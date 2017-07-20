@@ -172,7 +172,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objWeaponNode?.Attributes?["translate"].InnerText;
+                _strAltCategory = objWeaponNode?.Attributes?["translate"]?.InnerText;
             }
 
             // Populate the Range if it differs from the Weapon's Category.

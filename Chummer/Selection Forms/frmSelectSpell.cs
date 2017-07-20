@@ -171,9 +171,9 @@ namespace Chummer
 
             int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) 
             + _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
-                .Select(imp => _objCharacter.GetAttribute(imp.UniqueName)).Select(att => att.TotalValue).Sum() 
+                .Select(imp => _objCharacter.GetAttribute(imp.ImprovedName)).Select(att => att.TotalValue).Sum() 
             + _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                .Select(imp => _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.UniqueName)).Select(objSkill => objSkill.LearnedRating).Sum();
+                .Select(imp => _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName)).Select(objSkill => objSkill.LearnedRating).Sum();
             chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
         }
 
