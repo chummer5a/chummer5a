@@ -1,4 +1,4 @@
-Build 194
+﻿Build 194
 
 Application Changes:
 
@@ -53,6 +53,8 @@ Application Changes:
 - Exposed original English names and categories to the Print Methods for Qualities, Spirits, Spells, Metamagics, Arts, Enhancements, Complex Forms, Martial Arts, Limit Modifiers and Critter Powers.
 - Added missing adept way discount for the Traceless Walk and Improves Reflexes powers.
 - Fixed an incorrect skill linked to the Racing Bike PACK that caused a crash.
+- Character sheets are now loaded by a manifest file (sheets.xml) stored in the data directory. This file follows the same restrictions and usage as other data files, so use custom_sheets.xml for custom content. 
+    - This allows for ensuring the use of characters that can't be reliably read by Chummer's updater process, and provides some room in the future for credits, instructions for use, etc. 
 
 Data Changes:
 

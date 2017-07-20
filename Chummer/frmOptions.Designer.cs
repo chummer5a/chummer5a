@@ -1336,7 +1336,7 @@
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(162, 21);
             this.cboLanguage.TabIndex = 1;
-            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // cmdVerify
             // 
