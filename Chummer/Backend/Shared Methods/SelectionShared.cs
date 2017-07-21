@@ -1,4 +1,4 @@
-﻿using Chummer.Backend.Attributes;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System;
@@ -269,7 +269,7 @@ namespace Chummer.Backend.Shared_Methods
                 case "bioware":
                 case "cyberware":
                 {
-                    
+
                     int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
                     name = null;
                     name += node.Name == "cyberware"
@@ -353,7 +353,7 @@ namespace Chummer.Backend.Shared_Methods
                                .Replace("{0}", node.InnerText)
                                .Replace("{1}", character.Essence.ToString(CultureInfo.InvariantCulture));
                     return character.Essence >= Convert.ToDecimal(node.InnerText, GlobalOptions.InvariantCultureInfo);
-                    
+
                 case "group":
                     // Check that clustered options are present (Magical Tradition + Skill 6, for example)
                     string result = string.Empty;
@@ -439,7 +439,7 @@ namespace Chummer.Backend.Shared_Methods
                         objMetatypeDocument.SelectSingleNode($"/chummer/categories/category[. = \"{node.InnerText}\"]") ??
                         objCritterDocument.SelectSingleNode($"/chummer/categories/category[. = \"{node.InnerText}\"]");
                     name = nameNode?.Attributes["translate"] != null
-                        ? "\n\t" + nameNode.Attributes["translate"].InnerText
+                        ? "\n\t" + nameNode.Attributes["translate"]?.InnerText
                         : "\n\t" + node.InnerText;
                     name += LanguageManager.Instance.GetString("String_MetatypeCategory");
                     return node.InnerText == character.MetatypeCategory;

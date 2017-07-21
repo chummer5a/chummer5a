@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -31,7 +31,7 @@ namespace Chummer.Skills
                 {
                     int old = _skillFromSp;
 
-                    //Calculate how far above maximum we are. 
+                    //Calculate how far above maximum we are.
                     int overMax = (-1) * (RatingMaximum - (value + _skillFromKarma + FreeLevels()));
 
                     //reduce value by max or 0
@@ -59,7 +59,7 @@ namespace Chummer.Skills
                 {
                     int old = _skillFromKarma;
 
-                    //Calculate how far above maximum we are. 
+                    //Calculate how far above maximum we are.
                     int overMax = (-1) * (RatingMaximum - (value + _skillFromSp + FreeBase()));
 
                     //reduce value by max or 0
@@ -216,11 +216,11 @@ namespace Chummer.Skills
             SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
             newGroup.Add(skill);
             skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => String.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal));
-            
+
             return newGroup;
         }
 
-        
+
 
         private void Add(Skill skill)
         {
@@ -238,7 +238,7 @@ namespace Chummer.Skills
             writer.WriteElementString("base", _skillFromSp.ToString());
             writer.WriteElementString("id", Id.ToString());
             writer.WriteElementString("name", _groupName);
-            
+
             writer.WriteEndElement();
         }
 
@@ -275,7 +275,7 @@ namespace Chummer.Skills
                     OnPropertyChanged(nameof(Karma));
                 }
 
-                if (_karmaBrokenOldValue != KarmaUnbroken) { 
+                if (_karmaBrokenOldValue != KarmaUnbroken) {
                     OnPropertyChanged(nameof(KarmaUnbroken));
 }
                 _karmaBrokenOldValue = KarmaUnbroken;
@@ -292,10 +292,10 @@ namespace Chummer.Skills
         private bool _baseBrokenOldValue;
         private bool _karmaBrokenOldValue;
         private bool _careerIncreaseOldValue;
-        private readonly List<Skill> _affectedSkills = new List<Skill>(); 
+        private readonly List<Skill> _affectedSkills = new List<Skill>();
         private readonly string _groupName;
         private readonly Character _character;
-        
+
         private SkillGroup(Character character, string groupName, Guid guid = default(Guid))
         {
             _character = character;
@@ -317,7 +317,7 @@ namespace Chummer.Skills
             character.PropertyChanged += Character_PropertyChanged;
         }
 
-        
+
 
         public Character Character
         {
@@ -337,15 +337,11 @@ namespace Chummer.Skills
                 if(_cachedDisplayName != null)
                     return _cachedDisplayName;
 
-                if (GlobalOptions.Instance.Language != "en-us")
-                {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
-                    if (objNode?.Attributes?["translate"] != null)
-                        return _cachedDisplayName = objNode.Attributes["translate"].InnerText;
-                }
-                return _cachedDisplayName = Name;
-            } 
+                if (GlobalOptions.Instance.Language == "en-us") return _cachedDisplayName = Name;
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
+                return _cachedDisplayName = objNode?.Attributes?["translate"]?.InnerText;
+            }
         }
 
         public string DisplayRating
@@ -428,7 +424,7 @@ namespace Chummer.Skills
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
         private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
         {
@@ -463,8 +459,8 @@ namespace Chummer.Skills
             int cost = upper*(upper + 1);
             cost -= lower*(lower + 1);
             cost /= 2; //We get sqre, need triangle
-            
-            return cost * _character.Options.KarmaImproveSkillGroup; //todo handle KarmaNewSkillGrup 
+
+            return cost * _character.Options.KarmaImproveSkillGroup; //todo handle KarmaNewSkillGrup
         }
 
         public int UpgradeKarmaCost()
@@ -486,7 +482,7 @@ namespace Chummer.Skills
         }
 
         /// <summary>
-        /// Serves as a hash function for a particular type. 
+        /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
         /// A hash code for the current object.

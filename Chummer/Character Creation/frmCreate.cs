@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@ namespace Chummer
     public partial class frmCreate : CharacterShared
     {
         // Set the default culture to en-US so we work with decimals correctly.
-        
-        
+
+
         private bool _blnSkipRefresh = false;
         private bool _blnSkipUpdate = false;
         private bool _blnLoading = false;
@@ -108,7 +108,7 @@ namespace Chummer
 
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
             tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
-            //TODO: Can't bind visibility to the IsMysticAdept property for some reason. 
+            //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
             nudMysticAdeptMAGMagician.DataBindings.Add("Maximum", this._objCharacter.MAG, nameof(_objCharacter.MAG.TotalValue), false,
                             DataSourceUpdateMode.OnPropertyChanged);
             nudMysticAdeptMAGMagician.DataBindings.Add("Value", this._objCharacter, nameof(_objCharacter.MysticAdeptPowerPoints), false,
@@ -132,7 +132,7 @@ namespace Chummer
             MoveControls();
         }
 
-        
+
 
         /// <summary>
         /// Set the form to Loading mode so that certain events do not fire while data is being populated.
@@ -216,7 +216,7 @@ namespace Chummer
 
             int count = 0;
             foreach (Contact contact in _objCharacter.Contacts)
-                count += contact.ContactPoints;            
+                count += contact.ContactPoints;
 
             // Set the movement speed defaults
             lblMovement.Text = _objCharacter.Movement;
@@ -262,7 +262,7 @@ namespace Chummer
 
             // Remove the Improvements Tab.
             tabCharacterTabs.TabPages.Remove(tabImprovements);
-            
+
             if ((!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled) || !_objOptions.AllowInitiationInCreateMode)
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
             else
@@ -618,7 +618,7 @@ namespace Chummer
             objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
             int i = -1;
-            
+
             // Populate Contacts and Enemies.
             int intContact = -1;
             int intEnemy = -1;
@@ -1009,7 +1009,7 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateInitiationGradeTree();
             ScheduleCharacterUpdate();
-            
+
             lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
             lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
             BuildAttributePanel();
@@ -1022,7 +1022,7 @@ namespace Chummer
             Icon = Icon.Clone() as Icon;
             Timekeeper.Finish("load_frm_create");
             Timekeeper.Finish("loading");
-            
+
         }
 
         private void BindEvents(ContactControl objContactControl)
@@ -1105,7 +1105,7 @@ namespace Chummer
                     objContactControl.DeleteContact -= objContact_DeleteContact;
                     objContactControl.FileNameChanged -= objContact_FileNameChanged;
                     objContactControl.FreeRatingChanged -= objContact_OtherCostChanged;
-                    
+
                 }
 
                 foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
@@ -1391,11 +1391,11 @@ namespace Chummer
                 ClearAdeptTab();
                 tabCharacterTabs.TabPages.Remove(tabAdept);
             }
-            //TODO: Can't bind visibility to the IsMysticAdept property for some reason. 
+            //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
             lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
             nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
         }
-        
+
         private void objCharacter_AmbidextrousChanged(object sender)
         {
             if (_blnReapplyImprovements)
@@ -1617,7 +1617,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.FriendsInHighPlaces)
             {
 
@@ -1632,7 +1632,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.ExCon)
             {
 
@@ -1647,10 +1647,10 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-            
+
             if (_objCharacter.TrustFund> 0)
             {
-                
+
             }
             else
             {
@@ -1676,7 +1676,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.RestrictedGear)
             {
 
@@ -1692,7 +1692,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.Overclocker)
             {
 
@@ -1708,7 +1708,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.MadeMan)
             {
 
@@ -1724,10 +1724,10 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.SkillsSection.Linguist)
             {
-                
+
             }
             else
             {
@@ -1740,7 +1740,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.LightningReflexes)
             {
 
@@ -1756,7 +1756,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.Fame)
             {
 
@@ -1772,7 +1772,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.BornRich)
             {
                 nudNuyen.Maximum += 30;
@@ -1782,7 +1782,7 @@ namespace Chummer
                 nudNuyen.Maximum -= 30;
             }
 
-            
+
         }
 
         private void objCharacter_ErasedChanged(object sender)
@@ -1790,7 +1790,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            
+
             if (_objCharacter.Erased)
             {
 
@@ -1821,7 +1821,7 @@ namespace Chummer
 
             if (SkillPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
             SkillPropertyChanged_StopWatch.Restart();
-            
+
             CalculateBP();
             UpdateWindowTitle();
             UpdateSkillRelatedInfo();
@@ -3603,7 +3603,7 @@ namespace Chummer
                 // Once the Contact has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
                 if (blnFound)
                 {
-                    
+
                     objContactControl.Top -= 25;
                 }
             }
@@ -3647,7 +3647,7 @@ namespace Chummer
         {
             objEnemy_Changed(sender);
         }
-        
+
         private void objEnemy_Changed(Object sender, string strMode = null)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
@@ -3827,10 +3827,10 @@ namespace Chummer
             // Handle the ServicesOwedChanged Event for the SpiritControl object.
             // A Spirit cannot owe more services than the character's Summoning Skill Rating.
             SpiritControl objSpiritControl = (SpiritControl)sender;
-            
+
             // Retrieve the character's Summoning Skill Rating.
             int intSkillValue = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == "Summoning")?.Rating ?? 0; //TODO: LOOKUP TABLE
-            
+
             if (objSpiritControl.ServicesOwed > intSkillValue && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SpiritServices"), LanguageManager.Instance.GetString("MessageTitle_SpiritServices"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4009,7 +4009,7 @@ namespace Chummer
         #endregion
 
         #region Button Events
-        
+
         private void nudAdeptWayDiscount_ValueChanged(object sender, EventArgs e)
         {
             // Don't attempt to do anything while the data is still being populated.
@@ -4139,7 +4139,7 @@ namespace Chummer
         }
 
         private void cmdAddSpell_Click(object sender, EventArgs e)
-        {        
+        {
             frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
             frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
             frmPickSpell.ShowDialog(this);
@@ -4393,7 +4393,7 @@ namespace Chummer
                                     _objCharacter.Vehicles.Remove(objVehicle);
                                     break;
                                 }
-                            }              
+                            }
                         }
                     }
                     // Remove the Children.
@@ -4464,7 +4464,7 @@ namespace Chummer
                         objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
                     }
 
-                    // Fix for legacy characters with old addqualities improvements. 
+                    // Fix for legacy characters with old addqualities improvements.
                     if (objXmlCyberware["addqualities"] != null)
                     {
                         RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
@@ -6193,7 +6193,7 @@ namespace Chummer
                     break;
                 }
                 Quality q = _objCharacter.Qualities.Find(x => (
-                    x.Type == QualityType.LifeModule && 
+                    x.Type == QualityType.LifeModule &&
                     x.Stage == node.InnerText
                 ));
                 if (q == null)
@@ -6220,7 +6220,7 @@ namespace Chummer
             if (objLifeModule.InternalId == Guid.Empty.ToString())
                 return;
 
-            //Is there any reason not to add it? 
+            //Is there any reason not to add it?
             if (true)
             {
                 treQualities.Nodes[2].Nodes.Add(objNode);
@@ -6247,14 +6247,14 @@ namespace Chummer
 
             //Stupid hardcoding but no sane way
             //To do group skills (not that anything else is sane)
-            
+
             treQualities.SortCustom();
             ScheduleCharacterUpdate();
             RefreshContacts();
             _blnIsDirty = true;
             UpdateWindowTitle();
             RefreshQualities(treQualities,cmsQuality);
-            
+
             if(selectLifeModule.AddAgain)
                 cmdLifeModule_Click(sender, e);
         }
@@ -6444,7 +6444,7 @@ namespace Chummer
                     treQualities.Nodes[1].Nodes.Add(objAddQualityNode);
                     treQualities.Nodes[1].Expand();
                 }
-                
+
 
                 // Add any created Weapons to the character.
                 foreach (Weapon objWeapon in objAddWeapons)
@@ -6628,7 +6628,7 @@ namespace Chummer
                 _objCharacter.Weapons.Remove(objRemoveWeapon);
             }
 
-            // Fix for legacy characters with old addqualities improvements. 
+            // Fix for legacy characters with old addqualities improvements.
             if (objXmlDeleteQuality["addqualities"] != null)
             {
                 RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"), treQualities,
@@ -6897,7 +6897,7 @@ namespace Chummer
                 _objCharacter.Weapons.Add(objWeapon);
                 CommonFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             }
-            
+
             ScheduleCharacterUpdate();
 
             _blnIsDirty = true;
@@ -8169,7 +8169,7 @@ namespace Chummer
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
-            
+
             if (frmPickWeapon.FreeCost)
             {
                 objWeapon.Cost = 0;
@@ -9315,7 +9315,7 @@ namespace Chummer
 
             // Run through the list of Active Skills and pick out the two applicable ones.
             int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
-            
+
             if (intSpellCount >= (2 * intSkillValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -9753,7 +9753,7 @@ namespace Chummer
 
             if (objGear.InternalId == Guid.Empty.ToString())
                 return;
-            
+
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
             // Reduce the cost for Do It Yourself components.
@@ -10816,7 +10816,7 @@ namespace Chummer
             if (treGear.SelectedNode.Level > 0)
             {
                 Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-                
+
                 objGear.Rating = Convert.ToInt32(nudGearRating.Value);
                 if (objGear.Bonus != null)
                 {
@@ -10835,12 +10835,12 @@ namespace Chummer
                     }
                     if (blnAddBonus)
                         _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                    
+
                 }
 
                 _objController.PopulateFocusList(treFoci);
                 RefreshSelectedGear();
-                ScheduleCharacterUpdate(); 
+                ScheduleCharacterUpdate();
                 _objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
                 _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Rating));
 
@@ -12876,7 +12876,7 @@ namespace Chummer
             }
             strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
             tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
-            
+
             _blnSkipUpdate = false;
 
             ScheduleCharacterUpdate();
@@ -12949,7 +12949,7 @@ namespace Chummer
             }
             return s;
         }
-        
+
         /// <summary>
         /// Calculate the number of Build Points the character has remaining.
         /// </summary>
@@ -13027,7 +13027,7 @@ namespace Chummer
             }
 
             _objCharacter.ContactPointsUsed = intContactPointsLeft;
-            
+
             string strOf = LanguageManager.Instance.GetString("String_Of");
 
             StringBuilder sb = new StringBuilder();
@@ -13059,7 +13059,7 @@ namespace Chummer
                 sb.Append(')');
 
             }
-            
+
             lblContactsBP.Text = sb.ToString();
             lblContactPoints.Text = sb.ToString();
 
@@ -13087,7 +13087,7 @@ namespace Chummer
             int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
             int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
             int intLifeModuleQualities = 0;
-    
+
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
@@ -13111,7 +13111,7 @@ namespace Chummer
             intNegativeQualities -= intNegativeFree;
             intPositiveQualities -= intPositiveFree;
 
-            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.            
+            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
                 if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
@@ -13172,7 +13172,7 @@ namespace Chummer
             //TODO: Remaining is named USED?
             intKarmaPointsRemain -= knowledgeKarmaUsed;
             tabSkillUc.MissingDatabindingsWorkaround();
-            
+
             intFreestyleBP += knowledgeKarmaUsed;
 
             // ------------------------------------------------------------------------------
@@ -13301,7 +13301,7 @@ namespace Chummer
                             $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intRitualPointsUsed} {strPoints}");
                 }
             }
-            
+
             intFreestyleBP += intSpellPointsUsed + intRitualPointsUsed + intPrepPointsUsed;
 
             // ------------------------------------------------------------------------------
@@ -13398,7 +13398,7 @@ namespace Chummer
                 intKarmaPointsRemain -= objSpiritControl.ServicesOwed * _objOptions.KarmaSpirit;
                 intSpiritPointsUsed += objSpiritControl.ServicesOwed * _objOptions.KarmaSpirit;
 
-                // Each Fettered Spirit costs 3 x Force. 
+                // Each Fettered Spirit costs 3 x Force.
                 //TODO: Bind the 3 to an option.
                 if (objSpiritControl.Fettered)
                 {
@@ -13530,7 +13530,7 @@ namespace Chummer
             intKarmaPointsRemain -= intInitiationPoints;
             lblInitiationBP.Text = string.Format("{0} " + strPoints, intInitiationPoints.ToString());
             intFreestyleBP += intInitiationPoints;
-            
+
             // Add the Karma cost of any Critter Powers.
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
@@ -13602,13 +13602,13 @@ namespace Chummer
         /// </summary>
         public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
-        // TODO: Databind as much of this as possible        
+        // TODO: Databind as much of this as possible
             if (_blnLoading)
                 return;
 
             if (!_blnRequestCharacterUpdate)
                 return;
-            // Due to the indirect execution of UpdateCharacterInfo, it is occasionally possible for this method to run after a character has been closed. Fail out early in that case. 
+            // Due to the indirect execution of UpdateCharacterInfo, it is occasionally possible for this method to run after a character has been closed. Fail out early in that case.
             if (_objCharacter == null)
                 return;
             if (!_blnSkipUpdate)
@@ -13617,7 +13617,7 @@ namespace Chummer
                 _blnSkipUpdate = true;
 
                 //Redliner/Cyber Singularity Seeker(hackish)
-                RedlinerCheck(); 
+                RedlinerCheck();
 
                 // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
                 if (_objCharacter.DEPEnabled)
@@ -13637,11 +13637,11 @@ namespace Chummer
                 }
 
                 UpdateSkillRelatedInfo();
-                
+
                 UpdateConditionMonitor(lblCMPhysical,lblCMStun,tipTooltip, _objImprovementManager);
 
                 UpdateSpellDefence();
-                
+
                 UpdateArmorRating(lblArmor, tipTooltip, _objImprovementManager);
 
                 // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
@@ -13692,7 +13692,7 @@ namespace Chummer
                     _objImprovementManager.CreateImprovement("LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                     _objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 }
-                
+
                 // If MAG is enabled, update the Force for Spirits (equal to Magician MAG Rating) and Adept Powers.
                 if (_objCharacter.MAGEnabled)
                 {
@@ -14183,7 +14183,7 @@ namespace Chummer
             //objContactControl.FileNameChanged += objContact_FileNameChanged;
 
             var newcontacts = from contact in _objCharacter.Contacts
-                              where contact.EntityType == ContactType.Contact 
+                              where contact.EntityType == ContactType.Contact
                               && !existing.Contains(contact)
                               select contact;
 
@@ -14790,7 +14790,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
             //Direct Soak - Mana
             lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
-            strSpellTooltip = $"{strModifiers}: " + 
+            strSpellTooltip = $"{strModifiers}: " +
                               $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
@@ -14973,7 +14973,7 @@ namespace Chummer
 
                     if (objCommlink.Category != "Commlink Upgrade")
                         chkActiveCommlink.Visible = true;
-                    
+
                     if (_objCharacter.Metatype == "A.I.")
                     {
                         chkGearHomeNode.Visible = true;
@@ -15833,7 +15833,7 @@ namespace Chummer
             }
 
             _blnSkipRefresh = true;
-            
+
             nudLifestyleMonths.Enabled = true;
 
             // Locate the selected Lifestyle.
@@ -15881,10 +15881,10 @@ namespace Chummer
                 {
                     strQualities = strQualities.Substring(0, strQualities.Length - 2);
                 }
-                
+
                 lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
                 lblLifestyleQualities.Text += strQualities;
-                
+
                 nudLifestyleMonths.Enabled = true;
             }
             else
@@ -16088,7 +16088,7 @@ namespace Chummer
                     lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
                     lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
                     lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
-                    
+
                     tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
                     tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
                     tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
@@ -16099,7 +16099,7 @@ namespace Chummer
 
                 nudVehicleGearQty.Visible = true;
                 lblVehicleGearQtyLabel.Visible = true;
-                
+
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
                 UpdateSensor(objVehicle);
 
@@ -16324,7 +16324,7 @@ namespace Chummer
 
                             DisplayVehicleWeaponStats(false);
                             DisplayVehicleCommlinkStats(true);
-                            
+
                             if (_objCharacter.Metatype == "A.I.")
                             {
                                 chkVehicleHomeNode.Visible = true;
@@ -16349,7 +16349,7 @@ namespace Chummer
                         }
 
                         nudVehicleRating.Enabled = false;
-                        
+
                         DisplayVehicleWeaponStats(true);
                         DisplayVehicleCommlinkStats(false);
                         DisplayVehicleStats(false);
@@ -17178,7 +17178,7 @@ namespace Chummer
             string strExConItems = string.Empty;
             string strCyberwareGrade = string.Empty;
 
-            // Check if the character has more than 1 Martial Art, not counting One Trick Pony. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule. 
+            // Check if the character has more than 1 Martial Art, not counting One Trick Pony. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
             int intMartialArts = _objCharacter.MartialArts.Count(objArt => objArt.Name != "One Trick Pony");
             if (intMartialArts > 1)
                 strMessage += "\n\t" +
@@ -17330,7 +17330,7 @@ namespace Chummer
             {
                 int metageneticPositiveQualities = 0;
                 int metageneticNegativeQualities = 0;
-                foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString()))
+                foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Metagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString()))
                 {
                     if (objQuality.Type == QualityType.Positive)
                     {
@@ -17978,7 +17978,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Checks a nominated piece of gear for Availability requirements. 
+        /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
         /// <param name="objGear"></param>
         /// <param name="blnRestrictedGearUsed"></param>
@@ -18097,7 +18097,7 @@ namespace Chummer
                     }
 
                     strNewName = Path.Combine(Application.StartupPath, "saves", "backup", strNewName);
-                    
+
                     _objCharacter.Save(strNewName);
                 }
 
@@ -19379,7 +19379,7 @@ namespace Chummer
             }
 
             List<Quality> lstRemoveQualities = new List<Quality>();
-            //TODO: This shouldn't be required as of 17/10/16. Revert in case something weird shows up. 
+            //TODO: This shouldn't be required as of 17/10/16. Revert in case something weird shows up.
             /*Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
@@ -19554,7 +19554,7 @@ namespace Chummer
                 strToolTip += " (" + _objCharacter.Metavariant + ")";
             strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
             tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
-            
+
             ScheduleCharacterUpdate();
         }
 
@@ -19563,7 +19563,7 @@ namespace Chummer
         /// </summary>
         private void UpdateMentorSpirits()
         {
-            
+
             MentorSpirit objMentor = null;
             if (_objCharacter.MAGEnabled) objMentor = _objController.MentorInformation();
             else if (_objCharacter.RESEnabled) objMentor = _objController.MentorInformation(Improvement.ImprovementType.Paragon);
@@ -19767,7 +19767,7 @@ namespace Chummer
             lblSpellCategory.Left = lblSpellCategoryLabel.Left + intWidth + 6;
             lblSpellRange.Left = lblSpellRangeLabel.Left + intWidth + 6;
             lblSpellDuration.Left = lblSpellDurationLabel.Left + intWidth + 6;
-            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;          
+            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblSpellTypeLabel.Width, lblSpellDamageLabel.Width);
             intWidth = Math.Max(intWidth, lblSpellDVLabel.Width);
@@ -20175,7 +20175,7 @@ namespace Chummer
 
 
         /// <summary>
-        /// Recheck all mods to see if Sensor has changed. 
+        /// Recheck all mods to see if Sensor has changed.
         /// </summary>
         /// <param name="objVehicle">Vehicle to modify.</param>
         private void UpdateSensor(Vehicle objVehicle)

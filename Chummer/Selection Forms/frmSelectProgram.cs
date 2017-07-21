@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ namespace Chummer
                 if (objMetamagic.Name == "Biowire")
                     _blnBiowireEnabled = true;
             }
-            
+
             trePrograms.TreeViewNodeSorter = new SortByName();
             foreach (XmlNode objXmlProgram in objXmlNodeList)
             {
@@ -89,7 +89,7 @@ namespace Chummer
                     nodProgram.Text = objXmlProgram["name"].InnerText;
                 nodProgram.Tag = objXmlProgram["name"].InnerText;
                 nodParent = trePrograms.Nodes[0];
-                
+
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (blnCheckForOptional)
                 {
@@ -178,10 +178,7 @@ namespace Chummer
                     {
                         TreeNode nodCategory = new TreeNode();
                         nodCategory.Tag = objXmlCategory.InnerText;
-                        if (objXmlCategory.Attributes["translate"] != null)
-                            nodCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
-                        else
-                            nodCategory.Text = objXmlCategory.InnerText;
+                        nodCategory.Text = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
 
                         trePrograms.Nodes.Add(nodCategory);
                     }

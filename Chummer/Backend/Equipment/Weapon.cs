@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -478,11 +478,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objWeaponNode != null)
-                {
-                    if (objWeaponNode.Attributes["translate"] != null)
-                        _strAltCategory = objWeaponNode.Attributes["translate"].InnerText;
-                }
+                _strAltCategory = objWeaponNode?.Attributes?["translate"]?.InnerText;
             }
 
             if (objNode.InnerXml.Contains("<accessories>"))
@@ -770,11 +766,7 @@ namespace Chummer.Backend.Equipment
                 {
                     XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                    if (objNode != null)
-                    {
-                        if (objNode.Attributes["translate"] != null)
-                            strReturn = objNode.Attributes["translate"].InnerText;
-                    }
+                        strReturn = objNode?.Attributes?["translate"]?.InnerText;
                 }
 
                 return strReturn;
@@ -1189,7 +1181,7 @@ namespace Chummer.Backend.Equipment
         /// The second Active Skill Specialization that this Weapon uses, in addition to any others it would normally use.
         /// </summary>
         public string Spec2 => _strSpec2;
-        
+
         public Guid SourceID
         {
             get
@@ -1634,7 +1626,7 @@ namespace Chummer.Backend.Equipment
                     if (extendedMax > 0 && strAmmo.Contains("(c)"))
                     {
                         //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
-                        intAmmo = (intAmmo*(2 + extendedMax))/2; 
+                        intAmmo = (intAmmo*(2 + extendedMax))/2;
                     }
 
                     strAmmoString = intAmmo.ToString();
@@ -1665,7 +1657,7 @@ namespace Chummer.Backend.Equipment
                 strReturn = strReturn.Replace("(m)", "(" + LanguageManager.Instance.GetString("String_AmmoMagazine") + ")");
                 strReturn = strReturn.Replace("(ml)", "(" + LanguageManager.Instance.GetString("String_AmmoMuzzleLoad") + ")");
             }
-                
+
             return strReturn;
         }
 
@@ -2269,7 +2261,7 @@ namespace Chummer.Backend.Equipment
 
                 int intStrRC = ((_objCharacter.STR.TotalValue - 1)/3) + 1;
 
-                intRCBase += intStrRC + 1; 
+                intRCBase += intStrRC + 1;
                 intRCFull += intStrRC + 1;
                 strRCTip += $" + {_objCharacter.STR.DisplayAbbrev} [{_objCharacter.STR.TotalValue}] /3 = {intStrRC}]";
                 // If the full RC is not higher than the base, only the base value is shown.
@@ -2601,7 +2593,7 @@ namespace Chummer.Backend.Equipment
                 int intRangeBonus = RangeBonus;
                 int intMin = (Range("medium") * (100 + intRangeBonus) + 99) / 100;
                 int intMax = (Range("long") * (100 + intRangeBonus) + 99) / 100;
-                
+
                 if (intMin == -1 && intMax == -1)
                     return string.Empty;
                 else
@@ -2655,7 +2647,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = _intSuppressive;
-                
+
                 // Check to see if any of the Mods replace this value.
                 foreach (WeaponAccessory objAccessory in _lstAccessories)
                 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
-        
+
         /// Create a Gear from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlGear">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
@@ -122,11 +122,7 @@ namespace Chummer.Backend.Equipment
                     _strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
 
                 objGearNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objGearNode?.Attributes?["translate"] != null)
-                    _strAltCategory = objGearNode.Attributes["translate"].InnerText;
-
-                if (_strAltCategory.StartsWith("Stacked Focus"))
-                    _strAltCategory = _strAltCategory.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
+                _strAltCategory = objGearNode?.Attributes?["translate"]?.InnerText;
             }
 
             // Check for a Custom name
@@ -710,7 +706,7 @@ namespace Chummer.Backend.Equipment
                     _strAltCategory = _strAltCategory.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
             }
 
-            // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements. 
+            // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements.
             if (_strName == "Qi Focus")
             {
                 Version.TryParse("5.193.5", out Version test);
@@ -2278,7 +2274,7 @@ namespace Chummer.Backend.Equipment
 
                         // If this does not start with "-", add a "+" to the string.
                         if (!strReturn.StartsWith("-"))
-                            strReturn = "+" + strReturn;    
+                            strReturn = "+" + strReturn;
                     }
 
                     return strReturn;

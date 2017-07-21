@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -118,8 +118,8 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
             XmlNodeList objXmlModList = null;
             // Populate the Mod list.
-            objXmlModList = cboCategory.SelectedValue != null && (string) cboCategory.SelectedValue != "All" 
-            ? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]") 
+            objXmlModList = cboCategory.SelectedValue != null && (string) cboCategory.SelectedValue != "All"
+            ? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]")
             : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
             if (objXmlModList != null)
                 foreach (XmlNode objXmlMod in objXmlModList)
@@ -588,7 +588,7 @@ namespace Chummer
             lstMod.DataSource = lstMods;
             lstMod.EndUpdate();
         }
-        
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -686,7 +686,7 @@ namespace Chummer
                 {
                     strAvailExpr = objXmlMod["avail"].InnerText;
                 }
-                
+
                 XPathExpression xprAvail;
                 if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
@@ -762,7 +762,7 @@ namespace Chummer
                     // Apply any markup.
                     double dblCost = Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo);
                     dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
-                    
+
                     if (chkBlackMarketDiscount.Checked)
                     {
                         dblCost = dblCost - (dblCost*0.90);
@@ -815,7 +815,7 @@ namespace Chummer
                     else if (GlobalOptions.Instance.Language != "en-us")
                     {
                         XmlNode objXmlCategory = _objXmlDocument.SelectSingleNode("/chummer/modcategories/category[. = \"" + objXmlMod["category"].InnerText + "\"]");
-                        if (objXmlCategory != null && objXmlCategory.Attributes["translate"] != null)
+                        if (objXmlCategory?.Attributes["translate"] != null)
                         {
                             lblCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
                         }
@@ -828,15 +828,9 @@ namespace Chummer
                     if (GlobalOptions.Instance.Language != "en-us")
                     {
                         XmlNode objXmlLimit = _objXmlDocument.SelectSingleNode("/chummer/limits/limit[. = \"" + objXmlMod["limit"].InnerText + "\"]");
-                        if (objXmlLimit != null)
-                        {
-                            if (objXmlLimit.Attributes["translate"] != null)
-                                lblLimit.Text = " (" + objXmlLimit.Attributes["translate"].InnerText + ")";
-                            else
-                                lblLimit.Text = " (" + objXmlMod["limit"].InnerText + ")";
-                        }
-                        else
-                            lblLimit.Text = " (" + objXmlMod["limit"].InnerText + ")";
+                        lblLimit.Text = objXmlLimit.Attributes["translate"] != null
+                            ? " (" + objXmlLimit.Attributes["translate"].InnerText + ")"
+                            : " (" + objXmlMod["limit"].InnerText + ")";
                     }
                     else
                         lblLimit.Text = " (" + objXmlMod["limit"].InnerText + ")";

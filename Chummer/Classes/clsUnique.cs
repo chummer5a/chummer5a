@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,21 +18,13 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
+ using System.Drawing;
  using System.Globalization;
  using System.Linq;
-using System.Runtime.CompilerServices;
- using System.Text;
- using System.Threading;
  using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Annotations;
  using Chummer.Backend.Equipment;
-using Chummer.Backend;
  using Chummer.Skills;
 
 namespace Chummer
@@ -43,7 +35,7 @@ namespace Chummer
     public enum QualityType
     {
         Positive = 0,
-        Negative = 1,          
+        Negative = 1,
         LifeModule = 2,
         Entertainment = 3,
         Contracts = 4
@@ -65,13 +57,13 @@ namespace Chummer
     /// Reason a quality is not valid
     /// </summary>
     [Flags]
-    public enum QualityFailureReason : int
+    public enum QualityFailureReason
     {
         Allowed = 0x0,
         LimitExceeded =  0x1,
         RequiredSingle = 0x2,
         RequiredMultiple = 0x4,
-        ForbiddenSingle = 0x8, 
+        ForbiddenSingle = 0x8,
         MetatypeRequired = 0x10
     }
 
@@ -82,7 +74,7 @@ namespace Chummer
     {
         private Guid _guiID;
         private string _strName = string.Empty;
-        public string _strMetagenetic = string.Empty;
+        private string _strMetagenetic = string.Empty;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -107,8 +99,8 @@ namespace Chummer
 
         public String Stage
         {
-            get { return _stage; }
-            private set { _stage = value; }
+            get => _stage;
+            private set => _stage = value;
         }
 
         #region Helper Methods
@@ -178,7 +170,7 @@ namespace Chummer
             {
             if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
             {
-                    int intMin = 0;
+                    int intMin;
                     int intMax = 0;
                     string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
@@ -204,7 +196,7 @@ namespace Chummer
                     }
             }
             else
-            { 
+            {
                 _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
             }
             }
@@ -438,7 +430,7 @@ namespace Chummer
                     XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
 
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
-                        strQualityType = objNode?.Attributes?["translate"].InnerText ?? strQualityType;
+                        strQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", _objQualityType.ToString());
@@ -456,35 +448,20 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Internal identifier for the quality type
         /// </summary>
-        public string QualityId
-        {
-            get { return _qualiyGuid.ToString(); }
-        }
+        public string QualityId => _qualiyGuid.ToString();
 
         /// <summary>
         /// Guid of a Weapon.
         /// </summary>
         public string WeaponID
         {
-            get
-            {
-                return _guiWeaponID.ToString();
-            }
-            set
-            {
-                _guiWeaponID = Guid.Parse(value);
-            }
+            get => _guiWeaponID.ToString();
+            set => _guiWeaponID = Guid.Parse(value);
         }
 
         /// <summary>
@@ -492,29 +469,21 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
+        /// <summary>
+        /// Does the quality come from being a Changeling?
+        /// </summary>
+        public string Metagenetic => _strMetagenetic;
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -522,14 +491,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -544,10 +507,7 @@ namespace Chummer
 
                 return _strPage;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -555,14 +515,8 @@ namespace Chummer
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -570,14 +524,8 @@ namespace Chummer
         /// </summary>
         public QualityType Type
         {
-            get
-            {
-                return _objQualityType;
-            }
-            set
-            {
-                _objQualityType = value;
-            }
+            get => _objQualityType;
+            set => _objQualityType = value;
         }
 
         /// <summary>
@@ -585,14 +533,8 @@ namespace Chummer
         /// </summary>
         public QualitySource OriginSource
         {
-            get
-            {
-                return _objQualitySource;
-            }
-            set
-            {
-                _objQualitySource = value;
-            }
+            get => _objQualitySource;
+            set => _objQualitySource = value;
         }
 
         /// <summary>
@@ -600,11 +542,8 @@ namespace Chummer
         /// </summary>
         public int BP
         {
-            get { return CalculatedBP(); }
-            set
-            {
-                _intBP = value;
-            }
+            get => CalculatedBP();
+            set => _intBP = value;
         }
 
         /// <summary>
@@ -612,14 +551,8 @@ namespace Chummer
         /// </summary>
         public int LP
         {
-            get
-            {
-                return _intLP;
-            }
-            set
-            {
-                _intLP = value;
-            }
+            get => _intLP;
+            set => _intLP = value;
         }
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -659,14 +592,8 @@ namespace Chummer
         /// </summary>
         public bool AllowPrint
         {
-            get
-            {
-                return _blnPrint;
-            }
-            set
-            {
-                _blnPrint = value;
-            }
+            get => _blnPrint;
+            set => _blnPrint = value;
         }
 
         /// <summary>
@@ -674,14 +601,8 @@ namespace Chummer
         /// </summary>
         public bool DoubleCost
         {
-            get
-            {
-                return _blnDoubleCostCareer;
-            }
-            set
-            {
-                _blnDoubleCostCareer = value;                
-            }
+            get => _blnDoubleCostCareer;
+            set => _blnDoubleCostCareer = value;
         }
 
         /// <summary>
@@ -689,14 +610,8 @@ namespace Chummer
         /// </summary>
         public bool Implemented
         {
-            get
-            {
-                return _blnImplemented;
-            }
-            set
-            {
-                _blnImplemented = value;
-            }
+            get => _blnImplemented;
+            set => _blnImplemented = value;
         }
         /// <summary>
         /// Whether or not the Quality contributes towards the character's Quality BP limits.
@@ -714,7 +629,7 @@ namespace Chummer
                 if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
-                //Positive Metagenetic Qualities are free if you're a Changeling. 
+                //Positive Metagenetic Qualities are free if you're a Changeling.
                 if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
                 {
                     return false;
@@ -738,10 +653,7 @@ namespace Chummer
                 }
                 return blnReturn;
             }
-            set
-            {
-                _blnContributeToLimit = value;
-            }
+            set => _blnContributeToLimit = value;
         }
 
         /// <summary>
@@ -754,7 +666,7 @@ namespace Chummer
                 if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
-                    //Positive Metagenetic Qualities are free if you're a Changeling. 
+                    //Positive Metagenetic Qualities are free if you're a Changeling.
                     if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
                     {
                         return false;
@@ -786,14 +698,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -900,15 +806,7 @@ namespace Chummer
                             qualityRequired.Add(node.InnerText);
                         }
 
-                        bool blnFound = false;
-                        foreach (Quality quality in objCharacter.Qualities)
-                        {
-                            if (qualityRequired.Contains(quality.Name))
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
+                        bool blnFound = objCharacter.Qualities.Any(quality => qualityRequired.Contains(quality.Name));
 
                         if (!blnFound)
                         {
@@ -920,15 +818,7 @@ namespace Chummer
                     {
                         XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof/metatype");
 
-                        bool blnFound = false;
-                        foreach (XmlNode node in objXmlRequiredList)
-                        {
-                            if (node.InnerText == objCharacter.Metatype)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
+                        bool blnFound = objXmlRequiredList.Cast<XmlNode>().Any(node => node.InnerText == objCharacter.Metatype);
 
                         if (!blnFound)
                         {
@@ -986,7 +876,7 @@ namespace Chummer
                     }
                 }
             }
-            
+
             return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
         }
 
@@ -1279,27 +1169,15 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Spirit.
         /// </summary>
-        public Character CharacterObject
-        {
-            get
-            {
-                return _objCharacter;
-            }
-        }
+        public Character CharacterObject => _objCharacter;
 
         /// <summary>
         /// Name of the Spirit's Metatype.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -1307,14 +1185,8 @@ namespace Chummer
         /// </summary>
         public string CritterName
         {
-            get
-            {
-                return _strCritterName;
-            }
-            set
-            {
-                _strCritterName = value;
-            }
+            get => _strCritterName;
+            set => _strCritterName = value;
         }
 
         /// <summary>
@@ -1322,14 +1194,8 @@ namespace Chummer
         /// </summary>
         public int ServicesOwed
         {
-            get
-            {
-                return _intServicesOwed;
-            }
-            set
-            {
-                _intServicesOwed = value;
-            }
+            get => _intServicesOwed;
+            set => _intServicesOwed = value;
         }
 
         /// <summary>
@@ -1337,14 +1203,8 @@ namespace Chummer
         /// </summary>
         public int Force
         {
-            get
-            {
-                return _intForce;
-            }
-            set
-            {
-                _intForce = value;
-            }
+            get => _intForce;
+            set => _intForce = value;
         }
 
         /// <summary>
@@ -1352,14 +1212,8 @@ namespace Chummer
         /// </summary>
         public bool Bound
         {
-            get
-            {
-                return _blnBound;
-            }
-            set
-            {
-                _blnBound = value;
-            }
+            get => _blnBound;
+            set => _blnBound = value;
         }
 
         /// <summary>
@@ -1367,14 +1221,8 @@ namespace Chummer
         /// </summary>
         public SpiritType EntityType
         {
-            get
-            {
-                return _objEntityType;
-            }
-            set
-            {
-                _objEntityType = value;
-            }
+            get => _objEntityType;
+            set => _objEntityType = value;
         }
 
         /// <summary>
@@ -1382,14 +1230,8 @@ namespace Chummer
         /// </summary>
         public string FileName
         {
-            get
-            {
-                return _strFileName;
-            }
-            set
-            {
-                _strFileName = value;
-            }
+            get => _strFileName;
+            set => _strFileName = value;
         }
 
         /// <summary>
@@ -1397,14 +1239,8 @@ namespace Chummer
         /// </summary>
         public string RelativeFileName
         {
-            get
-            {
-                return _strRelativeName;
-            }
-            set
-            {
-                _strRelativeName = value;
-            }
+            get => _strRelativeName;
+            set => _strRelativeName = value;
         }
 
         /// <summary>
@@ -1412,22 +1248,16 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         public bool Fettered { get; internal set; }
 
         public string InternalId
         {
-            get { return _guiId.ToString(); }
-            set { _guiId = Guid.Parse(value); }
+            get => _guiId.ToString();
+            set => _guiId = Guid.Parse(value);
         }
         #endregion
     }
@@ -1508,7 +1338,7 @@ namespace Chummer
                     _strExtra = objImprovementManager.SelectedValue;
                 }
             }
-            
+
             objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
             objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -1676,27 +1506,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Spell's name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -1704,14 +1522,8 @@ namespace Chummer
         /// </summary>
         public int Grade
         {
-            get
-            {
-                return _intGrade;
-            }
-            set
-            {
-                _intGrade = value;
-            }
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -1719,14 +1531,8 @@ namespace Chummer
         /// </summary>
         public string Descriptors
         {
-            get
-            {
-                return _strDescriptors;
-            }
-            set
-            {
-                _strDescriptors = value;
-            }
+            get => _strDescriptors;
+            set => _strDescriptors = value;
         }
 
         /// <summary>
@@ -1865,14 +1671,8 @@ namespace Chummer
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
-            set
-            {
-                _strCategory = value;
-            }
+            get => _strCategory;
+            set => _strCategory = value;
         }
 
         /// <summary>
@@ -1880,14 +1680,8 @@ namespace Chummer
         /// </summary>
         public string Type
         {
-            get
-            {
-                return _strType;
-            }
-            set
-            {
-                _strType = value;
-            }
+            get => _strType;
+            set => _strType = value;
         }
 
         /// <summary>
@@ -2018,14 +1812,8 @@ namespace Chummer
         /// </summary>
         public string Range
         {
-            get
-            {
-                return _strRange;
-            }
-            set
-            {
-                _strRange = value;
-            }
+            get => _strRange;
+            set => _strRange = value;
         }
 
         /// <summary>
@@ -2052,14 +1840,8 @@ namespace Chummer
         /// </summary>
         public string Damage
         {
-            get
-            {
-                return _strDamage;
-            }
-            set
-            {
-                _strDamage = value;
-            }
+            get => _strDamage;
+            set => _strDamage = value;
         }
 
         /// <summary>
@@ -2093,14 +1875,8 @@ namespace Chummer
         /// </summary>
         public string Duration
         {
-            get
-            {
-                return _strDuration;
-            }
-            set
-            {
-                _strDuration = value;
-            }
+            get => _strDuration;
+            set => _strDuration = value;
         }
 
         /// <summary>
@@ -2178,10 +1954,7 @@ namespace Chummer
                 }
                 return strReturn;
             }
-            set
-            {
-                _strDV = value;
-            }
+            set => _strDV = value;
         }
 
         /// <summary>
@@ -2189,14 +1962,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -2211,10 +1978,7 @@ namespace Chummer
 
                 return _strPage;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -2222,14 +1986,8 @@ namespace Chummer
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -2237,14 +1995,8 @@ namespace Chummer
         /// </summary>
         public bool Limited
         {
-            get
-            {
-                return _blnLimited;
-            }
-            set
-            {
-                _blnLimited = value;
-            }
+            get => _blnLimited;
+            set => _blnLimited = value;
         }
 
         /// <summary>
@@ -2252,14 +2004,8 @@ namespace Chummer
         /// </summary>
         public bool Extended
         {
-            get
-            {
-                return _blnExtended;
-            }
-            set
-            {
-                _blnExtended = value;
-            }
+            get => _blnExtended;
+            set => _blnExtended = value;
         }
 
         /// <summary>
@@ -2267,14 +2013,8 @@ namespace Chummer
         /// </summary>
         public bool Alchemical
         {
-            get
-            {
-                return _blnAlchemical;
-            }
-            set
-            {
-                _blnAlchemical = value;
-            }
+            get => _blnAlchemical;
+            set => _blnAlchemical = value;
         }
 
         /// <summary>
@@ -2282,14 +2022,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -2339,8 +2073,8 @@ namespace Chummer
         /// </summary>
         public bool FreeBonus
         {
-            get { return _blnFreeBonus; }
-            set { _blnFreeBonus = value; }
+            get => _blnFreeBonus;
+            set => _blnFreeBonus = value;
         }
         #endregion
 
@@ -2493,27 +2227,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Focus in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Foci's name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -2521,14 +2243,8 @@ namespace Chummer
         /// </summary>
         public string GearId
         {
-            get
-            {
-                return _guiGearId.ToString();
-            }
-            set
-            {
-                _guiGearId = Guid.Parse(value);
-            }
+            get => _guiGearId.ToString();
+            set => _guiGearId = Guid.Parse(value);
         }
 
         /// <summary>
@@ -2536,14 +2252,8 @@ namespace Chummer
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
-            set
-            {
-                _intRating = value;
-            }
+            get => _intRating;
+            set => _intRating = value;
         }
         #endregion
     }
@@ -2607,27 +2317,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Stacked Focus in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// GUID of the linked Gear.
         /// </summary>
         public string GearId
         {
-            get
-            {
-                return _guiGearId.ToString();
-            }
-            set
-            {
-                _guiGearId = Guid.Parse(value);
-            }
+            get => _guiGearId.ToString();
+            set => _guiGearId = Guid.Parse(value);
         }
 
         /// <summary>
@@ -2635,14 +2333,8 @@ namespace Chummer
         /// </summary>
         public bool Bonded
         {
-            get
-            {
-                return _blnBonded;
-            }
-            set
-            {
-                _blnBonded = value;
-            }
+            get => _blnBonded;
+            set => _blnBonded = value;
         }
 
         /// <summary>
@@ -2760,14 +2452,8 @@ namespace Chummer
         /// </summary>
         public List<Gear> Gear
         {
-            get
-            {
-                return _lstGear;
-            }
-            set
-            {
-                _lstGear = value;
-            }
+            get => _lstGear;
+            set => _lstGear = value;
         }
         #endregion
     }
@@ -2904,27 +2590,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -2932,14 +2606,8 @@ namespace Chummer
         /// </summary>
         public Improvement.ImprovementSource SourceType
         {
-            get
-            {
-                return _objImprovementSource;
-            }
-            set
-            {
-                _objImprovementSource = value;
-            }
+            get => _objImprovementSource;
+            set => _objImprovementSource = value;
         }
 
         /// <summary>
@@ -2947,14 +2615,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -3011,14 +2673,8 @@ namespace Chummer
         /// </summary>
         public Int32 Grade
         {
-            get
-            {
-                return _intGrade;
-            }
-            set
-            {
-                _intGrade = value;
-            }
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -3026,14 +2682,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -3070,10 +2720,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -3081,14 +2728,8 @@ namespace Chummer
         /// </summary>
         public bool PaidWithKarma
         {
-            get
-            {
-                return _blnPaidWithKarma;
-            }
-            set
-            {
-                _blnPaidWithKarma = value;
-            }
+            get => _blnPaidWithKarma;
+            set => _blnPaidWithKarma = value;
         }
 
         /// <summary>
@@ -3096,14 +2737,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
     }
@@ -3224,27 +2859,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -3252,14 +2875,8 @@ namespace Chummer
         /// </summary>
         public Improvement.ImprovementSource SourceType
         {
-            get
-            {
-                return _objImprovementSource;
-            }
-            set
-            {
-                _objImprovementSource = value;
-            }
+            get => _objImprovementSource;
+            set => _objImprovementSource = value;
         }
 
         /// <summary>
@@ -3267,14 +2884,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -3321,14 +2932,8 @@ namespace Chummer
         /// </summary>
         public int Grade
         {
-            get
-            {
-                return _intGrade;
-            }
-            set
-            {
-                _intGrade = value;
-            }
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -3336,14 +2941,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -3370,10 +2969,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -3381,14 +2977,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
     }
@@ -3510,27 +3100,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -3538,14 +3116,8 @@ namespace Chummer
         /// </summary>
         public Improvement.ImprovementSource SourceType
         {
-            get
-            {
-                return _objImprovementSource;
-            }
-            set
-            {
-                _objImprovementSource = value;
-            }
+            get => _objImprovementSource;
+            set => _objImprovementSource = value;
         }
 
         /// <summary>
@@ -3553,14 +3125,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -3607,14 +3173,8 @@ namespace Chummer
         /// </summary>
         public int Grade
         {
-            get
-            {
-                return _intGrade;
-            }
-            set
-            {
-                _intGrade = value;
-            }
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -3622,14 +3182,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -3656,10 +3210,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -3667,14 +3218,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -3682,14 +3227,8 @@ namespace Chummer
         /// </summary>
         public Power Parent
         {
-            get
-            {
-                return _objParent;
-            }
-            set
-            {
-                _objParent = value;
-            }
+            get => _objParent;
+            set => _objParent = value;
         }
         #endregion
     }
@@ -3812,27 +3351,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Complex Form in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Complex Form's name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -3840,14 +3367,8 @@ namespace Chummer
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -3893,60 +3414,36 @@ namespace Chummer
         /// </summary>
         public string Duration
         {
-            get
-            {
-                return _strDuration;
-            }
-            set
-            {
-                _strDuration = value;
-            }
-            }
+            get => _strDuration;
+            set => _strDuration = value;
+        }
 
         /// <summary>
         /// The Complex Form's FV.
         /// </summary>
         public string FV
         {
-            get
-            {
-                return _strFV;
-            }
-            set
-            {
-                _strFV = value;
-            }
-            }
+            get => _strFV;
+            set => _strFV = value;
+        }
 
         /// <summary>
         /// The Complex Form's Target.
         /// </summary>
         public string Target
         {
-            get
-            {
-                return _strTarget;
-            }
-            set
-            {
-                _strTarget = value;
-            }
-            }
+            get => _strTarget;
+            set => _strTarget = value;
+        }
 
         /// <summary>
         /// Complex Form's Source.
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
-            }
+            get => _strSource;
+            set => _strSource = value;
+        }
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -3970,25 +3467,16 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
-            }
+            set => _strPage = value;
+        }
 
         /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
             }
@@ -4099,7 +3587,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", Name);
             if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.Instance.GetString("String_None"))
-                objWriter.WriteElementString("requiresprogram", LanguageManager.Instance.GetString("String_None")); 
+                objWriter.WriteElementString("requiresprogram", LanguageManager.Instance.GetString("String_None"));
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
@@ -4114,27 +3602,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this AI Program in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// AI Program's name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -4142,14 +3618,8 @@ namespace Chummer
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -4195,14 +3665,8 @@ namespace Chummer
         /// </summary>
         public string RequiresProgram
         {
-            get
-            {
-                return _strRequiresProgram;
-            }
-            set
-            {
-                _strRequiresProgram = value;
-            }
+            get => _strRequiresProgram;
+            set => _strRequiresProgram = value;
         }
 
         /// <summary>
@@ -4234,14 +3698,8 @@ namespace Chummer
         /// </summary>
         public bool CanDelete
         {
-            get
-            {
-                return _boolCanDelete;
-            }
-            set
-            {
-                _boolCanDelete = value;
-            }
+            get => _boolCanDelete;
+            set => _boolCanDelete = value;
         }
 
         /// <summary>
@@ -4249,14 +3707,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -4281,10 +3733,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -4292,26 +3741,15 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
         /// If the AI Program is an Advanced Program.
         /// </summary>
-        public bool IsAdvancedProgram
-        {
-            get
-            {
-                return _boolIsAdvancedProgram;
-            }
-        }
+        public bool IsAdvancedProgram => _boolIsAdvancedProgram;
+
         #endregion
     }
 
@@ -4442,20 +3880,11 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
-        public string InternalId
-        {
-            get { return _guiID.ToString(); }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -4499,14 +3928,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -4531,10 +3954,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -4542,14 +3962,8 @@ namespace Chummer
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
-            set
-            {
-                _intRating = value;
-            }
+            get => _intRating;
+            set => _intRating = value;
         }
 
         /// <summary>
@@ -4557,40 +3971,22 @@ namespace Chummer
         /// </summary>
         public bool IsQuality
         {
-            get
-            {
-                return _blnIsQuality;
-            }
-            set
-            {
-                _blnIsQuality = value;
-            }
+            get => _blnIsQuality;
+            set => _blnIsQuality = value;
         }
 
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public List<MartialArtAdvantage> Advantages
-        {
-            get
-            {
-                return _lstAdvantages;
-            }
-        }
+        public List<MartialArtAdvantage> Advantages => _lstAdvantages;
 
         /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
     }
@@ -4690,27 +4086,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Martial Art Advantage in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -4722,47 +4106,25 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
-                {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart/techniques/technique[. = \"" + _strName + "\"]");
-                    if (objNode != null)
-                    {
-                        if (objNode.Attributes["translate"] != null)
-                            strReturn = objNode.Attributes["translate"].InnerText;
-                    }
-                }
-
-                return strReturn;
+                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart/techniques/technique[. = \"" + _strName + "\"]");
+                return objNode?.Attributes?["translate"].InnerText ?? strReturn;
             }
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                string strReturn = DisplayNameShort;
-
-                return strReturn;
-            }
-        }
+        public string DisplayName => DisplayNameShort;
 
         /// <summary>
         /// Notes attached to this technique.
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -4770,14 +4132,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -4785,14 +4141,8 @@ namespace Chummer
         /// </summary>
         public string Page
         {
-            get
-            {
-                return _strPage;
-            }
-            set
-            {
-                _strPage = value;
-            }
+            get => _strPage;
+            set => _strPage = value;
         }
         #endregion
     }
@@ -4881,27 +4231,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Martial Art Maneuver in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -4946,14 +4284,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -4978,10 +4310,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -4989,14 +4318,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
     }
@@ -5122,24 +4445,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
         /// </summary>
         public Guid Guid
         {
-            get { return _guiID; }
-            set
-            {
-                _guiID = value;
-            }
+            get => _guiID;
+            set => _guiID = value;
         }
 
         /// <summary>
@@ -5147,14 +4461,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -5162,14 +4470,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -5177,14 +4479,8 @@ namespace Chummer
         /// </summary>
         public string Limit
         {
-            get
-            {
-                return _strLimit;
-            }
-            set
-            {
-                _strLimit = value;
-            }
+            get => _strLimit;
+            set => _strLimit = value;
         }
 
         /// <summary>
@@ -5192,14 +4488,8 @@ namespace Chummer
         /// </summary>
         public string Condition
         {
-            get
-            {
-                return _strCondition;
-            }
-            set
-            {
-                _strCondition = value;
-            }
+            get => _strCondition;
+            set => _strCondition = value;
         }
 
         /// <summary>
@@ -5207,14 +4497,8 @@ namespace Chummer
         /// </summary>
         public int Bonus
         {
-            get
-            {
-                return _intBonus;
-            }
-            set
-            {
-                _intBonus = value;
-            }
+            get => _intBonus;
+            set => _intBonus = value;
         }
 
         /// <summary>
@@ -5273,7 +4557,7 @@ namespace Chummer
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
-        
+
         private string _strGroupName = string.Empty;
         private ContactType _objContactType = ContactType.Contact;
         private string _strFileName = string.Empty;
@@ -5407,14 +4691,8 @@ namespace Chummer
 
         public bool ReadOnly
         {
-            get
-            {
-                return _readonly;
-            }
-            set
-            {
-                _readonly = value; 
-            }
+            get => _readonly;
+            set => _readonly = value;
         }
 
 
@@ -5439,14 +4717,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -5454,14 +4726,8 @@ namespace Chummer
         /// </summary>
         public string Role
         {
-            get
-            {
-                return _strRole;
-            }
-            set
-            {
-                _strRole = value;
-            }
+            get => _strRole;
+            set => _strRole = value;
         }
 
         /// <summary>
@@ -5469,14 +4735,8 @@ namespace Chummer
         /// </summary>
         public string Location
         {
-            get
-            {
-                return _strLocation;
-            }
-            set
-            {
-                _strLocation = value;
-            }
+            get => _strLocation;
+            set => _strLocation = value;
         }
 
         /// <summary>
@@ -5484,14 +4744,8 @@ namespace Chummer
         /// </summary>
         public int Connection
         {
-            get
-            {
-                return _intConnection;
-            }
-            set
-            {
-                _intConnection = value;
-            }
+            get => _intConnection;
+            set => _intConnection = value;
         }
 
         /// <summary>
@@ -5499,14 +4753,8 @@ namespace Chummer
         /// </summary>
         public int Loyalty
         {
-            get
-            {
-                return _intLoyalty;
-            }
-            set
-            {
-                _intLoyalty = value;
-            }
+            get => _intLoyalty;
+            set => _intLoyalty = value;
         }
 
         /// <summary>
@@ -5514,10 +4762,7 @@ namespace Chummer
         /// </summary>
         public bool IsGroup
         {
-            get
-            {
-                return _blnIsGroup || _blnMadeMan;
-            }
+            get => _blnIsGroup || _blnMadeMan;
             set
             {
                 _blnIsGroup = value;
@@ -5540,14 +4785,8 @@ namespace Chummer
         /// </summary>
         public ContactType EntityType
         {
-            get
-            {
-                return _objContactType;
-            }
-            set
-            {
-                _objContactType = value;
-            }
+            get => _objContactType;
+            set => _objContactType = value;
         }
 
         /// <summary>
@@ -5555,14 +4794,8 @@ namespace Chummer
         /// </summary>
         public string FileName
         {
-            get
-            {
-                return _strFileName;
-            }
-            set
-            {
-                _strFileName = value;
-            }
+            get => _strFileName;
+            set => _strFileName = value;
         }
 
         /// <summary>
@@ -5570,14 +4803,8 @@ namespace Chummer
         /// </summary>
         public string RelativeFileName
         {
-            get
-            {
-                return _strRelativeName;
-            }
-            set
-            {
-                _strRelativeName = value;
-            }
+            get => _strRelativeName;
+            set => _strRelativeName = value;
         }
 
         /// <summary>
@@ -5585,14 +4812,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -5600,14 +4821,8 @@ namespace Chummer
         /// </summary>
         public string GroupName
         {
-            get
-            {
-                return _strGroupName;
-            }
-            set
-            {
-                _strGroupName = value;
-            }
+            get => _strGroupName;
+            set => _strGroupName = value;
         }
 
         /// <summary>
@@ -5615,14 +4830,8 @@ namespace Chummer
         /// </summary>
         public Color Colour
         {
-            get
-            {
-                return _objColour;
-            }
-            set
-            {
-                _objColour = value;
-            }
+            get => _objColour;
+            set => _objColour = value;
         }
 
         /// <summary>
@@ -5630,14 +4839,8 @@ namespace Chummer
         /// </summary>
         public bool Free
         {
-            get
-            {
-                return _blnFree;
-            }
-            set
-            {
-                _blnFree = value;
-            }
+            get => _blnFree;
+            set => _blnFree = value;
         }
         /// <summary>
         /// Unique ID for this contact
@@ -5660,10 +4863,7 @@ namespace Chummer
         /// </summary>
         public bool MadeMan
         {
-            get
-            {
-                return _blnMadeMan;
-            }
+            get => _blnMadeMan;
             set
             {
                 _blnMadeMan = value;
@@ -5676,14 +4876,14 @@ namespace Chummer
 
         public bool Blackmail
         {
-            get { return _blnBlackmail; }
-            set { _blnBlackmail = value; }
+            get => _blnBlackmail;
+            set => _blnBlackmail = value;
         }
 
         public bool Family
         {
-            get { return _blnFamily; }
-            set { _blnFamily = value; }
+            get => _blnFamily;
+            set => _blnFamily = value;
         }
 
         #endregion
@@ -5845,20 +5045,14 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Critter Power in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
-        /// Paid levels of the power. 
+        /// Paid levels of the power.
         /// </summary>
         public int Rating
         {
-            get { return _intRating; }
+            get => _intRating;
             set
             {
                 if (Extra == Rating.ToString())
@@ -5885,14 +5079,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -5943,14 +5131,8 @@ namespace Chummer
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -5958,14 +5140,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -5990,10 +5166,7 @@ namespace Chummer
 
                 return strReturn;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -6001,14 +5174,8 @@ namespace Chummer
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -6018,20 +5185,11 @@ namespace Chummer
         {
             get
             {
-                string strReturn = _strCategory;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
-                {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                    if (objNode != null)
-                    {
-                        if (objNode.Attributes["translate"] != null)
-                            strReturn = objNode.Attributes["translate"].InnerText;
-                    }
-                }
-
-                return strReturn;
+                if (GlobalOptions.Instance.Language == "en-us") return _strCategory;
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+                return objNode.Attributes?["translate"].InnerText ?? _strCategory;
             }
         }
 
@@ -6040,14 +5198,8 @@ namespace Chummer
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
-            set
-            {
-                _strCategory = value;
-            }
+            get => _strCategory;
+            set => _strCategory = value;
         }
 
         /// <summary>
@@ -6055,14 +5207,8 @@ namespace Chummer
         /// </summary>
         public string Type
         {
-            get
-            {
-                return _strType;
-            }
-            set
-            {
-                _strType = value;
-            }
+            get => _strType;
+            set => _strType = value;
         }
 
         /// <summary>
@@ -6096,14 +5242,8 @@ namespace Chummer
         /// </summary>
         public string Action
         {
-            get
-            {
-                return _strAction;
-            }
-            set
-            {
-                _strAction = value;
-            }
+            get => _strAction;
+            set => _strAction = value;
         }
 
         /// <summary>
@@ -6143,14 +5283,8 @@ namespace Chummer
         /// </summary>
         public string Range
         {
-            get
-            {
-                return _strRange;
-            }
-            set
-            {
-                _strRange = value;
-            }
+            get => _strRange;
+            set => _strRange = value;
         }
 
         /// <summary>
@@ -6178,14 +5312,8 @@ namespace Chummer
         /// </summary>
         public string Duration
         {
-            get
-            {
-                return _strDuration;
-            }
-            set
-            {
-                _strDuration = value;
-            }
+            get => _strDuration;
+            set => _strDuration = value;
         }
 
         /// <summary>
@@ -6195,7 +5323,7 @@ namespace Chummer
         {
             get
             {
-                string strReturn = string.Empty;
+                string strReturn;
 
                 switch (_strDuration)
                 {
@@ -6225,14 +5353,8 @@ namespace Chummer
         /// </summary>
         public double PowerPoints
         {
-            get
-            {
-                return _dblPowerPoints;
-            }
-            set
-            {
-                _dblPowerPoints = value;
-            }
+            get => _dblPowerPoints;
+            set => _dblPowerPoints = value;
         }
 
         /// <summary>
@@ -6240,14 +5362,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -6255,14 +5371,8 @@ namespace Chummer
         /// </summary>
         public bool CountTowardsLimit
         {
-            get
-            {
-                return _blnCountTowardsLimit;
-            }
-            set
-            {
-                _blnCountTowardsLimit = value;
-            }
+            get => _blnCountTowardsLimit;
+            set => _blnCountTowardsLimit = value;
         }
 
         /// <summary>
@@ -6270,8 +5380,8 @@ namespace Chummer
         /// </summary>
         public int Karma
         {
-            get { return _intKarma; }
-            set { _intKarma = value; }
+            get => _intKarma;
+            set => _intKarma = value;
         }
         #endregion
     }
@@ -6352,27 +5462,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Initiation Grade in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Initiate Grade.
         /// </summary>
         public int Grade
         {
-            get
-            {
-                return _intGrade;
-            }
-            set
-            {
-                _intGrade = value;
-            }
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -6380,14 +5478,8 @@ namespace Chummer
         /// </summary>
         public bool Group
         {
-            get
-            {
-                return _blnGroup;
-            }
-            set
-            {
-                _blnGroup = value;
-            }
+            get => _blnGroup;
+            set => _blnGroup = value;
         }
 
         /// <summary>
@@ -6395,14 +5487,8 @@ namespace Chummer
         /// </summary>
         public bool Ordeal
         {
-            get
-            {
-                return _blnOrdeal;
-            }
-            set
-            {
-                _blnOrdeal = value;
-            }
+            get => _blnOrdeal;
+            set => _blnOrdeal = value;
         }
 
         /// <summary>
@@ -6410,14 +5496,8 @@ namespace Chummer
         /// </summary>
         public bool Schooling
         {
-            get
-            {
-                return _blnSchooling;
-            }
-            set
-            {
-                _blnSchooling = value;
-            }
+            get => _blnSchooling;
+            set => _blnSchooling = value;
         }
 
         /// <summary>
@@ -6425,14 +5505,8 @@ namespace Chummer
         /// </summary>
         public bool Technomancer
         {
-            get
-            {
-                return _blnTechnomancer;
-            }
-            set
-            {
-                _blnTechnomancer = value;
-            }
+            get => _blnTechnomancer;
+            set => _blnTechnomancer = value;
         }
         #endregion
 
@@ -6446,7 +5520,7 @@ namespace Chummer
             {
                 double dblCost = 10.0 + (_intGrade * _objOptions.KarmaInitiation);
                 double dblMultiplier = 1.0;
-                
+
                 // Discount for Group.
                 if (_blnGroup)
                     dblMultiplier -= 0.1;
@@ -6500,7 +5574,7 @@ namespace Chummer
                     }
                     strReturn += ")";
                 }
-                
+
                 return strReturn;
             }
         }
@@ -6510,14 +5584,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
     }
@@ -6589,27 +5657,15 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Calendar Week in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Year.
         /// </summary>
         public int Year
         {
-            get
-            {
-                return _intYear;
-            }
-            set
-            {
-                _intYear = value;
-            }
+            get => _intYear;
+            set => _intYear = value;
         }
 
         /// <summary>
@@ -6769,14 +5825,8 @@ namespace Chummer
         /// </summary>
         public int Week
         {
-            get
-            {
-                return _intWeek;
-            }
-            set
-            {
-                _intWeek = value;
-            }
+            get => _intWeek;
+            set => _intWeek = value;
         }
 
         /// <summary>
@@ -6784,14 +5834,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
         #endregion
     }
@@ -6807,14 +5851,8 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -6822,14 +5860,8 @@ namespace Chummer
         /// </summary>
         public string Advantages
         {
-            get
-            {
-                return _strAdvantages;
-            }
-            set
-            {
-                _strAdvantages = value;
-            }
+            get => _strAdvantages;
+            set => _strAdvantages = value;
         }
         #endregion
     }

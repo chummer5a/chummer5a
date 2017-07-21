@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -41,12 +41,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = node["id"].InnerText;
-                    if (node.Attributes != null)
-                    {
-                        objItem.Name = node.Attributes["translate"]?.InnerText ?? node["name"].InnerText;
-                    }
-                    else
-                        objItem.Name = node["name"].InnerXml;
+                    objItem.Name = node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText;
                     switch (node["category"].InnerText)
                     {
                         case "Visibility":
@@ -66,7 +61,7 @@ namespace Chummer
                             break;
                     }
 
-                    
+
                 }
             cboSize.BeginUpdate();
             cboSize.ValueMember = "Value";

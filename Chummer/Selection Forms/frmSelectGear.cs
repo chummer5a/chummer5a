@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -184,15 +184,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlCategory.InnerText;
-                    if (objXmlCategory.Attributes != null)
-                    {
-                        if (objXmlCategory.Attributes["translate"] != null)
-                            objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlCategory.InnerText;
-                    }
-                    else
-                        objItem.Name = objXmlCategory.InnerXml;
+                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                     _lstCategory.Add(objItem);
                 }
             }
@@ -792,7 +784,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Default text string to filter by. 
+        /// Default text string to filter by.
         /// </summary>
         public string DefaultSearchText { get; set; }
         #endregion
@@ -1120,7 +1112,7 @@ namespace Chummer
                     else
                         lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.CultureInfo) + "]";
                 }
-                
+
                 // Rating.
                 if (Convert.ToInt32(objXmlGear["rating"].InnerText) > 0)
                 {

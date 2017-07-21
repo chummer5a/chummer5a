@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -22,7 +22,7 @@ namespace Chummer
         private string _strResources = string.Empty;
         private string _strSelectedMetatype = string.Empty;
         private string _strSelectedMetavariant = string.Empty;
-        private string _strSelectedMetatypeCategory = string.Empty; 
+        private string _strSelectedMetatypeCategory = string.Empty;
         private string _strSelectedTalent = string.Empty;
         private int intBuildMethod = 0;
         private List<ListItem> _lstCategory = new List<ListItem>();
@@ -215,7 +215,7 @@ namespace Chummer
                 _strSelectedMetavariant = value;
             }
         }
-        
+
         #endregion
 
         #region Form Events
@@ -259,7 +259,7 @@ namespace Chummer
             XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
             if (string.IsNullOrEmpty(_objCharacter.GameplayOption))
                 _objCharacter.GameplayOption = "Standard";
-            
+
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 intBuildMethod = 1;
@@ -410,7 +410,7 @@ namespace Chummer
                 cboMetavariant.SelectedValue = strMetavariant;
             }
             PopulateTalents();
-            
+
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.Instance.GetString("Tip_Metatype_PossessionTradition"));
@@ -420,7 +420,7 @@ namespace Chummer
             XmlNode objXmlPossession = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\"]");
             XmlNode objXmlInhabitation = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
             List<ListItem> lstMethods = new List<ListItem>();
-            
+
             ListItem objPossession = new ListItem();
             objPossession.Value = "Possession";
             objPossession.Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText;
@@ -456,7 +456,7 @@ namespace Chummer
 
                 XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
                 XmlNode objXmlMetatypeBP = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
-                
+
                 if (objXmlMetatypeBP["karma"] != null)
                 {
                     lblMetavariantBP.Text = objXmlMetatypeBP["karma"].InnerText;
@@ -515,7 +515,7 @@ namespace Chummer
                 // Select the None item.
                 cboMetavariant.SelectedIndex = 0;
                 cboMetavariant.EndUpdate();
-                
+
                 // Set the special attributes label.
                 XmlNodeList objXmlMetatypeList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
                 lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
@@ -731,7 +731,7 @@ namespace Chummer
                 XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
                 XmlNode objXmlMetavariantBP = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue.ToString() + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
                 if (objXmlMetavariantBP == null)
-                { 
+                {
                     MessageBox.Show(LanguageManager.Instance.GetString("String_NotSupported"), "Chummer5",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cmdOK.Enabled = false;
@@ -1107,7 +1107,7 @@ namespace Chummer
                         boolHalveAttributePriorityPoints = true;
                 }
 
-                //TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh. 
+                //TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh.
                 _objCharacter.AttributeList.Add(_objCharacter.BOD);
                 _objCharacter.AttributeList.Add(_objCharacter.AGI);
                 _objCharacter.AttributeList.Add(_objCharacter.REA);
@@ -1156,7 +1156,7 @@ namespace Chummer
                         objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
                         objQuality.ContributeToLimit = false;
                         _objCharacter.Qualities.Add(objQuality);
-                        
+
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in objWeapons)
                             _objCharacter.Weapons.Add(objWeapon);
@@ -1698,7 +1698,7 @@ namespace Chummer
             }
 
             manager.Commit();
-            
+
         }
 
         /// <summary>
@@ -2037,12 +2037,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlCategory.InnerText;
-                    if (objXmlCategory.Attributes != null)
-                    {
-                        objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                    }
-                    else
-                        objItem.Name = objXmlCategory.InnerXml;
+                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                     _lstCategory.Add(objItem);
                 }
             }
