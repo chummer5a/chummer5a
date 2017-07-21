@@ -180,6 +180,7 @@
       <limit>6</limit>
       <required>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -211,6 +212,7 @@
       <limit>3</limit>
       <required>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -224,6 +226,7 @@
       </required>
       <forbidden>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Focused Concentration (Rating 1)</quality>
           <quality>Focused Concentration (Rating 3)</quality>
           <quality>Focused Concentration (Rating 4)</quality>
@@ -242,6 +245,7 @@
       <limit>2</limit>
       <required>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -272,6 +276,7 @@
       <category>Positive</category>
       <required>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -285,6 +290,7 @@
       </required>
       <forbidden>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Focused Concentration (Rating 2)</quality>
           <quality>Focused Concentration (Rating 3)</quality>
           <quality>Focused Concentration (Rating 1)</quality>
@@ -302,6 +308,7 @@
       <category>Positive</category>
       <required>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -332,6 +339,7 @@
       <category>Positive</category>
       <required>
         <oneof>
+          <power>Adept Spell</power>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>

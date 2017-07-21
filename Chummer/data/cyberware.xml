@@ -4065,22 +4065,22 @@
       <id>c8d6fe4e-f55b-4111-bbbb-ad89b6c99074</id>
       <name>Cyberears (2050)</name>
       <category>Earware</category>
-      <rating>0</rating>
       <ess>0.2</ess>
       <capacity>4</capacity>
       <avail>0</avail>
       <cost>5000</cost>
+      <source>2050</source>
+      <page>201</page>
       <allowgear>
         <gearcategory>Audio Enhancements</gearcategory>
       </allowgear>
       <allowsubsystems>
         <category>Earware</category>
       </allowsubsystems>
+      <rating>0</rating>
       <subsystems>
         <subsystem>Sound Link</subsystem>
       </subsystems>
-      <source>2050</source>
-      <page>201</page>
     </cyberware>
     <cyberware>
       <id>75f71536-b34a-452e-9045-17ce7ef02daf</id>
@@ -4139,7 +4139,7 @@
     </cyberware>
     <cyberware>
       <id>fd3f6510-e145-492b-8c47-9063ea24da2f</id>
-      <name>Cyberlimb Full Arm , Obvious (2050)</name>
+      <name>Cyberlimb Full Arm, Obvious (2050)</name>
       <category>Bodyware</category>
       <ess>1</ess>
       <capacity>15</capacity>
@@ -4150,6 +4150,12 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
+      <allowsubsystems>
+        <category>Bodyware</category>
+        <category>Cyberlimb Enhancement</category>
+        <category>Cyberlimb Accessory</category>
+        <category>Cyber Implant Weapon</category>
+      </allowsubsystems>
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4157,16 +4163,10 @@
         <selectside />
       </bonus>
       <limbslot>arm</limbslot>
-      <subsystems>
-        <subsystem>Bodyware</subsystem>
-        <subsystem>Cyberlimb Enhancement</subsystem>
-        <subsystem>Cyberlimb Accessory</subsystem>
-        <subsystem>Cyber Implant Weapon</subsystem>
-      </subsystems>
     </cyberware>
     <cyberware>
       <id>4ca30ddc-f990-40bc-bf1f-4789996ae34c</id>
-      <name>Cyberlimb Full Leg , Obvious (2050)</name>
+      <name>Cyberlimb Full Leg, Obvious (2050)</name>
       <category>Bodyware</category>
       <ess>1</ess>
       <capacity>20</capacity>
@@ -4177,6 +4177,12 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
+      <allowsubsystems>
+        <category>Bodyware</category>
+        <category>Cyberlimb Enhancement</category>
+        <category>Cyberlimb Accessory</category>
+        <category>Cyber Implant Weapon</category>
+      </allowsubsystems>
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4184,12 +4190,6 @@
         <selectside />
       </bonus>
       <limbslot>leg</limbslot>
-      <subsystems>
-        <subsystem>Bodyware</subsystem>
-        <subsystem>Cyberlimb Enhancement</subsystem>
-        <subsystem>Cyberlimb Accessory</subsystem>
-        <subsystem>Cyber Implant Weapon</subsystem>
-      </subsystems>
     </cyberware>
     <cyberware>
       <id>1839428f-b8a2-4461-af47-c821ae808dde</id>
@@ -4204,6 +4204,12 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
+      <allowsubsystems>
+        <category>Bodyware</category>
+        <category>Cyberlimb Enhancement</category>
+        <category>Cyberlimb Accessory</category>
+        <category>Cyber Implant Weapon</category>
+      </allowsubsystems>
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4211,12 +4217,6 @@
         <selectside />
       </bonus>
       <limbslot>arm</limbslot>
-      <subsystems>
-        <subsystem>Bodyware</subsystem>
-        <subsystem>Cyberlimb Enhancement</subsystem>
-        <subsystem>Cyberlimb Accessory</subsystem>
-        <subsystem>Cyber Implant Weapon</subsystem>
-      </subsystems>
     </cyberware>
     <cyberware>
       <id>b8d74993-2ae6-4c42-98ef-f72e96415d7b</id>
@@ -4231,6 +4231,12 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
+      <allowsubsystems>
+        <category>Bodyware</category>
+        <category>Cyberlimb Enhancement</category>
+        <category>Cyberlimb Accessory</category>
+        <category>Cyber Implant Weapon</category>
+      </allowsubsystems>
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4238,12 +4244,6 @@
         <selectside />
       </bonus>
       <limbslot>leg</limbslot>
-      <subsystems>
-        <subsystem>Bodyware</subsystem>
-        <subsystem>Cyberlimb Enhancement</subsystem>
-        <subsystem>Cyberlimb Accessory</subsystem>
-        <subsystem>Cyber Implant Weapon</subsystem>
-      </subsystems>
     </cyberware>
     <cyberware>
       <id>4415180f-c3a0-4bb9-8580-3ed689ab6863</id>
@@ -4529,9 +4529,6 @@
       <cost>50000</cost>
       <source>2050</source>
       <page>302</page>
-      <subsystems>
-        <subsystem>Voiceware</subsystem>
-      </subsystems>
     </cyberware>
     <cyberware>
       <id>7996ff21-d75c-4c5a-8990-1527b22b53b8</id>
@@ -4637,29 +4634,29 @@
       <capacity>0</capacity>
       <avail>10R</avail>
       <cost>72600</cost>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-          <cyberware>Bone Lacing (Plastic)</cyberware>
-          <cyberware>Bone Lacing (Aluminum)</cyberware>
-          <cyberware>Bone Lacing (Titanium)</cyberware>
-          <bioware>Bone Density Augmentation</bioware>
-        </oneof>
-      </forbidden>
+      <source>SAG</source>
+      <page>80</page>
       <bonus>
+        <armor>1</armor>
+        <damageresistance>1</damageresistance>
         <initiativepass precedence="0">1</initiativepass>
         <specificattribute>
           <name>REA</name>
           <val>2</val>
         </specificattribute>
-        <armor>1</armor>
-        <damageresistance>1</damageresistance>
         <unarmeddv>1</unarmeddv>
         <unarmeddvphysical />
       </bonus>
-      <source>SAG</source>
-      <page>80</page>
+      <forbidden>
+        <oneof>
+          <bioware>Bone Density Augmentation</bioware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>6dd9013a-52c4-45be-a4a2-7210f5caa53b</id>
@@ -4669,6 +4666,14 @@
       <capacity>0</capacity>
       <avail>12R</avail>
       <cost>15600</cost>
+      <source>SAG</source>
+      <page>80</page>
+      <bonus>
+        <specificattribute>
+          <name>REA</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
@@ -4680,14 +4685,6 @@
           <cyberware>Siemens Cyberspine</cyberware>
         </allof>
       </required>
-      <bonus>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <source>SAG</source>
-      <page>80</page>
     </cyberware>
     <cyberware>
       <id>0f53caba-37ea-4676-8c6e-68b2d826ecd0</id>
@@ -4697,6 +4694,14 @@
       <capacity>0</capacity>
       <avail>17R</avail>
       <cost>15600</cost>
+      <source>SAG</source>
+      <page>80</page>
+      <bonus>
+        <specificattribute>
+          <name>REA</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
@@ -4709,14 +4714,6 @@
           <cyberware>Siemens Cyberspine Upgrade (Elite Athletic)</cyberware>
         </allof>
       </required>
-      <bonus>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <source>SAG</source>
-      <page>80</page>
     </cyberware>
     <cyberware>
       <id>70d15d2b-739d-418b-a7fe-3f03dee79546</id>
@@ -4726,6 +4723,15 @@
       <capacity>0</capacity>
       <avail>14R</avail>
       <cost>132000</cost>
+      <source>SAG</source>
+      <page>80</page>
+      <bonus>
+        <initiativepass precedence="0">2</initiativepass>
+        <specificattribute>
+          <name>REA</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
       <forbidden>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
@@ -4737,15 +4743,6 @@
           <cyberware>Siemens Cyberspine</cyberware>
         </allof>
       </required>
-      <bonus>
-        <specificattribute>
-          <initiativepass precedence="0">2</initiativepass>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <source>SAG</source>
-      <page>80</page>
     </cyberware>
     <cyberware>
       <id>6a4ba6e2-0473-47dc-81f5-fd3a95e4b714</id>
@@ -4755,6 +4752,15 @@
       <capacity>0</capacity>
       <avail>22R</avail>
       <cost>81600</cost>
+      <source>SAG</source>
+      <page>80</page>
+      <bonus>
+        <initiativepass precedence="0">3</initiativepass>
+        <specificattribute>
+          <name>REA</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
       <!--<forbidden>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
@@ -4767,15 +4773,6 @@
           <cyberware>Siemens Cyberspine Upgrade (Elite Warrior)</cyberware>
         </allof>
       </required>-->
-      <bonus>
-        <specificattribute>
-          <initiativepass precedence="0">3</initiativepass>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <source>SAG</source>
-      <page>80</page>
     </cyberware>
     <!-- End Region -->
   </cyberwares>
