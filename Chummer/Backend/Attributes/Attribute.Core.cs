@@ -83,7 +83,7 @@ namespace Chummer.Backend.Attributes
                 _intBase = 0;
             }
             //Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time. 
-            if (objNode["value"] != null)
+            if (objNode["value"] != null && _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule)
             {
                 int i = Convert.ToInt32(objNode["value"].InnerText);
                 i -= _intMetatypeMin;
@@ -256,7 +256,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Math.Min(Base + Karma + MetatypeMinimum, TotalMaximum);
+                return Math.Min(Base + FreeBase + Karma + MetatypeMinimum, TotalMaximum);
             }
         }
 
