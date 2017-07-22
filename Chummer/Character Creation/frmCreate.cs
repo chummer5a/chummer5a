@@ -13201,6 +13201,24 @@ namespace Chummer
                 int rituals = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category == "Rituals" && !spell.FreeBonus).Count();
                 int preps = _objCharacter.Spells.Where(spell => spell.Alchemical && !spell.FreeBonus).Count();
 
+                int limit = _objCharacter.SpellLimit;
+                int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
+                               _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
+                foreach (
+                    Improvement imp in
+                    _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+                {
+                    CharacterAttrib att = _objCharacter.GetAttribute(imp.UniqueName);
+                    limitMod += att.TotalValue;
+                }
+                foreach (
+                    Improvement imp in
+                    _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
+                {
+                    Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName);
+                    limitMod += objSkill.LearnedRating;
+                }
+
                 if (nudMysticAdeptMAGMagician.Value > 0)
                 {
                     if (_objOptions.PrioritySpellsAsAdeptPowers)
@@ -13213,7 +13231,7 @@ namespace Chummer
                         intKarmaPointsRemain -= intAttributePointsUsed;
                     }
                 }
-                for (int i = _objCharacter.SpellLimit; i > 0; i--)
+                for (int i = limit+limitMod; i > 0; i--)
                 {
                     if (spells > 0)
                     {
@@ -13243,62 +13261,44 @@ namespace Chummer
                 intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
                 intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
                 tipTooltip.SetToolTip(lblSpellsBP, $"{spells} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-                tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-                tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-            }
-
-            int limit = _objCharacter.SpellLimit;
-            int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
-                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
-            foreach (
-                Improvement imp in
-                _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
-            {
-                CharacterAttrib att = _objCharacter.GetAttribute(imp.UniqueName);
-                limitMod += att.TotalValue;
-            }
-            foreach (
-                Improvement imp in
-                _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
-            {
-                Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName);
-                limitMod += objSkill.LearnedRating;
-            }
-            if (limit > 0)
-            {
-                lblBuildPrepsBP.Text =
-                    string.Format(
-                        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intPrepPointsUsed} {strPoints}");
-                lblSpellsBP.Text =
-                    string.Format(
-                        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intSpellPointsUsed} {strPoints}");
-                lblBuildRitualsBP.Text =
-                    string.Format(
-                        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intRitualPointsUsed} {strPoints}");
-            }
-            else
-            {
-                if (limitMod == 0)
+                tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intRitualPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+                tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intPrepPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+                if (limit + limitMod > 0)
                 {
                     lblBuildPrepsBP.Text =
-                        string.Format($"{intPrepPointsUsed} {strPoints}");
+                        string.Format(
+                            $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intPrepPointsUsed} {strPoints}");
                     lblSpellsBP.Text =
-                        string.Format($"{intSpellPointsUsed} {strPoints}");
+                        string.Format(
+                            $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intSpellPointsUsed} {strPoints}");
                     lblBuildRitualsBP.Text =
-                        string.Format($"{intRitualPointsUsed} {strPoints}");
+                        string.Format(
+                            $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intRitualPointsUsed} {strPoints}");
                 }
                 else
                 {
-                    //TODO: Make the costs render better, currently looks wrong as hell
-                    lblBuildPrepsBP.Text =
-                        string.Format(
-                            $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intPrepPointsUsed} {strPoints}");
-                    lblSpellsBP.Text =
-                        string.Format(
-                            $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intSpellPointsUsed} {strPoints}");
-                    lblBuildRitualsBP.Text =
-                        string.Format(
-                            $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intRitualPointsUsed} {strPoints}");
+                    if (limitMod == 0)
+                    {
+                        lblBuildPrepsBP.Text =
+                            string.Format($"{intPrepPointsUsed} {strPoints}");
+                        lblSpellsBP.Text =
+                            string.Format($"{intSpellPointsUsed} {strPoints}");
+                        lblBuildRitualsBP.Text =
+                            string.Format($"{intRitualPointsUsed} {strPoints}");
+                    }
+                    else
+                    {
+                        //TODO: Make the costs render better, currently looks wrong as hell
+                        lblBuildPrepsBP.Text =
+                            string.Format(
+                                $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intPrepPointsUsed} {strPoints}");
+                        lblSpellsBP.Text =
+                            string.Format(
+                                $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intSpellPointsUsed} {strPoints}");
+                        lblBuildRitualsBP.Text =
+                            string.Format(
+                                $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intRitualPointsUsed} {strPoints}");
+                    }
                 }
             }
 
@@ -16260,8 +16260,6 @@ namespace Chummer
                         _blnSkipRefresh = true;
                         nudVehicleRating.Enabled = false;
                         nudVehicleGearQty.Enabled = true;
-                        nudVehicleGearQty.Maximum = 100000;
-                        //nudVehicleGearQty.Minimum = objGear.CostFor;
                         nudVehicleGearQty.Value = objGear.Quantity;
                         nudVehicleGearQty.Increment = objGear.CostFor;
                         nudVehicleGearQty.Visible = true;
