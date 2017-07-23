@@ -4428,7 +4428,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
 
-            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
 
             // Check for SelectText.
             string strExtra = string.Empty;
@@ -4437,7 +4437,7 @@ namespace Chummer
                 if (objXmlProgram["bonus"]["selecttext"] != null)
                 {
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText);
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
                 }

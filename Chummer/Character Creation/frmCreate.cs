@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -4536,7 +4536,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
 
-            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
 
             // Check for SelectText.
             string strExtra = string.Empty;
@@ -4545,7 +4545,7 @@ namespace Chummer
                 if (objXmlProgram["bonus"]["selecttext"] != null)
                 {
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText);
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
                 }
