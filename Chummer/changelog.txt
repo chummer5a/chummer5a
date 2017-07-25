@@ -85,6 +85,7 @@ Data Changes:
 - Fixed behaviour of the Satyr Legs quality and Flight critter power to properly provide movement speed increases.
 - Removed Uneducated from the Naga metasapient. Sorry sneks, not sure how that crept in there.
 - Adepts with the Adept Spell power can now take the Focused Concentration quality.
+- Implemented content from The Complete Trog. 
 
 New Strings:
 

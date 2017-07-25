@@ -60,6 +60,7 @@
     <category>ID/Credsticks</category>
     <category>Magical Compounds</category>
     <category>Magical Supplies</category>
+    <category>Metatype-Specific</category>
     <category>Miscellany</category>
     <category>Nanogear</category>
     <category>PI-Tac</category>
@@ -5689,6 +5690,36 @@
       <page>449</page>
       <avail>8F</avail>
       <cost>85</cost>
+    </gear>
+    <gear>
+      <id>fc0987f2-b3cf-4ba2-8777-0610ed97e90e</id>
+      <name>Reinforced Microwire (100m)</name>
+      <category>Grapple Gun</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>185</page>
+      <avail>8</avail>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>8adaecd5-0c24-4982-8803-e4459e16589f</id>
+      <name>Reinforced Standard Rope (100m)</name>
+      <category>Grapple Gun</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>185</page>
+      <avail>2</avail>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>76890101-9f90-41db-a6f0-6f5fd4802896</id>
+      <name>Reinforced Stealth Rope (100m)</name>
+      <category>Grapple Gun</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>185</page>
+      <avail>12F</avail>
+      <cost>170</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Biotech -->
@@ -11479,6 +11510,48 @@
       <cost>Variable(150-600)</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Metatype-Specific -->
+    <gear>
+      <id>e6d5c030-9aa7-46da-a9cb-7db33bbfd23f</id>
+      <name>Folding Metachair, basic</name>
+      <category>Metatype-Specific</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>184</page>
+      <avail>0</avail>
+      <cost>50</cost>
+    </gear>
+    <gear>
+      <id>0007e417-d83b-4066-ba77-c3ea4c1aa4b6</id>
+      <name>Folding Metachair, self-assembly</name>
+      <category>Metatype-Specific</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>184</page>
+      <avail>0</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>30e2f962-3ced-4fc8-a46c-41c26db2332b</id>
+      <name>Folding MaxiMetachair, basic</name>
+      <category>Metatype-Specific</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>184</page>
+      <avail>0</avail>
+      <cost>85</cost>
+    </gear>
+    <gear>
+      <id>6d55b4d0-ea27-42d6-be1b-83ccdcac65e7</id>
+      <name>Folding MaxiMetachair, self-assembly</name>
+      <category>Metatype-Specific</category>
+      <rating>0</rating>
+      <source>TCT</source>
+      <page>184</page>
+      <avail>0</avail>
+      <cost>235</cost>
+    </gear>
+    <!-- End Region -->
     <gear>
       <id>0025f1c7-45a4-4ec5-a692-e18aab2f97a9</id>
       <name>Custom Item</name>
@@ -13292,6 +13365,7 @@
       <avail>(Rating +4)R</avail>
       <cost>2000 * Rating</cost>
     </gear>
+    <!-- End Region -->
     <!-- End Region -->
   </gears>
 </chummer>
