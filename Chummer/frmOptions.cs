@@ -230,6 +230,7 @@ namespace Chummer
             bool isEnabled = cboLanguage.SelectedValue.ToString() != "en-us";
             cmdVerify.Enabled = isEnabled;
             cmdVerifyData.Enabled = isEnabled;
+            OptionsChanged(sender,e);
         }
 
         private void cmdVerify_Click(object sender, EventArgs e)
@@ -1075,19 +1076,15 @@ namespace Chummer
         private List<ListItem> GetXslFilesFromSheetsDirectory()
         {
             var items = new List<ListItem>();
+            
+            XmlDocument manifest = XmlManager.Instance.Load("sheets.xml");
+            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='en-us']/sheet");
 
-            // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            string sheetsDirectoryPath = Path.Combine(Application.StartupPath, "sheets");
-
-            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
-            // (hidden because they are partial templates that cannot be used on their own).
-            List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(sheetsDirectoryPath);
-
-            foreach (string fileName in fileNames)
+            foreach (XmlNode sheet in sheets)
             {
                 ListItem objItem = new ListItem();
-                objItem.Value = fileName;
-                objItem.Name = fileName;
+                objItem.Value = sheet["filename"].InnerText;
+                objItem.Name = sheet["name"].InnerText;
 
                 items.Add(objItem);
             }
@@ -1103,18 +1100,15 @@ namespace Chummer
             if (GlobalOptions.Instance.Language != "en-us")
             {
                 XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
+                XmlDocument manifest = XmlManager.Instance.Load("sheets.xml");
+                XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{GlobalOptions.Instance.Language}']/sheet");
                 string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-                string languageDirectoryPath = Path.Combine(Application.StartupPath, "sheets", GlobalOptions.Instance.Language);
 
-                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
-                // (hidden because they are partial templates that cannot be used on their own).
-                List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(languageDirectoryPath);
-
-                foreach (string fileName in fileNames)
+                foreach (XmlNode sheet in sheets)
                 {
                     ListItem objItem = new ListItem();
-                    objItem.Value = Path.Combine(GlobalOptions.Instance.Language, fileName);
-                    objItem.Name = strLanguage + ": " + fileName;
+                    objItem.Value = Path.Combine(GlobalOptions.Instance.Language, sheet["filename"].InnerText);
+                    objItem.Name = strLanguage + ": " + sheet["name"].InnerText;
 
                     items.Add(objItem);
                 }

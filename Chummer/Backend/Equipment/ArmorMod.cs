@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,11 +96,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objArmorNode != null)
-                {
-                    if (objArmorNode.Attributes["translate"] != null)
-                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-                }
+                _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
 
             // Check for a Variable Cost.
@@ -267,11 +263,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objArmorNode != null)
-                {
-                    if (objArmorNode.Attributes["translate"] != null)
-                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-                }
+                _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
         }
 
@@ -507,7 +499,7 @@ namespace Chummer.Backend.Equipment
                     // If the cost is determined by the Rating, evaluate the expression.
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    
+
                     string strCostExpression = _strCost;
 
                     string strCost = strCostExpression.Replace("Rating", _intRating.ToString());

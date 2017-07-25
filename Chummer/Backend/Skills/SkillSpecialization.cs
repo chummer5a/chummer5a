@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Xml;
 using Chummer.Datastructures;
@@ -10,7 +10,7 @@ namespace Chummer
     /// </summary>
     public class SkillSpecialization
     {
-        private static TranslatedField<string> _translator = new TranslatedField<string>(); 
+        private static TranslatedField<string> _translator = new TranslatedField<string>();
 
         private Guid _guiID;
         private string _name;
@@ -27,7 +27,7 @@ namespace Chummer
                 XmlNodeList specList = document.SelectNodes("/chummer/*/skill/specs/spec");
                 foreach (XmlNode node in specList.Cast<XmlNode>().Where(node => node.Attributes?["translate"] != null))
                 {
-                    _translator.Add(node.InnerText, node.Attributes["translate"]?.InnerText);
+                    _translator.Add(node.InnerText, node.Attributes?["translate"]?.InnerText);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace Chummer
         /// </summary>
         public bool Free
         {
-            get { return _free; } 
+            get { return _free; }
         }
 
         #endregion

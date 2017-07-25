@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,14 +78,7 @@ namespace Chummer
                         foreach (ListItem objItem in from strCategory in _strLimitToCategories where strCategory == objXmlCategory.InnerText select new ListItem())
                         {
                             objItem.Value = objXmlCategory.InnerText;
-                            if (objXmlCategory.Attributes != null)
-                            {
-                                objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                            }
-                            else
-                            {
-                                objItem.Name = objXmlCategory.InnerXml;
-                            }
+                            objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                             _lstCategory.Add(objItem);
                         }
                     }
@@ -99,12 +92,7 @@ namespace Chummer
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objXmlCategory.InnerText;
-                        if (objXmlCategory.Attributes != null)
-                        {
-                            objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                        }
-                        else
-                            objItem.Name = objXmlCategory.InnerXml;
+                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                         _lstCategory.Add(objItem);
                     }
             }
@@ -305,7 +293,7 @@ namespace Chummer
                         string strAvail = objWeapon.Avail;
                         string strSource = objWeapon.Source + " " + objWeapon.Page;
                         int intCost = objWeapon.Cost;
-                        
+
                         tabWeapons.Rows.Add(strID,strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, intCost);
                     }
                 }
@@ -339,7 +327,7 @@ namespace Chummer
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
-                    
+
                     if (objXmlWeapon["mount"] != null && !blnHide)
                     {
                         blnHide = !Mounts.Contains(objXmlWeapon["mount"].InnerText);

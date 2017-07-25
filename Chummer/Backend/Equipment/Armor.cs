@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -86,11 +86,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objArmorNode != null)
-                {
-                    if (objArmorNode.Attributes["translate"] != null)
-                        _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
-                }
+                _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
 
             // Check for a Variable Cost.
@@ -498,8 +494,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objArmorNode?.Attributes["translate"] != null)
-                    _strAltCategory = objArmorNode.Attributes["translate"].InnerText;
+                _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
         }
 
@@ -1123,7 +1118,7 @@ namespace Chummer.Backend.Equipment
                             // If the cost is determined by the Rating, evaluate the expression.
                             XmlDocument objXmlDocument = new XmlDocument();
                             XPathNavigator nav = objXmlDocument.CreateNavigator();
-                            
+
                             string strAvailExpression = (objChild.Avail);
 
                             string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());

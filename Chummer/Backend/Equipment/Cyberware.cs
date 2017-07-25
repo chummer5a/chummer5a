@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -191,8 +191,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objCyberwareNode?.Attributes?["translate"] != null)
-                    _strAltCategory = objCyberwareNode.Attributes["translate"].InnerText;
+                _strAltCategory = objCyberwareNode?.Attributes?["translate"]?.InnerText;
             }
 
             // Add Subsytem information if applicable.
@@ -504,8 +503,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                if (objCyberwareNode?.Attributes?["translate"] != null)
-                    _strAltCategory = objCyberwareNode.Attributes["translate"].InnerText;
+                _strAltCategory = objCyberwareNode?.Attributes?["translate"]?.InnerText;
             }
 
             if (objNode.InnerXml.Contains("<cyberware>"))

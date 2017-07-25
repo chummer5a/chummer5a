@@ -560,7 +560,7 @@
             <armor>
                 <id>608d5c68-aba1-40e5-8100-d2615a39a2f3</id>
                 <name>Custom Ballistic Mask</name>
-                <translate>Ballistic Maske: Maßanfertigung</translate>
+                <translate>Ballistische Maske: Maßanfertigung</translate>
                 <page>74</page>
             </armor>
             <armor>
@@ -1018,7 +1018,7 @@
                 <id>4a2e90f7-487a-4fa2-a51d-1d9695e0f66f</id>
                 <name>Good Jewelry</name>
                 <page>260</page>
-                <translate>Guter SChmuck</translate>
+                <translate>Guter Schmuck</translate>
             </armor>
             <armor>
                 <id>e98c2113-306a-4596-abcb-46607c432cfb</id>
@@ -1265,73 +1265,73 @@
             <mod>
                 <id>b3965c7d-3e19-4aad-9dc0-1ec5b62daea5</id>
                 <name>Liner - Fire Resistance (4)</name>
-                <translate>Panzerungsmod.- Feuerresistenz (4)</translate>
+                <translate>Zusätzl. Schutz - Feuerresistenz (4)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>ca385470-fdfb-4ac2-bb4d-f88de768541b</id>
                 <name>Liner - Chemical Protection (4)</name>
-                <translate>Panzerungsmod.- Chemische Versiegelung (4)</translate>
+                <translate>Zusätzl. Schutz - Chemische Isolierung (4)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>a0043353-1825-42cb-94b2-ddf35b3089b5</id>
                 <name>Liner - Insulation (4)</name>
-                <translate>Panzerungsmod.-Tthermische Iso. (4)</translate>
+                <translate>Zusätzl. Schutz - Thermische Isolierung (4)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>f22cd9de-78ce-4ec1-9485-932c47638f52</id>
                 <name>Liner - Fire Resistance (3)</name>
-                <translate>Panzerungsmod.- Feuerresistenz (3)</translate>
+                <translate>Zusätzl. Schutz - Feuerresistenz (3)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>ba6e7ab8-9e19-41ea-b124-bad6c8d1a515</id>
                 <name>Liner - Chemical Protection (3)</name>
-                <translate>Panzerungsmod.- Chemische Versiegelung (3)</translate>
+                <translate>Zusätzl. Schutz - Chemische Isolierung (3)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>cee9f035-3668-4736-b0f2-7607d7156995</id>
                 <name>Liner - Insulation (3)</name>
-                <translate>Panzerungsmod.- Thermische Iso. (3)</translate>
+                <translate>Zusätzl. Schutz - Thermische Isolierung (3)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>8a119129-4c6f-40ab-9832-a61295ee715f</id>
                 <name>Liner - Fire Resistance (2)</name>
-                <translate>Panzerungsmod.- Feuerresistenz (2)</translate>
+                <translate>Zusätzl. Schutz - Feuerresistenz (2)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>fed9e56c-c1b8-4c68-a16a-4bceb011bc62</id>
                 <name>Liner - Chemical Protection (2)</name>
-                <translate>Panzerungsmod.- Chemische Versiegelung (2)</translate>
+                <translate>Zusätzl. Schutz - Chemische Isolierung (2)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>1bff09e4-ea20-4705-ac7b-5bea4a03d925</id>
                 <name>Liner - Insulation (2)</name>
-                <translate>Panzerungsmod.- Thermische Iso. (2)</translate>
+                <translate>Zusätzl. Schutz - Thermische Isolierung (2)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>84c3dbd2-6d47-4045-a5d6-7dc926b3ff42</id>
                 <name>Liner - Fire Resistance (6)</name>
-                <translate>Panzerungsmod.- Feuerresistenz (6)</translate>
+                <translate>Zusätzl. Schutz - Feuerresistenz (6)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>0cbf733c-1fd0-48ae-be2c-b3afe0036fd0</id>
                 <name>Liner - Chemical Protection (6)</name>
-                <translate>Panzerungsmod.- Chemische Versiegelung (6)</translate>
+                <translate>Zusätzl. Schutz - Chemische Isolierung (6)</translate>
                 <page>441</page>
             </mod>
             <mod>
                 <id>af3208a9-05b5-47bb-92a1-f3d2ea82f6f0</id>
                 <name>Liner - Insulation (6)</name>
-                <translate>Panzerungsmod.- Thermische Iso. (6)</translate>
+                <translate>Zusätzl. Schutz - Thermische Isolierung (6)</translate>
                 <page>441</page>
             </mod>
             <mod translated="True">
@@ -9837,7 +9837,7 @@
             <category translate="Sichtgeräte" translated="True">Vision Devices</category>
             <category translate="Bauformen für Kommlinks/Cyberdecks">Commlink/Cyberdeck Form Factors</category>
             <category translate="Kommlink-Apps">Commlink Apps</category>
-            <category>Critter Gear</category>
+            <category translate="Critter-Ausrüstung">Critter Gear</category>
             <category translate="Gerätemodifikationen">Electronic Modification</category>
             <category translate="Elektronische Bauteile">Electronic Parts</category>
             <category translate="Unterhaltung">Entertainment</category>
@@ -10389,7 +10389,7 @@
                 <id>fa6fa434-107b-4f36-a138-f98b044dae76</id>
                 <name>Camera, Micro</name>
                 <page>447</page>
-                <translate>Kamera, Micro</translate>
+                <translate>Mikrokamera</translate>
             </gear>
             <gear>
                 <id>22ceb53b-7863-424b-8ee5-d04bb520d97d</id>
@@ -10454,7 +10454,7 @@
             <gear>
                 <id>3f086e04-8de6-4d4e-a503-a19cba8295f5</id>
                 <name>Spatial Recognizer</name>
-                <page>459</page>
+                <page>449</page>
                 <translate>Richtungsdetektor</translate>
             </gear>
             <gear>
@@ -11043,7 +11043,7 @@
                 <id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
                 <name>Grenade: Flash-Bang</name>
                 <page>438</page>
-                <translate>Granate: SChock</translate>
+                <translate>Granate: Schock</translate>
             </gear>
             <gear>
                 <id>8e04c493-b04d-4511-ba68-7b2e0edbf3aa</id>
@@ -11318,7 +11318,7 @@
             <gear>
                 <id>9517a1df-5e00-46e5-92f7-4669b8b72380</id>
                 <name>Bolt: Barbed Head</name>
-                <translate>Bolzen Widerhakenspitze</translate>
+                <translate>Bolzen: Widerhakenspitze</translate>
                 <page>24</page>
             </gear>
             <gear>
@@ -11865,7 +11865,7 @@
                 <id>0e713b88-ab10-4fed-8373-df0a4d8546cc</id>
                 <name>Microphone, Directional</name>
                 <translate>Richtmikrofon</translate>
-                <page>445</page>
+                <page>449</page>
             </gear>
             <gear translated="True">
                 <id>026f00c9-376e-4b4a-b615-9242db87afb3</id>
@@ -12836,7 +12836,7 @@
             <gear translated="True">
                 <id>44acc4c0-5795-47a4-84fb-bd2374276360</id>
                 <name>Flashlight, Low-light</name>
-                <translate>Taschenlampe, Restlichtverstärkung</translate>
+                <translate>Taschenlampe, Restlicht</translate>
                 <page>453</page>
             </gear>
             <gear translated="True">
@@ -14051,13 +14051,13 @@
                 <page>180</page>
                 <translate>Ultraschallgenerator</translate>
             </gear>
-            <!--<gear>
+            <gear>
                 <id>3ca6be75-6efb-4cf4-809f-da72eb83e909</id>
                 <name>Microphone, Omni-Directional, Micro</name>
-                <page>TODO</page>
-                <translate>TODO</translate>
+                <page>449</page>
+                <translate>Mikro-Mikrofon</translate>
             </gear>
-            <gear>
+            <!--<gear>
                 <id>3ccd4f6c-f3a4-4432-9f5e-c95225dbbb9c</id>
                 <name>Sound Link</name>
                 <page>TODO</page>
@@ -14899,7 +14899,7 @@
                 <id>989796e7-445e-4fa7-87b5-3152612fa6ee</id>
                 <name>Bag of Chips (Large)</name>
                 <page>260</page>
-                <translate>Tüte Chips (groß=</translate>
+                <translate>Tüte Chips (groß)</translate>
             </gear>
             <gear>
                 <id>2bcdccb2-8821-475d-a7be-c95e72716c68</id>
@@ -15895,7 +15895,7 @@
                 <id>5be1fa0b-2315-48ef-b73e-5de10436aa88</id>
                 <name>Bullhorn</name>
                 <page>261</page>
-                <translate>megaphon</translate>
+                <translate>Megaphon</translate>
             </gear>
             <gear>
                 <id>0ca6e7c8-ddaa-45f6-821e-e203ab16df0e</id>
@@ -16112,6 +16112,11 @@
                 <name>Elemental Binding Materials (2050)</name>
                 <page>207</page>
                 <translate>Bindungsmaterialien für Elementare</translate>
+            </gear>
+            <gear>
+                <id>82334694-a630-42c4-95d6-eb1345e4ed82</id>
+                <name>Concealed Quick-Draw Holster</name>
+                <translate>Schnellzieh-Tarnholster</translate>
             </gear>
         </gears>
     </chummer>
@@ -18353,7 +18358,7 @@
                         <name>Adept: Gain 2 free levels of Danger Sense.</name>
                         <translate>2 Stufen Gefahrensinn gratis</translate>
                     </choice>
-                </choices>            
+                </choices>
             </mentor>
             <mentor>
                 <id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
@@ -18497,7 +18502,7 @@
                         <name>Adept: 2 free levels of Hang Time.</name>
                         <translate>Adept: 2 Stufen Fester Halt gratis</translate>
                     </choice>
-                </choices>            
+                </choices>
             </mentor>
             <mentor>
                 <id>88b517e3-a3c8-4028-9a69-d947f3384aab</id>
@@ -20203,7 +20208,7 @@
                 <id>515f6d35-044e-4f4b-9a8b-1ff12e346648</id>
                 <name>Search</name>
                 <page>64</page>
-                <translate>SUche</translate>
+                <translate>Suche</translate>
             </program>
             <program>
                 <id>1fde3c4b-54a5-4961-ba80-decfb3df510f</id>
@@ -23777,13 +23782,13 @@
                 <id>4765ff9e-90f4-4783-b0cc-826419fafade</id>
                 <name>Poor Self Control (Attention-Seeking)</name>
                 <page>62</page>
-                <translate>SChlechte Selbstbeherrschung (Aufmerksamkeitsbedürftig)</translate>
+                <translate>Schlechte Selbstbeherrschung (Aufmerksamkeitsbedürftig)</translate>
             </quality>
             <quality>
                 <id>f5fada49-7344-4e0d-b2d8-61aead583d7b</id>
                 <name>Poor Self Control (Sadistic)</name>
                 <page>62</page>
-                <translate>SChlechte Selbstbeherrschung (Sadistisch)</translate>
+                <translate>Schlechte Selbstbeherrschung (Sadistisch)</translate>
             </quality>
             <quality translated="True">
                 <id>bd64ccab-5138-475d-8eb1-400ae4a11ac2</id>
@@ -23952,7 +23957,7 @@
             </quality>
             <quality>
                 <id>3e2eac9a-e256-4755-a66a-ffbaac751cfa</id>
-                <name>VolksSIN (Criminal)</name>    
+                <name>VolksSIN (Criminal)</name>
             </quality>
         </qualities>
     </chummer>
@@ -26390,7 +26395,7 @@
                     <spec translate="Barrakudas">Barracudas</spec>
                     <spec translate="Bären">Bears</spec>
                     <spec translate="Wildschweine">Boars</spec>
-                    <spec translate="SChimpansen">Chimpanzees</spec>
+                    <spec translate="Schimpansen">Chimpanzees</spec>
                     <spec translate="Kakerlaken">Cockroaches</spec>
                     <spec translate="Krähen">Crows</spec>
                     <spec translate="Hirsche">Deer</spec>
@@ -32389,7 +32394,7 @@
                 <id>5011b79e-8594-4dbe-9768-0db4d11ead2b</id>
                 <name>Defiance T-250, Short-Barrel</name>
                 <page>432</page>
-                <translate>Defiance T-250, Short-Barrel</translate>
+                <translate>Defiance T-250, Kurzlauf</translate>
             </weapon>
             <weapon translated="True">
                 <id>622bd915-0e0c-431b-9da5-e0c0c31e2122</id>
@@ -32850,25 +32855,25 @@
             <weapon>
                 <id>1752def7-cfed-44d8-a79f-bc95f32c4c13</id>
                 <name>Battering Ram, Fluid-Motion</name>
-                <translate>Battering Ram, Hydro</translate>
+                <translate>Ramme, Hydro</translate>
                 <page>103</page>
             </weapon>
             <weapon>
                 <id>375930d0-6a29-480e-a6d8-46fe4eaf2a16</id>
                 <name>Battering Ram, Pneumatic</name>
-                <translate>Battering Ram, Pneumatisch</translate>
+                <translate>Ramme, Pneumatisch</translate>
                 <page>103</page>
             </weapon>
             <weapon>
                 <id>c0e77aad-3ecb-4136-b39d-00e9db6e6407</id>
                 <name>Battering Ram, Shock</name>
-                <translate>Battering Ram, Schock</translate>
+                <translate>Ramme, Schock</translate>
                 <page>104</page>
             </weapon>
             <weapon>
                 <id>5ed720a1-bfa5-4670-85a2-5867f5caafbf</id>
                 <name>Battering Ram, Standard</name>
-                <translate>Battering Ram, Einmann</translate>
+                <translate>Ramme, Einmann</translate>
                 <page>103</page>
             </weapon>
             <weapon>
@@ -34284,7 +34289,7 @@
                 <name>Mossberg CMDT/SM (2050)</name>
                 <page>186</page>
                 <translate>Mossberg CMDT/SM</translate>
-            </weapon>                
+            </weapon>
         </weapons>
         <accessories>
             <accessory>
@@ -34315,13 +34320,13 @@
                 <id>fa873465-a678-4077-888f-f7a1fb792d47</id>
                 <name>Flashlight, Infrared</name>
                 <page>36</page>
-                <translate>Lampe, Infrarot</translate>
+                <translate>Taktische Lampe, Infrarot</translate>
             </accessory>
             <accessory>
                 <id>41ca17be-6fe4-469f-9a66-7345263c4733</id>
                 <name>Flashlight, Standard</name>
                 <page>36</page>
-                <translate>Lampe, Standard</translate>
+                <translate>Taktische Lampe, Standard</translate>
             </accessory>
             <accessory>
                 <id>8eec5df1-88e2-4822-b156-9c2340a33efc</id>
@@ -34578,7 +34583,7 @@
             <accessory>
                 <id>487ae8d8-f45b-4133-a79f-c831a6b6a651</id>
                 <name>Flashlight, Low Light</name>
-                <translate>Taktische Lampe, Schwachlicht</translate>
+                <translate>Taktische Lampe, Restlicht</translate>
                 <page>52</page>
             </accessory>
             <accessory>
@@ -34778,7 +34783,7 @@
                 <id>036742ce-95d8-4510-b25f-5c380ef1076e</id>
                 <name>Imaging Scope (Optical)</name>
                 <page>436</page>
-                <translate>Ziehlfernrohr (Optisch)</translate>
+                <translate>Zielfernrohr (Optisch)</translate>
             </accessory>
             <accessory>
                 <id>90804D8B-16CA-4A6F-81E6-454F71768DCE</id>

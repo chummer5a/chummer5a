@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -52,10 +52,7 @@ namespace Chummer
             {
                 objItem = new ListItem();
                 objItem.Value = objXmlSpecialization.InnerText;
-                if (objXmlSpecialization.Attributes["translate"] != null)
-                    objItem.Name = objXmlSpecialization.Attributes["translate"].InnerText;
-                else
-                    objItem.Name = objXmlSpecialization.InnerText;
+                objItem.Name = objXmlSpecialization.Attributes["translate"]?.InnerText ?? objXmlSpecialization.InnerText;
                 lstItems.Add(objItem);
 
                 if (_objSkill.SkillCategory == "Combat Active")
@@ -68,10 +65,7 @@ namespace Chummer
                     {
                         objItem = new ListItem();
                         objItem.Value = objXmlWeapon["name"].InnerText;
-                        if (objXmlWeapon["name"].Attributes["translate"] != null)
-                            objItem.Name = objXmlWeapon.Attributes["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlWeapon["name"].InnerText;
+                        objItem.Name = objXmlWeapon.Attributes?["translate"]?.InnerText ?? objXmlWeapon.InnerText;
                         lstItems.Add(objItem);
                     }
                 }
@@ -152,7 +146,7 @@ namespace Chummer
         #endregion
 
         #region Properties
-        
+
         /// <summary>
         /// Name of the item that was selected.
         /// </summary>

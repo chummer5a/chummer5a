@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,14 +30,14 @@ namespace Chummer
     {
         public static ListItem AutoXml(string value, XmlNode node)
         {
-            string display = node.Attributes["translate"]?.InnerText ?? node.InnerText;
+            string display = node.Attributes?["translate"]?.InnerText ?? node.InnerText;
 
             return new ListItem(value, display);
         }
 
         public static ListItem Auto(string value, string languageString)
         {
-            return new ListItem(value, LanguageManager.Instance.GetString(languageString)); 
+            return new ListItem(value, LanguageManager.Instance.GetString(languageString));
         }
 
         public ListItem(string value, string name)
@@ -48,7 +48,7 @@ namespace Chummer
 
         public ListItem()
         {
-            
+
         }
 
         private string _strValue = string.Empty;
@@ -157,7 +157,7 @@ namespace Chummer
                 compareResult = _objObjectCompare.Compare(Convert.ToInt32(listviewX.SubItems[_intColumnToSort].Text.Replace("¥", string.Empty).Replace(",", string.Empty).Replace(" ", string.Empty)), Convert.ToInt32(listviewY.SubItems[_intColumnToSort].Text.Replace("¥", string.Empty).Replace(",", string.Empty).Replace(" ", string.Empty)));
             else
                 compareResult = _objObjectCompare.Compare(listviewX.SubItems[_intColumnToSort].Text, listviewY.SubItems[_intColumnToSort].Text);
-            
+
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return compareResult;

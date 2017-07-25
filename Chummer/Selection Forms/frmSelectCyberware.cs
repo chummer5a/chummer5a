@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ namespace Chummer
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objXmlCategory.InnerText;
-                        objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                         _lstCategory.Add(objItem);
                     }
                 }
@@ -458,7 +458,7 @@ namespace Chummer
                 BuildCyberwareList();
                 return;
             }
-            
+
             string strCategoryFilter = _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
 
             // Treat everything as being uppercase so the search is case-insensitive.

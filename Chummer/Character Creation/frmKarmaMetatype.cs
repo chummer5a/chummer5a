@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -181,12 +181,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlCategory.InnerText;
-                    if (objXmlCategory.Attributes != null)
-                    {
-                        objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                    }
-                    else
-                        objItem.Name = objXmlCategory.InnerXml;
+                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                     _lstCategory.Add(objItem);
                 }
             }
@@ -229,7 +224,7 @@ namespace Chummer
             XmlNode objXmlPossession = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\"]");
             XmlNode objXmlInhabitation = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
             List<ListItem> lstMethods = new List<ListItem>();
-            
+
             ListItem objPossession = new ListItem();
             objPossession.Value = "Possession";
             objPossession.Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText;
@@ -656,7 +651,7 @@ namespace Chummer
                     _objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, intMaxModifier), ExpressionToString(objXmlMetatype["depmin"]?.InnerText, intForce, intMaxModifier));
                 }
 
-                //TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh. 
+                //TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh.
                 _objCharacter.AttributeList.Add(_objCharacter.BOD);
                 _objCharacter.AttributeList.Add(_objCharacter.AGI);
                 _objCharacter.AttributeList.Add(_objCharacter.REA);
@@ -715,7 +710,7 @@ namespace Chummer
                         objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
                         objQuality.ContributeToLimit = false;
                         _objCharacter.Qualities.Add(objQuality);
-                        
+
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in objWeapons)
                             _objCharacter.Weapons.Add(objWeapon);
@@ -875,7 +870,7 @@ namespace Chummer
                 {
                     if (objXmlMetatype["optionalpowers"] != null)
                     {
-                        //For every 3 full points of Force a spirit has, it may gain one Optional Power. 
+                        //For every 3 full points of Force a spirit has, it may gain one Optional Power.
                         for (int i = intForce -3; i >= 0; i -= 3)
                         {
                             XmlDocument objDummyDocument = new XmlDocument();
