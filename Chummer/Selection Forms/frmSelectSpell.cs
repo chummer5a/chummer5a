@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ namespace Chummer
                 TreeNode nodSpell = new TreeNode();
                 TreeNode nodParent = new TreeNode();
                 bool blnInclude = false;
-                
+
                 if (_blnIgnoreRequirements)
                 {
                     blnInclude = true;
@@ -132,25 +132,23 @@ namespace Chummer
                 if (blnInclude)
                     blnInclude = SelectionShared.RequirementsMet(objXmlSpell, false, _objCharacter);
 
-                if (blnInclude)
+                if (!blnInclude) continue;
+                nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
+                nodSpell.Tag = objXmlSpell["id"].InnerText;
+                // Check to see if there is already a Category node for the Spell's category.
+                foreach (TreeNode nodCategory in treSpells.Nodes)
                 {
-                    nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
-                    nodSpell.Tag = objXmlSpell["id"].InnerText;
-                    // Check to see if there is already a Category node for the Spell's category.
-                    foreach (TreeNode nodCategory in treSpells.Nodes)
+                    if (nodCategory.Level == 0 && nodCategory.Tag.ToString() == objXmlSpell["category"].InnerText)
                     {
-                        if (nodCategory.Level == 0 && nodCategory.Tag.ToString() == objXmlSpell["category"].InnerText)
-                        {
-                            nodParent = nodCategory;
-                        }
+                        nodParent = nodCategory;
                     }
-
-                    // Add the Spell to the Category node.
-                    nodParent.Nodes.Add(nodSpell);
-
-                    if (!string.IsNullOrEmpty(_strLimitCategory))
-                        nodParent.Expand();
                 }
+
+                // Add the Spell to the Category node.
+                nodParent.Nodes.Add(nodSpell);
+
+                if (!string.IsNullOrEmpty(_strLimitCategory))
+                    nodParent.Expand();
             }
 
             if (_lstExpandCategories != null)
@@ -166,15 +164,24 @@ namespace Chummer
                     }
                 }
             }
-            
+
             txtSearch.Enabled = string.IsNullOrEmpty(_strLimitCategory);
 
-            int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells) 
-            + _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
-                .Select(imp => _objCharacter.GetAttribute(imp.ImprovedName)).Select(att => att.TotalValue).Sum() 
-            + _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                .Select(imp => _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName)).Select(objSkill => objSkill.LearnedRating).Sum();
-            chkFreeBonus.Visible = freeSpells > 0 && freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
+            if (!_objCharacter.Created) return;
+            //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
+            //in Career Mode. Create mode manages itself.
+            int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells)
+                             + _objCharacter.Improvements
+                                 .Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
+                                 .Select(imp => _objCharacter.GetAttribute(imp.ImprovedName))
+                                 .Select(att => att.TotalValue).Sum()
+                             + _objCharacter.Improvements
+                                 .Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                                 .Select(imp => _objCharacter.SkillsSection.Skills.First(
+                                     x => x.Name == imp.ImprovedName)).Select(objSkill => objSkill.LearnedRating)
+                                 .Sum();
+            chkFreeBonus.Visible = freeSpells > 0 &&
+                                   freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
         }
 
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
@@ -186,7 +193,7 @@ namespace Chummer
                 XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + treSpells.SelectedNode.Tag + "\"]");
 
                 string[] strDescriptorsIn = objXmlSpell["descriptor"].InnerText.Split(',');
-                
+
                 string strDescriptors = string.Empty;
                 bool blnExtendedFound = false;
                 foreach (string strDescriptor in strDescriptorsIn)
@@ -429,7 +436,7 @@ namespace Chummer
                     }
                 }
                 if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0)
-                {                    
+                {
                     AcceptForm();
                 }
             }
@@ -455,7 +462,7 @@ namespace Chummer
             string strAdditionalFilter = string.Empty;
             if (_objCharacter.Options.ExtendAnyDetectionSpell)
                 strAdditionalFilter = " and ((not(contains(name, \", Extended\"))))";
-            
+
             // Treat everything as being uppercase so the search is case-insensitive.
             string strSearch = "/chummer/spells/spell[(" + _objCharacter.Options.BookXPath() + ")" + strAdditionalFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
 
@@ -499,7 +506,7 @@ namespace Chummer
                     TreeNode nodSpell = new TreeNode();
                     TreeNode nodParent = new TreeNode();
                     nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
-                    nodSpell.Tag = objXmlSpell["name"].InnerText;
+                    nodSpell.Tag = objXmlSpell["id"].InnerText;
                     // Check to see if there is already a Category node for the Spell's category.
                     foreach (TreeNode nodCategory in treSpells.Nodes)
                     {

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,24 +61,12 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlAdvantage["name"].InnerText;
-                if (objXmlAdvantage.Attributes["translate"] != null)
-                    objItem.Name = objXmlAdvantage.Attributes["translate"].InnerText;
-                else
-                    objItem.Name = objXmlAdvantage["name"].InnerText;
+                objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? objXmlAdvantage["name"].InnerText;
 
                 bool blnIsNew = true;
-                foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
+                foreach (MartialArt objMartialArt in _objCharacter.MartialArts.Where(objMartialArt => objMartialArt.Name == _strMartialArt))
                 {
-                    if (objMartialArt.Name == _strMartialArt)
-                    {
-                        foreach (MartialArtAdvantage objMartialArtAdvantage in objMartialArt.Advantages)
-                        {
-                            if (objMartialArtAdvantage.Name == objItem.Value)
-                            {
-                                blnIsNew = false;
-                            }
-                        }
-                    }
+                    blnIsNew = objMartialArt.Advantages.All(advantage => advantage.Name != objItem.Value);
                 }
 
                 if (blnIsNew)

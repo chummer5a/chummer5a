@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -182,10 +182,7 @@ namespace Chummer.Skills
             }
             XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
 
-            if (objCategoryNode?.Attributes?["translate"] != null)
-            {
-                skill.DisplayCategory = objCategoryNode.Attributes["translate"].InnerText;
-            }
+            skill.DisplayCategory = objCategoryNode?.Attributes?["translate"]?.InnerText ?? string.Empty;
 
             return skill;
         }
@@ -419,7 +416,7 @@ namespace Chummer.Skills
             }
         }
 
-        private bool _oldEnable = true; //For OnPropertyChanged 
+        private bool _oldEnable = true; //For OnPropertyChanged
 
         //TODO handle aspected/adepts who cannot (always) get magic skills
         public bool Enabled
@@ -864,7 +861,7 @@ namespace Chummer.Skills
             }
             else
             {
-                //Handler for the Inspired Quality. 
+                //Handler for the Inspired Quality.
                 if (!IsKnowledgeSkill && Name == "Artisan")
                 {
                     if (CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
@@ -934,7 +931,7 @@ namespace Chummer.Skills
 
         #region Static
 
-        //A tree of dependencies. Once some of the properties are changed, 
+        //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
         private static readonly ReverseTree<string> DependencyTree =

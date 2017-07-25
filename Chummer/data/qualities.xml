@@ -13341,6 +13341,24 @@
       <page>40</page>
     </quality>
     <quality>
+        <id>820ec42b-5255-4c73-93af-e8caa5b6abbf</id>
+        <name>Shock Mage</name>
+        <doublecareer>False</doublecareer>
+        <karma>15</karma>
+        <category>Positive</category>
+        <bonus />
+        <required>
+          <oneof>
+            <skill>
+              <name>Spellcasting</name>
+              <val>6</val>
+            </skill>
+          </oneof>
+        </required>
+        <source>FA</source>
+        <page>40</page>
+    </quality>
+    <quality>
       <id>16cb1300-bdf4-42d0-9556-3b681ef517fc</id>
       <name>Skinwalker</name>
       <doublecareer>False</doublecareer>

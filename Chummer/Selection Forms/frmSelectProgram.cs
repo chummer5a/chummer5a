@@ -19,7 +19,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Runtime.Serialization;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -76,20 +77,15 @@ namespace Chummer
                 if (objMetamagic.Name == "Biowire")
                     _blnBiowireEnabled = true;
             }
-            
+
             trePrograms.TreeViewNodeSorter = new SortByName();
             foreach (XmlNode objXmlProgram in objXmlNodeList)
             {
                 bool blnAdd = true;
                 TreeNode nodProgram = new TreeNode();
-                TreeNode nodParent = new TreeNode();
-                if (objXmlProgram["translate"] != null)
-                    nodProgram.Text = objXmlProgram["translate"].InnerText;
-                else
-                    nodProgram.Text = objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["name"].InnerText;
-                nodParent = trePrograms.Nodes[0];
-                
+                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
+                nodProgram.Tag = objXmlProgram["id"].InnerText;
+
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (blnCheckForOptional)
                 {
@@ -103,19 +99,17 @@ namespace Chummer
 
                 // Add the Program to the Category node.
                 if (blnAdd)
-                    nodParent.Nodes.Add(nodProgram);
+                    trePrograms.Nodes.Add(nodProgram);
             }
             trePrograms.Nodes[0].Expand();
         }
 
         private void trePrograms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            // Only attempt to retrieve Program information if a child node is selected.
-            if (trePrograms.SelectedNode.Level > 0)
+            // Display the Program information.
+            XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + trePrograms.SelectedNode.Tag + "\"]");
+            if (objXmlProgram != null)
             {
-                // Display the Program information.
-                XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + trePrograms.SelectedNode.Tag + "\"]");
-
                 string strDuration = objXmlProgram["duration"].InnerText;
                 string strTarget = objXmlProgram["target"].InnerText;
                 string strFV = objXmlProgram["fv"].InnerText;
@@ -130,7 +124,9 @@ namespace Chummer
                     strPage = objXmlProgram["altpage"].InnerText;
                 lblSource.Text = strBook + " " + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource,
+                    _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " +
+                    LanguageManager.Instance.GetString("String_Page") + " " + strPage);
             }
         }
 
@@ -168,61 +164,16 @@ namespace Chummer
 
             trePrograms.Nodes.Clear();
 
-            // Populate the Category list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlNodeList)
-            {
-                if (string.IsNullOrEmpty(_strLimitCategory) || _strLimitCategory == objXmlCategory.InnerText)
-                {
-                    if (objXmlCategory.InnerText != "Skillsofts" && objXmlCategory.InnerText != "Autosoft" || (objXmlCategory.InnerText == "Skillsofts" && _blnBiowireEnabled) || (objXmlCategory.InnerText == "Autosoft" && _objCharacter.Options.TechnomancerAllowAutosoft))
-                    {
-                        TreeNode nodCategory = new TreeNode();
-                        nodCategory.Tag = objXmlCategory.InnerText;
-                        if (objXmlCategory.Attributes["translate"] != null)
-                            nodCategory.Text = objXmlCategory.Attributes["translate"].InnerText;
-                        else
-                            nodCategory.Text = objXmlCategory.InnerText;
-
-                        trePrograms.Nodes.Add(nodCategory);
-                    }
-                }
-            }
-
             // Populate the Program list.
-            objXmlNodeList = _objXmlDocument.SelectNodes(strSearch);
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes(strSearch);
             trePrograms.TreeViewNodeSorter = new SortByName();
             foreach (XmlNode objXmlProgram in objXmlNodeList)
             {
                 TreeNode nodProgram = new TreeNode();
-                TreeNode nodParent = new TreeNode();
-                if (objXmlProgram["translate"] != null)
-                    nodProgram.Text = objXmlProgram["translate"].InnerText;
-                else
-                    nodProgram.Text = objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["name"].InnerText;
-                // Check to see if there is already a Category node for the Program's category.
-                foreach (TreeNode nodCategory in trePrograms.Nodes)
-                {
-                    if (nodCategory.Level == 0 && nodCategory.Tag.ToString() == objXmlProgram["category"].InnerText)
-                    {
-                        nodParent = nodCategory;
-                    }
-                }
-
-                // Add the Program to the Category node.
-                nodParent.Nodes.Add(nodProgram);
-                nodParent.Expand();
+                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
+                nodProgram.Tag = objXmlProgram["id"].InnerText;
+                trePrograms.Nodes.Add(nodProgram);
             }
-
-            List<TreeNode> lstRemove = new List<TreeNode>();
-            foreach (TreeNode nodNode in trePrograms.Nodes)
-            {
-                if (nodNode.Level == 0 && nodNode.Nodes.Count == 0)
-                    lstRemove.Add(nodNode);
-            }
-
-            foreach (TreeNode nodNode in lstRemove)
-                trePrograms.Nodes.Remove(nodNode);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)

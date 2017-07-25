@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-﻿using System.Xml;
+ using System.Linq;
+ using System.Xml;
 using System.Windows.Forms;
+ using Chummer.Annotations;
  using Chummer.Backend.Equipment;
  using Microsoft.Win32;
 
@@ -695,32 +697,22 @@ namespace Chummer
         /// Remove a file from the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to remove.</param>
-        public void RemoveFromMRUList(string strFile, string strMRUType = "mru")
+        public void RemoveFromMRUList([NotNull] string strFile, string strMRUType = "mru")
         {
             List<string> strFiles = ReadMRUList(strMRUType);
 
-            bool blnHasRemoved = false;
+            if (strFile.Contains(strFile))
+            {
+                strFiles.Remove(strFile);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                if (_objBaseChummerKey.GetValue(strMRUType + i) != null)
+                    _objBaseChummerKey.DeleteValue(strMRUType + i);
+            }
             for (int i = 0; i < strFiles.Count; i++)
             {
-                if (blnHasRemoved)
-                {
-                    _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
-                }
-                else if (strFiles[i] == strFile)
-                {
-                    strFiles.RemoveAt(i);
-                    blnHasRemoved = true;
-                }
-            }
-            if (strFiles.Count < 10)
-            {
-                for (int i = strFiles.Count + 1; i <= 10; i++)
-                {
-                    if (_objBaseChummerKey.GetValue(strMRUType + i.ToString()) != null)
-                    {
-                        _objBaseChummerKey.DeleteValue(strMRUType + i.ToString());
-                    }
-                }
+                _objBaseChummerKey.SetValue(strMRUType + (i + 1), strFiles[i]);
             }
             MRUChanged?.Invoke();
         }
@@ -740,7 +732,7 @@ namespace Chummer
                     lstFiles.Add(objLoopValue.ToString());
                 }
             }
-
+            lstFiles = lstFiles.Distinct().ToList();
             return lstFiles;
         }
         #endregion

@@ -4245,7 +4245,7 @@
     </string>
     <string>
       <key>Checkbox_Options_PrintExpenses</key>
-      <text>Karma und Nuyen Ausgaben mitschreiben</text>
+      <text>Karma und Nuyen Ausgaben ausdrucken</text>
     </string>
     <string>
       <key>Checkbox_Options_UseCyberlimbCalculation</key>
@@ -7928,6 +7928,70 @@
     <string>
       <key>Label_SelectBP_StartingKarma</key>
       <text>Anfangs-\nKarma</text>
+    </string>
+    <string>
+      <key>String_SumtoTen</key>
+      <text>Zehn-Punkte-Option</text>
+    </string>
+    <string>
+      <key>String_ActionInterrupt</key>
+      <text>Unterbrechung (-5 Initiative)</text>
+    </string>
+    <string>
+      <key>Label_SummaryRituals</key>
+      <text>Rituale</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Base_Area</key>
+      <text>Gegend: [{0}/{1}]</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_UnusedLP</key>
+      <text>Ungen. LP:</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_SumToX</key>
+      <text>Zehn-Punkte-Option</text>
+    </string>
+    <string>
+      <key>String_LifestyleFreeNuyen</key>
+      <text>Im Lebensstil enthalten</text>
+    </string>
+    <string>
+      <key>Node_SelectAdvancedLifestyle_FreeMatrixGrids</key>
+      <text>Freie Matrix-Gitter</text>
+    </string>
+    <string>
+      <key>Title_ListView</key>
+      <text>Listenansicht</text>
+    </string>
+    <string>
+      <key>Title_Browse</key>
+      <text>Durchblättern</text>
+    </string>
+    <string>
+      <key>Label_PowerLevels</key>
+      <text>Stufe:</text>
+    </string>
+    <string>
+      <key>Power_SortAction</key>
+      <text>Handlung</text>
+    </string>
+    <string>
+      <key>String_PowerFilterAll</key>
+      <text>Zeige alle Kräfte</text>
+    </string>
+    <string>
+      <key>String_PowerFilterRatingAboveZero</key>
+      <text>Zeige aktive Kräfte mit Stufe &gt; 0</text>
+    </string>
+    <string>
+      <key>String_PowerFilterRatingZero</key>
+      <text>Zeige Kräfte mit Stufe = 0</text>
+    </string>
+    <string>
+      <key>Label_SummaryPreparations</key>
+      <text>Alchemistische Zauber</text>
     </string>
   </strings>
 </chummer>

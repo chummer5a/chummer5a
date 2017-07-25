@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,20 +75,12 @@ namespace Chummer
             _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
             // Populate the Quality Category list.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");           
+            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {                
+            {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
-                if (objXmlCategory.Attributes != null)
-                {
-                    if (objXmlCategory.Attributes["translate"] != null)
-                        objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlCategory.InnerText;
-                }
-                else
-                    objItem.Name = objXmlCategory.InnerXml;
+                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                 _lstCategory.Add(objItem);
             }
             cboCategory.BeginUpdate();
@@ -161,7 +153,7 @@ namespace Chummer
                 }
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;
-            } 
+            }
             else
             {
                 lblCost.Visible = false;
@@ -171,7 +163,7 @@ namespace Chummer
         }
 
         private string GetMinimumRequirement(string strAllowedLifestyles)
-        {           
+        {
             if (_strLifestyleSpecific.Contains(strAllowedLifestyles))
             {
                 return strAllowedLifestyles;
