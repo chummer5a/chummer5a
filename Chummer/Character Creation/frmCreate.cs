@@ -4576,7 +4576,7 @@ namespace Chummer
             //if (_objCharacter.CFPLimit - intComplexForms < 0)
             //    lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.CFPLimit.ToString());
             //else
-            lblBuildComplexForms.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+            lblComplexFormsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
 
             if (frmPickProgram.AddAgain)
                 cmdAddComplexForm_Click(sender, e);
@@ -6142,7 +6142,7 @@ namespace Chummer
                 _objCharacter.ComplexForms.Remove(objProgram);
                 treComplexForms.SelectedNode.Remove();
 
-                lblBuildComplexForms.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
+                lblComplexFormsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
 
                 ScheduleCharacterUpdate();
 
@@ -13430,14 +13430,19 @@ namespace Chummer
             }
             if (intFormsPointsUsed > _objCharacter.CFPLimit)
                 intKarmaPointsRemain -= (intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm;
-            string s = $"0 {LanguageManager.Instance.GetString("String_Karma")}";
+            string s = $"0 {strPoints}";
             if (_objCharacter.CFPLimit > 0)
             {
-                s = $"{_objCharacter.SkillsSection.SkillGroupPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.SkillsSection.SkillGroupPointsMaximum}";
+                s = $"{intFormsPointsUsed} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.CFPLimit}";
+                if (intFormsPointsUsed > 0)
+                {
+                    s +=
+                        $": {(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
+                }
             }
-            if (intFormsPointsUsed > 0)
+            else
             {
-                s += $": {_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {LanguageManager.Instance.GetString("String_Karma")}";
+                s = $"{(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
             }
             lblComplexFormsBP.Text = s;
             intFreestyleBP += intFormsPointsUsed;
