@@ -237,6 +237,7 @@
       <cost>FixedValues(43000,97000,208000)</cost>
       <source>SR5</source>
       <page>452</page>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -443,6 +444,7 @@
       <allowsubsystems>
         <category>Eyeware</category>
       </allowsubsystems>
+      <minrating>1</minrating>
       <rating>4</rating>
       <subsystems>
         <subsystem>Image Link</subsystem>
@@ -576,6 +578,7 @@
       <allowsubsystems>
         <category>Earware</category>
       </allowsubsystems>
+      <minrating>1</minrating>
       <rating>4</rating>
       <subsystems>
         <subsystem>Sound Link</subsystem>
@@ -879,6 +882,7 @@
           <cyberware>Siemens Cyberspine</cyberware>
         </oneof>
       </forbidden>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -2276,6 +2280,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3847,6 +3852,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -4491,6 +4497,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -4503,6 +4510,7 @@
       <cost>FixedValues(12000,60000,300000)</cost>
       <source>2050</source>
       <page>203</page>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
