@@ -9541,6 +9541,10 @@
       <cost>Rating * 250</cost>
       <rating>50</rating>
       <slots>0</slots>
+      <bonus>
+        <handling>-1</handling>
+        <offroadhandling>1</offroadhandling>
+      </bonus>
     </mod>
     <mod>
       <id>bac2fcca-1edd-4814-ba50-31d63f031d4e</id>
@@ -9552,6 +9556,10 @@
       <cost>Rating * 250</cost>
       <rating>50</rating>
       <slots>0</slots>
+      <bonus>
+        <handling>1</handling>
+        <offroadhandling>-1</offroadhandling>
+      </bonus>        
     </mod>
     <mod>
       <id>aba3338c-0a54-4486-84a4-2e74524b63de</id>

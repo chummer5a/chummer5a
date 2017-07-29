@@ -86,6 +86,7 @@ Data Changes:
 - Removed Uneducated from the Naga metasapient. Sorry sneks, not sure how that crept in there.
 - Adepts with the Adept Spell power can now take the Focused Concentration quality.
 - Implemented content from The Complete Trog. 
+- Added missing bonuses for the special tires from Rigger 5.0.
 
 New Strings:
 
