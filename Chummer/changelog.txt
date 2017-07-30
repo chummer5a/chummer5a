@@ -85,7 +85,7 @@ Data Changes:
 - Fixed behaviour of the Satyr Legs quality and Flight critter power to properly provide movement speed increases.
 - Removed Uneducated from the Naga metasapient. Sorry sneks, not sure how that crept in there.
 - Adepts with the Adept Spell power can now take the Focused Concentration quality.
-- Implemented content from The Complete Trog. 
+- Implemented content from The Complete Trog. NB: Black Forest Native doesn't provide the skill bonus, Community Connection doesn't provide the housing cost discount, and Nasty Trog/Trog Leader don't have conditionals for their skill bonus so always apply. 
 - Added missing bonuses for the special tires from Rigger 5.0.
 
 New Strings:
