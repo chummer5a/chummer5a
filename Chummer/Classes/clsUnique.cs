@@ -204,6 +204,7 @@ namespace Chummer
             if (objXmlQuality["category"] != null)
                 _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
             _objQualitySource = objQualitySource;
+            objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
@@ -333,6 +334,7 @@ namespace Chummer
             objWriter.WriteElementString("bp", _intBP.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
             if (_strMetagenetic != null)
             {
                 objWriter.WriteElementString("metagenetic", _strMetagenetic);
@@ -380,6 +382,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
+            objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             if (objNode["qualitytype"] != null)
             _objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
             if (objNode["qualitysource"] != null)
