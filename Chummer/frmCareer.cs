@@ -1972,7 +1972,7 @@ namespace Chummer
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
                         if (objNode["bonus"] != null)
                         {
-                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayNameShort);
+                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayName);
                         }
                     }
                 }

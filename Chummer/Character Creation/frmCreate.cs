@@ -2113,7 +2113,7 @@ namespace Chummer
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
                         if (objNode["bonus"] != null)
                         {
-                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayNameShort);
+                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayName);
                         }
                     }
                 }
@@ -13088,21 +13088,11 @@ namespace Chummer
             int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
             int intLifeModuleQualities = 0;
 
-            foreach (Quality objQuality in _objCharacter.Qualities)
-            {
-                if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
-                {
-                    intPositiveQualities += (objQuality.BP * _objOptions.KarmaQuality);
-                }
-                else if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
-                {
-                    intNegativeQualities += (objQuality.BP * _objOptions.KarmaQuality);
-            }
-                else if (objQuality.Type == QualityType.LifeModule && objQuality.ContributeToBP)
-                {
-                    intLifeModuleQualities += (objQuality.BP);
-                }
-            }
+            intPositiveQualities += _objCharacter.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            int unlimitedPositive = _objCharacter.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            intNegativeQualities += _objCharacter.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            int unlimitedNegative = _objCharacter.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            intLifeModuleQualities += _objCharacter.Qualities.Where(q => q.Type == QualityType.LifeModule && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
 
             // Deduct the amounts for free Qualities.
             int intPositiveFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) * _objOptions.KarmaQuality;
@@ -13126,11 +13116,14 @@ namespace Chummer
                 }
             }
 
-            intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities;
+            intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities + unlimitedPositive + unlimitedNegative;
+            lblPositiveQualitiesBP.Text = unlimitedPositive > 0
+                ? $"{intPositiveQualities}/{_objCharacter.GameplayOptionQualityLimit} {strPoints} ({intPositiveQualities + unlimitedPositive})"
+                : $"{intPositiveQualities}/{_objCharacter.GameplayOptionQualityLimit} {strPoints}";
 
-            lblPositiveQualitiesBP.Text = string.Format("{0} " + strPoints, intPositiveQualities);
-
-            lblNegativeQualitiesBP.Text = string.Format("{0} " + strPoints, intNegativeQualities);
+            lblNegativeQualitiesBP.Text = unlimitedNegative > 0
+                ? $"{intNegativeQualities * -1}/{_objCharacter.GameplayOptionQualityLimit} {strPoints} ({intNegativeQualities + unlimitedNegative})"
+                : $"{intNegativeQualities * -1}/{_objCharacter.GameplayOptionQualityLimit} {strPoints}";
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
