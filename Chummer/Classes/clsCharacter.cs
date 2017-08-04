@@ -1335,7 +1335,6 @@ namespace Chummer
             SpecialAttributeList.Add(_attEDG);
             SpecialAttributeList.Add(_attMAG);
             SpecialAttributeList.Add(_attRES);
-            SpecialAttributeList.Add(_attESS);
             SpecialAttributeList.Add(_attDEP);
 
             Timekeeper.Finish("load_char_attrib");
