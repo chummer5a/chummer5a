@@ -1382,6 +1382,12 @@ namespace Chummer.Backend.Attributes
                 {
                     Base -= 1;
                 }
+                else if
+                    (Abbrev == "EDG" && TotalMinimum > 0)
+                {
+                    //Edge can reduce the metatype minimum below zero. 
+                    MetatypeMinimum--;
+                }
                 else
                     return;
             }

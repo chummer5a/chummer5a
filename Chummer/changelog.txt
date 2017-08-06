@@ -85,6 +85,8 @@ Data Changes:
 - Fixed behaviour of the Satyr Legs quality and Flight critter power to properly provide movement speed increases.
 - Removed Uneducated from the Naga metasapient. Sorry sneks, not sure how that crept in there.
 - Adepts with the Adept Spell power can now take the Focused Concentration quality.
+- Implemented content from The Complete Trog. NB: Black Forest Native doesn't provide the skill bonus, Community Connection doesn't provide the housing cost discount, and Nasty Trog/Trog Leader don't have conditionals for their skill bonus so always apply. 
+- Added missing bonuses for the special tires from Rigger 5.0.
 
 New Strings:
 
@@ -720,6 +722,8 @@ Application Changes:
 - Added the ability for priorities to add to Depth.
 - Added the AddSkillSpecialisation bonus type, which allows for adding a free specialisation to a skill.
 - Changes to the condition monitor now immediately refresh skill dicepools.
+- The cost label for qualities in create mode now shows as Current/Maximum (Total) to assist with calculating quality values. 
+    -The total value is mostly going to be seen for Changelings and Point-Buy characters, as it shows qualities that don't contribute to your limit. 
 
 Data Changes:
 

@@ -132,7 +132,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (trePrograms.SelectedNode != null && trePrograms.SelectedNode.Level > 0)
+            if (trePrograms.SelectedNode != null)
             {
                 AcceptForm();
             }
@@ -140,7 +140,7 @@ namespace Chummer
 
         private void trePrograms_DoubleClick(object sender, EventArgs e)
         {
-            if (trePrograms.SelectedNode != null && trePrograms.SelectedNode.Level > 0)
+            if (trePrograms.SelectedNode != null)
             {
                 AcceptForm();
             }

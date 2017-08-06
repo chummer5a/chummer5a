@@ -11795,6 +11795,65 @@
       <page>37</page>
     </weapon>
     <!-- End Region -->
+    <!-- Region The Complete Trog -->
+    <weapon>
+      <id>78beeb28-9ae6-418d-97bb-1d45ac19cee8</id>
+      <name>Osmium Mace (STR 4-)</name>
+      <category>Clubs</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>3</accuracy>
+      <reach>2</reach>
+      <damage>(STR+2)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>14R</avail>
+      <cost>5500</cost>
+      <allowaccessory>true</allowaccessory>
+      <source>TCT</source>
+      <page>185</page>
+    </weapon>
+    <weapon>
+      <id>9b3dfd78-eb44-48ae-9935-a1737f0aea39</id>
+      <name>Osmium Mace (STR 5+)</name>
+      <category>Clubs</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>4</accuracy>
+      <reach>2</reach>
+      <damage>(STR+4)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>14R</avail>
+      <cost>5500</cost>
+      <allowaccessory>true</allowaccessory>
+      <source>TCT</source>
+      <page>185</page>
+    </weapon>
+    <weapon>
+      <id>c3123adb-1f5c-4209-8c5a-21ebdd2f44ec</id>
+      <name>Osmium Mace (STR 7+)</name>
+      <category>Clubs</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>5</accuracy>
+      <reach>2</reach>
+      <damage>(STR+6)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>14R</avail>
+      <cost>30</cost>
+      <allowaccessory>true</allowaccessory>
+      <source>TCT</source>
+      <page>185</page>
+    </weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->

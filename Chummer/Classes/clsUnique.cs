@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -204,6 +204,7 @@ namespace Chummer
             if (objXmlQuality["category"] != null)
                 _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
             _objQualitySource = objQualitySource;
+            objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
@@ -333,6 +334,7 @@ namespace Chummer
             objWriter.WriteElementString("bp", _intBP.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
             if (_strMetagenetic != null)
             {
                 objWriter.WriteElementString("metagenetic", _strMetagenetic);
@@ -380,6 +382,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
+            objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             if (objNode["qualitytype"] != null)
             _objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
             if (objNode["qualitysource"] != null)
@@ -4024,7 +4027,7 @@ namespace Chummer
             if (objXmlAdvantageNode["bonus"] != null)
             {
                 ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayNameShort))
+                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -4072,7 +4075,7 @@ namespace Chummer
         public void Print(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("martialartadvantage");
-            objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name", DisplayName);
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -4100,7 +4103,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayName
         {
             get
             {
@@ -4109,14 +4112,9 @@ namespace Chummer
                 if (GlobalOptions.Instance.Language == "en-us") return strReturn;
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart/techniques/technique[. = \"" + _strName + "\"]");
-                return objNode?.Attributes?["translate"].InnerText ?? strReturn;
+                return objNode?.Attributes?["translate"]?.InnerText ?? strReturn;
             }
         }
-
-        /// <summary>
-        /// The name of the object as it should be displayed in lists. Name (Extra).
-        /// </summary>
-        public string DisplayName => DisplayNameShort;
 
         /// <summary>
         /// Notes attached to this technique.

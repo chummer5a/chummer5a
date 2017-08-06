@@ -1147,7 +1147,10 @@ namespace Chummer
 
             lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
             lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
-            lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+            if (GlobalOptions.Instance.OmaeEnabled)
+            {
+                lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+            }
 
             cboXSLT.BeginUpdate();
             cboXSLT.ValueMember = "Value";

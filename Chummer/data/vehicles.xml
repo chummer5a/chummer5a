@@ -7267,6 +7267,54 @@
       </weapons>
     </vehicle>
     <!-- End Region-->
+    <!-- Region The Complete Trog -->
+    <vehicle>
+      <id>139fb6cb-a4c5-4ba2-8cf2-f10b9e187093</id>
+      <name>BMW Trollhammer</name>
+      <page>184</page>
+      <source>TCT</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>0</avail>
+      <body>10</body>
+      <category>Bikes</category>
+      <cost>12500</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+      </gears>
+      <mods>
+        <name>Metahuman Adjustment</name>
+      </mods>
+      <seats>1</seats>
+    </vehicle>
+    <vehicle>
+      <id>d706917a-ae42-4134-a1bb-0dc276e02fbe</id>
+      <name>Ford Titan</name>
+      <page>184</page>
+      <source>TCT</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Bikes</category>
+      <cost>32500</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+      </gears>
+      <mods>
+        <name>Metahuman Adjustment</name>
+      </mods>
+      <seats>8</seats>
+    </vehicle>
+    <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
@@ -8672,6 +8720,17 @@
       <slots>0</slots>
     </mod>
     <mod>
+      <id>140ade78-b25c-44fd-9775-a0ebf256d90c</id>
+      <name>Yerz Kit</name>
+      <page>187</page>
+      <source>TCT</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>500</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
       <id>a36612c7-c5a7-4072-ad0d-5e78080d12e1</id>
       <name>Yerzed Out</name>
       <page>171</page>
@@ -9482,6 +9541,10 @@
       <cost>Rating * 250</cost>
       <rating>50</rating>
       <slots>0</slots>
+      <bonus>
+        <handling>-1</handling>
+        <offroadhandling>1</offroadhandling>
+      </bonus>
     </mod>
     <mod>
       <id>bac2fcca-1edd-4814-ba50-31d63f031d4e</id>
@@ -9493,6 +9556,10 @@
       <cost>Rating * 250</cost>
       <rating>50</rating>
       <slots>0</slots>
+      <bonus>
+        <handling>1</handling>
+        <offroadhandling>-1</offroadhandling>
+      </bonus>        
     </mod>
     <mod>
       <id>aba3338c-0a54-4486-84a4-2e74524b63de</id>

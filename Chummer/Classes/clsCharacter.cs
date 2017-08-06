@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1335,7 +1335,6 @@ namespace Chummer
             SpecialAttributeList.Add(_attEDG);
             SpecialAttributeList.Add(_attMAG);
             SpecialAttributeList.Add(_attRES);
-            SpecialAttributeList.Add(_attESS);
             SpecialAttributeList.Add(_attDEP);
 
             Timekeeper.Finish("load_char_attrib");
@@ -2982,7 +2981,7 @@ namespace Chummer
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {
-                                strReturn = objAdvantage.DisplayNameShort;
+                                strReturn = objAdvantage.DisplayName;
                                 break;
                             }
                         }
