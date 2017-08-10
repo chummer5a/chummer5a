@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -716,6 +716,11 @@ namespace Chummer
         /// Whether the bioware should be discounted by Prototype Transhuman.
         /// </summary>
         public bool PrototypeTranshuman => chkPrototypeTranshuman.Checked && _objMode == Mode.Bioware && !_objCharacter.Created;
+
+        /// <summary>
+        /// Parent cyberware that the current selection will be added to.
+        /// </summary>
+        public Cyberware Parent;
         #endregion
 
         #region Methods
@@ -821,12 +826,13 @@ namespace Chummer
             }
             else if (objXmlCyberware["cost"] != null)
             {
+                string strCost = objXmlCyberware["cost"].InnerText;
                 // Check for a Variable Cost.
                 if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
                 {
                     int intMin;
                     int intMax = 0;
-                    string strCost = objXmlCyberware["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
+                    strCost = strCost.Replace("Variable", string.Empty).Trim("()".ToCharArray());
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
@@ -840,9 +846,9 @@ namespace Chummer
 
                     dblItemCost = intMin;
                 }
-                else if (objXmlCyberware["cost"].InnerText.StartsWith("FixedValues"))
+                else if (strCost.StartsWith("FixedValues"))
                 {
-                    string[] strValues = objXmlCyberware["cost"].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCost.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                     {
                         dblItemCost = Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier * dblGenetechCostModifier;
@@ -857,7 +863,20 @@ namespace Chummer
                 }
                 else
                 {
-                    if (objXmlCyberware["cost"].InnerText.Contains("MinRating"))
+                    if (strCost.StartsWith("Parent Cost"))
+                    {
+                        if (Parent != null)
+                        {
+                            strCost = strCost.Replace("Parent Cost", Parent.Cost);
+                            if (strCost.Contains("Rating"))
+                            {
+                                strCost = strCost.Replace("Rating", Parent.Rating.ToString());
+                            }
+                        }
+                        else
+                            strCost = "0";
+                    }
+                    if (strCost.Contains("MinRating"))
                     {
                         XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
                         if (xmlMinRatingNode != null)
@@ -865,15 +884,15 @@ namespace Chummer
                             switch (xmlMinRatingNode.InnerText)
                             {
                                 case "MinimumAGI":
-                                    objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", ParentVehicle?.Pilot.ToString() ?? 3.ToString());
+                                    strCost = strCost.Replace("MinRating", ParentVehicle?.Pilot.ToString() ?? 3.ToString());
                                     break;
                                 case "MinimumSTR":
-                                    objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", ParentVehicle?.TotalBody.ToString() ?? 3.ToString());
+                                    strCost = strCost.Replace("MinRating", ParentVehicle?.TotalBody.ToString() ?? 3.ToString());
                                     break;
                             }
                         }
                     }
-                    XPathExpression xprCost = _nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
+                    XPathExpression xprCost = _nav.Compile(strCost.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
                     double dblCost = (Convert.ToDouble(_nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier *
                                       dblGenetechCostModifier);
                     dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
