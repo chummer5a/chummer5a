@@ -29,29 +29,25 @@ before_build:
 - ps: >-
     $token = $env:api_token
 
-    $accountName = 'chummer5a'
-
-    $projectSlug = 'chummer'
-
     $headers = @{
-      "Authorization" = "Bearer $token"
-      "Content-type" = "application/json"
-    }
-
-    $LastCommit = git rev-list -1 --skip 1 head
-
-    $NewCommit = $env:APPVEYOR_REPO_COMMIT
-
-
-    Write-Host "Last Commit ID: $LastCommit"
-
-    Write-Host "This Commit ID: $NewCommit"
-
-    if ($LastCommit -eq $NewCommit -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
-
-    {
-    	Exit-AppveyorBuild
-    }
+  "Authorization" = "Bearer $token"
+  "Content-type" = "application/json"
+}
+$apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
+$history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
+if ($history.builds.Count -eq 2)
+{
+  $CurrentCommitID = $history.builds[0].commitId
+  $PreviousCommitID = $history.builds[1].commitId
+  Write-host "Current Commit ID: $CurrentCommitID"
+  Write-host "Previous Commit ID: $PreviousCommitID"
+  $history.builds[1].commitId
+  if ($CurrentCommitID -eq $PreviousCommitID)
+  {
+    Write-host "Current Commit ID is the same as previous, exiting build."
+    Exit-AppveyorBuild
+  }
+}
     nuget restore
 
     & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
