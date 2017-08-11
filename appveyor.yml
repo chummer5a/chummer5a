@@ -26,9 +26,8 @@ nuget:
   project_feed: true
   disable_publish_on_pr: true
 before_build:
-- ps: $token = $env:api_token
-      $headers = @{
-        "Authorization" = "Bearer $token"
+- ps: |
+      "$token = $env:api_token\n$headers = @{"Authorization" = "Bearer $token"
         "Content-type" = "application/json"}
       $apiURL = "https://ci.appveyor.com/api/projects/chummer5a/chummer"
       $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
