@@ -297,7 +297,7 @@ namespace Chummer
                 _nodDiscounts = objXmlQuality["costdiscount"];
             }
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (objXmlQuality.InnerXml.Contains("<bonus>"))
+            if (objXmlQuality["bonus"]?.ChildNodes.Count > 0)
             {
                 ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
                 objImprovementManager.ForcedValue = strForceValue;
@@ -1943,7 +1943,7 @@ namespace Chummer
                     }
 
                     object xprResult = null;
-                    xprDV = nav.Compile(dv);
+                    xprDV = nav.Compile(dv.TrimStart('+'));
 
                     xprResult = nav.Evaluate(xprDV);
                     if (force)

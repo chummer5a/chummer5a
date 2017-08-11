@@ -3436,9 +3436,12 @@
       <ess>0</ess>
       <capacity>[0]</capacity>
       <avail>12F</avail>
-      <cost>Parent Cost * 0.10</cost>
+      <cost>Variable(0-1000000)</cost>
       <source>CF</source>
       <page>147</page>
+      <bonus>
+        <selectcyberware />
+      </bonus>
       <forcegrade>Standard</forcegrade>
       <rating>6</rating>
     </cyberware>

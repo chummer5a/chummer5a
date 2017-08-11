@@ -6483,7 +6483,7 @@ namespace Chummer
             else if (objQuality.OriginSource == QualitySource.MetatypeRemovable)
             {
                 // Look up the cost of the Quality.
-                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objQuality.QualityId + "\"]");
                 int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -1;
                 int intShowBP = intBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
@@ -6502,6 +6502,7 @@ namespace Chummer
                 List<Weapon> objWeapons = new List<Weapon>();
                 List<TreeNode> objWeaponNodes = new List<TreeNode>();
                 Quality objReplaceQuality = new Quality(_objCharacter);
+                
                 objReplaceQuality.Create(objXmlMetatypeQuality, _objCharacter, QualitySource.Selected, objEmptyNode, objWeapons, objWeaponNodes);
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
