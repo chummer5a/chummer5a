@@ -33,7 +33,7 @@ before_build:
   "Authorization" = "Bearer $token"
   "Content-type" = "application/json"
 }
-$apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
+$apiURL = "https://ci.appveyor.com/api/projects/chummer5a/chummer"
 $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
 if ($history.builds.Count -eq 2)
 {
