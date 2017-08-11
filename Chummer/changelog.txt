@@ -87,6 +87,7 @@ Data Changes:
 - Adepts with the Adept Spell power can now take the Focused Concentration quality.
 - Implemented content from The Complete Trog. NB: Black Forest Native doesn't provide the skill bonus, Community Connection doesn't provide the housing cost discount, and Nasty Trog/Trog Leader don't have conditionals for their skill bonus so always apply. 
 - Added missing bonuses for the special tires from Rigger 5.0.
+- Fixed cost formula for Handling Enhancement. 
 
 New Strings:
 

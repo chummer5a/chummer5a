@@ -1035,6 +1035,7 @@ namespace Chummer.Backend.Equipment
                 strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strCost = strCost.Replace("Speed", Parent.Speed.ToString());
                 strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
+                strCost = strCost.Replace("Handling", Parent.Handling.ToString());
                 XPathExpression xprCost = nav.Compile(strCost);
                 int intReturn = Convert.ToInt32(nav.Evaluate(xprCost)?.ToString());
 
