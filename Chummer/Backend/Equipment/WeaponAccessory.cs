@@ -174,13 +174,8 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
                 XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + _strName + "\"]");
-                if (objAccessoryNode != null)
-                {
-                    if (objAccessoryNode["translate"] != null)
-                        _strAltName = objAccessoryNode["translate"].InnerText;
-                    if (objAccessoryNode["altpage"] != null)
-                        _strAltPage = objAccessoryNode["altpage"].InnerText;
-                }
+                _strAltName = objAccessoryNode?["translate"]?.InnerText ?? string.Empty;
+                _strAltPage = objAccessoryNode?["altpage"]?.InnerText ?? string.Empty;
             }
 
             objNode.Text = DisplayName;

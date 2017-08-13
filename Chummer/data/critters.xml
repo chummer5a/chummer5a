@@ -1471,7 +1471,7 @@
             </bonus>
             <powers>
                 <power>Gills</power>
-                <power select="Ink">Substance Extrusion</power>
+                <power select="Ink">Secretion/Substance Extrusion</power>
             </powers>
             <skills>
                 <skill rating="3">Escape Artist</skill>
@@ -1540,7 +1540,7 @@
             </bonus>
             <powers>
                 <power>Gills</power>
-                <power select="Ink">Substance Extrusion</power>
+                <power select="Ink">Secretion/Substance Extrusion</power>
             </powers>
             <skills>
                 <skill rating="5">Escape Artist</skill>
@@ -1608,7 +1608,7 @@
             </bonus>
             <powers>
                 <power>Gills</power>
-                <power select="Ink">Substance Extrusion</power>
+                <power select="Ink">Secretion/Substance Extrusion</power>
             </powers>
             <skills>
                 <skill rating="3">Escape Artist</skill>
@@ -1675,7 +1675,7 @@
             </bonus>
             <powers>
                 <power>Gills</power>
-                <power select="Ink">Substance Extrusion</power>
+                <power select="Ink">Secretion/Substance Extrusion</power>
             </powers>
             <skills>
                 <skill rating="3">Escape Artist</skill>
@@ -8961,7 +8961,7 @@
                 </enabletab>
             </bonus>
             <powers>
-                <power select="Skunk Fluid">Substance Extrusion</power>
+                <power select="Skunk Fluid">Secretion/Substance Extrusion</power>
                 <power rating="1">Fragile</power>
             </powers>
             <skills>
@@ -11983,7 +11983,7 @@
             </bonus>
             <powers>
                 <power>Gestalt Consciousness</power>
-                <power select="Silk">Substance Extrusion</power>
+                <power select="Silk">Secretion/Substance Extrusion</power>
                 <power>Wall Walking</power>
             </powers>
             <skills>
@@ -12050,7 +12050,7 @@
             </bonus>
             <powers>
                 <power>Gestalt Consciousness</power>
-                <power select="Urticating Hairs">Substance Extrusion</power>
+                <power select="Urticating Hairs">Secretion/Substance Extrusion</power>
                 <power>Wall Walking</power>
             </powers>
             <skills>
@@ -16067,7 +16067,7 @@
             <powers>
                 <power>Concealment</power>
                 <power select="Bite: DV 2P, AP 0, -1 Reach">Natural Weapon</power>
-                <power select="Skunk Fluid">Substance Extrusion</power>
+                <power select="Skunk Fluid">Secretion/Substance Extrusion</power>
             </powers>
             <skills>
                 <skill rating="2">Infiltration</skill>

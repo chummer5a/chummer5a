@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -470,12 +470,9 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
                         else
@@ -492,12 +489,9 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
                         else
@@ -520,12 +514,9 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
                         else

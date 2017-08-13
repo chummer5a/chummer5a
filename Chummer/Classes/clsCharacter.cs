@@ -4966,10 +4966,9 @@ namespace Chummer
             {
                 string strReturn = string.Empty;
 
-                strReturn += "(" + LanguageManager.Instance.GetString("String_CareerKarma") + " (" + CareerKarma.ToString() + ")";
+                strReturn += "(" + LanguageManager.Instance.GetString("String_CareerKarma") + " ÷ 10)";
                 if (BurntStreetCred != 0)
-                    strReturn += " - " + LanguageManager.Instance.GetString("String_BurntStreetCred") + " (" + BurntStreetCred.ToString() + ")";
-                strReturn += ") ÷ 10";
+                    strReturn += " - " + LanguageManager.Instance.GetString("String_BurntStreetCred");
 
                 return strReturn;
             }

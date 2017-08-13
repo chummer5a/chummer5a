@@ -320,31 +320,21 @@ namespace Chummer
                     objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-                if (objMetatypeNode["translate"] != null)
-                    strMetatype = objMetatypeNode["translate"].InnerText;
-                else
-                    strMetatype = _objCharacter.Metatype;
+                strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
 
                 strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                if (objMetatypeNode["altpage"] != null)
-                    strPage = objMetatypeNode["altpage"].InnerText;
-                else
-                    strPage = objMetatypeNode["page"].InnerText;
+                strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
                 if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
 
-                    if (objMetatypeNode["translate"] != null)
-                        strMetatype += " (" + objMetatypeNode["translate"].InnerText + ")";
-                    else
-                        strMetatype += " (" + _objCharacter.Metavariant + ")";
+                    strMetatype += objMetatypeNode["translate"] != null
+                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
+                        : " (" + _objCharacter.Metavariant + ")";
 
                     strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                    if (objMetatypeNode["altpage"] != null)
-                        strPage = objMetatypeNode["altpage"].InnerText;
-                    else
-                        strPage = objMetatypeNode["page"].InnerText;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
                 }
             }
             lblMetatype.Text = strMetatype;
@@ -397,10 +387,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlTradition["name"].InnerText;
-                if (objXmlTradition["translate"] != null)
-                    objItem.Name = objXmlTradition["translate"].InnerText;
-                else
-                    objItem.Name = objXmlTradition["name"].InnerText;
+                objItem.Name = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
                 lstTraditions.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -422,10 +409,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlDrain["name"].InnerText;
-                if (objXmlDrain["translate"] != null)
-                    objItem.Name = objXmlDrain["translate"].InnerText;
-                else
-                    objItem.Name = objXmlDrain["name"].InnerText;
+                objItem.Name = objXmlDrain["translate"]?.InnerText ?? objXmlDrain["name"].InnerText;
                 lstDrainAttributes.Add(objItem);
             }
             SortListItem objDrainSort = new SortListItem();
@@ -455,10 +439,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
+                    objItem.Name = objXmlSpirit["translate"]?.InnerText ?? objXmlSpirit["name"].InnerText;
                     lstSpirit.Add(objItem);
                 }
             }
@@ -471,55 +452,11 @@ namespace Chummer
             cboSpiritCombat.DataSource = lstSpirit;
             cboSpiritCombat.EndUpdate();
 
-            // Populate the Magician Custom Spirits lists - Detection.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
-
             cboSpiritDetection.BeginUpdate();
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstSpirit;
             cboSpiritDetection.EndUpdate();
-
-            // Populate the Magician Custom Spirits lists - Health.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
 
             cboSpiritHealth.BeginUpdate();
             cboSpiritHealth.ValueMember = "Value";
@@ -527,55 +464,11 @@ namespace Chummer
             cboSpiritHealth.DataSource = lstSpirit;
             cboSpiritHealth.EndUpdate();
 
-            // Populate the Magician Custom Spirits lists - Illusion.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
-
             cboSpiritIllusion.BeginUpdate();
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstSpirit;
             cboSpiritIllusion.EndUpdate();
-
-            // Populate the Magician Custom Spirits lists - Manipulation.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
 
             cboSpiritManipulation.BeginUpdate();
             cboSpiritManipulation.ValueMember = "Value";
@@ -19504,31 +19397,21 @@ namespace Chummer
                     objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-                if (objMetatypeNode["translate"] != null)
-                    strMetatype = objMetatypeNode["translate"].InnerText;
-                else
-                    strMetatype = _objCharacter.Metatype;
+                strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
 
                 strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                if (objMetatypeNode["altpage"] != null)
-                    strPage = objMetatypeNode["altpage"].InnerText;
-                else
-                    strPage = objMetatypeNode["page"].InnerText;
+                strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
                 if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
 
-                    if (objMetatypeNode["translate"] != null)
-                        strMetatype += " (" + objMetatypeNode["translate"].InnerText + ")";
-                    else
-                        strMetatype += " (" + _objCharacter.Metavariant + ")";
+                    strMetatype += objMetatypeNode["translate"] != null
+                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
+                        : " (" + _objCharacter.Metavariant + ")";
 
                     strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                    if (objMetatypeNode["altpage"] != null)
-                        strPage = objMetatypeNode["altpage"].InnerText;
-                    else
-                        strPage = objMetatypeNode["page"].InnerText;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
                 }
             }
             lblMetatype.Text = strMetatype;

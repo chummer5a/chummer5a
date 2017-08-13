@@ -72,10 +72,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlOption["name"].InnerText;
-                    if (objXmlOption["translate"] != null)
-                        objItem.Name = objXmlOption["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlOption["name"].InnerText;
+                    objItem.Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
                     lstOption.Add(objItem);
                 }
             }

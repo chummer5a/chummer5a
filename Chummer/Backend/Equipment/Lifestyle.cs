@@ -330,15 +330,11 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strBaseLifestyle;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
-                {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-                    if (objNode?["translate"] != null)
-                        strReturn = objNode["translate"].InnerText;
-                }
+                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
 
-                return strReturn;
+                return objNode?["translate"]?.InnerText ?? strReturn;
             }
         }
 
