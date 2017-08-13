@@ -58,6 +58,7 @@ Application Changes:
 - Fixed a crash when selecting spells with a positive Drain value and pre-existing modifiers from improvements.
 - Fixed a crash when selecting the Implant Medic cyberware.
 - Fixed removing Metatype qualities to work properly in create mode.
+- Fixed display of Extra value for Critter Powers that don't have a bonus or Rating. 
 
 Data Changes:
 

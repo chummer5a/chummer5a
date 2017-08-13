@@ -3363,10 +3363,7 @@ namespace Chummer
                 var objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
                 var strXPath = "/chummer/complexforms/complexform";
                 var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                if (!string.IsNullOrWhiteSpace(_strExtra))
-                {
-                    return $"{objNode?["translate"]?.InnerText ?? _strName} ({LanguageManager.Instance.TranslateExtra(_strExtra)})";
-                }
+
                 return objNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3611,10 +3608,6 @@ namespace Chummer
                 var objXmlDocument = XmlManager.Instance.Load("programs.xml");
                 var strXPath = "/chummer/programs/program";
                 var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                if (!string.IsNullOrWhiteSpace(_strExtra))
-                {
-                    return $"{objNode?["translate"]?.InnerText ?? _strName} ({LanguageManager.Instance.TranslateExtra(_strExtra)})";
-                }
                 return objNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3627,6 +3620,11 @@ namespace Chummer
             get
             {
                 string strReturn = DisplayNameShort;
+
+                if (!string.IsNullOrWhiteSpace(_strExtra))
+                {
+                    strReturn += $" ({LanguageManager.Instance.TranslateExtra(_strExtra)})";
+                }
                 return strReturn;
             }
         }
@@ -4905,6 +4903,8 @@ namespace Chummer
             }
             else if (intRating != 0)
                 _strExtra = intRating.ToString();
+            else
+                _strExtra = strForcedValue;
             objXmlPowerNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlPowerNode.TryGetStringFieldQuickly("type", ref _strType);
             objXmlPowerNode.TryGetStringFieldQuickly("action", ref _strAction);
@@ -5052,10 +5052,7 @@ namespace Chummer
                 var objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
                 var strXPath = "/chummer/powers/power";
                 var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                if (!string.IsNullOrWhiteSpace(_strExtra))
-                {
-                    return $"{objNode?["translate"]?.InnerText ?? _strName} ({LanguageManager.Instance.TranslateExtra(_strExtra)})";
-                }
+
                 return objNode?["translate"]?.InnerText ?? _strName;
             }
         }
