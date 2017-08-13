@@ -52,15 +52,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlSkill["name"].InnerText;
-                if (objXmlSkill.Attributes != null)
-                {
-                    if (objXmlSkill["translate"] != null)
-                        objItem.Name = objXmlSkill["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSkill["name"].InnerText;
-                }
-                else
-                    objItem.Name = objXmlSkill["name"].InnerXml;
+                objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
                 lstSkills.Add(objItem);
             }
 

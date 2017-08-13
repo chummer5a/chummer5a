@@ -565,10 +565,7 @@ namespace Chummer
                 bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
                 TreeNode objNode = new TreeNode();
 
-                if (objXmlBook["translate"] != null)
-                    objNode.Text = objXmlBook["translate"].InnerText;
-                else
-                    objNode.Text = objXmlBook["name"].InnerText;
+                objNode.Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText;
 
                 objNode.Tag = objXmlBook["code"].InnerText;
                 objNode.Checked = blnChecked;
