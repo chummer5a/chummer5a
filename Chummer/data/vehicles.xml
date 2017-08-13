@@ -7606,7 +7606,7 @@
       <source>R5</source>
       <avail>FixedValues(6,8,10)</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Rating*2000,Rating*5000,Rating*12000)</cost>
+      <cost>FixedValues(Handling*2000,Handling*5000,Handling*12000)</cost>
       <rating>3</rating>
       <slots>FixedValues(4,10,18)</slots>
       <bonus>

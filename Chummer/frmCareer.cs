@@ -21681,7 +21681,7 @@ namespace Chummer
                 }
 
                 frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
-
+                frmPickCyberware.Parent = objSelectedCyberware;
                 frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
             }
 

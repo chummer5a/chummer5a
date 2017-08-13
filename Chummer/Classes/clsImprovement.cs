@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -997,6 +997,11 @@ namespace Chummer
                     _strForcedValue = container.ForcedValue;
                     _strLimitSelection = container.LimitSelection;
                     _strSelectedValue = container.SelectedValue;
+                }
+            else if
+                    (bonusNode.ChildNodes.Count == 0)
+                {
+                    return true;
                 }
             else if (bonusNode.NodeType != XmlNodeType.Comment)
                 {
