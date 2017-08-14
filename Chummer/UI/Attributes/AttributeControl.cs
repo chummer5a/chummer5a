@@ -159,6 +159,10 @@ namespace Chummer.UI.Attributes
             {
                 nudKarma.Value -= nudBase.Increment;
             }
+            else
+            {
+                e.Cancel = true;
+            }
         }
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
@@ -167,6 +171,10 @@ namespace Chummer.UI.Attributes
             if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
     }
