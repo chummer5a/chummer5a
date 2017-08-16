@@ -144,22 +144,22 @@
     <sheet>
       <id>9dcbd2e5-aa5f-4127-ac26-f12e4f03d3a1</id>
       <name>Schick Blöcke</name>
-      <filename>Schick Blöcke</filename>
+      <filename>Fancy Blocks</filename>
     </sheet>
     <sheet>
       <id>947b9c37-e19b-46cc-b8c0-242243d5ead9</id>
       <name>Shadowrun 5 (Bewertet größer 0)</name>
-      <filename>Shadowrun 5 (Bewertet größer 0)</filename>
+      <filename>Shadowrun 5 (Rating greater 0)</filename>
     </sheet>
     <sheet>
       <id>7a80da80-317e-4ae7-bbee-26b3b1bcbb84</id>
       <name>Shadowrun 5 (Gruppiert Fähigkeit durch Bewertet)</name>
-      <filename>Shadowrun 5 (Gruppiert Fähigkeit durch Bewertet)</filename>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
     </sheet>
     <sheet>
       <id>1aef9b12-ad58-426d-b7f6-f1bcc2226376</id>
       <name>Shadowrun 5 (Gruppiert Fähigkeit durch Name)</name>
-      <filename>Shadowrun 5 (Gruppiert Fähigkeit durch Name)</filename>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
     </sheet>
     <sheet>
       <id>63314285-26fb-4162-bbf7-015788bea04b</id>
@@ -174,7 +174,7 @@
     <sheet>
       <id>46467c0b-b0b8-4b6f-8f6f-9b4c1c44e9e1</id>
       <name>Spielleiter Überblick</name>
-      <filename>Spielleiter Überblick</filename>
+      <filename>Game Master Summary</filename>
     </sheet>
   </sheets>
   <sheets lang="fr">
@@ -206,7 +206,7 @@
     <sheet>
       <id>d9991497-3d74-4f88-bc69-48188b778947</id>
       <name>Dépenses</name>
-      <filename>Dépenses</filename>
+      <filename>Expenses</filename>
     </sheet>
     <sheet>
       <id>ddbb9a60-6625-4091-8b42-59079538bb71</id>
@@ -231,12 +231,12 @@
     <sheet>
       <id>5ae700f8-e679-4f63-80b6-04c8b20cb957</id>
       <name>Shadowrun 5 (Groupé par nom)</name>
-      <filename>Shadowrun 5 (Groupé par nom)</filename>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
     </sheet>
     <sheet>
       <id>9fe635c3-3d4e-448e-91e7-d3f87e59af2b</id>
       <name>Shadowrun 5 (Groupé par évaluation)</name>
-      <filename>Shadowrun 5 (Groupé par évaluation)</filename>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
     </sheet>
     <sheet>
       <id>c306508d-5ffd-4b7b-acf7-13aef6bad142</id>
@@ -256,7 +256,7 @@
     <sheet>
       <id>2fe33919-5419-4681-9cf1-556f0054d398</id>
       <name>Véhicules</name>
-      <filename>Véhicules</filename>
+      <filename>Vehicles</filename>
     </sheet>
   </sheets>
   <sheets lang="jp">
