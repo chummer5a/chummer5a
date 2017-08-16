@@ -1,4 +1,10 @@
-﻿Build 194
+﻿Build 195
+
+Data Changes:
+
+- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
+
+Build 194
 
 Application Changes:
 

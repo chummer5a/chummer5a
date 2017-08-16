@@ -4373,12 +4373,10 @@
       <pilot>1</pilot>
       <sensor>2</sensor>
       <speed>6</speed>
+      <bodymodslots>4</bodymodslots>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
       </gears>
-      <mods>
-        <addslots>4</addslots>
-      </mods>
       <seats>4</seats>
     </vehicle>
     <vehicle>
@@ -4564,12 +4562,10 @@
       <pilot>1</pilot>
       <sensor>2</sensor>
       <speed>3</speed>
+      <bodymodslots>4</bodymodslots>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
       </gears>
-      <mods>
-        <addslots>4</addslots>
-      </mods>
       <seats>6</seats>
     </vehicle>
     <vehicle>
