@@ -1166,7 +1166,7 @@ namespace Chummer.Backend.Attributes
 
         public int SpentPriorityPoints => Base;
 
-        public bool AtMetatypeMaximum => Value == TotalMaximum;
+        public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
         public int KarmaMaximum => TotalMaximum - TotalBase;
         public int PriorityMaximum => TotalMaximum - Karma;
