@@ -95,7 +95,7 @@ namespace Chummer
             Name = objNode["name"].InnerText;
             _sourceID = Guid.Parse(objNode["id"].InnerText);
             _strPointsPerLevel = objNode["points"].InnerText;
-            _strAdeptWayDiscount = objNode["adeptway"].InnerText;
+            _strAdeptWayDiscount = objNode["adeptway"]?.InnerText ?? "0";
             LevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
             Rating = intRating;
             objNode.TryGetField("maxlevels", out _intMaxLevel, CharacterObject.MAG.TotalValue);

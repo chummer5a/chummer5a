@@ -96,7 +96,7 @@ namespace Chummer
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
 
             chkPrototypeTranshuman.Visible =
-                _objCharacter.PrototypeTranshuman > 0;
+                _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
             // Load the Cyberware information.
             switch (_objMode)
             {
