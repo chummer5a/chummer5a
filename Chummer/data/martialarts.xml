@@ -1862,6 +1862,138 @@
       <page>101</page>
     </martialart>
     <!-- End Region -->
+	<!-- Region State of the Art ADL -->
+	<martialart>
+      <id>d1baf7a8-d65b-46d0-b5dc-2bb4a3f18c80</id>
+      <name>Alpine Wrestling</name>
+      <techniques>
+        <technique>
+          <name>Oaken Stance</name>
+        </technique>
+        <technique>
+          <name>Rooted Tree</name>
+        </technique>
+        <technique>
+          <name>Clinch</name>
+        </technique>
+        <technique>
+          <name>Karmic Response</name>
+        </technique>
+        <technique>
+          <name>Throw Person</name>
+        </technique>
+        <technique>
+          <name>Imposing Stone</name>
+        </technique>
+      </techniques>
+      <source>SAG</source>
+      <page>17</page>
+    </martialart>
+	<martialart>
+      <id>7bbd5565-5020-4ef1-8ff0-9329cbffcfa9</id>
+      <name>German Ju-Jutsu</name>
+      <techniques>
+        <technique>
+          <name>Called Shot (Disarm)</name>
+        </technique>
+        <technique>
+          <name>Sweep</name>
+        </technique>
+        <technique>
+          <name>Clinch</name>
+        </technique>
+        <technique>
+          <name>Kick Attack</name>
+        </technique>
+        <technique>
+          <name>Throw Person</name>
+        </technique>
+        <technique>
+          <name>Defiant Dance</name>
+        </technique>
+      </techniques>
+      <source>SAG</source>
+      <page>17</page>
+    </martialart>
+	<martialart>
+      <id>616efc1e-65cf-44fb-96ef-a312108c5419</id>
+      <name>Esdo</name>
+      <techniques>
+        <technique>
+          <name>Oaken Stance</name>
+        </technique>
+        <technique>
+          <name>Bending of the Reed</name>
+        </technique>
+        <technique>
+          <name>Counterstrike</name>
+        </technique>
+        <technique>
+          <name>Kick Attack</name>
+        </technique>
+        <technique>
+          <name>Stagger</name>
+        </technique>
+        <technique>
+          <name>Yielding Force (Counterstrike)</name>
+        </technique>
+      </techniques>
+      <source>SAG</source>
+      <page>17</page>
+    </martialart>
+	<martialart>
+      <id>d932cfb7-2a62-4878-9c17-4697998f9447</id>
+      <name>Urban Brawl Parkour</name>
+      <techniques>
+        <technique>
+          <name>Tricking</name>
+        </technique>
+        <technique>
+          <name>Monkey Climb</name>
+        </technique>
+        <technique>
+          <name>Close Quarter Firearms (Pistols)</name>
+        </technique>
+        <technique>
+          <name>Close Quarter Defense Against Firearms</name>
+        </technique>
+        <technique>
+          <name>Rolling Clouds</name>
+        </technique>
+        <technique>
+          <name>Leaping Mantis</name>
+        </technique>
+      </techniques>
+      <source>SAG</source>
+      <page>17</page>
+    </martialart>
+	<martialart>
+      <id>85623e1c-53da-43cb-b873-2357e9c5020d</id>
+      <name>Sternschutz Tactical</name>
+      <techniques>
+        <technique>
+          <name>Oaken Stance</name>
+        </technique>
+        <technique>
+          <name>Called Shot (Break Weapon)</name>
+        </technique>
+        <technique>
+          <name>Broken Fang</name>
+        </technique>
+        <technique>
+          <name>Hammerfist</name>
+        </technique>
+        <technique>
+          <name>Opposing Force (Parry)</name>
+        </technique>
+        <technique>
+          <name>Close Quarter Defense Against Firearms</name>
+        </technique>
+      </techniques>
+      <source>SAG</source>
+      <page>17</page>
+    </martialart>
+	<!-- End Region -->
   </martialarts>
   <techniques>
   <!-- Region Run and Gun -->
