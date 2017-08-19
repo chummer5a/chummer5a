@@ -1,5 +1,9 @@
 ﻿Build 195
 
+Application Changes:
+
+- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
+
 Data Changes:
 
 - Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 

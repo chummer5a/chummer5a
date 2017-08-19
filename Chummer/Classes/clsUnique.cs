@@ -1924,6 +1924,11 @@ namespace Chummer
                     XPathExpression xprDV;
                     int intPos = 0;
                     string dv = string.Empty;
+                    //Navigator can't do math on a single value, so inject a mathable value.
+                    if (strReturn == "F")
+                    {
+                        strReturn = "F+0";
+                    }
                     if (strReturn.Contains('-'))
                     {
                         dv = strReturn.Substring(strReturn.LastIndexOf('-'));
