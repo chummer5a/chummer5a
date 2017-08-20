@@ -6611,6 +6611,10 @@ Do you want to continue?</text>
       <text>Leave Group/Network</text>
     </string>
     <string>
+      <key>Label_Options_AlchemicalFocus</key>
+      <text>Alchemical Focus</text>
+    </string>
+    <string>
       <key>Label_Options_AnchoringFocus</key>
       <text>Anchoring Focus</text>
     </string>
@@ -6631,12 +6635,12 @@ Do you want to continue?</text>
       <text>Counterspelling Focus</text>
     </string>
     <string>
-      <key>Label_Options_DiviningFocus</key>
-      <text>Divining Focus</text>
+      <key>Label_Options_DisenchantingFocus</key>
+      <text>Disenchanting Focus</text>
     </string>
     <string>
-      <key>Label_Options_DowsingFocus</key>
-      <text>Dowsing Focus</text>
+      <key>Label_Options_FlexibleSignatureFocus</key>
+      <text>Flexible Signature Focus</text>
     </string>
     <string>
       <key>Label_Options_InfusionFocus</key>
@@ -6651,12 +6655,20 @@ Do you want to continue?</text>
       <text>Power Focus</text>
     </string>
     <string>
-      <key>Label_Options_ShieldingFocus</key>
-      <text>Shielding Focus</text>
+      <key>Label_Options_QiFocus</key>
+      <text>Qi Focus</text>
+    </string>
+    <string>
+      <key>Label_Options_RitualSpellcastingFocus</key>
+      <text>Ritual Spellcasting Focus</text>
     </string>
     <string>
       <key>Label_Options_SpellcastingFocus</key>
       <text>Spellcasting Focus</text>
+    </string>
+    <string>
+      <key>Label_Options_SpellShapingFocus</key>
+      <text>Spell Shaping Focus</text>
     </string>
     <string>
       <key>Label_Options_SummoningFocus</key>
