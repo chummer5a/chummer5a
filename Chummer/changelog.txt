@@ -3,10 +3,12 @@
 Application Changes:
 
 - Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
+- Fixed translation for weapon availability in the Select Weapon table. 
 
 Data Changes:
 
 - Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
+- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
 
 Build 194
 

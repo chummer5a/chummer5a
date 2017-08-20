@@ -290,7 +290,7 @@ namespace Chummer
                                 strAccessories += "\n";
                             strAccessories += objAccessory.DisplayName;
                         }
-                        string strAvail = objWeapon.Avail;
+                        string strAvail = objWeapon.TotalAvail;
                         string strSource = objWeapon.Source + " " + objWeapon.Page;
                         int intCost = objWeapon.Cost;
 
