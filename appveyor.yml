@@ -1,4 +1,4 @@
-version: 5.193.{build}
+version: {build}
 branches:
   only:
   - master
