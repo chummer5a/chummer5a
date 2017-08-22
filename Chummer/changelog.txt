@@ -10,6 +10,8 @@ Data Changes:
 
 - Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
 - Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
+- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
+
 New Strings:
 - Label_Options_SpellShapingFocus
 - Label_Options_RitualSpellcastingFocus

@@ -7351,26 +7351,26 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
         </selectattributes>
       </bonus>

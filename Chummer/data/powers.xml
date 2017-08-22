@@ -241,7 +241,6 @@
           <attribute>REA</attribute>
           <attribute>STR</attribute>
           <val>Rating</val>
-          <affectbase>yes</affectbase>
         </selectattribute>
       </bonus>
     </power>
