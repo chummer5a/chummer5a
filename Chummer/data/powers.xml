@@ -107,7 +107,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -197,7 +196,6 @@
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -232,7 +230,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
           </oneof>
         </required>
@@ -244,7 +241,6 @@
           <attribute>REA</attribute>
           <attribute>STR</attribute>
           <val>Rating</val>
-          <affectbase>yes</affectbase>
         </selectattribute>
       </bonus>
     </power>
@@ -261,7 +257,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -285,7 +280,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -309,7 +303,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -328,14 +321,6 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
-      <adeptway>0</adeptway>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Beast's Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
@@ -375,7 +360,6 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
-            <quality>The Athlete's Way</quality>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Magician's Way</quality>
@@ -465,7 +449,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
           </oneof>
         </required>
@@ -489,7 +472,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -541,7 +523,6 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -566,7 +547,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -588,7 +568,6 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -645,7 +624,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -670,7 +648,6 @@
         <required>
           <oneof>
             <quality>The Invisible Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Warrior's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -702,8 +679,6 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
-            <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
@@ -771,7 +746,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -829,7 +803,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -940,7 +913,6 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
           </oneof>
@@ -1018,7 +990,6 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
           </oneof>
         </required>
@@ -1036,7 +1007,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -1083,7 +1053,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -1104,7 +1073,6 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
           </oneof>
         </required>
@@ -1163,7 +1131,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -1195,7 +1162,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -1238,7 +1204,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
           </oneof>
         </required>
@@ -1288,7 +1253,6 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
@@ -1417,7 +1381,6 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
-            <quality>The Beast's Way</quality>
             <quality>The Magician's Way</quality>
           </oneof>
         </required>

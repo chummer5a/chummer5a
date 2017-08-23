@@ -7351,26 +7351,26 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
         </selectattributes>
       </bonus>
@@ -14046,7 +14046,7 @@
         </naturalweapon>
       </naturalweapons>
       <source>FA</source>
-      <page></page>
+      <page>134</page>
     </quality>
     <quality>
       <id>e24b86ad-004b-4252-8383-3ca4aad53a26</id>
@@ -14065,7 +14065,7 @@
         </oneof>
       </required>
       <source>FA</source>
-      <page></page>
+      <page>134</page>
     </quality>
     <!-- End Region -->
     <!-- Region Aspects-->

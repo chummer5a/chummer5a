@@ -1,4 +1,26 @@
-﻿Build 194
+﻿Build 195
+
+Application Changes:
+
+- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
+- Fixed translation for weapon availability in the Select Weapon table. 
+- Fixed optional values for Foci not being saved properly. 
+
+Data Changes:
+
+- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
+- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
+- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
+
+New Strings:
+- Label_Options_SpellShapingFocus
+- Label_Options_RitualSpellcastingFocus
+- Label_Options_QiFocus
+- Label_Options_FlexibleSignatureFocus
+- Label_Options_DisenchantingFocus
+- Label_Options_AlchemicalFocus
+
+Build 194
 
 Application Changes:
 

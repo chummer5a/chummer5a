@@ -1727,7 +1727,6 @@
         <specificattribute>
           <name>WIL</name>
           <val>1</val>
-          <affectbase>no</affectbase>
         </specificattribute>
       </bonus>
       <source>CF</source>
