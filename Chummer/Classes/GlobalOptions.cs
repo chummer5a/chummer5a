@@ -190,9 +190,13 @@ namespace Chummer
         [SavePropertyAs("omaeautologin")]
         public bool OmaeAutoLogin { get; set; } = false;
 
+        [SavePropertyAs("omaeenabled")]
+        public bool OmaeEnabled { get; set; } = false;
+
         /// <summary>
         /// Main application form.
         /// </summary>
+        [DisplayIgnore]
         public frmMain MainForm { get; set; }
 
         /// <summary>
@@ -222,11 +226,13 @@ namespace Chummer
         /// <summary>
         /// Clipboard.
         /// </summary>
+        [DisplayIgnore]
         public XmlDocument Clipboard { get; set; } = new XmlDocument();
 
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
+        [DisplayIgnore]
         public ClipboardContentType ClipboardContentType { get; set; } = new ClipboardContentType();
 
         /// <summary>
@@ -242,11 +248,9 @@ namespace Chummer
         public string PDFAppPath { get; set; } = "";
 
         /// <summary>
-        /// Path to the user's PDF application.
+        /// How to open pdfs
         /// </summary>
-        /// [IsPath(Filter = "Programs|*.exe")]
-        [IsPath(Filter = "Programs|*.exe")]
-        public string URLAppPath { get; set; } = "";
+        public PdfMode PdfMode { get; set; } = PdfMode.Parameter;
 
         /// <summary>
         /// List of SourcebookInfo.
@@ -256,17 +260,14 @@ namespace Chummer
         /// <summary>
         /// Which method of opening PDFs to use. True = file://path.pdf#page=x
         /// </summary>
-        [SavePropertyAs("openpdfsasurls")]
-        public bool OpenPDFsAsURLs { get; set; } = false;
+        //[SavePropertyAs("openpdfsasurls")]
+        //public bool OpenPDFsAsURLs { get; set; } = false;
 
-        /// <summary>
-        /// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
-        /// </summary>
-        [SavePropertyAs("openpdfsasunix")]
-        public bool OpenPDFsAsAsUnix { get; set; } = false;
-
-        [SavePropertyAs("omaeenabled")]
-        public bool OmaeEnabled { get; set; } = false;
+        ///// <summary>
+        ///// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
+        ///// </summary>
+        //[SavePropertyAs("openpdfsasunix")]
+        //public bool OpenPDFsAsAsUnix { get; set; } = false;
 
         [SavePropertyAs("prefernightlybuilds")]
         public bool PreferNightlyBuilds { get; set; } = false;
@@ -458,5 +459,10 @@ namespace Chummer
 
     }
 
-    
+    public enum PdfMode
+    {
+        Parameter,
+        Url,
+        UnixMode
+    }
 }

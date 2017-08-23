@@ -8439,119 +8439,99 @@ Do you want to continue?</text>
   </string>
   <string>
     <key>Display_Name</key>
-    <text>  </text>
+    <text>\t  NOTSHOWN! N </text>
   </string>
   <string>
     <key>Display_RecentImageFolder</key>
-    <text>  </text>
+    <text>\tNOTSHOWN RIF </text>
   </string>
   <string>
     <key>Display_DefaultBuildMethod</key>
-    <text>  </text>
+    <text>\tDefault Build Method: {}</text>
   </string>
   <string>
     <key>Display_PointCount</key>
-    <text>  </text>
+    <text>\tBuild Points: {}</text>
   </string>
   <string>
     <key>Display_AutomaticUpdate</key>
-    <text>  </text>
+    <text>{}\tAutomatic Update</text>
   </string>
   <string>
     <key>Display_LifeModuleEnabled</key>
-    <text>  </text>
+    <text>{}\tExperimental! Enable life modules</text>
   </string>
   <string>
     <key>Display_LocalisedUpdatesOnly</key>
-    <text>{} Only download updates in my selected language</text>
+    <text>{}\tOnly download updates in my selected language</text>
   </string>
   <string>
     <key>Display_UseLogging</key>
-    <text>  </text>
+    <text>{}\tEnable logging</text>
   </string>
   <string>
     <key>Display_DatesIncludeTime</key>
-    <text>  </text>
+    <text>{}\tDates display includes time</text>
   </string>
   <string>
     <key>Display_MissionsOnly</key>
-    <text>{} Hide Qualities prohibited by Missions</text>
+    <text>{}\tHide Qualities prohibited by Missions</text>
   </string>
   <string>
     <key>Display_Dronemods</key>
-    <text>  </text>
+    <text>{}\tEnable drone modifications (UNUSED)</text>
   </string>
   <string>
     <key>Display_PrintToFileFirst</key>
-    <text>  </text>
+    <text>{}\tLinux printing fix</text>
   </string>
   <string>
     <key>Display_OmaeUserName</key>
-    <text>  </text>
+    <text>\tOmae username: {}</text>
   </string>
   <string>
     <key>Display_OmaePassword</key>
-    <text>  </text>
+    <text>\tOmae password {}</text>
   </string>
   <string>
     <key>Display_OmaeAutoLogin</key>
-    <text>  </text>
-  </string>
-  <string>
-    <key>Display_MainForm</key>
-    <text>  </text>
+    <text>{}\tAutomatic Omae login</text>
   </string>
   <string>
     <key>Display_Language</key>
-    <text>  </text>
+    <text>\tLanguage:{}</text>
   </string>
   <string>
     <key>Display_StartupFullscreen</key>
-    <text>  </text>
+    <text>{}\tStart Chummer in full screen mode</text>
   </string>
   <string>
     <key>Display_SingleDiceRoller</key>
-    <text>  </text>
-  </string>
-  <string>
-    <key>Display_Clipboard</key>
-    <text>  </text>
-  </string>
-  <string>
-    <key>Display_ClipboardContentType</key>
-    <text>  </text>
+    <text>{}\tOnly allow a single dice roller</text>
   </string>
   <string>
     <key>Display_DefaultCharacterSheet</key>
-    <text>  </text>
+    <text>\tDefault Character Sheet: {}</text>
   </string>
   <string>
     <key>Display_PDFAppPath</key>
-    <text>  </text>
+    <text>\tPDF Application path: {}\</text>
   </string>
   <string>
-    <key>Display_URLAppPath</key>
-    <text>  </text>
-  </string>
-  <string>
-    <key>Display_OpenPDFsAsURLs</key>
-    <text>  </text>
-  </string>
-  <string>
-    <key>Display_OpenPDFsAsAsUnix</key>
-    <text>  </text>
+    <key>Display_PdfMode</key>
+    <text>\tMode: {}</text>
   </string>
   <string>
     <key>Display_OmaeEnabled</key>
-    <text>{} Enable Omae character exchange</text>
+    <text>{}\tEnable Omae character exchange</text>
   </string>
   <string>
     <key>Display_PreferNightlyBuilds</key>
-    <text>  </text>
+    <text>{}\tPrefer nightly builds</text>
   </string>
   <string>
     <key>Display_CharacterRosterPath</key>
-    <text>  </text>
+    <text>\tCharacter rooster path: {}</text>
   </string>
   <string>
     <key>Label_Options_ProgramOptions</key>
