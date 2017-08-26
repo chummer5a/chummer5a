@@ -6,6 +6,7 @@ Application Changes:
 - Fixed translation for weapon availability in the Select Weapon table. 
 - Fixed optional values for Foci not being saved properly. 
 - Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
+- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
 
 Data Changes:
 
