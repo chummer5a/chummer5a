@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
-        {
+        {  
             if (disposing && (components != null))
             {
                 components.Dispose();
@@ -160,6 +160,12 @@
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.treSourcebook = new System.Windows.Forms.TreeView();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
+            this.lblKarmaRitualSpellcastingFocusExtra = new System.Windows.Forms.Label();
+            this.nudKarmaRitualSpellcastingFocus = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaRitualSpellcastingFocus = new System.Windows.Forms.Label();
+            this.lblFlexibleSignatureFocusExtra = new System.Windows.Forms.Label();
+            this.nudKarmaFlexibleSignatureFocus = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaFlexibleSignatureFocus = new System.Windows.Forms.Label();
             this.nudKarmaNewAIAdvancedProgram = new System.Windows.Forms.NumericUpDown();
             this.nudKarmaNewAIProgram = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaNewAIAdvancedProgram = new System.Windows.Forms.Label();
@@ -168,9 +174,9 @@
             this.lblKarmaWeaponFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaWeaponFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaWeaponFocus = new System.Windows.Forms.Label();
-            this.lblKarmaSymbolicLinkFocusExtra = new System.Windows.Forms.Label();
-            this.nudKarmaSymbolicLinkFocus = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaSymbolicLinkFocus = new System.Windows.Forms.Label();
+            this.lblKarmaSpellShapingFocusExtra = new System.Windows.Forms.Label();
+            this.nudKarmaSpellShapingFocus = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaSpellShapingFocus = new System.Windows.Forms.Label();
             this.lblKarmaSustainingFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaSustainingFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaSustainingFocus = new System.Windows.Forms.Label();
@@ -180,24 +186,18 @@
             this.lblKarmaSpellcastingFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaSpellcastingFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaSpellcastingFocus = new System.Windows.Forms.Label();
-            this.lblKarmaShieldingFocusExtra = new System.Windows.Forms.Label();
-            this.nudKarmaShieldingFocus = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaShieldingFocus = new System.Windows.Forms.Label();
+            this.lblKarmaQiFocusExtra = new System.Windows.Forms.Label();
+            this.nudKarmaQiFocus = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaQiFocus = new System.Windows.Forms.Label();
             this.lblKarmaPowerFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaPowerFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaPowerFocus = new System.Windows.Forms.Label();
             this.lblKarmaMaskingFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaMaskingFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaMaskingFocus = new System.Windows.Forms.Label();
-            this.lblKarmaInfusionFocusExtra = new System.Windows.Forms.Label();
-            this.nudKarmaInfusionFocus = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaInfusionFocus = new System.Windows.Forms.Label();
-            this.lblKarmaDowsingFocusExtra = new System.Windows.Forms.Label();
-            this.nudKarmaDowsingFocus = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaDowsingFocus = new System.Windows.Forms.Label();
-            this.lblKarmaDiviningFocusExtra = new System.Windows.Forms.Label();
-            this.nudKarmaDiviningFocus = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaDiviningFocus = new System.Windows.Forms.Label();
+            this.lblKarmaDisenchantingFocusExtra = new System.Windows.Forms.Label();
+            this.nudKarmaDisenchantingFocus = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaDisenchantingFocus = new System.Windows.Forms.Label();
             this.lblKarmaCounterspellingFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaCounterspellingFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaCounterspellingFocus = new System.Windows.Forms.Label();
@@ -210,9 +210,9 @@
             this.lblKarmaBanishingFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaBanishingFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaBanishingFocus = new System.Windows.Forms.Label();
-            this.lblKarmaAnchoringFocusExtra = new System.Windows.Forms.Label();
-            this.nudKarmaAnchoringFocus = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaAnchoringFocus = new System.Windows.Forms.Label();
+            this.lblKarmaAlchemicalFocusExtra = new System.Windows.Forms.Label();
+            this.nudKarmaAlchemicalFocus = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaAlchemicalFocus = new System.Windows.Forms.Label();
             this.lblKarmaComplexFormSkillsoftExtra = new System.Windows.Forms.Label();
             this.nudKarmaComplexFormSkillsoft = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaComplexFormSkillsoft = new System.Windows.Forms.Label();
@@ -309,24 +309,24 @@
             this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabKarmaCosts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaRitualSpellcastingFocus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaFlexibleSignatureFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSymbolicLinkFocus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellShapingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellcastingFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaShieldingFocus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQiFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaPowerFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMaskingFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInfusionFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaDowsingFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaDiviningFocus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaDisenchantingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCounterspellingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCenteringFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaBindingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaBanishingFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaAnchoringFocus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaAlchemicalFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormSkillsoft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaLeaveGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).BeginInit();
@@ -1794,6 +1794,12 @@
             // tabKarmaCosts
             // 
             this.tabKarmaCosts.BackColor = System.Drawing.SystemColors.Control;
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaRitualSpellcastingFocusExtra);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaRitualSpellcastingFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaRitualSpellcastingFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblFlexibleSignatureFocusExtra);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaFlexibleSignatureFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaFlexibleSignatureFocus);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaNewAIAdvancedProgram);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaNewAIProgram);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaNewAIAdvancedProgram);
@@ -1802,9 +1808,9 @@
             this.tabKarmaCosts.Controls.Add(this.lblKarmaWeaponFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaWeaponFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaWeaponFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaSymbolicLinkFocusExtra);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaSymbolicLinkFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaSymbolicLinkFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaSpellShapingFocusExtra);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaSpellShapingFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaSpellShapingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaSustainingFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaSustainingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaSustainingFocus);
@@ -1814,24 +1820,18 @@
             this.tabKarmaCosts.Controls.Add(this.lblKarmaSpellcastingFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaSpellcastingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaSpellcastingFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaShieldingFocusExtra);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaShieldingFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaShieldingFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaQiFocusExtra);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaQiFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaQiFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaPowerFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaPowerFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaPowerFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaMaskingFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaMaskingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaMaskingFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaInfusionFocusExtra);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaInfusionFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaInfusionFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaDowsingFocusExtra);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaDowsingFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaDowsingFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaDiviningFocusExtra);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaDiviningFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaDiviningFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaDisenchantingFocusExtra);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaDisenchantingFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaDisenchantingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaCounterspellingFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaCounterspellingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaCounterspellingFocus);
@@ -1844,9 +1844,9 @@
             this.tabKarmaCosts.Controls.Add(this.lblKarmaBanishingFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaBanishingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaBanishingFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaAnchoringFocusExtra);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaAnchoringFocus);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaAnchoringFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaAlchemicalFocusExtra);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaAlchemicalFocus);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaAlchemicalFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaComplexFormSkillsoftExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaComplexFormSkillsoft);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaComplexFormSkillsoft);
@@ -1917,6 +1917,60 @@
             this.tabKarmaCosts.TabIndex = 1;
             this.tabKarmaCosts.Tag = "Tab_Options_KarmaCosts";
             this.tabKarmaCosts.Text = "Karma Costs";
+            // 
+            // lblKarmaRitualSpellcastingFocusExtra
+            // 
+            this.lblKarmaRitualSpellcastingFocusExtra.AutoSize = true;
+            this.lblKarmaRitualSpellcastingFocusExtra.Location = new System.Drawing.Point(614, 344);
+            this.lblKarmaRitualSpellcastingFocusExtra.Name = "lblKarmaRitualSpellcastingFocusExtra";
+            this.lblKarmaRitualSpellcastingFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaRitualSpellcastingFocusExtra.TabIndex = 118;
+            this.lblKarmaRitualSpellcastingFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaRitualSpellcastingFocusExtra.Text = "x Force";
+            // 
+            // nudKarmaRitualSpellcastingFocus
+            // 
+            this.nudKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(561, 342);
+            this.nudKarmaRitualSpellcastingFocus.Name = "nudKarmaRitualSpellcastingFocus";
+            this.nudKarmaRitualSpellcastingFocus.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaRitualSpellcastingFocus.TabIndex = 117;
+            // 
+            // lblKarmaRitualSpellcastingFocus
+            // 
+            this.lblKarmaRitualSpellcastingFocus.AutoSize = true;
+            this.lblKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(403, 344);
+            this.lblKarmaRitualSpellcastingFocus.Name = "lblKarmaRitualSpellcastingFocus";
+            this.lblKarmaRitualSpellcastingFocus.Size = new System.Drawing.Size(126, 13);
+            this.lblKarmaRitualSpellcastingFocus.TabIndex = 116;
+            this.lblKarmaRitualSpellcastingFocus.Tag = "Label_Options_RitualSpellcastingFocus";
+            this.lblKarmaRitualSpellcastingFocus.Text = "Ritual Spellcasting Focus";
+            // 
+            // lblFlexibleSignatureFocusExtra
+            // 
+            this.lblFlexibleSignatureFocusExtra.AutoSize = true;
+            this.lblFlexibleSignatureFocusExtra.Location = new System.Drawing.Point(613, 240);
+            this.lblFlexibleSignatureFocusExtra.Name = "lblFlexibleSignatureFocusExtra";
+            this.lblFlexibleSignatureFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblFlexibleSignatureFocusExtra.TabIndex = 115;
+            this.lblFlexibleSignatureFocusExtra.Tag = "Label_Options_Force";
+            this.lblFlexibleSignatureFocusExtra.Text = "x Force";
+            // 
+            // nudKarmaFlexibleSignatureFocus
+            // 
+            this.nudKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(560, 238);
+            this.nudKarmaFlexibleSignatureFocus.Name = "nudKarmaFlexibleSignatureFocus";
+            this.nudKarmaFlexibleSignatureFocus.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaFlexibleSignatureFocus.TabIndex = 114;
+            // 
+            // lblKarmaFlexibleSignatureFocus
+            // 
+            this.lblKarmaFlexibleSignatureFocus.AutoSize = true;
+            this.lblKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(402, 240);
+            this.lblKarmaFlexibleSignatureFocus.Name = "lblKarmaFlexibleSignatureFocus";
+            this.lblKarmaFlexibleSignatureFocus.Size = new System.Drawing.Size(122, 13);
+            this.lblKarmaFlexibleSignatureFocus.TabIndex = 113;
+            this.lblKarmaFlexibleSignatureFocus.Tag = "Label_Options_FlexibleSignatureFocus";
+            this.lblKarmaFlexibleSignatureFocus.Text = "Flexible Signature Focus";
             // 
             // nudKarmaNewAIAdvancedProgram
             // 
@@ -1993,33 +2047,33 @@
             this.lblKarmaWeaponFocus.Tag = "Label_Options_WeaponFocus";
             this.lblKarmaWeaponFocus.Text = "Weapon Focus";
             // 
-            // lblKarmaSymbolicLinkFocusExtra
+            // lblKarmaSpellShapingFocusExtra
             // 
-            this.lblKarmaSymbolicLinkFocusExtra.AutoSize = true;
-            this.lblKarmaSymbolicLinkFocusExtra.Location = new System.Drawing.Point(613, 448);
-            this.lblKarmaSymbolicLinkFocusExtra.Name = "lblKarmaSymbolicLinkFocusExtra";
-            this.lblKarmaSymbolicLinkFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaSymbolicLinkFocusExtra.TabIndex = 104;
-            this.lblKarmaSymbolicLinkFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaSymbolicLinkFocusExtra.Text = "x Force";
+            this.lblKarmaSpellShapingFocusExtra.AutoSize = true;
+            this.lblKarmaSpellShapingFocusExtra.Location = new System.Drawing.Point(613, 448);
+            this.lblKarmaSpellShapingFocusExtra.Name = "lblKarmaSpellShapingFocusExtra";
+            this.lblKarmaSpellShapingFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaSpellShapingFocusExtra.TabIndex = 104;
+            this.lblKarmaSpellShapingFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaSpellShapingFocusExtra.Text = "x Force";
             // 
-            // nudKarmaSymbolicLinkFocus
+            // nudKarmaSpellShapingFocus
             // 
-            this.nudKarmaSymbolicLinkFocus.Location = new System.Drawing.Point(560, 446);
-            this.nudKarmaSymbolicLinkFocus.Name = "nudKarmaSymbolicLinkFocus";
-            this.nudKarmaSymbolicLinkFocus.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaSymbolicLinkFocus.TabIndex = 103;
-            this.nudKarmaSymbolicLinkFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudKarmaSpellShapingFocus.Location = new System.Drawing.Point(560, 446);
+            this.nudKarmaSpellShapingFocus.Name = "nudKarmaSpellShapingFocus";
+            this.nudKarmaSpellShapingFocus.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaSpellShapingFocus.TabIndex = 103;
+            this.nudKarmaSpellShapingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // lblKarmaSymbolicLinkFocus
+            // lblKarmaSpellShapingFocus
             // 
-            this.lblKarmaSymbolicLinkFocus.AutoSize = true;
-            this.lblKarmaSymbolicLinkFocus.Location = new System.Drawing.Point(402, 448);
-            this.lblKarmaSymbolicLinkFocus.Name = "lblKarmaSymbolicLinkFocus";
-            this.lblKarmaSymbolicLinkFocus.Size = new System.Drawing.Size(104, 13);
-            this.lblKarmaSymbolicLinkFocus.TabIndex = 102;
-            this.lblKarmaSymbolicLinkFocus.Tag = "Label_Options_SymbolicLinkFocus";
-            this.lblKarmaSymbolicLinkFocus.Text = "Symbolic Link Focus";
+            this.lblKarmaSpellShapingFocus.AutoSize = true;
+            this.lblKarmaSpellShapingFocus.Location = new System.Drawing.Point(402, 448);
+            this.lblKarmaSpellShapingFocus.Name = "lblKarmaSpellShapingFocus";
+            this.lblKarmaSpellShapingFocus.Size = new System.Drawing.Size(104, 13);
+            this.lblKarmaSpellShapingFocus.TabIndex = 102;
+            this.lblKarmaSpellShapingFocus.Tag = "Label_Options_SpellShapingFocus";
+            this.lblKarmaSpellShapingFocus.Text = "Spell Shaping Focus";
             // 
             // lblKarmaSustainingFocusExtra
             // 
@@ -2105,38 +2159,38 @@
             this.lblKarmaSpellcastingFocus.Tag = "Label_Options_SpellcastingFocus";
             this.lblKarmaSpellcastingFocus.Text = "Spellcasting Focus";
             // 
-            // lblKarmaShieldingFocusExtra
+            // lblKarmaQiFocusExtra
             // 
-            this.lblKarmaShieldingFocusExtra.AutoSize = true;
-            this.lblKarmaShieldingFocusExtra.Location = new System.Drawing.Point(613, 344);
-            this.lblKarmaShieldingFocusExtra.Name = "lblKarmaShieldingFocusExtra";
-            this.lblKarmaShieldingFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaShieldingFocusExtra.TabIndex = 92;
-            this.lblKarmaShieldingFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaShieldingFocusExtra.Text = "x Force";
+            this.lblKarmaQiFocusExtra.AutoSize = true;
+            this.lblKarmaQiFocusExtra.Location = new System.Drawing.Point(614, 318);
+            this.lblKarmaQiFocusExtra.Name = "lblKarmaQiFocusExtra";
+            this.lblKarmaQiFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaQiFocusExtra.TabIndex = 92;
+            this.lblKarmaQiFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaQiFocusExtra.Text = "x Force";
             // 
-            // nudKarmaShieldingFocus
+            // nudKarmaQiFocus
             // 
-            this.nudKarmaShieldingFocus.Location = new System.Drawing.Point(560, 342);
-            this.nudKarmaShieldingFocus.Name = "nudKarmaShieldingFocus";
-            this.nudKarmaShieldingFocus.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaShieldingFocus.TabIndex = 91;
-            this.nudKarmaShieldingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudKarmaQiFocus.Location = new System.Drawing.Point(561, 316);
+            this.nudKarmaQiFocus.Name = "nudKarmaQiFocus";
+            this.nudKarmaQiFocus.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaQiFocus.TabIndex = 91;
+            this.nudKarmaQiFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // lblKarmaShieldingFocus
+            // lblKarmaQiFocus
             // 
-            this.lblKarmaShieldingFocus.AutoSize = true;
-            this.lblKarmaShieldingFocus.Location = new System.Drawing.Point(402, 344);
-            this.lblKarmaShieldingFocus.Name = "lblKarmaShieldingFocus";
-            this.lblKarmaShieldingFocus.Size = new System.Drawing.Size(82, 13);
-            this.lblKarmaShieldingFocus.TabIndex = 90;
-            this.lblKarmaShieldingFocus.Tag = "Label_Options_ShieldingFocus";
-            this.lblKarmaShieldingFocus.Text = "Shielding Focus";
+            this.lblKarmaQiFocus.AutoSize = true;
+            this.lblKarmaQiFocus.Location = new System.Drawing.Point(403, 318);
+            this.lblKarmaQiFocus.Name = "lblKarmaQiFocus";
+            this.lblKarmaQiFocus.Size = new System.Drawing.Size(49, 13);
+            this.lblKarmaQiFocus.TabIndex = 90;
+            this.lblKarmaQiFocus.Tag = "Label_Options_QiFocus";
+            this.lblKarmaQiFocus.Text = "Qi Focus";
             // 
             // lblKarmaPowerFocusExtra
             // 
             this.lblKarmaPowerFocusExtra.AutoSize = true;
-            this.lblKarmaPowerFocusExtra.Location = new System.Drawing.Point(613, 318);
+            this.lblKarmaPowerFocusExtra.Location = new System.Drawing.Point(614, 290);
             this.lblKarmaPowerFocusExtra.Name = "lblKarmaPowerFocusExtra";
             this.lblKarmaPowerFocusExtra.Size = new System.Drawing.Size(42, 13);
             this.lblKarmaPowerFocusExtra.TabIndex = 89;
@@ -2145,7 +2199,7 @@
             // 
             // nudKarmaPowerFocus
             // 
-            this.nudKarmaPowerFocus.Location = new System.Drawing.Point(560, 316);
+            this.nudKarmaPowerFocus.Location = new System.Drawing.Point(561, 288);
             this.nudKarmaPowerFocus.Name = "nudKarmaPowerFocus";
             this.nudKarmaPowerFocus.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaPowerFocus.TabIndex = 88;
@@ -2154,7 +2208,7 @@
             // lblKarmaPowerFocus
             // 
             this.lblKarmaPowerFocus.AutoSize = true;
-            this.lblKarmaPowerFocus.Location = new System.Drawing.Point(402, 318);
+            this.lblKarmaPowerFocus.Location = new System.Drawing.Point(403, 290);
             this.lblKarmaPowerFocus.Name = "lblKarmaPowerFocus";
             this.lblKarmaPowerFocus.Size = new System.Drawing.Size(69, 13);
             this.lblKarmaPowerFocus.TabIndex = 87;
@@ -2164,7 +2218,7 @@
             // lblKarmaMaskingFocusExtra
             // 
             this.lblKarmaMaskingFocusExtra.AutoSize = true;
-            this.lblKarmaMaskingFocusExtra.Location = new System.Drawing.Point(613, 292);
+            this.lblKarmaMaskingFocusExtra.Location = new System.Drawing.Point(614, 264);
             this.lblKarmaMaskingFocusExtra.Name = "lblKarmaMaskingFocusExtra";
             this.lblKarmaMaskingFocusExtra.Size = new System.Drawing.Size(42, 13);
             this.lblKarmaMaskingFocusExtra.TabIndex = 86;
@@ -2173,7 +2227,7 @@
             // 
             // nudKarmaMaskingFocus
             // 
-            this.nudKarmaMaskingFocus.Location = new System.Drawing.Point(560, 290);
+            this.nudKarmaMaskingFocus.Location = new System.Drawing.Point(561, 262);
             this.nudKarmaMaskingFocus.Name = "nudKarmaMaskingFocus";
             this.nudKarmaMaskingFocus.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaMaskingFocus.TabIndex = 85;
@@ -2182,96 +2236,40 @@
             // lblKarmaMaskingFocus
             // 
             this.lblKarmaMaskingFocus.AutoSize = true;
-            this.lblKarmaMaskingFocus.Location = new System.Drawing.Point(402, 292);
+            this.lblKarmaMaskingFocus.Location = new System.Drawing.Point(403, 264);
             this.lblKarmaMaskingFocus.Name = "lblKarmaMaskingFocus";
             this.lblKarmaMaskingFocus.Size = new System.Drawing.Size(79, 13);
             this.lblKarmaMaskingFocus.TabIndex = 84;
             this.lblKarmaMaskingFocus.Tag = "Label_Options_MaskingFocus";
             this.lblKarmaMaskingFocus.Text = "Masking Focus";
             // 
-            // lblKarmaInfusionFocusExtra
+            // lblKarmaDisenchantingFocusExtra
             // 
-            this.lblKarmaInfusionFocusExtra.AutoSize = true;
-            this.lblKarmaInfusionFocusExtra.Location = new System.Drawing.Point(613, 266);
-            this.lblKarmaInfusionFocusExtra.Name = "lblKarmaInfusionFocusExtra";
-            this.lblKarmaInfusionFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaInfusionFocusExtra.TabIndex = 83;
-            this.lblKarmaInfusionFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaInfusionFocusExtra.Text = "x Force";
+            this.lblKarmaDisenchantingFocusExtra.AutoSize = true;
+            this.lblKarmaDisenchantingFocusExtra.Location = new System.Drawing.Point(613, 214);
+            this.lblKarmaDisenchantingFocusExtra.Name = "lblKarmaDisenchantingFocusExtra";
+            this.lblKarmaDisenchantingFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaDisenchantingFocusExtra.TabIndex = 83;
+            this.lblKarmaDisenchantingFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaDisenchantingFocusExtra.Text = "x Force";
             // 
-            // nudKarmaInfusionFocus
+            // nudKarmaDisenchantingFocus
             // 
-            this.nudKarmaInfusionFocus.Location = new System.Drawing.Point(560, 264);
-            this.nudKarmaInfusionFocus.Name = "nudKarmaInfusionFocus";
-            this.nudKarmaInfusionFocus.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaInfusionFocus.TabIndex = 82;
-            this.nudKarmaInfusionFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudKarmaDisenchantingFocus.Location = new System.Drawing.Point(560, 212);
+            this.nudKarmaDisenchantingFocus.Name = "nudKarmaDisenchantingFocus";
+            this.nudKarmaDisenchantingFocus.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaDisenchantingFocus.TabIndex = 82;
+            this.nudKarmaDisenchantingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // lblKarmaInfusionFocus
+            // lblKarmaDisenchantingFocus
             // 
-            this.lblKarmaInfusionFocus.AutoSize = true;
-            this.lblKarmaInfusionFocus.Location = new System.Drawing.Point(402, 266);
-            this.lblKarmaInfusionFocus.Name = "lblKarmaInfusionFocus";
-            this.lblKarmaInfusionFocus.Size = new System.Drawing.Size(76, 13);
-            this.lblKarmaInfusionFocus.TabIndex = 81;
-            this.lblKarmaInfusionFocus.Tag = "Label_Options_InfusionFocus";
-            this.lblKarmaInfusionFocus.Text = "Infusion Focus";
-            // 
-            // lblKarmaDowsingFocusExtra
-            // 
-            this.lblKarmaDowsingFocusExtra.AutoSize = true;
-            this.lblKarmaDowsingFocusExtra.Location = new System.Drawing.Point(613, 240);
-            this.lblKarmaDowsingFocusExtra.Name = "lblKarmaDowsingFocusExtra";
-            this.lblKarmaDowsingFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaDowsingFocusExtra.TabIndex = 80;
-            this.lblKarmaDowsingFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaDowsingFocusExtra.Text = "x Force";
-            // 
-            // nudKarmaDowsingFocus
-            // 
-            this.nudKarmaDowsingFocus.Location = new System.Drawing.Point(560, 238);
-            this.nudKarmaDowsingFocus.Name = "nudKarmaDowsingFocus";
-            this.nudKarmaDowsingFocus.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaDowsingFocus.TabIndex = 79;
-            this.nudKarmaDowsingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // lblKarmaDowsingFocus
-            // 
-            this.lblKarmaDowsingFocus.AutoSize = true;
-            this.lblKarmaDowsingFocus.Location = new System.Drawing.Point(402, 240);
-            this.lblKarmaDowsingFocus.Name = "lblKarmaDowsingFocus";
-            this.lblKarmaDowsingFocus.Size = new System.Drawing.Size(80, 13);
-            this.lblKarmaDowsingFocus.TabIndex = 78;
-            this.lblKarmaDowsingFocus.Tag = "Label_Options_DowsingFocus";
-            this.lblKarmaDowsingFocus.Text = "Dowsing Focus";
-            // 
-            // lblKarmaDiviningFocusExtra
-            // 
-            this.lblKarmaDiviningFocusExtra.AutoSize = true;
-            this.lblKarmaDiviningFocusExtra.Location = new System.Drawing.Point(613, 214);
-            this.lblKarmaDiviningFocusExtra.Name = "lblKarmaDiviningFocusExtra";
-            this.lblKarmaDiviningFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaDiviningFocusExtra.TabIndex = 77;
-            this.lblKarmaDiviningFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaDiviningFocusExtra.Text = "x Force";
-            // 
-            // nudKarmaDiviningFocus
-            // 
-            this.nudKarmaDiviningFocus.Location = new System.Drawing.Point(560, 212);
-            this.nudKarmaDiviningFocus.Name = "nudKarmaDiviningFocus";
-            this.nudKarmaDiviningFocus.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaDiviningFocus.TabIndex = 76;
-            this.nudKarmaDiviningFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // lblKarmaDiviningFocus
-            // 
-            this.lblKarmaDiviningFocus.AutoSize = true;
-            this.lblKarmaDiviningFocus.Location = new System.Drawing.Point(402, 214);
-            this.lblKarmaDiviningFocus.Name = "lblKarmaDiviningFocus";
-            this.lblKarmaDiviningFocus.Size = new System.Drawing.Size(77, 13);
-            this.lblKarmaDiviningFocus.TabIndex = 75;
-            this.lblKarmaDiviningFocus.Tag = "Label_Options_DiviningFocus";
-            this.lblKarmaDiviningFocus.Text = "Divining Focus";
+            this.lblKarmaDisenchantingFocus.AutoSize = true;
+            this.lblKarmaDisenchantingFocus.Location = new System.Drawing.Point(402, 214);
+            this.lblKarmaDisenchantingFocus.Name = "lblKarmaDisenchantingFocus";
+            this.lblKarmaDisenchantingFocus.Size = new System.Drawing.Size(107, 13);
+            this.lblKarmaDisenchantingFocus.TabIndex = 81;
+            this.lblKarmaDisenchantingFocus.Tag = "Label_Options_DisenchantingFocus";
+            this.lblKarmaDisenchantingFocus.Text = "Disenchanting Focus";
             // 
             // lblKarmaCounterspellingFocusExtra
             // 
@@ -2385,33 +2383,33 @@
             this.lblKarmaBanishingFocus.Tag = "Label_Options_BanishingFocus";
             this.lblKarmaBanishingFocus.Text = "Banishing Focus";
             // 
-            // lblKarmaAnchoringFocusExtra
+            // lblKarmaAlchemicalFocusExtra
             // 
-            this.lblKarmaAnchoringFocusExtra.AutoSize = true;
-            this.lblKarmaAnchoringFocusExtra.Location = new System.Drawing.Point(613, 84);
-            this.lblKarmaAnchoringFocusExtra.Name = "lblKarmaAnchoringFocusExtra";
-            this.lblKarmaAnchoringFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaAnchoringFocusExtra.TabIndex = 62;
-            this.lblKarmaAnchoringFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaAnchoringFocusExtra.Text = "x Force";
+            this.lblKarmaAlchemicalFocusExtra.AutoSize = true;
+            this.lblKarmaAlchemicalFocusExtra.Location = new System.Drawing.Point(613, 84);
+            this.lblKarmaAlchemicalFocusExtra.Name = "lblKarmaAlchemicalFocusExtra";
+            this.lblKarmaAlchemicalFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaAlchemicalFocusExtra.TabIndex = 62;
+            this.lblKarmaAlchemicalFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaAlchemicalFocusExtra.Text = "x Force";
             // 
-            // nudKarmaAnchoringFocus
+            // nudKarmaAlchemicalFocus
             // 
-            this.nudKarmaAnchoringFocus.Location = new System.Drawing.Point(560, 82);
-            this.nudKarmaAnchoringFocus.Name = "nudKarmaAnchoringFocus";
-            this.nudKarmaAnchoringFocus.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaAnchoringFocus.TabIndex = 61;
-            this.nudKarmaAnchoringFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudKarmaAlchemicalFocus.Location = new System.Drawing.Point(560, 82);
+            this.nudKarmaAlchemicalFocus.Name = "nudKarmaAlchemicalFocus";
+            this.nudKarmaAlchemicalFocus.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaAlchemicalFocus.TabIndex = 61;
+            this.nudKarmaAlchemicalFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // lblKarmaAnchoringFocus
+            // lblKarmaAlchemicalFocus
             // 
-            this.lblKarmaAnchoringFocus.AutoSize = true;
-            this.lblKarmaAnchoringFocus.Location = new System.Drawing.Point(402, 84);
-            this.lblKarmaAnchoringFocus.Name = "lblKarmaAnchoringFocus";
-            this.lblKarmaAnchoringFocus.Size = new System.Drawing.Size(87, 13);
-            this.lblKarmaAnchoringFocus.TabIndex = 60;
-            this.lblKarmaAnchoringFocus.Tag = "Label_Options_AnchoringFocus";
-            this.lblKarmaAnchoringFocus.Text = "Anchoring Focus";
+            this.lblKarmaAlchemicalFocus.AutoSize = true;
+            this.lblKarmaAlchemicalFocus.Location = new System.Drawing.Point(402, 84);
+            this.lblKarmaAlchemicalFocus.Name = "lblKarmaAlchemicalFocus";
+            this.lblKarmaAlchemicalFocus.Size = new System.Drawing.Size(90, 13);
+            this.lblKarmaAlchemicalFocus.TabIndex = 60;
+            this.lblKarmaAlchemicalFocus.Tag = "Label_Options_AlchemicalFocus";
+            this.lblKarmaAlchemicalFocus.Text = "Alchemical Focus";
             // 
             // lblKarmaComplexFormSkillsoftExtra
             // 
@@ -3291,24 +3289,24 @@
             this.tabPage3.ResumeLayout(false);
             this.tabKarmaCosts.ResumeLayout(false);
             this.tabKarmaCosts.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaRitualSpellcastingFocus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaFlexibleSignatureFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSymbolicLinkFocus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellShapingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellcastingFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaShieldingFocus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQiFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaPowerFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMaskingFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInfusionFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaDowsingFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaDiviningFocus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaDisenchantingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCounterspellingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCenteringFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaBindingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaBanishingFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaAnchoringFocus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaAlchemicalFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormSkillsoft)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaLeaveGroup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).EndInit();
@@ -3438,15 +3436,15 @@
         private System.Windows.Forms.Label lblKarmaComplexFormSkillsoftExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaComplexFormSkillsoft;
         private System.Windows.Forms.Label lblKarmaComplexFormSkillsoft;
-        private System.Windows.Forms.Label lblKarmaAnchoringFocusExtra;
-        private System.Windows.Forms.NumericUpDown nudKarmaAnchoringFocus;
-        private System.Windows.Forms.Label lblKarmaAnchoringFocus;
+        private System.Windows.Forms.Label lblKarmaAlchemicalFocusExtra;
+        private System.Windows.Forms.NumericUpDown nudKarmaAlchemicalFocus;
+        private System.Windows.Forms.Label lblKarmaAlchemicalFocus;
         private System.Windows.Forms.Label lblKarmaWeaponFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaWeaponFocus;
         private System.Windows.Forms.Label lblKarmaWeaponFocus;
-        private System.Windows.Forms.Label lblKarmaSymbolicLinkFocusExtra;
-        private System.Windows.Forms.NumericUpDown nudKarmaSymbolicLinkFocus;
-        private System.Windows.Forms.Label lblKarmaSymbolicLinkFocus;
+        private System.Windows.Forms.Label lblKarmaSpellShapingFocusExtra;
+        private System.Windows.Forms.NumericUpDown nudKarmaSpellShapingFocus;
+        private System.Windows.Forms.Label lblKarmaSpellShapingFocus;
         private System.Windows.Forms.Label lblKarmaSustainingFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaSustainingFocus;
         private System.Windows.Forms.Label lblKarmaSustainingFocus;
@@ -3456,24 +3454,18 @@
         private System.Windows.Forms.Label lblKarmaSpellcastingFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaSpellcastingFocus;
         private System.Windows.Forms.Label lblKarmaSpellcastingFocus;
-        private System.Windows.Forms.Label lblKarmaShieldingFocusExtra;
-        private System.Windows.Forms.NumericUpDown nudKarmaShieldingFocus;
-        private System.Windows.Forms.Label lblKarmaShieldingFocus;
+        private System.Windows.Forms.Label lblKarmaQiFocusExtra;
+        private System.Windows.Forms.NumericUpDown nudKarmaQiFocus;
+        private System.Windows.Forms.Label lblKarmaQiFocus;
         private System.Windows.Forms.Label lblKarmaPowerFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaPowerFocus;
         private System.Windows.Forms.Label lblKarmaPowerFocus;
         private System.Windows.Forms.Label lblKarmaMaskingFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaMaskingFocus;
         private System.Windows.Forms.Label lblKarmaMaskingFocus;
-        private System.Windows.Forms.Label lblKarmaInfusionFocusExtra;
-        private System.Windows.Forms.NumericUpDown nudKarmaInfusionFocus;
-        private System.Windows.Forms.Label lblKarmaInfusionFocus;
-        private System.Windows.Forms.Label lblKarmaDowsingFocusExtra;
-        private System.Windows.Forms.NumericUpDown nudKarmaDowsingFocus;
-        private System.Windows.Forms.Label lblKarmaDowsingFocus;
-        private System.Windows.Forms.Label lblKarmaDiviningFocusExtra;
-        private System.Windows.Forms.NumericUpDown nudKarmaDiviningFocus;
-        private System.Windows.Forms.Label lblKarmaDiviningFocus;
+        private System.Windows.Forms.Label lblKarmaDisenchantingFocusExtra;
+        private System.Windows.Forms.NumericUpDown nudKarmaDisenchantingFocus;
+        private System.Windows.Forms.Label lblKarmaDisenchantingFocus;
         private System.Windows.Forms.Label lblKarmaCounterspellingFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaCounterspellingFocus;
         private System.Windows.Forms.Label lblKarmaCounterspellingFocus;
@@ -3574,5 +3566,11 @@
         private System.Windows.Forms.CheckBox chkReverseAttributePriorityOrder;
         private System.Windows.Forms.CheckBox chkHideItemsOverAvail;
         private System.Windows.Forms.CheckBox chkAllowHoverIncrement;
+        private System.Windows.Forms.Label lblFlexibleSignatureFocusExtra;
+        private System.Windows.Forms.NumericUpDown nudKarmaFlexibleSignatureFocus;
+        private System.Windows.Forms.Label lblKarmaFlexibleSignatureFocus;
+        private System.Windows.Forms.Label lblKarmaRitualSpellcastingFocusExtra;
+        private System.Windows.Forms.NumericUpDown nudKarmaRitualSpellcastingFocus;
+        private System.Windows.Forms.Label lblKarmaRitualSpellcastingFocus;
     }
 }

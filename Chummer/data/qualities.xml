@@ -7351,26 +7351,26 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase>yes</affectbase>
+            <affectbase />
           </selectattribute>
         </selectattributes>
       </bonus>
@@ -14046,7 +14046,7 @@
         </naturalweapon>
       </naturalweapons>
       <source>FA</source>
-      <page></page>
+      <page>134</page>
     </quality>
     <quality>
       <id>e24b86ad-004b-4252-8383-3ca4aad53a26</id>
@@ -14065,7 +14065,7 @@
         </oneof>
       </required>
       <source>FA</source>
-      <page></page>
+      <page>134</page>
     </quality>
     <!-- End Region -->
     <!-- Region Aspects-->
@@ -14145,6 +14145,166 @@
       <source>SAG</source>
       <page>148</page>
     </quality>
+    <!-- End Region -->
+    <!-- Region The Complete Trog -->
+      <quality>
+          <id>f9b746ae-9112-4b84-ba8d-e0a852678a20</id>
+          <name>Black Forest Native</name>
+          <karma>22</karma>
+          <category>Positive</category>
+          <bonus>
+              <addqualities>
+                <addquality select="Black Forest: You Know a Guy">Home Ground</addquality>
+                <addquality select="Black Forest: Street Politics">Home Ground</addquality>
+              </addqualities>
+              <selecttext />
+          </bonus>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>397eee55-11eb-4ede-bede-a8a13befa21c</id>
+          <name>Community Connection</name>
+          <karma>5</karma>
+          <category>Positive</category>
+          <bonus>
+              <!--TODO: Implement flat cost reduction for specific lifestyle types. Scream internally at improvement naming conventions. -->
+          </bonus>
+          <required>
+              <oneof>
+                  <metatype>Troll</metatype>
+                  <metatype>Ork</metatype>
+              </oneof>
+          </required>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>fd5468e4-a671-4c84-a9ec-590b94ae6ae3</id>
+          <name>Delicate Fingers</name>
+          <karma>5</karma>
+          <category>Positive</category>
+          <required>
+              <oneof>
+                  <metatype>Troll</metatype>
+              </oneof>
+          </required>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>9ad4e8e7-80d7-4941-96d5-9a1aaa1bd4c9</id>
+          <name>Human Lifespan</name>
+          <karma>10</karma>
+          <category>Positive</category>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>3a5b909e-7b37-471d-a24a-3fda7c18d837</id>
+          <name>Nasty Trog</name>
+          <karma>5</karma>
+          <category>Positive</category>
+          <bonus>
+              <!-- TODO: Conditionals for skill bonuses? -->
+              <specificskill>
+                  <name>Intimidation</name>
+                  <bonus>3</bonus>
+              </specificskill>
+          </bonus>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>8d8dee2e-868b-4eda-87b5-959dd55304e0</id>
+          <name>Trog Artisan</name>
+          <karma>8</karma>
+          <category>Positive</category>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>94d14ec2-7bcf-4728-8ff6-ef315da4c80c</id>
+          <name>Trog Historian</name>
+          <karma>4</karma>
+          <category>Positive</category>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>ac24ddb3-5e35-486c-a899-5b1bd11e9d86</id>
+          <name>Trog Leader</name>
+          <karma>7</karma>
+          <category>Positive</category>
+          <bonus>
+              <!-- TODO: Conditionals for skill bonuses? -->
+              <specificskill>
+                  <name>Leadership</name>
+                  <bonus>3</bonus>
+              </specificskill>
+          </bonus>
+          <required>
+              <oneof>
+                  <metatype>Troll</metatype>
+                  <metatype>Ork</metatype>
+              </oneof>
+          </required>
+          <source>TCT</source>
+          <page>188</page>
+      </quality>
+      <quality>
+          <id>14b5b9c0-5180-47ec-8bf9-f422d3196744</id>
+          <name>Trog Networker</name>
+          <karma>12</karma>
+          <category>Positive</category>
+          <required>
+            <oneof>
+              <metatype>Troll</metatype>
+              <metatype>Ork</metatype>
+            </oneof>
+          </required>
+          <source>TCT</source>
+          <page>189</page>
+      </quality>
+      <quality>
+          <id>e4bceac5-8f1d-4090-90fc-ad5e94bca8d7</id>
+          <name>Bad Credit</name>
+          <karma>-8</karma>
+          <category>Negative</category>
+          <bonus>
+              <basiclifestylecost>10</basiclifestylecost>
+              <lifestylecost>10</lifestylecost>
+          </bonus>
+          <source>TCT</source>
+          <page>189</page>
+      </quality>
+      <quality>
+          <id>0b28f554-8929-4b8b-b8c6-4203ca856b33</id>
+          <name>Elevated Stress</name>
+          <karma>-8</karma>
+          <category>Negative</category>
+          <bonus>
+              <!-- TODO: Addiction, toxin resistance tests. -->
+          </bonus>
+          <source>TCT</source>
+          <page>189</page>
+      </quality>
+      <quality>
+          <id>13379299-27a2-4b5d-8938-6a54f49dc861</id>
+          <name>Force of Chaos</name>
+          <karma>-4</karma>
+          <category>Negative</category>
+          <source>TCT</source>
+          <page>189</page>
+      </quality>
+      <quality>
+          <id>ca4459b7-ea68-4b6c-9754-8bdcf3f4aef7</id>
+          <name>Trog Traitor</name>
+          <karma>-5</karma>
+          <category>Negative</category>
+          <source>TCT</source>
+          <page>189</page>
+      </quality>      
     <!-- End Region -->
   </qualities>
 </chummer>

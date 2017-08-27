@@ -1,4 +1,29 @@
-﻿Build 194
+﻿Build 195
+
+Application Changes:
+
+- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
+- Fixed translation for weapon availability in the Select Weapon table. 
+- Fixed optional values for Foci not being saved properly. 
+- Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
+- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
+
+Data Changes:
+
+- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
+- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
+- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
+- Critter Body Armor now properly grants armor equal to the Rating. 
+
+New Strings:
+- Label_Options_SpellShapingFocus
+- Label_Options_RitualSpellcastingFocus
+- Label_Options_QiFocus
+- Label_Options_FlexibleSignatureFocus
+- Label_Options_DisenchantingFocus
+- Label_Options_AlchemicalFocus
+
+Build 194
 
 Application Changes:
 
@@ -55,6 +80,10 @@ Application Changes:
 - Fixed an incorrect skill linked to the Racing Bike PACK that caused a crash.
 - Character sheets are now loaded by a manifest file (sheets.xml) stored in the data directory. This file follows the same restrictions and usage as other data files, so use custom_sheets.xml for custom content. 
     - This allows for ensuring the use of characters that can't be reliably read by Chummer's updater process, and provides some room in the future for credits, instructions for use, etc. 
+- Fixed a crash when selecting spells with a positive Drain value and pre-existing modifiers from improvements.
+- Fixed a crash when selecting the Implant Medic cyberware.
+- Fixed removing Metatype qualities to work properly in create mode.
+- Fixed display of Extra value for Critter Powers that don't have a bonus or Rating. 
 
 Data Changes:
 
@@ -85,6 +114,9 @@ Data Changes:
 - Fixed behaviour of the Satyr Legs quality and Flight critter power to properly provide movement speed increases.
 - Removed Uneducated from the Naga metasapient. Sorry sneks, not sure how that crept in there.
 - Adepts with the Adept Spell power can now take the Focused Concentration quality.
+- Implemented content from The Complete Trog. NB: Black Forest Native doesn't provide the skill bonus, Community Connection doesn't provide the housing cost discount, and Nasty Trog/Trog Leader don't have conditionals for their skill bonus so always apply. 
+- Added missing bonuses for the special tires from Rigger 5.0.
+- Fixed cost formula for Handling Enhancement. 
 
 New Strings:
 
@@ -720,6 +752,8 @@ Application Changes:
 - Added the ability for priorities to add to Depth.
 - Added the AddSkillSpecialisation bonus type, which allows for adding a free specialisation to a skill.
 - Changes to the condition monitor now immediately refresh skill dicepools.
+- The cost label for qualities in create mode now shows as Current/Maximum (Total) to assist with calculating quality values. 
+    -The total value is mostly going to be seen for Changelings and Point-Buy characters, as it shows qualities that don't contribute to your limit. 
 
 Data Changes:
 

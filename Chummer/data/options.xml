@@ -44,7 +44,7 @@
     <pdfarguments>
       <pdfargument>
         <name>Web Browser</name>
-        <value>{absolutepath}#page={page}</value>
+        <value>"file://{absolutepath}#page={page}"</value>
       </pdfargument>
       <pdfargument>
         <name>Acrobat-style</name>

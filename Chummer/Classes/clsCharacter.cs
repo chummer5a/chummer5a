@@ -1335,7 +1335,6 @@ namespace Chummer
             SpecialAttributeList.Add(_attEDG);
             SpecialAttributeList.Add(_attMAG);
             SpecialAttributeList.Add(_attRES);
-            SpecialAttributeList.Add(_attESS);
             SpecialAttributeList.Add(_attDEP);
 
             Timekeeper.Finish("load_char_attrib");
@@ -2110,7 +2109,7 @@ namespace Chummer
             objWriter.WriteElementString("cyberwaredisabled", _blnCyberwareDisabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", _blnCritterEnabled.ToString());
-
+            objWriter.WriteElementString("totaless", Essence.ToString(GlobalOptions.InvariantCultureInfo));
             // <tradition />
             string strTraditionName = _strMagicTradition;
             if (strTraditionName == "Custom")
@@ -2982,7 +2981,7 @@ namespace Chummer
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {
-                                strReturn = objAdvantage.DisplayNameShort;
+                                strReturn = objAdvantage.DisplayName;
                                 break;
                             }
                         }
@@ -4967,10 +4966,9 @@ namespace Chummer
             {
                 string strReturn = string.Empty;
 
-                strReturn += "(" + LanguageManager.Instance.GetString("String_CareerKarma") + " (" + CareerKarma.ToString() + ")";
+                strReturn += "(" + LanguageManager.Instance.GetString("String_CareerKarma") + " ÷ 10)";
                 if (BurntStreetCred != 0)
-                    strReturn += " - " + LanguageManager.Instance.GetString("String_BurntStreetCred") + " (" + BurntStreetCred.ToString() + ")";
-                strReturn += ") ÷ 10";
+                    strReturn += " - " + LanguageManager.Instance.GetString("String_BurntStreetCred");
 
                 return strReturn;
             }

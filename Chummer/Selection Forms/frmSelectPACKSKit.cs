@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -92,10 +92,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPack["name"].InnerText;
-                if (objXmlPack["translate"] != null)
-                    objItem.Name = objXmlPack["translate"].InnerText;
-                else
-                    objItem.Name = objXmlPack["name"].InnerText;
+                objItem.Name = objXmlPack["translate"]?.InnerText ?? objXmlPack["name"].InnerText;
                 lstKit.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -154,13 +151,10 @@ namespace Chummer
                         {
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             TreeNode objChild = new TreeNode();
-                            if (objNode["translate"] != null)
-                                objChild.Text = objNode["translate"].InnerText;
-                            else
-                                objChild.Text = objXmlQuality.InnerText;
+                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
                             if (objXmlQuality.Attributes["select"] != null)
-                                objChild.Text += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                                objChild.Text += $" ({LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText)})";
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -170,13 +164,10 @@ namespace Chummer
                         {
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             TreeNode objChild = new TreeNode();
-                            if (objNode["translate"] != null)
-                                objChild.Text = objNode["translate"].InnerText;
-                            else
-                                objChild.Text = objXmlQuality.InnerText;
+                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
                             if (objXmlQuality.Attributes["select"] != null)
-                                objChild.Text += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                                objChild.Text += $" ({LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText)})";
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -198,10 +189,7 @@ namespace Chummer
                         {
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objXmlSkill["name"].InnerText + "\"]");
                             TreeNode objChild = new TreeNode();
-                            if (objNode["translate"] != null)
-                                objChild.Text = objNode["translate"].InnerText;
-                            else
-                                objChild.Text = objXmlSkill["name"].InnerText;
+                            objChild.Text = objNode["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
                             objChild.Text += " " + objXmlSkill["rating"].InnerText;
 
                             if (objXmlSkill["spec"] != null)
@@ -758,10 +746,7 @@ namespace Chummer
 
             TreeNode objChild = new TreeNode();
             if (objNode != null) {
-            if (objNode["translate"] != null)
-                objChild.Text = objNode["translate"].InnerText;
-            else
-                objChild.Text = objXmlGear["name"].InnerText;
+            objChild.Text = objNode["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
 
             if (objXmlGear["name"].Attributes["select"] != null)
                 objChild.Text += " (" + objXmlGear["name"].Attributes["select"].InnerText + ")";

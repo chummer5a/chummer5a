@@ -507,10 +507,7 @@ namespace Chummer
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlSpirit.InnerText;
                     XmlNode objXmlCritterNode = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlSpirit.InnerText + "\"]");
-                    if (objXmlCritterNode["translate"] != null)
-                        objItem.Name = objXmlCritterNode["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit.InnerText;
+                    objItem.Name = objXmlCritterNode["translate"]?.InnerText ?? objXmlSpirit.InnerText;
 
                     lstCritters.Add(objItem);
                 }

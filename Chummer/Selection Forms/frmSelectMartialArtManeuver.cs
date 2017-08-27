@@ -60,10 +60,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlManeuver["name"].InnerText;
-                if (objXmlManeuver["translate"] != null)
-                    objItem.Name = objXmlManeuver["translate"].InnerText;
-                else
-                    objItem.Name = objXmlManeuver["name"].InnerText;
+                objItem.Name = objXmlManeuver["translate"]?.InnerText ?? objXmlManeuver["name"].InnerText;
                 lstManeuver.Add(objItem);
             }
             SortListItem objSort = new SortListItem();

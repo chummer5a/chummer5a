@@ -112,15 +112,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlSkill["name"].InnerText;
-                    if (objXmlSkill.Attributes != null)
-                    {
-                        if (objXmlSkill["translate"] != null)
-                            objItem.Name = objXmlSkill["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlSkill["name"].InnerText;
-                    }
-                    else
-                        objItem.Name = objXmlSkill["name"].InnerXml;
+                    objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
                     lstSkills.Add(objItem);
                 }
 
@@ -154,10 +146,9 @@ namespace Chummer
                             // Use the translated Exotic Skill name if available.
                             XmlNode objXmlSkill =
                                 _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"Yes\" and name = \"" + objExoticSkill.Name + "\"]");
-                            if (objXmlSkill["translate"] != null)
-                                objItem.Name = objXmlSkill["translate"].InnerText + " (" + objExoticSkill.DisplaySpecialization + ")";
-                            else
-                                objItem.Name = objExoticSkill.Name + " (" + objExoticSkill.DisplaySpecialization + ")";
+                            objItem.Name = objXmlSkill["translate"] != null
+                                ? objXmlSkill["translate"].InnerText + " (" + objExoticSkill.DisplaySpecialization + ")"
+                                : objExoticSkill.Name + " (" + objExoticSkill.DisplaySpecialization + ")";
                             lstSkills.Add(objItem);
                         }
                     }

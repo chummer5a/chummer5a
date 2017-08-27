@@ -1,4 +1,4 @@
-version: 5.193.{build}
+version: "5.194.{build}"
 branches:
   only:
   - master
@@ -19,6 +19,29 @@ environment:
   matrix:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
+init:
+- ps: |
+    $headers = @{
+    "Authorization" = "Bearer $token"
+    "Content-type" = "application/json"
+    }
+
+    $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
+    $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
+
+    if ($history.builds.Count -eq 2)
+    {
+        $CurrentCommitID = $history.builds[0].commitId
+        $PreviousCommitID = $history.builds[1].commitId
+        Write-host "Current Commit ID: $CurrentCommitID"
+        Write-host "Previous Commit ID: $PreviousCommitID"
+        $history.builds[1].commitId
+        if ($CurrentCommitID -eq $PreviousCommitID)
+        {
+            Write-host "Current Commit ID is the same as previous, exiting build."
+            Exit-AppveyorBuild
+        }
+    }
 install:
 - ps: "$token = $env:api_token\n$accountName = 'chummer5a'\n$projectSlug = 'chummer'\n$headers = @{\n  \"Authorization\" = \"Bearer $token\"\n  \"Content-type\" = \"application/json\"\n}\n\nSet-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]\nWrite-Host \"Environment Variable: $env:OldMinorVersion\"\n$Assemblyfile = \"C:\\projects\\chummer\\Chummer\\Properties\\AssemblyInfo.cs\"\n\n$regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\\s*\\(\\s*\\\")(.*)(\\\"\\s*\\))', \n         [System.Text.RegularExpressions.RegexOptions]::MultiLine)\n\n$content = [IO.File]::ReadAllText($assemblyFile)\n\n$version = $null\n$match = $regex.Match($content)\nif($match.Success) {\n    $version = $match.groups[3].value\n}\n\n$Major = $version.Split('.')[0]\n$Minor = $version.Split('.')[1]\n\nIf ($Minor -ne $($env:OldMinorVersion))\n{	\n$apiUrl = 'https://ci.appveyor.com/api/projects'\n$BuildNumber = '{ nextBuildNumber: 1; }'\n$Format = '{ versionFormat: $Major.$Minor.0; }'\n# get project with last build details\nInvoke-RestMethod -Method Put -Uri \"$apiUrl/$accountName/$projectSlug/settings/build-number\" -Headers $headers -Body $BuildNumber\nInvoke-RestMethod -Method Put -Uri \"$apiUrl/$accountName/$projectSlug/settings\" -Headers $headers -Body $BuildNumber\nUpdate-AppveyorBuild -Version \"$Major.$Minor.0\"\n}\nelse \n{\n	Update-AppveyorBuild -Version \"$Major.$Minor.$env:appveyor_build_number\"\n}"
 nuget:
@@ -26,32 +49,7 @@ nuget:
   project_feed: true
   disable_publish_on_pr: true
 before_build:
-- ps: >-
-    $token = $env:api_token
-
-    $accountName = 'chummer5a'
-
-    $projectSlug = 'chummer'
-
-    $headers = @{
-      "Authorization" = "Bearer $token"
-      "Content-type" = "application/json"
-    }
-
-    $LastCommit = git rev-list -1 --skip 1 head
-
-    $NewCommit = $env:APPVEYOR_REPO_COMMIT
-
-
-    Write-Host "Last Commit ID: $LastCommit"
-
-    Write-Host "This Commit ID: $NewCommit"
-
-    if ($LastCommit -eq $NewCommit -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
-
-    {
-    	Exit-AppveyorBuild
-    }
+- ps: 
     nuget restore
 
     & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'

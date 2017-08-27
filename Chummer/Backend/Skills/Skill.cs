@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -182,7 +182,7 @@ namespace Chummer.Skills
             }
             XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
 
-            skill.DisplayCategory = objCategoryNode?.Attributes?["translate"]?.InnerText ?? string.Empty;
+            skill.DisplayCategory = objCategoryNode?.Attributes?["translate"]?.InnerText ?? skill.SkillCategory;
 
             return skill;
         }
@@ -312,10 +312,7 @@ namespace Chummer.Skills
 
                     s = new Skill(character, n);
                 }
-                if (knoNode?.Attributes?["translate"] != null)
-                {
-                    s.DisplayCategory = knoNode.Attributes["translate"].InnerText;
-                }
+                s.DisplayCategory = knoNode?.Attributes?["translate"]?.InnerText ?? string.Empty;
             }
 
 

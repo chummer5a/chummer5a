@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -782,12 +782,9 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
                         else
@@ -804,12 +801,9 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
                         }
                         else
@@ -850,10 +844,7 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
                             if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
@@ -872,10 +863,7 @@ namespace Chummer
                         if (GlobalOptions.Instance.Language != "en-us")
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objQuality["translate"] != null)
-                                strQualities += objQuality["translate"].InnerText;
-                            else
-                                strQualities += objXmlQuality.InnerText;
+                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
                             if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
                                 strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
@@ -1108,6 +1096,8 @@ namespace Chummer
                 }
 
                 //TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh.
+                _objCharacter.AttributeList.Clear();
+                _objCharacter.SpecialAttributeList.Clear();
                 _objCharacter.AttributeList.Add(_objCharacter.BOD);
                 _objCharacter.AttributeList.Add(_objCharacter.AGI);
                 _objCharacter.AttributeList.Add(_objCharacter.REA);
@@ -2141,3 +2131,4 @@ namespace Chummer
         #endregion
     }
 }
+

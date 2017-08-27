@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -320,31 +320,21 @@ namespace Chummer
                     objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-                if (objMetatypeNode["translate"] != null)
-                    strMetatype = objMetatypeNode["translate"].InnerText;
-                else
-                    strMetatype = _objCharacter.Metatype;
+                strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
 
                 strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                if (objMetatypeNode["altpage"] != null)
-                    strPage = objMetatypeNode["altpage"].InnerText;
-                else
-                    strPage = objMetatypeNode["page"].InnerText;
+                strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
                 if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
 
-                    if (objMetatypeNode["translate"] != null)
-                        strMetatype += " (" + objMetatypeNode["translate"].InnerText + ")";
-                    else
-                        strMetatype += " (" + _objCharacter.Metavariant + ")";
+                    strMetatype += objMetatypeNode["translate"] != null
+                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
+                        : " (" + _objCharacter.Metavariant + ")";
 
                     strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                    if (objMetatypeNode["altpage"] != null)
-                        strPage = objMetatypeNode["altpage"].InnerText;
-                    else
-                        strPage = objMetatypeNode["page"].InnerText;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
                 }
             }
             lblMetatype.Text = strMetatype;
@@ -397,10 +387,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlTradition["name"].InnerText;
-                if (objXmlTradition["translate"] != null)
-                    objItem.Name = objXmlTradition["translate"].InnerText;
-                else
-                    objItem.Name = objXmlTradition["name"].InnerText;
+                objItem.Name = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
                 lstTraditions.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -422,10 +409,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlDrain["name"].InnerText;
-                if (objXmlDrain["translate"] != null)
-                    objItem.Name = objXmlDrain["translate"].InnerText;
-                else
-                    objItem.Name = objXmlDrain["name"].InnerText;
+                objItem.Name = objXmlDrain["translate"]?.InnerText ?? objXmlDrain["name"].InnerText;
                 lstDrainAttributes.Add(objItem);
             }
             SortListItem objDrainSort = new SortListItem();
@@ -455,10 +439,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
+                    objItem.Name = objXmlSpirit["translate"]?.InnerText ?? objXmlSpirit["name"].InnerText;
                     lstSpirit.Add(objItem);
                 }
             }
@@ -471,55 +452,11 @@ namespace Chummer
             cboSpiritCombat.DataSource = lstSpirit;
             cboSpiritCombat.EndUpdate();
 
-            // Populate the Magician Custom Spirits lists - Detection.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
-
             cboSpiritDetection.BeginUpdate();
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstSpirit;
             cboSpiritDetection.EndUpdate();
-
-            // Populate the Magician Custom Spirits lists - Health.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
 
             cboSpiritHealth.BeginUpdate();
             cboSpiritHealth.ValueMember = "Value";
@@ -527,55 +464,11 @@ namespace Chummer
             cboSpiritHealth.DataSource = lstSpirit;
             cboSpiritHealth.EndUpdate();
 
-            // Populate the Magician Custom Spirits lists - Illusion.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
-
             cboSpiritIllusion.BeginUpdate();
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstSpirit;
             cboSpiritIllusion.EndUpdate();
-
-            // Populate the Magician Custom Spirits lists - Manipulation.
-            lstSpirit = new List<ListItem>();
-            objSpiritBlank = new ListItem();
-            objSpiritBlank.Value = string.Empty;
-            objSpiritBlank.Name = string.Empty;
-            lstSpirit.Add(objSpiritBlank);
-            foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
-            {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
-                    lstSpirit.Add(objItem);
-                }
-            }
-            objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
 
             cboSpiritManipulation.BeginUpdate();
             cboSpiritManipulation.ValueMember = "Value";
@@ -2113,7 +2006,7 @@ namespace Chummer
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
                         if (objNode["bonus"] != null)
                         {
-                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayNameShort);
+                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayName);
                         }
                     }
                 }
@@ -4536,7 +4429,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
 
-            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + frmPickProgram.SelectedProgram + "\"]");
+            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
 
             // Check for SelectText.
             string strExtra = string.Empty;
@@ -4545,7 +4438,7 @@ namespace Chummer
                 if (objXmlProgram["bonus"]["selecttext"] != null)
                 {
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText);
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
                 }
@@ -4576,7 +4469,7 @@ namespace Chummer
             //if (_objCharacter.CFPLimit - intComplexForms < 0)
             //    lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.CFPLimit.ToString());
             //else
-            lblBuildComplexForms.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+            lblComplexFormsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
 
             if (frmPickProgram.AddAgain)
                 cmdAddComplexForm_Click(sender, e);
@@ -6142,7 +6035,7 @@ namespace Chummer
                 _objCharacter.ComplexForms.Remove(objProgram);
                 treComplexForms.SelectedNode.Remove();
 
-                lblBuildComplexForms.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
+                lblComplexFormsBP.Text = string.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
 
                 ScheduleCharacterUpdate();
 
@@ -6483,7 +6376,7 @@ namespace Chummer
             else if (objQuality.OriginSource == QualitySource.MetatypeRemovable)
             {
                 // Look up the cost of the Quality.
-                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objQuality.QualityId + "\"]");
                 int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -1;
                 int intShowBP = intBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
@@ -6502,6 +6395,7 @@ namespace Chummer
                 List<Weapon> objWeapons = new List<Weapon>();
                 List<TreeNode> objWeaponNodes = new List<TreeNode>();
                 Quality objReplaceQuality = new Quality(_objCharacter);
+                
                 objReplaceQuality.Create(objXmlMetatypeQuality, _objCharacter, QualitySource.Selected, objEmptyNode, objWeapons, objWeaponNodes);
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
@@ -13088,21 +12982,11 @@ namespace Chummer
             int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
             int intLifeModuleQualities = 0;
 
-            foreach (Quality objQuality in _objCharacter.Qualities)
-            {
-                if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
-                {
-                    intPositiveQualities += (objQuality.BP * _objOptions.KarmaQuality);
-                }
-                else if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
-                {
-                    intNegativeQualities += (objQuality.BP * _objOptions.KarmaQuality);
-            }
-                else if (objQuality.Type == QualityType.LifeModule && objQuality.ContributeToBP)
-                {
-                    intLifeModuleQualities += (objQuality.BP);
-                }
-            }
+            intPositiveQualities += _objCharacter.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            int unlimitedPositive = _objCharacter.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            intNegativeQualities += _objCharacter.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            int unlimitedNegative = _objCharacter.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
+            intLifeModuleQualities += _objCharacter.Qualities.Where(q => q.Type == QualityType.LifeModule && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * _objOptions.KarmaQuality);
 
             // Deduct the amounts for free Qualities.
             int intPositiveFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) * _objOptions.KarmaQuality;
@@ -13126,11 +13010,14 @@ namespace Chummer
                 }
             }
 
-            intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities;
+            intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities + unlimitedPositive + unlimitedNegative;
+            lblPositiveQualitiesBP.Text = unlimitedPositive > 0
+                ? $"{intPositiveQualities}/{_objCharacter.GameplayOptionQualityLimit} {strPoints} ({intPositiveQualities + unlimitedPositive})"
+                : $"{intPositiveQualities}/{_objCharacter.GameplayOptionQualityLimit} {strPoints}";
 
-            lblPositiveQualitiesBP.Text = string.Format("{0} " + strPoints, intPositiveQualities);
-
-            lblNegativeQualitiesBP.Text = string.Format("{0} " + strPoints, intNegativeQualities);
+            lblNegativeQualitiesBP.Text = unlimitedNegative > 0
+                ? $"{intNegativeQualities * -1}/{_objCharacter.GameplayOptionQualityLimit} {strPoints} ({intNegativeQualities + unlimitedNegative})"
+                : $"{intNegativeQualities * -1}/{_objCharacter.GameplayOptionQualityLimit} {strPoints}";
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -13201,6 +13088,24 @@ namespace Chummer
                 int rituals = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category == "Rituals" && !spell.FreeBonus).Count();
                 int preps = _objCharacter.Spells.Where(spell => spell.Alchemical && !spell.FreeBonus).Count();
 
+                int limit = _objCharacter.SpellLimit;
+                int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
+                               _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
+                foreach (
+                    Improvement imp in
+                    _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+                {
+                    CharacterAttrib att = _objCharacter.GetAttribute(imp.UniqueName);
+                    limitMod += att.TotalValue;
+                }
+                foreach (
+                    Improvement imp in
+                    _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
+                {
+                    Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName);
+                    limitMod += objSkill.LearnedRating;
+                }
+
                 if (nudMysticAdeptMAGMagician.Value > 0)
                 {
                     if (_objOptions.PrioritySpellsAsAdeptPowers)
@@ -13213,7 +13118,7 @@ namespace Chummer
                         intKarmaPointsRemain -= intAttributePointsUsed;
                     }
                 }
-                for (int i = _objCharacter.SpellLimit; i > 0; i--)
+                for (int i = limit+limitMod; i > 0; i--)
                 {
                     if (spells > 0)
                     {
@@ -13243,62 +13148,44 @@ namespace Chummer
                 intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
                 intPrepPointsUsed += Math.Max(Math.Max(0, preps) * spellCost, 0);
                 tipTooltip.SetToolTip(lblSpellsBP, $"{spells} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-                tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-                tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intSpellPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
-            }
-
-            int limit = _objCharacter.SpellLimit;
-            int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
-                        _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
-            foreach (
-                Improvement imp in
-                _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
-            {
-                CharacterAttrib att = _objCharacter.GetAttribute(imp.UniqueName);
-                limitMod += att.TotalValue;
-            }
-            foreach (
-                Improvement imp in
-                _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
-            {
-                Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName);
-                limitMod += objSkill.LearnedRating;
-            }
-            if (limit > 0)
-            {
-                lblBuildPrepsBP.Text =
-                    string.Format(
-                        $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intPrepPointsUsed} {strPoints}");
-                lblSpellsBP.Text =
-                    string.Format(
-                        $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intSpellPointsUsed} {strPoints}");
-                lblBuildRitualsBP.Text =
-                    string.Format(
-                        $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intRitualPointsUsed} {strPoints}");
-            }
-            else
-            {
-                if (limitMod == 0)
+                tipTooltip.SetToolTip(lblBuildRitualsBP, $"{rituals} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intRitualPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+                tipTooltip.SetToolTip(lblBuildPrepsBP, $"{preps} x {spellCost} + {LanguageManager.Instance.GetString("String_Karma")} = {intPrepPointsUsed} {LanguageManager.Instance.GetString("String_Karma")}");
+                if (limit + limitMod > 0)
                 {
                     lblBuildPrepsBP.Text =
-                        string.Format($"{intPrepPointsUsed} {strPoints}");
+                        string.Format(
+                            $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intPrepPointsUsed} {strPoints}");
                     lblSpellsBP.Text =
-                        string.Format($"{intSpellPointsUsed} {strPoints}");
+                        string.Format(
+                            $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intSpellPointsUsed} {strPoints}");
                     lblBuildRitualsBP.Text =
-                        string.Format($"{intRitualPointsUsed} {strPoints}");
+                        string.Format(
+                            $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limit + limitMod}: {intRitualPointsUsed} {strPoints}");
                 }
                 else
                 {
-                    //TODO: Make the costs render better, currently looks wrong as hell
-                    lblBuildPrepsBP.Text =
-                        string.Format(
-                            $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intPrepPointsUsed} {strPoints}");
-                    lblSpellsBP.Text =
-                        string.Format(
-                            $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intSpellPointsUsed} {strPoints}");
-                    lblBuildRitualsBP.Text =
-                        string.Format(
-                            $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intRitualPointsUsed} {strPoints}");
+                    if (limitMod == 0)
+                    {
+                        lblBuildPrepsBP.Text =
+                            string.Format($"{intPrepPointsUsed} {strPoints}");
+                        lblSpellsBP.Text =
+                            string.Format($"{intSpellPointsUsed} {strPoints}");
+                        lblBuildRitualsBP.Text =
+                            string.Format($"{intRitualPointsUsed} {strPoints}");
+                    }
+                    else
+                    {
+                        //TODO: Make the costs render better, currently looks wrong as hell
+                        lblBuildPrepsBP.Text =
+                            string.Format(
+                                $"{prepPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intPrepPointsUsed} {strPoints}");
+                        lblSpellsBP.Text =
+                            string.Format(
+                                $"{spellPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intSpellPointsUsed} {strPoints}");
+                        lblBuildRitualsBP.Text =
+                            string.Format(
+                                $"{ritualPoints} {LanguageManager.Instance.GetString("String_Of")} {limitMod}: {intRitualPointsUsed} {strPoints}");
+                    }
                 }
             }
 
@@ -13430,14 +13317,19 @@ namespace Chummer
             }
             if (intFormsPointsUsed > _objCharacter.CFPLimit)
                 intKarmaPointsRemain -= (intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm;
-            string s = $"0 {LanguageManager.Instance.GetString("String_Karma")}";
+            string s = $"0 {strPoints}";
             if (_objCharacter.CFPLimit > 0)
             {
-                s = $"{_objCharacter.SkillsSection.SkillGroupPoints} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.SkillsSection.SkillGroupPointsMaximum}";
+                s = $"{intFormsPointsUsed} {LanguageManager.Instance.GetString("String_Of")} {_objCharacter.CFPLimit}";
+                if (intFormsPointsUsed > 0)
+                {
+                    s +=
+                        $": {(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
+                }
             }
-            if (intFormsPointsUsed > 0)
+            else
             {
-                s += $": {_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {LanguageManager.Instance.GetString("String_Karma")}";
+                s = $"{(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
             }
             lblComplexFormsBP.Text = s;
             intFreestyleBP += intFormsPointsUsed;
@@ -13676,6 +13568,15 @@ namespace Chummer
                 {
                     _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                     _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                    _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                    /*
+                     _objImprovementManager.CreateImprovement("MAGBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
+                        Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                    _objImprovementManager.CreateImprovement("RESBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
+                        Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                    _objImprovementManager.CreateImprovement("DEPBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
+                        Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                    */
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -16260,8 +16161,6 @@ namespace Chummer
                         _blnSkipRefresh = true;
                         nudVehicleRating.Enabled = false;
                         nudVehicleGearQty.Enabled = true;
-                        nudVehicleGearQty.Maximum = 100000;
-                        //nudVehicleGearQty.Minimum = objGear.CostFor;
                         nudVehicleGearQty.Value = objGear.Quantity;
                         nudVehicleGearQty.Increment = objGear.CostFor;
                         nudVehicleGearQty.Visible = true;
@@ -19507,31 +19406,21 @@ namespace Chummer
                     objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-                if (objMetatypeNode["translate"] != null)
-                    strMetatype = objMetatypeNode["translate"].InnerText;
-                else
-                    strMetatype = _objCharacter.Metatype;
+                strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
 
                 strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                if (objMetatypeNode["altpage"] != null)
-                    strPage = objMetatypeNode["altpage"].InnerText;
-                else
-                    strPage = objMetatypeNode["page"].InnerText;
+                strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
                 if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
 
-                    if (objMetatypeNode["translate"] != null)
-                        strMetatype += " (" + objMetatypeNode["translate"].InnerText + ")";
-                    else
-                        strMetatype += " (" + _objCharacter.Metavariant + ")";
+                    strMetatype += objMetatypeNode["translate"] != null
+                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
+                        : " (" + _objCharacter.Metavariant + ")";
 
                     strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                    if (objMetatypeNode["altpage"] != null)
-                        strPage = objMetatypeNode["altpage"].InnerText;
-                    else
-                        strPage = objMetatypeNode["page"].InnerText;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
                 }
             }
             lblMetatype.Text = strMetatype;

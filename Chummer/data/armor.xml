@@ -2438,7 +2438,7 @@
       <name>Critter Body Armor</name>
       <category>Specialty Armor</category>
       <rating>24</rating>
-      <armor>0</armor>
+      <armor>Rating</armor>
       <armorcapacity>Rating</armorcapacity>
       <avail>6</avail>
       <cost>50 * Rating</cost>
@@ -2910,6 +2910,47 @@
       </bonus>
       <source>SAG</source>
       <page>93</page>
+    </armor>
+    <!-- End Region -->
+    <!-- Region The Complete Trog -->
+    <armor>
+      <id>efa1f97d-1408-4f75-befe-4e0b22f9f2c5</id>
+      <name>Rockblood Old School Line</name>
+      <category>Clothing</category>
+      <armor>8</armor>
+      <armorcapacity>10</armorcapacity>
+      <avail>8</avail>
+      <cost>1900</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Must be visible</condition>
+        </limitmodifier>
+      </bonus>
+      <source>TCT</source>
+      <page>186</page>
+    </armor>
+    <armor>
+      <id>74ccca34-925c-4149-a58b-501e69cabe46</id>
+      <name>Rockblood Signature Armored Shirt</name>
+      <category>Clothing</category>
+      <armor>6</armor>
+      <armorcapacity>4</armorcapacity>
+      <avail>14</avail>
+      <cost>800</cost>
+      <bonus>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Intimidation</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <source>TCT</source>
+      <page>486</page>
     </armor>
     <!-- End Region -->
   </armors>

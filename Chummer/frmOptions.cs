@@ -191,6 +191,24 @@ namespace Chummer
             _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
             _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
 
+            // Focus costs
+            _characterOptions.KarmaAlchemicalFocus = Convert.ToInt32(nudKarmaAlchemicalFocus.Value);
+            _characterOptions.KarmaBanishingFocus = Convert.ToInt32(nudKarmaBanishingFocus.Value);
+            _characterOptions.KarmaBindingFocus = Convert.ToInt32(nudKarmaBindingFocus.Value);
+            _characterOptions.KarmaCenteringFocus = Convert.ToInt32(nudKarmaCenteringFocus.Value);
+            _characterOptions.KarmaCounterspellingFocus = Convert.ToInt32(nudKarmaCounterspellingFocus.Value);
+            _characterOptions.KarmaDisenchantingFocus = Convert.ToInt32(nudKarmaDisenchantingFocus.Value);
+            _characterOptions.KarmaFlexibleSignatureFocus = Convert.ToInt32(nudKarmaFlexibleSignatureFocus.Value);
+            _characterOptions.KarmaMaskingFocus = Convert.ToInt32(nudKarmaMaskingFocus.Value);
+            _characterOptions.KarmaPowerFocus = Convert.ToInt32(nudKarmaPowerFocus.Value);
+            _characterOptions.KarmaQiFocus = Convert.ToInt32(nudKarmaQiFocus.Value);
+            _characterOptions.KarmaRitualSpellcastingFocus = Convert.ToInt32(nudKarmaRitualSpellcastingFocus.Value);
+            _characterOptions.KarmaSpellcastingFocus = Convert.ToInt32(nudKarmaSpellcastingFocus.Value);
+            _characterOptions.KarmaSpellShapingFocus = Convert.ToInt32(nudKarmaSpellShapingFocus.Value);
+            _characterOptions.KarmaSummoningFocus = Convert.ToInt32(nudKarmaSummoningFocus.Value);
+            _characterOptions.KarmaSustainingFocus = Convert.ToInt32(nudKarmaSustainingFocus.Value);
+            _characterOptions.KarmaWeaponFocus = Convert.ToInt32(nudKarmaWeaponFocus.Value);
+
             // Build Priority options.
             _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
             _characterOptions.UseContactPoints = chkContactPoints.Checked;
@@ -474,21 +492,20 @@ namespace Chummer
 
             intWidth = Math.Max(lblKarmaMetamagic.Width, lblKarmaJoinGroup.Width);
             intWidth = Math.Max(intWidth, lblKarmaLeaveGroup.Width);
-            intWidth = Math.Max(intWidth, lblKarmaAnchoringFocus.Width);
+            intWidth = Math.Max(intWidth, lblKarmaAlchemicalFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaBanishingFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaBindingFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaCenteringFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaCounterspellingFocus.Width);
-            intWidth = Math.Max(intWidth, lblKarmaDiviningFocus.Width);
-            intWidth = Math.Max(intWidth, lblKarmaDowsingFocus.Width);
-            intWidth = Math.Max(intWidth, lblKarmaInfusionFocus.Width);
+            intWidth = Math.Max(intWidth, lblKarmaDisenchantingFocus.Width);
+            intWidth = Math.Max(intWidth, lblKarmaFlexibleSignatureFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaMaskingFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaPowerFocus.Width);
-            intWidth = Math.Max(intWidth, lblKarmaShieldingFocus.Width);
+            intWidth = Math.Max(intWidth, lblKarmaQiFocus.Width);
+            intWidth = Math.Max(intWidth, lblKarmaRitualSpellcastingFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaSpellcastingFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaSummoningFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaSustainingFocus.Width);
-            intWidth = Math.Max(intWidth, lblKarmaSymbolicLinkFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaWeaponFocus.Width);
             intWidth = Math.Max(intWidth, lblKarmaNewAIProgram.Width);
             intWidth = Math.Max(intWidth, lblKarmaNewAIAdvancedProgram.Width);
@@ -496,41 +513,41 @@ namespace Chummer
             nudKarmaMetamagic.Left = lblKarmaMetamagic.Left + intWidth + 6;
             nudKarmaJoinGroup.Left = nudKarmaMetamagic.Left;
             nudKarmaLeaveGroup.Left = nudKarmaMetamagic.Left;
-            nudKarmaAnchoringFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaAlchemicalFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaBanishingFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaBindingFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaCenteringFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaCounterspellingFocus.Left = nudKarmaMetamagic.Left;
-            nudKarmaDiviningFocus.Left = nudKarmaMetamagic.Left;
-            nudKarmaDowsingFocus.Left = nudKarmaMetamagic.Left;
-            nudKarmaInfusionFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaDisenchantingFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaFlexibleSignatureFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaMaskingFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaPowerFocus.Left = nudKarmaMetamagic.Left;
-            nudKarmaShieldingFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaRitualSpellcastingFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaSpellcastingFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaSpellShapingFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaSummoningFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaSustainingFocus.Left = nudKarmaMetamagic.Left;
-            nudKarmaSymbolicLinkFocus.Left = nudKarmaMetamagic.Left;
+            nudKarmaQiFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaWeaponFocus.Left = nudKarmaMetamagic.Left;
             nudKarmaNewAIProgram.Left = nudKarmaMetamagic.Left;
             nudKarmaNewAIAdvancedProgram.Left = nudKarmaMetamagic.Left;
 
-            lblKarmaAnchoringFocusExtra.Left = nudKarmaAnchoringFocus.Left + nudKarmaAnchoringFocus.Width + 6;
-            lblKarmaBanishingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaBindingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaCenteringFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaCounterspellingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaDiviningFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaDowsingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaInfusionFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaMaskingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaPowerFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaShieldingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaSpellcastingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaSummoningFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaSustainingFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaSymbolicLinkFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
-            lblKarmaWeaponFocusExtra.Left = lblKarmaAnchoringFocusExtra.Left;
+            lblKarmaAlchemicalFocusExtra.Left = nudKarmaAlchemicalFocus.Left + nudKarmaAlchemicalFocus.Width + 6;
+            lblKarmaBanishingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaBindingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaCenteringFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaCounterspellingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaDisenchantingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblFlexibleSignatureFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaMaskingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaPowerFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaQiFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaRitualSpellcastingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaSpellcastingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaSpellShapingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaSummoningFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaSustainingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
+            lblKarmaWeaponFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
 
             // Determine where the widest control ends so we can change the window with to accommodate it.
             intWidth = (from Control objControl in tabGeneral.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
@@ -565,10 +582,7 @@ namespace Chummer
                 bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
                 TreeNode objNode = new TreeNode();
 
-                if (objXmlBook["translate"] != null)
-                    objNode.Text = objXmlBook["translate"].InnerText;
-                else
-                    objNode.Text = objXmlBook["name"].InnerText;
+                objNode.Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText;
 
                 objNode.Tag = objXmlBook["code"].InnerText;
                 objNode.Checked = blnChecked;
@@ -697,6 +711,22 @@ namespace Chummer
             nudKarmaMetamagic.Value = _characterOptions.KarmaMetamagic;
             nudKarmaJoinGroup.Value = _characterOptions.KarmaJoinGroup;
             nudKarmaLeaveGroup.Value = _characterOptions.KarmaLeaveGroup;
+            nudKarmaAlchemicalFocus.Value = _characterOptions.KarmaAlchemicalFocus;
+            nudKarmaBanishingFocus.Value = _characterOptions.KarmaBanishingFocus;
+            nudKarmaBindingFocus.Value = _characterOptions.KarmaBindingFocus;
+            nudKarmaCenteringFocus.Value = _characterOptions.KarmaCenteringFocus;
+            nudKarmaCounterspellingFocus.Value = _characterOptions.KarmaCounterspellingFocus;
+            nudKarmaDisenchantingFocus.Value = _characterOptions.KarmaDisenchantingFocus;
+            nudKarmaFlexibleSignatureFocus.Value = _characterOptions.KarmaFlexibleSignatureFocus;
+            nudKarmaMaskingFocus.Value = _characterOptions.KarmaMaskingFocus;
+            nudKarmaPowerFocus.Value = _characterOptions.KarmaPowerFocus;
+            nudKarmaQiFocus.Value = _characterOptions.KarmaQiFocus;
+            nudKarmaRitualSpellcastingFocus.Value = _characterOptions.KarmaRitualSpellcastingFocus;
+            nudKarmaSpellcastingFocus.Value = _characterOptions.KarmaSpellcastingFocus;
+            nudKarmaSpellShapingFocus.Value = _characterOptions.KarmaSpellShapingFocus;
+            nudKarmaSummoningFocus.Value = _characterOptions.KarmaSummoningFocus;
+            nudKarmaSustainingFocus.Value = _characterOptions.KarmaSustainingFocus;
+            nudKarmaWeaponFocus.Value = _characterOptions.KarmaWeaponFocus;
         }
 
         private void SaveGlobalOptions()
@@ -812,22 +842,22 @@ namespace Chummer
 
         private void RestoreDefaultKarmaFociValues()
         {
-            nudKarmaAnchoringFocus.Value = 6;
-            nudKarmaBanishingFocus.Value = 3;
-            nudKarmaBindingFocus.Value = 3;
-            nudKarmaCenteringFocus.Value = 6;
-            nudKarmaCounterspellingFocus.Value = 3;
-            nudKarmaDiviningFocus.Value = 6;
-            nudKarmaDowsingFocus.Value = 6;
-            nudKarmaInfusionFocus.Value = 3;
-            nudKarmaMaskingFocus.Value = 6;
-            nudKarmaPowerFocus.Value = 6;
-            nudKarmaShieldingFocus.Value = 6;
-            nudKarmaSpellcastingFocus.Value = 4;
-            nudKarmaSummoningFocus.Value = 4;
-            nudKarmaSustainingFocus.Value = 2;
-            nudKarmaSymbolicLinkFocus.Value = 1;
-            nudKarmaWeaponFocus.Value = 3;
+            nudKarmaAlchemicalFocus.Value        = 3;
+            nudKarmaBanishingFocus.Value         = 2;
+            nudKarmaBindingFocus.Value           = 2;
+            nudKarmaCenteringFocus.Value         = 3;
+            nudKarmaCounterspellingFocus.Value   = 2;
+            nudKarmaDisenchantingFocus.Value     = 3;
+            nudKarmaFlexibleSignatureFocus.Value = 3;
+            nudKarmaMaskingFocus.Value           = 3;
+            nudKarmaPowerFocus.Value             = 6;
+            nudKarmaQiFocus.Value                = 2;
+            nudKarmaRitualSpellcastingFocus.Value     = 2;
+            nudKarmaSpellcastingFocus.Value      = 2;
+            nudKarmaSpellShapingFocus.Value      = 3;
+            nudKarmaSummoningFocus.Value         = 2;
+            nudKarmaSustainingFocus.Value        = 2;
+            nudKarmaWeaponFocus.Value            = 3;
         }
 
         private void PopulateBuildMethodList()
@@ -1147,7 +1177,10 @@ namespace Chummer
 
             lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
             lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
-            lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+            if (GlobalOptions.Instance.OmaeEnabled)
+            {
+                lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+            }
 
             cboXSLT.BeginUpdate();
             cboXSLT.ValueMember = "Value";

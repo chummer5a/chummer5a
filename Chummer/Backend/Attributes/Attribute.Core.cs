@@ -83,7 +83,7 @@ namespace Chummer.Backend.Attributes
                 _intBase = 0;
             }
             //Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time. 
-            if (objNode["value"] != null)
+            if (objNode["value"] != null && _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule)
             {
                 int i = Convert.ToInt32(objNode["value"].InnerText);
                 i -= _intMetatypeMin;
@@ -256,7 +256,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Math.Min(Base + Karma + MetatypeMinimum, TotalMaximum);
+                return Math.Min(Base + FreeBase + Karma + TotalMinimum + AttributeValueModifiers, TotalMaximum);
             }
         }
 
@@ -301,7 +301,7 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// The total amount of the modifiers that affect the CharacterAttribute's value.
+        /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
         /// </summary>
         public int AttributeModifiers
         {
@@ -453,7 +453,7 @@ namespace Chummer.Backend.Attributes
                     intCustomModifier += intHighest;
                 }
 
-                intModifier += AttributeValueModifiers + intCustomModifier;
+                intModifier += intCustomModifier;
                 return intModifier;
             }
         }
@@ -595,7 +595,7 @@ namespace Chummer.Backend.Attributes
                 int intModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && objImprovement.Enabled)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == _strAbbrev || objImprovement.ImprovedName == _strAbbrev + "Base") && objImprovement.Enabled)
                     {
                         intModifier += objImprovement.Minimum * objImprovement.Rating;
                     }
@@ -611,7 +611,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && objImprovement.Enabled).Sum(objImprovement => objImprovement.Maximum * objImprovement.Rating);
+                return _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == _strAbbrev || objImprovement.ImprovedName == _strAbbrev + "Base") && objImprovement.Enabled).Sum(objImprovement => objImprovement.Maximum * objImprovement.Rating);
             }
         }
 
@@ -1166,7 +1166,7 @@ namespace Chummer.Backend.Attributes
 
         public int SpentPriorityPoints => Base;
 
-        public bool AtMetatypeMaximum => Value == TotalMaximum;
+        public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
         public int KarmaMaximum => TotalMaximum - TotalBase;
         public int PriorityMaximum => TotalMaximum - Karma;
@@ -1334,7 +1334,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-               return LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", _strAbbrev.Replace("{1}", (Value + AttributeValueModifiers + 1).ToString()).Replace("{2}", UpgradeKarmaCost().ToString()));
+               return LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", _strAbbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost().ToString()));
             }
         }
 
@@ -1358,7 +1358,7 @@ namespace Chummer.Backend.Attributes
             if (!CanUpgradeCareer) return;
 
             int price = UpgradeKarmaCost();
-            string upgradetext = LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + _strAbbrev + " " + (Value + AttributeValueModifiers).ToString() + " -> " + (Value + AttributeValueModifiers + 1).ToString();
+            string upgradetext = $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -1381,6 +1381,12 @@ namespace Chummer.Backend.Attributes
                 else if (Base > 0)
                 {
                     Base -= 1;
+                }
+                else if
+                    (Abbrev == "EDG" && TotalMinimum > 0)
+                {
+                    //Edge can reduce the metatype minimum below zero. 
+                    MetatypeMinimum--;
                 }
                 else
                     return;
@@ -1414,6 +1420,7 @@ namespace Chummer.Backend.Attributes
                         OnPropertyChanged(nameof(TotalValue));
                     }
                 }
+                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
             }
             else if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
             {

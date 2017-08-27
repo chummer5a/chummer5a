@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -290,7 +290,7 @@ namespace Chummer
                                 strAccessories += "\n";
                             strAccessories += objAccessory.DisplayName;
                         }
-                        string strAvail = objWeapon.Avail;
+                        string strAvail = objWeapon.TotalAvail;
                         string strSource = objWeapon.Source + " " + objWeapon.Page;
                         int intCost = objWeapon.Cost;
 

@@ -237,6 +237,7 @@
       <cost>FixedValues(43000,97000,208000)</cost>
       <source>SR5</source>
       <page>452</page>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -443,6 +444,7 @@
       <allowsubsystems>
         <category>Eyeware</category>
       </allowsubsystems>
+      <minrating>1</minrating>
       <rating>4</rating>
       <subsystems>
         <subsystem>Image Link</subsystem>
@@ -576,6 +578,7 @@
       <allowsubsystems>
         <category>Earware</category>
       </allowsubsystems>
+      <minrating>1</minrating>
       <rating>4</rating>
       <subsystems>
         <subsystem>Sound Link</subsystem>
@@ -879,6 +882,7 @@
           <cyberware>Siemens Cyberspine</cyberware>
         </oneof>
       </forbidden>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -2276,6 +2280,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3431,9 +3436,12 @@
       <ess>0</ess>
       <capacity>[0]</capacity>
       <avail>12F</avail>
-      <cost>Parent Cost * 0.10</cost>
+      <cost>Variable(0-1000000)</cost>
       <source>CF</source>
       <page>147</page>
+      <bonus>
+        <selectcyberware />
+      </bonus>
       <forcegrade>Standard</forcegrade>
       <rating>6</rating>
     </cyberware>
@@ -3847,6 +3855,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3872,7 +3881,7 @@
       <page>182</page>
     </cyberware>
     <!-- End Region -->
-    <!-- Shadowrun 2050 SR5 -->
+    <!-- Region Shadowrun 2050 SR5 -->
     <cyberware>
       <id>13ade3a3-1811-4ca6-9937-61dc6cfaccfb</id>
       <name>Datajack (2050)</name>
@@ -4491,6 +4500,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -4503,6 +4513,7 @@
       <cost>FixedValues(12000,60000,300000)</cost>
       <source>2050</source>
       <page>203</page>
+      <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -4773,6 +4784,44 @@
           <cyberware>Siemens Cyberspine Upgrade (Elite Warrior)</cyberware>
         </allof>
       </required>-->
+    </cyberware>
+    <!-- End Region -->
+    <!-- Region The Complete Trog -->
+    <cyberware>
+      <id>3d4b52fd-a8e8-4dd7-b390-8512e673e88a</id>
+      <name>Antenna Grill</name>
+      <category>Bodyware</category>
+      <ess>0.1</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>1000</cost>
+      <source>TCT</source>
+      <page>187</page>
+      <rating>0</rating>
+    </cyberware>
+    <cyberware>
+      <id>d37dd5d2-97d2-47f6-87a1-f55328142ad5</id>
+      <name>Horn Compartment</name>
+      <category>Bodyware</category>
+      <ess>0</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>1000</cost>
+      <source>TCT</source>
+      <page>185</page>
+      <rating>0</rating>
+    </cyberware>
+    <cyberware>
+      <id>d17bef68-2419-45fe-9bb4-e050d61d1352</id>
+      <name>Troll Roarer</name>
+      <category>Bodyware</category>
+      <ess>0.1</ess>
+      <capacity>0</capacity>
+      <avail>RatingR</avail>
+      <cost>50 * Rating</cost>
+      <source>TCT</source>
+      <page>187</page>
+      <rating>12</rating>
     </cyberware>
     <!-- End Region -->
   </cyberwares>

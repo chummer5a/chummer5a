@@ -69,10 +69,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlArt["name"].InnerText;
-                    if (objXmlArt["translate"] != null)
-                        objItem.Name = objXmlArt["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlArt["name"].InnerText;
+                    objItem.Name = objXmlArt["translate"]?.InnerText ?? objXmlArt["name"].InnerText;
                     lstMartialArt.Add(objItem);
                 }
             }

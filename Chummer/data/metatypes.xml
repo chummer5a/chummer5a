@@ -1570,7 +1570,7 @@
         </negative>
       </qualities>
       <powers>
-        <power>Concealment</power>
+        <power select="Self-Only">Concealment</power>
         <power select="Upon Death">Vanishing</power>
       </powers>
       <source>RF</source>
