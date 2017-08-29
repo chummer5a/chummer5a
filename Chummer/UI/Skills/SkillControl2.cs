@@ -329,5 +329,13 @@ namespace Chummer.UI.Skills
                 chkKarma.Checked = true;
             }
         }
+
+        private void RatingChanged(object sender, EventArgs e)
+        {
+            if (_skill.LearnedRating == 0 && _skill.Specializations.Count > 0)
+            {
+                _skill.Specializations.Clear();
+            }
+        }
     }
 }

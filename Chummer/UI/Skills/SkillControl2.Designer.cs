@@ -106,6 +106,7 @@ namespace Chummer.UI.Skills
             this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
             this.nudKarma.TabIndex = 14;
+            this.nudKarma.ValueChanged += new System.EventHandler(this.RatingChanged);
             // 
             // nudSkill
             // 
@@ -120,6 +121,7 @@ namespace Chummer.UI.Skills
             this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudSkill.Size = new System.Drawing.Size(40, 20);
             this.nudSkill.TabIndex = 15;
+            this.nudSkill.ValueChanged += new System.EventHandler(this.RatingChanged);
             // 
             // lblModifiedRating
             // 

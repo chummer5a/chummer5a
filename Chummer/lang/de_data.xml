@@ -24079,7 +24079,7 @@
                 <specs>
                     <spec translate="Auren Lesen">Aura Reading</spec>
                     <spec translate="Astrale Signaturen">Astral Signatures</spec>
-                    <spec translate="[Aura Type]">[Aura Type]</spec>
+                    <spec translate="[Auratyp]">[Aura Type]</spec>
                 </specs>
             </skill>
             <skill>
@@ -24088,11 +24088,11 @@
                 <page>143</page>
                 <translate>Astralkampf</translate>
                 <specs>
-                    <spec translate="Magier">Magicians</spec>
-                    <spec translate="Mana Barrieren">Mana Barriers</spec>
+                    <spec translate="Zauberer">Magicians</spec>
+                    <spec translate="Manabarrieren">Mana Barriers</spec>
                     <spec translate="Geister">Spirits</spec>
-                    <spec translate="[Weapon Focus Type]">[Weapon Focus Type]</spec>
-                    <spec translate="[Other Opponent Type]">[Other Opponent Type]</spec>
+                    <spec translate="[Waffenfokusart]">[Weapon Focus Type]</spec>
+                    <spec translate="[Andere Gegnerart]">[Other Opponent Type]</spec>
                 </specs>
             </skill>
             <skill>
@@ -24125,12 +24125,12 @@
                 <page>143</page>
                 <translate>Verbannen</translate>
                 <specs>
-                    <spec translate="Geister des Himmels">Spirits of Air</spec>
-                    <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-                    <spec translate="Geister des Landes">Spirits of Earth</spec>
-                    <spec translate="Geister des Feuers">Spirits of Fire</spec>
+                    <spec translate="Luftgeister">Spirits of Air</spec>
+                    <spec translate="Geister des Tieres">Spirits of Beasts</spec>
+                    <spec translate="Erdgeister">Spirits of Earth</spec>
+                    <spec translate="Feuergeister">Spirits of Fire</spec>
                     <spec translate="Geister des Menschen">Spirits of Man</spec>
-                    <spec translate="Geister des Wassers">Spirits of Water</spec>
+                    <spec translate="Wassergeister">Spirits of Water</spec>
                     <spec translate="Beschützergeist">Guardian Spirit</spec>
                     <spec translate="Ratgebergeist">Guidance Spirit</spec>
                     <spec translate="Pflanzengeist">Plant Spirit</spec>
@@ -24147,12 +24147,12 @@
                 <page>143</page>
                 <translate>Binden</translate>
                 <specs>
-                    <spec translate="Geister des Himmels">Spirits of Air</spec>
-                    <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-                    <spec translate="Geister des Landes">Spirits of Earth</spec>
-                    <spec translate="Geister des Feuers">Spirits of Fire</spec>
+                    <spec translate="Luftgeister">Spirits of Air</spec>
+                    <spec translate="Geister des Tieres">Spirits of Beasts</spec>
+                    <spec translate="Erdgeister">Spirits of Earth</spec>
+                    <spec translate="Feuergeister">Spirits of Fire</spec>
                     <spec translate="Geister des Menschen">Spirits of Man</spec>
-                    <spec translate="Geister des Wassers">Spirits of Water</spec>
+                    <spec translate="Wassergeister">Spirits of Water</spec>
                     <spec translate="Beschützergeist">Guardian Spirit</spec>
                     <spec translate="Ratgebergeist">Guidance Spirit</spec>
                     <spec translate="Pflanzengeist">Plant Spirit</spec>
@@ -24727,12 +24727,12 @@
                 <page>143</page>
                 <translate>Herbeirufen</translate>
                 <specs>
-                    <spec translate="Spirits of Air">Spirits of Air</spec>
-                    <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-                    <spec translate="Spirits of Earth">Spirits of Earth</spec>
-                    <spec translate="Spirits of Fire">Spirits of Fire</spec>
-                    <spec translate="Spirits of Man">Spirits of Man</spec>
-                    <spec translate="Spirits of Water">Spirits of Water</spec>
+                    <spec translate="Luftgeister">Spirits of Air</spec>
+                    <spec translate="Geister des Tieres">Spirits of Beasts</spec>
+                    <spec translate="Erdgeister">Spirits of Earth</spec>
+                    <spec translate="Feuergeister">Spirits of Fire</spec>
+                    <spec translate="Geister des Menschen">Spirits of Man</spec>
+                    <spec translate="Wassergeister">Spirits of Water</spec>
                     <spec translate="Guardian Spirit">Guardian Spirit</spec>
                     <spec translate="Guidance Spirit">Guidance Spirit</spec>
                     <spec translate="Plant Spirit">Plant Spirit</spec>
@@ -24799,7 +24799,7 @@
                     <spec translate="Blocken">Blocking</spec>
                     <spec translate="Cyberimplantatwaffen">Cyber Implants</spec>
                     <spec translate="Festhaltekampf">Subduing Combat</spec>
-                    <spec translate="[Martial Art]">[Martial Art]</spec>
+                    <spec translate="[Kampfkunst]">[Martial Art]</spec>
                 </specs>
             </skill>
             <skill>
@@ -24827,15 +24827,15 @@
                 <page>142</page>
                 <translate>Alchemie</translate>
                 <specs>
-                    <spec translate="Combat">Combat</spec>
-                    <spec translate="Command">Command</spec>
-                    <spec translate="Contact">Contact</spec>
-                    <spec translate="Detection">Detection</spec>
-                    <spec translate="Health">Health</spec>
+                    <spec translate="Kampf">Combat</spec>
+                    <spec translate="Befehl">Command</spec>
+                    <spec translate="Berührung">Contact</spec>
+                    <spec translate="Wahrnehmung">Detection</spec>
+                    <spec translate="Heilung">Health</spec>
                     <spec translate="Illusion">Illusion</spec>
                     <spec translate="Manipulation">Manipulation</spec>
-                    <spec translate="Time">Time</spec>
-                    <spec translate="[Trigger]">[Trigger]</spec>
+                    <spec translate="Zeit">Time</spec>
+                    <spec translate="[Auslöser]">[Trigger]</spec>
                 </specs>
             </skill>
             <skill>
@@ -25396,10 +25396,12 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>					
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+					<spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25409,7 +25411,6 @@
                     <spec translate="Kleinasien">Asia - Minor</spec>
                     <spec translate="Mittlerer Osten">Middle East</spec>
                     <spec translate="Australien">Australia</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill>
@@ -25445,6 +25446,7 @@
                     <spec translate="Van Gogh">Van Gogh</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25464,6 +25466,7 @@
                     <spec translate="Anatomie">Anatomy</spec>
                     <spec translate="Mikrobiologie">Microbiology</spec>
                     <spec translate="Physiologie">Physiology</spec>
+                    <spec translate="Parazoologie">Parazoology</spec>
                 </specs>
             </skill>
             <skill>
@@ -25527,7 +25530,7 @@
                     <spec translate="Elf">Elf</spec>
                     <spec translate="FDC">FDC</spec>
                     <spec translate="Gay">Gay</spec>
-                    <spec translate="High-Class">High-Class</spec>
+                    <spec translate="Oberschicht">High-Class</spec>
                     <spec translate="Hotel">Hotel</spec>
                     <spec translate="Jazz">Jazz</spec>
                     <spec translate="Hongkong">Hong-Kong</spec>
@@ -25564,6 +25567,7 @@
                     <spec translate="Schatten">Shadows</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25580,6 +25584,8 @@
                 <name>Economics</name>
                 <translate>Wirtschaft</translate>
                 <specs>
+                    <spec translate="Mikroökonomie">Micro-economics</spec>
+                    <spec translate="Makroökonomie">Macro-economics</spec>
                     <spec translate="Konzern">Corporate</spec>
                     <spec translate="Stamm">Tribal</spec>
                     <spec translate="Unterwelt">Underworld</spec>
@@ -25608,10 +25614,12 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25621,7 +25629,6 @@
                     <spec translate="Kleinasien">Asia - Minor</spec>
                     <spec translate="Mittlerer Osten">Middle East</spec>
                     <spec translate="Australien">Australia</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill>
@@ -25723,9 +25730,9 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill>
@@ -25746,6 +25753,9 @@
                 <name>History</name>
                 <translate>Geschichte</translate>
                 <specs>
+                    <spec translate="Altertum">Ancient</spec>
+                    <spec translate="Mittelalterlich">Medieval</spec>
+                    <spec translate="Modern">Modern</spec>
                     <spec translate="Kunst">Art</spec>
                     <spec translate="Konzern">Corporate</spec>
                     <spec translate="Militär">Military</spec>
@@ -25779,10 +25789,12 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25792,14 +25804,15 @@
                     <spec translate="Kleinasien">Asia - Minor</spec>
                     <spec translate="Mittlerer Osten">Middle East</spec>
                     <spec translate="Australien">Australia</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill>
                 <id>ee36423c-21c7-4af3-81da-93778da83a45</id>
-                <name>Music</name>
-                <translate>Musik</translate>
+                <name>Club Music</name>
+                <translate>Clubmusik</translate>
                 <specs>
+                    <spec translate="Astral Rock">Astral Rock</spec>
+                    <spec translate="Electron Wave">Electron Wave</spec>
                     <spec translate="Goblin Rock">Goblin Rock</spec>
                     <spec translate="Powernoize">Powernoize</spec>
                     <spec translate="Rockabilly">Rockabilly</spec>
@@ -25810,8 +25823,6 @@
                     <spec translate="Elfen Rap">Elven Rap</spec>
                     <spec translate="Neo-J Pop">Neo-J Pop</spec>
                     <spec translate="Nova K Rock">Nova K Rock</spec>
-                    <spec translate="Astral Rock">Astral Rock</spec>
-                    <spec translate="Electron Wave">Electron Wave</spec>
                 </specs>
             </skill>
             <skill>
@@ -25851,10 +25862,12 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25864,7 +25877,6 @@
                     <spec translate="Kleinasien">Asia - Minor</spec>
                     <spec translate="Mittlerer Osten">Middle East</spec>
                     <spec translate="Australien">Australia</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill translated="True">
@@ -25875,6 +25887,7 @@
                     <spec translate="Geister">Spirits</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25921,10 +25934,12 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25934,7 +25949,6 @@
                     <spec translate="Kleinasien">Asia - Minor</spec>
                     <spec translate="Mittlerer Osten">Middle East</spec>
                     <spec translate="Australien">Australia</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill>
@@ -25942,11 +25956,15 @@
                 <name>Literature</name>
                 <translate>Literatur</translate>
                 <specs>
+                    <spec translate="Japanisch">Japanese</spec>
+                    <spec translate="Frühes Zwanzigstes Jahrhundert">Early Twentieth Century</spec>
                     <spec translate="Science Fiction">Science Fiction</spec>
                     <spec translate="Poesie">Poetry</spec>
+                    <spec translate="Fiktion">Fiction</spec>
                     <spec translate="Romanzen">Romance</spec>
                     <spec translate="Nordamerika">N. America</spec>
                     <spec translate="Südamerika">S. America</spec>
+                    <spec translate="Zentralamerika">Central America</spec>
                     <spec translate="Antarktis">Antarctica</spec>
                     <spec translate="Afrika">Africa</spec>
                     <spec translate="Westeuropa">Western Europe</spec>
@@ -25984,8 +26002,8 @@
             </skill>
             <skill>
                 <id>0bbb3078-a940-4003-b4f3-fa23937cf227</id>
-                <name>Magical Theory</name>
-                <translate>Magietheorie</translate>
+                <name>Magical Theory (Academic)</name>
+                <translate>Magietheorie (Akademisches Wissen)</translate>
                 <specs>
                     <spec translate="Hexerei">Sorcery</spec>
                     <spec translate="Beschwören">Conjuring</spec>
@@ -26005,6 +26023,7 @@
                     <spec translate="Blutmagie">Blood Magic</spec>
                     <spec translate="Toxische Magie">Toxic Magic</spec>
                     <spec translate="Insektengeister">Insect Spirits</spec>
+                    <spec translate="Schattengeister">Shadow Spirits</spec>
                 </specs>
             </skill>
             <skill>
@@ -26048,6 +26067,7 @@
                     <spec translate="Privat">Home</spec>
                     <spec translate="Veranstaltung">Public Event</spec>
                     <spec translate="Fahrzeug">Vehicle</spec>
+                    <spec translate="VIP">VIP</spec>
                 </specs>
             </skill>
             <skill>
@@ -26059,6 +26079,7 @@
                     <spec translate="Knight Errant">Knight Errant</spec>
                     <spec translate="Hard Corps">Hard Corps</spec>
                     <spec translate="Minutemen Security">Minutemen Security</spec>
+                    <spec translate="Seattle Sec Corps">Seattle Sec Corps</spec>
                 </specs>
             </skill>
             <skill>
@@ -26074,10 +26095,11 @@
                     <spec translate="Schnelle Eingreiftruppen">Rapid Response</spec>
                     <spec translate="Grenzpatrollien">Border Patrol</spec>
                     <spec translate="Zoll">Customs</spec>
+                    <spec translate="VIP">VIP</spec>
                 </specs>
             </skill>
             <skill translated="True">
-                <id>bd978c37-7bff-4610-9c3a-1bab45c6e93f</id>
+                <id>fe3ccfd5-9e14-4e0a-962d-f9601fc24950</id>
                 <name>Shadow Community</name>
                 <translate>Shadow Community</translate>
                 <specs>
@@ -26089,6 +26111,7 @@
                     <spec translate="Neuigkeiten">News</spec>
                     <spec translate="Persönlichkeiten">Personalities</spec>
                     <spec translate="Gerüchte">Rumours</spec>
+                    <spec translate="Berühmt Shadowrunner">Famous Shadowrunners</spec>
                 </specs>
             </skill>
             <skill>
@@ -26096,7 +26119,7 @@
                 <name>Spirits</name>
                 <translate>Geister</translate>
                 <specs>
-                    <spec translate="Monster">Beast</spec>
+                    <spec translate="Tier">Beast</spec>
                     <spec translate="Erde">Earth</spec>
                     <spec translate="Feuer">Fire</spec>
                     <spec translate="Wächter">Guardian</spec>
@@ -26114,17 +26137,19 @@
                 <translate>Sport</translate>
                 <specs>
                     <spec translate="Baseball">Baseball</spec>
+                    <spec translate="Basketball">Basketball</spec>
+                    <spec translate="Boxen">Boxing</spec>
                     <spec translate="Combat Biking">Combat Biking</spec>
+                    <spec translate="Court Ball">Court Ball</spec>
                     <spec translate="Football">Football</spec>
+                    <spec translate="MMA">MMA</spec>
                     <spec translate="Hockey">Hockey</spec>
                     <spec translate="Fußball">Soccer</spec>
+                    <spec translate="Stickball">Stickball</spec>
                     <spec translate="UFC">UFC</spec>
+                    <spec translate="Untergrundkämpfe">Underground Fighting</spec>
                     <spec translate="Stadtkrieg">Urban Brawl</spec>
                     <spec translate="Wrestling">Wrestling</spec>
-                    <spec translate="Basketball">Basketball</spec>
-                    <spec translate="Court Ball">Court Ball</spec>
-                    <spec translate="MMA">MMA</spec>
-                    <spec translate="Stickball">Stickball</spec>
                 </specs>
             </skill>
             <skill>
@@ -26132,9 +26157,10 @@
                 <name>Syndicates</name>
                 <translate>Syndikate</translate>
                 <specs>
+                    <spec translate="Persönlichkeiten">Personalities</spec>
                     <spec translate="Geisterkartelle">Ghost Cartels</spec>
                     <spec translate="Mafia">Mafia</spec>
-                    <spec translate="Triad">Triad</spec>
+                    <spec translate="Triade">Triad</spec>
                     <spec translate="Yakuza">Yakuza</spec>
                     <spec translate="Vory">Vory</spec>
                     <spec translate="Atlanta">Atlanta</spec>
@@ -26162,9 +26188,9 @@
                     <spec translate="Quebec">Quebec</spec>
                     <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
                     <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                     <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
                     <spec translate="Yucatán">Yukutan</spec>
-                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
                 </specs>
             </skill>
             <skill>
@@ -26186,11 +26212,15 @@
                 <translate>Trids</translate>
                 <specs>
                     <spec translate="Action">Action</spec>
-                    <spec translate="Cop">Cop</spec>
+                    <spec translate="Comedy">Comedy</spec>
+                    <spec translate="Kop">Cop</spec>
                     <spec translate="Dokumentation">Documentary</spec>
+                    <spec translate="Drama">Drama</spec>
                     <spec translate="Fantasy">Fantasy</spec>
+                    <spec translate="Horror">Horror</spec>
                     <spec translate="Romantik/Comedy">Rom-Com</spec>
-                    <spec translate="Sci-Fi">Sci-fi</spec>
+                    <spec translate="Science-Fiction">Sci-fi</spec>
+                    <spec translate="Thriller">Thriller</spec>
                 </specs>
             </skill>
             <skill>
@@ -26200,10 +26230,12 @@
                 <specs>
                     <spec translate="Brandstiftung">Arson</spec>
                     <spec translate="Schwarze Magie">Black Magic</spec>
+                    <spec translate="Schwarzmarktkanal">Black Market Pipeline</spec>
                     <spec translate="Erpressung">Blackmail</spec>
                     <spec translate="BTL">BTL</spec>
                     <spec translate="Falschgeld">Counterfitting</spec>
                     <spec translate="Drogen">Drugs</spec>
+                    <spec translate="Drogendealer">Drug Dealers</spec>
                     <spec translate="Hehlerei">Fencing</spec>
                     <spec translate="Finanzkriminalität">Financial Crime</spec>
                     <spec translate="Fixing">Fixing</spec>
@@ -26211,17 +26243,24 @@
                     <spec translate="Falschspiel">Gambling</spec>
                     <spec translate="Grifting">Grifting</spec>
                     <spec translate="Entführung">Hijacking</spec>
+                    <spec translate="Illegale Waren">Illegal Goods</spec>
                     <spec translate="Kidnapping">Kidnapping</spec>
                     <spec translate="Kredithai">Loansharking</spec>
+                    <spec translate="Lokale Runners">Local Runners</spec>
                     <spec translate="Medizin">Medicine</spec>
                     <spec translate="Matrixkriminalität">Matrix Crime</spec>
                     <spec translate="Geldwäsche">Money Laundering</spec>
-                    <spec translate="Pornography">Pornography</spec>
+                    <spec translate="Organhändler">>Organleggers</spec>
+                    <spec translate="Pornographie">Pornography</spec>
                     <spec translate="Prostitution">Prostitution</spec>
                     <spec translate="Schutzgeld">Protection</spec>
                     <spec translate="Raub">Robbery</spec>
+                    <spec translate="Schmuggler">Smugglers</spec>
                     <spec translate="Schmuggel">Smuggling</spec>
+                    <spec translate="Talislegger">Talislegger</spec>
+                    <spec translate="Taminous groups">Taminous groups</spec>
                     <spec translate="Wirtschaftskriminalität">White Collar</spec>
+                    <spec translate="Wetwork">Wetwork</spec>
                 </specs>
             </skill>
             <skill translated="True">
@@ -26255,10 +26294,10 @@
                 <name>Fashion</name>
                 <translate>Mode</translate>
                 <specs>
-                    <spec translate="Harajuku Scene">Harajuku Scene</spec>
-                    <spec translate="London Scene">London Scene</spec>
-                    <spec translate="New York Scene">New York Scene</spec>
-                    <spec translate="Paris Scene">Paris Scene</spec>
+                    <spec translate="Harajuku Szene">Harajuku Scene</spec>
+                    <spec translate="London Szene">London Scene</spec>
+                    <spec translate="New York Szene">New York Scene</spec>
+                    <spec translate="Paris Szene">Paris Scene</spec>
                 </specs>
             </skill>
             <skill translated="True">
@@ -26266,11 +26305,21 @@
                 <name>Matrix Games</name>
                 <translate>Matrix Spiele</translate>
                 <specs>
+                    <spec translate="Astral Dreams: Legend of Tenku">Astral Dreams: Legend of Tenku</spec>
+                    <spec translate="Awakening: 1949">Awakening: 1949</spec>
+                    <spec translate="Beat the Market">Beat the Market</spec>
                     <spec translate="Dawn of Atlantis III">Dawn of Atlantis III</spec>
                     <spec translate="Dragon Storm">Dragon Storm</spec>
+                    <spec translate="Fermat's Last Hermetic Equation">Fermat's Last Hermetic Equation</spec>
+                    <spec translate="Galaxy Ten">Galaxy Ten</spec>
                     <spec translate="Grand Larceny">Grand Larceny</spec>
                     <spec translate="Killing Floor">Killing Floor</spec>
+                    <spec translate="Life's a Bitch">Life's a Bitch</spec>
+                    <spec translate="Miracle Shooter">Miracle Shooter</spec>
+                    <spec translate="Noir Confidential">Noir Confidential</spec>
+                    <spec translate="Run, Run Runner">Run, Run Runner</spec>
                     <spec translate="Shadowrun Online">Shadowrun Online</spec>
+                    <spec translate="The Seelie Court">The Seelie Court</spec>
                 </specs>
             </skill>
             <skill>
@@ -26278,11 +26327,12 @@
                 <name>Small Unit Tactics</name>
                 <translate>Taktik kleinerer Einheiten</translate>
                 <specs>
+                    <spec translate="Arktis">Arctic</spec>
                     <spec translate="Wüste">Desert</spec>
-                    <spec translate="Langstrecke">Distance</spec>
-                    <spec translate="Sprint">Sprinting</spec>
+                    <spec translate="Wald">Forest</spec>
+                    <spec translate="Dschungel">Jungle</spec>
+                    <spec translate="Berge">Mountains</spec>
                     <spec translate="Stadt">Urban</spec>
-                    <spec translate="Wildnis">Wilderness</spec>
                     <spec translate="[Terrain]">[Terrain]</spec>
                 </specs>
             </skill>
@@ -26295,6 +26345,7 @@
                     <spec translate="Soup Kitchens">Soup Kitchens</spec>
                     <spec translate="Squats">Squats</spec>
                     <spec translate="Street Docs">Street Docs</spec>
+                    <spec translate="Street Rumors">Street Rumors</spec>
                 </specs>
             </skill>
             <skill>
@@ -26302,6 +26353,8 @@
                 <name>Street Drugs</name>
                 <translate>Straßendrogen</translate>
                 <specs>
+                    <spec translate="Betel">Betel</spec>
+                    <spec translate="Binaural Beats">Binaural Beats</spec>
                     <spec translate="BTLs">BTLs</spec>
                     <spec translate="Cram">Cram</spec>
                     <spec translate="Deepweed">Deepweed</spec>
@@ -26315,9 +26368,9 @@
                 <name>Administration</name>
                 <translate>Verwaltung</translate>
                 <specs>
-                    <spec>Unternehmen</spec>
-                    <spec>Regierung</spec>
-                    <spec>Religiös</spec>
+                    <spec translate="Unternehmen">Corporate</spec>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Religiös">Religious</spec>
                 </specs>
             </skill>
             <skill>
@@ -26360,6 +26413,36 @@
                 <id>6331a44a-ad26-4b08-8b7a-2dbe3c2d0584</id>
                 <name>Black Markets</name>
                 <translate>Schwarzmarkt</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Saskatoon">Saskatoon</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Algonkian-Manitu-Rat">Algonkian-Manitou Council</spec>
+                    <spec translate="Athabaska-Rat">Athabaskan Council</spec>
+                    <spec translate="Amazonien">Amazonia</spec>
+                    <spec translate="Aztlan">Aztlan</spec>
+                    <spec translate="Karibische Liga">Carribean League</spec>
+                    <spec translate="Freistaat Kalifornien">California Free State</spec>
+                    <spec translate="Pueblo Konzernrat">Pueblo Corporate Council</spec>
+                    <spec translate="CAS">CAS</spec>
+                    <spec translate="UCAS">UCAS</spec>
+                    <spec translate="Quebec">Quebec</spec>
+                    <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
+                    <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
+                    <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
+                    <spec translate="Yucatán">Yukutan</spec>
+                </specs>
             </skill>
             <skill>
                 <id>c52d63de-ddc0-477f-bf46-33002f8f4aaa</id>
@@ -26385,6 +26468,21 @@
                 <id>d5412408-46a4-4871-945e-7983ad43857e</id>
                 <name>Charity Shelters</name>
                 <translate>Obdachlosenasyle</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Saskatoon">Saskatoon</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                </specs>
             </skill>
             <skill>
                 <id>47c41bfc-2cfa-47ca-b20e-ec3351979791</id>
@@ -26444,6 +26542,12 @@
                 <id>cee3de6f-4947-4947-b2e1-75fde02a5d78</id>
                 <name>Fashion Design</name>
                 <translate>Modedesign</translate>
+                <specs>
+                    <spec translate="Harajuku Szene">Harajuku Scene</spec>
+                    <spec translate="London Szene">London Scene</spec>
+                    <spec translate="New York Szene">New York Scene</spec>
+                    <spec translate="Paris Szene">Paris Scene</spec>
+                </specs>
             </skill>
             <skill>
                 <id>7ace94b0-ab82-446a-93d0-e1fdb380d1d8</id>
@@ -26509,7 +26613,7 @@
                     <spec translate="Militärisch">Military</spec>
                     <spec translate="Persönlich">Private</spec>
                     <spec translate="Privat">Home</spec>
-                    <spec translate="Konzern">[Corporation]</spec>
+                    <spec translate="[Konzern]">[Corporation]</spec>
                 </specs>
             </skill>
             <skill>
@@ -26611,11 +26715,71 @@
                 <id>d0f7dabe-667a-45b1-ab51-a17f463b1bb1</id>
                 <name>Smuggler Routes</name>
                 <translate>Schmugglerrouten</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Saskatoon">Saskatoon</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Algonkian-Manitu-Rat">Algonkian-Manitou Council</spec>
+                    <spec translate="Athabaska-Rat">Athabaskan Council</spec>
+                    <spec translate="Amazonien">Amazonia</spec>
+                    <spec translate="Aztlan">Aztlan</spec>
+                    <spec translate="Karibische Liga">Carribean League</spec>
+                    <spec translate="Freistaat Kalifornien">California Free State</spec>
+                    <spec translate="Pueblo Konzernrat">Pueblo Corporate Council</spec>
+                    <spec translate="CAS">CAS</spec>
+                    <spec translate="UCAS">UCAS</spec>
+                    <spec translate="Quebec">Quebec</spec>
+                    <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
+                    <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
+                    <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
+                    <spec translate="Yucatán">Yukutan</spec>
+                </specs>
             </skill>
             <skill>
                 <id>4a046ac0-b5fe-40d8-9ec6-305ffbac189c</id>
                 <name>Smuggler Safe Houses</name>
-                <translate>Schmuggler Safehouses</translate>
+                <translate>Schmuggler Rückzugsorte</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Saskatoon">Saskatoon</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Algonkian-Manitu-Rat">Algonkian-Manitou Council</spec>
+                    <spec translate="Athabaska-Rat">Athabaskan Council</spec>
+                    <spec translate="Amazonien">Amazonia</spec>
+                    <spec translate="Aztlan">Aztlan</spec>
+                    <spec translate="Karibische Liga">Carribean League</spec>
+                    <spec translate="Freistaat Kalifornien">California Free State</spec>
+                    <spec translate="Pueblo Konzernrat">Pueblo Corporate Council</spec>
+                    <spec translate="CAS">CAS</spec>
+                    <spec translate="UCAS">UCAS</spec>
+                    <spec translate="Quebec">Quebec</spec>
+                    <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
+                    <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
+                    <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
+                    <spec translate="Yucatán">Yukutan</spec>
+                </specs>
             </skill>
             <skill>
                 <id>ac2d2cb7-e602-42cc-bc53-9bb45588244c</id>
@@ -26638,10 +26802,10 @@
                     <spec translate="Dokumentation">Documentary</spec>
                     <spec translate="Drama">Drama</spec>
                     <spec translate="Fantasy">Fantasy</spec>
-                    <spec translate="Speileshows">Game Shows</spec>
+                    <spec translate="Spieleshows">Game Shows</spec>
                     <spec translate="Horror">Horror</spec>
                     <spec translate="Reality Shows">Reality Shows</spec>
-                    <spec translate="Romantic Commedy">Rom-Com</spec>
+                    <spec translate="Romantik/Comedy">Rom-Com</spec>
                     <spec translate="Science-Fiction">Sci-fi</spec>
                     <spec translate="Thriller">Thriller</spec>
                 </specs>
@@ -26655,7 +26819,7 @@
                     <spec translate="Mars">Mars</spec>
                     <spec translate="Mond">Moon</spec>
                     <spec translate="Sterne">Stars</spec>
-                    <spec translate="Kategorie">[category]</spec>
+                    <spec translate="[Kategorie]">[category]</spec>
                 </specs>
             </skill>
             <skill>
@@ -26670,7 +26834,7 @@
                     <spec translate="Oper">Opera</spec>
                     <spec translate="Orchestral">Orchestral</spec>
                     <spec translate="Renaissance">Renaissance</spec>
-                    <spec translate="Musikrichtung">[music style]</spec>
+                    <spec translate="[Musikrichtung]">[music style]</spec>
                 </specs>
             </skill>
             <skill>
@@ -26826,6 +26990,36 @@
                 <id>2d74b337-f0c4-465c-a03a-23af8d93082b</id>
                 <name>Fight Clubs</name>
                 <translate>Fight-Clubs</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Saskatoon">Saskatoon</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Algonkian-Manitu-Rat">Algonkian-Manitou Council</spec>
+                    <spec translate="Athabaska-Rat">Athabaskan Council</spec>
+                    <spec translate="Amazonien">Amazonia</spec>
+                    <spec translate="Aztlan">Aztlan</spec>
+                    <spec translate="Karibische Liga">Carribean League</spec>
+                    <spec translate="Freistaat Kalifornien">California Free State</spec>
+                    <spec translate="Pueblo Konzernrat">Pueblo Corporate Council</spec>
+                    <spec translate="CAS">CAS</spec>
+                    <spec translate="UCAS">UCAS</spec>
+                    <spec translate="Quebec">Quebec</spec>
+                    <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
+                    <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
+                    <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
+                    <spec translate="Yucatán">Yukutan</spec>
+                </specs>
             </skill>
             <skill>
                 <id>abeaf83e-edeb-4780-baff-4662e73ea8e6</id>
@@ -26851,31 +27045,47 @@
                 <id>e48a5194-57e7-420a-b176-5f51bdb235c4</id>
                 <name>Megacorp Law (Street)</name>
                 <translate>Megacorp Gesetze (Straßenwissen)</translate>
+                <specs>
+                    <spec translate="Verträge">Contracts</spec>
+                </specs>
             </skill>
             <skill>
                 <id>227bcaa5-0cc0-4f85-99e6-345a5d7e696d</id>
                 <name>Law</name>
                 <translate>Recht</translate>
+                <specs>
+                    <spec translate="Verträge">Contracts</spec>
+                </specs>
             </skill>
             <skill>
                 <id>d6304862-cfa6-4916-aee1-40789798b590</id>
                 <name>Matrix</name>
                 <translate>Matrix</translate>
             </skill>
-            <!--<skill>
+            <skill>
                 <id>cb491fb5-2fa9-422e-b572-9ff84fcd5616</id>
                 <name>Matrix Threats</name>
-                <translate>TODO</translate>
-            </skill>-->
+                <translate>Matrix Bedrohungen</translate>
+            </skill>
             <skill>
                 <id>4dd0d947-b1e1-471b-bfc0-9ba8ecd827dc</id>
                 <name>Magical Law</name>
                 <translate>Magisches Recht</translate>
+                <specs>
+                    <spec translate="Verträge">Contracts</spec>
+                </specs>
             </skill>
             <skill>
                 <id>e93e443e-7b21-41f7-9f8e-ba316b1e385a</id>
                 <name>Metahumans</name>
                 <translate>Metamenschen</translate>
+                <specs>
+                    <spec translate="Zwerge">Dwarves</spec>
+                    <spec translate="Elfen">Elves</spec>
+                    <spec translate="Menschen">Humans</spec>
+                    <spec translate="Orks">Orks</spec>
+                    <spec translate="Trolle">Trolls</spec>
+                </specs>
             </skill>
             <skill>
                 <id>a2a68932-b602-4387-931b-03b2408a416d</id>
@@ -26906,41 +27116,111 @@
                 <id>d232a676-7550-4e5a-8b5a-57417bb8038d</id>
                 <name>Organized Crime: Chicago</name>
                 <translate>Organisiertes Verbrechen: Chicago</translate>
+                <specs>
+                    <spec translate="Turf">Turf</spec>
+                    <spec translate="Politik">Politics</spec>
+                    <spec translate="Zeichen">Signs</spec>
+                    <spec translate="Geschichte">History</spec>
+                    <spec translate="Organisation">Organizations</spec>
+                    <spec translate="Rückzugsorte">Safe Houses</spec>
+                </specs>
             </skill>
             <skill>
                 <id>8ba59909-186d-4629-97ee-62880189b5c3</id>
                 <name>Police Procedures (Professional)</name>
                 <translate>Polizeiprozeduren (Berufswissen)</translate>
+                <specs>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Militärisches Sicherheitsdesign">Military Security Design</spec>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Militärisch">Military</spec>
+                    <spec translate="Persönlich">Private</spec>
+                    <spec translate="Privat">Home</spec>
+                    <spec translate="[Konzern]">[Corporation]</spec>
+                </specs>
             </skill>
             <skill>
                 <id>a9ba4d49-7a9c-4d3f-9e71-99ef8458ca5f</id>
                 <name>Police Procedures (Street)</name>
                 <translate>Polizeiprozeduren (Straßenwissen)</translate>
+                <specs>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Militärisches Sicherheitsdesign">Military Security Design</spec>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Militärisch">Military</spec>
+                    <spec translate="Persönlich">Private</spec>
+                    <spec translate="Privat">Home</spec>
+                    <spec translate="[Konzern]">[Corporation]</spec>
+                </specs>
             </skill>
             <skill>
                 <id>8a82edaa-9ff0-447d-acb7-3a72a8bcfb9f</id>
                 <name>Security Procedures</name>
                 <translate>Sicherheitsprozeduren</translate>
+                <specs>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Militärisches Sicherheitsdesign">Military Security Design</spec>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Militärisch">Military</spec>
+                    <spec translate="Physisch">Physical</spec>
+                    <spec translate="Persönlich">Private</spec>
+                    <spec translate="Privat">Home</spec>
+                    <spec translate="[Konzern]">[Corporation]</spec>
+                </specs>
             </skill>
-            <!--<skill>
+            <skill>
                 <id>af8ea3b6-5ffd-41b6-892a-7e77ee8e247a</id>
                 <name>Law Enforcement Procedures (Professional)</name>
-                <translate>TODO</translate>
+                <translate>Strafverfolgungsverfahren (Berufswissen)</translate>
+                <specs>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Militärisch">Military</spec>
+                    <spec translate="Physisch">Physical</spec>
+                    <spec translate="Persönlich">Private</spec>
+                    <spec translate="[Konzern]">[Corporation]</spec>
+                </specs>
             </skill>
             <skill>
                 <id>687a25c8-2f47-40fd-a9f8-a44bedb2c1f3</id>
                 <name>Law Enforcement Procedures (Street)</name>
-                <translate>TODO</translate>
+                <translate>Strafverfolgungsverfahren (Straßenwissen)</translate>
+                <specs>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Militärisch">Military</spec>
+                    <spec translate="Physisch">Physical</spec>
+                    <spec translate="Persönlich">Private</spec>
+                    <spec translate="[Konzern]">[Corporation]</spec>
+                </specs>
             </skill>
             <skill>
                 <id>31357280-24e0-4146-b5ee-ad532decaa5e</id>
                 <name>Government Procedures</name>
-                <translate>TODO</translate>
-            </skill>-->
+                <translate>Regierungsverfahren</translate>
+                <specs>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Physisch">Physical</spec>
+                    <spec translate="Bürokratisch">Bureaucratic</spec>
+                </specs>
+            </skill>
             <skill>
                 <id>1d68ed58-91ff-495a-a456-2bc04d82a3b7</id>
                 <name>Lone Star Procedures</name>
                 <translate>Lone Star Vorgehensweisen</translate>
+                <specs>
+                    <spec translate="Regierung">Government</spec>
+                    <spec translate="Magisch">Magical</spec>
+                    <spec translate="Matrix">Matrix</spec>
+                    <spec translate="Physisch">Physical</spec>
+                    <spec translate="Privat">Home</spec>
+                </specs>
             </skill>
             <skill>
                 <id>c345b536-1406-4d32-9ae1-0fc5002cd9c5</id>
@@ -26951,6 +27231,7 @@
                 <id>519e73c7-d1d4-4c53-9654-e4974f9e531b</id>
                 <name>Popular Culture</name>
                 <translate>Popkultur</translate>
+                <specs />
             </skill>
             <skill>
                 <id>9176d81a-ac8b-4168-afe6-affd4bb9514e</id>
@@ -26966,6 +27247,22 @@
                 <id>85a3fe58-b638-4272-949e-bd7549e32e00</id>
                 <name>Runner Hangouts</name>
                 <translate>Runner-Treffpunkte</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Oberschicht">High-Class</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Unterschicht">Low-Class</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                </specs>
             </skill>
             <skill>
                 <id>79a0069c-4517-4698-91b5-3d24b928c5ee</id>
@@ -26977,14 +27274,9 @@
                     <spec translate="Lingo">Lingo</spec>
                 </specs>
             </skill>
-            <!--<skill>
-                <id>fe3ccfd5-9e14-4e0a-962d-f9601fc24950</id>
-                <name>Shadow Community</name>
-                <translate>TODO</translate>
-            </skill>-->
             <skill>
                 <id>4c0b7b81-5dd4-4247-82da-88161992a374</id>
-                <name>Spanish: Aztlaner</name>
+                <name>Spanisch: Azlanisch</name>
                 <specs>
                     <spec translate="Lesen/Schreiben">Read/Write</spec>
                     <spec translate="Sprechen">Speak</spec>
@@ -27001,6 +27293,9 @@
                 <id>ea016ac9-8000-4cb3-ae84-102e9c989667</id>
                 <name>Telesma</name>
                 <translate>Telesmas</translate>
+                <specs>
+                    <spec translate="[Fokusart]">[Focus Type]</spec>
+                </specs>
             </skill>
             <skill>
                 <id>9d03c940-d018-40eb-8273-c33215de3948</id>
@@ -27057,6 +27352,137 @@
             <skill>
                 <id>037f8de4-9485-4efe-8e93-d7b929c62b29</id>
                 <name>Zuni</name>
+                <specs>
+                    <spec translate="Lesen/Schreiben">Read/Write</spec>
+                    <spec translate="Sprechen">Speak</spec>
+                    <spec translate="Dialekt">Dialect</spec>
+                    <spec translate="Lingo">Lingo</spec>
+                </specs>
+            </skill>
+            <skill>
+                <id>94f7ee6d-e79d-4236-9787-c7bc45727e9f</id>
+                <name>Cybertechnology</name>
+                <translate>Cybertechnologie</translate>
+            </skill>
+            <skill>
+                <id>534600a0-395e-4bbc-8dc9-97a007e97504</id>
+                <name>Anatomy</name>
+                <translate>Anatomie</translate>
+                <specs />
+            </skill>
+            <skill>
+                <id>48bd3a3e-9ea8-425a-b2cd-c764479e9565</id>
+                <name>Crook Hangouts</name>
+                <translate>Crook-Treffpunkte</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Oberschicht">High-Class</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Unterschicht">Low-Class</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                </specs>
+            </skill>
+            <skill>
+                <id>5227212f-507d-4aa7-8894-7d35a1eb98cf</id>
+                <name>DIY</name>
+                <specs>
+                    <name translate="Elektronik">Electronics</name>
+                    <spec translate="Schreinern">Carpentry</spec>
+                    <spec translate="Klempnern">Plumbing</spec>
+                    <spec translate="Nähen">Sewing</spec>
+                </specs>
+            </skill>
+            <skill>
+                <id>be9be259-3109-489f-91d4-6e62e44f5ea3</id>
+                <name>Disease</name>
+                <translate>Krankheit</translate>
+                <specs />
+            </skill>
+            <skill>
+                <id>71407a60-c753-40d9-9d5b-416c43b51fef</id>
+                <name>Infected</name>
+                <translate>Infizierte</translate>
+                <specs></specs>
+            </skill>
+            <skill>
+                <id>516713c4-8022-46ea-b1d1-f843922731d4</id>
+                <name>National Threats</name>
+                <translate>Nationale Bedrohungen</translate>
+                <specs>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Algonkian-Manitu-Rat">Algonkian-Manitou Council</spec>
+                    <spec translate="Athabaska-Rat">Athabaskan Council</spec>
+                    <spec translate="Amazonien">Amazonia</spec>
+                    <spec translate="Aztlan">Aztlan</spec>
+                    <spec translate="Karibische Liga">Carribean League</spec>
+                    <spec translate="Freistaat Kalifornien">California Free State</spec>
+                    <spec translate="Pueblo Konzernrat">Pueblo Corporate Council</spec>
+                    <spec translate="CAS">CAS</spec>
+                    <spec translate="UCAS">UCAS</spec>
+                    <spec translate="Quebec">Quebec</spec>
+                    <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
+                    <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
+                    <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
+                    <spec translate="Yucatán">Yukutan</spec>
+                </specs>
+            </skill>
+            <skill>
+                <id>974e376f-5eec-4df8-b7d5-e53e900058e9</id>
+                <name>Undead</name>
+                <translate>Untote</translate>
+                <specs></specs>
+            </skill>
+            <skill>
+                <id>37013018-70bd-4016-827c-c366949622f5</id>
+                <name>Awakened Hangouts</name>
+                <translate>Erwachten-Treffpunkte</translate>
+                <specs>
+                    <spec translate="Atlanta">Atlanta</spec>
+                    <spec translate="Cheyenne">Cheyenne</spec>
+                    <spec translate="Chicago">Chicago</spec>
+                    <spec translate="Denver">Denver</spec>
+                    <spec translate="Hongkong">Hong-Kong</spec>
+                    <spec translate="LA">LA</spec>
+                    <spec translate="Manhattan">Manhattan</spec>
+                    <spec translate="FDC">FDC</spec>
+                    <spec translate="Portland">Portland</spec>
+                    <spec translate="Seattle">Seattle</spec>
+                    <spec translate="Saskatoon">Saskatoon</spec>
+                    <spec translate="Sacramento">Sacramento</spec>
+                    <spec translate="Quebec City">Quebec City</spec>
+                    <spec translate="Algonkian-Manitu-Rat">Algonkian-Manitou Council</spec>
+                    <spec translate="Athabaska-Rat">Athabaskan Council</spec>
+                    <spec translate="Amazonien">Amazonia</spec>
+                    <spec translate="Aztlan">Aztlan</spec>
+                    <spec translate="Karibische Liga">Carribean League</spec>
+                    <spec translate="Freistaat Kalifornien">California Free State</spec>
+                    <spec translate="Pueblo Konzernrat">Pueblo Corporate Council</spec>
+                    <spec translate="CAS">CAS</spec>
+                    <spec translate="UCAS">UCAS</spec>
+                    <spec translate="Quebec">Quebec</spec>
+                    <spec translate="Salish-Shidhe-Rat">Salish-Shidhe Council</spec>
+                    <spec translate="Sioux">Sioux</spec>
+                    <spec translate="Tir Tairngire">Tir Tairngire</spec>
+                    <spec translate="Tsimshian-Protektorat">Tsimshian Protectorate</spec>
+                    <spec translate="Yucatán">Yukutan</spec>
+                </specs>
+            </skill>
+            <skill>
+                <id>63bb99a1-457c-4ee6-ab63-05267b0b0e09</id>
+                <name>City Speak</name>
+                <translate>Strassensprache</translate>
                 <specs>
                     <spec translate="Lesen/Schreiben">Read/Write</spec>
                     <spec translate="Sprechen">Speak</spec>
