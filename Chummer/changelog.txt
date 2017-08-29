@@ -5,6 +5,7 @@ Application Changes:
 - Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
 - Fixed translation for weapon availability in the Select Weapon table. 
 - Fixed optional values for Foci not being saved properly. 
+- Fixes an issue in which editing basic lifestyles wouldn't reselect previous qualities. 
 
 Data Changes:
 

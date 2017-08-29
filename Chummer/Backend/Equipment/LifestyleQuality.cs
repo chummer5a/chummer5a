@@ -11,7 +11,8 @@ namespace Chummer.Backend.Equipment
 {
     public class LifestyleQuality : INamedItemWithGuid
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID;
+        private Guid _SourceGuid;
         private string _strName = string.Empty;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
@@ -86,6 +87,7 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
         {
             _objParentLifestyle = objParentLifestyle;
+            _SourceGuid = Guid.Parse(objXmlLifestyleQuality["id"].InnerText);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("cost", ref _intCost);
@@ -152,6 +154,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("lifestylequality");
+            objWriter.WriteElementString("id", _SourceGuid.ToString());
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
@@ -184,6 +187,12 @@ namespace Chummer.Backend.Equipment
             ParentLifestyle = objParentLifestyle;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (!objNode.TryGetField("id", Guid.TryParse, out _SourceGuid))
+            {
+                var doc = XmlManager.Instance.Load("lifestyles.xml");
+                var q = doc.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                q.TryGetField("id", Guid.TryParse, out _SourceGuid);
+            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             objNode.TryGetInt32FieldQuickly("cost", ref _intCost);
@@ -322,7 +331,16 @@ namespace Chummer.Backend.Equipment
                 return _guiID.ToString();
             }
         }
-
+        /// <summary>
+        /// Source identifier that will be used to identify this Lifestyle Quality in data.
+        /// </summary>
+        public string SourceID
+        {
+            get
+            {
+                return _SourceGuid.ToString();
+            }
+        }
         /// <summary>
         /// LifestyleQuality's name.
         /// </summary>
