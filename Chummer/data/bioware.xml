@@ -133,9 +133,9 @@
       </bonus>
       <forbidden>
         <oneof>
-					<cyberware>Bone Lacing (Titanium)</cyberware>
-					<cyberware>Bone Lacing (Aluminum)</cyberware>
-					<cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
         </oneof>
       </forbidden>
       <rating>4</rating>
@@ -296,7 +296,7 @@
       </bonus>
       <forbidden>
         <oneof>
-					<cyberware>Dermal Plating</cyberware>
+          <cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
       <rating>4</rating>
@@ -1727,7 +1727,6 @@
         <specificattribute>
           <name>WIL</name>
           <val>1</val>
-          <affectbase>no</affectbase>
         </specificattribute>
       </bonus>
       <source>CF</source>
@@ -2038,7 +2037,7 @@
       </bonus>
       <required>
         <oneof>
-					<cyberware>Reaction Enhancers</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </required>
       <source>CF</source>
@@ -2391,7 +2390,7 @@
       <addweapon>Bone Spike I</addweapon>
       <forbidden>
         <oneof>
-					<bioware>Bone Density Augmentation</bioware>
+          <bioware>Bone Density Augmentation</bioware>
         </oneof>
       </forbidden>
       <source>HT</source>
@@ -2408,7 +2407,7 @@
       <addweapon>Bone Spike II</addweapon>
       <required>
         <oneof>
-					<bioware>Bone Density Augmentation</bioware>
+          <bioware>Bone Density Augmentation</bioware>
         </oneof>
       </required>
       <source>HT</source>
@@ -2425,7 +2424,7 @@
       <addweapon>Bone Spike III</addweapon>
       <required>
         <oneof>
-					<bioware>Bone Density Augmentation</bioware>
+          <bioware>Bone Density Augmentation</bioware>
         </oneof>
       </required>
       <source>HT</source>
@@ -2639,7 +2638,7 @@
       </bonus>
       <forbidden>
         <oneof>
-					<bioware>Bone Density Augmentation</bioware>
+          <bioware>Bone Density Augmentation</bioware>
         </oneof>
       </forbidden>
       <rating>3</rating>

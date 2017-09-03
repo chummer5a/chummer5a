@@ -1,13 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<!-- Skills grouped by Skill Category with Ratings more than zero listed by Rating (descending) (English - US) -->
-<!-- Version -500 -->
+<!-- Skills grouped by Skill Category with Ratings more than zero listed by Rating (descending) -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="xz.en-us.xslt"/>
+  <xsl:import href="xz.language.xslt"/>
 
-	<xsl:import href="Shadowrun 5 includes.xslt"/>
-	<xsl:import href="xs.SkillsGroupedByRating.xslt"/>
+  <xsl:import href="Shadowrun 5 set.xslt"/>
+  <xsl:import href="xs.SkillsGroupedByRating.xslt"/>
 
-	<!-- Set global control variables -->
-	<xsl:variable name="lang" select="'en'"/>
-	<xsl:variable name="MinimumRating" select="1"/>
+  <!-- Set global control variables -->
+  <xsl:variable name="MinimumRating" select="1"/>
 </xsl:stylesheet>

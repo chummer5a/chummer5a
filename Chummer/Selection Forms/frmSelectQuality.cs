@@ -33,10 +33,10 @@ namespace Chummer
     {
         public int buildPos = 0;
         public int buildNeg = 0;
-		private string _strSelectedQuality = string.Empty;
-		private bool _blnAddAgain = false;
-	    private bool _blnLoading = true;
-		private readonly Character _objCharacter;
+        private string _strSelectedQuality = string.Empty;
+        private bool _blnAddAgain = false;
+        private bool _blnLoading = true;
+        private readonly Character _objCharacter;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 
@@ -54,13 +54,13 @@ namespace Chummer
             MoveControls();
         }
 
-		private void frmSelectQuality_Load(object sender, EventArgs e)
-		{
-			foreach (Label objLabel in Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = string.Empty;
-			}
+        private void frmSelectQuality_Load(object sender, EventArgs e)
+        {
+            foreach (Label objLabel in Controls.OfType<Label>())
+            {
+                if (objLabel.Text.StartsWith("["))
+                    objLabel.Text = string.Empty;
+            }
 
             // Load the Quality information.
             _objXmlDocument = XmlManager.Instance.Load("qualities.xml");
@@ -71,15 +71,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
-                if (objXmlCategory.Attributes != null)
-                {
-                    if (objXmlCategory.Attributes["translate"] != null)
-                        objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlCategory.InnerText;
-                }
-                else
-                    objItem.Name = objXmlCategory.InnerXml;
+                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                 _lstCategory.Add(objItem);
             }
             cboCategory.BeginUpdate();
@@ -98,7 +90,7 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
-		    _blnLoading = false;
+            _blnLoading = false;
             BuildQualityList();
         }
 
@@ -140,15 +132,15 @@ namespace Chummer
             else
             {
                 int.TryParse(objXmlQuality["karma"]?.InnerText, out intBP);
-			}
-		    bool doubleCostCareer = true;
-		    if (objXmlQuality["doublecareer"] != null)
-		    {
+            }
+            bool doubleCostCareer = true;
+            if (objXmlQuality["doublecareer"] != null)
+            {
                 doubleCostCareer = bool.Parse(objXmlQuality["doublecareer"].InnerText);
-		    }
+            }
 
 
-		    if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && doubleCostCareer)
+            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && doubleCostCareer)
             {
                 intBP *= 2;
             }
@@ -276,10 +268,10 @@ namespace Chummer
             }
         }
 
-	    /// <summary>
-	    /// A Quality the character has that should be ignored for checking Fobidden requirements (which would prevent upgrading/downgrading a Quality).
-	    /// </summary>
-	    public string IgnoreQuality { get; set; } = string.Empty;
+        /// <summary>
+        /// A Quality the character has that should be ignored for checking Fobidden requirements (which would prevent upgrading/downgrading a Quality).
+        /// </summary>
+        public string IgnoreQuality { get; set; } = string.Empty;
 
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
@@ -304,14 +296,14 @@ namespace Chummer
         }
         #endregion
 
-		#region Methods
-		/// <summary>
-		/// Build the list of Qualities.
-		/// </summary>
-		private void BuildQualityList()
-		{
-		    if (_blnLoading) return;
-			List<ListItem> lstQuality = new List<ListItem>();
+        #region Methods
+        /// <summary>
+        /// Build the list of Qualities.
+        /// </summary>
+        private void BuildQualityList()
+        {
+            if (_blnLoading) return;
+            List<ListItem> lstQuality = new List<ListItem>();
             XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
             if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
@@ -368,7 +360,7 @@ namespace Chummer
 
                     if (objXmlQuality["hide"] == null && blnQualityAllowed)
                     {
-						if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlQuality["name"]?.InnerText;
@@ -446,10 +438,10 @@ namespace Chummer
                         if (objXmlMetatype.SelectSingleNode("qualityrestriction/" + cboCategory.SelectedValue.ToString().ToLower() + "/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
                             blnQualityAllowed = true;
                     }
-					if (blnQualityAllowed)
-					{
-						if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
-						{
+                    if (blnQualityAllowed)
+                    {
+                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+                        {
                             if (objXmlQuality["hide"] == null)
                             {
                                 ListItem objItem = new ListItem();
@@ -501,10 +493,10 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
             _strSelectCategory = objNode["category"]?.InnerText;
 
-			if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
-				return;
-			DialogResult = DialogResult.OK;
-		}
+            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+                return;
+            DialogResult = DialogResult.OK;
+        }
 
         private void MoveControls()
         {

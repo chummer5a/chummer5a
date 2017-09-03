@@ -75,20 +75,12 @@ namespace Chummer
             _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
             // Populate the Quality Category list.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");           
+            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {                
+            {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
-                if (objXmlCategory.Attributes != null)
-                {
-                    if (objXmlCategory.Attributes["translate"] != null)
-                        objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlCategory.InnerText;
-                }
-                else
-                    objItem.Name = objXmlCategory.InnerXml;
+                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                 _lstCategory.Add(objItem);
             }
             cboCategory.BeginUpdate();
@@ -148,21 +140,21 @@ namespace Chummer
             if (objXmlQuality["cost"] != null)
             {
                 if (chkFree.Checked)
-				{
-					lblCost.Text = LanguageManager.Instance.GetString("Checkbox_Free");
-				}
+                {
+                    lblCost.Text = LanguageManager.Instance.GetString("Checkbox_Free");
+                }
                 else if (objXmlQuality["allowed"]?.InnerText.Contains(_strSelectedLifestyle) == true)
                 {
                     lblCost.Text = LanguageManager.Instance.GetString("String_LifestyleFreeNuyen");
                 }
-				else
-				{
+                else
+                {
                 lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
-				}
+                }
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;
-			} 
-			else
+            }
+            else
             {
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
@@ -171,7 +163,7 @@ namespace Chummer
         }
 
         private string GetMinimumRequirement(string strAllowedLifestyles)
-        {           
+        {
             if (_strLifestyleSpecific.Contains(strAllowedLifestyles))
             {
                 return strAllowedLifestyles;
@@ -368,10 +360,6 @@ namespace Chummer
             }
             else
             {
-                XmlDocument objXmlMetatypeDocument = new XmlDocument();
-                if (_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Protosapients")
-                    objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
-
                 string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
 
                 foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
@@ -386,10 +374,7 @@ namespace Chummer
                                 {
                                     ListItem objItem = new ListItem();
                                     objItem.Value = objXmlQuality["name"].InnerText;
-                                    if (objXmlQuality["translate"] != null)
-                                        objItem.Name = objXmlQuality["translate"].InnerText;
-                                    else
-                                        objItem.Name = objXmlQuality["name"].InnerText;
+                                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
 
                                     lstLifestyleQuality.Add(objItem);
                                 }
@@ -566,8 +551,8 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-				XmlDocument _objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
-				foreach (XmlNode objXmlOneOf in objXmlRequiredList)
+                XmlDocument _objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
+                foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
                     string strThisRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_OneOf");

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Character sheet with skills listed in alphabetically order (Japanese) -->
-<!-- Version -500 -->
+<!-- Character sheet with skills listed in alphabetically order -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="xz.jp.xslt"/>
+  <xsl:include href="xz.language.xslt"/>
 
-	<xsl:import href="../Shadowrun 5 includes.xslt"/>
-	<xsl:import href="../xs.SkillsGroupedAssorted.xslt"/>
-
-	<!-- Set global control variables -->
-	<xsl:variable name="lang" select="'jp'"/>
+  <xsl:include href="../Shadowrun 5 set.xslt"/>
+  <xsl:include href="../xs.SkillsGroupedAssorted.xslt"/>
 </xsl:stylesheet>

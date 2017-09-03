@@ -1,33 +1,33 @@
 ﻿namespace Chummer
 {
-	partial class frmSelectLifestyleAdvanced
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectLifestyleAdvanced
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
@@ -529,7 +529,7 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
         private void nudSecurity_ValueChanged(object sender, System.EventArgs e)
         {
@@ -561,24 +561,24 @@
             CalculateValues();
         }
 
-		#endregion
+        #endregion
 
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Upgrade_Comforts;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.Label lblTotalLPLabel;
-		private System.Windows.Forms.Label lblTotalLP;
-		private System.Windows.Forms.Label lblCostLabel;
-		private System.Windows.Forms.Label lblCost;
-		private System.Windows.Forms.Label lblLifestyleNameLabel;
-		private System.Windows.Forms.TextBox txtLifestyleName;
-		private System.Windows.Forms.NumericUpDown nudPercentage;
-		private System.Windows.Forms.Label lblPercentage;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.NumericUpDown nudRoommates;
-		private System.Windows.Forms.Label lblRoommates;
+        private System.Windows.Forms.Label lblTotalLPLabel;
+        private System.Windows.Forms.Label lblTotalLP;
+        private System.Windows.Forms.Label lblCostLabel;
+        private System.Windows.Forms.Label lblCost;
+        private System.Windows.Forms.Label lblLifestyleNameLabel;
+        private System.Windows.Forms.TextBox txtLifestyleName;
+        private System.Windows.Forms.NumericUpDown nudPercentage;
+        private System.Windows.Forms.Label lblPercentage;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.NumericUpDown nudRoommates;
+        private System.Windows.Forms.Label lblRoommates;
         private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.ComboBox cboBaseLifestyle;
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Base_Lifestyle;
@@ -591,7 +591,7 @@
         private System.Windows.Forms.Button cmdAddQuality;
         private System.Windows.Forms.Button cmdDeleteQuality;
         private System.Windows.Forms.TreeView treLifestyleQualities;
-		private System.Windows.Forms.CheckBox chkTrustFund;
+        private System.Windows.Forms.CheckBox chkTrustFund;
         private System.Windows.Forms.Label lblQualityLp;
         private System.Windows.Forms.Label lblQualityBPLabel;
         private System.Windows.Forms.Label lblQualitySource;

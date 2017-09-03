@@ -1,33 +1,33 @@
 ﻿namespace Chummer
 {
-	partial class frmSelectQuality
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectQuality
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.lstQualities = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
@@ -355,26 +355,26 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.ListBox lstQualities;
-		private System.Windows.Forms.Label lblCategory;
-		private System.Windows.Forms.ComboBox cboCategory;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.CheckBox chkLimitList;
-		private System.Windows.Forms.Label lblBP;
-		private System.Windows.Forms.Label lblBPLabel;
-		private System.Windows.Forms.CheckBox chkFree;
-		private System.Windows.Forms.CheckBox chkMetagenetic;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.ListBox lstQualities;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.ComboBox cboCategory;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.CheckBox chkLimitList;
+        private System.Windows.Forms.Label lblBP;
+        private System.Windows.Forms.Label lblBPLabel;
+        private System.Windows.Forms.CheckBox chkFree;
+        private System.Windows.Forms.CheckBox chkMetagenetic;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkNotMetagenetic;
         private System.Windows.Forms.NumericUpDown nudMinimumBP;
         private System.Windows.Forms.NumericUpDown nudValueBP;

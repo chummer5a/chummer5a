@@ -58,15 +58,15 @@ namespace Chummer.UI.Attributes
 					DataSourceUpdateMode.OnPropertyChanged);
 				nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
-	            cmdBurnEdge.Visible = false;
-				
+                cmdBurnEdge.Visible = false;
+                
             }
         }
 
-		public AttributeControl(object sender)
-		{
-			this.sender = sender;
-		}
+        public AttributeControl(object sender)
+        {
+            this.sender = sender;
+        }
 
 		public void ResetBinding(CharacterAttrib attrib)
 		{
@@ -95,29 +95,29 @@ namespace Chummer.UI.Attributes
 	        ValueChanged?.Invoke(this);
         }
 
-		private void nudBase_ValueChanged(object sender, EventArgs e)
-		{
-			decimal d = ((NumericUpDownEx) sender).Value;
-			if (!ShowAttributeRule(d + nudKarma.Value))
-			{
-				nudBase.Value = _oldBase;
-				return;
-			}
-			ValueChanged?.Invoke(this);
-			_oldBase = d;
-		}
+        private void nudBase_ValueChanged(object sender, EventArgs e)
+        {
+            decimal d = ((NumericUpDownEx) sender).Value;
+            if (!ShowAttributeRule(d + nudKarma.Value))
+            {
+                nudBase.Value = _oldBase;
+                return;
+            }
+            ValueChanged?.Invoke(this);
+            _oldBase = d;
+        }
 
-		private void nudKarma_ValueChanged(object sender, EventArgs e)
-		{
-			decimal d = ((NumericUpDownEx)sender).Value;
-			if (!ShowAttributeRule(d + nudBase.Value))
-			{
-				nudKarma.Value = _oldKarma;
-				return;
-			}
-			ValueChanged?.Invoke(this);
-			_oldKarma = d;
-		}
+        private void nudKarma_ValueChanged(object sender, EventArgs e)
+        {
+            decimal d = ((NumericUpDownEx)sender).Value;
+            if (!ShowAttributeRule(d + nudBase.Value))
+            {
+                nudKarma.Value = _oldKarma;
+                return;
+            }
+            ValueChanged?.Invoke(this);
+            _oldKarma = d;
+        }
 
 		/// <summary>
 		/// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
@@ -147,9 +147,9 @@ namespace Chummer.UI.Attributes
 				return;
 			}
 
-			// Verify that the user wants to Burn a point of Edge.
-			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnEdge"), LanguageManager.Instance.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-				return;
+            // Verify that the user wants to Burn a point of Edge.
+            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnEdge"), LanguageManager.Instance.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
 
 			_attribute.Degrade(1);
 			ValueChanged?.Invoke(this);
@@ -163,6 +163,10 @@ namespace Chummer.UI.Attributes
             {
                 nudKarma.Value -= nudBase.Increment;
             }
+            else
+            {
+                e.Cancel = true;
+            }
         }
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
@@ -171,6 +175,10 @@ namespace Chummer.UI.Attributes
             if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
     }
