@@ -7311,6 +7311,246 @@
       <seats>8</seats>
     </vehicle>
     <!-- End Region -->
+	<!-- Region Asphaltkrieger-->
+	<vehicle>
+      <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
+      <name>Mercury Cruiser</name>
+	  <handling>4/3</handling>
+	  <speed>3</speed>
+      <accel>3</accel>
+      <body>14</body>
+	  <armor>11</armor>
+      <pilot>1</pilot>	  
+      <sensor>2</sensor>
+      <seats>5</seats>  
+      <avail>0</avail>
+      <cost>21000</cost>  
+	  <source>R5G</source>
+      <page>51</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	<vehicle>
+      <id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
+      <name>Mercedes-Benz CityMog</name>
+	  <handling>5/4</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+	  <armor>10</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>3</seats>  
+      <avail>0</avail>
+      <cost>44000</cost>  
+	  <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	<vehicle>
+      <id>122a3919-dc05-4d8d-89b3-fa0ac9e1d669</id>
+      <name>Mercedes-Benz CityMog CM-X (Pickup)</name>
+	  <handling>5/4</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+	  <armor>10</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>5</seats>  
+      <avail>0</avail>
+      <cost>42000</cost>  
+	  <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	<vehicle>
+      <id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
+      <name>Mercedes-Benz CityMog Traveller</name>
+	  <handling>5/4</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+	  <armor>10</armor>
+      <pilot>3</pilot>	  
+      <sensor>2</sensor>
+      <seats>20</seats>  
+      <avail>0</avail>
+      <cost>56000</cost>  
+	  <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+	  <mods>
+	    <name>Amenities (Middle)</name>
+	  </mods>
+    </vehicle>
+	<vehicle>
+      <id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
+      <name>Mercedes-Benz CityMog Elite</name>
+	  <handling>5/3</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+	  <armor>12</armor>
+      <pilot>3</pilot>	  
+      <sensor>4</sensor>
+      <seats>12</seats>  
+      <avail>0</avail>
+      <cost>96000</cost>  
+	  <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="4" maxrating="4">Sensor Array</gear>
+      </gears>
+	  <mods>
+	    <name>Amenities (High)</name>
+	  </mods>
+    </vehicle>
+	<vehicle>
+      <id>b52811c6-03d4-4dee-8a2e-04ea043b79e8</id>
+      <name>Volkswagen Multicity</name>
+	  <handling>3/2</handling>
+	  <speed>4</speed>
+      <accel>1</accel>
+      <body>12</body>
+	  <armor>4</armor>
+      <pilot>1</pilot>	  
+      <sensor>1</sensor>
+      <seats>3</seats>  
+      <avail>0</avail>
+      <cost>18000</cost>  
+	  <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="1" maxrating="1">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	<vehicle>
+      <id>8abe349d-d687-45a0-a1c9-d6189e4eac39</id>
+      <name>Volkswagen Urban Explorer</name>
+	  <handling>3/3</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>13</body>
+	  <armor>6</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>4</seats>  
+      <avail>0</avail>
+      <cost>28000</cost>  
+	  <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+	  <mods>
+	    <name>Amenities (Middle)</name>
+		<name>SunCell</name>
+	  </mods>
+    </vehicle>
+	<vehicle>
+      <id>9b5cf9b8-c3ce-4853-91c7-215a73ad4ed2</id>
+      <name>Volkswagen Urban Transporter</name>
+	  <handling>3/3</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>13</body>
+	  <armor>6</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>2</seats>  
+      <avail>0</avail>
+      <cost>19500</cost>  
+	  <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	<vehicle>
+      <id>61c57dad-8683-464e-92e1-3ad57776365e</id>
+      <name>Volkswagen Urban Traveller</name>
+	  <handling>3/3</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>13</body>
+	  <armor>6</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>9</seats>  
+      <avail>0</avail>
+      <cost>29500</cost>  
+	  <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	<vehicle>
+      <id>1581a0b7-d198-46ba-bf68-88871554fcf1</id>
+      <name>Volkswagen Urban Watcher</name>
+	  <handling>3/3</handling>
+	  <speed>3</speed>
+      <accel>1</accel>
+      <body>16</body>
+	  <armor>10</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>4</seats>  
+      <avail>12R</avail>
+      <cost>65000</cost>  
+	  <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+	  <mods>
+		<name>Landing Drone Rack (Medium)</name>
+		<name>Landing Drone Rack (Medium)</name>
+		<name>Landing Drone Rack (Medium)</name>
+		<name>Landing Drone Rack (Medium)</name>
+		<name>Retrans Unit</name>
+	  </mods>
+    </vehicle>
+	<vehicle>
+      <id>d0bdf891-9faa-4128-8439-ae4964a425f7</id>
+      <name>Ares Minotaurus</name>
+	  <handling>4/5</handling>
+	  <speed>5</speed>
+      <accel>2</accel>
+      <body>14</body>
+	  <armor>8</armor>
+      <pilot>4</pilot>	  
+      <sensor>4</sensor>
+      <seats>4</seats>  
+      <avail>12F</avail>
+      <cost>45000</cost>  
+	  <source>R5G</source>
+      <page>81</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="4" maxrating="4">Sensor Array</gear>
+      </gears>
+    </vehicle>
+	
+	<!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
