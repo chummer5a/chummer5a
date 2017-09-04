@@ -18,6 +18,7 @@ namespace Chummer.UI.Skills
         private readonly Font _normal;
         private readonly Font _italic;
         private CharacterAttrib _attributeActive;
+        private BindingSource _dataSource;
 
         public SkillControl2(Skill skill)
         {
@@ -42,7 +43,7 @@ namespace Chummer.UI.Skills
             skill.PropertyChanged += Skill_PropertyChanged;
 
             _attributeActive = skill.AttributeObject;
-            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+            _dataSource = _attributeActive._objCharacter.AttributeSection.GetAttributeBindingByName(_attributeActive.Abbrev);
             Skill_PropertyChanged(null, null);  //if null it updates all
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);

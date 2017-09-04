@@ -4335,7 +4335,7 @@ namespace Chummer
                 decESS -= decHole;
 
                 //1781 Essence is not printing
-                _attESS.Base = Convert.ToInt32(decESS);
+                ESS.Base = Convert.ToInt32(decESS);
 
                 return decESS;
             }
