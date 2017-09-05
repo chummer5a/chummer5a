@@ -11099,7 +11099,10 @@
           <name>Folding Stock</name>
         </accessory>
         <accessory>
-          <name>Sling</name>
+          <name>Slide Mount</name>
+        </accessory>
+		<accessory>
+          <name>Slide Mount</name>
         </accessory>
       </accessories>
       <source>SAG</source>
