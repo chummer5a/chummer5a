@@ -12,14 +12,13 @@ namespace Chummer.Backend.Attributes
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-		private List<CharacterAttrib> _attributes = new List<CharacterAttrib>();
-		private List<CharacterAttrib> _specialAttributes = new List<CharacterAttrib>();
-		private List<KeyValuePair<string,BindingSource>> _bindings = new List<KeyValuePair<string, BindingSource>>();
+	    private List<KeyValuePair<string,BindingSource>> _bindings = new List<KeyValuePair<string, BindingSource>>();
 		private readonly Character _character;
-		public CharacterAttrib.AttributeCategory AttributeCategory = CharacterAttrib.AttributeCategory.Standard;
+		private CharacterAttrib.AttributeCategory _attributeCategory = CharacterAttrib.AttributeCategory.Standard;
+	    public Action<object> AttributeCategoryChanged;
 
-		#region Constructor, Save, Load, Print Methods
-		public AttributeSection(Character character)
+        #region Constructor, Save, Load, Print Methods
+        public AttributeSection(Character character)
 		{
 			_character = character;
 		}
@@ -44,11 +43,11 @@ namespace Chummer.Backend.Attributes
 
 		internal void Save(XmlTextWriter objWriter)
 		{
-			foreach (CharacterAttrib objAttribute in _attributes)
+			foreach (CharacterAttrib objAttribute in AttributeList)
 			{
 				objAttribute.Save(objWriter);
 			}
-			foreach (CharacterAttrib objAttribute in _specialAttributes)
+			foreach (CharacterAttrib objAttribute in SpecialAttributeList)
 			{
 				objAttribute.Save(objWriter);
 			}
@@ -80,11 +79,11 @@ namespace Chummer.Backend.Attributes
 
 		internal void Print(XmlTextWriter objWriter)
 		{
-			foreach (CharacterAttrib att in _attributes)
+			foreach (CharacterAttrib att in AttributeList)
 			{
 				att.Print(objWriter);
 			}
-			foreach (CharacterAttrib att in _specialAttributes)
+			foreach (CharacterAttrib att in SpecialAttributeList)
 			{
 				att.Print(objWriter);
 			}
@@ -94,15 +93,15 @@ namespace Chummer.Backend.Attributes
 		#region Methods
 		public CharacterAttrib GetAttributeByName(string abbrev)
 		{
-			if (_attributes.Any(att => att.Abbrev == abbrev))
+			if (AttributeList.Any(att => att.Abbrev == abbrev))
 			{
 				return _character.MetatypeCategory == "Shapeshifter" && _character.Created && _character.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter
-				? _attributes.First(att => att.Abbrev == abbrev && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) 
-				: _attributes.First(att => att.Abbrev == abbrev);
+				? AttributeList.First(att => att.Abbrev == abbrev && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) 
+				: AttributeList.First(att => att.Abbrev == abbrev);
 			}
-			if (_specialAttributes.Any(att => att.Abbrev == abbrev))
+			if (SpecialAttributeList.Any(att => att.Abbrev == abbrev))
 			{
-				return _specialAttributes.First(att => att.Abbrev == abbrev);
+				return SpecialAttributeList.First(att => att.Abbrev == abbrev);
 			}
 			return null;
 		}
@@ -114,7 +113,7 @@ namespace Chummer.Backend.Attributes
 
 		internal void ForceAttributePropertyChangedNotificationAll(string name)
 		{
-			foreach (CharacterAttrib att in _attributes)
+			foreach (CharacterAttrib att in AttributeList)
 			{
 				att.ForceEvent(name);
 			}
@@ -208,31 +207,23 @@ namespace Chummer.Backend.Attributes
 		/// <summary>
 		/// Character's Attributes.
 		/// </summary>
-		public List<CharacterAttrib> AttributeList
-		{
-			get
-			{
-				return _attributes;
-			}
-			set
-			{
-				_attributes = value;
-			}
-		}
-		/// <summary>
+		public List<CharacterAttrib> AttributeList { get; set; } = new List<CharacterAttrib>();
+
+	    /// <summary>
 		/// Character's Attributes.
 		/// </summary>
-		public List<CharacterAttrib> SpecialAttributeList
-		{
-			get
-			{
-				return _specialAttributes;
-			}
-			set
-			{
-				_specialAttributes = value;
-			}
-		}
-		#endregion
+		public List<CharacterAttrib> SpecialAttributeList { get; set; } = new List<CharacterAttrib>();
+
+	    public CharacterAttrib.AttributeCategory AttributeCategory
+	    {
+	        get => _attributeCategory;
+	        set
+	        {
+	            _attributeCategory = value;
+	            AttributeCategoryChanged?.Invoke(this);
+            }
+	    }
+
+	    #endregion
 	}
 }

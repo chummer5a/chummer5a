@@ -18,7 +18,6 @@ namespace Chummer.UI.Skills
         private readonly Font _normal;
         private readonly Font _italic;
         private CharacterAttrib _attributeActive;
-        private BindingSource _dataSource;
 
         public SkillControl2(Skill skill)
         {
@@ -41,9 +40,8 @@ namespace Chummer.UI.Skills
             lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 
             skill.PropertyChanged += Skill_PropertyChanged;
-
+            skill.CharacterObject.AttributeSection.AttributeCategoryChanged += AttributeCategoryOnPropertyChanged;
             _attributeActive = skill.AttributeObject;
-            _dataSource = _attributeActive._objCharacter.AttributeSection.GetAttributeBindingByName(_attributeActive.Abbrev);
             Skill_PropertyChanged(null, null);  //if null it updates all
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);
@@ -136,7 +134,16 @@ namespace Chummer.UI.Skills
 
             ResumeLayout();
         }
-        
+
+        private void AttributeCategoryOnPropertyChanged(object obj)
+        {
+            _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+            _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
+
+            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+            AttributeActiveOnPropertyChanged(null, null);
+        }
+
         private void ContextMenu_Opening(object sender, CancelEventArgs e)
         {
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
@@ -317,7 +324,7 @@ namespace Chummer.UI.Skills
         {
             Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
         }
-
+        
         private void lblName_Click(object sender, EventArgs e)
         {
             CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
