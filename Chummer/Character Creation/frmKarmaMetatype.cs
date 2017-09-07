@@ -586,7 +586,7 @@ namespace Chummer
 
                 // Set Metatype information.
 
-                if (objXmlMetavariant != null && cboMetavariant.SelectedValue.ToString() != "None")
+                if (objXmlMetavariant != null && cboMetavariant.SelectedValue.ToString() != "None" && cboCategory.SelectedValue.ToString() != "Shapeshifter")
                 {
                     _objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetavariant["bodmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["bodmax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["bodaug"]?.InnerText, intForce, 0));
                     _objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetavariant["agimin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["agimax"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["agiaug"]?.InnerText, intForce, 0));

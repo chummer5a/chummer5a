@@ -15131,11 +15131,12 @@ namespace Chummer
 	        {
 		        List<CharacterAttrib> staging = new List<CharacterAttrib>();
 		        XmlDocument xmlDoc = XmlManager.Instance.Load("metatypes.xml");
+                string s = $"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]";
 		        foreach (CharacterAttrib att in _objCharacter.AttributeSection.AttributeList)
 		        {
 			        CharacterAttrib newAtt = new CharacterAttrib(_objCharacter, att.Abbrev,
 				        CharacterAttrib.AttributeCategory.Shapeshifter);
-					_objCharacter.AttributeSection.CopyAttribute(att,newAtt,_objCharacter.Metavariant,xmlDoc);
+					_objCharacter.AttributeSection.CopyAttribute(att,newAtt, s, xmlDoc);
 					staging.Add(newAtt);
 		        }
 		        foreach (CharacterAttrib att in staging)

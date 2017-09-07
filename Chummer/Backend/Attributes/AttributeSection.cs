@@ -121,7 +121,7 @@ namespace Chummer.Backend.Attributes
 
 		public void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
 		{
-			XmlNode node = xmlDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{mv}\"]");
+			XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
 			target.MetatypeMinimum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}min"].InnerText);
 			target.MetatypeMaximum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}max"].InnerText);
 			target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}aug"].InnerText);
