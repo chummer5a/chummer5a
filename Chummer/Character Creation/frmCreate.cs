@@ -446,34 +446,39 @@ namespace Chummer
             SortListItem objSpiritSort = new SortListItem();
             lstSpirit.Sort(objSpiritSort.Compare);
 
+            List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
             cboSpiritCombat.BeginUpdate();
             cboSpiritCombat.ValueMember = "Value";
             cboSpiritCombat.DisplayMember = "Name";
-            cboSpiritCombat.DataSource = lstSpirit;
+            cboSpiritCombat.DataSource = lstCombat;
             cboSpiritCombat.EndUpdate();
 
+            List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
             cboSpiritDetection.BeginUpdate();
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
-            cboSpiritDetection.DataSource = lstSpirit;
+            cboSpiritDetection.DataSource = lstDetection;
             cboSpiritDetection.EndUpdate();
 
+            List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
             cboSpiritHealth.BeginUpdate();
             cboSpiritHealth.ValueMember = "Value";
             cboSpiritHealth.DisplayMember = "Name";
-            cboSpiritHealth.DataSource = lstSpirit;
+            cboSpiritHealth.DataSource = lstHealth;
             cboSpiritHealth.EndUpdate();
 
+            List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
             cboSpiritIllusion.BeginUpdate();
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
-            cboSpiritIllusion.DataSource = lstSpirit;
+            cboSpiritIllusion.DataSource = lstIllusion;
             cboSpiritIllusion.EndUpdate();
 
+            List<ListItem> lstManip = new List<ListItem>(lstSpirit);
             cboSpiritManipulation.BeginUpdate();
             cboSpiritManipulation.ValueMember = "Value";
             cboSpiritManipulation.DisplayMember = "Name";
-            cboSpiritManipulation.DataSource = lstSpirit;
+            cboSpiritManipulation.DataSource = lstManip;
             cboSpiritManipulation.EndUpdate();
 
             // Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls

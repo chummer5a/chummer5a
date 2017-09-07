@@ -126,7 +126,7 @@ namespace Chummer
                 {
                     foreach (TreeNode objNode in treQualities.Nodes)
                     {
-                        if (objNode.Tag.ToString().StartsWith(objQuality.Name))
+                        if (objNode.Tag.ToString() == objQuality.SourceID)
                         {
                             objNode.Checked = true;
                             break;

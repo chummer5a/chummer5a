@@ -1096,6 +1096,8 @@ namespace Chummer
                 }
 
                 //TODO: Move this into AttributeSection when I get around to implementing that. This is an ugly hack that shouldn't be necessary, but eh.
+                _objCharacter.AttributeList.Clear();
+                _objCharacter.SpecialAttributeList.Clear();
                 _objCharacter.AttributeList.Add(_objCharacter.BOD);
                 _objCharacter.AttributeList.Add(_objCharacter.AGI);
                 _objCharacter.AttributeList.Add(_objCharacter.REA);
@@ -2129,3 +2131,4 @@ namespace Chummer
         #endregion
     }
 }
+

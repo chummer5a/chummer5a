@@ -1709,7 +1709,7 @@
     <Content Include="sheets\fr\Remarques.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Résumé du jeu.xsl">
+    <Content Include="sheets\fr\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr\Shadowrun 5 %28Coeur%29.xsl">
@@ -1730,7 +1730,7 @@
     <Content Include="sheets\fr\Texte seulement.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr\Véhicules.xsl">
+    <Content Include="sheets\fr\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr\xz.language.xslt">

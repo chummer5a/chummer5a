@@ -183,5 +183,13 @@ namespace Chummer.UI.Skills
         {
             _skill.LoadDefaultType(_skill.Name);
         }
+
+        private void RatingChanged(object sender, EventArgs e)
+        {
+            if (_skill.LearnedRating == 0 && _skill.Specializations.Count > 0)
+            {
+                _skill.Specializations.Clear();
+            }
+        }
     }
 }

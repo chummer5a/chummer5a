@@ -2438,7 +2438,7 @@
       <name>Critter Body Armor</name>
       <category>Specialty Armor</category>
       <rating>24</rating>
-      <armor>0</armor>
+      <armor>Rating</armor>
       <armorcapacity>Rating</armorcapacity>
       <avail>6</avail>
       <cost>50 * Rating</cost>

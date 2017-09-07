@@ -5,12 +5,18 @@ Application Changes:
 - Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
 - Fixed translation for weapon availability in the Select Weapon table. 
 - Fixed optional values for Foci not being saved properly. 
+- Fixes an issue in which editing basic lifestyles wouldn't reselect previous qualities. 
+- Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
+- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
+- Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
 
 Data Changes:
 
 - Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
 - Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
 - Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
+- Critter Body Armor now properly grants armor equal to the Rating. 
+- Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
 
 New Strings:
 - Label_Options_SpellShapingFocus
