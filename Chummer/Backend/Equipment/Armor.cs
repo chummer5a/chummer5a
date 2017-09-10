@@ -910,7 +910,7 @@ namespace Chummer.Backend.Equipment
                     blnUseBase = true;
 
                 int intTotalArmor;
-                int.TryParse(_strA, out intTotalArmor);
+                int.TryParse(_strA.Replace("Rating", _intRating.ToString()), out intTotalArmor);
                 // if there's zero or usebase is true, we're all done. Calculate as normal.
                 if (blnCustomFitted || (!blnUseBase && intOverride > 1 && !blnHighest))
                 {
