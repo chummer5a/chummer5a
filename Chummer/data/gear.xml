@@ -6326,7 +6326,7 @@
       <bonus>
         <spellcategory>
           <name>Combat</name>
-          <val>2</val>
+          <val>Rating</val>
         </spellcategory>
       </bonus>
       <cost>Rating * 4000</cost>
@@ -6372,7 +6372,7 @@
       <bonus>
         <spellcategory>
           <name>Detection</name>
-          <val>2</val>
+          <val>Rating</val>
         </spellcategory>
       </bonus>
       <cost>Rating * 4000</cost>
@@ -6418,7 +6418,7 @@
       <bonus>
         <spellcategory>
           <name>Health</name>
-          <val>2</val>
+          <val>Rating</val>
         </spellcategory>
       </bonus>
       <cost>Rating * 4000</cost>
@@ -6464,7 +6464,7 @@
       <bonus>
         <spellcategory>
           <name>Illusion</name>
-          <val>2</val>
+          <val>Rating</val>
         </spellcategory>
       </bonus>
       <cost>Rating * 4000</cost>
@@ -6510,7 +6510,7 @@
       <bonus>
         <spellcategory>
           <name>Manipulation</name>
-          <val>2</val>
+          <val>Rating</val>
         </spellcategory>
       </bonus>
       <cost>Rating * 4000</cost>
