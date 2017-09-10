@@ -9779,7 +9779,7 @@
       <slots>0</slots>
       <bonus>
         <handling>-1</handling>
-        <offroadhandling>1</offroadhandling>
+        <offroadhandling>+1</offroadhandling>
       </bonus>
     </mod>
     <mod>
@@ -9793,7 +9793,7 @@
       <rating>50</rating>
       <slots>0</slots>
       <bonus>
-        <handling>1</handling>
+        <handling>+1</handling>
         <offroadhandling>-1</offroadhandling>
       </bonus>        
     </mod>
