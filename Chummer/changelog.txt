@@ -9,6 +9,7 @@ Application Changes:
 - Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
 - Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
 - Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
+- Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
 
 Data Changes:
 

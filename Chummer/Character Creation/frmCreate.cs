@@ -13860,7 +13860,7 @@ namespace Chummer
             _objCharacter.Nuyen = intNuyen - intDeductions;
             lblRemainingNuyen.Text = $"{intNuyen - intDeductions:###,###,##0¥}";
             tssNuyenRemaining.Text = $"{intNuyen - intDeductions:###,###,##0¥}";
-            lblNuyenBP.Text = $"{intNuyen - intDeductions:###,###,##0¥}";
+            //lblNuyenBP.Text = $"{intNuyen - intDeductions:###,###,##0¥}";
 
             return intNuyen - intDeductions;
         }
