@@ -17461,6 +17461,7 @@ namespace Chummer
                     if ((GetAvailInt(objArmor.TotalAvail) <= 24) && ((GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)))
                     {
                         blnRestrictedGearUsed = true;
+                        strRestrictedItem = objArmor.DisplayName;
                     }
                     else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
                     {
@@ -17511,6 +17512,7 @@ namespace Chummer
                     if ((GetAvailInt(objWeapon.TotalAvail) <= 24) && GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
                     {
                         blnRestrictedGearUsed = true;
+                        strRestrictedItem = objWeapon.DisplayName;
                     }
                     else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
                     {
@@ -17533,6 +17535,7 @@ namespace Chummer
                             if ((GetAvailInt(objAccessory.TotalAvail) <= 24) && (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability))
                             {
                                 blnRestrictedGearUsed = true;
+                                strRestrictedItem = objAccessory.DisplayName;
                             }
                             else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
                             {
@@ -17563,6 +17566,7 @@ namespace Chummer
                     if ((GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicle.CalculatedAvail) <= 24))
                     {
                         blnRestrictedGearUsed = true;
+                        strRestrictedItem = objVehicle.DisplayName;
                     }
                     else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
                     {
@@ -17584,6 +17588,7 @@ namespace Chummer
                             if ((GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicleMod.TotalAvail) <= 24))
                             {
                                 blnRestrictedGearUsed = true;
+                                strRestrictedItem = objVehicleMod.DisplayName;
                             }
                             else if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability)
                             {
@@ -17596,6 +17601,7 @@ namespace Chummer
                             if ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objWeapon.TotalAvail) <= 24))
                             {
                                 blnRestrictedGearUsed = true;
+                                strRestrictedItem = objWeapon.DisplayName;
                             }
                             else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
                             {
@@ -17611,6 +17617,7 @@ namespace Chummer
                                         if ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objAccessory.TotalAvail) <= 24))
                                         {
                                             blnRestrictedGearUsed = true;
+                                            strRestrictedItem = objAccessory.DisplayName;
                                         }
                                         else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
                                         {

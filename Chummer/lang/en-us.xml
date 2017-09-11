@@ -1792,7 +1792,7 @@
     </string>
     <string>
       <key>Message_PositiveQualityLimit</key>
-      <text>You cannot spend more than {0} on Positive Qualities.</text>
+      <text>You cannot spend more than {0} on Positive Qualities and Group Contacts.</text>
     </string>
     <string>
       <key>Message_PositiveQualityMoreThanNegativeQuality</key>

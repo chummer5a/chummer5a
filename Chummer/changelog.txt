@@ -28,6 +28,9 @@ New Strings:
 - Label_Options_DisenchantingFocus
 - Label_Options_AlchemicalFocus
 
+Changes Strings:
+- Message_PositiveQualityLimit
+
 Build 194
 
 Application Changes:
