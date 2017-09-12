@@ -30,6 +30,7 @@ New Strings:
 
 Changes Strings:
 - Message_PositiveQualityLimit
+- Label_LifestyleNuyen_ResultOf
 
 Build 194
 

@@ -3869,7 +3869,7 @@
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Ergebnis aus</text>
+      <text>Ergebnis aus {0}W6: (</text>
     </string>
     <string>
       <key>Title_Metatype</key>

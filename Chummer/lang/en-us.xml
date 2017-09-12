@@ -5792,7 +5792,7 @@ Do you want to continue?</text>
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Result of</text>
+      <text>Result of {0}D6: (</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Metatype Window -->

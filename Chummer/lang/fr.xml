@@ -4442,7 +4442,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Résultat de</text>
+      <text>Résultat de {0}D6: (</text>
     </string>
     <!-- Select Metatype Window -->
     <string>
