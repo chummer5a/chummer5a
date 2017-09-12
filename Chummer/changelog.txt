@@ -21,6 +21,7 @@ Data Changes:
 - Critter Body Armor now properly grants armor equal to the Rating. 
 - Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
 - Fixed behaviour of spellcasting foci to scale based on Force. 
+- Fixed missing increased seating bonus for the Amenities (Squatter) vehicle modification.
 
 New Strings:
 - Label_Options_SpellShapingFocus
