@@ -10,6 +10,7 @@ Application Changes:
 - Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
 - Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
 - Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
+- Fixed quirks with attribute point warnings when moving to career mode. 
 
 Data Changes:
 

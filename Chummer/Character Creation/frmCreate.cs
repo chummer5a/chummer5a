@@ -12803,7 +12803,7 @@ namespace Chummer
             return intBP;
         }
 
-        private int CalculteAttributePriorityPoints(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null)
+        private int CalculateAttributePriorityPoints(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null)
         {
             int intAtt = 0;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
@@ -12830,7 +12830,7 @@ namespace Chummer
         {
             int bp = CalculateAttributeBP(attribs, extraAttribs);
             string s = $"{bp} {LanguageManager.Instance.GetString("String_Karma")}";
-            int att = CalculteAttributePriorityPoints(attribs, extraAttribs);
+            int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
             int total = special ? _objCharacter.TotalSpecial : _objCharacter.TotalAttributes;
             if ((_objCharacter.BuildMethod == CharacterBuildMethod.Priority) ||
                 (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen))
@@ -17283,18 +17283,22 @@ namespace Chummer
                 }
 
             }
+            int i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
             // Check if the character has gone over on Primary Attributes
-            if (_objCharacter.Attributes < 0)
+            if (i < 0)
             {
+                //TODO: ATTACH TO ATTRIBUTE SECTION
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAttributeExcess").Replace("{0}", ((_objCharacter.Attributes) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAttributeExcess").Replace("{0}", (i * -1).ToString());
             }
 
+            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
-            if (_objCharacter.Special < 0)
+            if (i < 0)
             {
+                //TODO: ATTACH TO ATTRIBUTE SECTION
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSpecialExcess").Replace("{0}", ((_objCharacter.Special) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSpecialExcess").Replace("{0}", (i * -1).ToString());
             }
 
             // Check if the character has gone over on Skill Groups
@@ -17811,13 +17815,13 @@ namespace Chummer
             }
 
 
-
+            i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
             // Check if the character has gone over on Primary Attributes
-            if (blnValid && _objCharacter.Attributes > 0)
+            if (blnValid && i > 0)
             {
                 if (MessageBox.Show(
                     LanguageManager.Instance.GetString("Message_ExtraPoints")
-                        .Replace("{0}", _objCharacter.Attributes.ToString())
+                        .Replace("{0}", i.ToString())
                         .Replace("{1}", LanguageManager.Instance.GetString("Label_SummaryPrimaryAttributes")),
                     LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) == DialogResult.No)
@@ -17826,13 +17830,14 @@ namespace Chummer
                 }
             }
 
+            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (blnValid && _objCharacter.Special > 0)
             {
                 if (
                     MessageBox.Show(
                         LanguageManager.Instance.GetString("Message_ExtraPoints")
-                            .Replace("{0}", _objCharacter.Special.ToString())
+                            .Replace("{0}", i.ToString())
                             .Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
                         LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning) == DialogResult.No)
