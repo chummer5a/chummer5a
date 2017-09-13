@@ -20483,7 +20483,7 @@ namespace Chummer
                 strType = "bioware";
                 intParentNode = 1;
             }
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(strType + ".xml");
+            XmlDocument objXmlDocument = XmlManager.Instance.Load(strType + ".xml", true);
 
             XmlNode objXmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
             Cyberware objTemp = new Cyberware(_objCharacter);
