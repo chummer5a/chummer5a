@@ -1228,7 +1228,7 @@
       <forbidden>
         <oneof>
           <quality>Apprentice</quality>
-          <quality>ASpected Magician</quality>
+          <quality>Aspected Magician</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>

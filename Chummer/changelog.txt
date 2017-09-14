@@ -12,6 +12,8 @@ Application Changes:
 - Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
 - Fixed quirks with attribute point warnings when moving to career mode. 
 - Fixed an issue when loading critters that caused them to have lower attribute values than intended. 
+- Fixed behaviour of the Enchanter priority choice. 
+- Fixed an issue that allowed priority choices that received a single skill or skill group to receive multiples.
 
 Data Changes:
 
