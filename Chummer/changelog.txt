@@ -22,6 +22,7 @@ Data Changes:
 - Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
 - Fixed behaviour of spellcasting foci to scale based on Force. 
 - Fixed missing increased seating bonus for the Amenities (Squatter) vehicle modification.
+- Added entries for Chakram from the Run & Gun errata and the Horizon BoomerEye from the bottom of Boomerang's statblock in Run & Gun.
 
 New Strings:
 - Label_Options_SpellShapingFocus
