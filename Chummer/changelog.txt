@@ -11,7 +11,9 @@ Application Changes:
 - Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
 - Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
 - Fixed quirks with attribute point warnings when moving to career mode. 
-- Fixed an issue when loading critters that caused them to have lower attribute values than intended. 
+- Fixed an issue when loading critters that caused them to have lower attribute values than intended.
+- Added backend support for wireless bonuses to Gear, Armor, Armor Mods, Vehicle Mods, and Cyberware.
+- Fixed an issue where lifestyle qualities would not have closing square brackets for their costs.
 
 Data Changes:
 

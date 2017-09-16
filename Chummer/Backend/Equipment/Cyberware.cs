@@ -40,6 +40,8 @@ namespace Chummer.Backend.Equipment
         private List<Cyberware> _objChildren = new List<Cyberware>();
         private List<Gear> _lstGear = new List<Gear>();
         private XmlNode _nodBonus;
+        private XmlNode _nodWirelessBonus;
+        private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
@@ -120,6 +122,8 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlCyberware.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objXmlCyberware["bonus"];
+            _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
+            _blnWirelessOn = _nodWirelessBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
             objXmlCyberware.TryGetField("id", Guid.TryParse, out _sourceID);
 
@@ -294,19 +298,27 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the piece grants a bonus, pass the information to the Improvement Manager.
-            if (objXmlCyberware["bonus"] != null && blnCreateImprovements)
+            if (blnCreateImprovements)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!string.IsNullOrEmpty(strForced))
-                    objImprovementManager.ForcedValue = strForced;
-
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
+                if (objXmlCyberware["bonus"] != null || objXmlCyberware["wirelessbonus"] != null)
                 {
-                    _guiID = Guid.Empty;
-                    return;
+                    ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
+                    if (!string.IsNullOrEmpty(strForced))
+                        objImprovementManager.ForcedValue = strForced;
+
+                    if (objXmlCyberware["bonus"] != null && !objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                    if (objXmlCyberware["wirelessbonus"] != null && !objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodWirelessBonus, false, _intRating, DisplayNameShort))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                        _strLocation = objImprovementManager.SelectedValue;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strLocation = objImprovementManager.SelectedValue;
             }
 
             // Create the TreeNode for the new item.
@@ -388,6 +400,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
                 objWriter.WriteElementString("bonus", string.Empty);
+            if (_nodWirelessBonus != null)
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+            else
+                objWriter.WriteElementString("wirelessbonus", string.Empty);
             if (_nodAllowGear != null)
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -468,6 +484,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("vehiclemounted", ref _blnVehicleMounted);
             objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
+            _nodWirelessBonus = objNode["wirelessbonus"];
+            if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+            {
+                _blnWirelessOn = _nodWirelessBonus != null;
+            }
             _nodAllowGear = objNode["allowgear"];
             if (objNode["improvementsource"] != null)
                 _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
@@ -575,6 +596,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("minrating", _intMinRating.ToString());
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
             objWriter.WriteElementString("allowsubsystems", _strAllowSubsystems);
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("grade", _objGrade.DisplayName);
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -662,6 +684,36 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _nodBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Bonus node from the XML file.
+        /// </summary>
+        public XmlNode WirelessBonus
+        {
+            get
+            {
+                return _nodWirelessBonus;
+            }
+            set
+            {
+                _nodWirelessBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether the Cyberware's Wireless is enabled
+        /// </summary>
+        public bool WirelessOn
+        {
+            get
+            {
+                return _blnWirelessOn;
+            }
+            set
+            {
+                _blnWirelessOn = value;
             }
         }
 

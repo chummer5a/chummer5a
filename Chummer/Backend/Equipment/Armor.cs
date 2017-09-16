@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -38,6 +38,8 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         protected string _strLocation = string.Empty;
         private XmlNode _nodBonus;
+        private XmlNode _nodWirelessBonus;
+        private bool _blnWirelessOn = true;
         private string _strAltName = string.Empty;
         private string _strAltCategory = string.Empty;
         private string _strAltPage = string.Empty;
@@ -74,6 +76,8 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objXmlArmorNode["bonus"];
+            _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
+            _blnWirelessOn = _nodWirelessBonus != null;
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
@@ -358,6 +362,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("armorname", _strArmorName);
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("damage", _intDamage.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
@@ -390,6 +395,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
                 objWriter.WriteElementString("bonus", string.Empty);
+            if (_nodWirelessBonus != null)
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+            else
+                objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
@@ -448,6 +457,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             _nodBonus = objNode["bonus"];
+            _nodWirelessBonus = objNode["wirelessbonus"];
+            if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+                _blnWirelessOn = _nodWirelessBonus != null;
             if (objNode.InnerXml.Contains("armormods"))
             {
                 XmlNodeList nodMods = objNode.SelectNodes("armormods/armormod");
@@ -517,6 +529,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("armorname", _strArmorName);
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
             {
@@ -585,6 +598,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _nodBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Wireless Bonus node from the XML file.
+        /// </summary>
+        public XmlNode WirelessBonus
+        {
+            get
+            {
+                return _nodWirelessBonus;
+            }
+            set
+            {
+                _nodWirelessBonus = value;
             }
         }
 
@@ -870,6 +898,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _blnEquipped = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not Wireless is turned on for this armor
+        /// </summary>
+        public bool WirelessOn
+        {
+            get
+            {
+                return _blnWirelessOn;
+            }
+            set
+            {
+                _blnWirelessOn = value;
             }
         }
 
@@ -1255,6 +1298,10 @@ namespace Chummer.Backend.Equipment
                         if (objMod.Bonus != null)
                         {
                             blnSoftweave = objMod.Bonus.SelectSingleNode("softweave") != null;
+                        }
+                        if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                        {
+                            blnSoftweave = objMod.WirelessBonus.SelectSingleNode("softweave") != null;
                         }
                         if (blnSoftweave) continue;
                         string strCapacity = objMod.CalculatedCapacity;
