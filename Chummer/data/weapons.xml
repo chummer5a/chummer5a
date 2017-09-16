@@ -2067,6 +2067,25 @@
       <source>SR5</source>
       <page>423</page>
     </weapon>
+	<weapon>
+      <id>dc18811b-eb07-43d8-8d95-d5c468f048f4</id>
+      <name>Chakram</name>
+      <category>Exotic Melee Weapons</category>
+      <type>Melee</type>
+      <conceal>-2</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>(STR)P</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>8R</avail>
+      <cost>750</cost>
+      <allowaccessory>true</allowaccessory>
+      <source>RG</source>
+      <page>20</page>
+    </weapon>
     <weapon>
       <id>4f1d1416-5af6-4853-a1b3-2bb44a132d8f</id>
       <name>Stimtouch Hosiery</name>
@@ -2222,6 +2241,28 @@
       <range>Aerodynamic Grenade</range>
       <source>RG</source>
       <page>24</page>
+    </weapon>
+	<weapon>
+      <id>dabbf576-066e-4c41-923b-43229f2defa3</id>
+      <name>Horizon BoomerEye</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <spec>Aerodynamic</spec>
+      <accuracy>Physical-1</accuracy>
+      <reach>0</reach>
+      <damage>(STR+2)P</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4</avail>
+      <cost>50</cost>
+      <allowaccessory>true</allowaccessory>
+      <useskill>Throwing Weapons</useskill>
+      <range>Aerodynamic Grenade</range>
+      <source>RG</source>
+      <page>25</page>
     </weapon>
     <weapon>
       <id>011493be-12eb-47ba-a445-f0c8cf139d4f</id>

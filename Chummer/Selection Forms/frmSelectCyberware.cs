@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -720,7 +720,7 @@ namespace Chummer
         /// <summary>
         /// Parent cyberware that the current selection will be added to.
         /// </summary>
-        public Cyberware Parent;
+        public Cyberware CyberwareParent;
         #endregion
 
         #region Methods
@@ -865,12 +865,12 @@ namespace Chummer
                 {
                     if (strCost.StartsWith("Parent Cost"))
                     {
-                        if (Parent != null)
+                        if (CyberwareParent != null)
                         {
-                            strCost = strCost.Replace("Parent Cost", Parent.Cost);
+                            strCost = strCost.Replace("Parent Cost", CyberwareParent.Cost);
                             if (strCost.Contains("Rating"))
                             {
-                                strCost = strCost.Replace("Rating", Parent.Rating.ToString());
+                                strCost = strCost.Replace("Rating", CyberwareParent.Rating.ToString());
                             }
                         }
                         else

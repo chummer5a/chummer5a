@@ -780,6 +780,18 @@
       <cost>50</cost>
       <costfor>1</costfor>
     </gear>
+	<gear>
+      <id>5b33b094-5e25-4f0e-9a3d-4f86a3621a3f</id>
+      <name>Horizon BoomerEye</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>25</page>
+      <avail>4</avail>
+      <addweapon>Horizon BoomerEye</addweapon>
+      <cost>50</cost>
+      <costfor>1</costfor>
+    </gear>
     <gear>
       <id>d3d99f54-4176-4a11-a8cb-8447e285d977</id>
       <name>Harpoon</name>
