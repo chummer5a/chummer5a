@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -3956,8 +3956,7 @@ namespace Chummer.Classes
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmPickSpellCategory.SelectedCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory,
-                _strUnique);
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
         }
 
         public void limitspiritcategory(XmlNode bonusNode)
@@ -3980,8 +3979,15 @@ namespace Chummer.Classes
             {
                 throw new AbortedException();
             }
-            CreateImprovement(frmSelect.SelectedItem, Improvement.ImprovementSource.Quality, SourceName,
-    Improvement.ImprovementType.LimitSpiritCategory,"");
+            SelectedValue = frmSelect.SelectedItem;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpiritCategory, _strUnique);
         }
         public void movementreplace(XmlNode bonusNode)
         {
