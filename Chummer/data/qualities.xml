@@ -186,6 +186,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -218,6 +220,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -251,6 +255,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -282,6 +288,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -314,6 +322,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -345,6 +355,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -553,6 +565,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magic Resistance (Rating 2)</quality>
           <quality>Magic Resistance (Rating 3)</quality>
@@ -586,6 +600,8 @@
           <quality>Mystic Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
@@ -617,6 +633,8 @@
           <quality>Mystic Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magic Resistance (Rating 2)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
@@ -648,6 +666,8 @@
           <quality>Aware</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magic Resistance (Rating 2)</quality>
           <quality>Magic Resistance (Rating 3)</quality>
@@ -672,6 +692,8 @@
         <oneof>
           <quality>Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -820,6 +842,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -1091,6 +1115,9 @@
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
+		  <quality>Aware</quality>
           <quality>Apprentice</quality>
           <quality>Technomancer</quality>
         </oneof>
@@ -1119,6 +1146,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Technomancer</quality>
         </oneof>
@@ -1148,6 +1177,8 @@
           <quality>Magician</quality>
           <quality>Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Technomancer</quality>
         </oneof>
@@ -1178,6 +1209,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Adept</quality>
         </oneof>
@@ -1203,6 +1236,8 @@
       <forbidden>
         <oneof>
           <quality>Aware</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -1229,14 +1264,18 @@
         <oneof>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
           <quality>Technomancer</quality>
         </oneof>
       </forbidden>
-      <source>SR5</source>
-      <page>69</page>
+      <source>FA</source>
+      <page>49</page>
     </quality>
     <!-- endregion-->
     <!--Region Shadowrun Core Negative Qualities -->
@@ -1404,6 +1443,8 @@
           <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -1907,6 +1948,8 @@
       <required>
         <oneof>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Aware</quality>
           <quality>Adept</quality>
@@ -3148,6 +3191,8 @@
       <required>
         <oneof>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Adept</quality>
@@ -3528,6 +3573,8 @@
             <quality>Aware</quality>
             <quality>Magician</quality>
             <quality>Aspected Magician</quality>
+			<quality>Enchanter</quality>
+			<quality>Explorer</quality>
             <quality>Apprentice</quality>
             <quality>Infected: Mutaqua</quality>
             <quality>Infected: Nosferatu</quality>
@@ -4923,6 +4970,8 @@
           <quality>Magician</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Infected: Mutaqua</quality>
@@ -6936,6 +6985,8 @@
         <required>
           <oneof>
             <quality>Aspected Magician</quality>
+			<quality>Enchanter</quality>
+			<quality>Explorer</quality>
             <quality>Apprentice</quality>
             <quality>Magician</quality>
             <quality>Aware</quality>
@@ -14085,12 +14136,70 @@
         <unlockskills>Sorcery</unlockskills>
         <unlockskills>Conjuring</unlockskills>
         <limitspellcategory />
-        <limitspiritcategory />
+		<limitspiritcategory />
       </bonus>
       <forbidden>
         <oneof>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Adept</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
+      <source>FA</source>
+      <page>47</page>
+    </quality>
+	<quality>
+      <id>a2484390-c4ea-4013-b007-4dc5d3a5c85b</id>
+      <name>Enchanter</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>magician</name>
+        </enabletab>
+        <unlockskills>Enchanting</unlockskills>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+		  <quality>Apprentice</quality>
+		  <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Adept</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
+      <source>FA</source>
+      <page>47</page>
+    </quality>
+	<quality>
+      <id>2f20c108-d724-4684-a642-d40ffe7c51e1</id>
+      <name>Explorer</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+		  <quality>Enchanter</quality>
+		  <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>

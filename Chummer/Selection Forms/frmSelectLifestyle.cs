@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -100,13 +100,13 @@ namespace Chummer
                 if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
                 {
                     nodOption.Text = intCost > 0
-                        ? $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [+{intCost}{strBaseString}%"
-                        : $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{intCost}{strBaseString}%";
+                        ? $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [+{intCost}{strBaseString}%]"
+                        : $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{intCost}{strBaseString}%]";
                 }
                 else
                 {
                     string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
-                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{strCost}¥";
+                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{strCost}¥]";
                 }
                 treQualities.Nodes.Add(nodOption);
             }

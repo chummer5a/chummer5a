@@ -132,7 +132,7 @@ namespace Chummer
             {
                 if (objCyberware.SourceType == _objSource)
                 {
-                    strGrade = objCyberware.Grade.ToString();
+                    strGrade = objCyberware.Grade.Name;
                     break;
                 }
             }

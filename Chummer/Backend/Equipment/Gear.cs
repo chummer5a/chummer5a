@@ -39,8 +39,10 @@ namespace Chummer.Backend.Equipment
         protected string _strExtra = string.Empty;
         protected bool _blnBonded = false;
         protected bool _blnEquipped = true;
+        protected bool _blnWirelessOn = true;
         protected bool _blnHomeNode = false;
         protected XmlNode _nodBonus;
+        protected XmlNode _nodWirelessBonus;
         protected XmlNode _nodWeaponBonus;
         protected Guid _guiWeaponID = new Guid();
         protected List<Gear> _objChildren = new List<Gear>();
@@ -100,6 +102,8 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("cost6", ref _strCost6);
             objXmlGear.TryGetStringFieldQuickly("cost10", ref _strCost10);
             _nodBonus = objXmlGear["bonus"];
+            _nodWirelessBonus = objXmlGear["wirelessbonus"];
+            _blnWirelessOn = _nodWirelessBonus != null;
             objXmlGear.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlGear.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
             _intRating = intRating;
@@ -475,8 +479,10 @@ namespace Chummer.Backend.Equipment
             _strExtra = objGear.Extra;
             _blnBonded = objGear.Bonded;
             _blnEquipped = objGear.Equipped;
+            _blnWirelessOn = objGear.WirelessOn;
             _blnHomeNode = objGear.HomeNode;
             _nodBonus = objGear.Bonus;
+            _nodWirelessBonus = objGear.WirelessBonus;
             _nodWeaponBonus = objGear.WeaponBonus;
             _guiWeaponID = Guid.Parse(objGear.WeaponID);
             _strNotes = objGear.Notes;
@@ -545,6 +551,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
@@ -552,6 +559,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
+            if (_nodWirelessBonus != null)
+                objWriter.WriteRaw("<wirelessbonus>" + _nodWirelessBonus.InnerXml + "</wirelessbonus>");
+            else
+                objWriter.WriteElementString("wirelessbonus", string.Empty);
             if (_nodWeaponBonus != null)
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
             objWriter.WriteElementString("source", _strSource);
@@ -639,6 +650,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
             objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
             _nodBonus = objNode["bonus"];
+            _nodWirelessBonus = objNode["wirelessbonus"];
+            if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+                _blnWirelessOn = _nodWirelessBonus != null;
             _nodWeaponBonus = objNode["weaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -723,6 +737,7 @@ namespace Chummer.Backend.Equipment
                             Equipped = false;
                             _objCharacter.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, InternalId);
                             Bonus = gear["bonus"];
+                            WirelessBonus = gear["wirelessbonus"];
                         }
                     }
                 }
@@ -782,6 +797,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("gearname", _strGearName);
@@ -893,6 +909,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _nodBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Wireless bonus node from the XML file.
+        /// </summary>
+        public XmlNode WirelessBonus
+        {
+            get
+            {
+                return _nodWirelessBonus;
+            }
+            set
+            {
+                _nodWirelessBonus = value;
             }
         }
 
@@ -1268,6 +1299,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _blnEquipped = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Gear's wireless bonus is enabled.
+        /// </summary>
+        public bool WirelessOn
+        {
+            get
+            {
+                return _blnWirelessOn;
+            }
+            set
+            {
+                _blnWirelessOn = value;
             }
         }
 

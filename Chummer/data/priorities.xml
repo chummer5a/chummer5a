@@ -979,7 +979,7 @@
           <name>Explorer - 5 Magic</name>
           <value>Explorer</value>
           <qualities>
-            <quality>Aspected Magician</quality>
+            <quality>Explorer</quality>
           </qualities>
           <skillchoices>
             <skill>Arcana</skill>
@@ -1000,7 +1000,7 @@
           <name>Enchanter - 5 Magic</name>
           <value>Enchanter</value>
           <qualities>
-            <quality>Aspected Magician</quality>
+            <quality>Enchanter</quality>
           </qualities>
           <skillgroupchoices>
             <skillgroup>Enchanting</skillgroup>

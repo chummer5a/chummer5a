@@ -80,7 +80,8 @@ namespace Chummer
         /// Load the selected XML file and its associated custom file.
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
-        public XmlDocument Load(string strFileName)
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        public XmlDocument Load(string strFileName, bool blnLoadFile = false)
         {
             string strPath = Path.Combine(Application.StartupPath, "data", strFileName);
             if (!File.Exists(strPath))
@@ -91,9 +92,8 @@ namespace Chummer
             DateTime datDate = File.GetLastWriteTime(strPath);
 
             // Look to see if this XmlDocument is already loaded.
-            bool blnLoadFile = false;
             XmlReference objReference = _lstXmlDocuments.Find(x => x.FileName == strFileName);
-            if (objReference == null)
+            if (objReference == null || blnLoadFile)
             {
                 // The file was not found in the reference list, so it must be loaded.
                 objReference = new XmlReference();
