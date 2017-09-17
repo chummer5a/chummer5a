@@ -15,6 +15,7 @@ Application Changes:
 - Added backend support for wireless bonuses to Gear, Armor, Armor Mods, Vehicle Mods, and Cyberware.
 - Fixed an issue where lifestyle qualities would not have closing square brackets for their costs.
 - Altered the Limit Spirit Selection bonus so that it also adds to its selection to the bonus' source. This also makes Apprentice indicate the chosen spirit instead of the chosen spell.
+- Fixed an issue that allowed priority choices that received a single skill or skill group to receive multiples.
 
 Data Changes:
 

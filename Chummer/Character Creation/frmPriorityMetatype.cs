@@ -580,6 +580,9 @@ namespace Chummer
         {
             cboSkill1.BeginUpdate();
             cboSkill2.BeginUpdate();
+
+            cboSkill1.Visible = false;
+            cboSkill2.Visible = false;
             if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
             {
                 XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
@@ -619,7 +622,7 @@ namespace Chummer
                                 objXmlSkillsList = GetMatrixSkillList();
                                 break;
                             }
-                        case "choices":
+                        case "grouped":
                             {
                                 objXmlSkillsList = BuildSkillCategoryList(objNodeList);
                                 break;
@@ -1521,7 +1524,11 @@ namespace Chummer
                 if ("Aspected Magician".Equals(cboTalents.SelectedValue))
                 {
                     _objCharacter.Pushtext.Push((string)cboSkill1.SelectedValue);
+                }
 
+                if ("Enchanter".Equals(cboTalents.SelectedValue))
+                {
+                    _objCharacter.Pushtext.Push((string)cboSkill1.SelectedValue);
                 }
                 // Set starting positive qualities
                 foreach (XmlNode objXmlQualityItem in objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]/qualities/quality"))
@@ -1585,9 +1592,17 @@ namespace Chummer
                     objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" +
                                                             cboTalent.SelectedValue + "\"]/talents/talent[value = \"" +
                                                             cboTalents.SelectedValue + "\"]");
-                int intFreeLevels = Convert.ToInt32(objTalentsNode.SelectSingleNode("skillval")?.InnerText ?? objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
-
-                AddFreeSkills(intFreeLevels);
+                if (objTalentsNode != null)
+                {
+                    int intFreeLevels = Convert.ToInt32(objTalentsNode.SelectSingleNode("skillval")?.InnerText ??
+                                                        objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
+                    Improvement.ImprovementType type = Improvement.ImprovementType.SkillBase;
+                    if (objTalentsNode.SelectSingleNode("skillgroupval") != null)
+                    {
+                        type = Improvement.ImprovementType.SkillGroupBase;
+                    }
+                    AddFreeSkills(intFreeLevels, type);
+                }
 
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);
@@ -1663,10 +1678,9 @@ namespace Chummer
             }
         }
 
-        private void AddFreeSkills(int intFreeLevels)
+        private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type = Improvement.ImprovementType.SkillGroupBase)
         {
             ImprovementManager manager = new ImprovementManager(_objCharacter);
-            var type = "Aspected Magician".Equals(cboTalents.SelectedValue) ? Improvement.ImprovementType.SkillGroupBase : Improvement.ImprovementType.SkillBase;
 
             if (cboSkill1.Visible)
             {
