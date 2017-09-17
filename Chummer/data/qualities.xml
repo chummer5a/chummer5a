@@ -12277,6 +12277,12 @@
       <category>Positive</category>
       <bonus />
       <required>
+        <allof>
+          <skill>
+            <name>Arcana</name>
+            <val>6</val>
+          </skill>
+        </allof>
         <oneof>
           <skill>
             <name>Magical Theory (Academic)</name>
@@ -12294,17 +12300,6 @@
             <type>Knowledge</type>
           </skill>
         </oneof>
-        <allof>
-          <skill>
-            <name>Magical Theory</name>
-            <val>4</val>
-            <type>Knowledge</type>
-          </skill>
-          <skill>
-            <name>Arcana</name>
-            <val>6</val>
-          </skill>
-        </allof>
       </required>
       <source>FA</source>
       <page>32</page>
