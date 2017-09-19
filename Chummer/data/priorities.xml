@@ -866,7 +866,7 @@
           <magic>5</magic>
           <skillgroupqty>1</skillgroupqty>
           <skillgroupval>4</skillgroupval>
-          <skillgrouptype>choices</skillgrouptype>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof><metatype>A.I.</metatype></oneof>
           </forbidden>
@@ -970,7 +970,7 @@
           <magic>3</magic>
           <skillgroupqty>1</skillgroupqty>
           <skillgroupval>2</skillgroupval>
-          <skillgrouptype>choices</skillgrouptype>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof><metatype>A.I.</metatype></oneof>
           </forbidden>
@@ -979,7 +979,7 @@
           <name>Explorer - 5 Magic</name>
           <value>Explorer</value>
           <qualities>
-            <quality>Aspected Magician</quality>
+            <quality>Explorer</quality>
           </qualities>
           <skillchoices>
             <skill>Arcana</skill>
@@ -1000,7 +1000,7 @@
           <name>Enchanter - 5 Magic</name>
           <value>Enchanter</value>
           <qualities>
-            <quality>Aspected Magician</quality>
+            <quality>Enchanter</quality>
           </qualities>
           <skillgroupchoices>
             <skillgroup>Enchanting</skillgroup>
@@ -1008,7 +1008,7 @@
           <magic>5</magic>
           <skillgroupqty>1</skillgroupqty>
           <skillgroupval>4</skillgroupval>
-          <skillgrouptype>choices</skillgrouptype>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof>
               <metatype>A.I.</metatype>
@@ -1084,7 +1084,7 @@
           <magic>2</magic>
           <skillgroupqty>1</skillgroupqty>
           <skillgroupval>0</skillgroupval>
-          <skillgrouptype>choices</skillgrouptype>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof><metatype>A.I.</metatype></oneof>
           </forbidden>

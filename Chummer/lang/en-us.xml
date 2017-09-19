@@ -1792,7 +1792,7 @@
     </string>
     <string>
       <key>Message_PositiveQualityLimit</key>
-      <text>You cannot spend more than {0} on Positive Qualities.</text>
+      <text>You cannot spend more than {0} on Positive Qualities and Group Contacts.</text>
     </string>
     <string>
       <key>Message_PositiveQualityMoreThanNegativeQuality</key>
@@ -5792,7 +5792,7 @@ Do you want to continue?</text>
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Result of</text>
+      <text>Result of {0}D6: (</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Metatype Window -->

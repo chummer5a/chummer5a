@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -949,6 +949,8 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                         _objImprovementManager.ForcedValue = objFociGear.Extra;
                                     _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    if (objFociGear.WirelessOn)
+                                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
                                 }
                                 objNode.Checked = true;
                             }
@@ -1104,7 +1106,7 @@ namespace Chummer
             if (blnEquipped)
             {
                 // Add any Improvements from the Gear.
-                if (objGear.Bonus != null)
+                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
                 {
                     bool blnAddImprovement = true;
                     // If this is a Focus which is not bonded, don't do anything.
@@ -1117,7 +1119,10 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(objGear.Extra))
                                 _objImprovementManager.ForcedValue = objGear.Extra;
-                            _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            if (objGear.Bonus != null)
+                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
                             objGear.Extra = _objImprovementManager.SelectedValue;
                         }
                     }
@@ -1132,7 +1137,10 @@ namespace Chummer
                                 {
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                         _objImprovementManager.ForcedValue = objFociGear.Extra;
-                                    _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    if (objGear.Bonus != null)
+                                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
                                 }
                             }
                         }
@@ -1142,7 +1150,7 @@ namespace Chummer
             else
             {
                 // Remove any Improvements from the Gear.
-                if (objGear.Bonus != null)
+                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
                 {
                     if (objGear.Category != "Stacked Focus")
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);

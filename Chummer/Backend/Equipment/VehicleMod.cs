@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -24,6 +24,8 @@ namespace Chummer.Backend.Equipment
         private int _intMarkup;
         private string _strAvail = string.Empty;
         private XmlNode _nodBonus;
+        private XmlNode _nodWirelessBonus;
+        private bool _blnWirelessOn = true;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private bool _blnIncludeInVehicle;
@@ -137,6 +139,8 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objXmlMod["bonus"];
+            _nodWirelessBonus = objXmlMod["wirelessbonus"];
+            _blnWirelessOn = _nodWirelessBonus != null;
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
@@ -185,6 +189,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
             objWriter.WriteElementString("installed", _blnInstalled.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("subsystems", _strSubsystems);
             objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
             objWriter.WriteStartElement("weapons");
@@ -200,6 +205,8 @@ namespace Chummer.Backend.Equipment
             }
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
+            if (_nodWirelessBonus != null)
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
             objWriter.WriteEndElement();
@@ -269,6 +276,9 @@ namespace Chummer.Backend.Equipment
             }
 
             _nodBonus = objNode["bonus"];
+            _nodWirelessBonus = objNode["wirelessbonus"];
+            if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+                _blnWirelessOn = _nodWirelessBonus != null;
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -304,6 +314,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("cost", TotalCost.ToString());
             objWriter.WriteElementString("owncost", OwnCost.ToString());
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
@@ -639,6 +650,36 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _nodBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Wireless Bonus node.
+        /// </summary>
+        public XmlNode WirelessBonus
+        {
+            get
+            {
+                return _nodWirelessBonus;
+            }
+            set
+            {
+                _nodWirelessBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether the vehicle mod's wireless is enabled
+        /// </summary>
+        public bool WirelessOn
+        {
+            get
+            {
+                return _blnWirelessOn;
+            }
+            set
+            {
+                _blnWirelessOn = value;
             }
         }
 

@@ -2196,6 +2196,7 @@ namespace Chummer
         private string _strName = string.Empty;
         private Guid _guiGearId;
         private int _intRating;
+        internal string DisplayName;
 
         #region Constructor, Create, Save, and Load Methods
         public Focus()

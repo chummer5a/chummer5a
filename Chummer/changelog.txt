@@ -9,7 +9,14 @@ Application Changes:
 - Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
 - Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
 - Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
-
+- Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
+- Fixed quirks with attribute point warnings when moving to career mode. 
+- Fixed an issue when loading critters that caused them to have lower attribute values than intended.
+- Added backend support for wireless bonuses to Gear, Armor, Armor Mods, Vehicle Mods, and Cyberware.
+- Fixed an issue where lifestyle qualities would not have closing square brackets for their costs.
+- Altered the Limit Spirit Selection bonus so that it also adds to its selection to the bonus' source. This also makes Apprentice indicate the chosen spirit instead of the chosen spell.
+- Fixed an issue that allowed priority choices that received a single skill or skill group to receive multiples.
+- Fixed incorrect costs for binding foci when using non-English language files.
 Data Changes:
 
 - Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
@@ -17,6 +24,11 @@ Data Changes:
 - Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
 - Critter Body Armor now properly grants armor equal to the Rating. 
 - Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
+- Fixed behaviour of spellcasting foci to scale based on Force. 
+- Fixed missing increased seating bonus for the Amenities (Squatter) vehicle modification.
+- Added entries for Chakram from the Run & Gun errata and the Horizon BoomerEye from the bottom of Boomerang's statblock in Run & Gun.
+- Added qualities for Explorer and Enchanter, and made minor fixes to Aware. Fixes #1705.
+- Fixed an incorrect skill requirement for the Apt Pupil quality. 
 
 New Strings:
 - Label_Options_SpellShapingFocus
@@ -25,6 +37,10 @@ New Strings:
 - Label_Options_FlexibleSignatureFocus
 - Label_Options_DisenchantingFocus
 - Label_Options_AlchemicalFocus
+
+Changes Strings:
+- Message_PositiveQualityLimit
+- Label_LifestyleNuyen_ResultOf
 
 Build 194
 

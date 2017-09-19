@@ -4457,10 +4457,6 @@
       <key>Label_LifestyleNuyen_Description</key>
       <text>キャラクターの開始時の新円の額を決めるため, 下に表示された数のダイスを振ってください.</text>
     </string>
-    <string>
-      <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>ダイス数</text>
-    </string>
     <!-- Select Metatype Window -->
     <string>
       <key>Title_Metatype</key>

@@ -83,7 +83,7 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            _objXmlDocument = XmlManager.Instance.Load(_strType + ".xml");
+            _objXmlDocument = XmlManager.Instance.Load(_strType + ".xml", true);
 
             if (_objCharacter.DEPEnabled)
                 return;
@@ -104,7 +104,6 @@ namespace Chummer
             _lstCyberware.Clear();
 
             XmlNode objXmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + lstCyberware.Text + "\"]");
-            lblGrade.Text = objXmlSuite["grade"].InnerText;
 
             decimal decTotalESS = 0.0m;
             int intTotalCost = 0;
@@ -126,6 +125,7 @@ namespace Chummer
 
             lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
             lblCost.Text = $"{intTotalCost:###,###,##0¥}";
+            lblGrade.Text = objXmlSuite["grade"].InnerText;
             _intCost = intTotalCost;
         }
         #endregion
