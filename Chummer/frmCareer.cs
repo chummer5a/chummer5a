@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17401,7 +17401,8 @@ namespace Chummer
                 {
 
                     Focus objFocus = new Focus();
-                    objFocus.Name = e.Node.Text;
+                    objFocus.Name = objSelectedFocus.Name;
+                    objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
                     objFocus.Rating = objSelectedFocus.Rating;
                     objFocus.GearId = e.Node.Tag.ToString();
                     _objCharacter.Foci.Add(objFocus);
