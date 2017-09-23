@@ -2324,10 +2324,10 @@
       <advantage>All: +2 dice pool modifer for tests using the Stealth skill group.</advantage>
       <disadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</disadvantage>
       <bonus>
-        <skillgrouplevel>
+        <skillgroup>
           <name>Stealth</name>
-          <val>2</val>
-        </skillgrouplevel>
+          <bonus>2</bonus>
+        </skillgroup>
       </bonus>
       <choices>
         <choice>

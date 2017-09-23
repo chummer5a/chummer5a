@@ -17,6 +17,7 @@ Application Changes:
 - Altered the Limit Spirit Selection bonus so that it also adds to its selection to the bonus' source. This also makes Apprentice indicate the chosen spirit instead of the chosen spell.
 - Fixed an issue that allowed priority choices that received a single skill or skill group to receive multiples.
 - Fixed incorrect costs for binding foci when using non-English language files.
+
 Data Changes:
 
 - Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
@@ -29,6 +30,7 @@ Data Changes:
 - Added entries for Chakram from the Run & Gun errata and the Horizon BoomerEye from the bottom of Boomerang's statblock in Run & Gun.
 - Added qualities for Explorer and Enchanter, and made minor fixes to Aware. Fixes #1705.
 - Fixed an incorrect skill requirement for the Apt Pupil quality. 
+- Fixed an issue with the alternative Spider mentor increasing Karma costs for the Stealth skillgroup instead of applying a dicepool modifier. 
 
 New Strings:
 - Label_Options_SpellShapingFocus
