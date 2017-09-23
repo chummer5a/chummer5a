@@ -18,6 +18,10 @@ Application Changes:
 - Fixed an issue that allowed priority choices that received a single skill or skill group to receive multiples.
 - Fixed incorrect costs for binding foci when using non-English language files.
 - Fixed an issue with free spells from Dedicated Spellslinger improperly prompting for Karma in career mode.
+- Fixed archaic handling of how restrictions are applied to bonus Adept powers by adding a "bonus override" portion to bonuses that add specific Adept powers with certain restrictions (e.g. specifically free levels in Attribute Boost AGI instead of in any Attribute Boost).
+- Fixed a bug where bonuses granting free levels of certain adept powers, e.g. Improved Ability, would not actually have their effect applied, and would also not have their effect properly removed if the source of the bonus was removed.
+- Made minor performance optimization to code that constructs the dicepool tooltips for skills.
+- The "Select Skill" form can now process multiple skill group inclusions, skill group exclusions, and skill category inclusions the same way it does for multiple skill inclusions (the old way of handling multiple skill category inclusions still works). It can also handle multiple filters at once, e.g. list only Physical Skills that are linked to STR, or list all Social Skills excluding the ones in the Acting skill group.
 
 Data Changes:
 
@@ -31,7 +35,12 @@ Data Changes:
 - Added entries for Chakram from the Run & Gun errata and the Horizon BoomerEye from the bottom of Boomerang's statblock in Run & Gun.
 - Added qualities for Explorer and Enchanter, and made minor fixes to Aware. Fixes #1705.
 - Fixed an incorrect skill requirement for the Apt Pupil quality. 
-- Fixed an issue with the alternative Spider mentor increasing Karma costs for the Stealth skillgroup instead of applying a dicepool modifier. 
+- Fixed an issue with the alternative Spider mentor increasing Karma costs for the Stealth skillgroup instead of applying a dicepool modifier.
+- Updated all mentor spirits whose free adept powers have a restricted selection (e.g. Firebringer, Wise Warrior, Seducer) so that those restrictions properly work.
+- Corrected the text of Seducer mentor spirit's adept bonus to match the one found in the core rulebook.
+- Corrected the page number references of Forbidden Arcana mentor spirits.
+- Spider (Alt) now properly gives 2 levels of Spirit Claw instead of 1.
+- Changed the name of "Great Mother" mentor spirit from SASS to "Great Mother (SASS)" to differentiate it from an identically named mentor spirit from Forbidden Arcana.
 
 New Strings:
 - Label_Options_SpellShapingFocus

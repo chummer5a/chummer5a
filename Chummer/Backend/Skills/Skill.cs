@@ -573,6 +573,8 @@ namespace Chummer.Skills
                         //TODO translate (could not find it in lang file, did not check old source)
                 }
 
+                IEnumerable<Improvement> lstRelevantImprovements = RelevantImprovements();
+
                 StringBuilder s;
                 if (CyberwareRating() > LearnedRating)
                 {
@@ -584,7 +586,7 @@ namespace Chummer.Skills
 
 
                     bool first = true;
-                    foreach (Improvement source in RelevantImprovements().Where(x => x.AddToRating))
+                    foreach (Improvement source in lstRelevantImprovements.Where(x => x.AddToRating))
                     {
                         if (first)
                         {
@@ -621,7 +623,7 @@ namespace Chummer.Skills
 
                 }
 
-                foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute && x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
+                foreach (Improvement source in lstRelevantImprovements.Where(x => !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute && x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
                 {
                     s.Append(" + ");
                     s.Append(GetName(source));
@@ -661,7 +663,7 @@ namespace Chummer.Skills
                     }
                 }
 
-                foreach(Improvement objSwapSkillAttribute in RelevantImprovements().Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
+                foreach(Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
                 {
                     s.Append("\n");
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
