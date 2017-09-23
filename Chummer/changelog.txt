@@ -22,6 +22,12 @@ Application Changes:
 - Fixed a bug where bonuses granting free levels of certain adept powers, e.g. Improved Ability, would not actually have their effect applied, and would also not have their effect properly removed if the source of the bonus was removed.
 - Made minor performance optimization to code that constructs the dicepool tooltips for skills.
 - The "Select Skill" form can now process multiple skill group inclusions, skill group exclusions, and skill category inclusions the same way it does for multiple skill inclusions (the old way of handling multiple skill category inclusions still works). It can also handle multiple filters at once, e.g. list only Physical Skills that are linked to STR, or list all Social Skills excluding the ones in the Acting skill group.
+- Fixed a bug that prevented bonuses granting free levels of certain powers from updating values boosted by said powers. Fixes #1834 and #1856.
+- Fixed a bug that made removing items that granted free levels of adept powers sometimes not actually remove the improvements added by said adept powers.
+- Fixed a bug that allowed the deletion of some powers without levels that were granted by free levels of adept powers.
+- Maximum values for adept powers should now update properly with changes to MAG values, and in the case of Improved Ability, changes to skill ratings.
+- Cancelling out of a dialog triggered by selecting an adept power or a property of an adept power will now properly cancel the dialog and not actually add the last/default selected choice.
+- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than 0. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
 
 Data Changes:
 
@@ -39,8 +45,9 @@ Data Changes:
 - Updated all mentor spirits whose free adept powers have a restricted selection (e.g. Firebringer, Wise Warrior, Seducer) so that those restrictions properly work.
 - Corrected the text of Seducer mentor spirit's adept bonus to match the one found in the core rulebook.
 - Corrected the page number references of Forbidden Arcana mentor spirits.
-- Spider (Alt) now properly gives 2 levels of Spirit Claw instead of 1.
+- Spider (Alt) now properly gives 2 levels of Spirit Claw instead of 1. (Yes, Spirit Claw does not have levels, so Forbidden Arcana will need to be errata'd, but Chummer5 can handle this sort of thing regardless)
 - Changed the name of "Great Mother" mentor spirit from SASS to "Great Mother (SASS)" to differentiate it from an identically named mentor spirit from Forbidden Arcana.
+- Improved Ability can no longer be taken for skills that have a rating of 0, as 0 x1.5 is still 0. This extends to Mentor Spirits that would give free levels of Improved Ability.
 
 New Strings:
 - Label_Options_SpellShapingFocus
@@ -49,6 +56,8 @@ New Strings:
 - Label_Options_FlexibleSignatureFocus
 - Label_Options_DisenchantingFocus
 - Label_Options_AlchemicalFocus
+- Message_Improvement_EmptySelectionList
+- Message_Improvement_EmptySelectionListNamed
 
 Changes Strings:
 - Message_PositiveQualityLimit

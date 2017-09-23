@@ -8369,6 +8369,14 @@ Do you want to continue?</text>
       <key>String_CustomItem_SelectText</key>
       <text>Enter a name for this custom item.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <!-- End Region-->
     <!-- Region CharacterOptions Messages -->
     <string>

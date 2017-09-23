@@ -7435,6 +7435,14 @@
       <key>String_CustomItem_SelectText</key>
       <text>Geben Sie einen Namen für diesen Gegenstand an.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <string>
       <key>String_MetamagicSkillBase</key>
       <text>Basierend auf Ihrer Talentauswahl dürfen Sie {0} auswählen.</text>

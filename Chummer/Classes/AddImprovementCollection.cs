@@ -332,7 +332,8 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
 
             // Display the Select Skill window and record which Skill was selected.
-            frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+            frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter, _strFriendlyName);
+            frmPickSkill.RequiresExistingNonzeroRating = !string.IsNullOrWhiteSpace(bonusNode.Attributes?["requireexistingnonzerorating"]?.InnerText);
             if (!string.IsNullOrEmpty(_strFriendlyName))
                 frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
                     .Replace("{0}", _strFriendlyName);
@@ -2875,9 +2876,6 @@ namespace Chummer.Classes
                 Log.Info("objXmlSpecificPower = " + bonusNode.OuterXml.ToString());
 
                 string strPowerName = bonusNode["name"].InnerText;
-                int intLevels = 0;
-                if (bonusNode["val"] != null)
-                    intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
 
                 string strPowerNameLimit = strPowerName;
 
@@ -2887,17 +2885,27 @@ namespace Chummer.Classes
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower =
                     objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerNameLimit + "\"]");
-                objNewPower.Create(objXmlPower, _manager, intLevels, bonusNode["bonusoverride"]);
+                if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
+                    throw new AbortedException();
 
-                bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
-                if (!blnHasPower)
+                Power objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+                if (objBoostedPower == null)
                 {
                     _objCharacter.Powers.Add(objNewPower);
+                    objBoostedPower = objNewPower;
+                    Log.Info("blnHasPower = false");
                 }
+                else
+                    Log.Info("blnHasPower = true");
 
-                Log.Info("blnHasPower = " + blnHasPower);
                 Log.Info("Calling CreateImprovement");
+                int intLevels = 0;
+                if (bonusNode["val"] != null)
+                    intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
+                if (!objBoostedPower.LevelsEnabled)
+                    intLevels = 1;
                 CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
+                objBoostedPower.OnPropertyChanged(nameof(objBoostedPower.TotalRating));
             }
         }
 
@@ -2946,7 +2954,8 @@ namespace Chummer.Classes
 
                     // If no, add the power and mark it free or give it free levels
                     Power objNewPower = new Power(_objCharacter);
-                    objNewPower.Create(objXmlPower, _manager,0);
+                    if (!objNewPower.Create(objXmlPower, 0))
+                        throw new AbortedException();
 
                     bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 

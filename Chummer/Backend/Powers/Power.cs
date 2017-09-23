@@ -23,19 +23,19 @@ namespace Chummer
         private string _strPage = "";
         private string _strPointsPerLevel = "0";
         private string _strAction = "";
-        private decimal _decExtraPointCost;
-        private int _intMaxLevel;
-        private bool _blnDiscountedAdeptWay;
-        private bool _blnDiscountedGeas;
+        private decimal _decExtraPointCost = 0;
+        private int _intMaxLevel = 0;
+        private bool _blnDiscountedAdeptWay = false;
+        private bool _blnDiscountedGeas = false;
         private XmlNode _nodAdeptWayRequirements;
         private string _strNotes = "";
-        private bool _blnFree;
-        private int _intFreeLevels;
+        private bool _blnFree = false;
+        private int _intFreeLevels = 0;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = "";
-        private decimal _decFreePoints;
-        private string _strDisplayName;
-        private string _displayPoints;
+        private decimal _decFreePoints = 0;
+        private string _strDisplayName = "";
+        private string _displayPoints = "";
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Power(Character objCharacter)
@@ -90,24 +90,24 @@ namespace Chummer
             CharacterObject.SourceProcess(_strSource);
         }
 
-        public void Create(XmlNode objNode, ImprovementManager objImprovementManager, int intRating = 1, XmlNode objBonusNodeOverride = null)
+        public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null)
         {
             Name = objNode["name"].InnerText;
             _sourceID = Guid.Parse(objNode["id"].InnerText);
-            _strPointsPerLevel = objNode["points"].InnerText;
-            _strAdeptWayDiscount = objNode["adeptway"]?.InnerText ?? "0";
+            objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
+            objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
             LevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
             Rating = intRating;
-            objNode.TryGetField("maxlevels", out _intMaxLevel, CharacterObject.MAG.TotalValue);
-            objNode.TryGetField("discounted", out _blnDiscountedAdeptWay);
-            objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
-            objNode.TryGetField("bonussource", out _strBonusSource);
-            objNode.TryGetField("freepoints", out _decFreePoints);
-            objNode.TryGetField("extrapointcost", out _decExtraPointCost);
-            objNode.TryGetField("action", out _strAction);
-            objNode.TryGetField("source", out _strSource);
-            objNode.TryGetField("page", out _strPage);
-            objNode.TryGetField("notes", out _strNotes);
+            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevel);
+            objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
+            objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
+            objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
+            objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints);
+            objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost);
+            objNode.TryGetStringFieldQuickly("action", ref _strAction);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             Bonus = objNode["bonus"];
             if (objBonusNodeOverride != null)
                 Bonus = objBonusNodeOverride;
@@ -126,16 +126,21 @@ namespace Chummer
             }
             if (Bonus != null && Bonus.HasChildNodes)
             {
-                if (
-                    !objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false,
-                        Convert.ToInt32(Rating), DisplayNameShort))
+                if (!CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
                 {
                     this.Deleting = true;
                     CharacterObject.Powers.Remove(this);
-                    return;
+                    OnPropertyChanged(nameof(TotalRating));
+                    return false;
                 }
-                Extra = objImprovementManager.SelectedValue;
+                Extra = CharacterObject.ObjImprovementManager.SelectedValue;
             }
+            if (TotalMaximumLevels < Rating)
+            {
+                Rating = TotalMaximumLevels;
+                OnPropertyChanged(nameof(TotalRating));
+            }
+            return true;
         }
 
         /// <summary>
@@ -379,7 +384,7 @@ namespace Chummer
             get { return Math.Min(Rating + FreeLevels, TotalMaximumLevels); }
             set
             {
-                Rating = value - FreeLevels;
+                Rating = Math.Max(value - FreeLevels, 0);
                 OnPropertyChanged();
             }
         }
@@ -391,14 +396,11 @@ namespace Chummer
         {
             get
             {
-                int intReturn = 0;
                 decimal decExtraCost = FreePoints;
-                /*if (!LevelsEnabled)
-                {
-                
-                }
-                //The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
-                else*/ if (Rating == 0 && ExtraPointCost > 0)
+                // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+                int intReturn = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
+                // The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
+                if (Rating + intReturn == 0 && ExtraPointCost > 0)
                 {
                     decExtraCost -= (PointsPerLevel + ExtraPointCost);
                     if (decExtraCost >= 0)
@@ -419,7 +421,6 @@ namespace Chummer
                     }
 
                 }
-                intReturn += CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
                 return Math.Min(intReturn, CharacterObject.MAG.TotalValue);
             }
         }
@@ -456,7 +457,10 @@ namespace Chummer
         {
             get
             {
-                return _displayPoints ?? PowerPoints.ToString("G29");
+                if (!string.IsNullOrEmpty(_displayPoints))
+                    return _displayPoints;
+                else
+                    return PowerPoints.ToString("G29");
             }
             set { _displayPoints = value; }
         }
@@ -545,7 +549,7 @@ namespace Chummer
         {
             get
             {
-                return Math.Max(_intMaxLevel, 1);
+                return _intMaxLevel;
             }
             set
             {
@@ -656,23 +660,25 @@ namespace Chummer
         {
             get
             {
+                if (!LevelsEnabled)
+                    return 1;
                 int intReturn = MaxLevels;
-                if (LevelsEnabled && MaxLevels == 0)
+                if (intReturn == 0)
                 {
-                    intReturn = Math.Max(MaxLevels, CharacterObject.MAG.TotalValue);
+                    intReturn = Math.Max(intReturn, CharacterObject.MAG.TotalValue);
                 }
                 if (Name == "Improved Ability (skill)")
                 {
-                    foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(objSkill => Extra == objSkill.Name || objSkill.IsExoticSkill && Extra == objSkill.DisplayName + " (" + objSkill.Specialization + ")"))
+                    Skill objBoostedSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(objSkill => Extra == objSkill.Name || objSkill.IsExoticSkill && Extra == objSkill.DisplayName + " (" + objSkill.Specialization + ")");
+                    if (objBoostedSkill != null)
                     {
-                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        intReturn = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
+                        intReturn = Math.Min(intReturn, (objBoostedSkill.Base + objBoostedSkill.Karma + 1) / 2);
                     }
                 }
-                if (intReturn > CharacterObject.MAG.TotalValue && !CharacterObject.IgnoreRules)
+                if (!CharacterObject.IgnoreRules)
                 {
-                    intReturn = CharacterObject.MAG.TotalValue;
+                    intReturn = Math.Min(intReturn, CharacterObject.MAG.TotalValue);
                 }
                 return intReturn;
             }
@@ -718,15 +724,18 @@ namespace Chummer
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-            if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating) && !Deleting)
+            if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating))
             {
                 CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
-                CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-                CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
+                if (!Deleting)
+                {
+                    CharacterObject.ObjImprovementManager.ForcedValue = Extra;
+                    CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
+                }
             }
         }
 

@@ -1343,16 +1343,13 @@ namespace Chummer
                         Power objImprovedPower = _objCharacter.Powers.First(objPower => objPower.Name == objImprovement.ImprovedName &&
                                         objPower.Extra == objImprovement.UniqueName);
 
-                        if (objImprovedPower.TotalRating == 0)
+                        if (objImprovedPower.TotalRating <= 0)
                         {
                             objImprovedPower.Deleting = true;
                             _objCharacter.Powers.Remove(objImprovedPower);
                         }
-                        else
-                        {
-                            // TODO Find a better way to trigger OnPropertyChanged() of the Power object
-                            objImprovedPower.TotalRating = objImprovedPower.TotalRating;
-                        }
+
+                        objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
                         break;
                 }
             }

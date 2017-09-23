@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ namespace Chummer
                 if (objXmlPower["extrapointcost"]?.InnerText != null && blnAdd)
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
-                    if (!_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.Rating > 0))
+                    if (!_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.TotalRating > 0))
                         dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
                 if (_dblLimitToRating > 0 && blnAdd)
