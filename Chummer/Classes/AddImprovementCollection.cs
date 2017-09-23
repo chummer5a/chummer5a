@@ -2882,24 +2882,24 @@ namespace Chummer.Classes
                 string strPowerNameLimit = strPowerName;
 
                 // Check if the character already has this power
-                    Log.Info("strSelection = " + strSelection);
+                Log.Info("strSelection = " + strSelection);
                 Power objNewPower = new Power(_objCharacter);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower =
                     objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerNameLimit + "\"]");
-                objNewPower.Create(objXmlPower, _manager, 0);
+                objNewPower.Create(objXmlPower, _manager, intLevels, bonusNode["bonusoverride"]);
 
                 bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
                 if (!blnHasPower)
                 {
                     _objCharacter.Powers.Add(objNewPower);
-                    }
+                }
 
                 Log.Info("blnHasPower = " + blnHasPower);
                 Log.Info("Calling CreateImprovement");
                 CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0, intLevels);
-                    }
-                    }
+            }
+        }
 
         // Select a Power.
         public void selectpowers(XmlNode bonusNode)

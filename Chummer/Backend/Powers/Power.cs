@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -90,7 +90,7 @@ namespace Chummer
             CharacterObject.SourceProcess(_strSource);
         }
 
-        public void Create(XmlNode objNode, ImprovementManager objImprovementManager, int intRating = 1)
+        public void Create(XmlNode objNode, ImprovementManager objImprovementManager, int intRating = 1, XmlNode objBonusNodeOverride = null)
         {
             Name = objNode["name"].InnerText;
             _sourceID = Guid.Parse(objNode["id"].InnerText);
@@ -109,6 +109,8 @@ namespace Chummer
             objNode.TryGetField("page", out _strPage);
             objNode.TryGetField("notes", out _strNotes);
             Bonus = objNode["bonus"];
+            if (objBonusNodeOverride != null)
+                Bonus = objBonusNodeOverride;
             _nodAdeptWayRequirements = objNode["adeptwayrequires"];
             if (objNode.InnerXml.Contains("enhancements"))
             {
