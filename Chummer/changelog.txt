@@ -36,7 +36,6 @@ Data Changes:
 - Added qualities for Explorer and Enchanter, and made minor fixes to Aware. Fixes #1705.
 - Fixed an incorrect skill requirement for the Apt Pupil quality. 
 - Fixed an issue with the alternative Spider mentor increasing Karma costs for the Stealth skillgroup instead of applying a dicepool modifier.
-- Fixed an incorrect skill requirement for the Apt Pupil quality.
 - Updated all mentor spirits whose free adept powers have a restricted selection (e.g. Firebringer, Wise Warrior, Seducer) so that those restrictions properly work.
 - Corrected the text of Seducer mentor spirit's adept bonus to match the one found in the core rulebook.
 - Corrected the page number references of Forbidden Arcana mentor spirits.
