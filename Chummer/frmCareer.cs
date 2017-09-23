@@ -3893,9 +3893,13 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsSpell;
             if (objSpell.InternalId == Guid.Empty.ToString())
                 return;
-
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
-                return;
+            objSpell.FreeBonus = frmPickSpell.FreeBonus;
+            if (!objSpell.FreeBonus)
+            {
+                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend")
+                    .Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                    return;
+            }
 
             _objCharacter.Spells.Add(objSpell);
 
@@ -3935,17 +3939,23 @@ namespace Chummer
             }
 
             treSpells.SelectedNode = objNode;
-            
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
-            objEntry.Create((_objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
-            _objCharacter.ExpenseEntries.Add(objEntry);
-            _objCharacter.Karma -= _objOptions.KarmaSpell + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
+            if (!objSpell.FreeBonus)
+            {
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                objEntry.Create(
+                    (_objOptions.KarmaSpell +
+                     _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount)) * -1,
+                    LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name,
+                    ExpenseType.Karma, DateTime.Now);
+                _objCharacter.ExpenseEntries.Add(objEntry);
+                _objCharacter.Karma -= _objOptions.KarmaSpell +
+                                       _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
 
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
-            objEntry.Undo = objUndo;
-
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
+                objEntry.Undo = objUndo;
+            }
             treSpells.SortCustom();
             ScheduleCharacterUpdate();
 
