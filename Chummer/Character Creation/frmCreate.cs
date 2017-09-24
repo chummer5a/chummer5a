@@ -18092,7 +18092,16 @@ namespace Chummer
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
                     if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "backup")))
-                        Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "backup"));
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "backup"));
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                        }
+                    }
 
                     string strFileName = _objCharacter.FileName;
                     string[] strParts = strFileName.Split(Path.DirectorySeparatorChar);

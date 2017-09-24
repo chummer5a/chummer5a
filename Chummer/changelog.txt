@@ -32,6 +32,7 @@ Application Changes:
 - Added support for Barehanded Adept and qualities similar to it.
 - Drain for Physical Adepts is now properly displayed and calculated as BOD + WIL.
 - Reapply Improvements will now starts by clearing out all improvements that it would reapply, regardless of source names. This helps clean out old .chum5 saves that have orphaned improvements, which fixes #1916.
+- Chummer5 will now warn users when it does not have the proper write permissions to its own folder, or if an error was encountered that prevented a character from being saved. Fixes #1915.
 
 Data Changes:
 
@@ -65,6 +66,8 @@ New Strings:
 - Label_Options_AlchemicalFocus
 - Message_Improvement_EmptySelectionList
 - Message_Improvement_EmptySelectionListNamed
+- Message_Insufficient_Permissions_Warning
+- Message_Save_Error_Warning
 
 Changes Strings:
 - Message_PositiveQualityLimit

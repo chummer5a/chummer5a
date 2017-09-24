@@ -948,11 +948,10 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                return;
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
             }
             objWriter.Close();
             objStream.Close();
-
         }
 
         /// <summary>
@@ -1972,8 +1971,17 @@ namespace Chummer
             // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
             // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
                 string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
-                if (!Directory.Exists(mugshotsDirectoryPath))
+            if (!Directory.Exists(mugshotsDirectoryPath))
+            {
+                try
+                {
                     Directory.CreateDirectory(mugshotsDirectoryPath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                }
+            }
             // <mainmugshotpath />
             if (MainMugshot.Length > 0)
             {

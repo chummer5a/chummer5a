@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -192,7 +192,16 @@ namespace Chummer
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
-                Directory.CreateDirectory(settingsDirectoryPath);
+            {
+                try
+                {
+                    Directory.CreateDirectory(settingsDirectoryPath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                }
+            }
 
             // If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
             string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
