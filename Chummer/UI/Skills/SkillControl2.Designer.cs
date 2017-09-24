@@ -154,6 +154,9 @@ namespace Chummer.UI.Skills
             this.chkKarma.Size = new System.Drawing.Size(15, 14);
             this.chkKarma.TabIndex = 18;
             this.chkKarma.UseVisualStyleBackColor = true;
+            /* Delnar: Awaiting other authors' approval before activation.
+            this.chkKarma.CheckedChanged += new System.EventHandler(this.chkKarma_CheckChanged);
+            */
             // 
             // cmdDelete
             // 
