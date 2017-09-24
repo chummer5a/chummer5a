@@ -7551,6 +7551,34 @@
     </vehicle>
   
   <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+          <id>c659ace5-1dfb-4eeb-b49d-5867b3153649</id>
+          <name>Avibras-Nissan AN 822</name>
+          <page>31</page>
+          <source>SFME</source>
+          <accel>0</accel>
+          <armor>10</armor>
+          <avail>11</avail>
+          <body>14</body>
+          <category>Rotorcraft</category>
+          <cost>18000</cost>
+          <handling>5</handling>
+          <pilot>4</pilot>
+          <sensor>4</sensor>
+          <speed>6</speed>
+          <gears>
+              <gear rating="2" maxrating="4">Sensor Array</gear>
+              <gear rating="2" select="Evasion">Skill Autosoft</gear>
+              <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
+              <gear select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
+          </gears>
+          <mods>
+              <name>Rigger Interface</name>
+          </mods>
+          <seats>5</seats>
+      </vehicle>
+      <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
