@@ -52,6 +52,7 @@ Data Changes:
 - Spider (Alt) now properly gives 2 levels of Spirit Claw instead of 1. (Yes, Spirit Claw does not have levels, so Forbidden Arcana will need to be errata'd, but Chummer5 can handle this sort of thing regardless)
 - Changed the name of "Great Mother" mentor spirit from SASS to "Great Mother (SASS)" to differentiate it from an identically named mentor spirit from Forbidden Arcana.
 - Improved Ability can no longer be taken for skills that have a rating of 0, as 0 x1.5 is still 0. This extends to Mentor Spirits that would give free levels of Improved Ability.
+- Implemented content from Shadows in Focus: Metropole. Life Modules are untested because they're awful.
 - Reakt and Combat Sense now give dodge bonuses.
 - Barehanded Adept can now be taken by Mystic Adepts as well, and it will now properly provide free Touch-ranged spells that use Unarmed Combat in place of Spellcasting.
 

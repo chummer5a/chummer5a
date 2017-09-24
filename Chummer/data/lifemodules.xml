@@ -7147,7 +7147,6 @@
     </module>
 <!-- End Region -->
     <!-- Region Hard Targets-->
-    <!--Hard Targets modules-->
     <module>
       <id>efdee4d0-f6fb-4d75-816e-859e85ec29d4</id>
       <stage>Nationality</stage>
@@ -7304,7 +7303,6 @@
       <source>HT</source>
       <page>138</page>
     </module>
-    <!-- Region Teen Years -->
     <module>
       <id>cf75cd28-5992-40d4-a9b4-837f3b3c4867</id>
       <stage>Teen Years</stage>
@@ -8389,6 +8387,165 @@
       <page>104</page>
     </module>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Shadows in Focus: Metropole -->
+      <module>
+          <id>36b14645-f416-4598-ae10-f60f80d93155</id>
+          <stage>Nationality</stage>
+          <category>LifeModule</category>
+          <name>Amazonian</name>
+          <karma>15</karma>
+          <!--<selectable/>-->
+          <versions>
+              <version>
+                  <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
+                  <name>Metropole - Rio de Janeiro</name>
+                  <story>$real was born in Rio de Janeiro.</story>
+                  <bonus>
+                      <attributelevel>
+                          <!--Defaults to <val>1</val>-->
+                          <name>CHA</name>
+                      </attributelevel>
+                      <skilllevel>
+                          <name>Etiquette</name>
+                      </skilllevel>
+                      <skilllevel>
+                          <name>Swimming</name>
+                      </skilllevel>
+                      <freenegativequalities>-5</freenegativequalities>
+                      <addqualities>
+                          <addquality>SINner (National)</addquality>
+                      </addqualities>
+                  </bonus>
+              </version>
+              <version>
+                  <id>569ef9c9-3576-4d88-973b-df184a20675b</id>
+                  <name>Metropole - Centro</name>
+                  <story>$real was born in Centro.</story>
+                  <bonus>
+                      <attributelevel>
+                          <!--Defaults to <val>1</val>-->
+                          <name>LOG</name>
+                      </attributelevel>
+                      <knowledgeskilllevel>
+                          <name>Law</name>
+                          <group>Academic</group>
+                      </knowledgeskilllevel>
+                      <knowledgeskilllevel>
+                          <name>Paranormal Critters</name>
+                          <group>Academic</group>
+                      </knowledgeskilllevel>
+                      <skilllevel>
+                          <name>Computer</name>
+                      </skilllevel>
+                      <freenegativequalities>-5</freenegativequalities>
+                      <addqualities>
+                          <addquality>SINner (National)</addquality>
+                      </addqualities>
+                  </bonus>
+              </version>
+              <version>
+                  <id>5129c5a5-066f-47b6-a37e-fae8d3e87471</id>
+                  <name>Metropole - Sao Paolo</name>
+                  <story>$real was born in Sao Paolo.</story>
+                  <bonus>
+                      <attributelevel>
+                          <!--Defaults to <val>1</val>-->
+                          <name>LOG</name>
+                      </attributelevel>
+                      <knowledgeskilllevel>
+                          <name>[Languge]</name>
+                          <group>Language</group>
+                      </knowledgeskilllevel>
+                      <skilllevel>
+                          <name>Negotiation</name>
+                      </skilllevel>
+                      <freenegativequalities>-5</freenegativequalities>
+                      <addqualities>
+                          <addquality>SINner (National)</addquality>
+                      </addqualities>
+                  </bonus>
+              </version>
+              <version>
+                  <id>60de16a9-72e8-48d6-aefa-e4e89b1620cb</id>
+                  <name>Metropole - Sinless</name>
+                  <story>$real was born in the Metropole without the luxury of a SIN.</story>
+                  <bonus>
+                      <attributelevel>
+                          <!--Defaults to <val>1</val>-->
+                          <name>AGI</name>
+                      </attributelevel>
+                      <knowledgeskilllevel>
+                          <name>Metropole</name>
+                          <group>Street</group>
+                      </knowledgeskilllevel>
+                  </bonus>
+              </version>
+              <version>
+                  <id>25d61719-2056-437b-80b8-376f70bd7cb3</id>
+                  <name>Amazonian Tribal</name>
+                  <story>$real was born in the Amazonian wilds.</story>
+                  <bonus>
+                      <attributelevel>
+                          <!--Defaults to <val>1</val>-->
+                          <name>BOD</name>
+                      </attributelevel>
+                      <knowledgeskilllevel>
+                          <name>Amazonian Rainforest</name>
+                          <group>Street</group>
+                      </knowledgeskilllevel>
+                      <knowledgeskilllevel>
+                          <name>Flora</name>
+                          <group>Street</group>
+                      </knowledgeskilllevel>
+                      <skilllevel>
+                          <name>Archery</name>
+                      </skilllevel>
+                      <skilllevel>
+                          <name>Survival</name>
+                      </skilllevel>
+                      <freenegativequalities>-8</freenegativequalities>
+                      <addqualities>
+                          <addquality>Uneducated</addquality>
+                      </addqualities>
+                  </bonus>
+              </version>
+          </versions>
+          <bonus>
+              <skilllevel>
+                  <name>Computer</name>
+              </skilllevel>
+              <knowledgeskilllevel>
+                  <name>Football</name>
+                  <group>Interest</group>
+              </knowledgeskilllevel>
+              <knowledgeskilllevel>
+                  <name>Amazonia</name>
+                  <group>Academic</group>
+              </knowledgeskilllevel>
+              <knowledgeskilllevel>
+                  <name>Paranormal Critters</name>
+                  <group>Academic</group>
+              </knowledgeskilllevel>
+              <knowledgeskilllevel>
+                  <name>Amazonian Portugese</name>
+                  <group>Language</group>
+                  <val>0</val>
+              </knowledgeskilllevel>
+              <knowledgeskilllevel>
+                  <options>
+                      <spanish>Spanish</spanish>
+                      <german>German</german>
+                      <japanese>Japanese</japanese>
+                  </options>
+                  <id>a9df9852-6f4d-423d-8251-c92a709c1476</id>
+                  <group>Language</group>
+              </knowledgeskilllevel>
+          </bonus>
+          <story />
+          <source>SFME</source>
+          <page>31</page>
+      </module>      
     <!-- End Region -->
   </modules>
   <storybuilder>
