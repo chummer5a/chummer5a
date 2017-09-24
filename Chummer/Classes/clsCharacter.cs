@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -4272,6 +4272,10 @@ namespace Chummer
         {
             get
             {
+                if (AdeptEnabled && !MagicianEnabled)
+                {
+                    return "BOD + WIL";
+                }
                 return _strTraditionDrain;
             }
             set
@@ -5508,6 +5512,17 @@ namespace Chummer
             get
             {
                 return ArmorRating + _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
+        /// </summary>
+        public int TotalBonusDodgeRating
+        {
+            get
+            {
+                return _objImprovementManager.ValueOf(Improvement.ImprovementType.Dodge);
             }
         }
 

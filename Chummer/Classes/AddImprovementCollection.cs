@@ -2013,6 +2013,25 @@ namespace Chummer.Classes
                 ValueToInt(bonusNode.InnerText, _intRating));
         }
 
+        // Check for Dodge modifiers.
+        public void dodge(XmlNode bonusNode)
+        {
+            Log.Info("dodge");
+            Log.Info("dodge = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            string strUseUnique = _strUnique;
+            if (bonusNode.Attributes["precedence"] != null)
+            {
+                strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
+            }
+            else if (bonusNode.Attributes["group"] != null)
+            {
+                strUseUnique = "group" + bonusNode.Attributes["group"].InnerText;
+            }
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Dodge, strUseUnique,
+                ValueToInt(bonusNode.InnerText, _intRating));
+        }
+
         // Check for Reach modifiers.
         public void reach(XmlNode bonusNode)
         {
@@ -3212,6 +3231,9 @@ namespace Chummer.Classes
         {
             Log.Info("freespells");
             Log.Info("freespells = " + bonusNode.OuterXml.ToString());
+            string strSpellTypeLimit = string.Empty;
+            if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["limit"].InnerText))
+                strSpellTypeLimit = bonusNode.Attributes?["limit"].InnerText;
             if (bonusNode.Attributes?["attribute"] != null)
             {
                 Log.Info("attribute");
@@ -3220,7 +3242,7 @@ namespace Chummer.Classes
                 {
                     Log.Info(att.Abbrev);
                     Log.Info("Calling CreateImprovement");
-                    CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, string.Empty);
+                    CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, strSpellTypeLimit);
                 }
             }
             else if (bonusNode.Attributes?["skill"] != null)
@@ -3231,7 +3253,7 @@ namespace Chummer.Classes
                 if (objSkill != null)
                 {
                     Log.Info("Calling CreateImprovement");
-                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill,string.Empty);
+                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
                 }
             }
             else

@@ -94,6 +94,9 @@
           </oneof>
         </required>
       </adeptwayrequires>
+	  <bonus>
+        <dodge>Rating</dodge>
+      </bonus>
     </power>
     <power>
       <id>dbf16604-164c-485c-96c8-fe3136cd5caa</id>

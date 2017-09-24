@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ namespace Chummer
         private bool _blnIgnoreRequirements;
         private string _strLimitCategory = string.Empty;
         private string _strForceSpell = string.Empty;
+        private bool _blnCanGenericSpellBeFree = false;
+        private bool _blnCanTouchOnlySpellBeFree = false;
         private List<TreeNode> _lstExpandCategories;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
@@ -64,6 +66,41 @@ namespace Chummer
             {
                 if (objLabel.Text.StartsWith("["))
                     objLabel.Text = string.Empty;
+            }
+
+            //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
+            //in Career Mode. Create mode manages itself.
+            int intFreeGenericSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
+            int intFreeTouchOnlySpells = 0;
+            foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+            {
+                int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
+                if (imp.UniqueName.Contains("half"))
+                    intAttValue = (intAttValue + 1) / 2;
+                if (imp.UniqueName.Contains("touchonly"))
+                    intFreeTouchOnlySpells += intAttValue;
+                else
+                    intFreeGenericSpells += intAttValue;
+            }
+            foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
+            {
+                int intSkillValue = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName).LearnedRating;
+                if (imp.UniqueName.Contains("half"))
+                    intSkillValue = (intSkillValue + 1) / 2;
+                if (imp.UniqueName.Contains("touchonly"))
+                    intFreeTouchOnlySpells += intSkillValue;
+                else
+                    intFreeGenericSpells += intSkillValue;
+            }
+            int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range != "T");
+            int intTotalFreeTouchOnlySpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range == "T");
+            if (intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount)
+            {
+                _blnCanTouchOnlySpellBeFree = true;
+            }
+            if (intFreeGenericSpells > intTotalFreeNonTouchSpellsCount + Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0))
+            {
+                _blnCanGenericSpellBeFree = true;
             }
 
             // Load the Spells information.
@@ -115,7 +152,8 @@ namespace Chummer
                 }
                 else if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                 {
-                    blnInclude = objXmlSpell["category"].InnerText == "Rituals" && !objXmlSpell["descriptor"].InnerText.Contains("Spell");
+                    blnInclude = (objXmlSpell["category"].InnerText == "Rituals" && !objXmlSpell["descriptor"].InnerText.Contains("Spell")) ||
+                        (_blnCanTouchOnlySpellBeFree && objXmlSpell["range"].InnerText == "T");
                 }
                 else if (!_objCharacter.AdeptEnabled)
                 {
@@ -163,20 +201,6 @@ namespace Chummer
             txtSearch.Enabled = string.IsNullOrEmpty(_strLimitCategory);
 
             if (!_objCharacter.Created) return;
-            //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
-            //in Career Mode. Create mode manages itself.
-            int freeSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells)
-                             + _objCharacter.Improvements
-                                 .Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
-                                 .Select(imp => _objCharacter.GetAttribute(imp.ImprovedName))
-                                 .Select(att => att.TotalValue).Sum()
-                             + _objCharacter.Improvements
-                                 .Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                                 .Select(imp => _objCharacter.SkillsSection.Skills.First(
-                                     x => x.Name == imp.ImprovedName)).Select(objSkill => objSkill.LearnedRating)
-                                 .Sum();
-            chkFreeBonus.Visible = freeSpells > 0 &&
-                                   freeSpells > _objCharacter.Spells.Count(spell => spell.FreeBonus);
         }
 
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
@@ -734,6 +758,19 @@ namespace Chummer
                 }
 
                 lblDV.Text = strDV;
+
+                if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled && _blnCanTouchOnlySpellBeFree && objXmlSpell["range"].InnerText == "T")
+                {
+                    chkFreeBonus.Checked = true;
+                    chkFreeBonus.Visible = true;
+                    chkFreeBonus.Enabled = false;
+                }
+                else
+                {
+                    chkFreeBonus.Checked = false;
+                    chkFreeBonus.Visible = _blnCanGenericSpellBeFree || (_blnCanTouchOnlySpellBeFree && objXmlSpell["range"].InnerText == "T");
+                    chkFreeBonus.Enabled = true;
+                }
 
                 string strBook = _objCharacter.Options.LanguageBookShort(objXmlSpell["source"].InnerText);
                 string strPage = objXmlSpell["page"].InnerText;

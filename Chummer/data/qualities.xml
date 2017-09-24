@@ -12491,11 +12491,7 @@
       <doublecareer>False</doublecareer>
       <karma>10</karma>
       <category>Positive</category>
-      <bonus />
       <required>
-        <allof>
-          <quality>Adept</quality>
-        </allof>
         <oneof>
           <group>
             <skill>
@@ -12503,14 +12499,36 @@
               <val>4</val>
             </skill>
             <tradition>Buddhism</tradition>
+			<quality>Adept</quality>
           </group>
-          <skill>
-            <name>Unarmed Combat</name>
-            <val>6</val>
-          </skill>
+		  <group>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>4</val>
+            </skill>
+            <tradition>Buddhism</tradition>
+			<quality>Mystic Adept</quality>
+          </group>
+		  <group>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>6</val>
+            </skill>
+			<quality>Adept</quality>
+          </group>
+		  <group>
+            <skill>
+              <name>Unarmed Combat</name>
+              <val>6</val>
+            </skill>
+			<quality>Mystic Adept</quality>
+          </group>
         </oneof>
       </required>
-      <!-- TODO: How the fuck do I implement getting free spells based on MAG? -->
+      <!-- TODO: Source code for this is super hacky, so it definitely needs cleaning up at the next opportunity -->
+	  <bonus>
+		<freespells attribute="MAG" limit="half,touchonly" />
+	  </bonus>
       <source>FA</source>
       <page>33</page>
     </quality>

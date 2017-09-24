@@ -28,6 +28,10 @@ Application Changes:
 - Maximum values for adept powers should now update properly with changes to MAG values, and in the case of Improved Ability, changes to skill ratings.
 - Cancelling out of a dialog triggered by selecting an adept power or a property of an adept power will now properly cancel the dialog and not actually add the last/default selected choice.
 - Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than 0. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
+- Added support for bonuses to defense dice (e.g. Combat Sense, Reakt).
+- Added support for Barehanded Adept and qualities similar to it.
+- Drain for Physical Adepts is now properly displayed and calculated as BOD + WIL.
+- Reapply Improvements will now starts by clearing out all improvements that it would reapply, regardless of source names. This helps clean out old .chum5 saves that have orphaned improvements, which fixes #1916.
 
 Data Changes:
 
@@ -48,6 +52,8 @@ Data Changes:
 - Spider (Alt) now properly gives 2 levels of Spirit Claw instead of 1. (Yes, Spirit Claw does not have levels, so Forbidden Arcana will need to be errata'd, but Chummer5 can handle this sort of thing regardless)
 - Changed the name of "Great Mother" mentor spirit from SASS to "Great Mother (SASS)" to differentiate it from an identically named mentor spirit from Forbidden Arcana.
 - Improved Ability can no longer be taken for skills that have a rating of 0, as 0 x1.5 is still 0. This extends to Mentor Spirits that would give free levels of Improved Ability.
+- Reakt and Combat Sense now give dodge bonuses.
+- Barehanded Adept can now be taken by Mystic Adepts as well, and it will now properly provide free Touch-ranged spells that use Unarmed Combat in place of Spellcasting.
 
 New Strings:
 - Label_Options_SpellShapingFocus
