@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1927,7 +1927,7 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         _objImprovementManager.ForcedValue = strSelected;
-                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objNode["bonus"], false, Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort);
+                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objNode["bonus"], false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort);
                     }
                 }
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -122,7 +122,7 @@ namespace Chummer.UI.Powers
                 new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
                     new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
                 new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortRating"),
-                    new PowerSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+                    new PowerSorter((x, y) => y.TotalRating.CompareTo(x.TotalRating))),
                 new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Power_SortAction"),
                     new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
                 //new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
@@ -230,11 +230,13 @@ namespace Chummer.UI.Powers
             XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-            objPower.Create(objXmlPower, ObjCharacter.ObjImprovementManager);
-            ObjCharacter.Powers.Add(objPower);
-            MissingDatabindingsWorkaround();
-            if (frmPickPower.AddAgain)
-                cmdAddPower_Click(sender, e);
+            if (objPower.Create(objXmlPower))
+            {
+                ObjCharacter.Powers.Add(objPower);
+                MissingDatabindingsWorkaround();
+                if (frmPickPower.AddAgain)
+                    cmdAddPower_Click(sender, e);
+            }
         }
 
         /// <summary>

@@ -6910,6 +6910,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>String_CustomItem_SelectText</key>
       <text>Entrez un nom pour cet objet personnalisé.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <string>
       <key>MessageTitle_Metatype_SelectTalent</key>
       <text>Selectionner un Talent</text>

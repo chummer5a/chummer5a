@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,19 +71,21 @@ namespace Chummer
 
         private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            switch (propertyChangedEventArgs?.PropertyName)
+            string strPropertyName = propertyChangedEventArgs?.PropertyName;
+            if (strPropertyName == nameof(PowerObject.FreeLevels) || strPropertyName == nameof(PowerObject.TotalRating))
             {
-                case nameof(PowerObject.CharacterObject.MAG.TotalValue):
-                //TODO: For skills - probably needs to be rebound to something more specific?
-                case "Karma":
+                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
+                tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+                cmdDelete.Enabled = PowerObject.FreeLevels == 0;
+            }
+            // Super hacky solution, but we need all values updated properly if maxima change for any reason
+            if (strPropertyName == nameof(PowerObject.TotalMaximumLevels))
+            {
+                nudRating.Maximum = PowerObject.TotalMaximumLevels;
+            }
+            else if (strPropertyName == "Karma" || PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue))
+            {
                 PowerObject.ForceEvent(nameof(PowerObject.TotalMaximumLevels));
-                    break;
-                case nameof(PowerObject.FreeLevels):
-                case nameof(PowerObject.TotalRating):
-                    PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
-                    tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
-                    cmdDelete.Enabled = PowerObject.FreeLevels == 0;
-                    break;
             }
         }
 

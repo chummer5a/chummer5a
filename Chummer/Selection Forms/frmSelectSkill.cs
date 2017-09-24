@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Skills;
 using System.Linq;
+using Chummer.Classes;
 
 namespace Chummer
 {
@@ -35,7 +36,9 @@ namespace Chummer
         private string _strLimitToSkill = string.Empty;
         private string _strLimitToCategories = string.Empty;
         private string _strForceSkill = string.Empty;
+        private string _strSourceName = string.Empty;
         private bool _blnKnowledgeSkill = false;
+        private bool _blnRequireExistingNonzeroRating = false;
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
@@ -43,11 +46,12 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
-        public frmSelectSkill(Character objCharacter)
+        public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
             _objCharacter = objCharacter;
+            _strSourceName = strSource;
+            InitializeComponent();
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
@@ -136,9 +140,15 @@ namespace Chummer
                 // Add the Skills to the list.
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
+                    string strXmlSkillName = objXmlSkill["name"].InnerText;
+                    if (_blnRequireExistingNonzeroRating &&
+                        !_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > 0))
+                    {
+                        continue;
+                    }
                     ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSkill["name"].InnerText;
-                    objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+                    objItem.Value = strXmlSkillName;
+                    objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
                     lstSkills.Add(objItem);
                 }
 
@@ -163,6 +173,11 @@ namespace Chummer
                                 blnAddSkill = !_strExcludeSkillGroup.Contains(objExoticSkill.SkillGroup);
                             else if (!string.IsNullOrEmpty(_strLimitToSkill))
                                 blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
+                        }
+
+                        if (_blnRequireExistingNonzeroRating && objSkill.Rating <= 0)
+                        {
+                            blnAddSkill = false;
                         }
 
                         if (blnAddSkill)
@@ -196,14 +211,20 @@ namespace Chummer
                     // Add the Skills to the list.
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
+                        string strXmlSkillName = objXmlSkill["name"].InnerText;
+                        if (_blnRequireExistingNonzeroRating &&
+                        !_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > 0))
+                        {
+                            continue;
+                        }
                         ListItem objItem = new ListItem();
-                        objItem.Value = objXmlSkill["name"].InnerText;
+                        objItem.Value = strXmlSkillName;
                         if (objXmlSkill.Attributes != null)
                         {
-                            objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+                            objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
                         }
                         else
-                            objItem.Name = objXmlSkill["name"].InnerXml;
+                            objItem.Name = strXmlSkillName;
                         lstSkills.Add(objItem);
                     }
                 }
@@ -212,6 +233,10 @@ namespace Chummer
                     // Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
                     foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
+                        if (_blnRequireExistingNonzeroRating && objKnow.Rating <= 0)
+                        {
+                            continue;
+                        }
                         ListItem objSkill = new ListItem();
                         objSkill.Value = objKnow.Name;
                         objSkill.Name = objKnow.DisplayName;
@@ -219,6 +244,13 @@ namespace Chummer
                     }
                 }
             }
+            if (lstSkills.Count <= 0)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", _strSourceName));
+                DialogResult = DialogResult.Cancel;
+                return;
+            }
+
             SortListItem objSort = new SortListItem();
             lstSkills.Sort(objSort.Compare);
             cboSkill.BeginUpdate();
@@ -360,8 +392,19 @@ namespace Chummer
                 _blnKnowledgeSkill = value;
             }
         }
+
+        /// <summary>
+        /// If true, only show skills that have a rating higher than 0.
+        /// </summary>
+        public bool RequiresExistingNonzeroRating
+        {
+            set
+            {
+                _blnRequireExistingNonzeroRating = value;
+            }
+        }
         #endregion
-    
-public  Character objCharacter { get; set; }
+
+        public  Character objCharacter { get; set; }
     }
 }

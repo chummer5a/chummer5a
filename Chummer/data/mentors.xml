@@ -245,7 +245,7 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill>
+				<selectskill requireexistingnonzerorating="true">
 					<val>Rating</val>
 					<applytorating>yes</applytorating>
 					<skillcategories>
@@ -432,7 +432,7 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill skillcategory="Physical Active">
+				<selectskill skillcategory="Physical Active" requireexistingnonzerorating="true">
 					<val>Rating</val>
 					<applytorating>yes</applytorating>
 				</selectskill>
@@ -473,7 +473,7 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill skillgroup="Acting,Influence">
+				<selectskill skillgroup="Acting,Influence" requireexistingnonzerorating="true">
 					<val>Rating</val>
 					<applytorating>yes</applytorating>
 				</selectskill>
@@ -625,7 +625,7 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
               <bonusoverride>
-				<selectskill skillcategory="Combat Active">
+				<selectskill skillcategory="Combat Active" requireexistingnonzerorating="true">
 					<val>Rating</val>
 					<applytorating>yes</applytorating>
 				</selectskill>
@@ -2608,7 +2608,7 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic">
+				<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic" requireexistingnonzerorating="true">
 					<val>Rating</val>
 					<applytorating>yes</applytorating>
 				</selectskill>
@@ -2735,7 +2735,7 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation">
+				<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation" requireexistingnonzerorating="true">
 					<val>Rating</val>
 					<applytorating>yes</applytorating>
 				</selectskill>

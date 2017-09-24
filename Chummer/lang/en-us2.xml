@@ -7262,6 +7262,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_CustomItem_SelectText</key>
 			<text>Enter a name for this custom item.</text>
 		</string>
+		<string>
+			<key>Message_Improvement_EmptySelectionList</key>
+			<text>No eligible items could be selected for this effect!</text>
+		</string>
+		<string>
+			<key>Message_Improvement_EmptySelectionListNamed</key>
+			<text>No eligible items could be selected for {0} to affect!</text>
+		</string>
 		<!-- CharacterOptions Messages -->
 		<string>
 			<key>Message_CharacterOptions_CannotLoadSetting</key>
