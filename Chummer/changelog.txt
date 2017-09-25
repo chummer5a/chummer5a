@@ -40,6 +40,9 @@ Application Changes:
 - Requirements that check for whether MAG, RES, or DEP are >= 1 will now instead check for if the corresponding attribute is enabled.
 - When adding adept powers, the list of available adept powers will hide powers whose prerequisites are not met.
 - Added support for any attribute or special attribute to be used in a weapon's damage code.
+- Fixed Character Validity Checker not properly counting attribute points and special attribute points. Fixes #1917.
+- Fixed Character Validity Checker not counting vehicle mod slot modifiers when checking vehicle mods are over capacity. Fixes #1875.
+- Fixed attribute points, special attribute points, and displayed metatype limits not updating if/when metatype limits are changed. Fixes #1912.
 
 Data Changes:
 

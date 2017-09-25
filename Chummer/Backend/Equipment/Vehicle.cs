@@ -2270,7 +2270,7 @@ namespace Chummer.Backend.Equipment
         {
             string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
             return !string.IsNullOrEmpty(strCheckCapacity) && arrCategories.Contains(strCheckCapacity)
-                ? arrCategories.Any(strCategory => CalcCategoryUsed(strCheckCapacity) > CalcCategoryAvail(strCheckCapacity))
+                ? CalcCategoryUsed(strCheckCapacity) > CalcCategoryAvail(strCheckCapacity)
                 : arrCategories.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
         }
 
@@ -2492,6 +2492,27 @@ namespace Chummer.Backend.Equipment
         public int CalcCategoryAvail(string strCategory)
         {
             int intBase = _intBody;
+            switch (strCategory)
+            {
+                case "Powertrain":
+                    intBase += _intAddPowertrainModSlots;
+                    break;
+                case "Weapons":
+                    intBase += _intAddWeaponModSlots;
+                    break;
+                case "Body":
+                    intBase += _intAddBodyModSlots;
+                    break;
+                case "Electromagnetic":
+                    intBase += _intAddElectromagneticModSlots;
+                    break;
+                case "Protection":
+                    intBase += _intAddProtectionModSlots;
+                    break;
+                case "Cosmetic":
+                    intBase += _intAddCosmeticModSlots;
+                    break;
+            }
             foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == strCategory)))
             {
                 if (objMod.CalculatedSlots < 0)
