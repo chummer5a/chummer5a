@@ -223,11 +223,20 @@ namespace Chummer.Backend.Shared_Methods
             {
                 case "attribute":
                     // Check to see if an Attribute meets a requirement.
-                    CharacterAttrib objAttribute =
-                        character.GetAttribute(node["name"].InnerText);
+                    CharacterAttrib objAttribute = character.GetAttribute(node["name"].InnerText);
                     name = $"\n\t{objAttribute.DisplayAbbrev} {node["total"].InnerText}";
-                    return objAttribute.TotalValue >=
-                           Convert.ToInt32(node["total"].InnerText);
+                    int intTargetValue = Convert.ToInt32(node["total"].InnerText);
+                    // Special cases for when we want to check if a special attribute is enabled
+                    if (intTargetValue == 1)
+                    {
+                        if (objAttribute.Abbrev == "MAG")
+                            return character.MAGEnabled;
+                        if (objAttribute.Abbrev == "RES")
+                            return character.RESEnabled;
+                        if (objAttribute.Abbrev == "DEP")
+                            return character.DEPEnabled;
+                    }
+                    return objAttribute.TotalValue >= intTargetValue;
 
                 case "attributetotal":
                     // Check if the character's Attributes add up to a particular total.

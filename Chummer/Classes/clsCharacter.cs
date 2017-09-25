@@ -950,6 +950,10 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
             }
+            catch (System.UnauthorizedAccessException)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
+            }
             objWriter.Close();
             objStream.Close();
         }
@@ -4569,6 +4573,7 @@ namespace Chummer
                         }
                     }
                 decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
+                decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
 
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
@@ -4629,19 +4634,31 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's total Essence Loss penalty.
+        /// Character's total Essence Loss penalty for RES or DEP.
         /// </summary>
         public int EssencePenalty
         {
             get
             {
-                // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to MAG and RES.
+                // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to RES and DEP.
                 return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
 
-#region Initiative
-#region Physical
+        /// <summary>
+        /// Character's total Essence Loss penalty for MAG.
+        /// </summary>
+        public int EssencePenaltyMAG
+        {
+            get
+            {
+                // Subtract the character's current Essence from its maximum, but taking into account essence modifiers that only affect MAG. Round the remaining amount up to get the total penalty to MAG.
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
+            }
+        }
+
+        #region Initiative
+        #region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>

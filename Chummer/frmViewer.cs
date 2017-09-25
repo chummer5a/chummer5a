@@ -117,6 +117,10 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
             }
+            catch (System.UnauthorizedAccessException)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
+            }
         }
 
         private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)

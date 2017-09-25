@@ -11947,8 +11947,8 @@ namespace Chummer
             {
                 case NuyenExpenseType.AddCyberware:
                     // Locate the Cyberware that was added.
-                    int intOldPenalty = 0;
-                    int intNewPenalty = 0;
+                    //int intOldPenalty = 0;
+                    //int intNewPenalty = 0;
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
                         if (objCyberware.InternalId == objEntry.Undo.ObjectId)
@@ -11964,11 +11964,11 @@ namespace Chummer
                             _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Bioware, objCyberware.InternalId);
 
                             // Determine the character's Essence penalty before removing the Cyberware.
-                            intOldPenalty = _objCharacter.EssencePenalty;
+                            //intOldPenalty = _objCharacter.EssencePenalty;
                             // Remove the Cyberware.
                             _objCharacter.Cyberware.Remove(objCyberware);
                             // Determine the character's Essence penalty after removing the Cyberware.
-                            intNewPenalty = _objCharacter.EssencePenalty;
+                            //intNewPenalty = _objCharacter.EssencePenalty;
 
                             // Restore the character's MAG/RES if they have it.
                             //if (!_objCharacter.OverrideSpecialAttributeEssenceLoss && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
@@ -19551,6 +19551,7 @@ namespace Chummer
         {
             // Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
             // Also update the Maximum and Augmented Maximum values displayed.
+            /*
             _blnSkipUpdate = true;
 
             int intEssenceLoss = 0;
@@ -19571,7 +19572,7 @@ namespace Chummer
             }
 
             _blnSkipUpdate = false;
-
+            */
             ScheduleCharacterUpdate();
         }
 
@@ -19680,6 +19681,8 @@ namespace Chummer
 
             // Reduce a character's MAG and RES from Essence Loss.
             int intReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(decESS));
+            int intMagReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(Math.Round(_objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero)));
+
 
             // Remove any Improvements from MAG and RES from Essence Loss.
             _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
@@ -19687,11 +19690,15 @@ namespace Chummer
             // Create the Essence Loss Improvements.
             if (intReduction > 0)
             {
-                _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                 _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                 _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
             }
+            if (intMagReduction > 0)
+            {
+                _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
+            }
 
+            /*
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
                 intEssenceLoss = _objCharacter.EssencePenalty;
@@ -19708,9 +19715,10 @@ namespace Chummer
                         intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
                 }
             }
+            */
 
-                // If the CharacterAttribute reaches 0, the character has burned out.
-                if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
+            // If the CharacterAttribute reaches 0, the character has burned out.
+            if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
                 {
                     _objCharacter.MAG.Base = 0;
                     _objCharacter.MAG.Karma = 0;

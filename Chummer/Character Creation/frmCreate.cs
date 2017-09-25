@@ -1178,10 +1178,11 @@ namespace Chummer
 
             if (_objCharacter.MAGEnabled)
             {
+                /*
                 int intEssenceLoss = 0;
                 if (!_objOptions.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
-
+                */
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
@@ -1220,10 +1221,12 @@ namespace Chummer
             // Change to the status of RES being enabled.
             if (_objCharacter.RESEnabled)
             {
+                /*
                 int intEssenceLoss = 0;
                 if (!_objOptions.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
                 // If the character options permit submersion in create mode, show the Initiation page.
+                */
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
                     UpdateInitiationCost();
@@ -13178,11 +13181,25 @@ namespace Chummer
                 int rituals = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category == "Rituals" && !spell.FreeBonus).Count();
                 int preps = _objCharacter.Spells.Where(spell => spell.Alchemical && !spell.FreeBonus).Count();
 
+                // Each spell costs KarmaSpell.
+                int spellCost = _objOptions.KarmaSpell +
+                                _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
                 int limit = _objCharacter.SpellLimit;
+
+                // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                if (spellCost <= _objOptions.KarmaSpell)
+                {
+                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                    int intQualityKarmaToSpellPoints = Math.Min(limit, (_objCharacter.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * _objOptions.KarmaQuality) / _objOptions.KarmaSpell);
+                    spells += intQualityKarmaToSpellPoints;
+                    // Add the karma paid for by spell points back into the available karma pool.
+                    intKarmaPointsRemain += intQualityKarmaToSpellPoints * _objOptions.KarmaSpell;
+                }
+
                 int limitMod = _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit) +
                                _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
                 int limitModTouchOnly = 0;
-                foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
+                foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
                 {
                     int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
                     if (imp.UniqueName.Contains("half"))
@@ -13192,7 +13209,7 @@ namespace Chummer
                     else
                         limitMod += intAttValue;
                 }
-                foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
+                foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
                 {
                     int intSkillValue = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName).LearnedRating;
                     if (imp.UniqueName.Contains("half"))
@@ -13205,20 +13222,18 @@ namespace Chummer
 
                 if (nudMysticAdeptMAGMagician.Value > 0)
                 {
+                    int intPPBought = Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
                     if (_objOptions.PrioritySpellsAsAdeptPowers)
                     {
-                        spells += Convert.ToInt32(nudMysticAdeptMAGMagician.Value);
+                        spells += Math.Min(limit, intPPBought);
+                        intPPBought = Math.Max(0, intPPBought - limit);
                     }
-                    else
-                    {
-                        intAttributePointsUsed = Convert.ToInt32(nudMysticAdeptMAGMagician.Value) * 5;
-                        intKarmaPointsRemain -= intAttributePointsUsed;
-                    }
+                    intAttributePointsUsed = intPPBought * 5;
+                    intKarmaPointsRemain -= intAttributePointsUsed;
                 }
-                spells -= intTouchOnlySpells;
-                intTouchOnlySpells = Math.Max(0, intTouchOnlySpells - limitModTouchOnly);
-                spells += intTouchOnlySpells;
-                for (int i = limit+limitMod; i > 0; i--)
+                spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - limitModTouchOnly);
+
+                for (int i = limit + limitMod; i > 0; i--)
                 {
                     if (spells > 0)
                     {
@@ -13240,9 +13255,6 @@ namespace Chummer
                         break;
                     }
                 }
-                // Each spell costs KarmaSpell.
-                int spellCost = _objOptions.KarmaSpell +
-                                _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellKarmaDiscount);
                 intKarmaPointsRemain -= Math.Max(0, spells + rituals + preps) * (spellCost);
                 intSpellPointsUsed += Math.Max(Math.Max(0, spells) * (spellCost), 0);
                 intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * (spellCost), 0);
@@ -13659,6 +13671,7 @@ namespace Chummer
 
                 // Reduce a character's MAG and RES from Essence Loss.
                 int intReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(decESS));
+                int intMagReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(Math.Round(_objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero)));
 
                 // Remove any Improvements from MAG and RES from Essence Loss.
                 _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
@@ -13666,7 +13679,6 @@ namespace Chummer
                 // Create the Essence Loss Improvements which reduce the Maximum of MAG/RES.
                 if (intReduction > 0)
                 {
-                    _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                     _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                     _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                     /*
@@ -13677,6 +13689,10 @@ namespace Chummer
                     _objImprovementManager.CreateImprovement("DEPBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
                         Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
                     */
+                }
+                if (intMagReduction > 0)
+                {
+                    _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -19448,9 +19464,11 @@ namespace Chummer
             }
             lstRemoveQualities.Clear();
 
+            /*
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
                 intEssenceLoss = _objCharacter.EssencePenalty;
+            */
 
             // Determine the number of points that have been put into Attributes.
             int intBOD = _objCharacter.BOD.Base - _objCharacter.BOD.MetatypeMinimum;

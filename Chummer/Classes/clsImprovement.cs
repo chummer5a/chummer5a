@@ -193,6 +193,8 @@ namespace Chummer
             RunSpeed,
             SprintSpeed,
             EssencePenalty,
+            EssencePenaltyT100,
+            EssencePenaltyMAGOnlyT100,
             FreeSpellsATT,
             FreeSpells,
             DrainValue,

@@ -84,6 +84,7 @@ namespace Chummer
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
+        private bool _blnCanBuyWithSpellPoints = false;
         private int _intBP;
         private int _intLP;
         private QualityType _objQualityType = QualityType.Positive;
@@ -205,6 +206,7 @@ namespace Chummer
                 _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
             _objQualitySource = objQualitySource;
             objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
+            objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
@@ -335,6 +337,7 @@ namespace Chummer
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
+            objWriter.WriteElementString("canbuywithspellpoints", _blnCanBuyWithSpellPoints.ToString());
             if (_strMetagenetic != null)
             {
                 objWriter.WriteElementString("metagenetic", _strMetagenetic);
@@ -383,6 +386,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
+            objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             if (objNode["qualitytype"] != null)
             _objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
             if (objNode["qualitysource"] != null)
@@ -606,6 +610,15 @@ namespace Chummer
         {
             get => _blnDoubleCostCareer;
             set => _blnDoubleCostCareer = value;
+        }
+
+        /// <summary>
+        /// Whether or not the quality can be bought with free spell points instead
+        /// </summary>
+        public bool CanBuyWithSpellPoints
+        {
+            get => _blnCanBuyWithSpellPoints;
+            set => _blnCanBuyWithSpellPoints = value;
         }
 
         /// <summary>
