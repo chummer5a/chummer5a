@@ -1835,6 +1835,9 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>75000</cost>
+	  <bonus>
+        <dodge>2</dodge>
+      </bonus>
       <source>CF</source>
       <page>161</page>
     </bioware>

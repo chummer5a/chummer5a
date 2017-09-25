@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -289,8 +289,16 @@ namespace Chummer
                         if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
                             continue;
                         string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
-                        Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
-                        entry.ExtractToFile(strLoopPath, true);
+                        try
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
+                            entry.ExtractToFile(strLoopPath, true);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                            break;
+                        }
                     }
                 }
                 Log.Info("Restart Chummer");

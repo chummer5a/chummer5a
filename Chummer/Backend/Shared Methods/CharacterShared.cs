@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,7 +76,18 @@ namespace Chummer
         public void AutoSaveCharacter()
         {
             if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "autosave")))
-                Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "autosave"));
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "autosave"));
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                    Autosave_StopWatch.Restart();
+                    return;
+                }
+            }
             
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
             string strShowFileName = strFile[strFile.Length - 1];
@@ -84,14 +95,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.Alias;
             string strFilePath = Path.Combine(Application.StartupPath, "saves", "autosave", strShowFileName);
-            try
-            {
-                _objCharacter.Save(strFilePath);
-            }
-            catch
-            {
-                // ignored, no point crashing the application if we can't backup.
-            }
+            _objCharacter.Save(strFilePath);
             Autosave_StopWatch.Restart();
         }
         protected void RedlinerCheck()

@@ -604,11 +604,15 @@ namespace Chummer
                         treSpells.Nodes[4].Expand();
                         break;
                     case "Rituals":
+                        /*
                         int intNode = 5;
                         if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                             intNode = 0;
                         treSpells.Nodes[intNode].Nodes.Add(objNode);
                         treSpells.Nodes[intNode].Expand();
+                        */
+                        treSpells.Nodes[5].Nodes.Add(objNode);
+                        treSpells.Nodes[5].Expand();
                         break;
                     case "Enchantments":
                         treSpells.Nodes[6].Nodes.Add(objNode);
@@ -1832,6 +1836,9 @@ namespace Chummer
 
             _blnReapplyImprovements = true;
 
+            // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
+            _objImprovementManager.RemoveImprovements(0, string.Empty, true);
+
             // Refresh Qualities.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
             foreach (Quality objQuality in _objCharacter.Qualities)
@@ -1841,7 +1848,8 @@ namespace Chummer
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         _objImprovementManager.ForcedValue = strSelected;
@@ -1873,7 +1881,8 @@ namespace Chummer
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + objMartialArt.Name + "\"]/techniques/technique[name = \"" + objAdvantage.Name + "\"]");
                     if (objNode != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
                         if (objNode["bonus"] != null)
                         {
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayName);
@@ -1891,7 +1900,8 @@ namespace Chummer
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + objSpell.Name + "\"]");
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Spell, objSpell.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Spell, objSpell.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         _objImprovementManager.ForcedValue = strSelected;
@@ -1923,7 +1933,8 @@ namespace Chummer
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objPower.Name + "\"]");
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         _objImprovementManager.ForcedValue = strSelected;
@@ -1939,7 +1950,8 @@ namespace Chummer
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objProgram.Name + "\"]");
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         foreach (TreeNode objParentNode in treComplexForms.Nodes)
@@ -1964,7 +1976,8 @@ namespace Chummer
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + objProgram.Name + "\"]");
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         foreach (TreeNode objParentNode in treAIPrograms.Nodes)
@@ -1992,7 +2005,8 @@ namespace Chummer
 
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objPower.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objPower.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         int intRating = 0;
@@ -2029,7 +2043,8 @@ namespace Chummer
 
                     if (objNode != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
                         if (objNode["bonus"] != null)
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objNode["bonus"], false, 1, objMetamagic.DisplayNameShort);
                     }
@@ -2041,7 +2056,8 @@ namespace Chummer
 
                     if (objNode != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
                         if (objNode["bonus"] != null)
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objNode["bonus"], false, 1, objMetamagic.DisplayNameShort);
                     }
@@ -2058,7 +2074,8 @@ namespace Chummer
 
                     if (objNode != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Cyberware, objCyberware.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Cyberware, objCyberware.InternalId);
                         if (objNode["bonus"] != null)
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Cyberware, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
                         if (!string.IsNullOrEmpty(_objImprovementManager.SelectedValue))
@@ -2083,7 +2100,8 @@ namespace Chummer
 
                         if (objChild != null)
                         {
-                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Cyberware, objPlugin.InternalId);
+                            // Because all improvements are wiped at the start, no need to go and remove them again
+                            //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Cyberware, objPlugin.InternalId);
                             if (objChild["bonus"] != null)
                                 _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Cyberware, objPlugin.InternalId, objChild["bonus"], false, objPlugin.Rating, objPlugin.DisplayNameShort);
                         }
@@ -2096,7 +2114,8 @@ namespace Chummer
 
                     if (objNode != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Bioware, objCyberware.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Bioware, objCyberware.InternalId);
                         if (objNode["bonus"] != null)
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Bioware, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
                         if (!string.IsNullOrEmpty(_objImprovementManager.SelectedValue))
@@ -2121,7 +2140,8 @@ namespace Chummer
 
                         if (objChild != null)
                         {
-                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Bioware, objPlugin.InternalId);
+                            // Because all improvements are wiped at the start, no need to go and remove them again
+                            //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Bioware, objPlugin.InternalId);
                             if (objChild["bonus"] != null)
                                 _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Bioware, objPlugin.InternalId, objChild["bonus"], false, objPlugin.Rating, objPlugin.DisplayNameShort);
                         }
@@ -2137,7 +2157,8 @@ namespace Chummer
 
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
                     if (objNode["bonus"] != null)
                         _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId, objNode["bonus"], false, 1, objArmor.DisplayNameShort);
                     if (!string.IsNullOrEmpty(_objImprovementManager.SelectedValue))
@@ -2162,7 +2183,8 @@ namespace Chummer
 
                     if (objChild != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                         if (objChild["bonus"] != null)
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objChild["bonus"], false, 1, objMod.DisplayNameShort);
                         if (!string.IsNullOrEmpty(_objImprovementManager.SelectedValue))
@@ -2192,7 +2214,8 @@ namespace Chummer
 
                     if (objChild != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                         if (objChild["bonus"] != null)
                             _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objChild["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
                         if (!string.IsNullOrEmpty(_objImprovementManager.SelectedValue))
@@ -2225,7 +2248,8 @@ namespace Chummer
 
                 if (objNode != null)
                 {
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+                    // Because all improvements are wiped at the start, no need to go and remove them again
+                    //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
                     if (objNode["bonus"] != null)
                     {
                         _objImprovementManager.ForcedValue = strSelected;
@@ -2254,7 +2278,8 @@ namespace Chummer
 
                     if (objChild != null)
                     {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objPlugin.InternalId);
+                        // Because all improvements are wiped at the start, no need to go and remove them again
+                        //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objPlugin.InternalId);
                         if (objChild["bonus"] != null)
                         {
                             _objImprovementManager.ForcedValue = strPluginSelected;
@@ -2286,7 +2311,8 @@ namespace Chummer
 
                         if (objSubChild != null)
                         {
-                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objSubPlugin.InternalId);
+                            // Because all improvements are wiped at the start, no need to go and remove them again
+                            //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objSubPlugin.InternalId);
                             if (objSubChild["bonus"] != null)
                             {
                                 _objImprovementManager.ForcedValue = strSubPluginSelected;
@@ -3236,9 +3262,9 @@ namespace Chummer
             string strCounterSpelling = LanguageManager.Instance.GetString("Label_CounterspellingDice");
             string strSpellResistance = LanguageManager.Instance.GetString("String_SpellResistanceDice");
             //Indirect Dodge
-            lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
+            lblSpellDefenceIndirectDodge.Text = (_objCharacter.INT.TotalValue + _objCharacter.REA.TotalValue + _objCharacter.TotalBonusDodgeRating).ToString();
             strSpellTooltip = $"{strModifiers}: " +
-                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue})";
+                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) + {strModifiers} ({_objCharacter.TotalBonusDodgeRating})";
             tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
             //Indirect Soak
             lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
@@ -3900,6 +3926,11 @@ namespace Chummer
                     .Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                     return;
             }
+            // Barehanded Adept
+            else if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled && objSpell.Range == "T")
+            {
+                objSpell.UsesUnarmed = true;
+            }
 
             _objCharacter.Spells.Add(objSpell);
 
@@ -3926,11 +3957,15 @@ namespace Chummer
                     treSpells.Nodes[4].Expand();
                     break;
                 case "Rituals":
+                    /*
                     int intNode = 5;
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                         intNode = 0;
                     treSpells.Nodes[intNode].Nodes.Add(objNode);
                     treSpells.Nodes[intNode].Expand();
+                    */
+                    treSpells.Nodes[5].Nodes.Add(objNode);
+                    treSpells.Nodes[5].Expand();
                     break;
                 case "Enchantments":
                     treSpells.Nodes[6].Nodes.Add(objNode);
@@ -11912,8 +11947,8 @@ namespace Chummer
             {
                 case NuyenExpenseType.AddCyberware:
                     // Locate the Cyberware that was added.
-                    int intOldPenalty = 0;
-                    int intNewPenalty = 0;
+                    //int intOldPenalty = 0;
+                    //int intNewPenalty = 0;
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
                         if (objCyberware.InternalId == objEntry.Undo.ObjectId)
@@ -11929,11 +11964,11 @@ namespace Chummer
                             _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Bioware, objCyberware.InternalId);
 
                             // Determine the character's Essence penalty before removing the Cyberware.
-                            intOldPenalty = _objCharacter.EssencePenalty;
+                            //intOldPenalty = _objCharacter.EssencePenalty;
                             // Remove the Cyberware.
                             _objCharacter.Cyberware.Remove(objCyberware);
                             // Determine the character's Essence penalty after removing the Cyberware.
-                            intNewPenalty = _objCharacter.EssencePenalty;
+                            //intNewPenalty = _objCharacter.EssencePenalty;
 
                             // Restore the character's MAG/RES if they have it.
                             //if (!_objCharacter.OverrideSpecialAttributeEssenceLoss && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
@@ -13801,11 +13836,15 @@ namespace Chummer
                     treSpells.Nodes[4].Expand();
                     break;
                 case "Rituals":
+                    /*
                     int intNode = 5;
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                         intNode = 0;
                     treSpells.Nodes[intNode].Nodes.Add(objNode);
                     treSpells.Nodes[intNode].Expand();
+                    */
+                    treSpells.Nodes[5].Nodes.Add(objNode);
+                    treSpells.Nodes[5].Expand();
                     break;
             }
 
@@ -19512,6 +19551,7 @@ namespace Chummer
         {
             // Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
             // Also update the Maximum and Augmented Maximum values displayed.
+            /*
             _blnSkipUpdate = true;
 
             int intEssenceLoss = 0;
@@ -19532,7 +19572,7 @@ namespace Chummer
             }
 
             _blnSkipUpdate = false;
-
+            */
             ScheduleCharacterUpdate();
         }
 
@@ -19641,6 +19681,8 @@ namespace Chummer
 
             // Reduce a character's MAG and RES from Essence Loss.
             int intReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(decESS));
+            int intMagReduction = _objCharacter.ESS.MetatypeMaximum - Convert.ToInt32(Math.Floor(Math.Round(_objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero)));
+
 
             // Remove any Improvements from MAG and RES from Essence Loss.
             _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
@@ -19648,11 +19690,15 @@ namespace Chummer
             // Create the Essence Loss Improvements.
             if (intReduction > 0)
             {
-                _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                 _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                 _objImprovementManager.CreateImprovement("DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
             }
+            if (intMagReduction > 0)
+            {
+                _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
+            }
 
+            /*
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
                 intEssenceLoss = _objCharacter.EssencePenalty;
@@ -19669,9 +19715,10 @@ namespace Chummer
                         intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
                 }
             }
+            */
 
-                // If the CharacterAttribute reaches 0, the character has burned out.
-                if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
+            // If the CharacterAttribute reaches 0, the character has burned out.
+            if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
                 {
                     _objCharacter.MAG.Base = 0;
                     _objCharacter.MAG.Karma = 0;

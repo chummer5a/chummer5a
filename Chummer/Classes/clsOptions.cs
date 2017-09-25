@@ -173,7 +173,16 @@ namespace Chummer
 
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
-                Directory.CreateDirectory(settingsDirectoryPath);
+            {
+                try
+                {
+                    Directory.CreateDirectory(settingsDirectoryPath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                }
+            }
 
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");

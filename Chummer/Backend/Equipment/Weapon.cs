@@ -1296,6 +1296,15 @@ namespace Chummer.Backend.Equipment
                     else
                         strDamage = strDamageExpression.Replace("STR", (_objCharacter.STR.TotalValue + intThrowDV).ToString());
                 }
+
+                foreach(Attributes.CharacterAttrib objLoopAttribute in _objCharacter.AttributeList)
+                {
+                    strDamage = strDamage.Replace(objLoopAttribute.Abbrev, objLoopAttribute.TotalValue.ToString());
+                }
+                foreach (Attributes.CharacterAttrib objLoopAttribute in _objCharacter.SpecialAttributeList)
+                {
+                    strDamage = strDamage.Replace(objLoopAttribute.Abbrev, objLoopAttribute.TotalValue.ToString());
+                }
             }
             else
             {

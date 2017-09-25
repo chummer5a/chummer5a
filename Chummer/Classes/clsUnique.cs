@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,6 +84,7 @@ namespace Chummer
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
+        private bool _blnCanBuyWithSpellPoints = false;
         private int _intBP;
         private int _intLP;
         private QualityType _objQualityType = QualityType.Positive;
@@ -205,6 +206,7 @@ namespace Chummer
                 _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
             _objQualitySource = objQualitySource;
             objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
+            objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlQuality.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
@@ -335,6 +337,7 @@ namespace Chummer
             objWriter.WriteElementString("implemented", _blnImplemented.ToString());
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
+            objWriter.WriteElementString("canbuywithspellpoints", _blnCanBuyWithSpellPoints.ToString());
             if (_strMetagenetic != null)
             {
                 objWriter.WriteElementString("metagenetic", _strMetagenetic);
@@ -383,6 +386,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
+            objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             if (objNode["qualitytype"] != null)
             _objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
             if (objNode["qualitysource"] != null)
@@ -606,6 +610,15 @@ namespace Chummer
         {
             get => _blnDoubleCostCareer;
             set => _blnDoubleCostCareer = value;
+        }
+
+        /// <summary>
+        /// Whether or not the quality can be bought with free spell points instead
+        /// </summary>
+        public bool CanBuyWithSpellPoints
+        {
+            get => _blnCanBuyWithSpellPoints;
+            set => _blnCanBuyWithSpellPoints = value;
         }
 
         /// <summary>
@@ -1291,6 +1304,7 @@ namespace Chummer
         private string _strAltPage = string.Empty;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;
+        private bool _blnUsesUnarmed = false;
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
@@ -1420,6 +1434,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString());
+            objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString());
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteEndElement();
@@ -1450,6 +1465,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited);
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
             objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
+            objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnUsesUnarmed);
             objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -2084,6 +2100,15 @@ namespace Chummer
             get => _blnFreeBonus;
             set => _blnFreeBonus = value;
         }
+
+        /// <summary>
+        /// Does the spell use Unarmed in place of Spellcasting for its casting test?
+        /// </summary>
+        public bool UsesUnarmed
+        {
+            get => _blnUsesUnarmed;
+            set => _blnUsesUnarmed = value;
+        }
         #endregion
 
         #region ComplexProperties
@@ -2097,33 +2122,49 @@ namespace Chummer
                 int intReturn = 0;
                 foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                 {
-                    if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
+                    if (_blnAlchemical)
                     {
-                        intReturn = objSkill.Pool;
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            intReturn += 2;
+                        if (objSkill.Name == "Alchemy")
+                        {
+                            intReturn = objSkill.Pool;
+                            // Add any Specialization bonus if applicable.
+                            if (objSkill.HasSpecialization(_strCategory))
+                                intReturn += 2;
+                            break;
+                        }
                     }
-                    if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
+                    else if (_strCategory == "Enchantments")
                     {
-                        intReturn = objSkill.Pool;
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            intReturn += 2;
+                        if (objSkill.Name == "Artificing")
+                        {
+                            intReturn = objSkill.Pool;
+                            // Add any Specialization bonus if applicable.
+                            if (objSkill.HasSpecialization(_strCategory))
+                                intReturn += 2;
+                            break;
+                        }
                     }
-                    if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
+                    else if (_strCategory == "Rituals")
                     {
-                        intReturn = objSkill.Pool;
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            intReturn += 2;
+                        if (objSkill.Name == "Ritual Spellcasting")
+                        {
+                            intReturn = objSkill.Pool;
+                            // Add any Specialization bonus if applicable.
+                            if (objSkill.HasSpecialization(_strCategory))
+                                intReturn += 2;
+                            break;
+                        }
                     }
-                    if (objSkill.Name == "Alchemy" && _blnAlchemical)
+                    else if ((!UsesUnarmed && objSkill.Name == "Spellcasting") || (UsesUnarmed && objSkill.Name == "Unarmed Combat"))
                     {
-                        intReturn = objSkill.Pool;
+                        if (UsesUnarmed)
+                            intReturn = objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue);
+                        else
+                            intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
+                        break;
                     }
                 }
 

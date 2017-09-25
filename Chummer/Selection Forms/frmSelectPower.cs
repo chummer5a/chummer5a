@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend.Shared_Methods;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -74,34 +75,33 @@ namespace Chummer
             }
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                bool blnAdd = true;
-
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 if (objXmlPower["limit"] != null && !IgnoreLimits)
                 {
                     if (_objCharacter.Powers.Count(power => power.Name == objXmlPower["name"].InnerText) >=
                         Convert.ToInt32(objXmlPower["limit"].InnerText))
                     {
-                        blnAdd = false;
+                        continue;
                     }
                 }
-                if (objXmlPower["extrapointcost"]?.InnerText != null && blnAdd)
+                if (objXmlPower["extrapointcost"]?.InnerText != null)
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
                     if (!_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.TotalRating > 0))
                         dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
-                if (_dblLimitToRating > 0 && blnAdd)
+                if (_dblLimitToRating > 0 && dblPoints > _dblLimitToRating)
                 {
-                    blnAdd = dblPoints <= _dblLimitToRating;
+                    continue;
                 }
-                if (blnAdd)
-                {
+
+                if (!SelectionShared.RequirementsMet(objXmlPower, false, _objCharacter, null, null, _objXmlDocument))
+                    continue;
+
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPower["name"].InnerText;
                     objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
                 lstPower.Add(objItem);
-                }
             }
             SortListItem objSort = new SortListItem();
             lstPower.Sort(objSort.Compare);

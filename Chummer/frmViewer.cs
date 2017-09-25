@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,18 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            _objCharacterXML.Save(strSaveFile);
+            try
+            {
+                _objCharacterXML.Save(strSaveFile);
+            }
+            catch (XmlException)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
+            }
         }
 
         private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)

@@ -1,4 +1,4 @@
-﻿using Chummer.Annotations;
+using Chummer.Annotations;
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
@@ -730,15 +730,19 @@ namespace Chummer.Backend.Attributes
                         intReturn = 1;
                 }
 
-                if (_objCharacter.EssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
+                int intEssencePenalty = _objCharacter.EssencePenalty;
+                if (_strAbbrev == "MAG")
+                    intEssencePenalty = _objCharacter.EssencePenaltyMAG;
+
+                if (intEssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
 
                 if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    return Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
+                    return Math.Max(intReturn - intEssencePenalty, 0);
                 }
-                if (_objCharacter.EssencePenalty >= TotalMaximum)
+                if (intEssencePenalty >= TotalMaximum)
                 {
-                    intReturn = Math.Max(intReturn - _objCharacter.EssencePenalty, 0);
+                    intReturn = Math.Max(intReturn - intEssencePenalty, 0);
                 }
                 return intReturn;
             }
@@ -1136,7 +1140,11 @@ namespace Chummer.Backend.Attributes
                 // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
                 int intEssenceLoss = 0;
                 if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
+                {
                     intEssenceLoss = _objCharacter.EssencePenalty;
+                    if (_strAbbrev == "MAG")
+                        intEssenceLoss = _objCharacter.EssencePenaltyMAG;
+                }
 
                 // Don't apply the ESS loss penalty to EDG.
                 int intUseEssenceLoss = intEssenceLoss;

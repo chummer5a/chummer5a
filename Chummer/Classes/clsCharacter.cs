@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -948,11 +948,14 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                return;
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Save_Error_Warning"));
             }
             objWriter.Close();
             objStream.Close();
-
         }
 
         /// <summary>
@@ -1972,8 +1975,17 @@ namespace Chummer
             // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
             // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
                 string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
-                if (!Directory.Exists(mugshotsDirectoryPath))
+            if (!Directory.Exists(mugshotsDirectoryPath))
+            {
+                try
+                {
                     Directory.CreateDirectory(mugshotsDirectoryPath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                }
+            }
             // <mainmugshotpath />
             if (MainMugshot.Length > 0)
             {
@@ -4272,6 +4284,10 @@ namespace Chummer
         {
             get
             {
+                if (AdeptEnabled && !MagicianEnabled)
+                {
+                    return "BOD + WIL";
+                }
                 return _strTraditionDrain;
             }
             set
@@ -4557,6 +4573,7 @@ namespace Chummer
                         }
                     }
                 decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
+                decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
 
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
@@ -4617,19 +4634,31 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's total Essence Loss penalty.
+        /// Character's total Essence Loss penalty for RES or DEP.
         /// </summary>
         public int EssencePenalty
         {
             get
             {
-                // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to MAG and RES.
+                // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to RES and DEP.
                 return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
 
-#region Initiative
-#region Physical
+        /// <summary>
+        /// Character's total Essence Loss penalty for MAG.
+        /// </summary>
+        public int EssencePenaltyMAG
+        {
+            get
+            {
+                // Subtract the character's current Essence from its maximum, but taking into account essence modifiers that only affect MAG. Round the remaining amount up to get the total penalty to MAG.
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
+            }
+        }
+
+        #region Initiative
+        #region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
@@ -5508,6 +5537,17 @@ namespace Chummer
             get
             {
                 return ArmorRating + _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
+        /// </summary>
+        public int TotalBonusDodgeRating
+        {
+            get
+            {
+                return _objImprovementManager.ValueOf(Improvement.ImprovementType.Dodge);
             }
         }
 

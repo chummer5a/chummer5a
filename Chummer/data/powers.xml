@@ -94,6 +94,9 @@
           </oneof>
         </required>
       </adeptwayrequires>
+	  <bonus>
+        <dodge>Rating</dodge>
+      </bonus>
     </power>
     <power>
       <id>dbf16604-164c-485c-96c8-fe3136cd5caa</id>
@@ -763,6 +766,11 @@
       <page>170</page>
       <action>Complex</action>
       <adeptway>.5</adeptway>
+	  <required>
+        <oneof>
+          <power>Elemental Strike</power>
+        </oneof>
+      </required>
       <bonus>
         <selecttext />
       </bonus>
@@ -777,6 +785,11 @@
       <page>170</page>
       <action>Simple</action>
       <adeptway>.25</adeptway>
+	  <required>
+        <oneof>
+          <power>Killing Hands</power>
+        </oneof>
+      </required>
       <adeptwayrequires>
         <required>
           <oneof>
@@ -1271,6 +1284,14 @@
       <page>176</page>
       <action>Simple</action>
       <adeptway>.25</adeptway>
+	  <required>
+        <oneof>
+          <power>Killing Hands</power>
+        </oneof>
+      </required>
+	  <bonus>
+        <selecttext />
+      </bonus>
     </power>
     <!-- End Region -->
     <!-- Region Bullets and Bandages -->

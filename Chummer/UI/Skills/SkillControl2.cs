@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -324,11 +324,18 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            if (!string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
             {
                 chkKarma.Checked = true;
             }
         }
+
+        /* Delnar: Awaiting other authors' approval before activation.
+        private void chkKarma_CheckChanged(object sender, EventArgs e)
+        {
+            cboSpec_TextChanged(sender, e);
+        }
+        */
 
         private void RatingChanged(object sender, EventArgs e)
         {
