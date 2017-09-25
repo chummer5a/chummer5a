@@ -89,6 +89,9 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
+            if (_objCharacter.MetageneticLimit == 0)
+                chkNotMetagenetic.Checked = true;
+
             lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
             _blnLoading = false;
             BuildQualityList();

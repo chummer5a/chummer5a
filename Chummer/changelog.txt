@@ -45,6 +45,7 @@ Application Changes:
 - Fixed attribute points, special attribute points, and displayed metatype limits not updating if/when metatype limits are changed. Fixes #1912.
 - Added support for the following requirements (to qualities): the item can only be taken during character generation, the item cannot be bought separately in priority-based character generation methods.
 - Added support for qualities that refund their cost when removed in career mode. The fact that such a quality can be bought for its normal price in chargen and then refunded for double its price in career mode is working as intended, as per rules for swapping Latent Dracomorphosis for a Drake quality.
+- "Don't Show Metagenetic Qualities" is automatically checked when choosing qualities for characters without any SURGE quality.
 
 Data Changes:
 
@@ -75,7 +76,7 @@ Data Changes:
 - Crystal Gut Stomach now properly reduces lifestyle costs by 10%.
 - Fixed Crystal Spine's initiative bonus stacking with other initiative bonuses.
 - Added appropriate power prerequisites to Elemental Strike, Elemental Body, and Toxic Strike. Users can now choose what toxic element Toxic Strike will take.
-- SURGE I and SURGE II now properly give metagenic quality limits of 10 and 15 respectively (from 30)
+- SURGE I and SURGE II now properly cost 10 and 15 karma respectively (from 30)
 - All Awakened qualities and the Technomancer quality cannot be bought separately during character generation when using Priority or Sum-to-Ten character generation methods.
 - Latent Dracomorphosis is now mutually exclusive with all Infected, Drake, and Changeling qualities, and will now refund its karma cost when removed in career mode.
 
