@@ -33,13 +33,41 @@ namespace Chummer.Backend.Shared_Methods
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
                 return true;
+            if (objXmlNode == null)
+                return false;
             if (objMetatypeDocument == null)
                 objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             if (objCritterDocument == null)
                 objCritterDocument = XmlManager.Instance.Load("critters.xml");
             if (objQualityDocument == null)
                 objQualityDocument = XmlManager.Instance.Load("qualities.xml");
-            if (objXmlNode == null) return false;
+            // See if the character is in career mode but would want to add a chargen-only Quality
+            if (objCharacter.Created)
+            {
+                if (objXmlNode["chargenonly"] != null && objXmlNode["chargenonly"]?.InnerText != "no")
+                {
+                    if (blnShowMessage)
+                    {
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGeneric_ChargenRestriction").Replace("{0}", strLocalName),
+                            LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return false;
+                    }
+                    return false;
+                }
+            }
+            // See if the character is using priority-based gen and is trying to add a Quality that can only be added through priorities
+            else if ((objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen) && objXmlNode["onlyprioritygiven"] != null && objXmlNode["onlyprioritygiven"]?.InnerText != "no")
+            {
+                if (blnShowMessage)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_PriorityRestriction").Replace("{0}", strLocalName),
+                        LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+                return false;
+            }
             // See if the character already has this Quality and whether or not multiple copies are allowed.
             if (objXmlNode["limit"] != null && objXmlNode["limit"]?.InnerText != "no")
             {

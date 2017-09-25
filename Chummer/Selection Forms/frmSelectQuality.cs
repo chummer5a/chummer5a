@@ -475,10 +475,10 @@ namespace Chummer
             switch (lstQualities.SelectedValue.ToString())
             {
                 case "Changeling (Class I SURGE)":
-                    _objCharacter.MetageneticLimit = 30;
+                    _objCharacter.MetageneticLimit = 10;
                     break;
                 case "Changeling (Class II SURGE)":
-                    _objCharacter.MetageneticLimit = 30;
+                    _objCharacter.MetageneticLimit = 15;
                     break;
                 case "Changeling (Class III SURGE)":
                     _objCharacter.MetageneticLimit = 30;
