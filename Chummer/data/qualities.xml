@@ -1101,6 +1101,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>30</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -1131,6 +1132,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>20</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -1161,6 +1163,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>35</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -1192,6 +1195,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>RES</name>
@@ -1224,6 +1228,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -1255,6 +1260,7 @@
       <hide>yes</hide>
       <karma>15</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -1264,8 +1270,6 @@
         <oneof>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
 		  <quality>Enchanter</quality>
 		  <quality>Explorer</quality>
           <quality>Magician</quality>
@@ -2596,6 +2600,7 @@
         <oneof>
           <quality>Changeling (Class II SURGE)</quality>
           <quality>Changeling (Class III SURGE)</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -2611,6 +2616,7 @@
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
           <quality>Changeling (Class III SURGE)</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -2626,6 +2632,7 @@
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
           <quality>Changeling (Class II SURGE)</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -7437,6 +7444,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -7573,6 +7581,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -7697,6 +7706,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -7830,6 +7840,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -7966,6 +7977,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8102,6 +8114,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8238,6 +8251,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8374,6 +8388,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8510,6 +8525,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8646,6 +8662,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8776,6 +8793,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -8910,6 +8928,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9058,6 +9077,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9198,6 +9218,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9341,6 +9362,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9500,6 +9522,7 @@
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Vampire (Non-Human)</quality>
           <quality>Mystic Adept</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9657,6 +9680,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9785,6 +9809,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -9911,6 +9936,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -10040,6 +10066,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -10167,6 +10194,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -10315,6 +10343,7 @@
           <quality>Magic Resistance (Rating 3)</quality>
           <quality>Magic Resistance (Rating 4)</quality>
           <quality>Technomancer</quality>
+		  <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -11624,6 +11653,40 @@
       <name>Latent Dracomorphosis</name>
       <karma>5</karma>
       <category>Positive</category>
+	  <refundkarmaonremove />
+	  <forbidden>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+          <quality>Dracoform (Western Drake)</quality>
+		  <quality>Dracoform (Feathered Drake)</quality>
+		  <quality>Dracoform (Sea Drake)</quality>
+          <quality>Changeling (Class I SURGE)</quality>
+		  <quality>Changeling (Class II SURGE)</quality>
+		  <quality>Changeling (Class III SURGE)</quality>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </forbidden>
       <bonus />
       <source>HS</source>
       <page>164</page>
@@ -11636,6 +11699,14 @@
       <stagedpurchase>True</stagedpurchase>
       <category>Positive</category>
       <limit>no</limit>
+	  <forbidden>
+        <oneof>
+          <quality>Dracoform (Western Drake)</quality>
+		  <quality>Dracoform (Feathered Drake)</quality>
+		  <quality>Dracoform (Sea Drake)</quality>
+          <quality>Latent Dracomorphosis</quality>
+        </oneof>
+      </forbidden>
       <bonus>
         <addqualities>
           <addquality>Wanted</addquality>
@@ -11694,6 +11765,14 @@
       <stagedpurchase>True</stagedpurchase>
       <category>Positive</category>
       <limit>no</limit>
+	  <forbidden>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+		  <quality>Dracoform (Feathered Drake)</quality>
+		  <quality>Dracoform (Sea Drake)</quality>
+          <quality>Latent Dracomorphosis</quality>
+        </oneof>
+      </forbidden>
       <bonus>
         <addqualities>
           <addquality>Wanted</addquality>
@@ -11748,6 +11827,14 @@
       <stagedpurchase>True</stagedpurchase>
       <category>Positive</category>
       <limit>no</limit>
+	  <forbidden>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+          <quality>Dracoform (Western Drake)</quality>
+		  <quality>Dracoform (Sea Drake)</quality>
+          <quality>Latent Dracomorphosis</quality>
+        </oneof>
+      </forbidden>
       <bonus>
         <addqualities>
           <addquality>Wanted</addquality>
@@ -11810,6 +11897,14 @@
       <stagedpurchase>True</stagedpurchase>
       <category>Positive</category>
       <limit>no</limit>
+	  <forbidden>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+          <quality>Dracoform (Western Drake)</quality>
+		  <quality>Dracoform (Feathered Drake)</quality>
+          <quality>Latent Dracomorphosis</quality>
+        </oneof>
+      </forbidden>
       <bonus>
         <addqualities>
           <addquality>Wanted</addquality>
@@ -15301,6 +15396,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -15334,6 +15430,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -15364,6 +15461,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
+	  <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>

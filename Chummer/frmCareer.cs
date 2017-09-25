@@ -7066,6 +7066,7 @@ namespace Chummer
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlNode objXmlDeleteQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 
             // Qualities that come from a Metatype cannot be removed.
             if (objQuality.OriginSource == QualitySource.Metatype)
@@ -7076,8 +7077,11 @@ namespace Chummer
             else if (objQuality.OriginSource == QualitySource.MetatypeRemovable)
             {
                 // Look up the cost of the Quality.
-                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-                int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -2;
+                int intBP = Convert.ToInt32(objXmlDeleteQuality["karma"].InnerText);
+                if (!_objOptions.DontDoubleQualityRefunds)
+                {
+                    intBP = intBP * -2;
+                }
                 int intShowBP = intBP * _objOptions.KarmaQuality;
                 string strBP = intShowBP.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 
@@ -7089,7 +7093,23 @@ namespace Chummer
 
             if (objQuality.Type == QualityType.Positive)
             {
-                if (!blnMetatypeQuality)
+                if (objXmlDeleteQuality["refundkarmaonremove"] != null)
+                {
+                    int intKarmaCost = objQuality.BP * _objOptions.KarmaQuality;
+                    if (!_objCharacter.Options.DontDoubleQualityPurchases && objQuality.DoubleCost)
+                        intKarmaCost *= 2;
+
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                    objEntry.Create(intKarmaCost, LanguageManager.Instance.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", LanguageManager.Instance.GetString("String_Karma")), ExpenseType.Karma, DateTime.Now, true);
+                    _objCharacter.ExpenseEntries.Add(objEntry);
+                    _objCharacter.Karma += intKarmaCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objQuality.Name);
+                    objUndo.Extra = objQuality.Extra;
+                    objEntry.Undo = objUndo;
+                }
+                else if (!blnMetatypeQuality)
                 {
                     if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeletePositiveQualityCareer")))
                         return;
@@ -7157,7 +7177,6 @@ namespace Chummer
             }
 
                 // Remove any Critter Powers that are gained through the Quality (Infected).
-            XmlNode objXmlDeleteQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
                 if (objXmlDeleteQuality.SelectNodes("powers/power").Count > 0)
                 {
                     objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");

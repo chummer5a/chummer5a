@@ -17394,7 +17394,7 @@ namespace Chummer
                 }
 
             }
-            int i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
+            int i = _objCharacter.TotalAttributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
             // Check if the character has gone over on Primary Attributes
             if (i < 0)
             {
@@ -17403,7 +17403,7 @@ namespace Chummer
                 strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAttributeExcess").Replace("{0}", (i * -1).ToString());
             }
 
-            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
+            i = _objCharacter.TotalSpecial - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (i < 0)
             {
@@ -19409,8 +19409,6 @@ namespace Chummer
                     if (objXmlQuality.SelectNodes("required/allof/metatype[. = \"" + _objCharacter.Metatype + "\"]").Count > 0 || objXmlQuality.SelectNodes("required/allof/metavariant[. = \"" + _objCharacter.Metavariant + "\"]").Count > 0)
                         strQualities += "\n\t" + objQuality.DisplayNameShort;
                 }
-
-
             }
             if (!string.IsNullOrEmpty(strQualities))
             {
@@ -19454,7 +19452,7 @@ namespace Chummer
                     default:
                         break;
                 }
-            }*/
+            }
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
             foreach (Quality objQuality in lstRemoveQualities)
@@ -19464,11 +19462,9 @@ namespace Chummer
             }
             lstRemoveQualities.Clear();
 
-            /*
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
                 intEssenceLoss = _objCharacter.EssencePenalty;
-            */
 
             // Determine the number of points that have been put into Attributes.
             int intBOD = _objCharacter.BOD.Base - _objCharacter.BOD.MetatypeMinimum;
@@ -19483,6 +19479,7 @@ namespace Chummer
             int intDEP = _objCharacter.DEP.Base - _objCharacter.DEP.MetatypeMinimum;
             int intMAG = Math.Max(_objCharacter.MAG.Base - _objCharacter.MAG.MetatypeMinimum, 0);
             int intRES = Math.Max(_objCharacter.RES.Base - _objCharacter.RES.MetatypeMinimum, 0);
+            */
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
             List<Improvement> lstImprovement = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage).ToList();
@@ -21571,7 +21568,7 @@ namespace Chummer
             {
                 lstSpecialAttributes.Add(_objCharacter.RES);
             }
-            if (_objCharacter.Metatype == "A.I.")
+            if (_objCharacter.DEPEnabled)
             {
                 lstSpecialAttributes.Add(_objCharacter.DEP);
             }

@@ -89,6 +89,9 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
+            if (_objCharacter.MetageneticLimit == 0)
+                chkNotMetagenetic.Checked = true;
+
             lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
             _blnLoading = false;
             BuildQualityList();
@@ -475,10 +478,10 @@ namespace Chummer
             switch (lstQualities.SelectedValue.ToString())
             {
                 case "Changeling (Class I SURGE)":
-                    _objCharacter.MetageneticLimit = 30;
+                    _objCharacter.MetageneticLimit = 10;
                     break;
                 case "Changeling (Class II SURGE)":
-                    _objCharacter.MetageneticLimit = 30;
+                    _objCharacter.MetageneticLimit = 15;
                     break;
                 case "Changeling (Class III SURGE)":
                     _objCharacter.MetageneticLimit = 30;
