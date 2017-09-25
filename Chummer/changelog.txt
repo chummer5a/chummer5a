@@ -38,6 +38,8 @@ Application Changes:
 - Added support for essence penalty improvements that only affect MAG, as well as essence penalty improvements that have hundredths-level precision instead of integer precision.
 - Fixed a bug where the optional rule that allows Mystic Adept PPs to be bought with priority spell points also allowed purchasing of PPs with free spell points given by Dedicated Spellslinger.
 - Requirements that check for whether MAG, RES, or DEP are >= 1 will now instead check for if the corresponding attribute is enabled.
+- When adding adept powers, the list of available adept powers will hide powers whose prerequisites are not met.
+- Added support for any attribute or special attribute to be used in a weapon's damage code.
 
 Data Changes:
 
@@ -67,6 +69,7 @@ Data Changes:
 - Crystalline Reflexes now properly gives 2 extra defense dice against attacks.
 - Crystal Gut Stomach now properly reduces lifestyle costs by 10%.
 - Fixed Crystal Spine's initiative bonus stacking with other initiative bonuses.
+- Added appropriate power prerequisites to Elemental Strike, Elemental Body, and Toxic Strike. Users can now choose what toxic element Toxic Strike will take.
 
 New Strings:
 - Label_Options_SpellShapingFocus
