@@ -79,6 +79,7 @@ Data Changes:
 - SURGE I and SURGE II now properly cost 10 and 15 karma respectively (from 30)
 - All Awakened qualities and the Technomancer quality cannot be bought separately during character generation when using Priority or Sum-to-Ten character generation methods.
 - Latent Dracomorphosis is now mutually exclusive with all Infected, Drake, and Changeling qualities, and will now refund its karma cost when removed in career mode.
+- Fixed a reference in improvements.xml to Initiative passes rather than initiative dice. 
 
 New Strings:
 - Label_Options_SpellShapingFocus
