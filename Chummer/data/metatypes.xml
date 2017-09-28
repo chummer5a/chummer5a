@@ -1653,6 +1653,7 @@
     <!-- End Region -->
     <!-- Region Metasapient -->
     <metatype>
+      <id>79b7b632-2e2d-4d7f-b8c7-c99071bd9632</id>
       <name>A.I.</name>
       <category>Metasapient</category>
       <karma>180</karma>
@@ -2415,6 +2416,7 @@
     <!-- End Region -->
     <!-- Region Shapeshifter -->
     <metatype>
+      <id>0d5cc52e-34fe-4266-a9d0-ea1411d25e43</id>
       <name>Shapeshifter: Equine</name>
       <karma>120</karma>
       <category>Shapeshifter</category>
