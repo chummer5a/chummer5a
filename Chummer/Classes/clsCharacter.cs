@@ -1232,9 +1232,12 @@ namespace Chummer
             {
                 if (objXmlQuality["name"] != null)
                 {
-                    Quality objQuality = new Quality(this);
-                    objQuality.Load(objXmlQuality);
-                    _lstQualities.Add(objQuality);
+                    if (!CorrectedUnleveledQuality(objXmlQuality))
+                    {
+                        Quality objQuality = new Quality(this);
+                        objQuality.Load(objXmlQuality);
+                        _lstQualities.Add(objQuality);
+                    }
                 }
                 else
                 {
@@ -2525,10 +2528,28 @@ namespace Chummer
             XmlManager.Instance.Load("qualities.xml");
 
             // <qualities>
+            // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
+            Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(_lstQualities.Count);
+            foreach (Quality objQuality in _lstQualities)
+            {
+                if (strQualitiesToPrint.ContainsKey(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                {
+                    strQualitiesToPrint[objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra] += 1;
+                }
+                else
+                {
+                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra, 1);
+                }
+            }
+            int intLoopRating = 0;
             objWriter.WriteStartElement("qualities");
             foreach (Quality objQuality in _lstQualities)
             {
-                objQuality.Print(objWriter);
+                if (strQualitiesToPrint.TryGetValue(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra, out intLoopRating))
+                {
+                    objQuality.Print(objWriter, intLoopRating);
+                    strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                }
             }
             // </qualities>
             objWriter.WriteEndElement();
@@ -6069,10 +6090,8 @@ namespace Chummer
             string[] strReturn = _strWalk.Split('/');
 
             int intTmp = 0;
-            if (Improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
+            if (Improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
             {
-                int impValue = 0;
                 Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType);
                 return imp.Value;
             }
@@ -6771,17 +6790,7 @@ namespace Chummer
         {
             get
             {
-                bool blnReturn = false;
-                foreach (Quality objQuality in _lstQualities)
-                {
-                    if (objQuality.Name == "The Burnout's Way")
-                    {
-                        blnReturn = true;
-                        break;
-                    }
-                }
-
-                return blnReturn;
+                return _lstQualities.Any(objQuality => objQuality.Name == "The Burnout's Way");
             }
         }
 
@@ -7059,9 +7068,465 @@ namespace Chummer
 
             return strTemp;
         }
-#endregion
 
-#region Temporary Properties : Dashboard
+        /// <summary>
+        /// Check for older instances of certain qualities that were manually numbered to be replaced with multiple instances of the first level quality (so that it works with the level system)
+        /// Returns true if it's a corrected quality, false otherwise
+        /// </summary>
+        /// <param name="strQuality">String to parse.</param>
+        private bool CorrectedUnleveledQuality(XmlNode objOldXmlQuality)
+        {
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlNode objXmlNewQuality = null;
+            int intRanks = 0;
+            switch (objOldXmlQuality["name"].InnerText)
+            {
+                case "Focused Concentration (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Focused Concentration (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Focused Concentration (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Focused Concentration (Rating 4)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Focused Concentration (Rating 5)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 5;
+                        break;
+                    }
+                case "Focused Concentration (Rating 6)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 6;
+                        break;
+                    }
+                case "High Pain Tolerance (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "High Pain Tolerance (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "High Pain Tolerance (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Magic Resistance (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Magic Resistance (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Magic Resistance (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Magic Resistance (Rating 4)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Will to Live (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Will to Live (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Will to Live (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Gremlins (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Gremlins (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Gremlins (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Gremlins (Rating 4)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Aged (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Aged (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Aged (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Illness (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Illness (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Illness (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Perceptive I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Perceptive II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Spike Resistance I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Spike Resistance II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Spike Resistance III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Tough as Nails Physical I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Tough as Nails Physical II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Tough as Nails Physical III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Tough as Nails Stun I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Tough as Nails Stun II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Tough as Nails Stun III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Dimmer Bulb I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Dimmer Bulb II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Dimmer Bulb III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "In Debt I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "In Debt II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "In Debt III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "In Debt IV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "In Debt V":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 5;
+                        break;
+                    }
+                case "In Debt VI":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 6;
+                        break;
+                    }
+                case "In Debt VII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 7;
+                        break;
+                    }
+                case "In Debt VIII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 8;
+                        break;
+                    }
+                case "In Debt IX":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 9;
+                        break;
+                    }
+                case "In Debt X":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 10;
+                        break;
+                    }
+                case "In Debt XI":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 11;
+                        break;
+                    }
+                case "In Debt XII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 12;
+                        break;
+                    }
+                case "In Debt XIII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 13;
+                        break;
+                    }
+                case "In Debt XIV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 14;
+                        break;
+                    }
+                case "In Debt XV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 15;
+                        break;
+                    }
+                case "Infirm I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Infirm II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Infirm III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Infirm IV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Infirm V":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 5;
+                        break;
+                    }
+                case "Shiva Arms (1 Pair)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Shiva Arms (2 Pair)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Arcane Arrester I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Arcane Arrester II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Pilot Origins (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Pilot Origins (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Pilot Origins (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Social Appearance Anxiety (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Social Appearance Anxiety (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Social Appearance Anxiety (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        intRanks = 3;
+                        break;
+                    }
+            }
+            if (intRanks > 0)
+            {
+                for (int i = 0; i < intRanks; ++i)
+                {
+                    Quality objQuality = new Quality(this);
+                    Guid guidOld;
+                    if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out guidOld))
+                        objQuality.setGUID(guidOld);
+                    QualitySource objQualitySource = QualitySource.Selected;
+                    if (objOldXmlQuality["qualitysource"] != null)
+                        objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"].InnerText);
+                    objQuality.Create(objXmlNewQuality, this, objQualitySource, new TreeNode(), new List<Weapon>(), new List<TreeNode>(), objOldXmlQuality["extra"]?.InnerText);
+                    int intOldBP;
+                    if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out intOldBP))
+                        objQuality.BP = intOldBP / intRanks;
+
+                    _lstQualities.Add(objQuality);
+                }
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region Temporary Properties : Dashboard
         // This region is for properties that are applicable to the Dashboard
         /// <summary>
         /// The Current Initiative roll result including base Initiative
@@ -7318,6 +7783,7 @@ namespace Chummer
             Improvement.ImprovementType.SkillKnowledgeForced, //A skill gained from a knowsoft
             Improvement.ImprovementType.SpecialSkills,
             Improvement.ImprovementType.ReflexRecorderOptimization,
+            Improvement.ImprovementType.DisableSpecializationEffects,
         };
 
         //List of events that might be able to affect attributes. TODO: Should this just be merged into skillRelated?

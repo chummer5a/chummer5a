@@ -1703,6 +1703,10 @@
       <key>Message_DeleteQuality</key>
       <text>Are you sure you want to delete this Quality?</text>
     </string>
+	<string>
+      <key>Message_LowerQualityLevel</key>
+      <text>Are you sure you want to remove a level from this Quality?</text>
+    </string>
     <string>
       <key>Message_DeleteMetatypeQuality</key>
       <text>Are you sure you want to remove this Metatype Quality for {0}?</text>
@@ -1719,6 +1723,10 @@
       <key>Message_DeletePositiveQualityCareer</key>
       <text>Are you sure you want to delete this Positive Quality? You will not receiving any Karma for removing it.</text>
     </string>
+	<string>
+	  <key>Message_LowerPositiveQualityLevelCareer</key>
+	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receiving any Karma for removing it.</text>
+	</string>
     <string>
       <key>Message_DeleteImprovement</key>
       <text>Are you sure you want to delete this Improvement?</text>
@@ -1814,6 +1822,10 @@
     <string>
       <key>Message_MetavariantQuality</key>
       <text>You cannot remove Qualities that come from your Metatype/Metavariant.</text>
+    </string>
+	<string>
+      <key>Message_ImprovementQuality</key>
+      <text>This Quality was added by {0}. You must remove it in order to remove this quality.</text>
     </string>
     <string>
       <key>MessageTitle_MetavariantQuality</key>
@@ -2443,6 +2455,10 @@
       <key>Message_ConfirmKarmaExpenseRemove</key>
       <text>Are you sure you want to spend {1} Karma on removing {0}?</text>
     </string>
+	<string>
+	  <key>Message_ConfirmKarmaExpenseLowerLevel</key>
+	  <text>Are you sure you want to spend {1} Karma on removing a level from {0}?</text>
+	</string>
     <string>
       <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
       <text>Are you sure you want to add this Complex Form Option for {0} Karma?</text>
@@ -3602,6 +3618,10 @@
       <key>Button_SwapQuality</key>
       <text>Swap Quality</text>
     </string>
+	<string>
+		<key>Label_QualityLevel</key>
+		<text>Quality Level:</text>
+	</string>
     <string>
       <key>Button_AddContact</key>
       <text>&amp;Add Contact</text>
@@ -8462,6 +8482,22 @@ Do you want to continue?</text>
       <key>Message_InvalidCharacters</key>
       <text>This text contains one or more invalid characters. Invalid character(s): "\n Please remove any invalid characters and try again.</text>
     </string>
+	<string>
+	  <key>String_DealerConnection_Drones</key>
+	  <text>Drones</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Groundcraft</key>
+	  <text>Groundcraft</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Watercraft</key>
+	  <text>Watercraft</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Aircraft</key>
+	  <text>Aircraft</text>
+	</string>
     <!-- End Region -->
     <!-- End Region -->
     <string>

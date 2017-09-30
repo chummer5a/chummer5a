@@ -2,6 +2,7 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -27,8 +28,9 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="strLocalName"></param>
         /// <param name="objMetatypeDocument"></param>
         /// <param name="objCritterDocument"></param>
+        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <returns></returns>
-        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "")
+        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "", string strSourceName = "")
         {
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
@@ -51,7 +53,6 @@ namespace Chummer.Backend.Shared_Methods
                         MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGeneric_ChargenRestriction").Replace("{0}", strLocalName),
                             LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
                     }
                     return false;
                 }
@@ -64,67 +65,55 @@ namespace Chummer.Backend.Shared_Methods
                     MessageBox.Show(LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_PriorityRestriction").Replace("{0}", strLocalName),
                         LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return false;
                 }
                 return false;
             }
             // See if the character already has this Quality and whether or not multiple copies are allowed.
-            if (objXmlNode["limit"] != null && objXmlNode["limit"]?.InnerText != "no")
+            string strLimitString = "";
+            // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
+            string strChargenLimitString = objXmlNode["chargenlimit"]?.InnerText;
+            if (!string.IsNullOrWhiteSpace(strChargenLimitString) && !objCharacter.Created)
+                strLimitString = strChargenLimitString;
+            else
+            {
+                strLimitString = objXmlNode["limit"]?.InnerText;
+                // Default case is each quality can only be taken once
+                if (string.IsNullOrWhiteSpace(strLimitString))
+                    strLimitString = "1";
+            }
+            if (strLimitString != "no")
             {
                 string limitTitle = LanguageManager.Instance.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
                 string limitMessage = LanguageManager.Instance.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
-                int intLimit = Convert.ToInt32(objXmlNode["limit"]?.InnerText);
-                int intCount;
-                bool allow = true;
+                
+                List<string> lstNamesIncludedInLimit = new List<string>();
+                if (objXmlNode["name"] != null)
+                {
+                    lstNamesIncludedInLimit.Add(objXmlNode["name"].InnerText);
+                }
 
+                // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
+                IEnumerable<INamedItem> objListToCheck = null;
                 switch (objXmlNode.Name)
                 {
                     case "quality":
                         {
-                            intCount =
-                                objCharacter.Qualities.Count(
-                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = !(intCount > intLimit &&
-                                    objCharacter.Qualities.Any(
-                                        objItem =>
-                                            objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality));
+                            objListToCheck = objCharacter.Qualities.Where(objQuality => objQuality.SourceName == strSourceName);
                             break;
                         }
                     case "metamagic":
                         {
-                            intCount =
-                                objCharacter.Metamagics.Count(
-                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = !(intCount > intLimit &&
-                                    objCharacter.Metamagics.Any(
-                                        objItem =>
-                                            objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality));
+                            objListToCheck = objCharacter.Metamagics;
                             break;
                         }
                     case "art":
                         {
-                            intCount =
-                                objCharacter.Arts.Count(
-                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = !(intCount > intLimit &&
-                                    objCharacter.Arts.Any(
-                                        objItem =>
-                                            objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality));
+                            objListToCheck = objCharacter.Arts;
                             break;
                         }
                     case "enhancement":
                         {
-                            intCount =
-                                objCharacter.Enhancements.Count(
-                                    objItem => objItem.Name == objXmlNode["name"]?.InnerText && objItem.Name != strIgnoreQuality);
-                            allow = !(intCount > intLimit &&
-                                    objCharacter.Enhancements.Any(
-                                        objItem =>
-                                            objItem.Name == objXmlNode["name"]?.InnerText &&
-                                            objItem.Name != strIgnoreQuality));
+                            objListToCheck = objCharacter.Enhancements;
                             break;
                         }
                     default:
@@ -133,14 +122,35 @@ namespace Chummer.Backend.Shared_Methods
                             break;
                         }
                 }
-                if (!allow)
+
+                int intCount = 0;
+                int intExtendedCount = 0;
+                if (objListToCheck != null)
+                {
+                    intCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                    intExtendedCount = intCount;
+                    // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
+                    if (objXmlNode["includeinlimit"] != null)
+                    {
+                        foreach (XmlNode objChildXml in objXmlNode["includeinlimit"].ChildNodes)
+                        {
+                            lstNamesIncludedInLimit.Add(objChildXml.InnerText);
+                        }
+                        intExtendedCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                    }
+                }
+                int intLimit = Convert.ToInt32(strLimitString);
+                int intExtendedLimit = intLimit;
+                if (objXmlNode["limitwithinclusions"] != null)
+                {
+                    intExtendedLimit = Convert.ToInt32(objXmlNode["limitwithinclusions"].InnerText);
+                }
+                if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
                 {
                     if (blnShowMessage)
                     {
                         limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-                        MessageBox.Show(limitMessage, limitTitle,
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
+                        MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
                 }
@@ -194,7 +204,8 @@ namespace Chummer.Backend.Shared_Methods
                             objMetatypeDocument,
                             objCritterDocument, objQualityDocument);
 
-                        if (blnOneOfMet) break;
+                        if (blnOneOfMet)
+                            break;
                         strThisRequirement += name;
                     }
 
@@ -203,29 +214,37 @@ namespace Chummer.Backend.Shared_Methods
                     strRequirement += strThisRequirement;
                 }
 
-                // Loop through the allof requirements.
-                objXmlRequiredList = objXmlNode.SelectNodes("required/allof");
-                foreach (XmlNode objXmlAllOf in objXmlRequiredList)
+                if (blnRequirementMet || blnShowMessage)
                 {
-                    bool blnAllOfMet = true;
-                    string strThisRequirement = "\n" +
-                                             LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
-                    XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
-                    foreach (XmlNode objXmlRequired in objXmlAllOfList)
+                    // Loop through the allof requirements.
+                    objXmlRequiredList = objXmlNode.SelectNodes("required/allof");
+                    foreach (XmlNode objXmlAllOf in objXmlRequiredList)
                     {
-                        bool blnFound = TestNodeRequirements(objXmlRequired, objCharacter, out string name, strIgnoreQuality,
-                            objMetatypeDocument,
-                            objCritterDocument, objQualityDocument);
+                        bool blnAllOfMet = true;
+                        string strThisRequirement = "\n" +
+                                                 LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
+                        XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
+                        foreach (XmlNode objXmlRequired in objXmlAllOfList)
+                        {
+                            bool blnFound = TestNodeRequirements(objXmlRequired, objCharacter, out string name, strIgnoreQuality,
+                                objMetatypeDocument,
+                                objCritterDocument, objQualityDocument);
 
-                        // If this item was not found, fail the AllOfMet condition.
-                        if (blnFound) continue;
-                        strThisRequirement += name;
-                        blnAllOfMet = false;
+                            // If this item was not found, fail the AllOfMet condition.
+                            if (!blnFound)
+                            {
+                                blnAllOfMet = false;
+                                if (blnShowMessage)
+                                    strThisRequirement += name;
+                                else
+                                    break;
+                            }
+                        }
+
+                        // Update the flag for requirements met.
+                        blnRequirementMet = blnRequirementMet && blnAllOfMet;
+                        strRequirement += strThisRequirement;
                     }
-
-                    // Update the flag for requirements met.
-                    blnRequirementMet = blnRequirementMet && blnAllOfMet;
-                    strRequirement += strThisRequirement;
                 }
 
                 // The character has not met the requirements, so display a message and uncheck the item.
@@ -305,16 +324,13 @@ namespace Chummer.Backend.Shared_Methods
                     break;
                 case "bioware":
                 case "cyberware":
-                {
-
-                    int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
-                    name = null;
-                    name += node.Name == "cyberware"
-                        ? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
-                        : "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
-                    return
-                        character.Cyberware.Count(
-                            objCyberware =>
+                    {
+                        int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
+                        name = null;
+                        name += node.Name == "cyberware"
+                            ? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
+                            : "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
+                        return character.Cyberware.Count( objCyberware =>
                                 objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
                                 node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
                     }
@@ -542,7 +558,7 @@ namespace Chummer.Backend.Shared_Methods
                         if (s != null)
                         {
                             name = s.DisplayName;
-                            if (node["spec"] != null)
+                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name))
                             {
                                 name += $" ({node["spec"].InnerText})";
                             }
@@ -564,7 +580,7 @@ namespace Chummer.Backend.Shared_Methods
                         if (s != null)
                         {
                             name = s.DisplayName;
-                            if (node["spec"] != null)
+                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name))
                             {
                                 name += $" ({node["spec"].InnerText})";
                             }

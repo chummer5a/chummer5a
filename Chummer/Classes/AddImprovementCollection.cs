@@ -333,7 +333,8 @@ namespace Chummer.Classes
 
             // Display the Select Skill window and record which Skill was selected.
             frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter, _strFriendlyName);
-            frmPickSkill.RequiresExistingNonzeroRating = !string.IsNullOrWhiteSpace(bonusNode.Attributes?["requireexistingnonzerorating"]?.InnerText);
+            if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["minimumrating"]?.InnerText))
+                frmPickSkill.MinimumRating = Convert.ToInt32(bonusNode.Attributes["minimumrating"].InnerText);
             if (!string.IsNullOrEmpty(_strFriendlyName))
                 frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
                     .Replace("{0}", _strFriendlyName);
@@ -404,6 +405,14 @@ namespace Chummer.Classes
                                 blnAddToRating);
                         }
 
+                        if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                        {
+                            Log.Info("Calling CreateImprovement");
+                            CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                _strUnique);
+                        }
+
                         if (!bonusNode.InnerXml.Contains("max")) continue;
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(k.Name, _objImprovementSource, SourceName,
@@ -426,6 +435,14 @@ namespace Chummer.Classes
                             _strUnique,
                             ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
                             blnAddToRating);
+                    }
+
+                    if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                    {
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.DisableSpecializationEffects,
+                            _strUnique);
                     }
 
                     if (!bonusNode.InnerXml.Contains("max")) return;
@@ -456,6 +473,14 @@ namespace Chummer.Classes
                                 0, 0, 0, 0, string.Empty, blnAddToRating);
                         }
 
+                        if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                        {
+                            Log.Info("Calling CreateImprovement");
+                            CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                _strUnique);
+                        }
+
                         if (!bonusNode.InnerXml.Contains("max")) continue;
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
@@ -475,6 +500,14 @@ namespace Chummer.Classes
                                 _strUnique,
                                 ValueToInt(bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
                                 blnAddToRating);
+                        }
+
+                        if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                        {
+                            Log.Info("Calling CreateImprovement");
+                            CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                _strUnique);
                         }
 
                         if (!bonusNode.InnerXml.Contains("max")) continue;
@@ -1826,6 +1859,13 @@ namespace Chummer.Classes
                 CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, ValueToInt(bonusNode["bonus"].InnerXml, _intRating), 1, 0, 0, 0,
                     0, string.Empty, blnAddToRating);
+            }
+            if (bonusNode["disablespecializationeffects"] != null)
+            {
+                Log.Info("Calling CreateImprovement for disabling specializtion effects");
+                CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.DisableSpecializationEffects,
+                    _strUnique);
             }
             if (bonusNode["max"] != null)
             {
@@ -3752,16 +3792,24 @@ namespace Chummer.Classes
         public void dealerconnection(XmlNode bonusNode)
         {
             Log.Info("dealerconnection");
-            frmSelectItem frmPickItem = new frmSelectItem();
             List<ListItem> lstItems = new List<ListItem>();
             XmlNodeList objXmlList = bonusNode.SelectNodes("category");
             foreach (XmlNode objNode in objXmlList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objNode.InnerText;
-                objItem.Name = objNode.InnerText;
-                lstItems.Add(objItem);
+                if (!_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection && objImprovement.UniqueName == objNode.InnerText))
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objNode.InnerText;
+                    objItem.Name = LanguageManager.Instance.GetString("String_DealerConnection_" + objNode.InnerText);
+                    lstItems.Add(objItem);
+                }
             }
+            if (lstItems.Count == 0)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", SourceName));
+                throw new AbortedException();
+            }
+            frmSelectItem frmPickItem = new frmSelectItem();
             frmPickItem.GeneralItems = lstItems;
             frmPickItem.AllowAutoSelect = false;
             frmPickItem.ShowDialog();
@@ -3771,17 +3819,16 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            SelectedValue = frmPickItem.SelectedItem;
+            SelectedValue = LanguageManager.Instance.GetString("String_DealerConnection_" + frmPickItem.SelectedItem);
             if (_blnConcatSelectedValue)
                 SourceName += " (" + SelectedValue + ")";
 
-            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
             Log.Info("SourceName = " + SourceName);
 
             // Create the Improvement.
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.DealerConnection, _strUnique);
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.DealerConnection, frmPickItem.SelectedItem);
         }
 
         public void unlockskills(XmlNode bonusNode)
@@ -3852,26 +3899,27 @@ namespace Chummer.Classes
                 string strForceValue = string.Empty;
                 if (objXmlAddQuality.Attributes["select"] != null)
                     strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
-                bool blnAddQuality = _objCharacter.Qualities.All(objCharacterQuality => objCharacterQuality.Name != objXmlAddQuality.InnerText || objCharacterQuality.Extra != strForceValue);
-
-                // Make sure the character does not yet have this Quality.
-
-                if (blnAddQuality)
+                
+                // Makes sure we aren't over our limits for this particular quality from this overall source
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, null, null, objXmlDocument, "", LanguageManager.Instance.GetString("String_Quality"), _strFriendlyName))
                 {
                     TreeNode objAddQualityNode = new TreeNode();
+                    List<Weapon> objWeapons = new List<Weapon>();
+                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
                     Quality objAddQuality = new Quality(_objCharacter);
-                    objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, null, null, strForceValue);
+                    objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue, _strFriendlyName);
 
-                    bool blnFree = (objXmlAddQuality.Attributes["contributetobp"] == null ||
-                                    (objXmlAddQuality.Attributes["contributetobp"]?.InnerText.ToLower() != "true"));
-                    if (blnFree)
+                    if (objXmlAddQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != "true")
                     {
                         objAddQuality.BP = 0;
                         objAddQuality.ContributeToLimit = false;
                     }
                     _objCharacter.Qualities.Add(objAddQuality);
-                    CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName,
-                    Improvement.ImprovementType.SpecificQuality, _strUnique);
+                    CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                }
+                else
+                {
+                    throw new AbortedException();
                 }
             }
         }
@@ -3888,11 +3936,9 @@ namespace Chummer.Classes
             {
                 if (objXmlAddQuality.Attributes["select"] != null)
                     strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
-                bool blnAddQuality = _objCharacter.Qualities.All(objCharacterQuality => objCharacterQuality.Name != objXmlAddQuality.InnerText || objCharacterQuality.Extra != strForceValue);
 
-                // Make sure the character does not yet have this Quality.
-
-                if (blnAddQuality)
+                // Makes sure we aren't over our limits for this particular quality from this overall source
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAddQuality, false, _objCharacter, null, null, objXmlDocument, "", LanguageManager.Instance.GetString("String_Quality"), _strFriendlyName))
                 {
                     XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                     ListItem objItem = new ListItem();
@@ -3901,29 +3947,31 @@ namespace Chummer.Classes
                     lstQualities.Add(objItem);
                 }
             }
+            if (lstQualities.Count == 0)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", SourceName));
+                throw new AbortedException();
+            }
             frmPickItem.GeneralItems = lstQualities;
             frmPickItem.ShowDialog();
 
             // Don't do anything else if the form was canceled.
             if (frmPickItem.DialogResult == DialogResult.Cancel)
-                return;
+                throw new AbortedException();
             XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
+            XmlNode objXmlBonusQuality = bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]");
             TreeNode objAddQualityNode = new TreeNode();
             Quality objAddQuality = new Quality(_objCharacter);
 
-            bool blnFree = bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]")?.Attributes?["contributetobp"] == null ||
-                            (bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]")?.Attributes?["contributetobp"]?.InnerText.ToLower() != "true");
-
-            strForceValue = bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]")?.Attributes?["select"].InnerText;
-            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, null, null, strForceValue);
-            if (blnFree)
+            strForceValue = objXmlBonusQuality?.Attributes?["select"].InnerText;
+            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
+            if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != "true")
             {
                 objAddQuality.BP = 0;
                 objAddQuality.ContributeToLimit = false;
             }
             _objCharacter.Qualities.Add(objAddQuality);
-            CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName,
-            Improvement.ImprovementType.SpecificQuality, _strUnique);
+            CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
         }
 
         public void addskillspecialization(XmlNode bonusNode)

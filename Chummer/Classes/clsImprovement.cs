@@ -201,7 +201,8 @@ namespace Chummer
             Spell,
             MentorSpirit,
             Paragon,
-            FreeSpellsSkill
+            FreeSpellsSkill,
+            DisableSpecializationEffects, // Disable the effects of specializations for a skill
         }
 
         public enum ImprovementSource
@@ -795,9 +796,9 @@ namespace Chummer
                 else
                 {
                     int.TryParse(strValue, out intReturn);
-            }
+                }
                 return intReturn;
-        }
+            }
         }
 
         /// <summary>
@@ -1051,6 +1052,7 @@ namespace Chummer
             // A List of Improvements to hold all of the items that will eventually be deleted.
             List<Improvement> objImprovementList = null;
             if (blnReapplyImprovements)
+            {
                 objImprovementList = _objCharacter.Improvements.Where(objImprovement =>
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.AIProgram ||
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Armor ||
@@ -1066,6 +1068,7 @@ namespace Chummer
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Power ||
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Quality ||
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Spell).ToList();
+            }
             else
                 objImprovementList = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
 
@@ -1074,7 +1077,10 @@ namespace Chummer
             {
                 // Remove the Improvement.
                 _objCharacter.Improvements.Remove(objImprovement);
-
+            }
+            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+            foreach (Improvement objImprovement in objImprovementList)
+            {
                 // See if the character has anything else that is granting them the same bonus as this improvement
                 bool blnHasDuplicate = _objCharacter.Improvements.Any(objLoopImprovement => objLoopImprovement.UniqueName == objImprovement.UniqueName && objLoopImprovement.ImprovedName == objImprovement.ImprovedName && objLoopImprovement.ImproveType == objImprovement.ImproveType && objLoopImprovement.SourceName != objImprovement.SourceName);
 
@@ -1318,14 +1324,14 @@ namespace Chummer
                 }
                         break;
                     case Improvement.ImprovementType.ContactMadeMan:
-                        Contact MadeManContact = _objCharacter.Contacts.First(c => c.GUID == objImprovement.ImprovedName);
-
-                        MadeManContact.MadeMan = false;
+                        Contact MadeManContact = _objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        if (MadeManContact != null)
+                            MadeManContact.MadeMan = false;
                         break;
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = _objCharacter.Contacts.First(c => c.GUID == objImprovement.ImprovedName);
-
-                        _objCharacter.Contacts.Remove(NewContact);
+                        Contact NewContact = _objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        if (NewContact != null)
+                            _objCharacter.Contacts.Remove(NewContact);
                         break;
                     case Improvement.ImprovementType.Initiation:
                     _objCharacter.InitiateGrade -= objImprovement.Value;
@@ -1337,46 +1343,39 @@ namespace Chummer
                     _objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                            if (objImprovement.ImprovedName == objQuality.InternalId)
-                    {
-                        _objCharacter.Qualities.Remove(objQuality);
-                        break;
-                    }
-                }
+                        Quality objQuality = _objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                        if (objQuality != null)
+                            _objCharacter.Qualities.Remove(objQuality);
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
-                    Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objImprovement.ImprovedName);
+                    Skill objSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
                     if (objSkill != null)
                     {
-                        SkillSpecialization objSkillSpec = objSkill.Specializations.First(x => x.Name == objImprovement.UniqueName);
+                        SkillSpecialization objSkillSpec = objSkill.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            if (objSkillSpec != null)
                         objSkill.Specializations.Remove(objSkillSpec);
                     }
                         break;
                     case Improvement.ImprovementType.AIProgram:
-                        foreach (AIProgram objProgram in _objCharacter.AIPrograms)
-                {
-                            if (objImprovement.ImprovedName == objProgram.InternalId)
-                    {
-                                _objCharacter.AIPrograms.Remove(objProgram);
-                                break;
-                            }
-                        }
+                        AIProgram objProgram = _objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                        if (objProgram != null)
+                            _objCharacter.AIPrograms.Remove(objProgram);
                         break;
                     case Improvement.ImprovementType.AdeptPowerFreeLevels:
                     case Improvement.ImprovementType.AdeptPowerFreePoints:
                         // Get the power improved by this improvement
-                        Power objImprovedPower = _objCharacter.Powers.First(objPower => objPower.Name == objImprovement.ImprovedName &&
+                        Power objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objImprovement.ImprovedName &&
                                         objPower.Extra == objImprovement.UniqueName);
-
-                        if (objImprovedPower.TotalRating <= 0)
+                        if (objImprovedPower != null)
                         {
-                            objImprovedPower.Deleting = true;
-                            _objCharacter.Powers.Remove(objImprovedPower);
-                        }
+                            if (objImprovedPower.TotalRating <= 0)
+                            {
+                                objImprovedPower.Deleting = true;
+                                _objCharacter.Powers.Remove(objImprovedPower);
+                            }
 
-                        objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                            objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                        }
                         break;
                 }
             }

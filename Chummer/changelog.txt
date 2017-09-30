@@ -27,7 +27,7 @@ Application Changes:
 - Fixed a bug that allowed the deletion of some powers without levels that were granted by free levels of adept powers.
 - Maximum values for adept powers should now update properly with changes to MAG values, and in the case of Improved Ability, changes to skill ratings.
 - Cancelling out of a dialog triggered by selecting an adept power or a property of an adept power will now properly cancel the dialog and not actually add the last/default selected choice.
-- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than 0. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
+- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
 - Added support for bonuses to defense dice (e.g. Combat Sense, Reakt).
 - Added support for Barehanded Adept and qualities similar to it.
 - Drain for Physical Adepts is now properly displayed and calculated as BOD + WIL.
@@ -46,6 +46,18 @@ Application Changes:
 - Added support for the following requirements (to qualities): the item can only be taken during character generation, the item cannot be bought separately in priority-based character generation methods.
 - Added support for qualities that refund their cost when removed in career mode. The fact that such a quality can be bought for its normal price in chargen and then refunded for double its price in career mode is working as intended, as per rules for swapping Latent Dracomorphosis for a Drake quality.
 - "Don't Show Metagenetic Qualities" is automatically checked when choosing qualities for characters without any SURGE quality.
+- Added support for setting a different quality (and other item) count limit when the quality would be taken at chargen.
+- Added support for including other quality names when checking against the quality count limit. Also added support to set the total limit when including differently named qualities to something different from the main limit for the quality itself (e.g. Tough as Nails has an individual limit of 3 per Condition Monitor type, but the total limit of Physical + Stun versions of Tough as Nails is 4).
+- Set the default quality count limit to 1 instead of Unlimited.
+- Added support for bonuses that disable dicepool bonuses from specializations for a selected or specific skill
+- Fixed a bug where Dealer Connection could be taken multiple times for the same category.
+- Fixed a bug where the categories in Dealer Connection could not be localized.
+- Qualities added by improvements (e.g. Poor Self Control Thrill Seeker for Daredrenaline) can no longer be deleted unless the source of the improvement is removed. The source of the improvement will also be printed with the quality on character sheets.
+- Multiple instances of the same quality will get combined into one entry. For example, 3 entries for "Social Appearance Anxiety" will get combined into "Social Appearance Anxiety 3". Qualities from different source types will not stack in this way. 
+- Fixed a bug where qualities to be added from an improvement would not be added if an instance of the quality already exists. This should e.g. allow Daredrenaline to properly represent its effects if the runner already has Poor Self Control Thrill Seeker.
+- Also added a numerical up-down control to quickly add or remove multiple instances of the same quality.
+- Added support for a quality to only apply certain bonuses at its first level.
+- Fixed a bug where newly added items would not cancel themselves if a quality that their bonus added could not be taken for the character.
 
 Data Changes:
 
@@ -79,7 +91,23 @@ Data Changes:
 - SURGE I and SURGE II now properly cost 10 and 15 karma respectively (from 30)
 - All Awakened qualities and the Technomancer quality cannot be bought separately during character generation when using Priority or Sum-to-Ten character generation methods.
 - Latent Dracomorphosis is now mutually exclusive with all Infected, Drake, and Changeling qualities, and will now refund its karma cost when removed in career mode.
-- Fixed a reference in improvements.xml to Initiative passes rather than initiative dice. 
+- Fixed a reference in improvements.xml to Initiative passes rather than initiative dice.
+- Consolidated the following quality entries so that they are now just one quality that can be taken multiple times: Focused Concentration, High Pain Tolerance, Magic Resistance, Will to Live, Gremlins, Perceptive, Spike Resistance, Tough as Nails, Dimmer Bulb, In Debt, Arcane Arrester, Shiva Arms, Social Appearance Anxiety, Infirm, Pilot Origins, Aged, Illness. When loading a save file for a character containing at least one of these existing qualities, they should get converted automatically to the new format.
+- Fixed a bug where the Indomitable quality could be taken more than three times across Physical, Mental, and Social limits.
+- Fixed a bug where Basic and Full levels of the Insomnia quality were not mutually exclusive.
+- Fixed a bug where Bilingual and Black Market Connection could be taken in-game.
+- Fixed a bug where Loss of Confidence could be taken for skills with Ratings lower than 4, and a bug where Loss of Confidence would not disallow use of specializations for the selected skill.
+- Fixed a bug where Restricted Gear could be taken more than once at chargen.
+- Fixed a bug where Metagenetic Improvement and Impaired Attribute could be taken more than once per attribute.
+- Fixed a bug where the Close Combat Mage quality did not allow you to select which bonus was taken.
+- Fixed a bug where Death Dealer could be taken more than once by Physical Adepts.
+- Fixed a bug where the Illusionist quality did not allow you to select the spell type to which it applied (Physical or Mana).
+- Fixed a bug where following the Sioux tradition did not reduce the requirements of the Skinwalker quality if you did not have the Manipulation specialization in Spellcasting.
+- Fixed a bug where Spirit Hunter I, Spirit Hunter II, and Spirit Hunter III could each be taken 3 times.
+- Fixed a bug where Black Market Pipeline could be taken after character generation.
+- Fixed a bug where the total of Tough as Nails Physical and Tough as Nails Stun levels could exceed 4.
+- Fixed incorrect page number references for Pilot Origins and Multiprocessing qualities.
+- Fixed incorrect range entry for the Control Emotions spell.
 
 New Strings:
 - Label_Options_SpellShapingFocus
@@ -94,6 +122,15 @@ New Strings:
 - Message_Save_Error_Warning
 - Message_SelectGeneric_ChargenRestriction
 - MessageTitle_SelectGeneric_PriorityRestriction
+- Message_LowerQualityLevel
+- Message_LowerPositiveQualityLevelCareer
+- Message_ImprovementQuality
+- Message_ConfirmKarmaExpenseLowerLevel
+- Label_QualityLevel
+- String_DealerConnection_Drones
+- String_DealerConnection_Groundcraft
+- String_DealerConnection_Watercraft
+- String_DealerConnection_Aircraft
 
 Changes Strings:
 - Message_PositiveQualityLimit

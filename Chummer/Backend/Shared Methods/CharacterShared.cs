@@ -439,21 +439,37 @@ namespace Chummer
         {
             //Count the child nodes in each treenode.
             int intQualityCount = 0;
-            foreach (TreeNode objTreeNode in treQualities.Nodes)
+            if (!blnForce)
             {
-                intQualityCount += objTreeNode.Nodes.Count;
+                foreach (TreeNode objTreeNode in treQualities.Nodes)
+                {
+                    intQualityCount += objTreeNode.Nodes.Count;
+                }
             }
 
             //If the node count is the same as the quality count, there's no need to do anything.
-            if (intQualityCount != _objCharacter.Qualities.Count || blnForce)
+            if (blnForce || intQualityCount != _objCharacter.Qualities.Count)
             {
+                // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
+                HashSet<string> strQualitiesToPrint = new HashSet<string>();
                 foreach (TreeNode objTreeNode in treQualities.Nodes)
                 {
                     objTreeNode.Nodes.Clear();
                 }
+                foreach (Quality objQuality in _objCharacter.Qualities)
+                {
+                    if (!strQualitiesToPrint.Contains(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                    {
+                        strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    }
+                }
                 // Populate the Qualities list.
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
+                    if (strQualitiesToPrint.Contains(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                        strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    else
+                        continue;
                     TreeNode objNode = new TreeNode();
                     objNode.Text = objQuality.DisplayName;
                     objNode.Tag = objQuality.InternalId;
@@ -461,11 +477,11 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(objQuality.Notes))
                         objNode.ForeColor = Color.SaddleBrown;
-                    else
+                    else if (objQuality.OriginSource == QualitySource.Metatype ||
+                            objQuality.OriginSource == QualitySource.MetatypeRemovable ||
+                            objQuality.OriginSource == QualitySource.Improvement)
                     {
-                        if (objQuality.OriginSource == QualitySource.Metatype ||
-                            objQuality.OriginSource == QualitySource.MetatypeRemovable)
-                            objNode.ForeColor = SystemColors.GrayText;
+                        objNode.ForeColor = SystemColors.GrayText;
                     }
                     objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
 
@@ -489,13 +505,38 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Refreshes all the names of qualities in the nodes
+        /// </summary>
+        /// <param name="treQualities">Treeview to insert the qualities into.</param>
+        protected void RefreshQualityNames(TreeView treQualities)
+        {
+            TreeNode objSelectedNode = null;
+            foreach (Quality objQuality in _objCharacter.Qualities)
+            {
+                for (int i = 0; i <= 1; i++)
+                {
+                    foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
+                    {
+                        if (objSelectedNode == null && objTreeNode == treQualities.SelectedNode)
+                            objSelectedNode = objTreeNode;
+                        if (objTreeNode.Tag.ToString() == objQuality.InternalId)
+                        {
+                            objTreeNode.Text = objQuality.DisplayName;
+                        }
+                    }
+                }
+            }
+            if (objSelectedNode != null)
+                treQualities.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
         /// <param name="treQualities"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities,
-            ImprovementManager _objImprovementManager)
+        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities, ImprovementManager _objImprovementManager)
         {
             foreach (XmlNode objNode in objNodeList)
             {
@@ -503,25 +544,30 @@ namespace Chummer
                 {
                     if (objQuality.Name == objNode.InnerText)
                     {
-                        switch (objQuality.Type)
-                        {
-                            case QualityType.Positive:
-                                foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
-                                {
-                                    if (nodQuality.Text == objQuality.Name)
-                                        nodQuality.Remove();
-                                }
-                                break;
-                            case QualityType.Negative:
-                                foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
-                                {
-                                    if (nodQuality.Text == objQuality.Name)
-                                        nodQuality.Remove();
-                                }
-                                break;
-                        }
                         _objCharacter.Qualities.Remove(objQuality);
                         _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                        if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.Name == objQuality.Name && objExistingQuality.Extra == objQuality.Extra))
+                        {
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
+                                    {
+                                        if (nodQuality.Text == objQuality.Name)
+                                            nodQuality.Remove();
+                                    }
+                                    break;
+                                case QualityType.Negative:
+                                    foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
+                                    {
+                                        if (nodQuality.Text == objQuality.Name)
+                                            nodQuality.Remove();
+                                    }
+                                    break;
+                            }
+                        }
+                        else
+                            RefreshQualityNames(treQualities);
                         break;
                     }
                 }

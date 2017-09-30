@@ -130,6 +130,7 @@ namespace Chummer
 
             SetTooltips();
             MoveControls();
+            nudQualityLevel_UpdateValue(null);
         }
 
 
@@ -377,7 +378,7 @@ namespace Chummer
             }
 
             // Populate the Qualities list.
-            RefreshQualities(treQualities, cmsQuality);
+            RefreshQualities(treQualities, cmsQuality, true);
             // Populate the Magician Traditions list.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
             List<ListItem> lstTraditions = new List<ListItem>();
@@ -4403,10 +4404,11 @@ namespace Chummer
                     {
                         RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
                     }
-                    RefreshQualities(treQualities, cmsQuality);
                     // Remove any Improvements created by the piece of Cyberware.
                     _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
                     _objCharacter.Cyberware.Remove(objCyberware);
+                    RefreshQualities(treQualities, cmsQuality);
+                    treQualities.SortCustom();
 
                     // If the Parent is populated, remove the item from its Parent.
                     if (objCyberware.Parent != null)
@@ -5463,6 +5465,7 @@ namespace Chummer
             if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMartialArt")))
                 return;
 
+            bool blnDoQualityRefresh = false;
             if (treMartialArts.SelectedNode.Level == 1)
             {
                 // Delete the selected Martial Art.
@@ -5471,14 +5474,20 @@ namespace Chummer
                     return;
                 if (objMartialArt.Name == "One Trick Pony")
                 {
-                    foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Name == "One Trick Pony"))
+                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.Name == "One Trick Pony");
+                    if (objQuality != null)
                     {
                         _objCharacter.Qualities.Remove(objQuality);
-                        foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text.ToString() == "One Trick Pony"))
+                        if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
                         {
-                            nodQuality.Remove();
+                            foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
+                            {
+                                if (nodQuality.Text.ToString() == "One Trick Pony")
+                                    nodQuality.Remove();
+                            }
                         }
-                        break;
+                        else
+                            blnDoQualityRefresh = true;
                     }
                 }
                 _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
@@ -5506,6 +5515,8 @@ namespace Chummer
             }
 
             CalculateBP();
+            if (blnDoQualityRefresh)
+                RefreshQualityNames(treQualities);
             ScheduleCharacterUpdate();
 
             _blnIsDirty = true;
@@ -6179,14 +6190,14 @@ namespace Chummer
             //Stupid hardcoding but no sane way
             //To do group skills (not that anything else is sane)
 
+            RefreshQualities(treQualities, cmsQuality);
             treQualities.SortCustom();
             ScheduleCharacterUpdate();
             RefreshContacts();
             _blnIsDirty = true;
             UpdateWindowTitle();
-            RefreshQualities(treQualities,cmsQuality);
 
-            if(selectLifeModule.AddAgain)
+            if (selectLifeModule.AddAgain)
                 cmdLifeModule_Click(sender, e);
         }
 
@@ -6209,7 +6220,11 @@ namespace Chummer
             objQuality.Create(objXmlQuality, _objCharacter, QualitySource.Selected, objNode, objWeapons, objWeaponNodes);
             objNode.ContextMenuStrip = cmsQuality;
             if (objQuality.InternalId == Guid.Empty.ToString())
+            {
+                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
                 return;
+            }
 
             if (frmPickQuality.FreeCost)
                 objQuality.BP = 0;
@@ -6262,9 +6277,6 @@ namespace Chummer
                             blnAddItem = false;
                         }
                     }
-                    {
-
-                    }
                 }
             }
             else
@@ -6315,7 +6327,8 @@ namespace Chummer
                     treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
                     treWeapons.Nodes[0].Expand();
                 }
-                RefreshQualities(treQualities, cmsQuality);
+                RefreshQualities(treQualities, cmsQuality, true);
+                treQualities.SortCustom();
             }
             else
             {
@@ -6323,7 +6336,7 @@ namespace Chummer
                 _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
             }
 
-            treQualities.SortCustom();
+            nudQualityLevel_UpdateValue(null);
             UpdateMentorSpirits();
             ScheduleCharacterUpdate();
             RefreshMartialArts();
@@ -6339,6 +6352,7 @@ namespace Chummer
                 cmdAddQuality_Click(sender, e);
         }
 
+        /*
         private Quality AddQuality(XmlNode objXmlAddQuality, XmlNode objXmlSelectedQuality, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
         {
             string strForceValue = string.Empty;
@@ -6394,36 +6408,40 @@ namespace Chummer
 
             return null;
         }
+        */
 
-        private void cmdDeleteQuality_Click(object sender, EventArgs e)
+        private bool RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
         {
-            // Locate the selected Quality.
-            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
-                return;
-
-            Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
-
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(objQuality.Type == QualityType.LifeModule ? "lifemodules.xml" :"qualities.xml");
-
+            XmlDocument objXmlDocument = XmlManager.Instance.Load(objSelectedQuality.Type == QualityType.LifeModule ? "lifemodules.xml" : "qualities.xml");
+            XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
             // Qualities that come from a Metatype cannot be removed.
-            if (objQuality.OriginSource == QualitySource.Metatype)
+            if (objSelectedQuality.OriginSource == QualitySource.Metatype)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_MetavariantQuality"), LanguageManager.Instance.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                return false;
             }
-            else if (objQuality.OriginSource == QualitySource.MetatypeRemovable)
+            else if (objSelectedQuality.OriginSource == QualitySource.Improvement)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementQuality").Replace("{0}", objSelectedQuality.SourceName), LanguageManager.Instance.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            else if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
             {
                 // Look up the cost of the Quality.
-                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objQuality.QualityId + "\"]");
-                int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -1;
+                XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objSelectedQuality.QualityId + "\"]");
+                int intBP = Convert.ToInt32(objXmlSelectedQuality["karma"].InnerText) * -1;
                 int intShowBP = intBP;
+                if (blnCompleteDelete)
+                    intShowBP *= objSelectedQuality.Levels;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                     intShowBP *= _objOptions.KarmaQuality;
                 string strBP = intShowBP.ToString();
                 strBP += " " + LanguageManager.Instance.GetString("String_Karma");
 
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMetatypeQuality").Replace("{0}", strBP)))
-                    return;
+                if (blnConfirmDelete && !_objFunctions.ConfirmDelete(blnCompleteDelete ?
+                                                                        LanguageManager.Instance.GetString("Message_DeleteMetatypeQuality").Replace("{0}", strBP) :
+                                                                        LanguageManager.Instance.GetString("Message_LowerMetatypeQualityLevel").Replace("{0}", strBP)))
+                    return false;
 
                 // Remove any Improvements that the Quality might have.
                 if (objXmlMetatypeQuality["bonus"] != null)
@@ -6433,12 +6451,12 @@ namespace Chummer
                 List<Weapon> objWeapons = new List<Weapon>();
                 List<TreeNode> objWeaponNodes = new List<TreeNode>();
                 Quality objReplaceQuality = new Quality(_objCharacter);
-                
+
                 objReplaceQuality.Create(objXmlMetatypeQuality, _objCharacter, QualitySource.Selected, objEmptyNode, objWeapons, objWeaponNodes);
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
-                if (objQuality.Type == QualityType.Positive)
-                    objQuality.Type = QualityType.Negative;
+                if (objSelectedQuality.Type == QualityType.Positive)
+                    objSelectedQuality.Type = QualityType.Negative;
                 else
                     objReplaceQuality.Type = QualityType.Positive;
                 // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
@@ -6448,14 +6466,14 @@ namespace Chummer
             }
             else
             {
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteQuality")))
-                    return;
+                if (blnConfirmDelete &&!_objFunctions.ConfirmDelete(blnCompleteDelete ? LanguageManager.Instance.GetString("Message_DeleteQuality") : LanguageManager.Instance.GetString("Message_LowerQualityLevel")))
+                    return false;
             }
 
             // Remove the Improvements that were created by the Quality.
-            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objSelectedQuality.InternalId);
 
-            if (objQuality.Name == "One Trick Pony")
+            if (objSelectedQuality.Name == "One Trick Pony")
             {
                 if (treMartialArts.Nodes[1].Nodes.Count > 0)
                 {
@@ -6472,35 +6490,10 @@ namespace Chummer
             }
 
             // Remove the Improvements that were created by the Quality.
-            switch (objQuality.Name)
+            switch (objSelectedQuality.Name)
             {
-                /*case "Magician":
-                    _objCharacter.MAGEnabled = false;
-                    _objCharacter.MagicianEnabled = false;
-                    break;
-                case "Aspected Magician":
-                    _objCharacter.MAGEnabled = false;
-                    _objCharacter.MagicianEnabled = false;
-                    break;
-                case "Adept":
-                    _objCharacter.MAGEnabled = false;
-                    _objCharacter.AdeptEnabled = false;
-                    break;
-                case "Mystic Adept":
-                    _objCharacter.MAGEnabled = false;
-                    _objCharacter.MagicianEnabled = false;
-                    _objCharacter.AdeptEnabled = false;
-                    break;
-                case "Technomancer":
-                    _objCharacter.RESEnabled = false;
-                    _objCharacter.TechnomancerEnabled = false;
-                    break;*/
                 case "Changeling (Class I SURGE)":
-                    _objCharacter.MetageneticLimit = 0;
-                    break;
                 case "Changeling (Class II SURGE)":
-                    _objCharacter.MetageneticLimit = 0;
-                    break;
                 case "Changeling (Class III SURGE)":
                     _objCharacter.MetageneticLimit = 0;
                     break;
@@ -6508,44 +6501,24 @@ namespace Chummer
                     break;
             }
 
-            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
-
-            if (objQuality.Name == "One Trick Pony")
-            {
-                if (treMartialArts.Nodes[1].Nodes.Count > 0)
-                {
-                    foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
-                    {
-                        if (objMartialArt.Name == "One Trick Pony")
-                        {
-                            _objCharacter.MartialArts.Remove(objMartialArt);
-                            treMartialArts.Nodes[1].Nodes[0].Remove();
-                            break;
-                        }
-                    }
-                }
-            }
-
             XmlNode objXmlDeleteQuality;
-            if (objQuality.Type == QualityType.LifeModule)
+            if (objSelectedQuality.Type == QualityType.LifeModule)
             {
-                objXmlDeleteQuality =
-                    Quality.GetNodeOverrideable(objQuality.QualityId);
+                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.QualityId);
             }
             else
             {
-                objXmlDeleteQuality =
-                    objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+                objXmlDeleteQuality = objXmlSelectedQuality;
             }
 
             // Remove any Weapons created by the Quality if applicable.
-            if (objQuality.WeaponID != Guid.Empty.ToString())
+            if (objSelectedQuality.WeaponID != Guid.Empty.ToString())
             {
                 // Remove the Weapon from the TreeView.
                 TreeNode objRemoveNode = new TreeNode();
                 foreach (TreeNode objWeaponNode in treWeapons.Nodes[0].Nodes)
                 {
-                    if (objWeaponNode.Tag.ToString() == objQuality.WeaponID)
+                    if (objWeaponNode.Tag.ToString() == objSelectedQuality.WeaponID)
                         objRemoveNode = objWeaponNode;
                 }
                 treWeapons.Nodes.Remove(objRemoveNode);
@@ -6554,7 +6527,7 @@ namespace Chummer
                 Weapon objRemoveWeapon = new Weapon(_objCharacter);
                 foreach (Weapon objWeapon in _objCharacter.Weapons)
                 {
-                    if (objWeapon.InternalId == objQuality.WeaponID)
+                    if (objWeapon.InternalId == objSelectedQuality.WeaponID)
                         objRemoveWeapon = objWeapon;
                 }
                 _objCharacter.Weapons.Remove(objRemoveWeapon);
@@ -6563,22 +6536,54 @@ namespace Chummer
             // Fix for legacy characters with old addqualities improvements.
             if (objXmlDeleteQuality["addqualities"] != null)
             {
-                RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"), treQualities,
-                    _objImprovementManager);
+                RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
             }
 
-            _objCharacter.Qualities.Remove(objQuality);
-            treQualities.SelectedNode.Remove();
-            RefreshQualities(treQualities,cmsQuality,true);
-            UpdateMentorSpirits();
-            ScheduleCharacterUpdate();
-            RefreshMartialArts();
-            RefreshAIPrograms();
-            RefreshLimitModifiers();
-            RefreshSpells(treSpells, cmsSpell, _objCharacter);
-            RefreshContacts();
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+            _objCharacter.Qualities.Remove(objSelectedQuality);
+            return true;
+        }
+
+        private void cmdDeleteQuality_Click(object sender, EventArgs e)
+        {
+            // Locate the selected Quality.
+            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
+                return;
+
+            Quality objSelectedQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
+            string strInternalIDToRemove = objSelectedQuality.QualityId;
+            // Can't do a foreach because we're removing items, this is the next best thing
+            bool blnFirstRemoval = true;
+            for(int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+            {
+                Quality objLoopQuality = _objCharacter.Qualities.ElementAt(i);
+                if (objLoopQuality.QualityId == strInternalIDToRemove)
+                {
+                    if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
+                        break;
+                    blnFirstRemoval = false;
+                    if (i > _objCharacter.Qualities.Count)
+                    {
+                        i = _objCharacter.Qualities.Count;
+                    }
+                }
+            }
+
+            // Only refresh if at least one quality was removed
+            if (!blnFirstRemoval)
+            {
+                RefreshQualities(treQualities, cmsQuality, true);
+                treQualities.SortCustom();
+                nudQualityLevel_UpdateValue(null);
+                UpdateMentorSpirits();
+                ScheduleCharacterUpdate();
+                RefreshMartialArts();
+                RefreshAIPrograms();
+                RefreshLimitModifiers();
+                RefreshSpells(treSpells, cmsSpell, _objCharacter);
+                RefreshContacts();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
         }
 
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
@@ -10321,7 +10326,10 @@ namespace Chummer
             lblQualitySource.Text = string.Empty;
             tipTooltip.SetToolTip(lblQualitySource, null);
             if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
+            {
+                nudQualityLevel_UpdateValue(null);
                 return;
+            }
 
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
 
@@ -10330,6 +10338,210 @@ namespace Chummer
             lblQualitySource.Text = strBook + " " + strPage;
             tipTooltip.SetToolTip(lblQualitySource, _objOptions.LanguageBookLong(objQuality.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objQuality.Page);
             lblQualityBP.Text = (objQuality.BP * _objOptions.KarmaQuality).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+
+            nudQualityLevel_UpdateValue(objQuality);
+        }
+
+        private void nudQualityLevel_UpdateValue(Quality objSelectedQuality)
+        {
+            nudQualityLevel.Enabled = false;
+            if (objSelectedQuality == null || objSelectedQuality.OriginSource == QualitySource.Improvement || objSelectedQuality.OriginSource == QualitySource.Metatype)
+            {
+                nudQualityLevel.Value = 1;
+                return;
+            }
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
+            string strLimitString = objQualityNode?["limit"]?.InnerText;
+            if (objQualityNode?["chargenlimit"] != null)
+                strLimitString = objQualityNode["chargenlimit"].InnerText;
+            int intMaxRating = 0;
+            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode?["nolevels"] == null && Int32.TryParse(strLimitString, out intMaxRating))
+            {
+                nudQualityLevel.Maximum = intMaxRating;
+                nudQualityLevel.Value = objSelectedQuality.Levels;
+                nudQualityLevel.Enabled = true;
+            }
+            else
+            {
+                nudQualityLevel.Value = 1;
+            }
+        }
+
+        private void nudQualityLevel_ValueChanged(object sender, EventArgs e)
+        {
+            if (nudQualityLevel.Enabled && treQualities.SelectedNode != null && treQualities.SelectedNode.Level > 0)
+            {
+                // Locate the selected Quality.
+                Quality objSelectedQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
+                int intCurrentLevels = objSelectedQuality.Levels;
+
+                // Adding a new level
+                if (nudQualityLevel.Value > intCurrentLevels)
+                {
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
+                    if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, null, null, objXmlDocument))
+                    {
+                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        return;
+                    }
+                    TreeNode objNode = new TreeNode();
+                    List<Weapon> objWeapons = new List<Weapon>();
+                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                    Quality objQuality = new Quality(_objCharacter);
+
+                    objQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objNode, objWeapons, objWeaponNodes, objSelectedQuality.Extra);
+                    if (objQuality.InternalId == Guid.Empty.ToString())
+                    {
+                        // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        return;
+                    }
+                    objNode.ContextMenuStrip = cmsQuality;
+
+                    objQuality.BP = objSelectedQuality.BP;
+                    objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
+
+                    // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                    string strAmount = _objCharacter.GameplayOptionQualityLimit.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    int intMaxQualityAmount = _objCharacter.GameplayOptionQualityLimit;
+
+                    // Make sure that adding the Quality would not cause the character to exceed their BP limits.
+                    int intBP = 0;
+                    bool blnAddItem = true;
+
+                    // Add the cost of the Quality that is being added.
+                    if (objQuality.ContributeToLimit)
+                        intBP += objQuality.BP;
+
+                    if (objQuality.Type == QualityType.Negative)
+                    {
+                        // Calculate the cost of the current Negative Qualities.
+                        foreach (Quality objCharacterQuality in _objCharacter.Qualities)
+                        {
+                            if (objCharacterQuality.Type == QualityType.Negative && objCharacterQuality.ContributeToLimit)
+                                intBP += objCharacterQuality.BP;
+                        }
+
+                        // Include the BP used by Enemies.
+                        if (lblEnemiesBP.Text.Contains(LanguageManager.Instance.GetString("String_BP")))
+                            intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.Instance.GetString("String_Karma"), string.Empty));
+                        else
+                            intBP += int.Parse(lblEnemiesBP.Text.Replace(" " + LanguageManager.Instance.GetString("String_Karma"), string.Empty));
+
+                        // Include the amount from Free Negative Quality BP cost Improvements.
+                        intBP -= (_objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities) * _objOptions.KarmaQuality);
+
+                        // Check if adding this Quality would put the character over their limit.
+                        if (!_objOptions.ExceedNegativeQualities)
+                        {
+                            if (intBP < (intMaxQualityAmount * -1) && !_objCharacter.IgnoreRules)
+                            {
+                                MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityLimit").Replace("{0}", strAmount), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                blnAddItem = false;
+                            }
+                            else if (_objCharacter.MetatypeBP < 0)
+                            {
+                                if ((intBP + _objCharacter.MetatypeBP) < (intMaxQualityAmount * -1) && !_objCharacter.IgnoreRules)
+                                {
+                                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityAndMetatypeLimit").Replace("{0}", strAmount), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    blnAddItem = false;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (objQuality.ContributeToLimit || objQuality.ContributeToBP)
+                        {
+                            // Calculate the cost of the current Positive Qualities.
+                            foreach (Quality objCharacterQuality in _objCharacter.Qualities)
+                            {
+                                if (objCharacterQuality.Type == QualityType.Positive && objCharacterQuality.ContributeToLimit)
+                                    intBP += objCharacterQuality.BP;
+                            }
+                            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                                intBP *= _objOptions.KarmaQuality;
+
+                            // Include the amount from Free Negative Quality BP cost Improvements.
+                            intBP -= (_objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) *
+                                      _objOptions.KarmaQuality);
+
+                            // Check if adding this Quality would put the character over their limit.
+                            if (!_objOptions.ExceedPositiveQualities)
+                            {
+                                if (intBP > intMaxQualityAmount && !_objCharacter.IgnoreRules)
+                                {
+                                    MessageBox.Show(
+                                        LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
+                                            .Replace("{0}", strAmount),
+                                        LanguageManager.Instance.GetString("MessageTitle_PositiveQualityLimit"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    blnAddItem = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (blnAddItem)
+                    {
+                        _objCharacter.Qualities.Add(objQuality);
+
+                        // Add any created Weapons to the character.
+                        foreach (Weapon objWeapon in objWeapons)
+                            _objCharacter.Weapons.Add(objWeapon);
+
+                        // Create the Weapon Node if one exists.
+                        foreach (TreeNode objWeaponNode in objWeaponNodes)
+                        {
+                            objWeaponNode.ContextMenuStrip = cmsWeapon;
+                            treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
+                            treWeapons.Nodes[0].Expand();
+                        }
+                        RefreshQualityNames(treQualities);
+                        UpdateMentorSpirits();
+                        ScheduleCharacterUpdate();
+                        RefreshMartialArts();
+                        RefreshAIPrograms();
+                        RefreshLimitModifiers();
+                        RefreshContacts();
+                        RefreshSpells(treSpells, cmsSpell, _objCharacter);
+                        RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                    else
+                    {
+                        // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                    }
+                }
+                // Removing a level
+                else if (nudQualityLevel.Value < intCurrentLevels)
+                {
+                    Quality objInvisibleQuality = _objCharacter.Qualities.FirstOrDefault(x => x.QualityId == objSelectedQuality.QualityId && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
+                    if (objInvisibleQuality != null)
+                        objSelectedQuality = objInvisibleQuality;
+                    if (RemoveQuality(objSelectedQuality, false, false))
+                    {
+                        RefreshQualityNames(treQualities);
+                        UpdateMentorSpirits();
+                        ScheduleCharacterUpdate();
+                        RefreshMartialArts();
+                        RefreshAIPrograms();
+                        RefreshLimitModifiers();
+                        RefreshSpells(treSpells, cmsSpell, _objCharacter);
+                        RefreshContacts();
+                        _blnIsDirty = true;
+                        UpdateWindowTitle();
+                    }
+                    else
+                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                }
+            }
         }
         #endregion
 
@@ -15443,6 +15655,7 @@ namespace Chummer
             ScheduleCharacterUpdate();
             RefreshSelectedCyberware();
             RefreshQualities(treQualities,cmsQuality);
+            treQualities.SortCustom();
             _blnSkipRefresh = false;
 
             _blnIsDirty = true;
@@ -18339,6 +18552,7 @@ namespace Chummer
             //blnCreateChildren = false;
 
             XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmPickPACKSKit.SelectedCategory + "\"]");
+            bool blnDoQualityTreeUpdate = false;
             // Update Qualities.
             if (objXmlKit["qualities"] != null)
             {
@@ -18359,10 +18573,15 @@ namespace Chummer
                         strForceValue = objXmlQuality.Attributes["select"].InnerText;
 
                     objQuality.Create(objXmlQualityNode, _objCharacter, QualitySource.Selected, objNode, objWeapons, objWeaponNodes, strForceValue);
-                    _objCharacter.Qualities.Add(objQuality);
+                    if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
+                    {
+                        treQualities.Nodes[0].Nodes.Add(objNode);
+                        treQualities.Nodes[0].Expand();
+                    }
+                    else
+                        blnDoQualityTreeUpdate = true;
 
-                    treQualities.Nodes[0].Nodes.Add(objNode);
-                    treQualities.Nodes[0].Expand();
+                    _objCharacter.Qualities.Add(objQuality);
 
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in objWeapons)
@@ -18394,8 +18613,13 @@ namespace Chummer
                     objQuality.Create(objXmlQualityNode, _objCharacter, QualitySource.Selected, objNode, objWeapons, objWeaponNodes, strForceValue);
                     _objCharacter.Qualities.Add(objQuality);
 
-                    treQualities.Nodes[1].Nodes.Add(objNode);
-                    treQualities.Nodes[1].Expand();
+                    if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
+                    {
+                        treQualities.Nodes[1].Nodes.Add(objNode);
+                        treQualities.Nodes[1].Expand();
+                    }
+                    else
+                        blnDoQualityTreeUpdate = true;
 
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in objWeapons)
@@ -19242,6 +19466,8 @@ namespace Chummer
 
             PopulateGearList();
             ScheduleCharacterUpdate();
+            if (blnDoQualityTreeUpdate)
+                RefreshQualityNames(treQualities);
         }
 
         /// <summary>
@@ -19532,6 +19758,7 @@ namespace Chummer
 
             // Populate the Qualities list.
             RefreshQualities(treQualities,cmsQuality,true);
+            treQualities.SortCustom();
 
             XmlDocument objMetatypeDoc = new XmlDocument();
             XmlNode objMetatypeNode;
@@ -19782,6 +20009,7 @@ namespace Chummer
             txtAlias.Width = lblMetatypeLabel.Left - txtAlias.Left - 6;
             nudNuyen.Left = lblNuyen.Left + lblNuyen.Width + 6;
             lblNuyenTotal.Left = nudNuyen.Left + nudNuyen.Width + 6;
+            lblQualityLevelLabel.Left = nudQualityLevel.Left - lblQualityLevelLabel.Width - 6;
 
             // Martial Arts tab.
             lblMartialArtSource.Left = lblMartialArtSourceLabel.Right + 6;

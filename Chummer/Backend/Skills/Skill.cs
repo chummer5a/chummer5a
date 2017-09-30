@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -73,7 +73,7 @@ namespace Chummer.Skills
             objWriter.WriteStartElement("skill");
 
             int rating = PoolOtherAttribute(AttributeObject.TotalValue);
-            int specRating = Specializations.Count == 0
+            int specRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name)
                 ? rating
                 : (!IsKnowledgeSkill && Name == "Artisan" &&
                    CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired")
@@ -675,7 +675,7 @@ namespace Chummer.Skills
                     bool blnHaveSpec = false;
 
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute &&
-                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude))
+                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == y.Name)))
                     {
                         intBasePool += 2;
                         blnHaveSpec = true;
@@ -854,7 +854,7 @@ namespace Chummer.Skills
         {
             int pool = PoolOtherAttribute(attributeValue);
 
-            if (string.IsNullOrWhiteSpace(Specialization))
+            if (string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name))
             {
                 return pool.ToString();
             }
@@ -1025,7 +1025,7 @@ namespace Chummer.Skills
             _cachedFreeKarma = int.MinValue;
             _cachedWareRating = int.MinValue;
             if (improvements.Any(imp =>
-                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects) &&
                 imp.ImprovedName == _name))
             {
                 OnPropertyChanged(nameof(PoolModifiers));
