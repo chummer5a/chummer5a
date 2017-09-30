@@ -30,7 +30,6 @@
       <source>SR5</source>
       <page>309</page>
       <action>Free</action>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
@@ -47,7 +46,6 @@
           <oneof>
             <quality>The Artist's Way</quality>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -65,7 +63,6 @@
       <source>SR5</source>
       <page>309</page>
       <action>Simple</action>
-      <adeptway>0</adeptway>
       <bonus>
         <selectattribute>
           <attribute>AGI</attribute>
@@ -88,7 +85,6 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -111,7 +107,6 @@
         <required>
           <oneof>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -133,7 +128,6 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>974d2aba-1772-474b-aaff-c84a12766e5f</id>
@@ -151,7 +145,6 @@
             <quality>The Artist's Way</quality>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -176,7 +169,6 @@
       <limit>100</limit>
       <source>SR5</source>
       <page>309</page>
-      <adeptway>0</adeptway>
       <bonus>
         <selectskill skillcategory="Combat Active">
           <val>0</val>
@@ -199,7 +191,6 @@
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -233,7 +224,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -260,7 +250,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -283,7 +272,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -306,7 +294,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -324,6 +311,10 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
+	  <adeptwayrequires>
+		<!-- Note, this isn't required here because the power cannot be discounted anyway, but in the future, this is how to blacklist a power from Magician's Way -->
+        <magicianswayforbids /> 
+      </adeptwayrequires>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
@@ -343,7 +334,6 @@
       <limit>100</limit>
       <source>SR5</source>
       <page>310</page>
-      <adeptway>0</adeptway>
       <bonus>
         <selecttext />
       </bonus>
@@ -365,7 +355,6 @@
             <quality>The Artist's Way</quality>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -384,7 +373,6 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>ce7df757-792e-4fac-a86e-6b587586deb2</id>
@@ -394,7 +382,6 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>c152dcba-8bb7-4a2a-86bb-6f854ea53b55</id>
@@ -405,7 +392,6 @@
       <source>SR5</source>
       <page>310</page>
       <action>Interrupt</action>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>da5f9389-a5fd-48ed-8825-8852ff5c56a8</id>
@@ -420,7 +406,6 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -437,7 +422,6 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>545a4bec-c144-42a1-b553-6d6c0c91f07f</id>
@@ -452,7 +436,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -475,7 +458,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -507,7 +489,6 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Invisible Way</quality>
           </oneof>
         </required>
@@ -526,7 +507,6 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -550,7 +530,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -571,7 +550,6 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -586,7 +564,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
-      <adeptway>0</adeptway>
       <bonus>
         <specificskill>
           <name>Animal Handling</name>
@@ -608,7 +585,6 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -627,7 +603,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -651,7 +626,6 @@
         <required>
           <oneof>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Warrior's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -666,7 +640,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
@@ -683,7 +656,6 @@
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
@@ -728,12 +700,21 @@
     <power>
       <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
       <name>Authoritative Tone</name>
-      <points>.50</points>
+      <points>.5</points>
       <levels>true</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>170</page>
       <adeptway>0.25</adeptway>
+	  <!-- Awaiting activation by errata
+	  <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Speaker's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+	  -->
       <maxlevels>3</maxlevels>
     </power>
     <power>
@@ -749,7 +730,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -794,7 +774,6 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -816,7 +795,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -845,7 +823,6 @@
       <source>SG</source>
       <page>171</page>
       <action>Complex</action>
-      <adeptway>0</adeptway>
       <bonus>
         <specificskill>
           <name>Disguise</name>
@@ -861,7 +838,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
-      <adeptway>0</adeptway>
       <maxlevels>3</maxlevels>
     </power>
     <power>
@@ -872,7 +848,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>c59c1bb0-9b3e-41be-9079-8982b451fe45</id>
@@ -883,7 +858,6 @@
       <source>SG</source>
       <page>171</page>
       <action>Simple</action>
-      <adeptway>0</adeptway>
       <bonus>
         <specificskill>
           <name>Climbing</name>
@@ -926,7 +900,6 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
           </oneof>
         </required>
@@ -945,7 +918,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
-      <adeptway>0</adeptway>
       <bonus>
         <nativelanguagelimit>1</nativelanguagelimit>
       </bonus>
@@ -973,7 +945,6 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -1003,7 +974,6 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
-            <quality>The Magician's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1020,7 +990,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -1048,7 +1017,6 @@
           <oneof>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -1067,7 +1035,6 @@
         <required>
           <oneof>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -1081,12 +1048,10 @@
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
-      <adeptway>0</adeptway>
       <adeptwayrequires>
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
-            <quality>The Magician's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1115,7 +1080,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
-      <adeptway>0</adeptway>
       <bonus>
         <unarmedap>-Rating</unarmedap>
       </bonus>
@@ -1144,7 +1108,6 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -1176,7 +1139,6 @@
           <oneof>
             <quality>The Athlete's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
         </required>
@@ -1201,7 +1163,6 @@
       <source>SG</source>
       <page>174</page>
       <action>Free</action>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>6145977c-5825-4358-b0db-1d189cd9d402</id>
@@ -1217,7 +1178,6 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
-            <quality>The Magician's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1230,7 +1190,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
-      <adeptway>0</adeptway>
       <maxlevels>3</maxlevels>
     </power>
     <power>
@@ -1241,7 +1200,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>bf425bd4-f112-4218-b729-2e8bb32f3b2b</id>
@@ -1251,7 +1209,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
@@ -1267,7 +1224,6 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Magician's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
           </oneof>
@@ -1335,7 +1291,6 @@
       <limit>100</limit>
       <source>SS</source>
       <page>191</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>60ac2e3a-d24a-459c-b8a4-cf648f0de447</id>
@@ -1345,7 +1300,6 @@
       <limit>6</limit>
       <source>SS</source>
       <page>191</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
@@ -1402,7 +1356,6 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
-            <quality>The Magician's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1415,7 +1368,6 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>bde8c111-b429-4283-87ca-9d3a2afc0215</id>
@@ -1425,7 +1377,6 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-      <adeptway>0</adeptway>
     </power>    
     <power>
       <id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
@@ -1435,7 +1386,6 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-      <adeptway>0</adeptway>
     </power>    
     <power>
       <id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
@@ -1476,7 +1426,6 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>35a76113-84fb-4f9d-b47d-f7fb491e6285</id>
@@ -1487,7 +1436,6 @@
       <source>SSP</source>
       <page>24</page>
       <action>Complex</action>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>57cea4cd-754b-4fcd-8711-75721b1edc15</id>
@@ -1497,7 +1445,6 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-      <adeptway>0</adeptway>
     </power>    
     <power>
       <id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
@@ -1518,7 +1465,6 @@
       <source>SSP</source>
       <page>24</page>
       <action>Simple</action>
-      <adeptway>0</adeptway>
     </power>
     <power>
       <id>300edbf6-1943-4f4e-87eb-7379ccef8ed5</id>
@@ -1571,7 +1517,6 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
-      <adeptway>0</adeptway>
       <maxlevels>3</maxlevels>
     </power>
     <power>
@@ -1582,7 +1527,6 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
-      <adeptway>0</adeptway>
       <maxlevels>6</maxlevels>
     </power>
     <power>
@@ -1603,7 +1547,6 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
-      <adeptway>0</adeptway>
       <maxlevels>3</maxlevels>
     </power>
     <!-- End Region -->
@@ -1632,7 +1575,6 @@
       <limit>1</limit>
       <source>CA</source>
       <page>153</page>
-      <adeptway>0</adeptway>
       <bonus>
         <judgeintentions>Rating</judgeintentions>
       </bonus>
@@ -1645,7 +1587,6 @@
       <limit>1</limit>
       <source>CA</source>
       <page>153</page>
-      <adeptway>0</adeptway>
       <required>
         <oneof>
           <power>Mimic</power>
@@ -1660,7 +1601,6 @@
       <limit>1</limit>
       <source>CA</source>
       <page>153</page>
-      <adeptway>0</adeptway>
     </power>
     <!-- End Region -->
   </powers>
@@ -1747,7 +1687,7 @@
       <name>Digital Celerity</name>
       <power>Nimble Fingers</power>
       <source>SG</source>
-      <page>157</page>
+      <page>158</page>
       <required>
         <allof>
           <power>Nimble Fingers</power>
@@ -1771,12 +1711,12 @@
     <enhancement>
       <id>fafc7fd4-8418-4a86-b396-6e90943d9e68</id>
       <name>Silver-Tongued Devil</name>
-      <power>Authoritative Tone</power>
+      <power>Commanding Voice</power>
       <source>SG</source>
       <page>159</page>
       <required>
         <allof>
-          <power>Authoritative Tone</power>
+          <power>Commanding Voice</power>
           <quality>The Speaker's Way</quality>
         </allof>
       </required>
