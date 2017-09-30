@@ -13922,14 +13922,8 @@
       </quality>
       <quality>
         <id>4d5c22b9-4908-493d-a6f7-4ccc3066888c</id>
-        <name>Focused Concentration (Rating 1)</name>
-        <translate>集中力 (レーティング 1)</translate>
-        <page>111</page>
-      </quality>
-      <quality>
-        <id>082d7513-1539-4e79-ac3e-91c6f2ea32ed</id>
-        <name>Focused Concentration (Rating 2)</name>
-        <translate>集中力 (レーティング 2)</translate>
+        <name>Focused Concentration</name>
+        <translate>集中力</translate>
         <page>111</page>
       </quality>
       <quality>
@@ -13940,20 +13934,8 @@
       </quality>
       <quality>
         <id>b7866fb4-3747-4caf-9240-69cbdd79ce78</id>
-        <name>High Pain Tolerance (Rating 1)</name>
-        <translate>苦痛に強い (レーティング 1)</translate>
-        <page>110</page>
-      </quality>
-      <quality>
-        <id>4c2804b5-2934-46f1-992c-87a943ce044b</id>
-        <name>High Pain Tolerance (Rating 2)</name>
-        <translate>苦痛に強い (レーティング 2)</translate>
-        <page>110</page>
-      </quality>
-      <quality>
-        <id>c1f41d1f-6345-4d4b-9041-ef93aad61948</id>
-        <name>High Pain Tolerance (Rating 3)</name>
-        <translate>苦痛に強い (レーティング 3)</translate>
+        <name>High Pain Tolerance</name>
+        <translate>苦痛に強い</translate>
         <page>110</page>
       </quality>
       <quality>
@@ -13982,26 +13964,8 @@
       </quality>
       <quality>
         <id>f80ef6fc-e844-441c-81e3-b1264b34a4e7</id>
-        <name>Magic Resistance (Rating 1)</name>
-        <translate>魔法抵抗 (レーティング 1)</translate>
-        <page>113</page>
-      </quality>
-      <quality>
-        <id>4779f545-b27d-42d9-8664-269253e2f901</id>
-        <name>Magic Resistance (Rating 2)</name>
-        <translate>魔法抵抗 (レーティング 2)</translate>
-        <page>113</page>
-      </quality>
-      <quality>
-        <id>c55ac86e-212e-4e18-a9c2-68304b6bea89</id>
-        <name>Magic Resistance (Rating 3)</name>
-        <translate>魔法抵抗 (レーティング 3)</translate>
-        <page>113</page>
-      </quality>
-      <quality>
-        <id>2f239f68-c93f-4ab9-b9a0-44386b4ea190</id>
-        <name>Magic Resistance (Rating 4)</name>
-        <translate>魔法抵抗 (レーティング 4)</translate>
+        <name>Magic Resistance</name>
+        <translate>魔法抵抗</translate>
         <page>113</page>
       </quality>
       <quality>
@@ -14084,20 +14048,8 @@
       </quality>
       <quality>
         <id>18d2a522-6460-4654-916b-a96631f11323</id>
-        <name>Will to Live (Rating 1)</name>
-        <translate>生への執着 (レーティング 1)</translate>
-        <page>111</page>
-      </quality>
-      <quality>
-        <id>5b785abd-91b7-4a94-8856-e98e71a32118</id>
-        <name>Will to Live (Rating 2)</name>
-        <translate>生への執着 (レーティング 2)</translate>
-        <page>111</page>
-      </quality>
-      <quality>
-        <id>2916b7de-7265-4e31-b872-074863c5aff3</id>
-        <name>Will to Live (Rating 3)</name>
-        <translate>生への執着 (レーティング 3)</translate>
+        <name>Will to Live</name>
+        <translate>生への執着</translate>
         <page>111</page>
       </quality>
       <quality>
@@ -14192,26 +14144,8 @@
       </quality>
       <quality>
         <id>de12b672-f60a-486d-85f6-b94a80a058da</id>
-        <name>Gremlins (Rating 1)</name>
-        <translate>グレムリン (レーティング 1)</translate>
-        <page>116</page>
-      </quality>
-      <quality>
-        <id>b71cecd5-7197-4372-bcf8-d55bf1c5d328</id>
-        <name>Gremlins (Rating 2)</name>
-        <translate>グレムリン (レーティング 2)</translate>
-        <page>116</page>
-      </quality>
-      <quality>
-        <id>1e819d6e-0ddb-441e-9025-f286fecf93e3</id>
-        <name>Gremlins (Rating 3)</name>
-        <translate>グレムリン (レーティング 3)</translate>
-        <page>116</page>
-      </quality>
-      <quality>
-        <id>564284b5-da31-4915-bc69-a893ab25b519</id>
-        <name>Gremlins (Rating 4)</name>
-        <translate>グレムリン (レーティング 4)</translate>
+        <name>Gremlins</name>
+        <translate>グレムリン</translate>
         <page>116</page>
       </quality>
       <quality>
@@ -14294,26 +14228,6 @@
         <id>84305e09-f8d5-4a82-8257-0119b8c3f926</id>
         <name>Catlike</name>
         <translate>Catlike</translate>
-      </quality>
-      <quality>
-        <id>c6939a14-58c0-4168-b936-8124fd09ffe6</id>
-        <name>Focused Concentration (Rating 3)</name>
-        <translate>Focused Concentration (Rating 3)</translate>
-      </quality>
-      <quality>
-        <id>79979e99-6776-4c93-b202-b630fabf3b30</id>
-        <name>Focused Concentration (Rating 4)</name>
-        <translate>Focused Concentration (Rating 4)</translate>
-      </quality>
-      <quality>
-        <id>0e911cb1-da5c-4117-ae20-ffbf7f607c7d</id>
-        <name>Focused Concentration (Rating 5)</name>
-        <translate>Focused Concentration (Rating 5)</translate>
-      </quality>
-      <quality>
-        <id>90ce7689-1dd8-437b-98ad-f10207380684</id>
-        <name>Focused Concentration (Rating 6)</name>
-        <translate>Focused Concentration (Rating 6)</translate>
       </quality>
       <quality>
         <id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
@@ -14632,33 +14546,13 @@
       </quality>
       <quality>
         <id>97e9b186-8924-4885-a948-3c781244a5cb</id>
-        <name>Aged (Rating 1)</name>
-        <translate>Aged (Rating 1)</translate>
-      </quality>
-      <quality>
-        <id>dd0b1ba0-6262-4eb9-9784-c4d29d6b7771</id>
-        <name>Aged (Rating 2)</name>
-        <translate>Aged (Rating 2)</translate>
-      </quality>
-      <quality>
-        <id>d93fdb8e-c8ca-4699-a610-75cad195b50d</id>
-        <name>Aged (Rating 3)</name>
-        <translate>Aged (Rating 3)</translate>
+        <name>Aged</name>
+        <translate>Aged</translate>
       </quality>
       <quality>
         <id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
-        <name>Illness (Rating 1)</name>
-        <translate>Illness (Rating 1)</translate>
-      </quality>
-      <quality>
-        <id>16c8e91c-0d65-42bb-bc85-4af17c681714</id>
-        <name>Illness (Rating 2)</name>
-        <translate>Illness (Rating 2)</translate>
-      </quality>
-      <quality>
-        <id>cea9bcde-4cbf-475e-b641-b6385d518543</id>
-        <name>Illness (Rating 3)</name>
-        <translate>Illness (Rating 3)</translate>
+        <name>Illness</name>
+        <translate>Illness</translate>
       </quality>
       <quality>
         <id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>

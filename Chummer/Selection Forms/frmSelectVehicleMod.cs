@@ -43,7 +43,6 @@ namespace Chummer
         private string _strAllowedCategories = string.Empty;
         private bool _blnAddAgain = false;
 
-        private XmlNodeList objXmlCategoryList;
         private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;

@@ -207,7 +207,7 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <selectskill requireexistingnonzerorating="true">
+        <selectskill minimumrating="1">
           <val>Rating</val>
           <applytorating>yes</applytorating>
           <skillcategories>

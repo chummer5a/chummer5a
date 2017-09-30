@@ -321,9 +321,21 @@ namespace Chummer
                 {
                     strSearch += " and not (metagenetic = 'yes')";
                 }
-                if (nudMinimumBP.Value != 0)
+                if (nudValueBP.Value != 0)
                 {
-                    strSearch += "and karma => " + nudMinimumBP.Value;
+                    strSearch += "and karma = " + nudValueBP.Value;
+                }
+                else
+                {
+                    if (nudMinimumBP.Value != 0)
+                    {
+                        strSearch += "and karma >= " + nudMinimumBP.Value;
+                    }
+
+                    if (nudMaximumBP.Value != 0)
+                    {
+                        strSearch += "and karma <= " + nudMaximumBP.Value;
+                    }
                 }
                 strSearch += "]";
 

@@ -4102,7 +4102,7 @@
       <descriptor>Mental</descriptor>
       <duration>S</duration>
       <dv>F-1</dv>
-      <range>LOS (A)</range>
+      <range>LOS</range>
       <type>M</type>
     </spell>
     <spell>

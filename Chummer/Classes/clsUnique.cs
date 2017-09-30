@@ -50,7 +50,8 @@ namespace Chummer
         Metatype = 1,
         MetatypeRemovable = 2,
         BuiltIn = 3,
-        LifeModule = 4
+        LifeModule = 4,
+        Improvement = 5
     }
 
     /// <summary>
@@ -85,10 +86,10 @@ namespace Chummer
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
         private bool _blnCanBuyWithSpellPoints = false;
-        private int _intBP;
-        private int _intLP;
+        private int _intBP = 0;
         private QualityType _objQualityType = QualityType.Positive;
         private QualitySource _objQualitySource = QualitySource.Selected;
+        private string _strSourceName = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
@@ -126,7 +127,7 @@ namespace Chummer
         /// Convert a string to a QualitySource.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public QualitySource ConvertToQualitySource(string strValue)
+        public static QualitySource ConvertToQualitySource(string strValue)
         {
             switch (strValue)
             {
@@ -138,6 +139,8 @@ namespace Chummer
                     return QualitySource.LifeModule;
                 case "Built-In":
                     return QualitySource.BuiltIn;
+                case "Improvement":
+                    return QualitySource.Improvement;
                 default:
                     return QualitySource.Selected;
             }
@@ -151,6 +154,10 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
+        public void setGUID(Guid guidExisting)
+        {
+            _guiID = guidExisting;
+        }
 
         /// <summary>
         /// Create a Quality from an XmlNode and return the TreeNodes for it.
@@ -162,15 +169,16 @@ namespace Chummer
         /// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
+        public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", string strSourceName = "")
         {
+            _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlQuality.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
             // Check for a Variable Cost.
             if (objXmlQuality["karma"] != null)
             {
-            if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
-            {
+                if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
+                {
                     int intMin;
                     int intMax = 0;
                     string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
@@ -195,13 +203,12 @@ namespace Chummer
                         frmPickNumber.ShowDialog();
                         _intBP = frmPickNumber.SelectedValue;
                     }
+                }
+                else
+                {
+                    _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+                }
             }
-            else
-            {
-                _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
-            }
-            }
-            objXmlQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             if (objXmlQuality["category"] != null)
                 _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
             _objQualitySource = objQualitySource;
@@ -314,6 +321,16 @@ namespace Chummer
                     objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
                 }
             }
+            if (objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0 && Levels == 0)
+            {
+                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
+                objImprovementManager.ForcedValue = strForceValue;
+                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["firstlevelbonus"], false, 1, DisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+            }
 
             // Metatype Qualities appear as grey text to show that they cannot be removed.
             if (objQualitySource == QualitySource.Metatype || objQualitySource == QualitySource.MetatypeRemovable)
@@ -349,6 +366,7 @@ namespace Chummer
                 objWriter.WriteElementString("mutant", _strMutant);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("sourcename", _strSourceName);
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
@@ -395,6 +413,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("mutant", ref _strMutant);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
             _nodDiscounts = objNode["costdiscount"];
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
@@ -422,14 +441,20 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, int intRating)
         {
             if (_blnPrint)
             {
+                string strRatingString = string.Empty;
+                if (intRating > 1)
+                    strRatingString = " " + intRating.ToString(GlobalOptions.CultureInfo);
+                string strSourceName = string.Empty;
+                if (!string.IsNullOrWhiteSpace(SourceName))
+                    strSourceName = " (" + SourceName + ")";
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort);
-                objWriter.WriteElementString("name_english", Name);
-                objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+                objWriter.WriteElementString("name_english", Name + strRatingString);
+                objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", _intBP.ToString());
                 string strQualityType = _objQualityType.ToString();
                 if (GlobalOptions.Instance.Language != "en-us")
@@ -518,6 +543,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Name of the Improvement that added this quality.
+        /// </summary>
+        public string SourceName
+        {
+            get
+            {
+                return LanguageManager.Instance.TranslateExtra(_strSourceName);
+            }
+            set => _strSourceName = value;
+        }
+
+        /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus
@@ -552,15 +589,7 @@ namespace Chummer
             get => CalculatedBP();
             set => _intBP = value;
         }
-
-        /// <summary>
-        /// Number of Build Points the Quality costs.
-        /// </summary>
-        public int LP
-        {
-            get => _intLP;
-            set => _intLP = value;
-        }
+        
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -577,6 +606,7 @@ namespace Chummer
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
         public string DisplayName
         {
@@ -590,7 +620,24 @@ namespace Chummer
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
                 }
+
+                int intLevels = Levels;
+                if (intLevels > 1)
+                    strReturn += " " + intLevels.ToString(GlobalOptions.CultureInfo);
+                
                 return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Returns how many instances of this quality there are in the character's quality list
+        /// TODO: Actually implement a proper rating system for qualities that plays nice with the Improvements Manager.
+        /// </summary>
+        public int Levels
+        {
+            get
+            {
+                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName);
             }
         }
 
@@ -723,40 +770,19 @@ namespace Chummer
         /// </summary>
         /// <returns></returns>
         private int CalculatedBP()
-                {
-            if (_nodDiscounts == null || !_nodDiscounts.HasChildNodes)
-                    {
-                return _intBP;
-                    }
+        {
             int intReturn = _intBP;
-            bool blnFound = false;
-            foreach (XmlNode objNode in _nodDiscounts)
-                    {
-                if (objNode.Name == "required")
-                    {
-                    if (objNode["oneof"].Cast<XmlNode>().Any(objRequiredNode => objRequiredNode.Name == "quality" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == objRequiredNode.InnerText)))
-                    {
-                        blnFound = true;
-                        break;
-                    }
-                    if (objNode["oneof"].Cast<XmlNode>().Any(objRequiredNode => objRequiredNode.Name == "power" && _objCharacter.Powers.Any(objPower => objPower.Name == objRequiredNode.InnerText)))
-                    {
-                        blnFound = true;
-                        break;
-                    }
+            if (_nodDiscounts?["value"] != null && _nodDiscounts.HasChildNodes && Backend.Shared_Methods.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
+            {
+                if (Type == QualityType.Positive)
+                {
+                    intReturn += Convert.ToInt32(_nodDiscounts["value"].InnerText);
+                }
+                else if (Type == QualityType.Negative)
+                {
+                    intReturn -= Convert.ToInt32(_nodDiscounts["value"].InnerText);
                 }
             }
-            if (blnFound)
-        {
-                if (Type == QualityType.Positive)
-            {
-                    intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
-            }
-                else if (Type == QualityType.Negative)
-            {
-                    intReturn -= Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
-            }
-        }
             return intReturn;
         }
         #endregion
@@ -1938,7 +1964,6 @@ namespace Chummer
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
                     XPathExpression xprDV;
-                    int intPos = 0;
                     string dv = string.Empty;
                     //Navigator can't do math on a single value, so inject a mathable value.
                     if (strReturn == "F")

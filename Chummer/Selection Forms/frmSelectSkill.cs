@@ -38,7 +38,7 @@ namespace Chummer
         private string _strForceSkill = string.Empty;
         private string _strSourceName = string.Empty;
         private bool _blnKnowledgeSkill = false;
-        private bool _blnRequireExistingNonzeroRating = false;
+        private int _intMinimumRating = 0;
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
@@ -141,8 +141,7 @@ namespace Chummer
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
                     string strXmlSkillName = objXmlSkill["name"].InnerText;
-                    if (_blnRequireExistingNonzeroRating &&
-                        !_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > 0))
+                    if (!_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating >= _intMinimumRating))
                     {
                         continue;
                     }
@@ -159,7 +158,9 @@ namespace Chummer
                     {
                         ExoticSkill objExoticSkill = objSkill as ExoticSkill;
                         bool blnAddSkill = true;
-                        if (!string.IsNullOrEmpty(_strForceSkill))
+                        if (objSkill.Rating < _intMinimumRating)
+                            blnAddSkill = false;
+                        else if (!string.IsNullOrEmpty(_strForceSkill))
                             blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
                         else
                         {
@@ -173,11 +174,6 @@ namespace Chummer
                                 blnAddSkill = !_strExcludeSkillGroup.Contains(objExoticSkill.SkillGroup);
                             else if (!string.IsNullOrEmpty(_strLimitToSkill))
                                 blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
-                        }
-
-                        if (_blnRequireExistingNonzeroRating && objSkill.Rating <= 0)
-                        {
-                            blnAddSkill = false;
                         }
 
                         if (blnAddSkill)
@@ -212,8 +208,7 @@ namespace Chummer
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
                         string strXmlSkillName = objXmlSkill["name"].InnerText;
-                        if (_blnRequireExistingNonzeroRating &&
-                        !_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > 0))
+                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating >= _intMinimumRating))
                         {
                             continue;
                         }
@@ -233,7 +228,7 @@ namespace Chummer
                     // Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
                     foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
-                        if (_blnRequireExistingNonzeroRating && objKnow.Rating <= 0)
+                        if (objKnow.Rating < _intMinimumRating)
                         {
                             continue;
                         }
@@ -394,13 +389,13 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If true, only show skills that have a rating higher than 0.
+        /// Only show skills with a rating higher than this
         /// </summary>
-        public bool RequiresExistingNonzeroRating
+        public int MinimumRating
         {
             set
             {
-                _blnRequireExistingNonzeroRating = value;
+                _intMinimumRating = value;
             }
         }
         #endregion
