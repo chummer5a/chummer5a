@@ -176,7 +176,8 @@ namespace Chummer
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (objXmlPower != null) _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
+                if (objXmlPower?["adeptway"] != null)
+                    _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
             LevelsEnabled = Convert.ToBoolean(objNode["levels"]?.InnerText);
@@ -696,23 +697,32 @@ namespace Chummer
                 {
                     return false;
                 }
-                XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements?.SelectNodes("required/oneof/quality");
-                if (objXmlRequiredList != null)
-                    foreach (XmlNode objNode in objXmlRequiredList)
+                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
+                {
+                    blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == "The Magician's Way");
+                }
+                if (!blnReturn)
+                {
+                    XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements?.SelectNodes("required/oneof/quality");
+                    if (objXmlRequiredList != null)
                     {
-                        if (objNode.Attributes?["extra"] != null)
+                        foreach (XmlNode objNode in objXmlRequiredList)
                         {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
-                            if (blnReturn)
-                                break;
-                        }
-                        else
-                        {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText); 
-                            if (blnReturn)
-                                break;
+                            if (objNode.Attributes?["extra"] != null)
+                            {
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
+                                if (blnReturn)
+                                    break;
+                            }
+                            else
+                            {
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText);
+                                if (blnReturn)
+                                    break;
+                            }
                         }
                     }
+                }
                 if (blnReturn == false && DiscountedAdeptWay)
                 {
                     DiscountedAdeptWay = false;

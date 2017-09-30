@@ -58,6 +58,8 @@ Application Changes:
 - Also added a numerical up-down control to quickly add or remove multiple instances of the same quality.
 - Added support for a quality to only apply certain bonuses at its first level.
 - Fixed a bug where newly added items would not cancel themselves if a quality that their bonus added could not be taken for the character.
+- Adept powers without and Adept way discount specified can no longer cause crashes.
+- Magician's Way now works via blacklist instead of whitelist: all powers that have Adept way discounts and that are not specified that Magician's Way is forbidden from getting them discounted will always be eligible for a Magician's Way discount. Fixes #1926.
 
 Data Changes:
 
@@ -108,6 +110,7 @@ Data Changes:
 - Fixed a bug where the total of Tough as Nails Physical and Tough as Nails Stun levels could exceed 4.
 - Fixed incorrect page number references for Pilot Origins and Multiprocessing qualities.
 - Fixed incorrect range entry for the Control Emotions spell.
+- Silver-Tongued Devil now properly requires Commanding Voice instead of Authoritative Tone.
 
 New Strings:
 - Label_Options_SpellShapingFocus
