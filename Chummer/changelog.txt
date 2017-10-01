@@ -60,6 +60,9 @@ Application Changes:
 - Fixed a bug where newly added items would not cancel themselves if a quality that their bonus added could not be taken for the character.
 - Adept powers without and Adept way discount specified can no longer cause crashes.
 - Magician's Way now works via blacklist instead of whitelist: all powers that have Adept way discounts and that are not specified that Magician's Way is forbidden from getting them discounted will always be eligible for a Magician's Way discount. Fixes #1926.
+- Fixed a bug where the Spells & Spirits tab would not appear for Adepts who would want to or have already learned Rituals or spells through Barehanded Adept. Fixes #1933.
+- Added support to display alternate ranges for weapons in addition to their main ranges. Fixes #1807.
+- Altered Create mode and Career mode windows to have identical dimensions and identical splits. Altered Weapon and Vehicle tabs in Create and Career mode both to largely match each other's layout and make room for alternate ranges.
 
 Data Changes:
 
@@ -111,6 +114,9 @@ Data Changes:
 - Fixed incorrect page number references for Pilot Origins and Multiprocessing qualities.
 - Fixed incorrect range entry for the Control Emotions spell.
 - Silver-Tongued Devil now properly requires Commanding Voice instead of Authoritative Tone.
+- Added alternate range displays to all shotguns that use shotgun ranges, Standard Harpoon Gun, and Aquadyne Shark-XS Harpoon Gun.
+- Added separate range category for weapons that follow Flamethrower rules for Taser ranges.
+- Corrected the range entries for the following weapon entries: Urban Tribe Tomahawk, Shuriken, Chakram, Trafalgar Gun Cane, Knockoff Gun Cane, Parashield Dart Rifle, Flametosser, Mounted Crossbow, Underbarrel Shotgun.
 
 New Strings:
 - Label_Options_SpellShapingFocus
