@@ -66,6 +66,7 @@ Application Changes:
 - Fixed a possible crash if a Resonance talent priority was defined with no free Complex Forms.
 - Fixed wonky behavior if skill value and a skill group value items were added to a talent priority. Now, skill value always takes complete precedence over skill group value.
 - Added support for talent priorities that give bonus special attribute points.
+- Fixed an issue where having multiple mugshots could cause the main mugshot to get overwritten when creating a character sheet.
 
 Data Changes:
 
