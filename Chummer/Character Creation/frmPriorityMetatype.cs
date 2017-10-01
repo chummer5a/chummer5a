@@ -520,10 +520,10 @@ namespace Chummer
                 string strMetavariantString = string.Empty;
                 if (cboMetavariant.SelectedValue != null && cboMetavariant.SelectedValue.ToString() != "None" && lstMetatypes.SelectedValue != null && cboHeritage.SelectedValue != null)
                     strMetavariantString = "/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]";
-                XmlNode objXmlMetatypeNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]" + strMetavariantString);
+                XmlNode objXmlMetatypeNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]" + strMetavariantString);
                 int intSpecialAttribPoints = 0;
                 int.TryParse(objXmlMetatypeNode["value"].InnerText.ToString(), out intSpecialAttribPoints);
-                objXmlMetatypeNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue.ToString() + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue.ToString() + "\"]");
+                objXmlMetatypeNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
                 int intTalentSpecialAttribPoints = 0;
                 if (int.TryParse(objXmlMetatypeNode?["specialattribpoints"]?.InnerText.ToString(), out intTalentSpecialAttribPoints))
                     intSpecialAttribPoints += intTalentSpecialAttribPoints;
@@ -719,7 +719,7 @@ namespace Chummer
                     string strMetavariantString = string.Empty;
                     if (cboMetavariant.SelectedValue != null && cboMetavariant.SelectedValue.ToString() != "None" && lstMetatypes.SelectedValue != null && cboHeritage.SelectedValue != null)
                         strMetavariantString = "/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]";
-                    XmlNode objXmlMetatypePriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]" + strMetavariantString);
+                    XmlNode objXmlMetatypePriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]" + strMetavariantString);
                     int intSpecialAttribPoints = 0;
                     int.TryParse(objXmlMetatypePriorityNode["value"].InnerText.ToString(), out intSpecialAttribPoints);
                     int intTalentSpecialAttribPoints = 0;
@@ -785,7 +785,7 @@ namespace Chummer
                 // Set the special attributes label.
                 int intSpecialAttribPoints = 0;
                 int.TryParse(objXmlMetavariantBP?["value"]?.InnerText.ToString(), out intSpecialAttribPoints);
-                XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue.ToString() + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue.ToString() + "\"]");
+                XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
                 int intTalentSpecialAttribPoints = 0;
                 if (int.TryParse(objXmlTalentPriorityNode?["specialattribpoints"]?.InnerText.ToString(), out intTalentSpecialAttribPoints))
                     intSpecialAttribPoints += intTalentSpecialAttribPoints;
@@ -900,7 +900,7 @@ namespace Chummer
                     // Set the special attributes label.;
                     int intSpecialAttribPoints = 0;
                     int.TryParse(objXmlMetatypePriorityNode["value"].InnerText.ToString(), out intSpecialAttribPoints);
-                    XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue.ToString() + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue.ToString() + "\"]");
+                    XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
                     int intTalentSpecialAttribPoints = 0;
                     if (int.TryParse(objXmlTalentPriorityNode?["specialattribpoints"]?.InnerText.ToString(), out intTalentSpecialAttribPoints))
                         intSpecialAttribPoints += intTalentSpecialAttribPoints;
