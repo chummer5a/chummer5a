@@ -990,6 +990,7 @@ namespace Chummer
             _blnIsDirty = false;
             UpdateWindowTitle(false);
             RefreshPasteStatus();
+            picMugshot_SizeChanged(sender, e);
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
             Timekeeper.Finish("load_frm_career");
@@ -26940,6 +26941,14 @@ namespace Chummer
             {
                 lstSpecialAttributes.Add(_objCharacter.DEP);
             }
+        }
+
+        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        {
+            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
+                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            else
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
         }
     }
 }

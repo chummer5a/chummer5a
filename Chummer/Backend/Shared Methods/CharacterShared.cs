@@ -634,6 +634,10 @@ namespace Chummer
                 objImageStream.Close();
             }
 
+            if (imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width)
+                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            else
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             picMugshot.Image = imgMugshot;
 
             return true;

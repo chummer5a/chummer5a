@@ -128,7 +128,32 @@
           display: none;
           }
           }
+          .mugshot {
+          height: auto;
+          width: auto;
+          max-width: 100%;
+          object-fit: scale-down;
+          image-rendering: optimizeQuality;
+          }
+          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+          .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
+          }
         </style>
+        <!--[if IE]
+        <style type="text/css">
+        .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
+        </style>
+        -->
 
         <style type="text/css" id="style_colored_headers">
           table.general {border-color: #6a6f29;}
@@ -459,9 +484,9 @@
   <xsl:template name="print_mugshot_and_priorities">
     <table class="stats general">
       <tr><td colspan="2"><div class="bigheader">[Mugshot]</div></td></tr>
-      <tr><td colspan="2">
+      <tr><td colspan="2" style="text-align:center; width: 100%;">
         <xsl:if test="mainmugshotbase64 != ''">
-          <img src="data:image/png;base64,{mainmugshotbase64}" />
+          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
         </xsl:if>
       </td></tr>
       <xsl:if test="prioritymetatype != ''">
@@ -1872,8 +1897,8 @@
               <td width="33%" style="text-align:center;">
                 <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
-                    <tr><td width="100%" style="text-align:center;">
-                      <img>
+                    <tr><td width="100%" style="text-align:center; width: 100%;">
+                      <img class="mugshot">
                         <xsl:attribute name="src">
                           data:image/png;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
@@ -1888,8 +1913,8 @@
                     <tr><td/></tr>
                   </xsl:if>
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
-                    <tr><td width="100%" style="text-align:center;">
-                      <img>
+                    <tr><td width="100%" style="text-align:center; width: 100%;">
+                      <img class="mugshot">
                         <xsl:attribute name="src">
                           data:image/png;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
@@ -1904,8 +1929,8 @@
                     <tr><td/></tr>
                   </xsl:if>
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
-                    <tr><td width="100%" style="text-align:center;">
-                      <img>
+                    <tr><td width="100%" style="text-align:center; width: 100%;">
+                      <img class="mugshot">
                         <xsl:attribute name="src">
                           data:image/png;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>

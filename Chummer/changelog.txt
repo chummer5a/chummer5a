@@ -67,6 +67,7 @@ Application Changes:
 - Fixed wonky behavior if skill value and a skill group value items were added to a talent priority. Now, skill value always takes complete precedence over skill group value.
 - Added support for talent priorities that give bonus special attribute points.
 - Fixed an issue where having multiple mugshots could cause the main mugshot to get overwritten when creating a character sheet.
+- Added proper support for mugshots of any arbitrary size to be properly displayed. Removed Label_MugshotDimensions and its related label because it is now redundant. Due to wonkiness with how Internet Explorer handles resizing images, it is still recommended that you save to HTML first and then print your sheet from within a browser like Google Chrome or Mozilla Firefox. Also, larger mugshots considerably increase the size of savefiles, so be reasonable.
 
 Data Changes:
 
@@ -148,6 +149,9 @@ New Strings:
 Changes Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf
+
+Removed Strings:
+- Label_MugshotDimensions
 
 Build 194
 

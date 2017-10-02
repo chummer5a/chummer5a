@@ -4598,10 +4598,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Mugshot:</text>
     </string>
     <string>
-      <key>Label_MugshotDimensions</key>
-      <text>210px X 310px</text>
-    </string>
-    <string>
       <key>Checkbox_Created</key>
       <text>Mark character as Created</text>
     </string>

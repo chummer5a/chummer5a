@@ -55,54 +55,79 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <style type="text/css">
           * {
-            font-family: segoe, tahoma, 'trebuchet ms', arial;
-            font-size: 8pt;
-            margin: 0;
-            text-align: left;
-            vertical-align: top;
+          font-family: segoe, tahoma, 'trebuchet ms', arial;
+          font-size: 8pt;
+          margin: 0;
+          text-align: left;
+          vertical-align: top;
           }
           html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
+          height: 100%;
+          margin: 0px;  /* this affects the margin on the html before sending to printer */
           }
           .tablestyle {
-            border-collapse: collapse;
-            border-color: #1c4a2d;
-            border-style: solid;
-            border-width: 0.5mm;
-            cellpadding: 2;
-            cellspacing: 0;
-            width: 100%;
+          border-collapse: collapse;
+          border-color: #1c4a2d;
+          border-style: solid;
+          border-width: 0.5mm;
+          cellpadding: 2;
+          cellspacing: 0;
+          width: 100%;
           }
           .attributecell p {
-            padding: 2px;
-            margin: 4px;
-            border: solid 1px #1c4a2d;
-            text-transform: uppercase;
+          padding: 2px;
+          margin: 4px;
+          border: solid 1px #1c4a2d;
+          text-transform: uppercase;
           }
           .indent {
-            padding-left: 2mm;
+          padding-left: 2mm;
           }
           .notesrow {
-            text-align: justify;
+          text-align: justify;
           }
           .notesrow2 {
-            padding-left: 2mm;
-            padding-right: 2mm;
-            text-align: justify;
+          padding-left: 2mm;
+          padding-right: 2mm;
+          text-align: justify;
           }
           th {
-            text-align: center;
-            text-transform: uppercase;
+          text-align: center;
+          text-transform: uppercase;
           }
           .title {
-            font-weight: bold;
-            text-transform: uppercase;
+          font-weight: bold;
+          text-transform: uppercase;
           }
           .upper {
-            text-transform: uppercase;
+          text-transform: uppercase;
+          }
+          .mugshot {
+          height: auto;
+          width: auto;
+          max-width: 100%;
+          object-fit: scale-down;
+          image-rendering: optimizeQuality;
+          }
+          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+          .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
           }
         </style>
+        <!--[if IE]
+        <style type="text/css">
+        .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
+        </style>
+        -->
         <style media="print">
            @page {
             size: auto;
@@ -2470,8 +2495,8 @@
         <td width="33%" style="text-align:center;">
           <table class="tablestyle" style="border-width: 0; empty-cells:show;">
             <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
-              <tr><td style="text-align:center;">
-                <img>
+              <tr><td style="text-align:center; width: 100%;">
+                <img class="mugshot">
                   <xsl:attribute name="src">
                     data:image/png;base64,<xsl:value-of select='stringbase64' />
                   </xsl:attribute>
@@ -2486,8 +2511,8 @@
               <tr><td/></tr>
             </xsl:if>
             <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
-              <tr><td style="text-align:center;">
-                <img>
+              <tr><td style="text-align:center; width: 100%;">
+                <img class="mugshot">
                   <xsl:attribute name="src">
                     data:image/png;base64,<xsl:value-of select='stringbase64' />
                   </xsl:attribute>
@@ -2502,8 +2527,8 @@
               <tr><td/></tr>
             </xsl:if>
             <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
-              <tr><td style="text-align:center;">
-                <img>
+              <tr><td style="text-align:center; width: 100%;">
+                <img class="mugshot">
                   <xsl:attribute name="src">
                     data:image/png;base64,<xsl:value-of select='stringbase64' />
                   </xsl:attribute>

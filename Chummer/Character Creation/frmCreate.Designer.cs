@@ -750,7 +750,6 @@ namespace Chummer
             this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.nudMugshotIndex = new System.Windows.Forms.NumericUpDown();
-            this.lblMugshotDimensions = new System.Windows.Forms.Label();
             this.btnCreateBackstory = new System.Windows.Forms.Button();
             this.lblPublicAwareTotal = new System.Windows.Forms.Label();
             this.lblNotorietyTotal = new System.Windows.Forms.Label();
@@ -1199,7 +1198,7 @@ namespace Chummer
             // lblNotoriety
             // 
             this.lblNotoriety.AutoSize = true;
-            this.lblNotoriety.Location = new System.Drawing.Point(654, 116);
+            this.lblNotoriety.Location = new System.Drawing.Point(654, 119);
             this.lblNotoriety.Name = "lblNotoriety";
             this.lblNotoriety.Size = new System.Drawing.Size(52, 13);
             this.lblNotoriety.TabIndex = 84;
@@ -1212,7 +1211,7 @@ namespace Chummer
             // lblStreetCred
             // 
             this.lblStreetCred.AutoSize = true;
-            this.lblStreetCred.Location = new System.Drawing.Point(654, 90);
+            this.lblStreetCred.Location = new System.Drawing.Point(654, 97);
             this.lblStreetCred.Name = "lblStreetCred";
             this.lblStreetCred.Size = new System.Drawing.Size(63, 13);
             this.lblStreetCred.TabIndex = 82;
@@ -8615,7 +8614,6 @@ namespace Chummer
             this.tabCharacterInfo.Controls.Add(this.chkIsMainMugshot);
             this.tabCharacterInfo.Controls.Add(this.lblNumMugshots);
             this.tabCharacterInfo.Controls.Add(this.nudMugshotIndex);
-            this.tabCharacterInfo.Controls.Add(this.lblMugshotDimensions);
             this.tabCharacterInfo.Controls.Add(this.btnCreateBackstory);
             this.tabCharacterInfo.Controls.Add(this.lblPublicAwareTotal);
             this.tabCharacterInfo.Controls.Add(this.lblNotorietyTotal);
@@ -8665,7 +8663,7 @@ namespace Chummer
             // 
             this.cboPrimaryArm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPrimaryArm.FormattingEnabled = true;
-            this.cboPrimaryArm.Location = new System.Drawing.Point(730, 61);
+            this.cboPrimaryArm.Location = new System.Drawing.Point(731, 66);
             this.cboPrimaryArm.Name = "cboPrimaryArm";
             this.cboPrimaryArm.Size = new System.Drawing.Size(100, 21);
             this.cboPrimaryArm.TabIndex = 93;
@@ -8674,7 +8672,7 @@ namespace Chummer
             // lblHandedness
             // 
             this.lblHandedness.AutoSize = true;
-            this.lblHandedness.Location = new System.Drawing.Point(654, 64);
+            this.lblHandedness.Location = new System.Drawing.Point(654, 69);
             this.lblHandedness.Name = "lblHandedness";
             this.lblHandedness.Size = new System.Drawing.Size(70, 13);
             this.lblHandedness.TabIndex = 92;
@@ -8684,7 +8682,7 @@ namespace Chummer
             // chkIsMainMugshot
             // 
             this.chkIsMainMugshot.AutoSize = true;
-            this.chkIsMainMugshot.Location = new System.Drawing.Point(637, 224);
+            this.chkIsMainMugshot.Location = new System.Drawing.Point(644, 237);
             this.chkIsMainMugshot.Name = "chkIsMainMugshot";
             this.chkIsMainMugshot.Size = new System.Drawing.Size(104, 17);
             this.chkIsMainMugshot.TabIndex = 95;
@@ -8695,7 +8693,7 @@ namespace Chummer
             // lblNumMugshots
             // 
             this.lblNumMugshots.AutoSize = true;
-            this.lblNumMugshots.Location = new System.Drawing.Point(758, 169);
+            this.lblNumMugshots.Location = new System.Drawing.Point(762, 185);
             this.lblNumMugshots.Name = "lblNumMugshots";
             this.lblNumMugshots.Size = new System.Drawing.Size(21, 13);
             this.lblNumMugshots.TabIndex = 94;
@@ -8704,25 +8702,15 @@ namespace Chummer
             // 
             // nudMugshotIndex
             // 
-            this.nudMugshotIndex.Location = new System.Drawing.Point(715, 166);
+            this.nudMugshotIndex.Location = new System.Drawing.Point(719, 182);
             this.nudMugshotIndex.Name = "nudMugshotIndex";
             this.nudMugshotIndex.Size = new System.Drawing.Size(42, 20);
             this.nudMugshotIndex.TabIndex = 93;
             this.nudMugshotIndex.ValueChanged += new System.EventHandler(this.nudMugshotIndex_ValueChanged);
             // 
-            // lblMugshotDimensions
-            // 
-            this.lblMugshotDimensions.AutoSize = true;
-            this.lblMugshotDimensions.Location = new System.Drawing.Point(764, 200);
-            this.lblMugshotDimensions.Name = "lblMugshotDimensions";
-            this.lblMugshotDimensions.Size = new System.Drawing.Size(78, 13);
-            this.lblMugshotDimensions.TabIndex = 92;
-            this.lblMugshotDimensions.Tag = "Label_MugshotDimensions";
-            this.lblMugshotDimensions.Text = "210px X 310px";
-            // 
             // btnCreateBackstory
             // 
-            this.btnCreateBackstory.Location = new System.Drawing.Point(632, 128);
+            this.btnCreateBackstory.Location = new System.Drawing.Point(654, 157);
             this.btnCreateBackstory.Name = "btnCreateBackstory";
             this.btnCreateBackstory.Size = new System.Drawing.Size(97, 23);
             this.btnCreateBackstory.TabIndex = 91;
@@ -8734,7 +8722,7 @@ namespace Chummer
             // lblPublicAwareTotal
             // 
             this.lblPublicAwareTotal.AutoSize = true;
-            this.lblPublicAwareTotal.Location = new System.Drawing.Point(784, 143);
+            this.lblPublicAwareTotal.Location = new System.Drawing.Point(779, 142);
             this.lblPublicAwareTotal.Name = "lblPublicAwareTotal";
             this.lblPublicAwareTotal.Size = new System.Drawing.Size(19, 13);
             this.lblPublicAwareTotal.TabIndex = 90;
@@ -8744,7 +8732,7 @@ namespace Chummer
             // lblNotorietyTotal
             // 
             this.lblNotorietyTotal.AutoSize = true;
-            this.lblNotorietyTotal.Location = new System.Drawing.Point(784, 116);
+            this.lblNotorietyTotal.Location = new System.Drawing.Point(779, 119);
             this.lblNotorietyTotal.Name = "lblNotorietyTotal";
             this.lblNotorietyTotal.Size = new System.Drawing.Size(19, 13);
             this.lblNotorietyTotal.TabIndex = 89;
@@ -8754,7 +8742,7 @@ namespace Chummer
             // lblStreetCredTotal
             // 
             this.lblStreetCredTotal.AutoSize = true;
-            this.lblStreetCredTotal.Location = new System.Drawing.Point(784, 90);
+            this.lblStreetCredTotal.Location = new System.Drawing.Point(779, 97);
             this.lblStreetCredTotal.Name = "lblStreetCredTotal";
             this.lblStreetCredTotal.Size = new System.Drawing.Size(19, 13);
             this.lblStreetCredTotal.TabIndex = 88;
@@ -8820,7 +8808,7 @@ namespace Chummer
             // 
             // cmdDeleteMugshot
             // 
-            this.cmdDeleteMugshot.Location = new System.Drawing.Point(701, 195);
+            this.cmdDeleteMugshot.Location = new System.Drawing.Point(708, 208);
             this.cmdDeleteMugshot.Name = "cmdDeleteMugshot";
             this.cmdDeleteMugshot.Size = new System.Drawing.Size(58, 23);
             this.cmdDeleteMugshot.TabIndex = 23;
@@ -8831,7 +8819,7 @@ namespace Chummer
             // 
             // cmdAddMugshot
             // 
-            this.cmdAddMugshot.Location = new System.Drawing.Point(637, 195);
+            this.cmdAddMugshot.Location = new System.Drawing.Point(644, 208);
             this.cmdAddMugshot.Name = "cmdAddMugshot";
             this.cmdAddMugshot.Size = new System.Drawing.Size(58, 23);
             this.cmdAddMugshot.TabIndex = 22;
@@ -8843,7 +8831,7 @@ namespace Chummer
             // lblMugshot
             // 
             this.lblMugshot.AutoSize = true;
-            this.lblMugshot.Location = new System.Drawing.Point(634, 168);
+            this.lblMugshot.Location = new System.Drawing.Point(642, 184);
             this.lblMugshot.Name = "lblMugshot";
             this.lblMugshot.Size = new System.Drawing.Size(51, 13);
             this.lblMugshot.TabIndex = 21;
@@ -8970,7 +8958,7 @@ namespace Chummer
             // 
             // txtHair
             // 
-            this.txtHair.Location = new System.Drawing.Point(543, 8);
+            this.txtHair.Location = new System.Drawing.Point(543, 9);
             this.txtHair.Name = "txtHair";
             this.txtHair.Size = new System.Drawing.Size(100, 20);
             this.txtHair.TabIndex = 7;
@@ -9042,11 +9030,18 @@ namespace Chummer
             // 
             // picMugshot
             // 
-            this.picMugshot.Location = new System.Drawing.Point(628, 247);
+            this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.picMugshot.Location = new System.Drawing.Point(641, 260);
+            this.picMugshot.Margin = new System.Windows.Forms.Padding(13);
+            this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
-            this.picMugshot.Size = new System.Drawing.Size(210, 310);
+            this.picMugshot.Size = new System.Drawing.Size(210, 340);
+            this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 20;
             this.picMugshot.TabStop = false;
+            this.picMugshot.SizeChanged += new System.EventHandler(this.picMugshot_SizeChanged);
             // 
             // tabImprovements
             // 
@@ -10904,7 +10899,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkIsMainMugshot;
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
-        private System.Windows.Forms.Label lblMugshotDimensions;
         private System.Windows.Forms.Label lblTraditionSource;
         private System.Windows.Forms.Label lblTraditionSourceLabel;
         private PowersTabUserControl tabPowerUc;
