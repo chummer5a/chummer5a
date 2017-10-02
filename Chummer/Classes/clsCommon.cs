@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -646,11 +646,11 @@ namespace Chummer
         /// <param name="objGear">Gear to delete.</param>
         /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public void DeleteGear(Gear objGear, TreeView treWeapons, ImprovementManager objImprovementManager)
+        public void DeleteGear(Gear objGear, TreeView treWeapons)
         {
             // Remove any children the Gear may have.
             foreach (Gear objChild in objGear.Children)
-                DeleteGear(objChild, treWeapons, objImprovementManager);
+                DeleteGear(objChild, treWeapons);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (objGear.WeaponID != Guid.Empty.ToString())
@@ -682,7 +682,7 @@ namespace Chummer
                     _objCharacter.Weapons.Remove(objRemoveWeapon);
             }
 
-            objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
 
             // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
             if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
@@ -712,7 +712,7 @@ namespace Chummer
                 {
                     if (objStack.GearId == objGear.InternalId)
                     {
-                        objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
                         _objCharacter.StackedFoci.Remove(objStack);
                         break;
                     }
@@ -770,7 +770,7 @@ namespace Chummer
         /// <param name="treArmor"></param>
         /// <param name="treWeapons"></param>
         /// <param name="_objImprovementManager"></param>
-        public void DeleteArmor(TreeView treArmor, TreeView treWeapons, ImprovementManager _objImprovementManager)
+        public void DeleteArmor(TreeView treArmor, TreeView treWeapons)
         {
             if (!ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmor")))
                 return;
@@ -802,13 +802,13 @@ namespace Chummer
                         }
                     }
 
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                 }
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Armor, objArmor.InternalId);
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
 
                 // Remove any Improvements created by the Armor's Gear.
                 foreach (Gear objGear in objArmor.Gear)
-                    DeleteGear(objGear, treWeapons, _objImprovementManager);
+                    DeleteGear(objGear, treWeapons);
 
                 List<Weapon> lstRemoveWeapons = new List<Weapon>();
                 // Remove the Weapon from the Character.
@@ -864,7 +864,7 @@ namespace Chummer
                     }
 
                     // Remove any Improvements created by the ArmorMod.
-                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                     objMod.Parent.ArmorMods.Remove(objMod);
                 }
                 else
@@ -874,7 +874,7 @@ namespace Chummer
                         out objSelectedArmor);
                     if (objGear != null)
                     {
-                        DeleteGear(objGear, treWeapons, _objImprovementManager);
+                        DeleteGear(objGear, treWeapons);
                         objSelectedArmor.Gear.Remove(objGear);
                     }
                 }
@@ -886,7 +886,7 @@ namespace Chummer
                 if (objGear != null)
                 {
                     objGear.Parent.Children.Remove(objGear);
-                    DeleteGear(objGear, treWeapons, _objImprovementManager);
+                    DeleteGear(objGear, treWeapons);
                     objSelectedArmor.Gear.Remove(objGear);
                 }
             }

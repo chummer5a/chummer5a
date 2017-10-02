@@ -52,7 +52,6 @@ namespace Chummer
         private XmlNode oldSkillsBackup;
         private XmlNode oldSKillGroupBackup;
 
-        private readonly ImprovementManager _objImprovementManager;
         private readonly CharacterOptions _objOptions;
 
         private string _strFileName = string.Empty;
@@ -327,7 +326,6 @@ namespace Chummer
             ESS._objCharacter = this;
             DEP._objCharacter = this;
 
-            _objImprovementManager = new ImprovementManager(this);
             _objOptions = new CharacterOptions(this);
             SkillsSection = new SkillsSection(this);
             SkillsSection.Reset();
@@ -1855,7 +1853,7 @@ namespace Chummer
                 {
                     XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
                     XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[name = \"" + mentorQuality.Extra + "\"]");
-                    _objImprovementManager.CreateImprovement("", Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
+                    ImprovementManager.CreateImprovement(this, "", Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
                         Improvement.ImprovementType.MentorSpirit, mentorDoc["id"].InnerText);
                 }
             }
@@ -2160,7 +2158,7 @@ namespace Chummer
                 XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
+                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
                 objWriter.WriteStartElement("drainattribute");
@@ -2232,7 +2230,7 @@ namespace Chummer
                 XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Fading Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
+                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
             }
@@ -2283,7 +2281,7 @@ namespace Chummer
             objWriter.WriteElementString("init", Initiative);
             objWriter.WriteElementString("initdice", InitiativeDice.ToString());
             objWriter.WriteElementString("initvalue", InitiativeValue.ToString());
-            objWriter.WriteElementString("initbonus", Math.Max(_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative), 0).ToString());
+            objWriter.WriteElementString("initbonus", Math.Max(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative), 0).ToString());
 
             // Astral Initiative.
             if (MAGEnabled)
@@ -4467,6 +4465,7 @@ namespace Chummer
             {
                 bool blnOldValue = _blnRESEnabled;
                 _blnRESEnabled = value;
+                ImprovementManager.ClearCachedValue(Improvement.ImprovementType.MatrixInitiativeDice);
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                     if (blnOldValue != value)
@@ -4595,8 +4594,8 @@ namespace Chummer
                                 decBioware += objCyberware.CalculatedESS();
                         }
                     }
-                decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
-                decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
+                decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty));
+                decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
 
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
@@ -4652,7 +4651,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToDecimal(ESS.MetatypeMaximum + _objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
+                return Convert.ToDecimal(ESS.MetatypeMaximum + ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -4664,7 +4663,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to RES and DEP.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
 
@@ -4676,7 +4675,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum, but taking into account essence modifiers that only affect MAG. Round the remaining amount up to get the total penalty to MAG.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
             }
         }
 
@@ -4702,7 +4701,7 @@ namespace Chummer
         {
             get
             {
-                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDiceAdd));
+                int intExtraIP = 1 + Convert.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd));
 
                 return Math.Min(intExtraIP, 5);
             }
@@ -4713,7 +4712,7 @@ namespace Chummer
             get
             {
                 int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifiers;
-                intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative);
+                intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative);
                 if (intINI < 0)
                     intINI = 0;
                 return intINI;
@@ -4810,12 +4809,12 @@ namespace Chummer
                 int intReturn;
                 // A.I.s always have 4 Matrix Initiative Dice.
                 if (_strMetatype == "A.I.")
-                    intReturn = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice);
+                    intReturn = 4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice);
                 else
                     intReturn = InitiativeDice;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
-                intReturn += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDiceAdd);
+                intReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd);
 
                 return Math.Min(intReturn, 5);
             }
@@ -4851,7 +4850,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeValue;
                 }
-                return INT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+                return INT.TotalValue + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
             }
         }
 
@@ -4866,7 +4865,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeDice;
                 }
-                return Math.Min(3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice),5);
+                return Math.Min(3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice),5);
             }
         }
 #endregion
@@ -4900,7 +4899,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeValue;
             }
-                return INT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+                return INT.TotalValue + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
             }
         }
 
@@ -4915,7 +4914,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeDice;
             }
-                return Math.Min(4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice), 5);
+                return Math.Min(4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice), 5);
             }
         }
 #endregion
@@ -4929,7 +4928,7 @@ namespace Chummer
         {
             get
             {
-                return _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellResistance);
+                return ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance);
             }
         }
 #endregion
@@ -4942,7 +4941,7 @@ namespace Chummer
         {
             get
             {
-                return WIL.TotalValue + CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Composure);
+                return WIL.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
             }
         }
 
@@ -4953,7 +4952,7 @@ namespace Chummer
         {
             get
             {
-                return INT.TotalValue + CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions);
+                return INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions);
             }
         }
 
@@ -4964,7 +4963,7 @@ namespace Chummer
         {
             get
             {
-                return STR.TotalValue + BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry);
+                return STR.TotalValue + BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
             }
         }
 
@@ -4975,7 +4974,7 @@ namespace Chummer
         {
             get
             {
-                return LOG.TotalValue + WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory);
+                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
             }
         }
 #endregion
@@ -5034,7 +5033,7 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = _objImprovementManager.ValueOf(Improvement.ImprovementType.Notoriety);
+                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);
 
                 foreach (Contact objContact in _lstContacts)
                 {
@@ -5107,10 +5106,7 @@ namespace Chummer
                     intReturn = (TotalStreetCred + TotalNotoriety) / 3;
                 }
 
-                ImprovementManager manager = new ImprovementManager(this);
-
-
-                return intReturn + manager.ValueOf(Improvement.ImprovementType.PublicAwareness);
+                return intReturn + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PublicAwareness);
             }
         }
 
@@ -5559,7 +5555,7 @@ namespace Chummer
         {
             get
             {
-                return ArmorRating + _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
+                return ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
             }
         }
 
@@ -5570,7 +5566,7 @@ namespace Chummer
         {
             get
             {
-                return _objImprovementManager.ValueOf(Improvement.ImprovementType.Dodge);
+                return ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
             }
         }
 
@@ -5642,7 +5638,7 @@ namespace Chummer
                     intCMPhysical += (BOD.TotalValue + 1) / 2;
                 }
                 // Include Improvements in the Condition Monitor values.
-                intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
+                intCMPhysical += ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
                 return intCMPhysical;
             }
         }
@@ -5660,7 +5656,7 @@ namespace Chummer
                 {
                     intCMStun = 8 + (WIL.TotalValue + 1) / 2;
                 // Include Improvements in the Condition Monitor values.
-                intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
+                intCMStun += ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
                 }
                 return intCMStun;
             }
@@ -5673,7 +5669,7 @@ namespace Chummer
         {
             get
             {
-                int intCMThreshold = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThreshold);
+                int intCMThreshold = 3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThreshold);
                 return intCMThreshold;
             }
         }
@@ -5685,7 +5681,7 @@ namespace Chummer
         {
             get
             {
-                int intCMThresholdOffset = _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset);
+                int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
                 return intCMThresholdOffset;
             }
         }
@@ -5702,7 +5698,7 @@ namespace Chummer
                 if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
                 {
                 // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
-                    intCMOverflow = BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
+                    intCMOverflow = BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMOverflow) + 1;
                 }
                 return intCMOverflow;
             }
@@ -5854,7 +5850,7 @@ namespace Chummer
         {
             get
             {
-                decimal decImprovement = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.InvariantCultureInfo);
+                decimal decImprovement = Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.InvariantCultureInfo);
                 if (_objBuildMethod == CharacterBuildMethod.Karma)
                     decImprovement *= 2.0m;
 
@@ -5907,7 +5903,7 @@ namespace Chummer
                 {
                     intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
                 }
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
+                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
                 return Convert.ToString(intLimit);
             }
         }
@@ -5941,7 +5937,7 @@ namespace Chummer
                         }
                     }
                 }
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
+                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
                 return intLimit;
             }
         }
@@ -5969,7 +5965,7 @@ namespace Chummer
                 {
                     intLimit = (CHA.TotalValue * 2 + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
                 }
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.SocialLimit);
+                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit);
                 return intLimit;
             }
         }
@@ -6184,19 +6180,19 @@ namespace Chummer
         private string CalculatedMovement(Improvement.ImprovementType objImprovementType, string strMovementType, bool blnUseCyberlegs = false)
         {
             string strReturn;
-                int intMultiply = 1;
-                // If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
-                if (strMovementType == "Fly" && _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) < 0)
-                {
-                    intMultiply = _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) * -1;
-                }
-                double dblPercent = _objImprovementManager.ValueOf(objImprovementType) / 100.0;
+            int intMultiply = 1;
+            // If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
+            if (strMovementType == "Fly" && ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) < 0)
+            {
+                intMultiply = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) * -1;
+            }
+            double dblPercent = ImprovementManager.ValueOf(this, objImprovementType) / 100.0;
 
-                int intRun = 0;
-                int intWalk = 0;
+            int intRun = 0;
+            int intWalk = 0;
             int intSprint = SprintingRate(strMovementType) * intMultiply;
-            int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
-            int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+            int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
+            int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
 
             intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
             intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
@@ -7715,11 +7711,6 @@ namespace Chummer
 
         public SkillsSection SkillsSection { get; }
 
-        public ImprovementManager ObjImprovementManager
-        {
-            get { return _objImprovementManager; }
-        }
-
 
         public int RedlinerBonus
         {
@@ -7763,8 +7754,8 @@ namespace Chummer
         }
 
         //I also think this prevents GC. But there is no good way to do it...
-        internal event Action<List<Improvement>, ImprovementManager> SkillImprovementEvent;
-        internal event Action<List<Improvement>, ImprovementManager> AttributeImprovementEvent;
+        internal event Action<List<Improvement>> SkillImprovementEvent;
+        internal event Action<List<Improvement>> AttributeImprovementEvent;
 
         //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down
         private static readonly Improvement.ImprovementType[] skillRelated = {
@@ -7798,15 +7789,15 @@ namespace Chummer
         //Ugly, ugly done, but we cannot get events out of it today
         // FUTURE REFACTOR HERE
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        internal void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
+        internal void ImprovementHook(List<Improvement> _lstTransaction)
         {
             if (_lstTransaction.Any(x => skillRelated.Any(y => y == x.ImproveType)))
             {
-                SkillImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+                SkillImprovementEvent?.Invoke(_lstTransaction);
             }
             if (_lstTransaction.Any(x => attribRelated.Any(y => y == x.ImproveType)))
             {
-                AttributeImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+                AttributeImprovementEvent?.Invoke(_lstTransaction);
             }
         }
 

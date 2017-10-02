@@ -158,12 +158,11 @@ namespace Chummer
             //Improvement manager defines the functions we need to manipulate improvements
             //When the locals (someday) gets moved to this class, this can be removed and use
             //the local
-            Lazy<ImprovementManager> manager = new Lazy<ImprovementManager>(() => new ImprovementManager(_objCharacter));
 
             // Remove which qualites have been removed or which values have changed
             foreach (Improvement improvement in lstSeekerImprovements)
             {
-                manager.Value.RemoveImprovements(improvement.ImproveSource, improvement.SourceName);
+                ImprovementManager.RemoveImprovements(_objCharacter, improvement.ImproveSource, improvement.SourceName);
             }
 
             // Add new improvements or old improvements with new values
@@ -171,21 +170,18 @@ namespace Chummer
             {
                 if (attribute == "BOX")
                 {
-                    manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
+                    ImprovementManager.CreateImprovement(_objCharacter, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.PhysicalCM,
                         Guid.NewGuid().ToString(), count*-3);
                 }
                 else
                 {
-                    manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
+                    ImprovementManager.CreateImprovement(_objCharacter, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.Attribute,
                         Guid.NewGuid().ToString(), count, 1, 0, 0, count);
                 }
             }
-            if (manager.IsValueCreated)
-            {
-                manager.Value.Commit(); //REFACTOR! WHEN MOVING MANAGER, change this to bool
-            }
+            ImprovementManager.Commit(_objCharacter);
         }
 
         /// <summary>
@@ -195,8 +191,7 @@ namespace Chummer
         /// <param name="lblStun"></param>
         /// <param name="tipTooltip"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip,
-            ImprovementManager _objImprovementManager)
+        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip)
         {
             // Condition Monitor.
             int intBOD = _objCharacter.BOD.TotalValue;
@@ -208,14 +203,14 @@ namespace Chummer
             lblPhysical.Text = intCMPhysical.ToString();
             lblStun.Text = intCMStun.ToString();
             string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
-            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
+            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
                 strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) + ")";
+                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) + ")";
             tipTooltip.SetToolTip(lblPhysical, strCM);
             strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
-            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
+            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
                 strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) + ")";
+                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) + ")";
             tipTooltip.SetToolTip(lblStun, strCM);
         }
 
@@ -226,8 +221,7 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         /// <param name="objImprovementManager"></param>
         /// <param name="lblCMArmor"></param>
-        protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, ImprovementManager objImprovementManager,
-            Label lblCMArmor = null)
+        protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, Label lblCMArmor = null)
         {
             // Armor Ratings.
             lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
@@ -243,13 +237,13 @@ namespace Chummer
             }
 
             // Remove any Improvements from Armor Encumbrance.
-            objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
             // Create the Armor Encumbrance Improvements.
             if (_objCharacter.ArmorEncumbrance < 0)
             {
-                objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+                ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-                objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+                ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
             }
         }
@@ -536,7 +530,7 @@ namespace Chummer
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
         /// <param name="treQualities"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities, ImprovementManager _objImprovementManager)
+        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities)
         {
             foreach (XmlNode objNode in objNodeList)
             {
@@ -545,7 +539,7 @@ namespace Chummer
                     if (objQuality.Name == objNode.InnerText)
                     {
                         _objCharacter.Qualities.Remove(objQuality);
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
                         if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.Name == objQuality.Name && objExistingQuality.Extra == objQuality.Extra))
                         {
                             switch (objQuality.Type)
@@ -675,7 +669,7 @@ namespace Chummer
         /// <param name="attributeText"></param>
         /// <param name="valueText"></param>
         /// <param name="tooltip"></param>
-        public void CalculateTraditionDrain(string strDrain, ImprovementManager objImprovementManager, Improvement.ImprovementType drain, Label attributeText, Label valueText, ToolTip tooltip)
+        public void CalculateTraditionDrain(string strDrain, Improvement.ImprovementType drain, Label attributeText, Label valueText, ToolTip tooltip)
         {
             if (string.IsNullOrWhiteSpace(strDrain))
                 return;
@@ -694,7 +688,7 @@ namespace Chummer
             XPathExpression xprFading = nav.Compile(strDrain);
             object o = nav.Evaluate(xprFading);
             if (o != null) intDrain = Convert.ToInt32(o.ToString());
-            intDrain += objImprovementManager.ValueOf(drain);
+            intDrain += ImprovementManager.ValueOf(_objCharacter, drain);
             attributeText.Text = strDisplayDrain;
             valueText.Text = intDrain.ToString();
             strTip = Character.AttributeStrings.Select(strAttribute => _objCharacter.GetAttribute(strAttribute)).Aggregate(strTip, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")"));

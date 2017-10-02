@@ -899,9 +899,7 @@ namespace Chummer.Skills
             }
 
 
-            ImprovementManager manager = new ImprovementManager(CharacterObject);
-
-            int skillWireRating = manager.ValueOf(Improvement.ImprovementType.Skillwire);
+            int skillWireRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire);
             if ((skillWireRating > 0 || IsKnowledgeSkill) && CharacterObject.SkillsoftAccess)
             {
                 Func<Gear, int> recusivestuff = null;
@@ -1019,7 +1017,7 @@ namespace Chummer.Skills
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+        private void OnImprovementEvent(List<Improvement> improvements)
         {
             _cachedFreeBase = int.MinValue;
             _cachedFreeKarma = int.MinValue;

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -375,9 +375,8 @@ namespace Chummer
             XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
 
             // Pass it to the Improvement Manager so that it can be added to the character.
-            ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
             string strGuid = Guid.NewGuid().ToString();
-            objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
+            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
 
             // If an Improvement was passed in, remove it from the character.
             string strNotes = string.Empty;
@@ -387,7 +386,7 @@ namespace Chummer
                 // Copy the notes over to the new item.
                 strNotes = _objEditImprovement.Notes;
                 intOrder = _objEditImprovement.SortOrder;
-                objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Custom, _objEditImprovement.SourceName);
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Custom, _objEditImprovement.SourceName);
             }
 
             // Find the newly-created Improvement and attach its custom name.

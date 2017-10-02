@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
@@ -701,11 +701,10 @@ namespace Chummer.Backend.Equipment
                     intReturn = Cost;
                     return intReturn;
                 }
-
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                decimal decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
+                
+                decimal decMultiplier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
                 if (_objType == LifestyleType.Standard)
-                    decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
+                    decMultiplier += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
                 decimal decExtraMultiplierBaseOnly = 0;
 
                 decimal decBaseCost = Cost;

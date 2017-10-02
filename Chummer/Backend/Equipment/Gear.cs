@@ -271,22 +271,16 @@ namespace Chummer.Backend.Equipment
 
                 if (blnApply)
                 {
-                    ImprovementManager objImprovementManager;
-                    if (blnAddImprovements)
-                        objImprovementManager = new ImprovementManager(objCharacter);
-                    else
-                        objImprovementManager = new ImprovementManager(null);
-
-                    objImprovementManager.ForcedValue = strForceValue;
-                    if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, strSource, objXmlGear["bonus"], false, intRating, DisplayNameShort))
+                    ImprovementManager.ForcedValue = strForceValue;
+                    if (!ImprovementManager.CreateImprovements(blnAddImprovements ? objCharacter : null, Improvement.ImprovementSource.Gear, strSource, objXmlGear["bonus"], false, intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
-                    if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                     {
-                        _strExtra = objImprovementManager.SelectedValue;
-                        objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                        _strExtra = ImprovementManager.SelectedValue;
+                        objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                     }
                 }
             }
@@ -735,7 +729,7 @@ namespace Chummer.Backend.Equipment
                         if (gear != null)
                         {
                             Equipped = false;
-                            _objCharacter.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, InternalId);
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
                             Bonus = gear["bonus"];
                             WirelessBonus = gear["wirelessbonus"];
                         }

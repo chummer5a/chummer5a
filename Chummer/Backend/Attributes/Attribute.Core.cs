@@ -232,10 +232,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return
-                    Math.Min(
-                        _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.Attributelevel, false,
-                            Abbrev), MetatypeMaximum - MetatypeMinimum);
+                return Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
             }
         }
 
@@ -1407,7 +1404,7 @@ namespace Chummer.Backend.Attributes
             }
         }
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+        private void OnImprovementEvent(List<Improvement> improvements)
         {
             if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled && imp.Augmented != 0))
             {

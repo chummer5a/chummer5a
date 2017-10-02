@@ -1243,8 +1243,7 @@ namespace Chummer.Backend.Equipment
             */
 
             // Factor in the character's Concealability modifiers.
-            ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-            intReturn += objImprovementManager.ValueOf(Improvement.ImprovementType.Concealability);
+            intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability);
 
             string strReturn = string.Empty;
             if (intReturn >= 0)
@@ -1274,8 +1273,6 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-
                 if (_blnCyberware)
                 {
                     int intSTR = _objCharacter.STR.TotalValue;
@@ -1305,7 +1302,7 @@ namespace Chummer.Backend.Equipment
                         intSTR = intUseSTR;
 
                     if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
-                        intSTR += objImprovementManager.ValueOf(Improvement.ImprovementType.ThrowSTR);
+                        intSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
 
                     strDamage = strDamageExpression.Replace("STR", intSTR.ToString());
                 }
@@ -1313,7 +1310,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intThrowDV = 0;
                     if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
-                        intThrowDV = objImprovementManager.ValueOf(Improvement.ImprovementType.ThrowSTR);
+                        intThrowDV = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
 
                     // A STR value has been passed, so use that instead.
                     if (intUseSTR > 0)
@@ -1428,7 +1425,7 @@ namespace Chummer.Backend.Equipment
             // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
             else if (Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
             {
-                intImprove += _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedDV);
+                intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
             }
             bool blnDamageReplaced = false;
 
@@ -2026,7 +2023,7 @@ namespace Chummer.Backend.Equipment
                         // Add any UnarmedAP bonus for the Unarmed Attack item.
                         if (_strName == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                         {
-                            intAP += _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedAP);
+                            intAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
                         }
                     }
                 }
@@ -2569,8 +2566,7 @@ namespace Chummer.Backend.Equipment
             // If this is a Throwing Weapon, include the ThrowRange bonuses in the character's STR.
             if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                intSTR += objImprovementManager.ValueOf(Improvement.ImprovementType.ThrowRange);
+                intSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
             }
 
             strRange = strRange.Replace("STR", intSTR.ToString());
@@ -2762,6 +2758,10 @@ namespace Chummer.Backend.Equipment
                 if (objSkill != null)
                 {
                     intDicePool = objSkill.Pool;
+                }
+                foreach(Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category))
+                {
+                    intDicePoolModifier += objImprovement.Value;
                 }
 
                 int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;

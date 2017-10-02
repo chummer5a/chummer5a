@@ -68,6 +68,9 @@ Application Changes:
 - Added support for talent priorities that give bonus special attribute points.
 - Fixed an issue where having multiple mugshots could cause the main mugshot to get overwritten when creating a character sheet.
 - Added proper support for mugshots of any arbitrary size to be properly displayed. Removed Label_MugshotDimensions and its related label because it is now redundant. Due to wonkiness with how Internet Explorer handles resizing images, it is still recommended that you save to HTML first and then print your sheet from within a browser like Google Chrome or Mozilla Firefox. Also, larger mugshots considerably increase the size of savefiles, so be reasonable.
+- Added support for improvements that add bonus dice to a particular weapon category.
+- Fixed the updater and "Restart Application" not working properly if Chummer5's exe was renamed.
+- Made a minor refactor of the ImprovementManager. On the user side, fetching of improvement-boosted values should be significantly faster.
 
 Data Changes:
 

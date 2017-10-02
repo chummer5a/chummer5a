@@ -70,7 +70,7 @@ namespace Chummer
 
             //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
             //in Career Mode. Create mode manages itself.
-            int intFreeGenericSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
+            int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
             int intFreeTouchOnlySpells = 0;
             foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
             {

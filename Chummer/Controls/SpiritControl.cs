@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,11 +91,11 @@ namespace Chummer
                     chkFettered.Checked = false;
                     return;
                 }
-                _objSpirit.CharacterObject.ObjImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                ImprovementManager.CreateImprovement(_objSpirit.CharacterObject, "MAG", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
             }
             else
             {
-                _objSpirit.CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
+                ImprovementManager.RemoveImprovements(_objSpirit.CharacterObject, Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
             }
             _objSpirit.Fettered = chkFettered.Checked;
 
@@ -587,7 +587,6 @@ namespace Chummer
                 return;
 
             // Code from frmMetatype.
-            ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
             XmlDocument objXmlDocument = XmlManager.Instance.Load("critters.xml");
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strCritterName + "\"]");
@@ -668,7 +667,7 @@ namespace Chummer
 
             // Determine if the Metatype has any bonuses.
             if (objXmlMetatype.InnerXml.Contains("bonus"))
-                objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), false, 1, strCritterName);
+                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), false, 1, strCritterName);
 
             // Create the Qualities that come with the Metatype.
             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/positive/quality"))
@@ -731,7 +730,7 @@ namespace Chummer
                 if (objXmlPower.Attributes["select"] != null)
                     strForcedValue = objXmlPower.Attributes["select"].InnerText;
 
-                objPower.Create(objXmlCritterPower, objCharacter, objNode, intRating, strForcedValue);
+                objPower.Create(objXmlCritterPower, objNode, intRating, strForcedValue);
                 objCharacter.CritterPowers.Add(objPower);
             }
 
@@ -746,7 +745,7 @@ namespace Chummer
                     XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true), true);
                     objDummyDocument.ImportNode(powerNode, true);
                     bonusNode.AppendChild(powerNode);
-                    objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, false, 1, objCharacter.Metatype);
+                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, false, 1, objCharacter.Metatype);
                 }
             }
             // Add any Complex Forms the Critter comes with (typically Sprites)

@@ -29,12 +29,9 @@ namespace Chummer
 {
     public class MainController : CharacterShared
     {
-        private readonly ImprovementManager _objImprovementManager;
-
         public MainController(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objImprovementManager = new ImprovementManager(_objCharacter);
             _objFunctions = new CommonFunctions(_objCharacter);
         }
 
@@ -652,8 +649,7 @@ namespace Chummer
         public void ClearSpellTab(TreeView treSpells)
         {
             // Run through all of the Spells and remove their Improvements.
-            foreach (Spell objSpell in _objCharacter.Spells)
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Spell, objSpell.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell);
 
             // Clear the list of Spells.
             foreach (TreeNode objNode in treSpells.Nodes)
@@ -670,8 +666,7 @@ namespace Chummer
         public void ClearAdeptTab()
         {
             // Run through all of the Powers and remove their Improvements.
-            foreach (Power objPower in _objCharacter.Powers)
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Power);
 
             _objCharacter.Powers.Clear();
         }
@@ -682,8 +677,7 @@ namespace Chummer
         public void ClearTechnomancerTab(TreeView treComplexForms)
         {
             // Run through all of the Complex Forms and remove their Improvements.
-            foreach (ComplexForm objProgram in _objCharacter.ComplexForms)
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm);
 
             // Clear the list of Complex Forms.
             foreach (TreeNode objNode in treComplexForms.Nodes)
@@ -699,8 +693,7 @@ namespace Chummer
         public void ClearAdvancedProgramsTab(TreeView treAIPrograms)
         {
             // Run through all of the Advanced Programs and remove their Improvements.
-            foreach (AIProgram objProgram in _objCharacter.AIPrograms)
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram);
 
             // Clear the list of Advanced Programs.
             foreach (TreeNode objNode in treAIPrograms.Nodes)
@@ -729,7 +722,7 @@ namespace Chummer
                 // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
                 foreach (Cyberware objChildCyberware in objCyberware.Children)
                 {
-                    _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objChildCyberware.InternalId);
+                    ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objChildCyberware.InternalId);
                     if (objChildCyberware.WeaponID != Guid.Empty.ToString())
                     {
                         // Remove the Weapon from the TreeView.
@@ -809,7 +802,7 @@ namespace Chummer
 
                 // Remove any Gear attached to the Cyberware.
                 foreach (Gear objGear in objCyberware.Gear)
-                { _objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager); }
+                { _objFunctions.DeleteGear(objGear, treWeapons); }
 
 
                 // Open the Cyberware XML file and locate the selected piece.
@@ -826,11 +819,11 @@ namespace Chummer
                 // Fix for legacy characters with old addqualities improvements. 
                 if (objXmlCyberware["addqualities"] != null)
                 {
-                    RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
+                    RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities);
                 }
                 
                 // Remove any Improvements created by the piece of Cyberware.
-                _objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
+                ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId);
             }
             _objCharacter.Cyberware.Clear();
 
@@ -847,8 +840,7 @@ namespace Chummer
         public void ClearCritterTab(TreeView treCritterPowers)
         {
             // Run through all of the Critter Powers and remove their Improvements.
-            foreach (CritterPower objPower in _objCharacter.CritterPowers)
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objPower.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower);
 
             // Clear the list of Critter Powers.
             foreach (TreeNode objNode in treCritterPowers.Nodes)
@@ -863,11 +855,8 @@ namespace Chummer
         public void ClearInitiationTab(TreeView treMetamagic)
         {
             // Remove any Metamagic/Echo Improvements.
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-            }
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Echo);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Metamagic);
 
             _objCharacter.InitiateGrade = 0;
             _objCharacter.SubmersionGrade = 0;
@@ -940,17 +929,17 @@ namespace Chummer
                             objNode.Text = LanguageManager.Instance.GetString("String_StackedFocus") + ": " + objStack.Name;
                             objNode.Tag = objStack.InternalId;
 
-                            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                             if (objStack.Bonded)
                             {
                                 foreach (Gear objFociGear in objStack.Gear)
                                 {
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        _objImprovementManager.ForcedValue = objFociGear.Extra;
-                                    _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                        ImprovementManager.ForcedValue = objFociGear.Extra;
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
                                     if (objFociGear.WirelessOn)
-                                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
                                 }
                                 objNode.Checked = true;
                             }
@@ -980,11 +969,11 @@ namespace Chummer
                         dblPowerPoints += objPower.PowerPoints;
                 }
 
-                int intPowerPoints = _objCharacter.EDG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
+                int intPowerPoints = _objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
                 // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
                 if (_objCharacter.Options.FreeSpiritPowerPointsMAG)
-                    intPowerPoints = _objCharacter.MAG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
+                    intPowerPoints = _objCharacter.MAG.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
                 strReturn = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
             }
@@ -995,7 +984,7 @@ namespace Chummer
                 if (_objCharacter.Metatype == "Free Spirit")
                 {
                     // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-                    intPowerPoints = _objCharacter.EDG.Value + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
+                    intPowerPoints = _objCharacter.EDG.Value + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
                 }
                 else if (_objCharacter.Metatype == "Ally Spirit")
                 {
@@ -1036,7 +1025,7 @@ namespace Chummer
                     dblPowerPoints += 1;
             }
 
-            int intPowerPoints = _objCharacter.EDG.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpiritPowerPoints);
+            int intPowerPoints = _objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
             return string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
         }
@@ -1118,12 +1107,12 @@ namespace Chummer
                         if (blnAddImprovement)
                         {
                             if (!string.IsNullOrEmpty(objGear.Extra))
-                                _objImprovementManager.ForcedValue = objGear.Extra;
+                                ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
-                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            objGear.Extra = _objImprovementManager.SelectedValue;
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            objGear.Extra = ImprovementManager.SelectedValue;
                         }
                     }
                     else
@@ -1136,11 +1125,11 @@ namespace Chummer
                                 foreach (Gear objFociGear in objStack.Gear)
                                 {
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        _objImprovementManager.ForcedValue = objFociGear.Extra;
+                                        ImprovementManager.ForcedValue = objFociGear.Extra;
                                     if (objGear.Bonus != null)
-                                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
                                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
                                 }
                             }
                         }
@@ -1153,7 +1142,7 @@ namespace Chummer
                 if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
                 {
                     if (objGear.Category != "Stacked Focus")
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
                     else
                     {
                         // Stacked Foci need to be handled a little differetnly.
@@ -1162,7 +1151,7 @@ namespace Chummer
                             if (objStack.GearId == objGear.InternalId)
                             {
                                 foreach (Gear objFociGear in objStack.Gear)
-                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
                             }
                         }
                     }

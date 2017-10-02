@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -39,7 +39,7 @@ namespace Chummer.Skills
 
         }
 
-        private void CharacterOnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+        private void CharacterOnImprovementEvent(List<Improvement> improvements)
         {
             if (PropertyChanged != null && improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills))
             {
@@ -409,7 +409,7 @@ namespace Chummer.Skills
                 // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
                 int fromAttributes = (_character.INT.Value + _character.LOG.Value) * _character.Options.FreeKnowledgeMultiplier;
 
-                int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
+                int val = ImprovementManager.ValueOf(_character, Improvement.ImprovementType.FreeKnowledgeSkills);
                 return fromAttributes + val;
             }
         }

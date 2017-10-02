@@ -146,16 +146,15 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode["bonus"] != null && !blnSkipCost && !blnSkipSelectForms)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                    _strExtra = ImprovementManager.SelectedValue;
+                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
             }
 

@@ -69,7 +69,7 @@ namespace Chummer.Backend.Shared_Methods
                 return false;
             }
             // See if the character already has this Quality and whether or not multiple copies are allowed.
-            string strLimitString = "";
+            string strLimitString = string.Empty;
             // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
             string strChargenLimitString = objXmlNode["chargenlimit"]?.InnerText;
             if (!string.IsNullOrWhiteSpace(strChargenLimitString) && !objCharacter.Created)
@@ -79,7 +79,12 @@ namespace Chummer.Backend.Shared_Methods
                 strLimitString = objXmlNode["limit"]?.InnerText;
                 // Default case is each quality can only be taken once
                 if (string.IsNullOrWhiteSpace(strLimitString))
-                    strLimitString = "1";
+                {
+                    if (objXmlNode.Name == "quality")
+                        strLimitString = "1";
+                    else
+                        strLimitString = int.MaxValue.ToString();
+                }
             }
             if (strLimitString != "no")
             {
@@ -114,6 +119,11 @@ namespace Chummer.Backend.Shared_Methods
                     case "enhancement":
                         {
                             objListToCheck = objCharacter.Enhancements;
+                            break;
+                        }
+                    case "cyberware":
+                        {
+                            objListToCheck = objCharacter.Cyberware;
                             break;
                         }
                     default:
@@ -353,9 +363,8 @@ namespace Chummer.Backend.Shared_Methods
                 }
                 case "damageresistance":
                     // Damage Resistance must be a particular value.
-                    ImprovementManager objImprovementManager = new ImprovementManager(character);
                     name = "\n\t" + LanguageManager.Instance.GetString("String_DamageResistance");
-                    return character.BOD.TotalValue + objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >=
+                    return character.BOD.TotalValue + ImprovementManager.ValueOf(character, Improvement.ImprovementType.DamageResistance) >=
                            Convert.ToInt32(node.InnerText);
                 case "ess":
                     if (node.Attributes["grade"] != null)

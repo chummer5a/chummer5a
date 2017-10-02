@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -824,8 +824,7 @@ namespace Chummer
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
-                                ImprovementManager _objImprovementManager = new ImprovementManager(_objCharacter);
-                                if (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnOneOfMet = true;
                                 break;
                         }
@@ -1097,8 +1096,7 @@ namespace Chummer
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
-                                ImprovementManager _objImprovementManager = new ImprovementManager(_objCharacter);
-                                if (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnFound = true;
                                 break;
                         }

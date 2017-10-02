@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -576,7 +576,6 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstMetatypes.Text))
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
                 XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
                 XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue + "\"]");
@@ -685,7 +684,7 @@ namespace Chummer
                 {
                     // Determine if the Metatype has any bonuses.
                     if (objXmlMetatype?.InnerXml.Contains("bonus") == true)
-                        objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), objXmlMetatype.SelectSingleNode("bonus"), false, 1, lstMetatypes.SelectedValue.ToString());
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), objXmlMetatype.SelectSingleNode("bonus"), false, 1, lstMetatypes.SelectedValue.ToString());
 
                     // Create the Qualities that come with the Metatype.
                     foreach (XmlNode objXmlQualityItem in objXmlMetatype?.SelectNodes("qualities/positive/quality"))
@@ -739,7 +738,7 @@ namespace Chummer
                     // Determine if the Metavariant has any bonuses.
                     if (objXmlMetavariant.InnerXml.Contains("bonus"))
                     {
-                        objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metavariant, cboMetavariant.SelectedValue.ToString(), objXmlMetavariant.SelectSingleNode("bonus"), false, 1, cboMetavariant.SelectedValue.ToString());
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metavariant, cboMetavariant.SelectedValue.ToString(), objXmlMetavariant.SelectSingleNode("bonus"), false, 1, cboMetavariant.SelectedValue.ToString());
                     }
 
                     // Create the Qualities that come with the Metatype.
@@ -805,7 +804,7 @@ namespace Chummer
                     if (objXmlPower.Attributes["select"] != null)
                         strForcedValue = objXmlPower.Attributes["select"].InnerText;
 
-                    objPower.Create(objXmlCritterPower, _objCharacter, objNode, intRating, strForcedValue);
+                    objPower.Create(objXmlCritterPower, objNode, intRating, strForcedValue);
                     objPower.CountTowardsLimit = false;
                     _objCharacter.CritterPowers.Add(objPower);
                 }
@@ -826,7 +825,7 @@ namespace Chummer
                         if (objXmlPower.Attributes["select"] != null)
                             strForcedValue = objXmlPower.Attributes["select"].InnerText;
 
-                        objPower.Create(objXmlCritterPower, _objCharacter, objNode, intRating, strForcedValue);
+                        objPower.Create(objXmlCritterPower, objNode, intRating, strForcedValue);
                         objPower.CountTowardsLimit = false;
                         _objCharacter.CritterPowers.Add(objPower);
                     }
@@ -873,7 +872,7 @@ namespace Chummer
                             XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true),true);
                             objDummyDocument.ImportNode(powerNode, true);
                             bonusNode.AppendChild(powerNode);
-                            objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), bonusNode, false, 1, lstMetatypes.SelectedValue.ToString());
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), bonusNode, false, 1, lstMetatypes.SelectedValue.ToString());
                         }
                     }
                     //If this is a Blood Spirit, add their free Critter Powers.
@@ -890,7 +889,7 @@ namespace Chummer
                             objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Energy Drain\"]");
                             objNode = new TreeNode();
                             objPower = new CritterPower(_objCharacter);
-                            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, string.Empty);
+                            objPower.Create(objXmlCritterPower, objNode, 0, string.Empty);
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
                         }
@@ -902,7 +901,7 @@ namespace Chummer
                             objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Fear\"]");
                             objNode = new TreeNode();
                             objPower = new CritterPower(_objCharacter);
-                            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, string.Empty);
+                            objPower.Create(objXmlCritterPower, objNode, 0, string.Empty);
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
                         }
@@ -911,7 +910,7 @@ namespace Chummer
                         objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Natural Weapon\"]");
                         objNode = new TreeNode();
                         objPower = new CritterPower(_objCharacter);
-                        objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, "DV " + intForce.ToString() + "P, AP 0");
+                        objPower.Create(objXmlCritterPower, objNode, 0, "DV " + intForce.ToString() + "P, AP 0");
                         objPower.CountTowardsLimit = false;
                         _objCharacter.CritterPowers.Add(objPower);
 
@@ -922,7 +921,7 @@ namespace Chummer
                             objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Evanescence\"]");
                             objNode = new TreeNode();
                             objPower = new CritterPower(_objCharacter);
-                            objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, string.Empty);
+                            objPower.Create(objXmlCritterPower, objNode, 0, string.Empty);
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
                         }
@@ -945,7 +944,7 @@ namespace Chummer
                                                             cboPossessionMethod.SelectedValue.ToString() + "\"]");
                         TreeNode objNode = new TreeNode();
                         CritterPower objPower = new CritterPower(_objCharacter);
-                        objPower.Create(objXmlCritterPower, _objCharacter, objNode, 0, string.Empty);
+                        objPower.Create(objXmlCritterPower, objNode, 0, string.Empty);
                         objPower.CountTowardsLimit = false;
                         _objCharacter.CritterPowers.Add(objPower);
                     }

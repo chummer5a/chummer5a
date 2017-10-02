@@ -308,24 +308,22 @@ namespace Chummer
             // If the item grants a bonus, pass the information to the Improvement Manager.
             if (objXmlQuality["bonus"]?.ChildNodes.Count > 0)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.ForcedValue = strForceValue;
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["bonus"], false, 1, DisplayNameShort))
+                ImprovementManager.ForcedValue = strForceValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                    _strExtra = ImprovementManager.SelectedValue;
+                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
             }
             if (objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0 && Levels == 0)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.ForcedValue = strForceValue;
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["firstlevelbonus"], false, 1, DisplayNameShort))
+                ImprovementManager.ForcedValue = strForceValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["firstlevelbonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -1367,18 +1365,17 @@ namespace Chummer
                     _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
 
-            ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-            objImprovementManager.ForcedValue = strForcedValue;
+            ImprovementManager.ForcedValue = strForcedValue;
             if (objXmlSpellNode["bonus"] != null)
             {
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
+                    _strExtra = ImprovementManager.SelectedValue;
                 }
             }
 
@@ -2194,8 +2191,7 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell Category.
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                intReturn += objImprovementManager.ValueOf(Improvement.ImprovementType.SpellCategory, false, _strCategory);
+                intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, _strCategory);
 
                 return intReturn;
             }
@@ -2243,9 +2239,9 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell Category.
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                if (objImprovementManager.ValueOf(Improvement.ImprovementType.SpellCategory, false, _strCategory) != 0)
-                    strReturn += " + " + DisplayCategory + " (" + objImprovementManager.ValueOf(Improvement.ImprovementType.SpellCategory, false, _strCategory).ToString() + ")";
+                int intSpellImprovements = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, _strCategory);
+                if (intSpellImprovements != 0)
+                    strReturn += " + " + DisplayCategory + " (" + intSpellImprovements.ToString() + ")";
 
                 return strReturn;
             }
@@ -2563,7 +2559,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlMetamagicNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlMetamagicNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
             objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -2579,14 +2575,13 @@ namespace Chummer
                 else
                     intRating = _objCharacter.InitiateGrade;
 
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strName += " (" + objImprovementManager.SelectedValue + ")";
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
@@ -2840,7 +2835,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlArtNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
             objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -2850,14 +2845,13 @@ namespace Chummer
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strName += " (" + objImprovementManager.SelectedValue + ")";
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
             objNode.Text = LanguageManager.Instance.GetString("Label_Art") + " " + DisplayName;
@@ -3072,7 +3066,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Enhancement is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlArtNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
             objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -3082,14 +3076,13 @@ namespace Chummer
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strName += " (" + objImprovementManager.SelectedValue + ")";
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
             objNode.Text = LanguageManager.Instance.GetString("Label_Enhancement") + " " + DisplayName;
@@ -3814,10 +3807,8 @@ namespace Chummer
         /// Create a Martial Art from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        /// <param name="objCharacter">Character the Martial Art is being added to.</param>
-        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Character objCharacter)
+        public void Create(XmlNode objXmlArtNode, TreeNode objNode)
         {
-            _objCharacter = objCharacter;
             objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -3825,8 +3816,7 @@ namespace Chummer
 
             if (objXmlArtNode["bonus"] != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArt, InternalId,
+                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, InternalId,
                     objXmlArtNode["bonus"], false, 1, DisplayNameShort);
             }
 
@@ -4044,7 +4034,7 @@ namespace Chummer
         /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlAdvantageNode, Character objCharacter, TreeNode objNode)
+        public void Create(XmlNode objXmlAdvantageNode, TreeNode objNode)
         {
             objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -4052,8 +4042,7 @@ namespace Chummer
 
             if (objXmlAdvantageNode["bonus"] != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayName))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -4383,14 +4372,13 @@ namespace Chummer
         /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlLimitModifierNode, Character objCharacter, TreeNode objNode)
+        public void Create(XmlNode objXmlLimitModifierNode, TreeNode objNode)
         {
             _strName = objXmlLimitModifierNode["name"].InnerText;
 
             if (objXmlLimitModifierNode["bonus"] != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -4946,11 +4934,10 @@ namespace Chummer
 
         /// Create a Critter Power from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlPowerNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlPowerNode, Character objCharacter, TreeNode objNode, int intRating = 0, string strForcedValue = "")
+        public void Create(XmlNode objXmlPowerNode, TreeNode objNode, int intRating = 0, string strForcedValue = "")
         {
             objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName);
             _intRating = intRating;
@@ -4958,17 +4945,16 @@ namespace Chummer
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (_nodBonus != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.ForcedValue = strForcedValue;
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
+                ImprovementManager.ForcedValue = strForcedValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                    _strExtra = ImprovementManager.SelectedValue;
+                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
                 else if (intRating != 0)
                     _strExtra = intRating.ToString();

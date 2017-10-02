@@ -302,22 +302,21 @@ namespace Chummer.Backend.Equipment
             {
                 if (objXmlCyberware["bonus"] != null || objXmlCyberware["wirelessbonus"] != null)
                 {
-                    ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
                     if (!string.IsNullOrEmpty(strForced))
-                        objImprovementManager.ForcedValue = strForced;
+                        ImprovementManager.ForcedValue = strForced;
 
-                    if (objXmlCyberware["bonus"] != null && !objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
+                    if (objXmlCyberware["bonus"] != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
-                    if (objXmlCyberware["wirelessbonus"] != null && !objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodWirelessBonus, false, _intRating, DisplayNameShort))
+                    if (objXmlCyberware["wirelessbonus"] != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodWirelessBonus, false, _intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
-                    if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                        _strLocation = objImprovementManager.SelectedValue;
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        _strLocation = ImprovementManager.SelectedValue;
                 }
             }
 
@@ -1569,8 +1568,7 @@ namespace Chummer.Backend.Equipment
                 decimal decDiscount = Convert.ToDecimal(_intEssenceDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
                 decESSMultiplier *= 1.0m - decDiscount;
             }
-
-            ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
+            
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
             if (!_strCategory.StartsWith("Genetech") && !_strCategory.StartsWith("Genetic Infusions") &&
@@ -1578,7 +1576,7 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decMultiplier = 1;
                 // Apply the character's Cyberware Essence cost multiplier if applicable.
-                if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && objImprovementManager.ValueOf(Improvement.ImprovementType.CyberwareEssCost) != 0)
+                if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCost) != 0)
                 {
                     decMultiplier = _objCharacter.Improvements
                         .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
@@ -1587,7 +1585,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Apply the character's Bioware Essence cost multiplier if applicable.
-                else if (_objImprovementSource == Improvement.ImprovementSource.Bioware && objImprovementManager.ValueOf(Improvement.ImprovementType.BiowareEssCost) != 0)
+                else if (_objImprovementSource == Improvement.ImprovementSource.Bioware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCost) != 0)
                 {
                     decMultiplier = _objCharacter.Improvements
                         .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
@@ -1597,7 +1595,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-            if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware && objImprovementManager.ValueOf(Improvement.ImprovementType.BasicBiowareEssCost) != 0)
+            if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost) != 0)
             {
                 decimal decBasicMultiplier = _objCharacter.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
@@ -1733,8 +1731,7 @@ namespace Chummer.Backend.Equipment
 
                 // Retrieve the Genetech Cost Multiplier if available.
                 double dblMultiplier = 1;
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                if (objImprovementManager.ValueOf(Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
                 {
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
@@ -1744,7 +1741,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Retrieve the Transgenics Cost Multiplier if available.
-                if (objImprovementManager.ValueOf(Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory == "Genetech: Transgenics")
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory == "Genetech: Transgenics")
                 {
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
@@ -1923,8 +1920,7 @@ namespace Chummer.Backend.Equipment
 
                 // Retrieve the Genetech Cost Multiplier if available.
                 double dblMultiplier = 1;
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                if (objImprovementManager.ValueOf(Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
                 {
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
@@ -1934,7 +1930,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Retrieve the Transgenics Cost Multiplier if available.
-                if (objImprovementManager.ValueOf(Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory == "Genetech: Transgenics")
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory == "Genetech: Transgenics")
                 {
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {

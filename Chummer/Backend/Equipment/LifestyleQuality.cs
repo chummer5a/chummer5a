@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -123,15 +123,14 @@ namespace Chummer.Backend.Equipment
             // If the item grants a bonus, pass the information to the Improvement Manager.
             if (objXmlLifestyleQuality.InnerXml.Contains("<bonus>"))
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlLifestyleQuality["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlLifestyleQuality["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
+                    _strExtra = ImprovementManager.SelectedValue;
                     //objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
                 }
             }

@@ -1,4 +1,4 @@
-﻿using Chummer.Backend;
+using Chummer.Backend;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -320,7 +320,7 @@ namespace Chummer.Skills
         {
             get
             {
-                return Math.Min(0, new ImprovementManager(_character).ValueOf(Improvement.ImprovementType.ConditionMonitor));
+                return Math.Min(0, ImprovementManager.ValueOf(_character, Improvement.ImprovementType.ConditionMonitor));
             }
         }
 

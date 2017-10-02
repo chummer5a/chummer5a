@@ -268,10 +268,10 @@ namespace Chummer
                     ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
                 }
                 // Delete the old Chummer5 executable.
-                if (File.Exists(_strAppPath + "\\Chummer5.exe.old"))
-                    File.Delete(_strAppPath + "\\Chummer5.exe.old");
+                if (File.Exists(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old"))
+                    File.Delete(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old");
                 // Rename the current Chummer5 executable.
-                File.Move(_strAppPath + "\\Chummer5.exe", _strAppPath + "\\Chummer5.exe.old");
+                File.Move(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName, _strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old");
                 foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll"))
                 {
                     if (File.Exists(strLoopDllName + ".old"))

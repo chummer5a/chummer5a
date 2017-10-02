@@ -328,8 +328,7 @@ namespace Chummer
                 }
 
                 // Check for modifiers in the improvements
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                decimal decModifier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
+                decimal decModifier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
                 decMod += decModifier / 100;
             }
             decBaseCost += decBaseCost * baseMultiplier;

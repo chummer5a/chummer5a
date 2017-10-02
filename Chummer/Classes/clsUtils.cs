@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + "\\Chummer5.exe",
+                FileName = Application.StartupPath + "\\" + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();

@@ -426,7 +426,7 @@ namespace Chummer.Skills
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+        private void OnImprovementEvent(List<Improvement> improvements)
         {
             _cachedFreeBase = int.MinValue;
             _cachedFreeLevels = int.MinValue;

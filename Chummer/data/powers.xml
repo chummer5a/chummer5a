@@ -1539,10 +1539,12 @@
       <page>191</page>
       <adeptway>0.5</adeptway>
       <bonus>
-        <specificskill>
-          <name>Archery</name>
-          <bonus>1</bonus>
-        </specificskill>
+        <weaponcategorydice>
+          <category>
+			<name>Bows</name>
+			<value>1</value>
+		  </category>
+        </weaponcategorydice>
       </bonus>
     </power>
     <power>

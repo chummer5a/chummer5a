@@ -126,14 +126,14 @@ namespace Chummer
             }
             if (Bonus != null && Bonus.HasChildNodes)
             {
-                if (!CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
                 {
                     this.Deleting = true;
                     CharacterObject.Powers.Remove(this);
                     OnPropertyChanged(nameof(TotalRating));
                     return false;
                 }
-                Extra = CharacterObject.ObjImprovementManager.SelectedValue;
+                Extra = ImprovementManager.SelectedValue;
             }
             if (TotalMaximumLevels < Rating)
             {
@@ -740,11 +740,11 @@ namespace Chummer
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
             if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating))
             {
-                CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
                 if (!Deleting)
                 {
-                    CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-                    CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
+                    ImprovementManager.ForcedValue = Extra;
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
                 }
             }
         }
