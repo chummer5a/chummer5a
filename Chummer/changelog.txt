@@ -111,6 +111,7 @@ Data Changes:
 - Fixed incorrect page number references for Pilot Origins and Multiprocessing qualities.
 - Fixed incorrect range entry for the Control Emotions spell.
 - Silver-Tongued Devil now properly requires Commanding Voice instead of Authoritative Tone.
+- Properly applied a bonus to the Master Archer power. 
 
 New Strings:
 - Label_Options_SpellShapingFocus

@@ -1538,6 +1538,12 @@
       <source>HT</source>
       <page>191</page>
       <adeptway>0.5</adeptway>
+      <bonus>
+        <specificskill>
+          <name>Archery</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
     </power>
     <power>
       <id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
