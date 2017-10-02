@@ -84,6 +84,7 @@ namespace Chummer
             _objCharacter.AmbidextrousChanged += objCharacter_AmbidextrousChanged;
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
             _objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
+            _objCharacter.AdeptTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
             _objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
             _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
             _objCharacter.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
@@ -918,6 +919,7 @@ namespace Chummer
             _blnIsDirty = false;
             UpdateWindowTitle(false);
             RefreshPasteStatus();
+            picMugshot_SizeChanged(sender, e);
 
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
@@ -965,6 +967,7 @@ namespace Chummer
                 _objCharacter.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
                 _objCharacter.AdeptTabEnabledChanged -= objCharacter_AdeptTabEnabledChanged;
                 _objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
+                _objCharacter.AdeptTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
                 _objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
                 _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
                 _objCharacter.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
@@ -1347,7 +1350,7 @@ namespace Chummer
                 return;
 
             // Change to the status of Magician being enabled.
-            if (_objCharacter.MagicianEnabled)
+            if (_objCharacter.MagicianEnabled || _objCharacter.AdeptEnabled)
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                     tabCharacterTabs.TabPages.Insert(3, tabMagician);
@@ -14527,10 +14530,16 @@ namespace Chummer
                 chkIncludedInWeapon.Checked = false;
 
                 // Hide Weapon Ranges.
+                lblWeaponRangeMain.Text = string.Empty;
+                lblWeaponRangeAlternate.Text = string.Empty;
                 lblWeaponRangeShort.Text = string.Empty;
                 lblWeaponRangeMedium.Text = string.Empty;
                 lblWeaponRangeLong.Text = string.Empty;
                 lblWeaponRangeExtreme.Text = string.Empty;
+                lblWeaponAlternateRangeShort.Text = string.Empty;
+                lblWeaponAlternateRangeMedium.Text = string.Empty;
+                lblWeaponAlternateRangeLong.Text = string.Empty;
+                lblWeaponAlternateRangeExtreme.Text = string.Empty;
                 return;
             }
 
@@ -14573,10 +14582,17 @@ namespace Chummer
                 chkIncludedInWeapon.Checked = false;
 
                 // Show the Weapon Ranges.
-                lblWeaponRangeShort.Text = objWeapon.RangeShort;
-                lblWeaponRangeMedium.Text = objWeapon.RangeMedium;
-                lblWeaponRangeLong.Text = objWeapon.RangeLong;
-                lblWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
+                lblWeaponRangeMain.Text = objWeapon.Range;
+                lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
+                Dictionary<string, string> dictionaryRanges = objWeapon.RangeStrings;
+                lblWeaponRangeShort.Text = dictionaryRanges["short"];
+                lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                lblWeaponRangeLong.Text = dictionaryRanges["long"];
+                lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
                 _blnSkipRefresh = false;
 
                 lblWeaponAvail.Text = objWeapon.TotalAvail;
@@ -14616,10 +14632,17 @@ namespace Chummer
                     chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                     // Show the Weapon Ranges.
-                    lblWeaponRangeShort.Text = objWeapon.RangeShort;
-                    lblWeaponRangeMedium.Text = objWeapon.RangeMedium;
-                    lblWeaponRangeLong.Text = objWeapon.RangeLong;
-                    lblWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
+                    lblWeaponRangeMain.Text = objWeapon.Range;
+                    lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
+                    Dictionary<string, string> dictionaryRanges = objWeapon.RangeStrings;
+                    lblWeaponRangeShort.Text = dictionaryRanges["short"];
+                    lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                    lblWeaponRangeLong.Text = dictionaryRanges["long"];
+                    lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                    lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                    lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                    lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                    lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
                     _blnSkipRefresh = false;
 
                     lblWeaponAvail.Text = objWeapon.TotalAvail;
@@ -14745,10 +14768,17 @@ namespace Chummer
                     }
 
                     // Show the Weapon Ranges.
-                    lblWeaponRangeShort.Text = objSelectedWeapon.RangeShort;
-                    lblWeaponRangeMedium.Text = objSelectedWeapon.RangeMedium;
-                    lblWeaponRangeLong.Text = objSelectedWeapon.RangeLong;
-                    lblWeaponRangeExtreme.Text = objSelectedWeapon.RangeExtreme;
+                    lblWeaponRangeMain.Text = objSelectedWeapon.Range;
+                    lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
+                    Dictionary<string, string> dictionaryRanges = objSelectedWeapon.RangeStrings;
+                    lblWeaponRangeShort.Text = dictionaryRanges["short"];
+                    lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                    lblWeaponRangeLong.Text = dictionaryRanges["long"];
+                    lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                    lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                    lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                    lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                    lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
                 }
             }
         }
@@ -16152,10 +16182,16 @@ namespace Chummer
             lblVehicleWeaponAmmoLabel.Visible = blnDisplay;
             lblVehicleWeaponRangeLabel.Visible = blnDisplay;
 
+            lblVehicleWeaponRangeMain.Visible = blnDisplay;
+            lblVehicleWeaponRangeAlternate.Visible = blnDisplay;
             lblVehicleWeaponRangeShortLabel.Visible = blnDisplay;
             lblVehicleWeaponRangeMediumLabel.Visible = blnDisplay;
             lblVehicleWeaponRangeLongLabel.Visible = blnDisplay;
             lblVehicleWeaponRangeExtremeLabel.Visible = blnDisplay;
+            lblVehicleWeaponAlternateRangeShort.Visible = blnDisplay;
+            lblVehicleWeaponAlternateRangeMedium.Visible = blnDisplay;
+            lblVehicleWeaponAlternateRangeLong.Visible = blnDisplay;
+            lblVehicleWeaponAlternateRangeExtreme.Visible = blnDisplay;
         }
 
         /// <summary>
@@ -16589,10 +16625,17 @@ namespace Chummer
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo();
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode;
 
-                        lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
-                        lblVehicleWeaponRangeMedium.Text = objWeapon.RangeMedium;
-                        lblVehicleWeaponRangeLong.Text = objWeapon.RangeLong;
-                        lblVehicleWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
+                        lblVehicleWeaponRangeMain.Text = objWeapon.Range;
+                        lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
+                        Dictionary<string, string> dictionaryRanges = objWeapon.RangeStrings;
+                        lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
+                        lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                        lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
+                        lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                        lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                        lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                        lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                        lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
@@ -16723,10 +16766,17 @@ namespace Chummer
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo();
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode;
 
-                        lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
-                        lblVehicleWeaponRangeMedium.Text = objWeapon.RangeMedium;
-                        lblVehicleWeaponRangeLong.Text = objWeapon.RangeLong;
-                        lblVehicleWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
+                        lblVehicleWeaponRangeMain.Text = objWeapon.Range;
+                        lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
+                        Dictionary<string, string> dictionaryRanges = objWeapon.RangeStrings;
+                        lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
+                        lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                        lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
+                        lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                        lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                        lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                        lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                        lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
@@ -21836,6 +21886,14 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
+        }
+
+        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        {
+            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
+                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            else
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
         }
     }
 }

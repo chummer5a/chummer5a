@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -227,6 +227,7 @@ namespace Chummer
             lblFilePath.Text = objCache.FileName;
             tipTooltip.SetToolTip(lblFilePath,objCache.FilePath);
             picMugshot.Image = objCache.Mugshot;
+            picMugshot_SizeChanged(null, EventArgs.Empty);
         }
 
         #region Form Methods
@@ -399,6 +400,14 @@ namespace Chummer
             GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
             GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
             sender.Remove();
+        }
+
+        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        {
+            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
+                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            else
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
         }
         #endregion
         #region Classes

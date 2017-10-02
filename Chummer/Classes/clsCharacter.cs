@@ -2005,6 +2005,7 @@ namespace Chummer
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
                 objWriter.WriteStartElement("othermugshots");
+                int i = 0;
                 foreach (string strMugshot in Mugshots)
                 {
                     if (strMugshot == MainMugshot)
@@ -2016,12 +2017,13 @@ namespace Chummer
                     objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
                     objImageStream.Write(bytImage, 0, bytImage.Length);
                     imgMugshot = Image.FromStream(objImageStream, true);
-                    imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + ".img");
+                    imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
                     objWriter.WriteEndElement();
-            }
+                    ++i;
+                }
                 // </mugshots>
                 objWriter.WriteEndElement();
             }

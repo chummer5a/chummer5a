@@ -22,20 +22,45 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <style type="text/css">
           * {
-            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-            font-size: 9pt;
-            margin: 0;
-            vertical-align: top;
+          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+          font-size: 9pt;
+          margin: 0;
+          vertical-align: top;
           }
           html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
+          height: 100%;
+          margin: 0px;  /* this affects the margin on the html before sending to printer */
           }
           .label {
-            font-weight: bold;
-            width: 15%;
+          font-weight: bold;
+          width: 15%;
+          }
+          .mugshot {
+          height: auto;
+          width: auto;
+          max-width: 100%;
+          object-fit: scale-down;
+          image-rendering: optimizeQuality;
+          }
+          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+          .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
           }
         </style>
+        <!--[if IE]
+        <style type="text/css">
+        .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
+        </style>
+        -->
         <style media="print">
            @page {
             size: auto;
@@ -53,9 +78,9 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Name"/>:</td>
               <td><xsl:value-of select="name"/></td>
-              <td rowspan="10" width="40%" align="center">
+              <td rowspan="11" width="40%" align="center" style="text-align:center; width: 100%;">
                 <xsl:if test="mainmugshotbase64 != ''">
-                  <img src="data:image/png;base64,{mainmugshotbase64}" />
+                  <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
                 </xsl:if>
               </td>
             </tr>

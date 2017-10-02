@@ -88,9 +88,6 @@
   <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWSSDK.Core.3.3.17.5\lib\net45\AWSSDK.Core.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.Core.1.5.1-beta1\lib\net45\HtmlRenderer.dll</HintPath>
       <Private>True</Private>
@@ -1663,6 +1660,7 @@
     </Content>
     <Content Include="sheets\Dossier set.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1675,6 +1673,7 @@
     </Content>
     <Content Include="sheets\Fancy Blocks set.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1864,6 +1863,7 @@
     </Content>
     <Content Include="sheets\xt.MugShot.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\xt.Notes.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1925,7 +1925,7 @@
     <Content Include="sheets\zh\暗影狂奔5（名称排列）.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh\暗影狂奔5（技能等级＞0）.xsl" >
+    <Content Include="sheets\zh\暗影狂奔5（技能等级＞0）.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh\暗影狂奔5（核心）.xsl">
@@ -2120,7 +2120,7 @@
     <Content Include="lang\jp_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-	<Content Include="lang\zh.xml">
+    <Content Include="lang\zh.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="lang\zh_data.xml">

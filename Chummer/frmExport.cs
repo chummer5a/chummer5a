@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
  using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
- using Amazon.Runtime.Internal.Transform;
  using Newtonsoft.Json;
  using Formatting = Newtonsoft.Json.Formatting;
 
@@ -175,7 +174,7 @@ namespace Chummer
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
             {
-                _dictCache.Add(new KeyValuePair<string, string>(cboXSLT.Text, rtbText.Text));
+                _dictCache.Add(cboXSLT.Text, rtbText.Text);
             }
         }
         #endregion
@@ -187,7 +186,7 @@ namespace Chummer
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
             {
-                _dictCache.Add(new KeyValuePair<string, string>(cboXSLT.Text, rtbText.Text));
+                _dictCache.Add(cboXSLT.Text, rtbText.Text);
             }
         }
 

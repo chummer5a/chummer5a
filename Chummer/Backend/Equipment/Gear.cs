@@ -249,7 +249,7 @@ namespace Chummer.Backend.Equipment
                     if (blnAerodynamic)
                     {
                         objGearWeapon.Name += " (" + LanguageManager.Instance.GetString("Checkbox_Aerodynamic") + ")";
-                        objGearWeapon.SetRange("Aerodynamic Grenades");
+                        objGearWeapon.Range = "Aerodynamic Grenades";
                         objGearWeaponNode.Text = objGearWeapon.DisplayName;
                         _strName += " (" + LanguageManager.Instance.GetString("Checkbox_Aerodynamic") + ")";
                         objNode.Text = DisplayName;

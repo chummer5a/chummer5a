@@ -60,6 +60,14 @@ Application Changes:
 - Fixed a bug where newly added items would not cancel themselves if a quality that their bonus added could not be taken for the character.
 - Adept powers without and Adept way discount specified can no longer cause crashes.
 - Magician's Way now works via blacklist instead of whitelist: all powers that have Adept way discounts and that are not specified that Magician's Way is forbidden from getting them discounted will always be eligible for a Magician's Way discount. Fixes #1926.
+- Fixed a bug where the Spells & Spirits tab would not appear for Adepts who would want to or have already learned Rituals or spells through Barehanded Adept. Fixes #1933.
+- Added support to display alternate ranges for weapons in addition to their main ranges. Fixes #1807.
+- Altered Create mode and Career mode windows to have identical dimensions and identical splits. Altered Weapon and Vehicle tabs in Create and Career mode both to largely match each other's layout and make room for alternate ranges.
+- Fixed a possible crash if a Resonance talent priority was defined with no free Complex Forms.
+- Fixed wonky behavior if skill value and a skill group value items were added to a talent priority. Now, skill value always takes complete precedence over skill group value.
+- Added support for talent priorities that give bonus special attribute points.
+- Fixed an issue where having multiple mugshots could cause the main mugshot to get overwritten when creating a character sheet.
+- Added proper support for mugshots of any arbitrary size to be properly displayed. Removed Label_MugshotDimensions and its related label because it is now redundant. Due to wonkiness with how Internet Explorer handles resizing images, it is still recommended that you save to HTML first and then print your sheet from within a browser like Google Chrome or Mozilla Firefox. Also, larger mugshots considerably increase the size of savefiles, so be reasonable.
 
 Data Changes:
 
@@ -111,6 +119,9 @@ Data Changes:
 - Fixed incorrect page number references for Pilot Origins and Multiprocessing qualities.
 - Fixed incorrect range entry for the Control Emotions spell.
 - Silver-Tongued Devil now properly requires Commanding Voice instead of Authoritative Tone.
+- Added alternate range displays to all shotguns that use shotgun ranges, Standard Harpoon Gun, and Aquadyne Shark-XS Harpoon Gun.
+- Added separate range category for weapons that follow Flamethrower rules for Taser ranges.
+- Corrected the range entries for the following weapon entries: Urban Tribe Tomahawk, Shuriken, Chakram, Trafalgar Gun Cane, Knockoff Gun Cane, Parashield Dart Rifle, Flametosser, Mounted Crossbow, Underbarrel Shotgun.
 - Properly applied a bonus to the Master Archer power. 
 
 New Strings:
@@ -139,6 +150,9 @@ New Strings:
 Changes Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf
+
+Removed Strings:
+- Label_MugshotDimensions
 
 Build 194
 
