@@ -227,6 +227,13 @@
           <thresholdoffset precedence="0">1</thresholdoffset>
         </conditionmonitor>
       </bonus>
+	  <forbidden>
+        <oneof>
+		  <bioware>Damage Compensators</bioware>
+		  <bioware>Damage Compensators (2050)</bioware>
+		  <power>Pain Resistance</power>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>74</page>
     </quality>
@@ -6749,6 +6756,7 @@
           <power select="Air Pollution, Moderate">Allergy</power>
           <power select="Sunlight, Moderate">Allergy</power>
           <power select="Metahuman Flesh">Dietary Requirement</power>
+		  <power rating="1">Armor</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -6757,9 +6765,6 @@
           <name>critter</name>
         </enabletab>
         <essencepenalty>-1</essencepenalty>
-        <optionalpowers>
-          <optionalpower>Armor</optionalpower>
-        </optionalpowers>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -8393,7 +8398,7 @@
         <movementmultiplier>1</movementmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
-          <optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+          <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
           <optionalpower>Fear</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
         </optionalpowers>
@@ -9313,6 +9318,432 @@
       </naturalweapons>
       <source>RF</source>
       <page>140</page>
+    </quality>
+	<quality>
+      <id>f466b913-5df0-4370-abf0-fad4ab380d19</id>
+      <name>Infected Optional Power: Armor</name>
+      <karma>6</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+	  <limit>no</limit>
+      <bonus>
+        <critterpowers>
+			<power rating="1">Armor</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Dzoo-Noo-Qua</quality>
+			<quality>Infected: Fomoraig</quality>
+			<quality>Infected: Gnawer</quality>
+			<quality>Infected: Mutaqua</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>62d59650-f889-4599-9700-60829d50887e</id>
+      <name>Infected Optional Power: Compulsion</name>
+      <karma>9</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Compulsion</power>
+		</critterpowers>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<critterpower>Compulsion</critterpower>
+		</oneof>
+	  </forbidden>
+	  <required>
+		<oneof>
+			<quality>Infected: Nosferatu</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>ae0312ad-acb2-4ae8-974e-99af82e81211</id>
+      <name>Infected Optional Power: Enhanced Sense (Hearing)</name>
+      <karma>3</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Hearing">Enhanced Senses</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Dzoo-Noo-Qua</quality>
+			<quality>Infected: Mutaqua</quality>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>3ec5c096-322a-4342-a4fb-4c2ffda565f7</id>
+      <name>Infected Optional Power: Enhanced Sense (Low-Light Vision)</name>
+      <karma>3</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Low-Light Vision">Enhanced Senses</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Mutaqua</quality>
+			<quality>Infected: Nosferatu</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>c0e9082b-4930-4f0a-8d84-090878a28a7b</id>
+      <name>Infected Optional Power: Enhanced Sense (Smell)</name>
+      <karma>3</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Smell">Enhanced Senses</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Goblin</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>11f49fab-be66-4679-bc23-b08cf5742cac</id>
+      <name>Infected Optional Power: Enhanced Sense (Taste)</name>
+      <karma>3</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Taste">Enhanced Senses</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Goblin</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>0baaaa57-d738-448e-8f0f-cdb96357c4ef</id>
+      <name>Infected Optional Power: Enhanced Sense (Thermographic Vision)</name>
+      <karma>3</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Thermographic Vision">Enhanced Senses</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>28d06111-33e6-4260-a4f3-bca94d3b5afa</id>
+      <name>Infected Optional Power: Enhanced Sense (Visual Acuity)</name>
+      <karma>3</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Visual Acuity">Enhanced Senses</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>d5de8180-d8b7-48ab-8a1d-878f1c2736af</id>
+      <name>Infected Optional Power: Fear</name>
+      <karma>9</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Fear</power>
+		</critterpowers>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<critterpower>Fear</critterpower>
+		</oneof>
+	  </forbidden>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Mutaqua</quality>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>a85e0a7e-cfb5-4b51-8eb5-f2775cba303a</id>
+      <name>Infected Optional Power: Immunity (Fire)</name>
+      <karma>6</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Fire">Immunity</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Goblin</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>b0460fde-7bf8-4e77-b402-6fe7143aa590</id>
+      <name>Infected Optional Power: Immunity (Pathogens)</name>
+      <karma>6</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Pathogens">Immunity</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>ad81bcdf-2f45-4ca3-ab46-c766fd734800</id>
+      <name>Infected Optional Power: Immunity (Toxins)</name>
+      <karma>6</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power select="Toxins">Immunity</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Dzoo-Noo-Qua</quality>
+			<quality>Infected: Goblin</quality>
+			<quality>Infected: Mutaqua</quality>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>e3ed1dec-9e91-4dbf-ac5c-30bd6d9900a4</id>
+      <name>Infected Optional Power: Influence</name>
+      <karma>9</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Influence</power>
+		</critterpowers>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<critterpower>Influence</critterpower>
+		</oneof>
+	  </forbidden>
+	  <required>
+		<oneof>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>630fd84e-553d-4faf-a271-9148b717d226</id>
+      <name>Infected Optional Power: Magical Guard</name>
+      <karma>9</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Magical Guard</power>
+		</critterpowers>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<critterpower>Magical Guard</critterpower>
+		</oneof>
+	  </forbidden>
+	  <required>
+		<oneof>
+			<quality>Infected: Dzoo-Noo-Qua</quality>
+			<quality>Infected: Mutaqua</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>7843087c-30a3-4d87-aaa2-5ebdb90cccd8</id>
+      <name>Infected Optional Power: Mist Form</name>
+      <karma>12</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Mist Form</power>
+		</critterpowers>
+      </bonus>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>6d9f205e-52a0-4bb2-a4c2-e49232dd8346</id>
+      <name>Infected Optional Power: Paralyzing Howl</name>
+      <karma>9</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Paralyzing Howl</power>
+		</critterpowers>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<critterpower>Paralyzing Howl</critterpower>
+		</oneof>
+	  </forbidden>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
+    </quality>
+	<quality>
+      <id>311ebb96-bf65-483e-86b7-62702a43aae3</id>
+      <name>Infected Optional Power: Regeneration</name>
+      <karma>12</karma>
+      <category>Positive</category>
+	  <doublecareer>False</doublecareer>
+	  <chargenlimit>0</chargenlimit>
+      <bonus>
+        <critterpowers>
+			<power>Regeneration</power>
+		</critterpowers>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<critterpower>Regeneration</critterpower>
+		</oneof>
+	  </forbidden>
+	  <required>
+		<oneof>
+			<quality>Infected: Banshee</quality>
+			<quality>Infected: Dzoo-Noo-Qua</quality>
+			<quality>Infected: Goblin</quality>
+			<quality>Infected: Mutaqua</quality>
+			<quality>Infected: Nosferatu</quality>
+			<quality>Infected: Vampire (Human)</quality>
+			<quality>Infected: Vampire (Non-Human)</quality>
+			<quality>Infected: Sukuyan (Human)</quality>
+			<quality>Infected: Sukuyan (Non-Human)</quality>
+			<quality>Infected: Wendigo</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>136</page>
     </quality>
     <!-- End Region -->
     <!-- End Region -->

@@ -444,6 +444,11 @@
           <thresholdoffset>Rating</thresholdoffset>
         </conditionmonitor>
       </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>High Pain Tolerance</quality>
+        </oneof>
+      </forbidden>
     </power>
     <power>
       <id>4676b6f7-120d-4344-81ac-5922445a521b</id>

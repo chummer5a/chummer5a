@@ -5650,13 +5650,14 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, bool blnPrintNotes = true)
         {
             objWriter.WriteStartElement("week");
             objWriter.WriteElementString("year", _intYear.ToString());
             objWriter.WriteElementString("month", Month.ToString());
             objWriter.WriteElementString("week", MonthWeek.ToString());
-            objWriter.WriteElementString("notes", _strNotes);
+            if (blnPrintNotes)
+                objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
         #endregion

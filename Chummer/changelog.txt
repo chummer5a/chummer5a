@@ -71,6 +71,13 @@ Application Changes:
 - Added support for improvements that add bonus dice to a particular weapon category.
 - Fixed the updater and "Restart Application" not working properly if Chummer5's exe was renamed.
 - Made a minor refactor of the ImprovementManager. On the user side, fetching of improvement-boosted values should be significantly faster.
+- When values of improvements are fetched, precedence0 and precedence1 items will now check the total value of items without precedence, and if they are less than the latter, they will not override it. Fixes #1231.
+- Added support for the inclusion of adept powers and critter powers in requirements lists.
+- Added support for CM threshold offset improvements that are shared between Physical and Stun tracks. Note that these are always cumulative with regular CM threshold improvements.
+- The category of all knowledge skills are now saved with the character. Fixes #1670, fixes #1624.
+- Fixed a bug where knowledge skill purchased in Create mode could have their category changed in Career mode if they were not advanced with karma. Fixes #1773.
+- Fixed notes in Skills and Calendar not obeying the Print Notes option.
+- Fixed Fancy Blocks character sheet so that its blocks no longer cut across pages and its page break options work properly. Fixes #1018.
 
 Data Changes:
 
@@ -125,7 +132,10 @@ Data Changes:
 - Added alternate range displays to all shotguns that use shotgun ranges, Standard Harpoon Gun, and Aquadyne Shark-XS Harpoon Gun.
 - Added separate range category for weapons that follow Flamethrower rules for Taser ranges.
 - Corrected the range entries for the following weapon entries: Urban Tribe Tomahawk, Shuriken, Chakram, Trafalgar Gun Cane, Knockoff Gun Cane, Parashield Dart Rifle, Flametosser, Mounted Crossbow, Underbarrel Shotgun.
-- Properly applied a bonus to the Master Archer power. 
+- Properly applied a bonus to the Master Archer power.
+- High Pain Tolerance quality is now mutually exclusive from Damage Compensator bioware and Pain Resistance Adept power (Pain Editor is not banned because its effects are not passive).
+- Damage Compensators now properly respond to condition monitors getting filled. Fixes #821.
+- Added optional powers that Infected can take as extra qualities. Fixes #1212.
 
 New Strings:
 - Label_Options_SpellShapingFocus

@@ -2272,7 +2272,9 @@ namespace Chummer
             // <cmthreshold>
             objWriter.WriteElementString("cmthreshold", CMThreshold.ToString());
             // <cmthresholdoffset>
-            objWriter.WriteElementString("cmthresholdoffset", CMThresholdOffset.ToString());
+            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString());
+            // <cmthresholdoffset>
+            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString());
             // <cmoverflow>
             objWriter.WriteElementString("cmoverflow", CMOverflow.ToString());
 
@@ -2648,7 +2650,7 @@ namespace Chummer
             objWriter.WriteStartElement("calendar");
             //_lstCalendar.Sort();
             foreach (CalendarWeek objWeek in _lstCalendar)
-                objWeek.Print(objWriter);
+                objWeek.Print(objWriter, Options.PrintNotes);
             // </expenses>
             objWriter.WriteEndElement();
 
@@ -5675,14 +5677,30 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Number of additioal boxes appear before the first Condition Monitor penalty.
+        /// Number of additioal boxes appear before the first Physical Condition Monitor penalty.
         /// </summary>
-        public int CMThresholdOffset
+        public int PhysicalCMThresholdOffset
         {
             get
             {
                 int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
-                return intCMThresholdOffset;
+                // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
+                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(StunCMFilled - CMThreshold, 0);
+                return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
+            }
+        }
+
+        /// <summary>
+        /// Number of additioal boxes appear before the first Stun Condition Monitor penalty.
+        /// </summary>
+        public int StunCMThresholdOffset
+        {
+            get
+            {
+                int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
+                // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
+                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(PhysicalCMFilled - CMThreshold, 0);
+                return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
             }
         }
 

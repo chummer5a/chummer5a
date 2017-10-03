@@ -642,7 +642,7 @@
                             <xsl:value-of select="cmthreshold"/>
                           </xsl:with-param>
                           <xsl:with-param name="Offset">
-                            <xsl:value-of select="cmthresholdoffset"/>
+                            <xsl:value-of select="physicalcmthresholdoffset"/>
                           </xsl:with-param>
                           <xsl:with-param name="TotalBoxes">
                             <xsl:value-of select="physicalcm"/>
@@ -662,7 +662,7 @@
                             <xsl:value-of select="cmthreshold"/>
                           </xsl:with-param>
                           <xsl:with-param name="Offset">
-                            <xsl:value-of select="cmthresholdoffset"/>
+                            <xsl:value-of select="stuncmthresholdoffset"/>
                           </xsl:with-param>
                           <xsl:with-param name="TotalBoxes">
                             <xsl:value-of select="stuncm"/>

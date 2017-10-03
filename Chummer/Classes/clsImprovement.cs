@@ -113,6 +113,7 @@ namespace Chummer
             Composure,
             UnarmedAP,
             CMThresholdOffset,
+            CMSharedThresholdOffset,
             Restricted,
             Notoriety,
             SpellCategory,
@@ -710,8 +711,8 @@ namespace Chummer
                                 intValue += objImprovement.Value;
                         }
                     }
+                }
             }
-                    }
 
             if (lstUniqueName.Contains("precedence0"))
             {
@@ -722,12 +723,12 @@ namespace Chummer
                 {
                     intHighest += lstUniquePair.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
                     }
-                intValue = intHighest;
+                intValue = Math.Max(intValue, intHighest);
                 }
             else if (lstUniqueName.Contains("precedence1"))
                 {
                 // Retrieve all of the items that are precedence1 and nothing else.
-                intValue = lstUniquePair.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                intValue = Math.Max(intValue, lstUniquePair.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
             }
             else
                     {

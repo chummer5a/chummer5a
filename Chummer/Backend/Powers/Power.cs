@@ -15,7 +15,7 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
-    public class Power : INotifyPropertyChanged
+    public class Power : INotifyPropertyChanged, INamedItemWithGuid
     {
         private Guid _guiID;
         private Guid _sourceID = new Guid();

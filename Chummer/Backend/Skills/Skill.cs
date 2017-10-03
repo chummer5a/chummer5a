@@ -44,6 +44,8 @@ namespace Chummer.Skills
             writer.WriteStartElement("skill");
             writer.WriteElementString("guid", Id.ToString());
             writer.WriteElementString("suid", SkillId.ToString());
+            writer.WriteElementString("isknowledge", IsKnowledgeSkill.ToString());
+            writer.WriteElementString("skillcategory", SkillCategory);
             writer.WriteElementString("karma", _karma.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("base", _base.ToString(CultureInfo.InvariantCulture)); //this could acctually be saved in karma too during career
             writer.WriteElementString("notes", _strNotes);
@@ -101,7 +103,8 @@ namespace Chummer.Skills
             objWriter.WriteElementString("spec", DisplaySpecialization);
             objWriter.WriteElementString("attribute", Attribute);
             objWriter.WriteElementString("displayattribute", DisplayAttribute);
-            objWriter.WriteElementString("notes", _strNotes);
+            if (CharacterObject.Options.PrintNotes)
+                objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
@@ -171,6 +174,15 @@ namespace Chummer.Skills
             XmlElement element = n["guid"];
             if (element != null) skill.Id = Guid.Parse(element.InnerText);
 
+            bool blnIsKnowledgeSkill = false;
+            if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill))
+            {
+                string strCategoryString = string.Empty;
+                if (n.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
+                {
+                    ((KnowledgeSkill)skill).Type = strCategoryString;
+                }
+            }
             n.TryGetInt32FieldQuickly("karma", ref skill._karma);
             n.TryGetInt32FieldQuickly("base", ref skill._base);
             n.TryGetBoolFieldQuickly("buywithkarma", ref skill._buyWithKarma);

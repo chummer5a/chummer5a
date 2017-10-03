@@ -121,7 +121,18 @@ namespace Chummer.Backend.Shared_Methods
                             objListToCheck = objCharacter.Enhancements;
                             break;
                         }
+                    case "power":
+                        {
+                            objListToCheck = objCharacter.Powers;
+                            break;
+                        }
+                    case "critterpower":
+                        {
+                            objListToCheck = objCharacter.CritterPowers;
+                            break;
+                        }
                     case "cyberware":
+                    case "bioware":
                         {
                             objListToCheck = objCharacter.Cyberware;
                             break;

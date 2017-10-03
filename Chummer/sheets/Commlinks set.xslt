@@ -166,7 +166,7 @@
                     <td width="50%" valign="top">
                       <xsl:call-template name="ConditionMonitor">
                         <xsl:with-param name="PenaltyBox"><xsl:value-of select="../../cmthreshold"/></xsl:with-param>
-                        <xsl:with-param name="Offset"><xsl:value-of select="../../cmthresholdoffset"/></xsl:with-param>
+                        <xsl:with-param name="Offset"><xsl:value-of select="../../physicalcmthresholdoffset"/></xsl:with-param>
                         <xsl:with-param name="CMWidth">3</xsl:with-param>
                         <xsl:with-param name="TotalBoxes"><xsl:value-of select="../../physicalcm"/></xsl:with-param>
                         <xsl:with-param name="DamageTaken"><xsl:value-of select="../../physicalcmfilled"/></xsl:with-param>
@@ -176,7 +176,7 @@
                     <td widht="50%" valign="top">
                       <xsl:call-template name="ConditionMonitor">
                         <xsl:with-param name="PenaltyBox"><xsl:value-of select="../../cmthreshold"/></xsl:with-param>
-                        <xsl:with-param name="Offset"><xsl:value-of select="../../cmthresholdoffset"/></xsl:with-param>
+                        <xsl:with-param name="Offset"><xsl:value-of select="../../stuncmthresholdoffset"/></xsl:with-param>
                         <xsl:with-param name="CMWidth">3</xsl:with-param>
                         <xsl:with-param name="TotalBoxes"><xsl:value-of select="../../stuncm"/></xsl:with-param>
                         <xsl:with-param name="DamageTaken"><xsl:value-of select="../../stuncmfilled"/></xsl:with-param>

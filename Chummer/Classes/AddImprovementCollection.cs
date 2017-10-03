@@ -1776,6 +1776,17 @@ namespace Chummer.Classes
                 CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
                     strUseUnique, ValueToInt(_objCharacter, bonusNode["thresholdoffset"].InnerText, _intRating));
             }
+            // Condition Monitor Threshold Offset that must be shared between the two. (Additioal boxes appear before the FIRST Condition Monitor penalty)
+            if (bonusNode["sharedthresholdoffset"] != null)
+            {
+                string strUseUnique = _strUnique;
+                if (bonusNode["sharedthresholdoffset"].Attributes["precedence"] != null)
+                    strUseUnique = "precedence" + bonusNode["sharedthresholdoffset"].Attributes["precedence"].InnerText;
+
+                Log.Info("Calling CreateImprovement for Threshold Offset");
+                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CMSharedThresholdOffset,
+                    strUseUnique, ValueToInt(_objCharacter, bonusNode["sharedthresholdoffset"].InnerText, _intRating));
+            }
 
             // Condition Monitor Overflow.
             if (bonusNode["overflow"] != null)

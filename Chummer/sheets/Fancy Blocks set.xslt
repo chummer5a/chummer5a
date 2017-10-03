@@ -89,6 +89,10 @@
           {
           color: grey;
           }
+          td
+          {
+          page-break-inside: avoid;
+          }
           strong
           {
           font-size: 105%;
@@ -121,7 +125,7 @@
           .page_breaker_on
           {
           page-break-before: always;
-          display: none;
+          visibility: hidden;
           }
           .noprint
           {
@@ -386,19 +390,20 @@
           <xsl:when test="qualities/quality[name='Aspected Magician']"><td>Special</td><td><strong>Aspected Magician</strong></td></xsl:when>
           <xsl:when test="qualities/quality[name='Magician']"><td>Special</td><td><strong>Magician</strong></td></xsl:when>
           <xsl:when test="qualities/quality[name='Technomancer']"><td>Special</td><td><strong>Technomancer</strong></td></xsl:when>
+          <xsl:otherwise><td></td><td></td></xsl:otherwise>
         </xsl:choose>
       </tr>
-      <tr><td>Age</td><td><strong><xsl:value-of select="age" /></strong></td> <td>Skin</td><td><strong><xsl:value-of select="skin" /></strong></td></tr>
-      <tr><td>Hair</td><td><strong><xsl:value-of select="hair" /></strong></td> <td>Eyes</td><td><strong><xsl:value-of select="eyes" /></strong></td></tr>
-      <tr><td>Height</td><td><strong><xsl:value-of select="height" /></strong></td> <td>Weight</td><td><strong><xsl:value-of select="weight" /></strong></td></tr>
+      <tr><td>Age</td><td><strong><xsl:value-of select="age" /></strong></td> <td>Skin</td><td style="white-space: nowrap;"><strong><xsl:value-of select="skin" /></strong></td></tr>
+      <tr><td>Hair</td><td><strong><xsl:value-of select="hair" /></strong></td> <td>Eyes</td><td style="white-space: nowrap;"><strong><xsl:value-of select="eyes" /></strong></td></tr>
+      <tr><td>Height</td><td><strong><xsl:value-of select="height" /></strong></td> <td>Weight</td><td style="white-space: nowrap;"><strong><xsl:value-of select="weight" /></strong></td></tr>
       <tr><td colspan="4"><hr /></td></tr>
-      <tr><td>Karma</td><td><strong><xsl:value-of select="karma" /></strong></td> <td>Nuyen</td><td><strong><xsl:value-of select="nuyen" /> &#165;</strong></td></tr>
-      <tr><td>Streed Cred</td><td><strong><xsl:value-of select="totalstreetcred" /></strong></td> <td>Career Karma</td><td><strong><xsl:value-of select="totalkarma" /></strong></td></tr>
-      <tr><td>Notoriety</td><td><strong><xsl:value-of select="totalnotoriety" /></strong></td> <td>Public Awareness</td><td><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
+      <tr><td>Karma</td><td><strong><xsl:value-of select="karma" /></strong></td> <td>Nuyen</td><td style="white-space: nowrap;"><strong><xsl:value-of select="nuyen" /> &#165;</strong></td></tr>
+      <tr><td>Streed Cred</td><td><strong><xsl:value-of select="totalstreetcred" /></strong></td> <td>Career Karma</td><td style="white-space: nowrap;"><strong><xsl:value-of select="totalkarma" /></strong></td></tr>
+      <tr><td>Notoriety</td><td><strong><xsl:value-of select="totalnotoriety" /></strong></td> <td>Public Awareness</td><td style="white-space: nowrap;"><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
       <tr><td colspan="4"><hr /></td></tr>
-      <tr><td>Composure</td><td><strong><xsl:value-of select="composure" /></strong></td> <td>Judge Intentions</td><td><strong><xsl:value-of select="judgeintentions" /></strong></td></tr>
-      <tr><td>Memory</td><td><strong><xsl:value-of select="memory" /></strong></td> <td>Lift and Carry</td><td><strong><xsl:value-of select="liftandcarry" /></strong></td></tr>
-      <tr><td>Movement</td><td><strong><xsl:value-of select="movement" /></strong></td> <td>Lift/Carry Weight</td><td><strong><xsl:value-of select="liftweight" />/<xsl:value-of select="carryweight" /></strong></td></tr>
+      <tr><td>Composure</td><td><strong><xsl:value-of select="composure" /></strong></td> <td>Judge Intentions</td><td style="white-space: nowrap;"><strong><xsl:value-of select="judgeintentions" /></strong></td></tr>
+      <tr><td>Memory</td><td><strong><xsl:value-of select="memory" /></strong></td> <td>Lift and Carry</td><td style="white-space: nowrap;"><strong><xsl:value-of select="liftandcarry" /></strong></td></tr>
+      <tr><td>Movement</td><td><strong><xsl:value-of select="movement" /></strong></td> <td>Lift/Carry Weight</td><td style="white-space: nowrap;"><strong><xsl:value-of select="liftweight" />/<xsl:value-of select="carryweight" /></strong></td></tr>
       <tr><td colspan="4"><hr /></td></tr>
       <tr><td>Physical</td><td><strong><xsl:value-of select="limitphysical" /></strong></td> <td>Mental</td><td><strong><xsl:value-of select="limitmental" /></strong></td></tr>
       <tr><td>Social</td><td><strong><xsl:value-of select="limitsocial" /></strong></td> <td>Astral</td><td><strong><xsl:value-of select="limitastral" /></strong></td></tr>
