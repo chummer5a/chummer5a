@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -60,6 +60,8 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
+                if (objXmlCategory["hide"] != null)
+                    continue;
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
                 objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
@@ -90,6 +92,8 @@ namespace Chummer
             XmlNodeList objXmlPacksList = _objXmlDocument.SelectNodes("/chummer/packs/pack[category = \"" + cboCategory.SelectedValue + "\"]");
             foreach (XmlNode objXmlPack in objXmlPacksList)
             {
+                if (objXmlPack["hide"] != null)
+                    continue;
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPack["name"].InnerText;
                 objItem.Name = objXmlPack["translate"]?.InnerText ?? objXmlPack["name"].InnerText;
@@ -126,6 +130,8 @@ namespace Chummer
 
             foreach (XmlNode objXmlItem in objXmlPack.ChildNodes)
             {
+                if (objXmlItem["hide"] != null)
+                    continue;
                 TreeNode objParent = new TreeNode();
                 switch (objXmlItem.Name)
                 {
@@ -134,6 +140,8 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlAttribute in objXmlItem.ChildNodes)
                         {
+                            if (objXmlAttribute["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = LanguageManager.Instance.GetString("String_Attribute" + objXmlAttribute.Name.ToUpper() + "Short") + " " + (Convert.ToInt32(objXmlAttribute.InnerText) - (6 - _objCharacter.GetAttribute(objXmlAttribute.Name.ToUpper()).MetatypeMaximum)).ToString();
 
@@ -149,7 +157,11 @@ namespace Chummer
                         // Positive Qualities.
                         foreach (XmlNode objXmlQuality in objXmlItem.SelectNodes("positive/quality"))
                         {
+                            if (objXmlQuality["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
@@ -162,7 +174,11 @@ namespace Chummer
                         // Negative Qualities.
                         foreach (XmlNode objXmlQuality in objXmlItem.SelectNodes("negative/quality"))
                         {
+                            if (objXmlQuality["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
@@ -187,7 +203,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
                         {
+                            if (objXmlSkill["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objXmlSkill["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
                             objChild.Text += " " + objXmlSkill["rating"].InnerText;
@@ -199,7 +219,11 @@ namespace Chummer
                         }
                         foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skillgroup"))
                         {
+                            if (objXmlSkill["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + objXmlSkill["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode.Attributes["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
                             objChild.Text += $" {LanguageManager.Instance.GetString("String_SelectPACKSKit_Group")} {objXmlSkill["rating"].InnerText}";
@@ -217,10 +241,14 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
                         {
+                            if (objXmlSkill["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             if (objXmlSkill["name"] != null)
                             {
                                 XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + objXmlSkill["name"].InnerText + "\"]");
+                                if (objNode["hide"] != null)
+                                    continue;
                                 objChild.Text = objNode?["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
                             }
                             objChild.Text += " " + objXmlSkill["rating"].InnerText;
@@ -254,7 +282,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlArt in objXmlItem.SelectNodes("martialart"))
                         {
+                            if (objXmlArt["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + objXmlArt["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlArt["name"].InnerText;
                             objChild.Text += " " + objXmlArt["rating"].InnerText;
@@ -262,7 +294,11 @@ namespace Chummer
                             // Check for Advantages.
                             foreach (XmlNode objXmlAdvantage in objXmlArt.SelectNodes("techniques/technique"))
                             {
+                                if (objXmlAdvantage["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + objXmlArt["name"].InnerText + "\"]/techniques/technique[name = \"" + objXmlAdvantage.InnerText + "\"]");
+                                if (objNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode.Attributes["translate"]?.InnerText ?? objXmlAdvantage["name"].InnerText;
 
@@ -276,7 +312,11 @@ namespace Chummer
 
                         foreach (XmlNode objXmlManeuver in objXmlItem.SelectNodes("maneuver"))
                         {
+                            if (objXmlManeuver["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + objXmlManeuver.InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlManeuver["name"].InnerText;
                             objChild.Text += " " + objXmlManeuver["rating"].InnerText;
@@ -292,7 +332,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlPower in objXmlItem.SelectNodes("power"))
                         {
+                            if (objXmlPower["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
 
@@ -311,7 +355,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlProgram in objXmlItem.SelectNodes("program"))
                         {
+                            if (objXmlProgram["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlProgram["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
                             objChild.Text += " " + objXmlProgram["rating"].InnerText;
@@ -319,7 +367,11 @@ namespace Chummer
                             // Check for Program Options.
                             foreach (XmlNode objXmlOption in objXmlProgram.SelectNodes("options/option"))
                             {
+                                if (objXmlOption["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/options/option[name = \"" + objXmlOption["name"].InnerText + "\"]");
+                                if (objNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
 
@@ -341,7 +393,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSpell in objXmlItem.SelectNodes("spell"))
                         {
+                            if (objXmlSpell["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + objXmlSpell.InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlSpell.InnerText;
 
@@ -357,6 +413,8 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSpirit in objXmlItem.SelectNodes("spirit"))
                         {
+                            if (objXmlSpirit["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objXmlSpirit["name"].InnerText + " (" + LanguageManager.Instance.GetString("Label_Spirit_Force") + " " + objXmlSpirit["force"].InnerText + ", " + LanguageManager.Instance.GetString("Label_Spirit_ServicesOwed") + " " + objXmlSpirit["services"].InnerText + ")";
                             objParent.Nodes.Add(objChild);
@@ -369,12 +427,16 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlLifestyle in objXmlItem.SelectNodes("lifestyle"))
                         {
+                            if (objXmlLifestyle["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = string.Format("{0} {1} {2}", objXmlLifestyle["name"].InnerText, objXmlLifestyle["months"].InnerText, LanguageManager.Instance.GetString("Label_LifestyleMonths"));
 
                             // Check for Qualities.
                             foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
                             {
+                                if (objXmlQuality["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objXmlQuality.InnerText;
                                 objChild.Nodes.Add(objChildChild);
@@ -392,7 +454,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlCyberware in objXmlItem.SelectNodes("cyberware"))
                         {
+                            if (objXmlCyberware["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlCyberware["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlCyberware["name"].InnerText;
 
@@ -403,7 +469,11 @@ namespace Chummer
                             // Check for children.
                             foreach (XmlNode objXmlChild in objXmlCyberware.SelectNodes("cyberwares/cyberware"))
                             {
+                                if (objXmlChild["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlChild["name"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlChild["name"].InnerText;
 
@@ -433,7 +503,11 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlBioware in objXmlItem.SelectNodes("bioware"))
                         {
+                            if (objXmlBioware["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlBioware["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlBioware["name"].InnerText;
 
@@ -456,14 +530,22 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlArmor in objXmlItem.SelectNodes("armor"))
                         {
+                            if (objXmlArmor["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + objXmlArmor["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
 
                             // Check for children.
                             foreach (XmlNode objXmlChild in objXmlArmor.SelectNodes("mods/mod"))
                             {
+                                if (objXmlChild["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlChild["name"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlChild["name"].InnerText;
 
@@ -488,14 +570,22 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlWeapon in objXmlItem.SelectNodes("weapon"))
                         {
+                            if (objXmlWeapon["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
 
                             // Check for Weapon Accessories.
                             foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                             {
+                                if (objXmlAccessory["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlAccessory["name"].InnerText;
 
@@ -513,7 +603,11 @@ namespace Chummer
                             // Check for Weapon Mods.
                             foreach (XmlNode objXmlMod in objXmlWeapon.SelectNodes("mods/mod"))
                             {
+                                if (objXmlMod["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
 
@@ -526,7 +620,11 @@ namespace Chummer
                             // Check for Underbarrel Weapons.
                             if (objXmlWeapon["underbarrel"] != null)
                             {
+                                if (objXmlWeapon["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
 
@@ -545,6 +643,8 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlGear in objXmlItem.SelectNodes("gear"))
                         {
+                            if (objXmlGear["hide"] != null)
+                                continue;
                             WriteGear(objXmlItemDocument, objXmlGear, objParent);
                             objParent.Expand();
                         }
@@ -556,14 +656,22 @@ namespace Chummer
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlVehicle in objXmlItem.SelectNodes("vehicle"))
                         {
+                            if (objXmlVehicle["hide"] != null)
+                                continue;
                             XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlVehicle["name"].InnerText + "\"]");
+                            if (objNode["hide"] != null)
+                                continue;
                             TreeNode objChild = new TreeNode();
                             objChild.Text = objNode["translate"]?.InnerText ?? objXmlVehicle["name"].InnerText;
 
                             // Check for children.
                             foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
                             {
+                                if (objXmlMod["hide"] != null)
+                                    continue;
                                 XmlNode objChildNode = objXmlItemDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
 
@@ -576,6 +684,8 @@ namespace Chummer
                             // Check for children.
                             foreach (XmlNode objXmlChild in objXmlVehicle.SelectNodes("gears/gear"))
                             {
+                                if (objXmlChild["hide"] != null)
+                                    continue;
                                 WriteGear(objXmlGearDocument, objXmlChild, objChild);
                                 objChild.Expand();
                             }
@@ -583,8 +693,12 @@ namespace Chummer
                             // Check for children.
                             foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
                             {
+                                if (objXmlWeapon["hide"] != null)
+                                    continue;
                                 XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
                                 XmlNode objChildNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                                if (objChildNode["hide"] != null)
+                                    continue;
                                 TreeNode objChildChild = new TreeNode();
                                 objChildChild.Text = objChildNode["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText;
 

@@ -244,7 +244,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlGear in objXmlGearList)
             {
-                if (objXmlGear["hidden"] != null)
+                if (objXmlGear["hide"] != null)
                     continue;
 
                 if (objXmlGear["forbidden"]?["geardetails"] != null)
@@ -394,7 +394,7 @@ namespace Chummer
             bool blnAddToList;
             foreach (XmlNode objXmlGear in objXmlGearList)
             {
-                if (objXmlGear["hidden"] != null)
+                if (objXmlGear["hide"] != null)
                     continue;
                 if (objXmlGear["forbidden"]?["geardetails"] != null)
                 {

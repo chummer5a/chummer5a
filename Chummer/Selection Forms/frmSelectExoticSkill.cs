@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,11 +25,14 @@ namespace Chummer
 {
     public partial class frmSelectExoticSkill : Form
     {
+        private readonly Character _objCharacter;
+
         #region Control Events
-        public frmSelectExoticSkill()
+        public frmSelectExoticSkill(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            _objCharacter = objCharacter;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -118,11 +121,11 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
             XmlNodeList objXmlSelectedSkill =
-                objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + cboCategory.SelectedValue.ToString() + "\"]/specs/spec");
+                objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + cboCategory.SelectedValue.ToString() + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec");
             XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
             XmlNodeList objXmlWeaponList =
-                objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue.ToString() +
-                                                 "s\" or useskill = \"" + cboCategory.SelectedValue.ToString() + "\"]");
+                objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(category = \"" + cboCategory.SelectedValue.ToString() +
+                                                 "s\" or useskill = \"" + cboCategory.SelectedValue.ToString() + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlWeapon in objXmlWeaponList)
             {
                 ListItem objItem = new ListItem();

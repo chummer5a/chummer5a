@@ -2647,7 +2647,7 @@
       <dataprocessing>4</dataprocessing>
       <devicerating>4</devicerating>
       <firewall>4</firewall>
-      <hidden />
+      <hide />
       <sleaze>0</sleaze>
     </gear>
     <gear>
@@ -2664,7 +2664,7 @@
       <dataprocessing>5</dataprocessing>
       <devicerating>5</devicerating>
       <firewall>5</firewall>
-      <hidden />
+      <hide />
       <sleaze>0</sleaze>
     </gear>
     <gear>

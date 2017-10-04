@@ -11,6 +11,7 @@
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" />
                     <xs:element name="name" type="xs:string" />
+					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="karma" type="xs:unsignedByte" />
                     <xs:element name="maxavailability" type="xs:unsignedByte" />
                     <xs:element name="maxnuyen" type="xs:unsignedByte" />

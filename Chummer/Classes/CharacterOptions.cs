@@ -177,6 +177,9 @@ namespace Chummer
         private int _intBuildPoints = 800;
         private int _intAvailability = 12;
 
+        // List of names of custom data directories
+        private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
+
         // Sourcebook list.
         private readonly List<string> _lstBooks = new List<string>();
         private bool _mysaddPpCareer;
@@ -555,6 +558,15 @@ namespace Chummer
             // </books>
             objWriter.WriteEndElement();
 
+
+            // <customdatadirectorynames>
+            objWriter.WriteStartElement("customdatadirectorynames");
+            foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
+                objWriter.WriteElementString("directoryname", strDirectoryName);
+            // </customdatadirectorynames>
+            objWriter.WriteEndElement();
+            // <hascustomdirectories>
+
             // <defaultbuild>
             objWriter.WriteStartElement("defaultbuild");
             // <buildmethod />
@@ -867,6 +879,11 @@ namespace Chummer
                 _lstBooks.Add(objXmlBook.InnerText);
             RecalculateBookXPath();
 
+            // Load Custom Data Directory names.
+            _lstCustomDataDirectoryNames.Clear();
+            foreach (XmlNode objXmlDirectoryName in objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
+
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
             objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
@@ -1015,7 +1032,7 @@ namespace Chummer
             foreach (string strBookCode in strBooks)
             {
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-                if (objXmlBook?["code"] != null)
+                if (objXmlBook?["code"] != null && objXmlBook["hide"] == null)
                 {
                     _lstBooks.Add(objXmlBook["code"].InnerText);
                 }
@@ -1122,30 +1139,20 @@ namespace Chummer
             string strPath = _strBookXPath;
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                if (GlobalOptions.Instance.MissionsOnly)
-                {
-                    strPath += " and not(nomission)";
-                }
-
-                if (!GlobalOptions.Instance.Dronemods)
-                {
-                    strPath += " and not(optionaldrone)";
-                }
+                strPath += " and not(hide)";
             }
             else
             {
-                if (GlobalOptions.Instance.MissionsOnly)
-                {
-                    strPath += "not(nomission)";
-                    if (!GlobalOptions.Instance.Dronemods)
-                    {
-                        strPath += " and not(optionaldrone)";
-                    }
-                }
-                else if (!GlobalOptions.Instance.Dronemods)
-                {
-                    strPath += "not(optionaldrone)";
-                }
+                strPath += "not(hide)";
+            }
+            if (GlobalOptions.Instance.MissionsOnly)
+            {
+                strPath += " and not(nomission)";
+            }
+
+            if (!GlobalOptions.Instance.Dronemods)
+            {
+                strPath += " and not(optionaldrone)";
             }
             return strPath;
         }
@@ -1662,6 +1669,17 @@ namespace Chummer
             get
             {
                 return _lstBooks;
+            }
+        }
+
+        /// <summary>
+        /// Names of custom data directories
+        /// </summary>
+        public List<string> CustomDataDirectoryNames
+        {
+            get
+            {
+                return _lstCustomDataDirectoryNames;
             }
         }
 

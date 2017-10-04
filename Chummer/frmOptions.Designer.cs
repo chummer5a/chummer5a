@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmOptions
     {
@@ -221,19 +221,18 @@
             this.nudKarmaJoinGroup = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaJoinGroup = new System.Windows.Forms.Label();
             this.tabOptionalRules = new System.Windows.Forms.TabPage();
+            this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.cmdRenameCustomDataDirectory = new System.Windows.Forms.Button();
+            this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
+            this.cmdRemoveCustomDirectory = new System.Windows.Forms.Button();
+            this.cmdAddCustomDirectory = new System.Windows.Forms.Button();
+            this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
             this.chkDronemodsMaximumPilot = new System.Windows.Forms.CheckBox();
             this.chkDronemods = new System.Windows.Forms.CheckBox();
             this.chkMissions = new System.Windows.Forms.CheckBox();
-            this.chkContactPoints = new System.Windows.Forms.CheckBox();
-            this.chkMayBuyQualities = new System.Windows.Forms.CheckBox();
             this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
-            this.chkAlternateMatrixAttribute = new System.Windows.Forms.CheckBox();
-            this.chkAllowCustomTransgenics = new System.Windows.Forms.CheckBox();
-            this.chkAlternateComplexFormCost = new System.Windows.Forms.CheckBox();
-            this.chkArmorDegradation = new System.Windows.Forms.CheckBox();
-            this.chkArmorSuitCapacity = new System.Windows.Forms.CheckBox();
             this.chkMaximumArmorModifications = new System.Windows.Forms.CheckBox();
-            this.chkStrengthAffectsRecoil = new System.Windows.Forms.CheckBox();
             this.lblMetatypeCostsKarma = new System.Windows.Forms.Label();
             this.nudMetatypeCostsKarmaMultiplier = new System.Windows.Forms.NumericUpDown();
             this.chkMetatypeCostsKarma = new System.Windows.Forms.CheckBox();
@@ -2478,19 +2477,18 @@
             // tabOptionalRules
             // 
             this.tabOptionalRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabOptionalRules.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder);
+            this.tabOptionalRules.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder);
+            this.tabOptionalRules.Controls.Add(this.cmdRenameCustomDataDirectory);
+            this.tabOptionalRules.Controls.Add(this.treCustomDataDirectories);
+            this.tabOptionalRules.Controls.Add(this.cmdRemoveCustomDirectory);
+            this.tabOptionalRules.Controls.Add(this.cmdAddCustomDirectory);
+            this.tabOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel);
             this.tabOptionalRules.Controls.Add(this.chkDronemodsMaximumPilot);
             this.tabOptionalRules.Controls.Add(this.chkDronemods);
             this.tabOptionalRules.Controls.Add(this.chkMissions);
-            this.tabOptionalRules.Controls.Add(this.chkContactPoints);
-            this.tabOptionalRules.Controls.Add(this.chkMayBuyQualities);
             this.tabOptionalRules.Controls.Add(this.chkExtendAnyDetectionSpell);
-            this.tabOptionalRules.Controls.Add(this.chkAlternateMatrixAttribute);
-            this.tabOptionalRules.Controls.Add(this.chkAllowCustomTransgenics);
-            this.tabOptionalRules.Controls.Add(this.chkAlternateComplexFormCost);
-            this.tabOptionalRules.Controls.Add(this.chkArmorDegradation);
-            this.tabOptionalRules.Controls.Add(this.chkArmorSuitCapacity);
             this.tabOptionalRules.Controls.Add(this.chkMaximumArmorModifications);
-            this.tabOptionalRules.Controls.Add(this.chkStrengthAffectsRecoil);
             this.tabOptionalRules.Controls.Add(this.lblMetatypeCostsKarma);
             this.tabOptionalRules.Controls.Add(this.nudMetatypeCostsKarmaMultiplier);
             this.tabOptionalRules.Controls.Add(this.chkMetatypeCostsKarma);
@@ -2504,6 +2502,89 @@
             this.tabOptionalRules.TabIndex = 2;
             this.tabOptionalRules.Tag = "Tab_Options_OptionalRules";
             this.tabOptionalRules.Text = "Optional Rules";
+            // 
+            // cmdIncreaseCustomDirectoryLoadOrder
+            // 
+            this.cmdIncreaseCustomDirectoryLoadOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(459, 535);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
+            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(167, 24);
+            this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
+            this.cmdIncreaseCustomDirectoryLoadOrder.Tag = "Button_IncreaseCustomDirectoryLoadOrder";
+            this.cmdIncreaseCustomDirectoryLoadOrder.Text = "Increase Load Order";
+            this.cmdIncreaseCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdIncreaseCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdIncreaseCustomDirectoryLoadOrder_Click);
+            // 
+            // cmdDecreaseCustomDirectoryLoadOrder
+            // 
+            this.cmdDecreaseCustomDirectoryLoadOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(632, 535);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
+            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(167, 24);
+            this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
+            this.cmdDecreaseCustomDirectoryLoadOrder.Tag = "Button_DecreaseCustomDirectoryLoadOrder";
+            this.cmdDecreaseCustomDirectoryLoadOrder.Text = "Decrease Load Order";
+            this.cmdDecreaseCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdDecreaseCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdDecreaseCustomDirectoryLoadOrder_Click);
+            // 
+            // cmdRenameCustomDataDirectory
+            // 
+            this.cmdRenameCustomDataDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdRenameCustomDataDirectory.Location = new System.Drawing.Point(569, 155);
+            this.cmdRenameCustomDataDirectory.Name = "cmdRenameCustomDataDirectory";
+            this.cmdRenameCustomDataDirectory.Size = new System.Drawing.Size(112, 24);
+            this.cmdRenameCustomDataDirectory.TabIndex = 41;
+            this.cmdRenameCustomDataDirectory.Tag = "Button_RenameCustomDataDirectory";
+            this.cmdRenameCustomDataDirectory.Text = "Rename Entry";
+            this.cmdRenameCustomDataDirectory.UseVisualStyleBackColor = true;
+            this.cmdRenameCustomDataDirectory.Click += new System.EventHandler(this.cmdRenameCustomDataDirectory_Click);
+            // 
+            // treCustomDataDirectories
+            // 
+            this.treCustomDataDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treCustomDataDirectories.CheckBoxes = true;
+            this.treCustomDataDirectories.Location = new System.Drawing.Point(8, 182);
+            this.treCustomDataDirectories.Name = "treCustomDataDirectories";
+            this.treCustomDataDirectories.ShowLines = false;
+            this.treCustomDataDirectories.ShowPlusMinus = false;
+            this.treCustomDataDirectories.ShowRootLines = false;
+            this.treCustomDataDirectories.Size = new System.Drawing.Size(791, 347);
+            this.treCustomDataDirectories.TabIndex = 40;
+            this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
+            // 
+            // cmdRemoveCustomDirectory
+            // 
+            this.cmdRemoveCustomDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdRemoveCustomDirectory.Location = new System.Drawing.Point(687, 155);
+            this.cmdRemoveCustomDirectory.Name = "cmdRemoveCustomDirectory";
+            this.cmdRemoveCustomDirectory.Size = new System.Drawing.Size(112, 24);
+            this.cmdRemoveCustomDirectory.TabIndex = 39;
+            this.cmdRemoveCustomDirectory.Tag = "Button_RemoveCustomDirectory";
+            this.cmdRemoveCustomDirectory.Text = "Remove Directory";
+            this.cmdRemoveCustomDirectory.UseVisualStyleBackColor = true;
+            this.cmdRemoveCustomDirectory.Click += new System.EventHandler(this.cmdRemoveCustomDirectory_Click);
+            // 
+            // cmdAddCustomDirectory
+            // 
+            this.cmdAddCustomDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdAddCustomDirectory.Location = new System.Drawing.Point(451, 155);
+            this.cmdAddCustomDirectory.Name = "cmdAddCustomDirectory";
+            this.cmdAddCustomDirectory.Size = new System.Drawing.Size(112, 24);
+            this.cmdAddCustomDirectory.TabIndex = 38;
+            this.cmdAddCustomDirectory.Tag = "Button_AddCustomDirectory";
+            this.cmdAddCustomDirectory.Text = "Add Directory";
+            this.cmdAddCustomDirectory.UseVisualStyleBackColor = true;
+            this.cmdAddCustomDirectory.Click += new System.EventHandler(this.cmdAddCustomDirectory_Click);
+            // 
+            // lblCustomDataDirectoriesLabel
+            // 
+            this.lblCustomDataDirectoriesLabel.AutoSize = true;
+            this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(8, 161);
+            this.lblCustomDataDirectoriesLabel.Name = "lblCustomDataDirectoriesLabel";
+            this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(358, 13);
+            this.lblCustomDataDirectoriesLabel.TabIndex = 36;
+            this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directories to Use (Changes Are Only Applied After a Restart)";
             // 
             // chkDronemodsMaximumPilot
             // 
@@ -2541,32 +2622,6 @@
             this.chkMissions.UseVisualStyleBackColor = true;
             this.chkMissions.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // chkContactPoints
-            // 
-            this.chkContactPoints.AutoSize = true;
-            this.chkContactPoints.Location = new System.Drawing.Point(366, 259);
-            this.chkContactPoints.Name = "chkContactPoints";
-            this.chkContactPoints.Size = new System.Drawing.Size(252, 17);
-            this.chkContactPoints.TabIndex = 32;
-            this.chkContactPoints.Tag = "Checkbox_Options_ContactPoints";
-            this.chkContactPoints.Text = "Contact points instead of fixed Contacts (RC 40)";
-            this.chkContactPoints.UseVisualStyleBackColor = true;
-            this.chkContactPoints.Visible = false;
-            this.chkContactPoints.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkMayBuyQualities
-            // 
-            this.chkMayBuyQualities.AutoSize = true;
-            this.chkMayBuyQualities.Location = new System.Drawing.Point(366, 282);
-            this.chkMayBuyQualities.Name = "chkMayBuyQualities";
-            this.chkMayBuyQualities.Size = new System.Drawing.Size(148, 17);
-            this.chkMayBuyQualities.TabIndex = 31;
-            this.chkMayBuyQualities.Tag = "Checkbox_Options_MayBuyQualities";
-            this.chkMayBuyQualities.Text = "May buy Qualities (RC 40)";
-            this.chkMayBuyQualities.UseVisualStyleBackColor = true;
-            this.chkMayBuyQualities.Visible = false;
-            this.chkMayBuyQualities.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkExtendAnyDetectionSpell
             // 
             this.chkExtendAnyDetectionSpell.AutoSize = true;
@@ -2580,71 +2635,6 @@
             this.chkExtendAnyDetectionSpell.Visible = false;
             this.chkExtendAnyDetectionSpell.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // chkAlternateMatrixAttribute
-            // 
-            this.chkAlternateMatrixAttribute.AutoSize = true;
-            this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(366, 190);
-            this.chkAlternateMatrixAttribute.Name = "chkAlternateMatrixAttribute";
-            this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(202, 17);
-            this.chkAlternateMatrixAttribute.TabIndex = 12;
-            this.chkAlternateMatrixAttribute.Tag = "Checkbox_Options_AlternateMatrixAttribute";
-            this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix Attribute (UN 39)";
-            this.chkAlternateMatrixAttribute.UseVisualStyleBackColor = true;
-            this.chkAlternateMatrixAttribute.Visible = false;
-            this.chkAlternateMatrixAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkAllowCustomTransgenics
-            // 
-            this.chkAllowCustomTransgenics.AutoSize = true;
-            this.chkAllowCustomTransgenics.Location = new System.Drawing.Point(366, 236);
-            this.chkAllowCustomTransgenics.Name = "chkAllowCustomTransgenics";
-            this.chkAllowCustomTransgenics.Size = new System.Drawing.Size(297, 17);
-            this.chkAllowCustomTransgenics.TabIndex = 14;
-            this.chkAllowCustomTransgenics.Tag = "Checkbox_Options_AllowCustomTransgenics";
-            this.chkAllowCustomTransgenics.Text = "Allow any Bioware to be converted to Transgenic (AU 93)";
-            this.chkAllowCustomTransgenics.UseVisualStyleBackColor = true;
-            this.chkAllowCustomTransgenics.Visible = false;
-            this.chkAllowCustomTransgenics.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkAlternateComplexFormCost
-            // 
-            this.chkAlternateComplexFormCost.AutoSize = true;
-            this.chkAlternateComplexFormCost.Location = new System.Drawing.Point(366, 213);
-            this.chkAlternateComplexFormCost.Name = "chkAlternateComplexFormCost";
-            this.chkAlternateComplexFormCost.Size = new System.Drawing.Size(231, 17);
-            this.chkAlternateComplexFormCost.TabIndex = 13;
-            this.chkAlternateComplexFormCost.Tag = "Checkbox_Options_AlternateComplexFormCost";
-            this.chkAlternateComplexFormCost.Text = "Use alternate Complex Forms costs (UN 39)";
-            this.chkAlternateComplexFormCost.UseVisualStyleBackColor = true;
-            this.chkAlternateComplexFormCost.Visible = false;
-            this.chkAlternateComplexFormCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkArmorDegradation
-            // 
-            this.chkArmorDegradation.AutoSize = true;
-            this.chkArmorDegradation.Location = new System.Drawing.Point(366, 144);
-            this.chkArmorDegradation.Name = "chkArmorDegradation";
-            this.chkArmorDegradation.Size = new System.Drawing.Size(181, 17);
-            this.chkArmorDegradation.TabIndex = 10;
-            this.chkArmorDegradation.Tag = "Checkbox_Options_ArmorDegradation";
-            this.chkArmorDegradation.Text = "Allow Armor Degradation (AR 44)";
-            this.chkArmorDegradation.UseVisualStyleBackColor = true;
-            this.chkArmorDegradation.Visible = false;
-            this.chkArmorDegradation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkArmorSuitCapacity
-            // 
-            this.chkArmorSuitCapacity.AutoSize = true;
-            this.chkArmorSuitCapacity.Location = new System.Drawing.Point(366, 121);
-            this.chkArmorSuitCapacity.Name = "chkArmorSuitCapacity";
-            this.chkArmorSuitCapacity.Size = new System.Drawing.Size(179, 17);
-            this.chkArmorSuitCapacity.TabIndex = 9;
-            this.chkArmorSuitCapacity.Tag = "Checkbox_Options_ArmorSuitCapacity";
-            this.chkArmorSuitCapacity.Text = "Use Armor Suit Capacity (AR 44)";
-            this.chkArmorSuitCapacity.UseVisualStyleBackColor = true;
-            this.chkArmorSuitCapacity.Visible = false;
-            this.chkArmorSuitCapacity.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkMaximumArmorModifications
             // 
             this.chkMaximumArmorModifications.AutoSize = true;
@@ -2657,19 +2647,6 @@
             this.chkMaximumArmorModifications.UseVisualStyleBackColor = true;
             this.chkMaximumArmorModifications.Visible = false;
             this.chkMaximumArmorModifications.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkStrengthAffectsRecoil
-            // 
-            this.chkStrengthAffectsRecoil.AutoSize = true;
-            this.chkStrengthAffectsRecoil.Location = new System.Drawing.Point(366, 305);
-            this.chkStrengthAffectsRecoil.Name = "chkStrengthAffectsRecoil";
-            this.chkStrengthAffectsRecoil.Size = new System.Drawing.Size(203, 17);
-            this.chkStrengthAffectsRecoil.TabIndex = 7;
-            this.chkStrengthAffectsRecoil.Tag = "Checkbox_Options_StrengthAffectsRecoil";
-            this.chkStrengthAffectsRecoil.Text = "High Strength affects Weapon Recoil";
-            this.chkStrengthAffectsRecoil.UseVisualStyleBackColor = true;
-            this.chkStrengthAffectsRecoil.Visible = false;
-            this.chkStrengthAffectsRecoil.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblMetatypeCostsKarma
             // 
@@ -3424,9 +3401,6 @@
         private System.Windows.Forms.ComboBox cboLimbCount;
         private System.Windows.Forms.Label lblLimbCount;
         private System.Windows.Forms.Button cmdVerifyData;
-        private System.Windows.Forms.CheckBox chkStrengthAffectsRecoil;
-        private System.Windows.Forms.CheckBox chkArmorDegradation;
-        private System.Windows.Forms.CheckBox chkArmorSuitCapacity;
         private System.Windows.Forms.CheckBox chkMaximumArmorModifications;
         private System.Windows.Forms.CheckBox chkAutomaticRegistration;
         private System.Windows.Forms.CheckBox chkAutomaticCopyProtection;
@@ -3479,11 +3453,8 @@
         private System.Windows.Forms.NumericUpDown nudKarmaBanishingFocus;
         private System.Windows.Forms.Label lblKarmaBanishingFocus;
         private System.Windows.Forms.CheckBox chkCalculateCommlinkResponse;
-        private System.Windows.Forms.CheckBox chkAlternateComplexFormCost;
-        private System.Windows.Forms.CheckBox chkAllowCustomTransgenics;
         private System.Windows.Forms.CheckBox chkAllowSkillDiceRolling;
         private System.Windows.Forms.CheckBox chkSingleDiceRoller;
-        private System.Windows.Forms.CheckBox chkAlternateMatrixAttribute;
         private System.Windows.Forms.CheckBox chkCreateBackupOnCareer;
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabGlobal;
@@ -3509,8 +3480,6 @@
         private System.Windows.Forms.CheckBox chkExtendAnyDetectionSpell;
         private System.Windows.Forms.CheckBox chkPrintToFileFirst;
         private System.Windows.Forms.CheckBox chkSpecialKarmaCost;
-        private System.Windows.Forms.CheckBox chkContactPoints;
-        private System.Windows.Forms.CheckBox chkMayBuyQualities;
         private System.Windows.Forms.CheckBox chkLicenseEachRestrictedItem;
         private System.Windows.Forms.CheckBox chkUseLogging;
         private System.Windows.Forms.CheckBox chkIgnoreArt;
@@ -3572,5 +3541,12 @@
         private System.Windows.Forms.Label lblKarmaRitualSpellcastingFocusExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaRitualSpellcastingFocus;
         private System.Windows.Forms.Label lblKarmaRitualSpellcastingFocus;
+        private System.Windows.Forms.TreeView treCustomDataDirectories;
+        private System.Windows.Forms.Button cmdRemoveCustomDirectory;
+        private System.Windows.Forms.Button cmdAddCustomDirectory;
+        private System.Windows.Forms.Button cmdRenameCustomDataDirectory;
+        private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
+        private System.Windows.Forms.Button cmdIncreaseCustomDirectoryLoadOrder;
+        private System.Windows.Forms.Button cmdDecreaseCustomDirectoryLoadOrder;
     }
 }

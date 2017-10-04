@@ -224,6 +224,7 @@ namespace Chummer
 
         // Lists.
         private List<string> _lstSources = new List<string>();
+        private List<string> _lstCustomDataDirectoryNames = new List<string>();
         private List<Improvement> _lstImprovements = new List<Improvement>();
         private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
@@ -929,6 +930,15 @@ namespace Chummer
             objWriter.WriteEndElement();
             // </sources>
 
+            // <sources>
+            objWriter.WriteStartElement("customdatadirectorynames");
+            foreach (string strItem in _lstCustomDataDirectoryNames)
+            {
+                objWriter.WriteElementString("directoryname", strItem);
+            }
+            objWriter.WriteEndElement();
+            // </sources>
+
             // </character>
             objWriter.WriteEndElement();
 
@@ -1026,30 +1036,48 @@ namespace Chummer
                 return false;
 
             // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                if (objXmlCharacter["sources"] != null)
-                {
-                    bool blnMissingBooks = false;
+            if (objXmlCharacter["sources"] != null)
+            {
                 string strMissingBooks = string.Empty;
-                    //Does the list of enabled books contain the current item?
+                //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in objXmlCharacter["sources"].ChildNodes)
-                    {
+                {
                     if (objXmlNode.InnerText.Length > 0 && !_objOptions.Books.Contains(objXmlNode.InnerText))
                     {
                         strMissingBooks += (objXmlNode.InnerText + ";");
-                        blnMissingBooks = true;
                     }
                 }
-                    if (blnMissingBooks)
+                if (!string.IsNullOrEmpty(strMissingBooks))
                 {
-                    string strMessage =
-                        "This character was created with the following books that are not enabled:\n {0} \nThis may cause issues. Do you want to continue loading the character?"
-                            .Replace("{0}", TranslatedBookList(strMissingBooks));
-                    if (MessageBox.Show(strMessage, "Missing Books", MessageBoxButtons.YesNo) == DialogResult.No)
-                        {
-                            return false;
-                        }
+                    string strMessage = LanguageManager.Instance.GetString("Message_MissingSourceBooks").Replace("{0}", TranslatedBookList(strMissingBooks));
+                    if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("Message_MissingSourceBooks_Title"), MessageBoxButtons.YesNo) == DialogResult.No)
+                    {
+                        return false;
                     }
                 }
+            }
+
+            // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
+            if (objXmlCharacter["customdatadirectorynames"] != null)
+            {
+                string strMissingSourceNames = string.Empty;
+                //Does the list of enabled books contain the current item?
+                foreach (XmlNode objXmlNode in objXmlCharacter["customdatadirectorynames"].ChildNodes)
+                {
+                    if (objXmlNode.InnerText.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(objXmlNode.InnerText))
+                    {
+                        strMissingSourceNames += (objXmlNode.InnerText + ";\n");
+                    }
+                }
+                if (!string.IsNullOrEmpty(strMissingSourceNames))
+                {
+                    string strMessage = LanguageManager.Instance.GetString("Message_MissingCustomDataDirectories").Replace("{0}", strMissingSourceNames);
+                    if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("Message_MissingCustomDataDirectories_Title"), MessageBoxButtons.YesNo) == DialogResult.No)
+                    {
+                        return false;
+                    }
+                }
+            }
 
             if (objXmlCharacter["essenceatspecialstart"] != null)
             {

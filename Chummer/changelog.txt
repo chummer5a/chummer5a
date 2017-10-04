@@ -78,6 +78,11 @@ Application Changes:
 - Fixed a bug where knowledge skill purchased in Create mode could have their category changed in Career mode if they were not advanced with karma. Fixes #1773.
 - Fixed notes in Skills and Calendar not obeying the Print Notes option.
 - Fixed Fancy Blocks character sheet so that its blocks no longer cut across pages and its page break options work properly. Fixes #1018.
+- All items, including sourcebooks, will now always obey the <hide /> element and never show up in any browsing or selection lists if they are tagged as such. In the case of enabled sourcebooks, they become disabled when hidden.
+- Fixed a bug where Select Skill Specialization, Select Skill, Select Exotic Skill, Select Cyberware Suite, and Select Critter Power did not obey rules for what sourcebooks were enabled.
+- The message that warns of missing sourcebooks when a character is loaded is now localizable.
+- Added the ability to amend items instead of completely overriding them. When amending items, only nodes that are present in the amended node will overwrite or add to older data. Tags can also be removed this way by adding the 'remove="yes"' attribute to an element in an amending node. An ID and/or a Name field must be specified for all items regardless, as that is how the system identifies what data to amend. Sub-elements with children that also have ID and/or Name fields (e.g. metavariants lists inside metatype entries) will be treated the same way as their parents, i.e. only nodes present in the amending file will be overwritten, added, or removed.
+- Added the ability to load and set any custom data directory as a custom ruleset. Once added, these data directories will be saved to a list and can be toggled the same way as sourcebooks. Entries with invalid directory paths will be removed on startup, and if someone is running Chummer for the first time or has only invalid directory paths, Chummer will automatically populate the custom data directory list with each folder it finds in the "customdata" folder (they all start disabled).
 
 Data Changes:
 
@@ -136,6 +141,9 @@ Data Changes:
 - High Pain Tolerance quality is now mutually exclusive from Damage Compensator bioware and Pain Resistance Adept power (Pain Editor is not banned because its effects are not passive).
 - Damage Compensators now properly respond to condition monitors getting filled. Fixes #821.
 - Added optional powers that Infected can take as extra qualities. Fixes #1212.
+- Renamed the Colt Manhunter from Hard Targets to the Colt Manhunter A1, as per Missions FAQ.
+- Removed an obsolete weapon override file for the Ares Thunderstruck Gauss Rifle.
+- Added a set of custom rules that follows Shadowrun Missions 1.4 FAQ.
 
 New Strings:
 - Label_Options_SpellShapingFocus
@@ -159,6 +167,18 @@ New Strings:
 - String_DealerConnection_Groundcraft
 - String_DealerConnection_Watercraft
 - String_DealerConnection_Aircraft
+- Message_MissingSourceBooks
+- Message_MissingSourceBooks_Title
+- Message_MissingCustomDataDirectories
+- Message_MissingCustomDataDirectories_Title
+- Message_Duplicate_CustomDataDirectoryName
+- Message_Duplicate_CustomDataDirectoryName_Title
+- Label_CustomDataDirectories
+- Button_AddCustomDirectory
+- Button_RenameCustomDataDirectory
+- Button_RemoveCustomDirectory
+- Button_IncreaseCustomDirectoryLoadOrder
+- Button_DecreaseCustomDirectoryLoadOrder
 
 Changes Strings:
 - Message_PositiveQualityLimit

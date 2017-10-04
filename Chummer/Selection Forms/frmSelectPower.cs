@@ -75,6 +75,8 @@ namespace Chummer
             }
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
+                if (objXmlPower["hide"] != null)
+                    continue;
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 if (objXmlPower["limit"] != null && !IgnoreLimits)
                 {

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -203,12 +203,13 @@ namespace Chummer
             string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
 
             if (objXmlMetamagicList != null)
-            foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
+                foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
                 {
-                    bool add = !chkLimitList.Checked ||
+
+                    bool add = objXmlMetamagic["hide"] == null && (!chkLimitList.Checked ||
                                   (chkLimitList.Checked &&
                                    Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter,
-                                       _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s));
+                                       _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s)));
                     if (!add) continue;
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlMetamagic["name"]?.InnerText;

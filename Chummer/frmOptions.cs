@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -88,18 +88,15 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
 
-            SaveRegistrySettings();
             BuildBooksList();
+            BuildCustomDataDirectoryNamesList();
+            SaveRegistrySettings();
 
-            _characterOptions.AllowCustomTransgenics = chkAllowCustomTransgenics.Checked;
             _characterOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
             _characterOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
             _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _characterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
             _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
-            _characterOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
-            _characterOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
-            _characterOptions.ArmorDegradation = chkArmorDegradation.Checked;
             _characterOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
             _characterOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
             _characterOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
@@ -149,7 +146,6 @@ namespace Chummer
             _characterOptions.PrintNotes = chkPrintNotes.Checked;
             _characterOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
             _characterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
-            _characterOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
             _characterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
             _characterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
             _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
@@ -208,10 +204,6 @@ namespace Chummer
             _characterOptions.KarmaSummoningFocus = Convert.ToInt32(nudKarmaSummoningFocus.Value);
             _characterOptions.KarmaSustainingFocus = Convert.ToInt32(nudKarmaSustainingFocus.Value);
             _characterOptions.KarmaWeaponFocus = Convert.ToInt32(nudKarmaWeaponFocus.Value);
-
-            // Build Priority options.
-            _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
-            _characterOptions.UseContactPoints = chkContactPoints.Checked;
 
             // Build method options.
             _characterOptions.BuildMethod = cboBuildMethod.SelectedValue.ToString();
@@ -579,6 +571,8 @@ namespace Chummer
 
             foreach (XmlNode objXmlBook in objXmlBookList)
             {
+                if (objXmlBook["hide"] != null)
+                    continue;
                 bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
                 TreeNode objNode = new TreeNode();
 
@@ -590,6 +584,35 @@ namespace Chummer
             }
 
             treSourcebook.Sort();
+        }
+
+        private void PopulateCustomDataDirectoryTreeView()
+        {
+            if (GlobalOptions.Instance.CustomDataDirectoryInfo.Count != treCustomDataDirectories.Nodes.Count)
+            {
+                treCustomDataDirectories.Nodes.Clear();
+
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo)
+                {
+                    TreeNode objNode = new TreeNode();
+
+                    objNode.Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path + ")";
+                    objNode.Tag = objCustomDataDirectory.Name;
+                    objNode.Checked = objCustomDataDirectory.Enabled;
+                    treCustomDataDirectories.Nodes.Add(objNode);
+                }
+            }
+            else
+            {
+                for(int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
+                {
+                    TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
+                    CustomDataDirectoryInfo objLoopInfo = GlobalOptions.Instance.CustomDataDirectoryInfo[i];
+                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path + ")";
+                    objLoopNode.Tag = objLoopInfo.Name;
+                    objLoopNode.Checked = objLoopInfo.Enabled;
+                }
+            }
         }
 
         private void SetDefaultValueForLimbCount()
@@ -604,19 +627,15 @@ namespace Chummer
         private void PopulateOptions()
         {
             PopulateSourcebookTreeView();
+            PopulateCustomDataDirectoryTreeView();
 
             cboBuildMethod.SelectedValue = _characterOptions.BuildMethod;
             cboEssenceDecimals.SelectedValue = _characterOptions.EssenceDecimals == 0 ? "2" : _characterOptions.EssenceDecimals.ToString();
-            chkAllowCustomTransgenics.Checked = _characterOptions.AllowCustomTransgenics;
             chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
             chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
             chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
             chkDontUseCyberlimbCalculation.Checked = _characterOptions.DontUseCyberlimbCalculation;
             chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
-            chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
-            chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
-            chkArmorDegradation.Checked = _characterOptions.ArmorDegradation;
-            chkArmorSuitCapacity.Checked = _characterOptions.ArmorSuitCapacity;
             chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
             chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
             chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
@@ -627,7 +646,6 @@ namespace Chummer
             chkUseTotalValueForFreeKnowledge.Checked = _characterOptions.UseTotalValueForFreeKnowledge;
             chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
             chkDroneArmorMultiplier.Checked = _characterOptions.DroneArmorMultiplierEnabled;
-            chkContactPoints.Checked = _characterOptions.UseContactPoints;
             chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
             chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
             chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
@@ -651,7 +669,6 @@ namespace Chummer
             chkUnarmedSkillImprovements.Checked = _characterOptions.UnarmedImprovementsApplyToWeapons;
             chkLicenseEachRestrictedItem.Checked = _characterOptions.LicenseRestricted;
             chkMaximumArmorModifications.Checked = _characterOptions.MaximumArmorModifications;
-            chkMayBuyQualities.Checked = _characterOptions.MayBuyQualities;
             chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
             chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
             chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
@@ -660,7 +677,6 @@ namespace Chummer
             chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
             chkRestrictRecoil.Checked = _characterOptions.RestrictRecoil;
             chkSpecialKarmaCost.Checked = _characterOptions.SpecialKarmaCostBasedOnShownValue;
-            chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
             chkUseCalculatedPublicAwareness.Checked = _characterOptions.UseCalculatedPublicAwareness;
             chkStrictSkillGroups.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
             chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
@@ -783,9 +799,26 @@ namespace Chummer
             objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
 
             // Save the SourcebookInfo.
-            Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
+            Microsoft.Win32.RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");
             foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
                 objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
+            objSourceRegistry.Close();
+
+            // Save the Custom Data Directory Info.
+            if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
+                objRegistry.DeleteSubKeyTree("CustomDataDirectory");
+            Microsoft.Win32.RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory");
+            for (int i = 0; i < GlobalOptions.Instance.CustomDataDirectoryInfo.Count; ++i)
+            {
+                CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.Instance.CustomDataDirectoryInfo[i];
+                Microsoft.Win32.RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
+                objLoopKey.SetValue("Path", objCustomDataDirectory.Path);
+                objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
+                objLoopKey.SetValue("LoadOrder", i);
+                objLoopKey.Close();
+            }
+            objCustomDataDirectoryRegistry.Close();
+            objRegistry.Close();
         }
 
         private void BuildBooksList()
@@ -808,6 +841,26 @@ namespace Chummer
             if (!blnSR5Included)
                 _characterOptions.Books.Add("SR5");
             _characterOptions.RecalculateBookXPath();
+        }
+
+        private void BuildCustomDataDirectoryNamesList()
+        {
+            _characterOptions.CustomDataDirectoryNames.Clear();
+
+            foreach (TreeNode objNode in treCustomDataDirectories.Nodes)
+            {
+                CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.Instance.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objNode.Tag.ToString());
+                if (objCustomDataDirectory != null)
+                {
+                    if (objNode.Checked)
+                    {
+                        _characterOptions.CustomDataDirectoryNames.Add(objNode.Tag.ToString());
+                        objCustomDataDirectory.Enabled = true;
+                    }
+                    else
+                        objCustomDataDirectory.Enabled = false;
+                }
+            }
         }
 
         private void RestoreDefaultKarmaValues()
@@ -1300,6 +1353,139 @@ namespace Chummer
             {
                 if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
                     txtCharacterRosterPath.Text = selectFolderDialog.SelectedPath;
+            }
+        }
+
+        private void cmdAddCustomDirectory_Click(object sender, EventArgs e)
+        {
+            // Prompt the user to select a save file to associate with this Contact.
+            using (var selectFolderDialog = new FolderBrowserDialog())
+            {
+                selectFolderDialog.SelectedPath = Application.StartupPath;
+
+                if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText();
+                    frmSelectCustomDirectoryName.Description = LanguageManager.Instance.GetString("String_CustomItem_SelectText");
+                    if (frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
+                    {
+                        CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo();
+                        objNewCustomDataDirectory.Name = frmSelectCustomDirectoryName.SelectedValue;
+                        objNewCustomDataDirectory.Path = selectFolderDialog.SelectedPath;
+
+                        if (GlobalOptions.Instance.CustomDataDirectoryInfo.Any(x => x.Name == objNewCustomDataDirectory.Name))
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_Duplicate_CustomDataDirectoryName"), LanguageManager.Instance.GetString("Message_Duplicate_CustomDataDirectoryName_Title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            GlobalOptions.Instance.CustomDataDirectoryInfo.Add(objNewCustomDataDirectory);
+                            PopulateCustomDataDirectoryTreeView();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void cmdRemoveCustomDirectory_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
+            if (objSelectedCustomDataDirectory != null)
+            {
+                CustomDataDirectoryInfo objInfoToRemove = GlobalOptions.Instance.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
+                if (objInfoToRemove != null)
+                {
+                    if (objInfoToRemove.Enabled)
+                        OptionsChanged(sender, e);
+                    GlobalOptions.Instance.CustomDataDirectoryInfo.Remove(objInfoToRemove);
+                    PopulateCustomDataDirectoryTreeView();
+                }
+            }
+        }
+
+        private void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
+            if (objSelectedCustomDataDirectory != null)
+            {
+                CustomDataDirectoryInfo objInfoToRename = GlobalOptions.Instance.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
+                if (objInfoToRename != null)
+                {
+                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText();
+                    frmSelectCustomDirectoryName.Description = LanguageManager.Instance.GetString("String_CustomItem_SelectText");
+                    if (frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
+                    {
+                        if (GlobalOptions.Instance.CustomDataDirectoryInfo.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_Duplicate_CustomDataDirectoryName"), LanguageManager.Instance.GetString("Message_Duplicate_CustomDataDirectoryName_Title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            objInfoToRename.Name = frmSelectCustomDirectoryName.SelectedValue;
+                            PopulateCustomDataDirectoryTreeView();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void cmdIncreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
+            if (objSelectedCustomDataDirectory != null)
+            {
+                CustomDataDirectoryInfo objInfoToRaise = null;
+                List<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.Instance.CustomDataDirectoryInfo;
+                int intIndex = 0;
+                for(;intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
+                {
+                    if (lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
+                    {
+                        objInfoToRaise = lstCustomDataDirectoryInfos.ElementAt(intIndex);
+                        break;
+                    }
+                }
+                if (objInfoToRaise != null && intIndex > 0)
+                {
+                    CustomDataDirectoryInfo objTempInfo = GlobalOptions.Instance.CustomDataDirectoryInfo.ElementAt(intIndex - 1);
+                    bool blnOptionsChanged = objInfoToRaise.Enabled || objTempInfo.Enabled;
+                    GlobalOptions.Instance.CustomDataDirectoryInfo[intIndex - 1] = objInfoToRaise;
+                    GlobalOptions.Instance.CustomDataDirectoryInfo[intIndex] = objTempInfo;
+
+                    PopulateCustomDataDirectoryTreeView();
+                    if (blnOptionsChanged)
+                        OptionsChanged(sender, e);
+                }
+            }
+        }
+
+        private void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
+            if (objSelectedCustomDataDirectory != null)
+            {
+                CustomDataDirectoryInfo objInfoToLower = null;
+                List<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.Instance.CustomDataDirectoryInfo;
+                int intIndex = 0;
+                for (; intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
+                {
+                    if (lstCustomDataDirectoryInfos.ElementAt(intIndex).Name == objSelectedCustomDataDirectory.Tag.ToString())
+                    {
+                        objInfoToLower = lstCustomDataDirectoryInfos.ElementAt(intIndex);
+                        break;
+                    }
+                }
+                if (objInfoToLower != null && intIndex < lstCustomDataDirectoryInfos.Count - 1)
+                {
+                    CustomDataDirectoryInfo objTempInfo = GlobalOptions.Instance.CustomDataDirectoryInfo.ElementAt(intIndex + 1);
+                    bool blnOptionsChanged = objInfoToLower.Enabled || objTempInfo.Enabled;
+                    GlobalOptions.Instance.CustomDataDirectoryInfo[intIndex + 1] = objInfoToLower;
+                    GlobalOptions.Instance.CustomDataDirectoryInfo[intIndex] = objTempInfo;
+
+                    PopulateCustomDataDirectoryTreeView();
+                    if (blnOptionsChanged)
+                        OptionsChanged(sender, e);
+                }
             }
         }
     }

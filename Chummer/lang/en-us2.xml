@@ -7405,5 +7405,53 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_DealerConnection_Aircraft</key>
 			<text>Aircraft</text>
 		</string>
+		<string>
+			<key>Message_MissingSourceBooks</key>
+			<text>This character was created with the following books that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+		</string>
+		<string>
+			<key>Message_MissingSourceBooks_Title</key>
+			<text>Missing Books</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories</key>
+			<text>This character was created with the following custom data directories that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories_Title</key>
+			<text>Missing Custom Data Directories</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName</key>
+			<text>Custom data directory of this name already exists.</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+			<text>Duplicate Custom Data Directory Name</text>
+		</string>
+		<string>
+			<key>Label_CustomDataDirectories</key>
+			<text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+		</string>
+		<string>
+			<key>Button_AddCustomDirectory</key>
+			<text>Add Directory</text>
+		</string>
+		<string>
+			<key>Button_RenameCustomDataDirectory</key>
+			<text>Rename Entry</text>
+		</string>
+		<string>
+			<key>Button_RemoveCustomDirectory</key>
+			<text>Remove Directory</text>
+		</string>
+		<string>
+			<key>Button_IncreaseCustomDirectoryLoadOrder</key>
+			<text>Increase Load Order</text>
+		</string>
+		<string>
+			<key>Button_DecreaseCustomDirectoryLoadOrder</key>
+			<text>Decrease Load Order</text>
+		</string>
 	</strings>
 </chummer>

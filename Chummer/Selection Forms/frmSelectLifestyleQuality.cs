@@ -78,6 +78,8 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
+                if (objXmlCategory["hide"] != null)
+                    continue;
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
                 objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
@@ -368,19 +370,19 @@ namespace Chummer
                     {
                         continue;
                     }
-                            if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                            {
-                                if (objXmlQuality["hide"] == null)
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objXmlQuality["name"].InnerText;
-                                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
+                    {
+                        if (objXmlQuality["hide"] == null)
+                        {
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objXmlQuality["name"].InnerText;
+                            objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
 
-                                    lstLifestyleQuality.Add(objItem);
-                                }
-                            }
+                            lstLifestyleQuality.Add(objItem);
                         }
                     }
+                }
+            }
             SortListItem objSort = new SortListItem();
             lstLifestyleQuality.Sort(objSort.Compare);
             lstLifestyleQualities.BeginUpdate();

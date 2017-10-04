@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,11 +57,17 @@ namespace Chummer
         }
 
         private static readonly List<XmlReference> _lstXmlDocuments = new List<XmlReference>();
+        private static readonly List<string> _lstDataDirectories = new List<string>();
 
         #region Constructor and Instance
         static XmlManager()
         {
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+            _lstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            {
+                _lstDataDirectories.Add(objCustomDataDirectory.Path);
+            }
         }
 
         XmlManager()
@@ -83,8 +89,18 @@ namespace Chummer
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         public XmlDocument Load(string strFileName, bool blnLoadFile = false)
         {
-            string strPath = Path.Combine(Application.StartupPath, "data", strFileName);
-            if (!File.Exists(strPath))
+            bool blnFileFound = false;
+            string strPath = string.Empty;
+            foreach (string strDirectory in _lstDataDirectories)
+            {
+                strPath = Path.Combine(strDirectory, strFileName);
+                if (File.Exists(strPath))
+                {
+                    blnFileFound = true;
+                    break;
+                }
+            }
+            if (!blnFileFound)
             {
                 Utils.BreakIfDebug();
                 return null;
@@ -130,65 +146,84 @@ namespace Chummer
                 // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                 if (strFileName != "improvements.xml")
                 {
-                    strPath = Path.Combine(Application.StartupPath, "data");
-                    foreach (string strFile in Directory.GetFiles(strPath, "override*_" + strFileName))
+                    foreach (string strLoopPath in _lstDataDirectories)
                     {
-                        objXmlFile.Load(strFile);
-                        foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
+                        foreach (string strFile in Directory.GetFiles(strLoopPath, "override*_" + strFileName))
                         {
-                            foreach (XmlNode objType in objNode.ChildNodes)
+                            objXmlFile.Load(strFile);
+                            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                             {
-                                if (objType["id"] != null)
+                                foreach (XmlNode objType in objNode.ChildNodes)
                                 {
-                                    XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\"]");
-                                    if (objItem != null)
-                                        objItem.InnerXml = objType.InnerXml;
-                                }
-                                else if (objType["name"] != null)
-                                {
-                                    XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"]");
-                                    if (objItem != null)
-                                        objItem.InnerXml = objType.InnerXml;
+                                    if (objType["id"] != null)
+                                    {
+                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\"]");
+                                        if (objType["name"] != null)
+                                            objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[(id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\") and (name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\")]");
+                                        if (objItem != null)
+                                            objItem.InnerXml = objType.InnerXml;
+                                    }
+                                    else if (objType["name"] != null)
+                                    {
+                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"]");
+                                        if (objItem != null)
+                                            objItem.InnerXml = objType.InnerXml;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-                    foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
-                    {
-                        objXmlFile.Load(strFile);
-                        foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
+                        // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+                        foreach (string strFile in Directory.GetFiles(strLoopPath, "custom*_" + strFileName))
                         {
-                            // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
-                            List<XmlNode> lstDelete = new List<XmlNode>();
-                            foreach (XmlNode objChild in objNode.ChildNodes)
+                            objXmlFile.Load(strFile);
+                            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                             {
-                                if (objChild.ParentNode != null)
+                                // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
+                                List<XmlNode> lstDelete = new List<XmlNode>();
+                                foreach (XmlNode objChild in objNode.ChildNodes)
                                 {
-                                    // Only do this if the child has the name or id field since this is what we must match on.
-                                    if (objChild["id"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-                                                                    objChild.Name + "[name = \"" +
-                                                                    objChild["id"].InnerText + "\"]"))
+                                    if (objChild.ParentNode != null)
                                     {
-                                        lstDelete.Add(objChild);
-                                    }
-                                    else if (objChild["name"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-                                                                    objChild.Name + "[name = \"" +
-                                                                    objChild["name"].InnerText + "\"]"))
-                                    {
-                                        lstDelete.Add(objChild);
+                                        // Only do this if the child has the name or id field since this is what we must match on.
+                                        if (objChild["id"] != null && ((objChild["name"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
+                                                                        objChild.Name + "[(id = \"" +
+                                                                        objChild["id"].InnerText + "\") and (name = \"" +
+                                                                        objChild["name"].InnerText + "\")]")) ||
+                                            (objChild["name"] == null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
+                                                                        objChild.Name + "[id = \"" +
+                                                                        objChild["id"].InnerText + "\"]"))))
+                                        {
+                                            lstDelete.Add(objChild);
+                                        }
+                                        else if (objChild["id"] == null && objChild["name"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
+                                                                        objChild.Name + "[name = \"" +
+                                                                        objChild["name"].InnerText + "\"]"))
+                                        {
+                                            lstDelete.Add(objChild);
+                                        }
                                     }
                                 }
-                            }
-                            // Remove the offending items from the node we're about to merge in.
-                            foreach (XmlNode objRemoveNode in lstDelete)
-                            {
-                                objNode.RemoveChild(objRemoveNode);
-                            }
+                                // Remove the offending items from the node we're about to merge in.
+                                foreach (XmlNode objRemoveNode in lstDelete)
+                                {
+                                    objNode.RemoveChild(objRemoveNode);
+                                }
 
-                            // Append the entire child node to the new document.
-                            objDoc.DocumentElement?.AppendChild(objDoc.ImportNode(objNode, true));
+                                // Append the entire child node to the new document.
+                                objDoc.DocumentElement?.AppendChild(objDoc.ImportNode(objNode, true));
+                            }
+                        }
+
+                        // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
+                        bool blnDummy = false;
+                        foreach (string strFile in Directory.GetFiles(strLoopPath, "amend*_" + strFileName))
+                        {
+                            objXmlFile.Load(strFile);
+                            foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
+                            {
+                                AmendNodeChildern(objDoc, objNode, "/chummer", out blnDummy);
+                            }
                         }
                     }
                 }
@@ -359,10 +394,10 @@ namespace Chummer
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             if (GlobalOptions.Instance.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
             {
-                strPath = Path.Combine(Application.StartupPath, "customdata");
+                strPath = Path.Combine(Application.StartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
                 {
-                    foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
+                    foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName, SearchOption.AllDirectories))
                     {
                         objXmlFile.Load(strFile);
                         foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
@@ -372,14 +407,17 @@ namespace Chummer
                             foreach (XmlNode objChild in objNode.ChildNodes)
                             {
                                 // Only do this if the child has the name or id field since this is what we must match on.
-                                if (objChild["id"] != null &&
-                                    null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
-                                                                    objChild.Name + "[name = \"" +
-                                                                    objChild["id"].InnerText + "\"]"))
+                                if (objChild["id"] != null && ((objChild["name"] != null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
+                                                                        objChild.Name + "[(id = \"" +
+                                                                        objChild["id"].InnerText + "\") and (name = \"" +
+                                                                        objChild["name"].InnerText + "\")]")) ||
+                                            (objChild["name"] == null && null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
+                                                                        objChild.Name + "[id = \"" +
+                                                                        objChild["id"].InnerText + "\"]"))))
                                 {
                                     lstDelete.Add(objChild);
                                 }
-                                else if (objChild["name"] != null &&
+                                else if (objChild["id"] == null && objChild["name"] != null &&
                                          null != objDoc.SelectSingleNode("/chummer/" + objChild.ParentNode.Name + "/" +
                                                                          objChild.Name + "[name = \"" +
                                                                          objChild["name"].InnerText + "\"]"))
@@ -434,6 +472,112 @@ namespace Chummer
             }
 
             return objDoc;
+        }
+
+        /// <summary>
+        /// Deep search a document to amend with a new node, returns whether any edits were made.
+        /// If Attributes exist for the amending node, the Attributes for the original node will all be overwritten.
+        /// </summary>
+        /// <param name="objDoc">Document element in which to operate.</param>
+        /// <param name="objAmendingNode">The amending (new) node.</param>
+        /// <param name="strXPath">The current XPath in the document element that leads to where the amending node would be applied.</param>
+        /// <param name="blnHasIdentifier">Whether or not the amending node or any of its children have an identifier element ("id" and/or "name" element). Can safely use a dummy boolean if this is the first call in a recursion.</param>
+        private static bool AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath, out bool blnHasIdentifier)
+        {
+            blnHasIdentifier = (objAmendingNode["id"] != null || objAmendingNode["name"] != null);
+            XmlNode objNodeToEdit = null;
+            string strNewXPath = strXPath;
+            // Fetch the old node based on identifiers present in the amending node (id and/or name)
+            if (objAmendingNode["id"] != null)
+            {
+                if (objAmendingNode["name"] != null)
+                    strNewXPath += "/" + objAmendingNode.Name + "[(id = \"" + objAmendingNode["id"].InnerText.Replace("&amp;", "&") + "\") and (name = \"" + objAmendingNode["name"].InnerText.Replace("&amp;", "&") + "\")]";
+                else
+                    strNewXPath += "/" + objAmendingNode.Name + "[id = \"" + objAmendingNode["id"].InnerText.Replace("&amp;", "&") + "\"]";
+            }
+            else if (objAmendingNode["name"] != null)
+            {
+                strNewXPath += "/" + objAmendingNode.Name + "[name = \"" + objAmendingNode["name"].InnerText.Replace("&amp;", "&") + "\"]";
+            }
+            // If the amending node does not have an identifier, then select the first node in the document with a matching name as the old node.
+            else
+            {
+                strNewXPath += "/" + objAmendingNode.Name;
+            }
+            objNodeToEdit = objDoc.SelectSingleNode(strNewXPath);
+            if (objNodeToEdit != null)
+            {
+                // If the old node exists and the amending node has the attribute 'remove="yes"', then the old node is completely erased.
+                if (objAmendingNode.Attributes?["remove"]?.InnerText == "yes")
+                {
+                    objDoc.SelectSingleNode(strXPath).RemoveChild(objNodeToEdit);
+                }
+                else
+                {
+                    // Attributes are the only thing that is overwritten completely
+                    if (objNodeToEdit.Attributes != null && objAmendingNode.Attributes != null && objAmendingNode.Attributes.Count > 0)
+                    {
+                        objNodeToEdit.Attributes.RemoveAll();
+                        foreach (XmlAttribute objNewAttribute in objAmendingNode.Attributes)
+                        {
+                            objNodeToEdit.Attributes.Append(objNewAttribute);
+                        }
+                    }
+                    // If the amending node has children elements, run this method on all of its children.
+                    bool blnHasElementChildren = false;
+                    if (objAmendingNode.HasChildNodes)
+                    {
+                        foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                        {
+                            if (objChild.NodeType == XmlNodeType.Element)
+                            {
+                                blnHasElementChildren = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (blnHasElementChildren)
+                    {
+                        foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                        {
+                            if (objChild.NodeType != XmlNodeType.Element)
+                                continue;
+                            bool blnLoopHasIdentifier = false;
+                            // For each child, if no edits were made, but the child has an identifier (id and/or name field), then append the child to the old node.
+                            if (!AmendNodeChildern(objDoc, objChild, strNewXPath, out blnLoopHasIdentifier))
+                            {
+                                if (blnLoopHasIdentifier)
+                                {
+                                    objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
+                                }
+                            }
+                            blnHasIdentifier = blnHasIdentifier || blnLoopHasIdentifier;
+                        }
+                    }
+                    // If neither the amending node nor the old node has children elements, overwrite the old node with the amending one.
+                    else if (objNodeToEdit.HasChildNodes)
+                    {
+                        foreach (XmlNode objChild in objNodeToEdit.ChildNodes)
+                        {
+                            if (objChild.NodeType == XmlNodeType.Element)
+                            {
+                                blnHasElementChildren = true;
+                                break;
+                            }
+                        }
+                        if (!blnHasElementChildren)
+                            objNodeToEdit.InnerXml = objAmendingNode.InnerXml;
+                    }
+                }
+                return true;
+            }
+            // If there aren't any old nodes found, the amending node does not have an identifier, and the amending node would not want to erase the old node, then append the entire amending node to the XPath.
+            else if (!blnHasIdentifier && objAmendingNode.Attributes?["remove"]?.InnerText != "yes")
+            {
+                return objDoc.SelectSingleNode(strXPath)?.AppendChild(objDoc.ImportNode(objAmendingNode, true)) != null;
+            }
+
+            return false;
         }
 
         /// <summary>

@@ -123,7 +123,7 @@ namespace Chummer
             if (objXmlModList != null)
                 foreach (XmlNode objXmlMod in objXmlModList)
                 {
-                    if (objXmlMod["hidden"] != null)
+                    if (objXmlMod["hide"] != null)
                         continue;
 
                     if (objXmlMod["forbidden"]?["vehicledetails"] != null)
@@ -505,7 +505,7 @@ namespace Chummer
             if (objXmlModList != null)
                 foreach (XmlNode objXmlMod in objXmlModList)
                 {
-                    if (objXmlMod["hidden"] != null)
+                    if (objXmlMod["hide"] != null)
                         continue;
 
                     if (objXmlMod["forbidden"]?["vehicledetails"] != null)
