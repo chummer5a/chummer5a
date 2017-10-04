@@ -175,7 +175,7 @@ namespace Chummer.Skills
             if (element != null) skill.Id = Guid.Parse(element.InnerText);
 
             bool blnIsKnowledgeSkill = false;
-            if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill))
+            if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
                 string strCategoryString = string.Empty;
                 if (n.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
