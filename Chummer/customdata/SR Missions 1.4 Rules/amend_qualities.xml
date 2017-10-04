@@ -359,9 +359,6 @@
     <quality>
       <name>Otaku to Technomancer</name>
       <required>
-        <oneof>
-          <quality>Technomancer</quality>
-        </oneof>
 		<allof>
 		  <cyberware>Datajack</cyberware>
 		</allof>
