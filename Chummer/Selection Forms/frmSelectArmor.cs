@@ -78,6 +78,17 @@ namespace Chummer
                     objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                     _lstCategory.Add(objItem);
                 }
+            SortListItem objSort = new SortListItem();
+            _lstCategory.Sort(objSort.Compare);
+
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
+
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
@@ -149,7 +160,18 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+            {
+                txtSearch_TextChanged(sender, e);
+                return;
+            }
+            string strSelectedCategoryPath = string.Empty;
+            // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            {
+                strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
+            }
+            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ")]");
             BuildArmorList(objXmlArmorList);
         }
 
@@ -169,11 +191,16 @@ namespace Chummer
 
             string strCategoryFilter = string.Empty;
 
-            foreach (object objListItem in cboCategory.Items)
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+                strCategoryFilter = "category = \"" + cboCategory.SelectedValue + "\"";
+            else
             {
-                ListItem objItem = (ListItem)objListItem;
-                if (!string.IsNullOrEmpty(objItem.Value))
-                    strCategoryFilter += "category = \"" + objItem.Value + "\" or ";
+                foreach (object objListItem in cboCategory.Items)
+                {
+                    ListItem objItem = (ListItem)objListItem;
+                    if (!string.IsNullOrEmpty(objItem.Value))
+                        strCategoryFilter += "category = \"" + objItem.Value + "\" or ";
+                }
             }
 
             // Treat everything as being uppercase so the search is case-insensitive.

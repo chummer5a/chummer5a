@@ -14124,6 +14124,8 @@ namespace Chummer
                 if (_objCharacter.PrintWindow != null)
                     _objCharacter.PrintWindow.RefreshView();
             }
+            cmdAddBioware.Enabled = !_objCharacter.HasImprovement(Improvement.ImprovementType.DisableBioware, true);
+            cmdAddCyberware.Enabled = !_objCharacter.HasImprovement(Improvement.ImprovementType.DisableCyberware, true);
             RefreshImprovements();
             RefreshLimitModifiers();
             UpdateReputation();
@@ -15509,25 +15511,50 @@ namespace Chummer
             frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter);
             double dblMultiplier = 1;
             // Apply the character's Cyberware Essence cost multiplier if applicable.
-            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCost) != 0 && objSource == Improvement.ImprovementSource.Cyberware)
+            if (objSource == Improvement.ImprovementSource.Cyberware)
             {
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCost) != 0)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
+                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                    }
+                    frmPickCyberware.CharacterESSMultiplier *= dblMultiplier;
                 }
-                frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
+                {
+                    dblMultiplier = 1;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier && objImprovement.Enabled)
+                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                    }
+                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                }
             }
-
             // Apply the character's Bioware Essence cost multiplier if applicable.
-            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCost) != 0 && objSource == Improvement.ImprovementSource.Bioware)
+            else if (objSource == Improvement.ImprovementSource.Bioware)
             {
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCost) != 0)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                        dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
+                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                    }
+                    frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
                 }
-                frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
+                {
+                    dblMultiplier = 1;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
+                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                    }
+                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                }
             }
 
             // Apply the character's Basic Bioware Essence cost multiplier if applicable.

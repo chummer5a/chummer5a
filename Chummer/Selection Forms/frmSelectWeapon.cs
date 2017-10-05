@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,6 +96,16 @@ namespace Chummer
                         _lstCategory.Add(objItem);
                     }
             }
+            SortListItem objSort = new SortListItem();
+            _lstCategory.Sort(objSort.Compare);
+
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
 
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -114,14 +124,38 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
-            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-            BuildWeaponList(objXmlWeaponList);
+            cboCategory_SelectedIndexChanged(sender, e);
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+            {
+                txtSearch_TextChanged(sender, e);
+                return;
+            }
+            string strSelectedCategoryPath = string.Empty;
+            // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            {
+                strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
+            }
+            else
+            {
+                foreach (object objListItem in cboCategory.Items)
+                {
+                    ListItem objItem = (ListItem)objListItem;
+                    if (!string.IsNullOrEmpty(objItem.Value))
+                        strSelectedCategoryPath += "category = \"" + objItem.Value + "\" or ";
+                }
+                if (!string.IsNullOrEmpty(strSelectedCategoryPath))
+                {
+                    // Cut off the trailing " or " and replace it with a trailing "and"
+                    strSelectedCategoryPath = "(" + strSelectedCategoryPath.Substring(0, strSelectedCategoryPath.Length - 4) + ") and ";
+                }
+            }
             // Populate the Weapon list.
-            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ")]");
 
             BuildWeaponList(objXmlWeaponList);
         }
@@ -301,7 +335,14 @@ namespace Chummer
                 DataSet set = new DataSet("weapons");
                 set.Tables.Add(tabWeapons);
 
-                if (cboCategory.SelectedValue.ToString() == "Blades" || cboCategory.SelectedValue.ToString() == "Clubs" || cboCategory.SelectedValue.ToString() == "Improvised Weapons" || cboCategory.SelectedValue.ToString() == "Exotic Melee Weapons" || cboCategory.SelectedValue.ToString() == "Unarmed")
+                if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All")
+                {
+                    dgvWeapons.Columns[5].Visible = true;
+                    dgvWeapons.Columns[6].Visible = true;
+                    dgvWeapons.Columns[7].Visible = true;
+                    dgvWeapons.Columns[8].Visible = true;
+                }
+                else if (cboCategory.SelectedValue.ToString() == "Blades" || cboCategory.SelectedValue.ToString() == "Clubs" || cboCategory.SelectedValue.ToString() == "Improvised Weapons" || cboCategory.SelectedValue.ToString() == "Exotic Melee Weapons" || cboCategory.SelectedValue.ToString() == "Unarmed")
                 {
                     dgvWeapons.Columns[5].Visible = false;
                     dgvWeapons.Columns[6].Visible = false;
@@ -383,11 +424,23 @@ namespace Chummer
 
             string strCategoryFilter = string.Empty;
 
-            foreach (object objListItem in cboCategory.Items)
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
             {
-                ListItem objItem = (ListItem)objListItem;
-                if (!string.IsNullOrEmpty(objItem.Value))
-                    strCategoryFilter += "category = \"" + objItem.Value + "\" or ";
+                strCategoryFilter = "category = \"" + cboCategory.SelectedValue + "\"";
+            }
+            else
+            {
+                foreach (object objListItem in cboCategory.Items)
+                {
+                    ListItem objItem = (ListItem)objListItem;
+                    if (!string.IsNullOrEmpty(objItem.Value))
+                        strCategoryFilter += "category = \"" + objItem.Value + "\" or ";
+                }
+                if (!string.IsNullOrEmpty(strCategoryFilter))
+                {
+                    // Cut off the trailing " or " and replace it with a trailing "and"
+                    strCategoryFilter = strCategoryFilter.Substring(0, strCategoryFilter.Length - 4);
+                }
             }
 
             // Treat everything as being uppercase so the search is case-insensitive.
@@ -641,17 +694,24 @@ namespace Chummer
                 return;
             }
             string strCategoryLimit = string.Empty;
-            if (_strLimitToCategories.Length > 0)
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
             {
-                strCategoryLimit += "category = \"" + _strLimitToCategories[0] + "\"";
-                for (int i = 1; i < _strLimitToCategories.Length; i++)
-                {
-                    strCategoryLimit += " or category = \"" + _strLimitToCategories[i] + "\"";
-                }
+                strCategoryLimit = "category = \"" + cboCategory.SelectedValue + "\"";
             }
             else
             {
-                strCategoryLimit = "category != \"Cyberware\" and category != \"Gear\"";
+                if (_strLimitToCategories.Length > 0)
+                {
+                    strCategoryLimit += "category = \"" + _strLimitToCategories[0] + "\"";
+                    for (int i = 1; i < _strLimitToCategories.Length; i++)
+                    {
+                        strCategoryLimit += " or category = \"" + _strLimitToCategories[i] + "\"";
+                    }
+                }
+                else
+                {
+                    strCategoryLimit = "category != \"Cyberware\" and category != \"Gear\"";
+                }
             }
             // Treat everything as being uppercase so the search is case-insensitive.
             string strSearch = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and (" + strCategoryLimit + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";

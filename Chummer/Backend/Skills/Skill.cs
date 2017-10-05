@@ -140,7 +140,14 @@ namespace Chummer.Skills
             }
             XmlDocument skills = XmlManager.Instance.Load("skills.xml");
             Skill skill = null;
-            if (suid != Guid.Empty)
+            bool blnIsKnowledgeSkill = false;
+            if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
+            {
+                KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+                knoSkill.Load(n);
+                skill = knoSkill;
+            }
+            else if (suid != Guid.Empty)
             {
                 XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{n["suid"].InnerText}']");
 
@@ -172,14 +179,6 @@ namespace Chummer.Skills
                 }
             }
             */
-
-            bool blnIsKnowledgeSkill = false;
-            if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
-            {
-                KnowledgeSkill knoSkill = new KnowledgeSkill(character);
-                knoSkill.Load(n);
-                skill = knoSkill;
-            }
 
             if (skill == null)
                 skill = new KnowledgeSkill(character, n["name"]?.InnerText ?? string.Empty);

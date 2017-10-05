@@ -1559,6 +1559,7 @@ namespace Chummer.Backend.Equipment
 
             // Factor in the Essence multiplier of the selected CyberwareGrade.
             decimal decESSMultiplier = Grade.Essence;
+            decimal decTotalESSMultiplier = 1.0m;
 
             if (_blnSuite)
                 decESSMultiplier -= 0.1m;
@@ -1576,21 +1577,41 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decMultiplier = 1;
                 // Apply the character's Cyberware Essence cost multiplier if applicable.
-                if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCost) != 0)
+                if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
                 {
-                    decMultiplier = _objCharacter.Improvements
-                        .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                        .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-                    decESSMultiplier -= 1.0m - decMultiplier;
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCost) != 0)
+                    {
+                        decMultiplier = _objCharacter.Improvements
+                            .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
+                            .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                        decESSMultiplier -= 1.0m - decMultiplier;
+                    }
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
+                    {
+                        foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier))
+                        {
+                            decTotalESSMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m);
+                        }
+                    }
                 }
 
                 // Apply the character's Bioware Essence cost multiplier if applicable.
-                else if (_objImprovementSource == Improvement.ImprovementSource.Bioware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCost) != 0)
+                else if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
                 {
-                    decMultiplier = _objCharacter.Improvements
-                        .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                        .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-                    decESSMultiplier -= 1.0m - decMultiplier;
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCost) != 0)
+                    {
+                        decMultiplier = _objCharacter.Improvements
+                            .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
+                            .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                        decESSMultiplier -= 1.0m - decMultiplier;
+                    }
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
+                    {
+                        foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier))
+                        {
+                            decTotalESSMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m);
+                        }
+                    }
                 }
             }
 
@@ -1602,16 +1623,7 @@ namespace Chummer.Backend.Equipment
                     .Aggregate<Improvement, decimal>(1, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
                 decESSMultiplier -= 1.0m - decBasicMultiplier;
             }
-            decReturn = decReturn * decESSMultiplier;
-
-            // Check if the character has Sensitive System.
-            if (_objImprovementSource == Improvement.ImprovementSource.Cyberware && _objCharacter != null)
-            {
-                if (_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled))
-                {
-                    decReturn *= 2.0m;
-                }
-            }
+            decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 
             if (_objCharacter != null)
                 decReturn = Math.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);

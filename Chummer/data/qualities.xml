@@ -1454,7 +1454,8 @@
       <karma>-12</karma>
       <category>Negative</category>
       <bonus>
-        <sensitivesystem />
+        <disablebioware />
+		<cyberwaretotalessmultiplier>200</cyberwaretotalessmultiplier>
       </bonus>
       <source>SR5</source>
       <page>83</page>

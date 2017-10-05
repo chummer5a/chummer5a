@@ -811,6 +811,10 @@
       <key>Checkbox_HideOverAvailLimit</key>
       <text>Hide Items Over Avail Limit ({0})</text>
     </string>
+	<string>
+      <key>Checkbox_ShowOnlyAffordItems</key>
+      <text>Show Only Items I Can Afford</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -8541,6 +8545,10 @@ Do you want to continue?</text>
 	<string>
 	  <key>Button_DecreaseCustomDirectoryLoadOrder</key>
 	  <text>Decrease Load Order</text>
+	</string>
+	<string>
+	  <key>String_ShowAll</key>
+	  <text>Show All</text>
 	</string>
     <!-- End Region -->
     <!-- End Region -->

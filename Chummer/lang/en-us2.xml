@@ -7453,5 +7453,9 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_DecreaseCustomDirectoryLoadOrder</key>
 			<text>Decrease Load Order</text>
 		</string>
+		<string>
+			<key>String_ShowAll</key>
+			<text>Show All</text>
+		</string>
 	</strings>
 </chummer>

@@ -83,6 +83,13 @@ Application Changes:
 - The message that warns of missing sourcebooks when a character is loaded is now localizable.
 - Added the ability to amend items instead of completely overriding them. When amending items, only nodes that are present in the amended node will overwrite or add to older data. Tags can also be removed this way by adding the 'remove="yes"' attribute to an element in an amending node. An ID and/or a Name field must be specified for all items regardless, as that is how the system identifies what data to amend. Sub-elements with children that also have ID and/or Name fields (e.g. metavariants lists inside metatype entries) will be treated the same way as their parents, i.e. only nodes present in the amending file will be overwritten, added, or removed.
 - Added the ability to load and set any custom data directory as a custom ruleset. Once added, these data directories will be saved to a list and can be toggled the same way as sourcebooks. Entries with invalid directory paths will be removed on startup, and if someone is running Chummer for the first time or has only invalid directory paths, Chummer will automatically populate the custom data directory list with each folder it finds in the "customdata" folder (they all start disabled).
+- Fixed detection of Burnout's Way when combined with Adapsin.
+- Added an option in the Select Gear dialog to only show items that the character can currently afford.
+- Select Armor, Select Cyberware, Select Bioware, Select Gear, Select Vehicle, and Select Weapon screens now all have a category that shows all items, and searching for items on those screens will now only search within the selected category. In the case of Select Cyberware and Select Bioware screens, the current selection will be saved when switching between grades and selecting a particular grade will automatically hide all items that cannot be taken in that grade. Selecting the Cultured Bioware category when the Used grade is selected will switch the selected grade back to Standard.
+- The Select Cyberware screen will now only display Cyberlimb Customizations and Cyberlimb Enhancements when adding a subsystem to a cyberlimb.
+- Fixed a bug where cost modifiers were not properly applied to gear with FixedValue costs.
+- Replaced support for <cost3>, <cost6>, <cost10>, <avail3>, <avail6>, and <avail10> nodes with a system that can support any number of <cost[n]> and <avail[n]> nodes (where n = rating above which the indicated cost or availability no longer necessarily apply). When a regular <cost> or <avail> node is absent, the system will look for the <cost[n]> or <avail[n]> node with the lowest n that is still greater than the item's rating; if none are found, then the node with the highest n is used instead.
+- Added support for bonuses that remove the ability to add cyberware, remove the ability to add bioware, or modify the essence cost of bioware or cyberware in a way that stacks multiplicatively with other modifiers instead of additively.
 
 Data Changes:
 
@@ -144,6 +151,7 @@ Data Changes:
 - Renamed the Colt Manhunter from Hard Targets to the Colt Manhunter A1, as per Missions FAQ.
 - Removed an obsolete weapon override file for the Ares Thunderstruck Gauss Rifle.
 - Added a set of custom rules that follows Shadowrun Missions 1.4 FAQ.
+- Fixed a bug where Sensitive System did not disallow the character from adding bioware.
 
 New Strings:
 - Label_Options_SpellShapingFocus
@@ -179,6 +187,8 @@ New Strings:
 - Button_RemoveCustomDirectory
 - Button_IncreaseCustomDirectoryLoadOrder
 - Button_DecreaseCustomDirectoryLoadOrder
+- String_ShowAll
+- Checkbox_ShowOnlyAffordItems
 
 Changes Strings:
 - Message_PositiveQualityLimit

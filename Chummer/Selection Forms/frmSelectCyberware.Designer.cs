@@ -112,6 +112,7 @@
             this.cboGrade.Size = new System.Drawing.Size(182, 21);
             this.cboGrade.TabIndex = 25;
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
+            this.cboGrade.EnabledChanged += new System.EventHandler(this.cboGrade_EnabledChanged);
             // 
             // lstCyberware
             // 

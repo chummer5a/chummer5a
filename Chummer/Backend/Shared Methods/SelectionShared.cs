@@ -749,5 +749,67 @@ namespace Chummer.Backend.Shared_Methods
             }
             return blnAddToList;
         }
+
+        public static bool CheckNuyenRestriction(XPathNavigator nav, XmlNode objXmlGear, Character objCharacter, int intMaxNuyen, double dblCostMultiplier = 1.0)
+        {
+            // Cost.
+            double dblCost = 0.0;
+            XmlNode objCostNode = objXmlGear["cost"];
+            int intRating = 1;
+            if (objCostNode == null)
+            {
+                intRating = int.MaxValue;
+                foreach (XmlNode objLoopNode in objXmlGear.ChildNodes)
+                {
+                    if (objLoopNode.NodeType == XmlNodeType.Element && objLoopNode.Name.StartsWith("cost"))
+                    {
+                        string strLoopCostString = objLoopNode.Name.Substring(4);
+                        int intTmp;
+                        if (int.TryParse(strLoopCostString, out intTmp))
+                        {
+                            intRating = Math.Min(intRating, intTmp);
+                        }
+                    }
+                }
+                objCostNode = objXmlGear["cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo)];
+            }
+            if (objCostNode != null)
+            {
+                try
+                {
+                    XPathExpression xprCost = nav.Compile(objCostNode.InnerText.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)));
+                    dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                }
+                catch (XPathException)
+                {
+                    int intTemp;
+                    if (int.TryParse(objCostNode.InnerText, out intTemp))
+                    {
+                        dblCost = intTemp;
+                    }
+                }
+
+                if (objCostNode.InnerText.StartsWith("FixedValues"))
+                {
+                    string[] strValues = objCostNode.InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    dblCost = Convert.ToInt32(strValues[0].Replace("[", string.Empty).Replace("]", string.Empty));
+                }
+                else if (objCostNode.InnerText.StartsWith("Variable"))
+                {
+                    int intMin = 0;
+                    string strCost = objCostNode.InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    if (strCost.Contains("-"))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        intMin = Convert.ToInt32(strValues[0]);
+                    }
+                    else
+                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                    dblCost = intMin;
+                }
+            }
+            return intMaxNuyen >= Convert.ToInt32(dblCost * dblCostMultiplier);
+        }
     }
 }

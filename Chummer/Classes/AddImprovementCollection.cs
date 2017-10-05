@@ -2271,7 +2271,7 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Bioware Essence Cost modifiers.
+        // Check for Bioware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void biowareessmultiplier(XmlNode bonusNode)
         {
             Log.Info("biowareessmultiplier");
@@ -2281,13 +2281,33 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Cybeware Essence Cost modifiers.
+        // Check for Bioware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
+        public void biowaretotalessmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("biowaretotalessmultiplier");
+            Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Cybeware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void cyberwareessmultiplier(XmlNode bonusNode)
         {
             Log.Info("cyberwareessmultiplier");
             Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
             CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Cyberware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
+        public void cyberwaretotalessmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("cyberwaretotalessmultiplier");
+            Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2880,14 +2900,24 @@ namespace Chummer.Classes
             CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SoftWeave, "softweave");
         }
 
-        // Check for Sensitive System.
-        public void sensitivesystem(XmlNode bonusNode)
+        // Check for bonus that removes the ability to take any bioware (e.g. Sensitive System)
+        public void disablebioware(XmlNode bonusNode)
         {
-            Log.Info("sensitivesystem");
-            Log.Info("sensitivesystem = " + bonusNode.OuterXml.ToString());
+            Log.Info("disablebioware");
+            Log.Info("disablebioware = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SensitiveSystem,
-                "sensitivesystem");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.DisableBioware,
+                "disablebioware");
+        }
+
+        // Check for bonus that removes the ability to take any cyberware.
+        public void disablecyberware(XmlNode bonusNode)
+        {
+            Log.Info("disablecyberware");
+            Log.Info("disablecyberware = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.DisableCyberware,
+                "disablecyberware");
         }
 
         // Check for Movement Percent.

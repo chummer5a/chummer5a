@@ -65,6 +65,7 @@
             this.chkAerodynamic = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -286,6 +287,11 @@
             0,
             0,
             0});
+            this.nudGearQty.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudGearQty.Name = "nudGearQty";
             this.nudGearQty.Size = new System.Drawing.Size(56, 20);
             this.nudGearQty.TabIndex = 14;
@@ -475,6 +481,18 @@
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
+            // chkShowOnlyAffordItems
+            // 
+            this.chkShowOnlyAffordItems.AutoSize = true;
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(362, 355);
+            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
+            this.chkShowOnlyAffordItems.TabIndex = 66;
+            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+            // 
             // frmSelectGear
             // 
             this.AcceptButton = this.cmdOK;
@@ -482,6 +500,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(646, 414);
+            this.Controls.Add(this.chkShowOnlyAffordItems);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.chkBlackMarketDiscount);
             this.Controls.Add(this.chkAerodynamic);
@@ -574,5 +593,6 @@
         private System.Windows.Forms.CheckBox chkAerodynamic;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
     }
 }
