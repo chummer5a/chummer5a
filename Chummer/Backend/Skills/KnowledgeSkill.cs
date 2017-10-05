@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -366,7 +366,12 @@ namespace Chummer.Skills
             node.TryGetStringFieldQuickly(GlobalOptions.Instance.Language, ref _translated);
 
             LoadSuggestedSpecializations(_name);
-            Type = node["type"]?.InnerText;
+            string strCategoryString = string.Empty;
+            if ((node.TryGetStringFieldQuickly("type", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
+                || (node.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))
+            {
+                Type = strCategoryString;
+            }
         }
 
         public override bool IsKnowledgeSkill

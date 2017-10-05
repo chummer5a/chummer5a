@@ -139,7 +139,7 @@ namespace Chummer.Skills
                 return null;
             }
             XmlDocument skills = XmlManager.Instance.Load("skills.xml");
-            Skill skill;
+            Skill skill = null;
             if (suid != Guid.Empty)
             {
                 XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{n["suid"].InnerText}']");
@@ -157,6 +157,7 @@ namespace Chummer.Skills
                     skill = new Skill(character, node);
                 }
             }
+            /*
             else //This is ugly but i'm not sure how to make it pretty
             {
                 if (n["forced"] != null && n["name"] != null)
@@ -170,19 +171,21 @@ namespace Chummer.Skills
                     skill = knoSkill;
                 }
             }
-
-            XmlElement element = n["guid"];
-            if (element != null) skill.Id = Guid.Parse(element.InnerText);
+            */
 
             bool blnIsKnowledgeSkill = false;
             if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
-                string strCategoryString = string.Empty;
-                if (n.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
-                {
-                    ((KnowledgeSkill)skill).Type = strCategoryString;
-                }
+                KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+                knoSkill.Load(n);
+                skill = knoSkill;
             }
+
+            if (skill == null)
+                skill = new KnowledgeSkill(character, n["name"]?.InnerText ?? string.Empty);
+            XmlElement element = n["guid"];
+            if (element != null) skill.Id = Guid.Parse(element.InnerText);
+
             n.TryGetInt32FieldQuickly("karma", ref skill._karma);
             n.TryGetInt32FieldQuickly("base", ref skill._base);
             n.TryGetBoolFieldQuickly("buywithkarma", ref skill._buyWithKarma);
