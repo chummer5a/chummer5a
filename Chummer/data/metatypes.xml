@@ -568,8 +568,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
