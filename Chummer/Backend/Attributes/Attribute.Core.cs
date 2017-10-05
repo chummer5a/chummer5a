@@ -155,7 +155,6 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intMetatypeMin = value;
-                OnPropertyChanged(nameof(TotalMinimum));
                 OnPropertyChanged(nameof(FreeBase));
                 OnPropertyChanged(nameof(TotalBase));
                 OnPropertyChanged(nameof(AugmentedMetatypeLimits));

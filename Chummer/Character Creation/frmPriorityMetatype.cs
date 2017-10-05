@@ -1572,32 +1572,29 @@ namespace Chummer
                 }
 
                 XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
+                // Set starting magic
                 if (objXmlTalentPriorityNode["magic"] != null)
-                {
-                    // Set starting magic
-                    if (objXmlTalentPriorityNode["magic"] != null)
-                        _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentPriorityNode["magic"].InnerText);
-                    if (objXmlTalentPriorityNode["spells"] != null)
-                        _objCharacter.SpellLimit = Convert.ToInt32(objXmlTalentPriorityNode["spells"].InnerText);
-                    if (objXmlTalentPriorityNode["maxmagic"] != null)
-                        _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(objXmlTalentPriorityNode["magic"].InnerText);
-                    // Set starting resonance
-                    if (objXmlTalentPriorityNode["resonance"] != null)
-                        _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlTalentPriorityNode["resonance"].InnerText);
-                    if (objXmlTalentPriorityNode["cfp"] != null)
-                        _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentPriorityNode["cfp"].InnerText);
-                    if (objXmlTalentPriorityNode["maxresonance"] != null)
-                        _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlTalentPriorityNode["maxresonance"].InnerText);
-                    // Set starting depth
-                    if (objXmlTalentPriorityNode["depth"] != null)
-                        _objCharacter.DEP.MetatypeMinimum = Convert.ToInt32(objXmlTalentPriorityNode["depth"].InnerText);
-                    if (objXmlTalentPriorityNode["ainormalprogramlimit"] != null)
-                        _objCharacter.AINormalProgramLimit = Convert.ToInt32(objXmlTalentPriorityNode["ainormalprogramlimit"].InnerText);
-                    if (objXmlTalentPriorityNode["ainormalprogramlimit"] != null)
-                        _objCharacter.AIAdvancedProgramLimit = Convert.ToInt32(objXmlTalentPriorityNode["aiadvancedprogramlimit"].InnerText);
-                    if (objXmlTalentPriorityNode["maxdepth"] != null)
-                        _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(objXmlTalentPriorityNode["maxdepth"].InnerText);
-                } 
+                    _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentPriorityNode["magic"].InnerText);
+                if (objXmlTalentPriorityNode["spells"] != null)
+                    _objCharacter.SpellLimit = Convert.ToInt32(objXmlTalentPriorityNode["spells"].InnerText);
+                if (objXmlTalentPriorityNode["maxmagic"] != null)
+                    _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(objXmlTalentPriorityNode["magic"].InnerText);
+                // Set starting resonance
+                if (objXmlTalentPriorityNode["resonance"] != null)
+                    _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlTalentPriorityNode["resonance"].InnerText);
+                if (objXmlTalentPriorityNode["cfp"] != null)
+                    _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentPriorityNode["cfp"].InnerText);
+                if (objXmlTalentPriorityNode["maxresonance"] != null)
+                    _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlTalentPriorityNode["maxresonance"].InnerText);
+                // Set starting depth
+                if (objXmlTalentPriorityNode["depth"] != null)
+                    _objCharacter.DEP.MetatypeMinimum = Convert.ToInt32(objXmlTalentPriorityNode["depth"].InnerText);
+                if (objXmlTalentPriorityNode["ainormalprogramlimit"] != null)
+                    _objCharacter.AINormalProgramLimit = Convert.ToInt32(objXmlTalentPriorityNode["ainormalprogramlimit"].InnerText);
+                if (objXmlTalentPriorityNode["ainormalprogramlimit"] != null)
+                    _objCharacter.AIAdvancedProgramLimit = Convert.ToInt32(objXmlTalentPriorityNode["aiadvancedprogramlimit"].InnerText);
+                if (objXmlTalentPriorityNode["maxdepth"] != null)
+                    _objCharacter.DEP.MetatypeMaximum = Convert.ToInt32(objXmlTalentPriorityNode["maxdepth"].InnerText);
 
                 // Set Free Skills/Skill Groups
                 XmlNode objTalentsNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" +
