@@ -170,7 +170,7 @@ namespace Chummer
 
             tabPowerUc.ObjCharacter = _objCharacter;
             // Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
-            if (!_objCharacter.MagicianEnabled)
+            if (!_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
                 tabCharacterTabs.TabPages.Remove(tabMagician);
             if (!_objCharacter.AdeptEnabled)
                 tabCharacterTabs.TabPages.Remove(tabAdept);
@@ -26600,7 +26600,7 @@ namespace Chummer
 
         private void cboDrain_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || string.IsNullOrEmpty(cboDrain.SelectedValue.ToString()))
+            if (_blnLoading || string.IsNullOrEmpty(cboDrain.SelectedValue?.ToString()))
                 return;
 
             _objCharacter.TraditionDrain = cboDrain.SelectedValue.ToString();
