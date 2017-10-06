@@ -41,6 +41,7 @@ namespace Chummer
         private bool _blnAutomaticCopyProtection = true;
         private bool _blnAutomaticRegistration = true;
         private bool _blnStrictSkillGroupsInCreateMode;
+        private bool _blnAllowPointBuySpecializationsOnKarmaSkills = false;
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnCapSkillRating;
         private bool _blnConfirmDelete = true;
@@ -387,6 +388,8 @@ namespace Chummer
             objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
             // <breakskillgroupsincreatemode />
             objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
+            // <allowpointbuyspecializationsonkarmaskills />
+            objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString());
             // <extendanydetectionspell />
             objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
             // <allowskilldicerolling />
@@ -775,6 +778,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("usecontactpoints", ref _blnUseContactPoints);
             // Whether or not the user can break Skill Groups while in Create Mode.
             objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
+            // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+            objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills", ref _blnAllowPointBuySpecializationsOnKarmaSkills);
             // Whether or not any Detection Spell can be taken as Extended range version.
             objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
             // Whether or not dice rolling id allowed for Skills.
@@ -2205,6 +2210,21 @@ namespace Chummer
             set
             {
                 _blnStrictSkillGroupsInCreateMode = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// </summary>
+        public bool AllowPointBuySpecializationsOnKarmaSkills
+        {
+            get
+            {
+                return _blnAllowPointBuySpecializationsOnKarmaSkills;
+            }
+            set
+            {
+                _blnAllowPointBuySpecializationsOnKarmaSkills = value;
             }
         }
 

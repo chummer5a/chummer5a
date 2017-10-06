@@ -240,6 +240,7 @@ namespace Chummer
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkAllowPointBuySpecializationsOnKarmaSkills = new System.Windows.Forms.CheckBox();
             this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
             this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
             this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
@@ -2735,6 +2736,7 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkAllowPointBuySpecializationsOnKarmaSkills);
             this.tabHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder);
             this.tabHouseRules.Controls.Add(this.chkEducationQualitiesApplyOnChargenKarma);
             this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
@@ -2771,6 +2773,19 @@ namespace Chummer
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // chkAllowPointBuySpecializationsOnKarmaSkills
+            // 
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.AutoSize = true;
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Location = new System.Drawing.Point(8, 394);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Name = "chkAllowPointBuySpecializationsOnKarmaSkills";
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Size = new System.Drawing.Size(366, 17);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.TabIndex = 34;
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Tag = "Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills";
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Text = "Allow skill points to be used to buy specializations for karma-bought skills";
+            this.tipTooltip.SetToolTip(this.chkAllowPointBuySpecializationsOnKarmaSkills, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.UseVisualStyleBackColor = true;
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkReverseAttributePriorityOrder
             // 
@@ -3548,5 +3563,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
         private System.Windows.Forms.Button cmdIncreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.Button cmdDecreaseCustomDirectoryLoadOrder;
+        private System.Windows.Forms.CheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
     }
 }

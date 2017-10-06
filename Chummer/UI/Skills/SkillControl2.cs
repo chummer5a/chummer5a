@@ -324,7 +324,8 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
+            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
+                !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
             {
                 chkKarma.Checked = true;
             }

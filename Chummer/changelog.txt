@@ -90,6 +90,7 @@ Application Changes:
 - Fixed a bug where cost modifiers were not properly applied to gear with FixedValue costs.
 - Replaced support for <cost3>, <cost6>, <cost10>, <avail3>, <avail6>, and <avail10> nodes with a system that can support any number of <cost[n]> and <avail[n]> nodes (where n = rating above which the indicated cost or availability no longer necessarily apply). When a regular <cost> or <avail> node is absent, the system will look for the <cost[n]> or <avail[n]> node with the lowest n that is still greater than the item's rating; if none are found, then the node with the highest n is used instead.
 - Added support for bonuses that remove the ability to add cyberware, remove the ability to add bioware, or modify the essence cost of bioware or cyberware in a way that stacks multiplicatively with other modifiers instead of additively.
+- Added a houserule option to allow skill points to be used to buy specializations for karma-bought skills.
 
 Data Changes:
 
@@ -189,6 +190,7 @@ New Strings:
 - Button_DecreaseCustomDirectoryLoadOrder
 - String_ShowAll
 - Checkbox_ShowOnlyAffordItems
+- Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills
 
 Changes Strings:
 - Message_PositiveQualityLimit
