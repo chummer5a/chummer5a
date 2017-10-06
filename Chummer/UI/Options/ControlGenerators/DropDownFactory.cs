@@ -37,86 +37,80 @@ namespace Chummer.UI.Options.ControlGenerators
                 {
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
-                List<string> strings = new List<string>();
+
+                DropDownAttribute attribute;
+                int width;
                 if (v.TargetProperty.PropertyType.IsEnum)
                 {
-                    List<Enum> enums = new List<Enum>();
-                    string name = v.TargetProperty.PropertyType.Name;
-                    foreach (var value in Enum.GetValues(v.TargetProperty.PropertyType).Cast<Enum>())
-                    {
-                        string valueName = $"{name}_{value}";
-                        enums.Add(value);
-                        string display;
-                        strings.Add(LanguageManager.Instance.TryGetString(valueName, out display)
-                            ? display
-                            : value.ToString());
-                    }
+                    List<ListItem<Enum>> enumDisplayValues = CreateDisplayValuesFromEnum(v.TargetProperty);
+                    width = enumDisplayValues.Select(s => TextRenderer.MeasureText(s.Name, Control.DefaultFont).Width).Max() + DOWN_ARRAY_SPACE;
 
                     // ReSharper disable once ObjectCreationAsStatement
-                    new ComboBoxBinder<Enum>(v, backing, strings, enums);
-
-
-                    backing.Width = strings.Select(s => TextRenderer.MeasureText(s, Control.DefaultFont).Width).Max() + DOWN_ARRAY_SPACE;
-                    backing.Top -= TEXTBOX_MATCH_LABEL;
-                    return backing;
+                    new ComboBoxBinder<Enum>(v, backing, enumDisplayValues);
                 }
-                DropDownAttribute attribute = v.TargetProperty.GetCustomAttribute<DropDownAttribute>();
-                if (attribute != null)
+                else if ((attribute = v.TargetProperty.GetCustomAttribute<DropDownAttribute>()) != null)
                 {
-                    List<string> values = attribute.RealValues.ToList();
-                    if (attribute.DirectDisplay != null)
-                    {
-                        strings.AddRange(attribute.DirectDisplay);   
-                    }
-                    else if (attribute.TranslatedDisplay != null)
-                    {
-                        strings.AddRange(attribute.TranslatedDisplay.Select(LanguageManager.Instance.GetString));
-                    }
-                    else
-                    {
-                        strings.AddRange(values);
-                    }
-
-                    new ComboBoxBinder<string>(v, backing, strings, values);
-                    return backing;
+                    var displayValues = CreateDisplayValuesFromDropDownAttribute(attribute);
+                    width = displayValues.Select(s => TextRenderer.MeasureText(s.Name, Control.DefaultFont).Width).Max() + DOWN_ARRAY_SPACE;
+                    
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new ComboBoxBinder<string>(v, backing, displayValues);
+                }
+                else
+                {
+                    throw new ArgumentException("BackingEntry should either be an enum or have a DropDownAttribute");
                 }
 
-
-
-                //TODO: DropDownAttribute or something...
-
-
+                backing.Width = width;
+                backing.Top -= TEXTBOX_MATCH_LABEL;
+                return backing;
             }
 
             throw new NotImplementedException();
+        }
+
+        private List<ListItem<string>> CreateDisplayValuesFromDropDownAttribute(DropDownAttribute source)
+        {
+            return source.GetDisplayList();
+        }
+
+        private List<ListItem<Enum>> CreateDisplayValuesFromEnum(PropertyInfo enumProperty)
+        {
+            List<ListItem<Enum>> list = new List<ListItem<Enum>>();
+            string name = enumProperty.PropertyType.Name;
+            foreach (var value in Enum.GetValues(enumProperty.PropertyType).Cast<Enum>())
+            {
+                string valueName = $"{name}_{value}";
+                string display;
+                list.Add(new ListItem<Enum>(value, LanguageManager.Instance.TryGetString(valueName, out display)
+                    ? display
+                    : value.ToString()));
+            }
+
+            return list;
         }
 
         private class ComboBoxBinder<T>
         {
             private readonly OptionEntryProxy _backingField;
             private readonly ComboBox _uiElement;
-            private readonly List<string> _displayValues;
-            private readonly List<T> _realValues;
-
+            private readonly List<ListItem<T>> _items;
+            
             public ComboBoxBinder(
                 OptionEntryProxy backingField, 
-                ComboBox uiElement, 
-                List<string> displayValues,
-                List<T> realValues)
+                ComboBox uiElement,
+                List<ListItem<T>> items
+            )
             {
                 _backingField = backingField;
                 _uiElement = uiElement;
-                _displayValues = displayValues;
-                _realValues = realValues;
-                uiElement.Items.AddRange(displayValues.ToArray());
-
-
-                for (int i = 0; i < realValues.Count; i++)
+                _items = items;
+                for (int i = 0; i < _items.Count; i++)
                 {
-                    if (realValues[i].Equals(backingField.Value))
-                        uiElement.SelectedIndex = i;
+                    _uiElement.Items.Add(_items[i].Name);
+                    if (_items[i].Value.Equals(backingField.Value))
+                        _uiElement.SelectedIndex = i;
                 }
-
 
                 backingField.ValueChanged += BackingFieldOnValueChanged;
                 uiElement.SelectedIndexChanged += UiElementOnSelectedIndexChanged;
@@ -124,12 +118,12 @@ namespace Chummer.UI.Options.ControlGenerators
 
             private void UiElementOnSelectedIndexChanged(object sender, EventArgs eventArgs)
             {
-                _backingField.Value = _realValues[_uiElement.SelectedIndex];
+                _backingField.Value = _items[_uiElement.SelectedIndex].Value;
             }
 
             private void BackingFieldOnValueChanged()
             {
-                int index = _realValues.IndexOf((T) _backingField.Value);
+                int index = _items.FindIndex(x => x.Equals(_backingField.Value));
                 _uiElement.SelectedIndex = index;
             }
         }

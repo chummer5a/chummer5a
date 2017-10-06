@@ -23,10 +23,22 @@ using System.Xml;
 
 namespace Chummer
 {
+    public class ListItem<T>
+    {
+        public T Value { get; set; }
+        public string Name { get; set; }
+
+        public ListItem(T value, string name)
+        {
+            Value = value;
+            Name = name;
+        }
+    }
+
 	/// <summary>
 	/// ListItem class to make populating a DropDownList from a DataSource easier.
 	/// </summary>
-	public class ListItem
+	public class ListItem : ListItem<string>
 	{
 		public static ListItem AutoXml(string value, XmlNode node)
 		{
@@ -40,49 +52,13 @@ namespace Chummer
 			return new ListItem(value, LanguageManager.Instance.GetString(languageString)); 
 		}
 
-		public ListItem(string value, string name)
-		{
-			_strValue = value;
-			_strName = name;
-		}
-
-		public ListItem()
+		public ListItem(string value, string name) : base(value, name)
 		{
 			
 		}
 
-		private string _strValue = "";
-		private string _strName = "";
-
-		/// <summary>
-		/// Value.
-		/// </summary>
-		public string Value
-		{
-			get
-			{
-				return _strValue;
-			}
-			set
-			{
-				_strValue = value;
-			}
-		}
-
-		/// <summary>
-		/// Name.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _strName;
-			}
-			set
-			{
-				_strName = value;
-			}
-		}
+        public ListItem() : base(null, null)
+        { }
 	}
 
 	#region Sorting Classes

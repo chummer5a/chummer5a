@@ -190,6 +190,7 @@
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
+    <Compile Include="Classes\CharacterSheetsHelper.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashreport.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
@@ -353,6 +354,7 @@
     <Compile Include="UI\Options\ControlGenerators\IOptionWinFromControlFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\NumericUpDownOptionFactory.cs" />
     <Compile Include="UI\Options\ControlGenerators\PathSelectiorFactory.cs" />
+    <Compile Include="UI\Options\ControlGenerators\StringControlFactory.cs" />
     <Compile Include="UI\Options\OptionRender.cs">
       <SubType>UserControl</SubType>
     </Compile>

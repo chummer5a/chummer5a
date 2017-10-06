@@ -104,7 +104,7 @@ namespace Chummer.Backend.Options
 
                     if (!_supported.Any(x => x(entryProxy)))
                     {
-                        Console.WriteLine($"No controlfactory for {entryProxy.TargetProperty.PropertyType}");
+                        Console.WriteLine($"No controlfactory for {entryProxy.TargetProperty.PropertyType}({entryProxy.TargetProperty})");
                         continue;
                     }
 

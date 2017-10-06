@@ -9,6 +9,7 @@ using Chummer.Backend;
 using Chummer.Backend.Attributes.OptionAttributes;
 using Chummer.Backend.Attributes.SaveAttributes;
 using Chummer.Backend.Equipment;
+using Chummer.Classes;
 using Microsoft.Win32;
 
 namespace Chummer
@@ -235,9 +236,12 @@ namespace Chummer
         [DisplayIgnore]
         public ClipboardContentType ClipboardContentType { get; set; } = new ClipboardContentType();
 
+        
+
         /// <summary>
         /// Default character sheet to use when printing.
         /// </summary>
+        [DropDown(" Chummer.Classes.CharacterSheetsHelper.GetListOfCharacterSheets")]
         public string DefaultCharacterSheet { get; set; } = "Shadowrun 5";
 
         /// <summary>
