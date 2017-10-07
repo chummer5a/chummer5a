@@ -65,14 +65,14 @@ namespace Chummer
 
 		private void LoadCharacters()
 		{
-			foreach (string strFile in GlobalOptions.Instance.ReadStickyMRUList().Where(File.Exists))
+            //TODO: Benchmark this
+            //TODO: can be done in background?
+
+			foreach (string strFile in GlobalOptions.Instance.MostRecentlyUsedList.Select(x => x.Path).Where(File.Exists))
 			{
 				CacheCharacter(strFile);
 			}
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList().Where(File.Exists))
-			{
-				CacheCharacter(strFile);
-			}
+
 			if (!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath))
 			{
 				string[] objFiles = Directory.GetFiles(GlobalOptions.Instance.CharacterRosterPath);

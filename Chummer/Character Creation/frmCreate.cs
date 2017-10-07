@@ -16821,7 +16821,7 @@ namespace Chummer
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
-                GlobalOptions.Instance.AddToMRUList(_objCharacter.FileName);
+                GlobalOptions.Instance.MRUAdd(_objCharacter.FileName);
             }
             UpdateWindowTitle(false);
 
@@ -16870,7 +16870,7 @@ namespace Chummer
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
-                GlobalOptions.Instance.AddToMRUList(_objCharacter.FileName);
+                GlobalOptions.Instance.MRUAdd(_objCharacter.FileName);
             }
             if (blnEscapeAfterSave)
                 return blnSaved;

@@ -60,7 +60,9 @@ namespace Chummer
                     RegistryKey rootKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
                     loader.Load(ref _instance, rootKey);
 
-
+                    //TODO: Temporary readMRU for old options (Move this)
+                    _instance.MostRecentlyUsedList.AddRange(ReadStickyMRUList().Select(x => new MRUEntry(x) {Sticky = true}));
+                    _instance.MostRecentlyUsedList.AddRange(ReadMRUList().Select(x => new MRUEntry(x)));
                 }
             }
             catch
@@ -283,82 +285,90 @@ namespace Chummer
         #endregion
 
         #region MRU Methods
-        /// <summary>
-        /// Add a file to the most recently used characters.
-        /// </summary>
-        /// <param name="strFile">Name of the file to add.</param>
-        public void AddToMRUList(string strFile)
+
+        [DisplayIgnore]
+        public List<MRUEntry> MostRecentlyUsedList { get; } = new List<MRUEntry>();
+
+        public void MRUAdd(string entryPath)
         {
-            List<string> strFiles = ReadMRUList();
-
-            // Make sure the file does not already exist in the MRU list.
-            if (strFiles.Contains(strFile))
-                strFiles.Remove(strFile);
-
-            // Make sure the file doesn't exist in the sticky MRU list.
-            List<string> strStickyFiles = ReadStickyMRUList();
-            if (strStickyFiles.Contains(strFile))
-                return;
-
-            strFiles.Insert(0, strFile);
-
-            if (strFiles.Count > 10)
-                strFiles.RemoveRange(10, strFiles.Count - 10);
-
-            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            int i = 0;
-            foreach (string strItem in strFiles)
+            int progress;
+            for (progress = 0; progress < 10; progress++)
             {
-                i++;
-                objRegistry.SetValue("mru" + i.ToString(), strItem);
+                if (MostRecentlyUsedList[progress].Path == entryPath)
+                {
+                    return; //Found in sticky
+                }
+
+                //If not sticky anymore, need different logic
+                //Checking sticky after path. This means first after sticky returns above.
+                //This is fine, as refreshing top needs no action
+                if (!MostRecentlyUsedList[progress].Sticky) break;
             }
-            MRUChanged();
+
+            int topOfSticky = progress;
+            int index = MostRecentlyUsedList.FindIndex(topOfSticky, mru => mru.Path == entryPath);
+
+            if (index == -1) //Not found
+            {
+                MRUEntry entry = new MRUEntry(entryPath);
+                MostRecentlyUsedList.Insert(topOfSticky, entry);
+
+                //Remove every over index 9, backwards from performance (hah) reasons
+                //I don't actually think there can be more than 10 entries atm, but not much more complicated than if
+                //What off by one error?
+                for (int i = MostRecentlyUsedList.Count - 1; i >= 9; i--)
+                {
+                    MostRecentlyUsedList.RemoveAt(i);
+                }
+            }
+            //Found
+            else
+            {
+                //Move to top and rotate down
+                MRUEntry entry = MostRecentlyUsedList[index];
+                MostRecentlyUsedList.RemoveAt(index);
+                MostRecentlyUsedList.Insert(topOfSticky, entry);
+            }
+
+            MRUChanged?.Invoke();
+            //Needs to handle
+            //Item already in list
+            //New item
+            //Stickies
+            //Full stickies
         }
 
-        /// <summary>
-        /// Remove a file from the most recently used characters.
-        /// </summary>
-        /// <param name="strFile">Name of the file to remove.</param>
-        public void RemoveFromMRUList(string strFile)
+        public void MruToggleSticky(MRUEntry entry)
         {
-            List<string> strFiles = ReadMRUList();
+            //I'm sure this can be changed to a generalized case, but i can't see how right now
+            if (entry.Sticky)
+            {
+                int newIndex = MostRecentlyUsedList.FindIndex(x => !x.Sticky);
+                int oldIndex = MostRecentlyUsedList.IndexOf(entry);
+                entry.Sticky = false;
+                MostRecentlyUsedList.RemoveAt(oldIndex);
+                MostRecentlyUsedList.Insert(newIndex-1, entry);
+            }
+            else
+            {
+                int newIndex = MostRecentlyUsedList.FindLastIndex(x => x.Sticky);
+                int oldIndex = MostRecentlyUsedList.IndexOf(entry);
+                entry.Sticky = true;
+                MostRecentlyUsedList.RemoveAt(oldIndex);
+                MostRecentlyUsedList.Insert(newIndex + 1, entry);
 
-            foreach (string strItem in strFiles)
-            {
-                if (strItem == strFile)
-                {
-                    strFiles.Remove(strItem);
-                    break;
-                }
             }
 
-            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            int i = 0;
-            foreach (string strItem in strFiles)
-            {
-                i++;
-                objRegistry.SetValue("mru" + i.ToString(), strItem);
-            }
-            if (strFiles.Count < 10)
-            {
-                for (i = strFiles.Count + 1; i <= 10; i++)
-                {
-                    try
-                    {
-                        objRegistry.DeleteValue("mru" + i.ToString());
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-            MRUChanged();
+
+            MRUChanged?.Invoke();
+
+
         }
 
         /// <summary>
         /// Retrieve the list of most recently used characters.
         /// </summary>
-        public List<string> ReadMRUList()
+        private static List<string> ReadMRUList()
         {
             RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             List<string> lstFiles = new List<string>();
@@ -375,76 +385,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Add a file to the sticky most recently used characters.
-        /// </summary>
-        /// <param name="strFile">Name of the file to add.</param>
-        public void AddToStickyMRUList(string strFile)
-        {
-            List<string> strFiles = ReadStickyMRUList();
-
-            // Make sure the file does not already exist in the MRU list.
-            if (strFiles.Contains(strFile))
-                strFiles.Remove(strFile);
-
-            strFiles.Insert(0, strFile);
-
-            if (strFiles.Count > 10)
-                strFiles.RemoveRange(10, strFiles.Count - 10);
-
-            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            int i = 0;
-            foreach (string strItem in strFiles)
-            {
-                i++;
-                objRegistry.SetValue("stickymru" + i.ToString(), strItem);
-            }
-            MRUChanged();
-        }
-
-        /// <summary>
-        /// Remove a file from the sticky most recently used characters.
-        /// </summary>
-        /// <param name="strFile">Name of the file to remove.</param>
-        public void RemoveFromStickyMRUList(string strFile)
-        {
-            List<string> strFiles = ReadStickyMRUList();
-
-            foreach (string strItem in strFiles)
-            {
-                if (strItem == strFile)
-                {
-                    strFiles.Remove(strItem);
-                    break;
-                }
-            }
-
-            RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-            int i = 0;
-            foreach (string strItem in strFiles)
-            {
-                i++;
-                objRegistry.SetValue("stickymru" + i.ToString(), strItem);
-            }
-            if (strFiles.Count < 10)
-            {
-                for (i = strFiles.Count + 1; i <= 10; i++)
-                {
-                    try
-                    {
-                        objRegistry.DeleteValue("stickymru" + i.ToString());
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-            MRUChanged();
-        }
-
-        /// <summary>
         /// Retrieve the list of sticky most recently used characters.
         /// </summary>
-        public List<string> ReadStickyMRUList()
+        private static List<string> ReadStickyMRUList()
         {
             RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             List<string> lstFiles = new List<string>();
@@ -461,6 +404,16 @@ namespace Chummer
         }
         #endregion
 
+    }
+
+    public class MRUEntry
+    {
+        public bool Sticky { get; set; } = false;
+        public string Path { get; set; }
+        public MRUEntry(string path)
+        {
+            Path = path;
+        }
     }
 
     public enum PdfMode

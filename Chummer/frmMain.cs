@@ -35,10 +35,27 @@ namespace Chummer
 		private frmUpdate _frmUpdate;
         private Character _objCharacter;
 		private List<Character> _lstCharacters = new List<Character>();
+	    private ToolStripMenuItem[] _mruItems;
+
         #region Control Events
         public frmMain()
 		{
-			InitializeComponent();
+            InitializeComponent();
+
+            _mruItems = new ToolStripMenuItem[]
+            {
+                mnuMRU0,
+                mnuMRU1,
+                mnuMRU2,
+                mnuMRU3,
+                mnuMRU4,
+                mnuMRU5,
+                mnuMRU6,
+                mnuMRU7,
+                mnuMRU8,
+                mnuMRU9,
+            };
+
 			Version version = Assembly.GetExecutingAssembly().GetName().Version;
 			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 
@@ -309,44 +326,6 @@ namespace Chummer
 			objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
 		}
 
-		private void mnuMRU_Click(object sender, EventArgs e)
-		{
-			string strFileName = ((ToolStripMenuItem)sender).Text;
-			string strNumber = strFileName.Substring(0, 3);
-			strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
-			LoadCharacter(strFileName);
-		}
-
-		private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Right)
-			{
-				string strFileName = ((ToolStripMenuItem)sender).Text;
-				string strNumber = strFileName.Substring(0, 3);
-				strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
-
-				GlobalOptions.Instance.RemoveFromMRUList(strFileName);
-				GlobalOptions.Instance.AddToStickyMRUList(strFileName);
-			}
-		}
-
-		private void mnuStickyMRU_Click(object sender, EventArgs e)
-		{
-			string strFileName = ((ToolStripMenuItem)sender).Text;
-			LoadCharacter(strFileName);
-		}
-
-		private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Right)
-			{
-				string strFileName = ((ToolStripMenuItem)sender).Text;
-
-				GlobalOptions.Instance.RemoveFromStickyMRUList(strFileName);
-				GlobalOptions.Instance.AddToMRUList(strFileName);
-			}
-		}
-
 		private void frmMain_MdiChildActivate(object sender, EventArgs e)
 		{
 			// If there are no child forms, hide the tab control.
@@ -468,7 +447,7 @@ namespace Chummer
 			// Translate the items in the menu by finding their Tags in the translation file.
 			foreach (ToolStripMenuItem objItem in ((ToolStripMenuItem)sender).DropDownItems.OfType<ToolStripMenuItem>())
 			{
-				if (objItem.Tag != null)
+				if (objItem.Tag is string)
 				{
 					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
 				}
@@ -480,7 +459,7 @@ namespace Chummer
 			// Translate the items in the menu by finding their Tags in the translation file.
 			foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
 			{
-				if (objItem.Tag != null)
+				if (objItem.Tag is string)
 				{
 					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
 				}
@@ -494,7 +473,7 @@ namespace Chummer
 			{
 				foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
 				{
-					if (objButton.Tag != null)
+					if (objButton.Tag is string)
 						objButton.Text = LanguageManager.Instance.GetString(objButton.Tag.ToString());
 				}
 			}
@@ -713,7 +692,7 @@ namespace Chummer
 				}
 
 				if (blnIncludeInMRU)
-					GlobalOptions.Instance.AddToMRUList(strFileName);
+					GlobalOptions.Instance.MRUAdd(strFileName);
 
 				objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
 				objCharacter_CharacterNameChanged(objCharacter);
@@ -729,181 +708,44 @@ namespace Chummer
 		/// </summary>
 		public void PopulateMRU()
 		{
-			int i = -1;
-			foreach (string strFile in GlobalOptions.Instance.ReadStickyMRUList())
-			{
-				i++;
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (i)
-				{
-					case 0:
-						objItem = mnuStickyMRU0;
-						break;
-					case 1:
-						objItem = mnuStickyMRU1;
-						break;
-					case 2:
-						objItem = mnuStickyMRU2;
-						break;
-					case 3:
-						objItem = mnuStickyMRU3;
-						break;
-					case 4:
-						objItem = mnuStickyMRU4;
-						break;
-					case 5:
-						objItem = mnuStickyMRU5;
-						break;
-					case 6:
-						objItem = mnuStickyMRU6;
-						break;
-					case 7:
-						objItem = mnuStickyMRU7;
-						break;
-					case 8:
-						objItem = mnuStickyMRU8;
-						break;
-					case 9:
-						objItem = mnuStickyMRU9;
-						break;
-				}
+		    List<MRUEntry> entries = GlobalOptions.Instance.MostRecentlyUsedList;
+		    int progress;
+		    for (progress = 0; progress < entries.Count; progress++)
+		    {
+		        var working = _mruItems[progress];
+		        working.Text = entries[progress].Path;
+		        working.Tag = entries[progress];
+                working.Image = entries[progress].Sticky ? Chummer.Properties.Resources.asterisk_orange : null;
+		        working.Visible = true;
+		    }
 
-				objItem.Visible = true;
-				objItem.Text = strFile;
-				mnuFileMRUSeparator.Visible = true;
-			}
-
-			// Hide any unused items.
-			for (int x = i + 1; x <= 10; x++)
-			{
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (x)
-				{
-					case 0:
-						objItem = mnuStickyMRU0;
-						break;
-					case 1:
-						objItem = mnuStickyMRU1;
-						break;
-					case 2:
-						objItem = mnuStickyMRU2;
-						break;
-					case 3:
-						objItem = mnuStickyMRU3;
-						break;
-					case 4:
-						objItem = mnuStickyMRU4;
-						break;
-					case 5:
-						objItem = mnuStickyMRU5;
-						break;
-					case 6:
-						objItem = mnuStickyMRU6;
-						break;
-					case 7:
-						objItem = mnuStickyMRU7;
-						break;
-					case 8:
-						objItem = mnuStickyMRU8;
-						break;
-					case 9:
-						objItem = mnuStickyMRU9;
-						break;
-				}
-
-				objItem.Visible = false;
-			}
-
-			i = -1;
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
-			{
-				i++;
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (i)
-				{
-					case 0:
-						objItem = mnuMRU0;
-						break;
-					case 1:
-						objItem = mnuMRU1;
-						break;
-					case 2:
-						objItem = mnuMRU2;
-						break;
-					case 3:
-						objItem = mnuMRU3;
-						break;
-					case 4:
-						objItem = mnuMRU4;
-						break;
-					case 5:
-						objItem = mnuMRU5;
-						break;
-					case 6:
-						objItem = mnuMRU6;
-						break;
-					case 7:
-						objItem = mnuMRU7;
-						break;
-					case 8:
-						objItem = mnuMRU8;
-						break;
-					case 9:
-						objItem = mnuMRU9;
-						break;
-				}
-
-				objItem.Visible = true;
-				if (i == 9)
-					objItem.Text = "1&0 " + strFile;
-				else
-					objItem.Text = "&" + (i + 1).ToString() + " " + strFile;
-				mnuFileMRUSeparator.Visible = true;
-			}
-
-			// Hide any unused items.
-			for (int x = i + 1; x < 10; x++)
-			{
-				ToolStripMenuItem objItem = new ToolStripMenuItem();
-				switch (x)
-				{
-					case 0:
-						objItem = mnuMRU0;
-						break;
-					case 1:
-						objItem = mnuMRU1;
-						break;
-					case 2:
-						objItem = mnuMRU2;
-						break;
-					case 3:
-						objItem = mnuMRU3;
-						break;
-					case 4:
-						objItem = mnuMRU4;
-						break;
-					case 5:
-						objItem = mnuMRU5;
-						break;
-					case 6:
-						objItem = mnuMRU6;
-						break;
-					case 7:
-						objItem = mnuMRU7;
-						break;
-					case 8:
-						objItem = mnuMRU8;
-						break;
-					case 9:
-						objItem = mnuMRU9;
-						break;
-				}
-
-				objItem.Visible = false;
-			}
+		    for (; progress < _mruItems.Length; progress++)
+		    {
+		        _mruItems[progress].Visible = false;
+		    }
 		}
 
-		private void objCareer_DiceRollerOpened(Object sender)
+        private void mnuMRU_Click(object sender, EventArgs e)
+        {
+            string strFileName = ((ToolStripMenuItem)sender).Text;
+            string strNumber = strFileName.Substring(0, 3);
+            strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
+            LoadCharacter(strFileName);
+        }
+
+        private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                MRUEntry entry = (MRUEntry)item.Tag;
+                GlobalOptions.Instance.MruToggleSticky(entry);
+
+                //TODO: refresh view
+            }
+        }
+
+        private void objCareer_DiceRollerOpened(Object sender)
 		{
 			MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
 			//TODO: IMPLEMENT THIS SHIT
@@ -974,10 +816,7 @@ namespace Chummer
 
 		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
 		{
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
-			{
-				GlobalOptions.Instance.RemoveFromMRUList(strFile);
-			}
+            GlobalOptions.Instance.MostRecentlyUsedList.RemoveAll(x => !x.Sticky);
 		}
 	}
 }
