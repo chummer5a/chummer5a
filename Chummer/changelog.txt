@@ -1,4 +1,4 @@
-﻿Build 195
+Build 195
 
 Application Changes:
 
@@ -153,6 +153,7 @@ Data Changes:
 - Removed an obsolete weapon override file for the Ares Thunderstruck Gauss Rifle.
 - Added a set of custom rules that follows Shadowrun Missions 1.4 FAQ.
 - Fixed a bug where Sensitive System did not disallow the character from adding bioware.
+- Fixed an issue with the Taboo Transformer quality looking for an active skill version of Zoology for Mastery.
 
 New Strings:
 - Label_Options_SpellShapingFocus

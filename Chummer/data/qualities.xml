@@ -13514,6 +13514,7 @@
             <skill>
               <name>Zoology</name>
               <val>5</val>
+              <type>Knowledge</type>
             </skill>
             <spell>Shapechange</spell>
           </group>
@@ -13526,6 +13527,7 @@
             <skill>
               <name>Zoology</name>
               <val>5</val>
+              <type>Knowledge</type>
             </skill>
             <spell>[Critter] Form</spell>
           </group>
@@ -13537,6 +13539,7 @@
             <skill>
               <name>Zoology</name>
               <val>5</val>
+              <type>Knowledge</type>
             </skill>
             <spell>[Critter] Form</spell>
           </group>
@@ -13548,6 +13551,7 @@
             <skill>
               <name>Zoology</name>
               <val>5</val>
+              <type>Knowledge</type>
             </skill>
             <spell>Shapechange</spell>
           </group>
@@ -13560,6 +13564,7 @@
             <skill>
               <name>Zoology</name>
               <val>3</val>
+              <type>Knowledge</type>
             </skill>
             <spell>Shapechange</spell>
             <tradition>Wicca</tradition>
@@ -13573,6 +13578,7 @@
             <skill>
               <name>Zoology</name>
               <val>3</val>
+              <type>Knowledge</type>
             </skill>
             <spell>[Critter] Form</spell>
             <tradition>Wicca</tradition>
@@ -13585,6 +13591,7 @@
             <skill>
               <name>Zoology</name>
               <val>3</val>
+              <type>Knowledge</type>
             </skill>
             <spell>[Critter] Form</spell>
             <tradition>Wicca</tradition>
@@ -13597,6 +13604,7 @@
             <skill>
               <name>Zoology</name>
               <val>3</val>
+              <type>Knowledge</type>
             </skill>
             <spell>Shapechange</spell>
             <tradition>Wicca</tradition>
