@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17345,7 +17345,7 @@ namespace Chummer
                 }
 
             }
-            int i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
+            int i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes
             if (i < 0)
             {
@@ -17354,7 +17354,7 @@ namespace Chummer
                 strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAttributeExcess").Replace("{0}", (i * -1).ToString());
             }
 
-            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
+            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (i < 0)
             {
@@ -17877,7 +17877,7 @@ namespace Chummer
             }
 
 
-            i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
+            i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes
             if (blnValid && i > 0)
             {
@@ -17892,7 +17892,7 @@ namespace Chummer
                 }
             }
 
-            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
+            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (blnValid && _objCharacter.Special > 0)
             {

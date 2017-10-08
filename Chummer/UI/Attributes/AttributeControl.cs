@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -124,9 +124,9 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private bool ShowAttributeRule(decimal value)
         {
-            if (attribute._objCharacter.IgnoreRules || value < attribute.TotalMaximum || attribute.TotalMaximum == 0) return true;
-            bool any = attribute._objCharacter.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
-            if (!any || attribute.AtMetatypeMaximum || attribute._objCharacter.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
+            if (_attribute._objCharacter.IgnoreRules || value < _attribute.TotalMaximum || _attribute.TotalMaximum == 0) return true;
+            bool any = _attribute._objCharacter.AttributeSection.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
+            if (!any || _attribute.AtMetatypeMaximum || _attribute._objCharacter.AttributeSection.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
             MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"),
                 LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
