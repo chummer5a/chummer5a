@@ -1059,6 +1059,8 @@ namespace Chummer
                 {
                     if (objXmlCyberware["hide"] != null)
                         continue;
+                    if (!_blnShowOnlySubsystems && objXmlCyberware["ess"]?.InnerText == "0" && objXmlCyberware["capacity"]?.InnerText.Contains("[") == true)
+                        continue;
                     if (cboGrade.SelectedValue != null)
                     {
                         if (objXmlCyberware["forcegrade"] != null && cboGrade.SelectedValue.ToString() != objXmlCyberware["forcegrade"].InnerText)

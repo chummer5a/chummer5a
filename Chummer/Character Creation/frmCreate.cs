@@ -3354,6 +3354,10 @@ namespace Chummer
                     {
                         objVehicleGear.Children.Add(objGear);
                         objGear.Parent = objVehicleGear;
+                        if ((objVehicleGear as Commlink)?.CanSwapAttributes == true)
+                        {
+                            (objVehicleGear as Commlink).RefreshCyberdeckArray();
+                        }
                         TreeNode objNode = new TreeNode();
                         objNode.Text = objGear.DisplayName;
                         objNode.Tag = objGear.InternalId;
@@ -4421,7 +4425,13 @@ namespace Chummer
                     if (objGear.Parent == null)
                         objCyberware.Gear.Remove(objGear);
                     else
+                    {
                         objGear.Parent.Children.Remove(objGear);
+                        if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                        {
+                            (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                        }
+                    }
                     _objFunctions.DeleteGear(objGear, treWeapons);
                 }
 
@@ -4842,7 +4852,13 @@ namespace Chummer
                             if (objGear.Parent == null)
                                 objAccessory.Gear.Remove(objGear);
                             else
+                            {
                                 objGear.Parent.Children.Remove(objGear);
+                                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                                {
+                                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                                }
+                            }
                             treWeapons.SelectedNode.Remove();
                         }
                     }
@@ -4971,7 +4987,13 @@ namespace Chummer
 
                     // If the Parent is populated, remove the item from its Parent.
                     if (objParent != null)
+                    {
                         objParent.Children.Remove(objGear);
+                        if ((objParent as Commlink)?.CanSwapAttributes == true)
+                        {
+                            (objParent as Commlink).RefreshCyberdeckArray();
+                        }
+                    }
                 }
             }
             _objController.PopulateFocusList(treFoci);
@@ -5229,6 +5251,10 @@ namespace Chummer
                     {
                         blnFound = true;
                         objGear.Parent.Children.Remove(objGear);
+                        if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                        {
+                            (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                        }
                         treVehicles.SelectedNode.Remove();
 
                         _objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
@@ -5327,6 +5353,10 @@ namespace Chummer
                     {
                         blnFound = true;
                         objGear.Parent.Children.Remove(objGear);
+                        if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                        {
+                            (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                        }
                         treVehicles.SelectedNode.Remove();
 
                         _objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
@@ -5371,6 +5401,10 @@ namespace Chummer
                     {
                         blnFound = true;
                         objGear.Parent.Children.Remove(objGear);
+                        if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                        {
+                            (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                        }
                         treVehicles.SelectedNode.Remove();
 
                         _objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
@@ -5384,6 +5418,10 @@ namespace Chummer
                 if (objGear != null)
                 {
                     objGear.Parent.Children.Remove(objGear);
+                    if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                    {
+                        (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                    }
                     treVehicles.SelectedNode.Remove();
 
                     _objFunctions.DeleteVehicleGear(objGear, treVehicles, objFoundVehicle);
@@ -7669,7 +7707,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objSelectedVehicle.MyXmlNode);
             //frmPickGear.ShowPositiveCapacityOnly = true;
             frmPickGear.ShowDialog(this);
 
@@ -7686,24 +7724,23 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Gear objGear = new Gear(_objCharacter);
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
-                    objCommlink.DiscountCost = frmPickGear.BlackMarketDiscount;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
+                objCommlink.DiscountCost = frmPickGear.BlackMarketDiscount;
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objGear = objCommlink;
-                    break;
-                default:
-                    Gear objNewGear = new Gear(_objCharacter);
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
+                objGear = objCommlink;
+            }
+            else
+            {
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
 
-                    objGear = objNewGear;
-                    break;
+                objGear = objNewGear;
             }
 
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
@@ -7719,12 +7756,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost3))
-                    objGear.Cost3 = "(" + objGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost6))
-                    objGear.Cost6 = "(" + objGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost10))
-                    objGear.Cost10 = "(" + objGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
                     objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -7734,9 +7765,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
             }
 
             objGear.Quantity = frmPickGear.SelectedQty;
@@ -7748,9 +7776,7 @@ namespace Chummer
             //if (frmPickGear.SelectedCategory == "Sensors")
             //{
             //    objGear.Cost = "0";
-            //    objGear.Cost3 = "0";
-            //    objGear.Cost6 = "0";
-            //    objGear.Cost10 = "0";
+            //    objGear.DictionaryCostN = new Tuple<int, Dictionary<int, string>>(-1, new Dictionary<int, string>());
             //}
 
             objNode.ContextMenuStrip = cmsVehicleGear;
@@ -7817,11 +7843,9 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSensor.Name + "\" and category = \"" + objSensor.Category + "\"]");
-
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear != null)
@@ -7842,6 +7866,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -7850,26 +7875,23 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Gear objGear = new Gear(_objCharacter);
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objGear = objCommlink;
-                    break;
-                default:
-                    Gear objNewGear = new Gear(_objCharacter);
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objNewGear.DisplayName;
+                objGear = objCommlink;
+            }
+            else
+            {
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objNewGear.DisplayName;
 
-                    objGear = objNewGear;
-                    break;
+                objGear = objNewGear;
             }
 
             if (objGear.InternalId == Guid.Empty.ToString())
@@ -7883,12 +7905,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost3))
-                    objGear.Cost3 = "(" + objGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost6))
-                    objGear.Cost6 = "(" + objGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost10))
-                    objGear.Cost10 = "(" + objGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
                     objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -7898,9 +7914,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
             }
 
             objNode.Text = objGear.DisplayName;
@@ -7917,6 +7930,10 @@ namespace Chummer
             treVehicles.SelectedNode.Expand();
 
             objSensor.Children.Add(objGear);
+            if ((objSensor as Commlink)?.CanSwapAttributes == true)
+            {
+                (objSensor as Commlink).RefreshCyberdeckArray();
+            }
 
             if (frmPickGear.AddAgain)
                 tsVehicleSensorAddAsPlugin_Click(sender, e);
@@ -9394,7 +9411,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objCyberware.MyXmlNode);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -9414,35 +9431,31 @@ namespace Chummer
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             Gear objNewGear = new Gear(_objCharacter);
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Commlink Accessories":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objCommlink.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objCommlink.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objNewGear = objCommlink;
-                    break;
-                default:
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
-                    objGear.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objGear.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objGear.DisplayName;
+                objNewGear = objCommlink;
+            }
+            else
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
+                objGear.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objGear.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objGear.DisplayName;
 
-                    objNewGear = objGear;
-                    break;
+                objNewGear = objGear;
             }
 
             objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
@@ -9458,12 +9471,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost3))
-                    objNewGear.Cost3 = "(" + objNewGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost6))
-                    objNewGear.Cost6 = "(" + objNewGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost10))
-                    objNewGear.Cost10 = "(" + objNewGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
                     objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -9473,9 +9480,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objNewGear.Cost = "0";
-                objNewGear.Cost3 = "0";
-                objNewGear.Cost6 = "0";
-                objNewGear.Cost10 = "0";
             }
 
             // Create any Weapons that came with this Gear.
@@ -9525,11 +9529,9 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSensor.Name + "\" and category = \"" + objSensor.Category + "\"]");
-
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9548,6 +9550,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -9556,26 +9559,23 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Gear objGear = new Gear(_objCharacter);
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objGear = objCommlink;
-                    break;
-                default:
-                    Gear objNewGear = new Gear(_objCharacter);
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objNewGear.DisplayName;
+                objGear = objCommlink;
+            }
+            else
+            {
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objNewGear.DisplayName;
 
-                    objGear = objNewGear;
-                    break;
+                objGear = objNewGear;
             }
             objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
@@ -9590,12 +9590,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost3))
-                    objGear.Cost3 = "(" + objGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost6))
-                    objGear.Cost6 = "(" + objGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost10))
-                    objGear.Cost10 = "(" + objGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
                     objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -9605,9 +9599,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
             }
 
             objNode.Text = objGear.DisplayName;
@@ -9620,6 +9611,10 @@ namespace Chummer
 
             objGear.Parent = objSensor;
             objSensor.Children.Add(objGear);
+            if ((objSensor as Commlink)?.CanSwapAttributes == true)
+            {
+                (objSensor as Commlink).RefreshCyberdeckArray();
+            }
 
             if (frmPickGear.AddAgain)
                 tsCyberwareGearAddAsPlugin_Click(sender, e);
@@ -9649,11 +9644,9 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSensor.Name + "\" and category = \"" + objSensor.Category + "\"]");
-
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9672,6 +9665,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -9680,26 +9674,23 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Gear objGear = new Gear(_objCharacter);
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objGear = objCommlink;
-                    break;
-                default:
-                    Gear objNewGear = new Gear(_objCharacter);
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objNewGear.DisplayName;
+                objGear = objCommlink;
+            }
+            else
+            {
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objNewGear.DisplayName;
 
-                    objGear = objNewGear;
-                    break;
+                objGear = objNewGear;
             }
 
             if (objGear.InternalId == Guid.Empty.ToString())
@@ -9715,12 +9706,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost3))
-                    objGear.Cost3 = "(" + objGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost6))
-                    objGear.Cost6 = "(" + objGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost10))
-                    objGear.Cost10 = "(" + objGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
                     objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -9730,9 +9715,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
             }
 
             objNode.Text = objGear.DisplayName;
@@ -9745,6 +9727,10 @@ namespace Chummer
 
             objGear.Parent = objSensor;
             objSensor.Children.Add(objGear);
+            if ((objSensor as Commlink)?.CanSwapAttributes == true)
+            {
+                (objSensor as Commlink).RefreshCyberdeckArray();
+            }
 
             if (frmPickGear.AddAgain)
                 tsCyberwareGearMenuAddAsPlugin_Click(sender, e);
@@ -9769,7 +9755,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objAccessory.MyXmlNode);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -9789,36 +9775,32 @@ namespace Chummer
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             Gear objNewGear = new Gear(_objCharacter);
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objCommlink.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objCommlink.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objNewGear = objCommlink;
-                    break;
-                default:
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
-                    objGear.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objGear.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objGear.DisplayName;
-
-                    objNewGear = objGear;
-                    break;
+                objNewGear = objCommlink;
             }
+            else
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
+                objGear.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objGear.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objGear.DisplayName;
 
+                objNewGear = objGear;
+            }
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
             objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
@@ -9831,12 +9813,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost3))
-                    objNewGear.Cost3 = "(" + objNewGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost6))
-                    objNewGear.Cost6 = "(" + objNewGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost10))
-                    objNewGear.Cost10 = "(" + objNewGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
                     objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -9846,9 +9822,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objNewGear.Cost = "0";
-                objNewGear.Cost3 = "0";
-                objNewGear.Cost6 = "0";
-                objNewGear.Cost10 = "0";
             }
 
             // Create any Weapons that came with this Gear.
@@ -9893,11 +9866,9 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSensor.Name + "\" and category = \"" + objSensor.Category + "\"]");
-
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9916,6 +9887,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -9924,26 +9896,23 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Gear objGear = new Gear(_objCharacter);
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objGear = objCommlink;
-                    break;
-                default:
-                    Gear objNewGear = new Gear(_objCharacter);
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objNewGear.DisplayName;
+                objGear = objCommlink;
+            }
+            else
+            {
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objNewGear.DisplayName;
 
-                    objGear = objNewGear;
-                    break;
+                objGear = objNewGear;
             }
 
             if (objGear.InternalId == Guid.Empty.ToString())
@@ -9959,12 +9928,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost3))
-                    objGear.Cost3 = "(" + objGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost6))
-                    objGear.Cost6 = "(" + objGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost10))
-                    objGear.Cost10 = "(" + objGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
                     objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -9974,9 +9937,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
             }
 
             objNode.Text = objGear.DisplayName;
@@ -9988,6 +9948,10 @@ namespace Chummer
 
             objGear.Parent = objSensor;
             objSensor.Children.Add(objGear);
+            if ((objSensor as Commlink)?.CanSwapAttributes == true)
+            {
+                (objSensor as Commlink).RefreshCyberdeckArray();
+            }
 
             if (frmPickGear.AddAgain)
                 tsWeaponAccessoryGearMenuAddAsPlugin_Click(sender, e);
@@ -10104,11 +10068,9 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSensor.Name + "\" and category = \"" + objSensor.Category + "\"]");
-
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -10127,6 +10089,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -10135,26 +10098,23 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Gear objGear = new Gear(_objCharacter);
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objGear = objCommlink;
-                    break;
-                default:
-                    Gear objNewGear = new Gear(_objCharacter);
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
-                    objNode.Text = objNewGear.DisplayName;
+                objGear = objCommlink;
+            }
+            else
+            {
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
+                objNode.Text = objNewGear.DisplayName;
 
-                    objGear = objNewGear;
-                    break;
+                objGear = objNewGear;
             }
 
             if (objGear.InternalId == Guid.Empty.ToString())
@@ -10170,12 +10130,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost3))
-                    objGear.Cost3 = "(" + objGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost6))
-                    objGear.Cost6 = "(" + objGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objGear.Cost10))
-                    objGear.Cost10 = "(" + objGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
                     objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -10185,9 +10139,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
             }
 
             objNode.Text = objGear.DisplayName;
@@ -10199,6 +10150,10 @@ namespace Chummer
 
             objGear.Parent = objSensor;
             objSensor.Children.Add(objGear);
+            if ((objSensor as Commlink)?.CanSwapAttributes == true)
+            {
+                (objSensor as Commlink).RefreshCyberdeckArray();
+            }
 
             if (frmPickGear.AddAgain)
                 tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(sender, e);
@@ -10218,7 +10173,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objAccessory.MyXmlNode);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -10238,34 +10193,31 @@ namespace Chummer
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             Gear objNewGear = new Gear(_objCharacter);
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objCommlink.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objCommlink.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objCommlink.DisplayName;
 
-                    objNewGear = objCommlink;
-                    break;
-                default:
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
-                    objGear.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objGear.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objGear.DisplayName;
+                objNewGear = objCommlink;
+            }
+            else
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, false, true, frmPickGear.Aerodynamic);
+                objGear.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objGear.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objGear.DisplayName;
 
-                    objNewGear = objGear;
-                    break;
+                objNewGear = objGear;
             }
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
@@ -10281,12 +10233,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost3))
-                    objNewGear.Cost3 = "(" + objNewGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost6))
-                    objNewGear.Cost6 = "(" + objNewGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost10))
-                    objNewGear.Cost10 = "(" + objNewGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
                     objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -10296,9 +10242,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objNewGear.Cost = "0";
-                objNewGear.Cost3 = "0";
-                objNewGear.Cost6 = "0";
-                objNewGear.Cost10 = "0";
             }
 
             objAccessory.Gear.Add(objNewGear);
@@ -11364,365 +11307,324 @@ namespace Chummer
                 return;
 
             // Attempt to locate the selected piece of Gear.
-            Commlink objSelectedGear = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-
-            if (objSelectedGear != null && objSelectedGear.GetType() != typeof(Commlink))
+            if (treGear.SelectedNode != null)
             {
-                Commlink objCommlink = objSelectedGear;
-                objCommlink.IsActive = chkActiveCommlink.Checked;
+                Gear objSelectedGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 
-                ChangeActiveCommlink(objCommlink);
+                if (objSelectedGear != null && objSelectedGear.GetType() == typeof(Commlink))
+                {
+                    _objFunctions.ChangeActiveCommlink(objSelectedGear as Commlink, chkActiveCommlink.Checked);
 
-                RefreshSelectedGear();
-                ScheduleCharacterUpdate();
+                    RefreshSelectedGear();
+                    ScheduleCharacterUpdate();
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
+                }
             }
         }
 
 
         private void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboGearAttack.Enabled)
+                return;
             Commlink objCommlink = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
             if (objCommlink == null)
                 return;
-            List<string> objASDF = new List<string>() { "0","1","2","3"};
+            int intCurrentIndex = cboGearAttack.SelectedIndex;
 
-            objASDF.Remove(cboGearAttack.SelectedIndex.ToString());
-            objASDF.Remove(cboGearSleaze.SelectedIndex.ToString());
-            objASDF.Remove(cboGearDataProcessing.SelectedIndex.ToString());
-            objASDF.Remove(cboGearFirewall.SelectedIndex.ToString());
-            if (objASDF.Count == 0)
-                return;
-
-            string strMissing = objASDF[0].ToString();
-
-            _blnLoading = false;
+            _blnLoading = true;
+            string strTemp = objCommlink.Attack;
+            bool blnRefreshCBOs = true;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearSleaze.SelectedIndex == cboGearAttack.SelectedIndex)
+            if (cboGearSleaze.SelectedIndex == intCurrentIndex)
             {
-                cboGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Sleaze = Convert.ToInt32(cboGearAttack.SelectedValue);
+                objCommlink.Attack = objCommlink.Sleaze;
+                objCommlink.Sleaze = strTemp;
             }
+            else if (cboGearDataProcessing.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.Attack = objCommlink.DataProcessing;
+                objCommlink.DataProcessing = strTemp;
+            }
+            else if (cboGearFirewall.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.Attack = objCommlink.Firewall;
+                objCommlink.Firewall = strTemp;
+            }
+            else
+                blnRefreshCBOs = false;
+            if (blnRefreshCBOs)
+                objCommlink.RefreshCommlinkCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
-            if (cboGearDataProcessing.SelectedIndex == cboGearAttack.SelectedIndex)
-            {
-                cboGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.DataProcessing = Convert.ToInt32(cboGearDataProcessing.SelectedValue);
-            }
-
-            if (cboGearFirewall.SelectedIndex == cboGearAttack.SelectedIndex)
-            {
-                cboGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Firewall = Convert.ToInt32(cboGearFirewall.SelectedValue);
-            }
             _blnLoading = false;
-            objCommlink.Attack = Convert.ToInt32(cboGearAttack.SelectedValue);
         }
-
-
-
         private void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboGearSleaze.Enabled)
+                return;
             Commlink objCommlink = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
             if (objCommlink == null)
                 return;
-            List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
-
-            objASDF.Remove(cboGearAttack.SelectedIndex.ToString());
-            objASDF.Remove(cboGearSleaze.SelectedIndex.ToString());
-            objASDF.Remove(cboGearDataProcessing.SelectedIndex.ToString());
-            objASDF.Remove(cboGearFirewall.SelectedIndex.ToString());
-            if (objASDF.Count == 0)
-                return;
-
-            string strMissing = objASDF[0].ToString();
+            int intCurrentIndex = cboGearSleaze.SelectedIndex;
 
             _blnLoading = true;
+            string strTemp = objCommlink.Sleaze;
+            bool blnRefreshCBOs = true;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearAttack.SelectedIndex == cboGearSleaze.SelectedIndex)
+            if (cboGearAttack.SelectedIndex == intCurrentIndex)
             {
-                cboGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Attack = Convert.ToInt32(cboGearAttack.SelectedValue);
+                objCommlink.Sleaze = objCommlink.Attack;
+                objCommlink.Attack = strTemp;
             }
+            else if (cboGearDataProcessing.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.Sleaze = objCommlink.DataProcessing;
+                objCommlink.DataProcessing = strTemp;
+            }
+            else if (cboGearFirewall.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.Sleaze = objCommlink.Firewall;
+                objCommlink.Firewall = strTemp;
+            }
+            else
+                blnRefreshCBOs = false;
+            if (blnRefreshCBOs)
+                objCommlink.RefreshCommlinkCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
-            if (cboGearDataProcessing.SelectedIndex == cboGearAttack.SelectedIndex)
-            {
-                cboGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.DataProcessing = Convert.ToInt32(cboGearDataProcessing.SelectedValue);
-            }
-
-            if (cboGearFirewall.SelectedIndex == cboGearAttack.SelectedIndex)
-            {
-                cboGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Firewall = Convert.ToInt32(cboGearFirewall.SelectedValue);
-            }
             _blnLoading = false;
-            objCommlink.Sleaze = Convert.ToInt32(cboGearSleaze.SelectedValue);
         }
-
-
         private void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboGearDataProcessing.Enabled)
+                return;
             Commlink objCommlink = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-            if (objCommlink == null)
-                return;
-            List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
-
-            objASDF.Remove(cboGearAttack.SelectedIndex.ToString());
-            objASDF.Remove(cboGearSleaze.SelectedIndex.ToString());
-            objASDF.Remove(cboGearDataProcessing.SelectedIndex.ToString());
-            objASDF.Remove(cboGearFirewall.SelectedIndex.ToString());
-            if (objASDF.Count == 0)
-                return;
-
-            string strMissing = objASDF[0].ToString();
+            int intCurrentIndex = cboGearDataProcessing.SelectedIndex;
 
             _blnLoading = true;
+            string strTemp = objCommlink.DataProcessing;
+            bool blnRefreshCBOs = true;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearSleaze.SelectedIndex == cboGearDataProcessing.SelectedIndex)
+            if (cboGearSleaze.SelectedIndex == intCurrentIndex)
             {
-                cboGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Sleaze = Convert.ToInt32(cboGearSleaze.SelectedValue);
+                objCommlink.DataProcessing = objCommlink.Sleaze;
+                objCommlink.Sleaze = strTemp;
             }
+            else if (cboGearAttack.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.DataProcessing = objCommlink.Attack;
+                objCommlink.Attack = strTemp;
+            }
+            else if (cboGearFirewall.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.DataProcessing = objCommlink.Firewall;
+                objCommlink.Firewall = strTemp;
+            }
+            else
+                blnRefreshCBOs = false;
+            if (blnRefreshCBOs)
+                objCommlink.RefreshCommlinkCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
-            if (cboGearAttack.SelectedIndex == cboGearDataProcessing.SelectedIndex)
-            {
-                cboGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Attack = Convert.ToInt32(cboGearAttack.SelectedValue);
-            }
-
-            if (cboGearFirewall.SelectedIndex == cboGearDataProcessing.SelectedIndex)
-            {
-                cboGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Firewall = Convert.ToInt32(cboGearFirewall.SelectedValue);
-            }
             _blnLoading = false;
-            objCommlink.DataProcessing = Convert.ToInt32(cboGearDataProcessing.SelectedValue);
         }
-
-
         private void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboGearFirewall.Enabled)
+                return;
             Commlink objCommlink = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
             if (objCommlink == null)
                 return;
-            List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
+            int intCurrentIndex = cboGearFirewall.SelectedIndex;
 
-            objASDF.Remove(cboGearAttack.SelectedIndex.ToString());
-            objASDF.Remove(cboGearSleaze.SelectedIndex.ToString());
-            objASDF.Remove(cboGearDataProcessing.SelectedIndex.ToString());
-            objASDF.Remove(cboGearFirewall.SelectedIndex.ToString());
-            if (objASDF.Count == 0)
-                return;
-
-            string strMissing = objASDF[0].ToString();
-
-            // Find the combo with the same value as this one and change it to the missing value.
             _blnLoading = true;
-            if (cboGearSleaze.SelectedIndex == cboGearFirewall.SelectedIndex)
+            string strTemp = objCommlink.Firewall;
+            bool blnRefreshCBOs = true;
+            // Find the combo with the same value as this one and change it to the missing value.
+            if (cboGearAttack.SelectedIndex == intCurrentIndex)
             {
-                cboGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Sleaze = Convert.ToInt32(cboGearFirewall.SelectedValue);
+                objCommlink.Firewall = objCommlink.Attack;
+                objCommlink.Attack = strTemp;
             }
+            else if (cboGearSleaze.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.Firewall = objCommlink.Sleaze;
+                objCommlink.Sleaze = strTemp;
+            }
+            else if (cboGearDataProcessing.SelectedIndex == intCurrentIndex)
+            {
+                objCommlink.Firewall = objCommlink.DataProcessing;
+                objCommlink.DataProcessing = strTemp;
+            }
+            else
+                blnRefreshCBOs = false;
+            if (blnRefreshCBOs)
+                objCommlink.RefreshCommlinkCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
-            if (cboGearDataProcessing.SelectedIndex == cboGearFirewall.SelectedIndex)
-            {
-                cboGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.DataProcessing = Convert.ToInt32(cboGearDataProcessing.SelectedValue);
-            }
-
-            if (cboGearAttack.SelectedIndex == cboGearFirewall.SelectedIndex)
-            {
-                cboGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
-                objCommlink.Attack = Convert.ToInt32(cboGearAttack.SelectedValue);
-            }
             _blnLoading = false;
-            objCommlink.Firewall = Convert.ToInt32(cboGearFirewall.SelectedValue);
         }
         private void cboVehicleGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboVehicleGearAttack.Enabled)
+                return;
             Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
             Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
             if (objGear.GetType() == typeof(Commlink))
             {
                 Commlink objCommlink = (Commlink)objGear;
+                int intCurrentIndex = cboVehicleGearAttack.SelectedIndex;
 
-                List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
-
-                objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
-                if (objASDF.Count == 0)
-                    return;
-
-                string strMissing = objASDF[0].ToString();
-
-                _blnLoading = false;
+                _blnLoading = true;
+                string strTemp = objCommlink.Attack;
+                bool blnRefreshCBOs = true;
                 // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
+                if (cboVehicleGearSleaze.SelectedIndex == intCurrentIndex)
                 {
-                    cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+                    objCommlink.Attack = objCommlink.Sleaze;
+                    objCommlink.Sleaze = strTemp;
                 }
+                else if (cboVehicleGearDataProcessing.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.Attack = objCommlink.DataProcessing;
+                    objCommlink.DataProcessing = strTemp;
+                }
+                else if (cboVehicleGearFirewall.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.Attack = objCommlink.Firewall;
+                    objCommlink.Firewall = strTemp;
+                }
+                else
+                    blnRefreshCBOs = false;
+                if (blnRefreshCBOs)
+                    objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
-                if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
-                {
-                    cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
-                }
-
-                if (cboVehicleGearFirewall.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
-                {
-                    cboVehicleGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
-                }
                 _blnLoading = false;
-                objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
             }
             else
             {
                 return;
             }
         }
-
-
-
         private void cboVehicleGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboVehicleGearSleaze.Enabled)
+                return;
             Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
             Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
             if (objGear.GetType() == typeof(Commlink))
             {
                 Commlink objCommlink = (Commlink)objGear;
-                List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
-
-                objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
-                if (objASDF.Count == 0)
-                    return;
-
-                string strMissing = objASDF[0].ToString();
+                int intCurrentIndex = cboVehicleGearSleaze.SelectedIndex;
 
                 _blnLoading = true;
+                string strTemp = objCommlink.Sleaze;
+                bool blnRefreshCBOs = true;
                 // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearAttack.SelectedIndex == cboVehicleGearSleaze.SelectedIndex)
+                if (cboVehicleGearAttack.SelectedIndex == intCurrentIndex)
                 {
-                    cboVehicleGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+                    objCommlink.Sleaze = objCommlink.Attack;
+                    objCommlink.Attack = strTemp;
                 }
+                else if (cboVehicleGearDataProcessing.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.Sleaze = objCommlink.DataProcessing;
+                    objCommlink.DataProcessing = strTemp;
+                }
+                else if (cboVehicleGearFirewall.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.Sleaze = objCommlink.Firewall;
+                    objCommlink.Firewall = strTemp;
+                }
+                else
+                    blnRefreshCBOs = false;
+                if (blnRefreshCBOs)
+                    objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
-                if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearSleaze.SelectedIndex)
-                {
-                    cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
-                }
-
-                if (cboVehicleGearFirewall.SelectedIndex == cboVehicleGearSleaze.SelectedIndex)
-                {
-                    cboVehicleGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
-                }
                 _blnLoading = false;
-                objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearSleaze.SelectedValue);
             }
             else
             {
                 return;
             }
         }
-
-
-        private void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
-            Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
-            if (objGear.GetType() == typeof(Commlink))
-            {
-                Commlink objCommlink = (Commlink)objGear;
-                List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
-
-                objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
-                if (objASDF.Count == 0)
-                    return;
-
-                string strMissing = objASDF[0].ToString();
-
-                _blnLoading = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearDataProcessing.SelectedIndex)
-                {
-                    cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearSleaze.SelectedValue);
-                }
-
-                if (cboVehicleGearAttack.SelectedIndex == cboVehicleGearDataProcessing.SelectedIndex)
-                {
-                    cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
-                }
-
-                if (cboVehicleGearFirewall.SelectedIndex == cboVehicleGearDataProcessing.SelectedIndex)
-                {
-                    cboVehicleGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
-                }
-                _blnLoading = false;
-                objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
-            }
-            else
-            {
-                return;
-            }
-        }
-
-
         private void cboVehicleGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!cboVehicleGearFirewall.Enabled)
+                return;
             Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
             Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
             if (objGear.GetType() == typeof(Commlink))
             {
                 Commlink objCommlink = (Commlink)objGear;
-                List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
+                int intCurrentIndex = cboVehicleGearFirewall.SelectedIndex;
 
-                objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
-                objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
-                if (objASDF.Count == 0)
-                    return;
-
-                string strMissing = objASDF[0].ToString();
-
-                // Find the combo with the same value as this one and change it to the missing value.
                 _blnLoading = true;
-                if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
+                string strTemp = objCommlink.Firewall;
+                bool blnRefreshCBOs = true;
+                // Find the combo with the same value as this one and change it to the missing value.
+                if (cboVehicleGearAttack.SelectedIndex == intCurrentIndex)
                 {
-                    cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+                    objCommlink.Firewall = objCommlink.Attack;
+                    objCommlink.Attack = strTemp;
                 }
+                else if (cboVehicleGearSleaze.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.Firewall = objCommlink.Sleaze;
+                    objCommlink.Sleaze = strTemp;
+                }
+                else if (cboVehicleGearDataProcessing.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.Firewall = objCommlink.DataProcessing;
+                    objCommlink.DataProcessing = strTemp;
+                }
+                else
+                    blnRefreshCBOs = false;
+                if (blnRefreshCBOs)
+                    objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
-                if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
-                {
-                    cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
-                }
-
-                if (cboVehicleGearAttack.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
-                {
-                    cboVehicleGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
-                    objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
-                }
                 _blnLoading = false;
-                objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+            }
+            else
+            {
+                return;
+            }
+        }
+        private void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!cboVehicleGearDataProcessing.Enabled)
+                return;
+            Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
+            Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+            if (objGear.GetType() == typeof(Commlink))
+            {
+                Commlink objCommlink = (Commlink)objGear;
+                int intCurrentIndex = cboVehicleGearDataProcessing.SelectedIndex;
+
+                _blnLoading = true;
+                string strTemp = objCommlink.DataProcessing;
+                bool blnRefreshCBOs = true;
+                // Find the combo with the same value as this one and change it to the missing value.
+                if (cboVehicleGearSleaze.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.DataProcessing = objCommlink.Sleaze;
+                    objCommlink.Sleaze = strTemp;
+                }
+                else if (cboVehicleGearAttack.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.DataProcessing = objCommlink.Attack;
+                    objCommlink.Attack = strTemp;
+                }
+                else if (cboVehicleGearFirewall.SelectedIndex == intCurrentIndex)
+                {
+                    objCommlink.DataProcessing = objCommlink.Firewall;
+                    objCommlink.Firewall = strTemp;
+                }
+                else
+                    blnRefreshCBOs = false;
+                if (blnRefreshCBOs)
+                    objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                _blnLoading = false;
             }
             else
             {
@@ -14204,6 +14106,7 @@ namespace Chummer
             lblCyberDataProcessingLabel.Visible = false;
             lblCyberFirewallLabel.Visible = false;
             chkPrototypeTranshuman.Visible = false;
+            cmdDeleteCyberware.Enabled = treCyberware.SelectedNode != null;
 
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
@@ -14229,6 +14132,8 @@ namespace Chummer
             if (objCyberware != null)
             {
                 _blnSkipRefresh = true;
+                if (!string.IsNullOrEmpty(objCyberware.ParentID))
+                    cmdDeleteCyberware.Enabled = false;
                 lblCyberwareName.Text = objCyberware.DisplayNameShort;
                 lblCyberwareCategory.Text = objCyberware.DisplayCategory;
                 string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
@@ -14310,6 +14215,8 @@ namespace Chummer
                 Gear objGear = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objFoundCyberware);
 
                 _blnSkipRefresh = true;
+                if (objGear.IncludedInParent)
+                    cmdDeleteCyberware.Enabled = false;
                 lblCyberwareName.Text = objGear.DisplayNameShort;
                 lblCyberwareCategory.Text = objGear.DisplayCategory;
                 lblCyberwareAvail.Text = objGear.TotalAvail(true);
@@ -14326,10 +14233,10 @@ namespace Chummer
                 {
                     Commlink objCommlink = (Commlink)objGear;
                     lblCyberDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
-                    lblCyberAttack.Text = objCommlink.Attack.ToString();
-                    lblCyberSleaze.Text = objCommlink.Sleaze.ToString();
-                    lblCyberDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                    lblCyberFirewall.Text = objCommlink.Firewall.ToString();
+                    lblCyberAttack.Text = objCommlink.TotalAttack.ToString();
+                    lblCyberSleaze.Text = objCommlink.TotalSleaze.ToString();
+                    lblCyberDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
+                    lblCyberFirewall.Text = objCommlink.TotalFirewall.ToString();
 
                     lblCyberDeviceRating.Visible = true;
                     lblCyberAttack.Visible = true;
@@ -14504,6 +14411,7 @@ namespace Chummer
             lblWeaponSleaze.Text = string.Empty;
             lblWeaponDataProcessing.Text = string.Empty;
             lblWeaponFirewall.Text = string.Empty;
+            cmdDeleteWeapon.Enabled = treWeapons.SelectedNode != null;
 
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
             {
@@ -14549,6 +14457,9 @@ namespace Chummer
                 Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
                 if (objWeapon == null)
                     return;
+
+                if (objWeapon.IncludedInWeapon || objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || !string.IsNullOrEmpty(objWeapon.ParentID))
+                    cmdDeleteWeapon.Enabled = false;
 
                 // If this is a Cyberweapon, grab the STR of the limb.
                 int intUseSTR = 0;
@@ -14617,6 +14528,8 @@ namespace Chummer
                 if (objWeapon != null && objWeapon.IsUnderbarrelWeapon)
                 {
                     _blnSkipRefresh = true;
+                    if (objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
+                        cmdDeleteWeapon.Enabled = false;
                     lblWeaponName.Text = objWeapon.DisplayNameShort;
                     lblWeaponCategory.Text = objWeapon.DisplayCategory;
                     string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
@@ -14665,6 +14578,8 @@ namespace Chummer
                     WeaponAccessory objSelectedAccessory = CommonFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
                     if (objSelectedAccessory != null)
                     {
+                        if (objSelectedAccessory.IncludedInWeapon)
+                            cmdDeleteWeapon.Enabled = false;
                         objSelectedWeapon = objSelectedAccessory.Parent;
                         lblWeaponName.Text = objSelectedAccessory.DisplayNameShort;
                         lblWeaponCategory.Text = LanguageManager.Instance.GetString("String_WeaponAccessory");
@@ -14729,6 +14644,8 @@ namespace Chummer
                         _blnSkipRefresh = true;
                         WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                         Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
+                        if (objGear.IncludedInParent)
+                            cmdDeleteWeapon.Enabled = false;
                         lblWeaponName.Text = objGear.DisplayNameShort;
                         lblWeaponCategory.Text = objGear.DisplayCategory;
                         lblWeaponAvail.Text = objGear.TotalAvail(true);
@@ -14757,10 +14674,10 @@ namespace Chummer
                         {
                             Commlink objCommlink = (Commlink)objGear;
                             lblWeaponDeviceRating.Text = objCommlink.DeviceRating.ToString();
-                            lblWeaponAttack.Text = objCommlink.Attack.ToString();
-                            lblWeaponSleaze.Text = objCommlink.Sleaze.ToString();
-                            lblWeaponDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                            lblWeaponFirewall.Text = objCommlink.Firewall.ToString();
+                            lblWeaponAttack.Text = objCommlink.TotalAttack.ToString();
+                            lblWeaponSleaze.Text = objCommlink.TotalSleaze.ToString();
+                            lblWeaponDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
+                            lblWeaponFirewall.Text = objCommlink.TotalFirewall.ToString();
                         }
                     }
 
@@ -14790,6 +14707,7 @@ namespace Chummer
             lblArmorSleaze.Text = string.Empty;
             lblArmorDataProcessing.Text = string.Empty;
             lblArmorFirewall.Text = string.Empty;
+            cmdDeleteArmor.Enabled = treArmor.SelectedNode != null;
 
             if (treArmor.SelectedNode.Level == 0)
             {
@@ -14859,6 +14777,8 @@ namespace Chummer
 
                 if (blnIsMod)
                 {
+                    if (objSelectedMod.IncludedInArmor)
+                        cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = objSelectedMod.Armor.ToString();
                     lblArmorAvail.Text = objSelectedMod.TotalAvail;
                     if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
@@ -14906,6 +14826,8 @@ namespace Chummer
                 {
                     Gear objSelectedGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
 
+                    if (objSelectedGear.IncludedInParent)
+                        cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = string.Empty;
                     lblArmorAvail.Text = objSelectedGear.TotalAvail(true);
                     if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
@@ -14954,10 +14876,10 @@ namespace Chummer
                     {
                         Commlink objCommlink = (Commlink)objSelectedGear;
                         lblArmorDeviceRating.Text = objCommlink.DeviceRating.ToString();
-                        lblArmorAttack.Text = objCommlink.Attack.ToString();
-                        lblArmorSleaze.Text = objCommlink.Sleaze.ToString();
-                        lblArmorDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                        lblArmorFirewall.Text = objCommlink.Firewall.ToString();
+                        lblArmorAttack.Text = objCommlink.TotalAttack.ToString();
+                        lblArmorSleaze.Text = objCommlink.TotalSleaze.ToString();
+                        lblArmorDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
+                        lblArmorFirewall.Text = objCommlink.TotalFirewall.ToString();
                     }
 
                     _blnSkipRefresh = true;
@@ -14971,6 +14893,8 @@ namespace Chummer
                 Armor objSelectedArmor = new Armor(_objCharacter);
                 Gear objSelectedGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
 
+                if (objSelectedGear.IncludedInParent)
+                    cmdDeleteArmor.Enabled = false;
                 lblArmorValue.Text = string.Empty;
                 lblArmorAvail.Text = objSelectedGear.TotalAvail(true);
                 lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
@@ -15009,10 +14933,10 @@ namespace Chummer
                 {
                     Commlink objCommlink = (Commlink)objSelectedGear;
                     lblArmorDeviceRating.Text = objCommlink.DeviceRating.ToString();
-                    lblArmorAttack.Text = objCommlink.Attack.ToString();
-                    lblArmorSleaze.Text = objCommlink.Sleaze.ToString();
-                    lblArmorDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                    lblArmorFirewall.Text = objCommlink.Firewall.ToString();
+                    lblArmorAttack.Text = objCommlink.TotalAttack.ToString();
+                    lblArmorSleaze.Text = objCommlink.TotalSleaze.ToString();
+                    lblArmorDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
+                    lblArmorFirewall.Text = objCommlink.TotalFirewall.ToString();
                 }
             }
             else
@@ -15141,6 +15065,7 @@ namespace Chummer
         /// </summary>
         public void RefreshSelectedGear()
         {
+            cmdDeleteGear.Enabled = treGear.SelectedNode != null;
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
                 _blnSkipRefresh = true;
@@ -15161,6 +15086,8 @@ namespace Chummer
                 Gear objGear = new Gear(_objCharacter);
                 objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 
+                if (objGear.IncludedInParent)
+                    cmdDeleteGear.Enabled = false;
                 lblGearName.Text = objGear.DisplayNameShort;
                 lblGearCategory.Text = objGear.DisplayCategory;
                 lblGearAvail.Text = objGear.TotalAvail(true);
@@ -15180,43 +15107,15 @@ namespace Chummer
                 lblGearSource.Text = strBook + " " + strPage;
                 tipTooltip.SetToolTip(lblGearSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
 
-                cboGearAttack.BeginUpdate();
-                cboGearSleaze.BeginUpdate();
-                cboGearDataProcessing.BeginUpdate();
-                cboGearFirewall.BeginUpdate();
                 if (objGear.GetType() == typeof(Commlink))
                 {
                     Commlink objCommlink = (Commlink)objGear;
-                    List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-                    cboGearAttack.BindingContext = new BindingContext();
-                    cboGearAttack.ValueMember = "Value";
-                    cboGearAttack.DisplayMember = "Name";
-                    cboGearAttack.DataSource = objASDF;
-                    cboGearAttack.SelectedIndex = 0;
-                    cboGearAttack.Visible = true;
-                    cboGearSleaze.BindingContext = new BindingContext();
-                    cboGearSleaze.ValueMember = "Value";
-                    cboGearSleaze.DisplayMember = "Name";
-                    cboGearSleaze.DataSource = objASDF;
-                    cboGearSleaze.SelectedIndex = 1;
-                    cboGearDataProcessing.BindingContext = new BindingContext();
-                    cboGearDataProcessing.ValueMember = "Value";
-                    cboGearDataProcessing.DisplayMember = "Name";
-                    cboGearDataProcessing.DataSource = objASDF;
-                    cboGearDataProcessing.SelectedIndex = 2;
-                    cboGearFirewall.BindingContext = new BindingContext();
-                    cboGearFirewall.ValueMember = "Value";
-                    cboGearFirewall.DisplayMember = "Name";
-                    cboGearFirewall.DataSource = objASDF;
-                    cboGearFirewall.SelectedIndex = 3;
+                    objCommlink.RefreshCommlinkCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
+
                     lblGearDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
 
                     lblGearDeviceRating.Visible = true;
-                    cboGearAttack.Visible = true;
-                    cboGearSleaze.Visible = true;
-                    cboGearDataProcessing.Visible = true;
-                    cboGearFirewall.Visible = true;
                     lblGearDeviceRatingLabel.Visible = true;
                     lblGearAttackLabel.Visible = true;
                     lblGearSleazeLabel.Visible = true;
@@ -15238,7 +15137,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblGearDeviceRating.Text = objGear.DeviceRating.ToString();
+                    lblGearDeviceRating.Text = objGear.TotalDeviceRating.ToString();
                     chkActiveCommlink.Visible = false;
                     cboGearAttack.Visible = false;
                     cboGearSleaze.Visible = false;
@@ -15249,10 +15148,6 @@ namespace Chummer
                     lblGearDataProcessingLabel.Visible = false;
                     lblGearFirewallLabel.Visible = false;
                 }
-                cboGearAttack.EndUpdate();
-                cboGearSleaze.EndUpdate();
-                cboGearDataProcessing.EndUpdate();
-                cboGearFirewall.EndUpdate();
 
                 if (objGear.MaxRating > 0)
                 {
@@ -15532,6 +15427,26 @@ namespace Chummer
                     }
                     frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
                 }
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCostNonRetroactive) != 0)
+                {
+                    dblMultiplier = 1;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
+                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                    }
+                    frmPickCyberware.CharacterESSMultiplier *= dblMultiplier;
+                }
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive) != 0)
+                {
+                    dblMultiplier = 1;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
+                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                    }
+                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                }
             }
             // Apply the character's Bioware Essence cost multiplier if applicable.
             else if (objSource == Improvement.ImprovementSource.Bioware)
@@ -15551,6 +15466,26 @@ namespace Chummer
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
+                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                    }
+                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                }
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCostNonRetroactive) != 0)
+                {
+                    dblMultiplier = 1;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
+                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                    }
+                    frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
+                }
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
+                {
+                    dblMultiplier = 1;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
                             dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
                     }
                     frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
@@ -15733,14 +15668,12 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
-
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSelectedGear.Name + "\" and category = \"" + objSelectedGear.Category + "\"]");
+            XmlNode objXmlGear = objSelectedGear.MyXmlNode;
 
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objSelectedGear.Name);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear);
             if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0)
             {
                 if (objXmlGear != null && objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -15757,12 +15690,6 @@ namespace Chummer
                 // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                 if (!objSelectedGear.Capacity.Contains('['))
                     frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
-
-                if (objSelectedGear.Category == "Commlinks" || objSelectedGear.Category == "Cyberdecks")
-                {
-                    Commlink objCommlink = (Commlink)objSelectedGear;
-                    frmPickGear.CommlinkResponse = objCommlink.DeviceRating;
-                }
             }
 
             frmPickGear.ShowDialog(this);
@@ -15774,7 +15701,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Cyberware XML file and locate the selected piece.
-            objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -15784,38 +15711,35 @@ namespace Chummer
 
             objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objCommlink.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objCommlink.DisplayName;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objCommlink.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objCommlink.DisplayName;
 
-                    // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                    if (CommonFunctions.FindCharacterCommlinks(_objCharacter.Gear).Count == 0 && frmPickGear.SelectedCategory == "Commlinks")
-                        objCommlink.IsActive = true;
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (CommonFunctions.FindCharacterCommlinks(_objCharacter.Gear).Count == 0)
+                    objCommlink.IsActive = true;
 
-                    objNewGear = objCommlink;
-                    break;
-                default:
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
-                    objGear.Quantity = frmPickGear.SelectedQty;
-                    _blnSkipRefresh = true;
-                    nudGearQty.Increment = objGear.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    _blnSkipRefresh = false;
-                    objNode.Text = objGear.DisplayName;
+                objNewGear = objCommlink;
+            }
+            else
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, frmPickGear.Hacked, frmPickGear.InherentProgram, true, true, frmPickGear.Aerodynamic);
+                objGear.Quantity = frmPickGear.SelectedQty;
+                _blnSkipRefresh = true;
+                nudGearQty.Increment = objGear.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
+                _blnSkipRefresh = false;
+                objNode.Text = objGear.DisplayName;
 
-                    objNewGear = objGear;
-                    break;
+                objNewGear = objGear;
             }
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
@@ -15831,12 +15755,6 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost3))
-                    objNewGear.Cost3 = "(" + objNewGear.Cost3 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost6))
-                    objNewGear.Cost6 = "(" + objNewGear.Cost6 + ") * 0.1";
-                if (!string.IsNullOrEmpty(objNewGear.Cost10))
-                    objNewGear.Cost10 = "(" + objNewGear.Cost10 + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
                     objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
                 else
@@ -15846,9 +15764,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objNewGear.Cost = "0";
-                objNewGear.Cost3 = "0";
-                objNewGear.Cost6 = "0";
-                objNewGear.Cost10 = "0";
             }
 
             // Create any Weapons that came with this Gear.
@@ -15872,6 +15787,10 @@ namespace Chummer
                 treGear.SelectedNode.Nodes.Add(objNode);
                 treGear.SelectedNode.Expand();
                 objSelectedGear.Children.Add(objNewGear);
+                if ((objSelectedGear as Commlink)?.CanSwapAttributes == true)
+                {
+                    (objSelectedGear as Commlink).RefreshCyberdeckArray();
+                }
             }
             else
             {
@@ -15918,14 +15837,12 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
-
-            XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSelectedGear.Name + "\" and category = \"" + objSelectedGear.Category + "\"]");
+            XmlNode objXmlGear = objSelectedGear.MyXmlNode;
 
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlGear);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
             frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
             if (treArmor.SelectedNode != null)
@@ -15946,18 +15863,11 @@ namespace Chummer
                     // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                     if (!objSelectedGear.Capacity.Contains('['))
                         frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
-
-                    if (objSelectedGear.Category == "Commlinks" || objSelectedGear.Category == "Cyberdecks")
-                    {
-                        Commlink objCommlink = (Commlink)objSelectedGear;
-                        frmPickGear.CommlinkResponse = objCommlink.DeviceRating;
-                    }
                 }
                 else if (treArmor.SelectedNode.Level == 1)
                 {
                     // Open the Armor XML file and locate the selected Gear.
-                    objXmlDocument = XmlManager.Instance.Load("armor.xml");
-                    objXmlGear = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + objSelectedArmor.Name + "\"]");
+                    objXmlGear = objSelectedArmor.MyXmlNode;
 
                     if (objXmlGear.InnerXml.Contains("<addoncategory>"))
                     {
@@ -15980,7 +15890,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Cyberware XML file and locate the selected piece.
-            objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -15990,25 +15900,22 @@ namespace Chummer
 
             objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
-            switch (frmPickGear.SelectedCategory)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
-                    nudGearQty.Increment = objCommlink.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating);
+                objCommlink.Quantity = frmPickGear.SelectedQty;
+                nudGearQty.Increment = objCommlink.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
 
-                    objNewGear = objCommlink;
-                    break;
-                default:
-                    objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, false, false, true, true, frmPickGear.Aerodynamic);
-                    objNewGear.Quantity = frmPickGear.SelectedQty;
-                    nudGearQty.Increment = objNewGear.CostFor;
-                    //nudGearQty.Minimum = nudGearQty.Increment;
-                    break;
+                objNewGear = objCommlink;
+            }
+            else
+            {
+                objNewGear.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, false, false, true, true, frmPickGear.Aerodynamic);
+                objNewGear.Quantity = frmPickGear.SelectedQty;
+                nudGearQty.Increment = objNewGear.CostFor;
+                //nudGearQty.Minimum = nudGearQty.Increment;
             }
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
@@ -16024,9 +15931,6 @@ namespace Chummer
             if (frmPickGear.FreeCost)
             {
                 objNewGear.Cost = "0";
-                objNewGear.Cost3 = "0";
-                objNewGear.Cost6 = "0";
-                objNewGear.Cost10 = "0";
             }
 
             // Create any Weapons that came with this Gear.
@@ -16083,6 +15987,10 @@ namespace Chummer
                     treArmor.SelectedNode.Nodes.Add(objNode);
                     treArmor.SelectedNode.Expand();
                     objSelectedGear.Children.Add(objNewGear);
+                    if ((objSelectedGear as Commlink)?.CanSwapAttributes == true)
+                    {
+                        (objSelectedGear as Commlink).RefreshCyberdeckArray();
+                    }
                 }
 
                 // Select the node that was just added.
@@ -16309,6 +16217,7 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedVehicle()
         {
+            cmdDeleteVehicle.Enabled = treVehicles.SelectedNode != null;
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
                 _blnSkipRefresh = true;
@@ -16339,6 +16248,8 @@ namespace Chummer
                     return;
 
                 _blnSkipRefresh = true;
+                if (!string.IsNullOrEmpty(objVehicle.ParentID))
+                    cmdDeleteVehicle.Enabled = false;
                 lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Minimum = 0;
                 nudVehicleRating.Maximum = 0;
@@ -16460,6 +16371,8 @@ namespace Chummer
 
                 if (blnVehicleMod)
                 {
+                    if (objMod.IncludedInVehicle)
+                        cmdDeleteVehicle.Enabled = false;
                     if (objMod.MaxRating != "qty")
                     {
                         if (objMod.MaxRating == "Seats")
@@ -16545,6 +16458,8 @@ namespace Chummer
 
                     if (blnFound)
                     {
+                        if (objGear.IncludedInParent)
+                            cmdDeleteVehicle.Enabled = false;
                         _blnSkipRefresh = true;
                         nudVehicleRating.Enabled = false;
                         nudVehicleGearQty.Enabled = true;
@@ -16580,33 +16495,9 @@ namespace Chummer
 
                         if (objGear.GetType() == typeof(Commlink))
                         {
-                            cboVehicleGearAttack.BeginUpdate();
-                            cboVehicleGearSleaze.BeginUpdate();
-                            cboVehicleGearDataProcessing.BeginUpdate();
-                            cboVehicleGearFirewall.BeginUpdate();
                             Commlink objCommlink = (Commlink)objGear;
-                            List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
-                            cboVehicleGearAttack.BindingContext = new BindingContext();
-                            cboVehicleGearAttack.ValueMember = "Value";
-                            cboVehicleGearAttack.DisplayMember = "Name";
-                            cboVehicleGearAttack.DataSource = objASDF;
-                            cboVehicleGearAttack.SelectedIndex = 0;
-                            cboVehicleGearAttack.Visible = true;
-                            cboVehicleGearSleaze.BindingContext = new BindingContext();
-                            cboVehicleGearSleaze.ValueMember = "Value";
-                            cboVehicleGearSleaze.DisplayMember = "Name";
-                            cboVehicleGearSleaze.DataSource = objASDF;
-                            cboVehicleGearSleaze.SelectedIndex = 1;
-                            cboVehicleGearDataProcessing.BindingContext = new BindingContext();
-                            cboVehicleGearDataProcessing.ValueMember = "Value";
-                            cboVehicleGearDataProcessing.DisplayMember = "Name";
-                            cboVehicleGearDataProcessing.DataSource = objASDF;
-                            cboVehicleGearDataProcessing.SelectedIndex = 2;
-                            cboVehicleGearFirewall.BindingContext = new BindingContext();
-                            cboVehicleGearFirewall.ValueMember = "Value";
-                            cboVehicleGearFirewall.DisplayMember = "Name";
-                            cboVehicleGearFirewall.DataSource = objASDF;
-                            cboVehicleGearFirewall.SelectedIndex = 3;
+
+                            objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                             DisplayVehicleWeaponStats(false);
                             DisplayVehicleCommlinkStats(true);
@@ -16616,10 +16507,6 @@ namespace Chummer
                                 chkVehicleHomeNode.Visible = true;
                                 chkVehicleHomeNode.Checked = objCommlink.HomeNode;
                             }
-                            cboVehicleGearAttack.EndUpdate();
-                            cboVehicleGearSleaze.EndUpdate();
-                            cboVehicleGearDataProcessing.EndUpdate();
-                            cboVehicleGearFirewall.EndUpdate();
                         }
                     }
                     else
@@ -16640,6 +16527,8 @@ namespace Chummer
                         DisplayVehicleCommlinkStats(false);
                         DisplayVehicleStats(false);
 
+                        if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
+                            cmdDeleteVehicle.Enabled = false;
                         lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory;
                         lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage();
@@ -16691,6 +16580,8 @@ namespace Chummer
 
                 if (blnSensorPlugin)
                 {
+                    if (objGear.IncludedInParent)
+                        cmdDeleteVehicle.Enabled = false;
                     if (objGear.MaxRating > 0)
                     {
                         _blnSkipRefresh = true;
@@ -16715,7 +16606,7 @@ namespace Chummer
                     lblVehicleCategory.Text = objGear.DisplayCategory;
                     lblVehicleAvail.Text = objGear.TotalAvail(true);
                     lblVehicleCost.Text = $"{objGear.TotalCost:###,###,##0¥}";
-                    lblVehicleDevice.Text = objGear.DeviceRating.ToString();
+                    lblVehicleDevice.Text = objGear.TotalDeviceRating.ToString();
                     lblVehicleDeviceLabel.Visible = true;
                     DisplayVehicleWeaponStats(false);
                     DisplayVehicleCommlinkStats(false);
@@ -16729,43 +16620,14 @@ namespace Chummer
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
-                        List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-                        cboVehicleGearAttack.BeginUpdate();
-                        cboVehicleGearSleaze.BeginUpdate();
-                        cboVehicleGearDataProcessing.BeginUpdate();
-                        cboVehicleGearFirewall.BeginUpdate();
-                        cboVehicleGearAttack.BindingContext = new BindingContext();
-                        cboVehicleGearAttack.ValueMember = "Value";
-                        cboVehicleGearAttack.DisplayMember = "Name";
-                        cboVehicleGearAttack.DataSource = objASDF;
-                        cboVehicleGearAttack.SelectedIndex = 0;
-                        cboVehicleGearAttack.Visible = true;
-                        cboVehicleGearSleaze.BindingContext = new BindingContext();
-                        cboVehicleGearSleaze.ValueMember = "Value";
-                        cboVehicleGearSleaze.DisplayMember = "Name";
-                        cboVehicleGearSleaze.DataSource = objASDF;
-                        cboVehicleGearSleaze.SelectedIndex = 1;
-                        cboVehicleGearDataProcessing.BindingContext = new BindingContext();
-                        cboVehicleGearDataProcessing.ValueMember = "Value";
-                        cboVehicleGearDataProcessing.DisplayMember = "Name";
-                        cboVehicleGearDataProcessing.DataSource = objASDF;
-                        cboVehicleGearDataProcessing.SelectedIndex = 2;
-                        cboVehicleGearFirewall.BindingContext = new BindingContext();
-                        cboVehicleGearFirewall.ValueMember = "Value";
-                        cboVehicleGearFirewall.DisplayMember = "Name";
-                        cboVehicleGearFirewall.DataSource = objASDF;
-                        cboVehicleGearFirewall.SelectedIndex = 3;
+                        objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                         if (_objCharacter.Metatype == "A.I.")
                         {
                             chkVehicleHomeNode.Visible = true;
                             chkVehicleHomeNode.Checked = objCommlink.HomeNode;
                         }
-                        cboVehicleGearAttack.EndUpdate();
-                        cboVehicleGearSleaze.EndUpdate();
-                        cboVehicleGearDataProcessing.EndUpdate();
-                        cboVehicleGearFirewall.EndUpdate();
                     }
                 }
                 else
@@ -16780,6 +16642,8 @@ namespace Chummer
 
                     if (blnWeapon)
                     {
+                        if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
+                            cmdDeleteVehicle.Enabled = false;
                         DisplayVehicleWeaponStats(true);
                         lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory;
@@ -16852,6 +16716,8 @@ namespace Chummer
 
                         if (blnCyberware)
                         {
+                            if (!string.IsNullOrEmpty(objCyberware.ParentID))
+                                cmdDeleteCyberware.Enabled = false;
                             _blnSkipRefresh = true;
                             lblVehicleName.Text = objCyberware.DisplayNameShort;
                             lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
@@ -16917,6 +16783,8 @@ namespace Chummer
 
                 if (blnSensorPlugin)
                 {
+                    if (objGear.IncludedInParent)
+                        cmdDeleteVehicle.Enabled = false;
                     if (objGear.MaxRating > 0)
                     {
                         _blnSkipRefresh = true;
@@ -16972,43 +16840,15 @@ namespace Chummer
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
-                        List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-                        cboVehicleGearAttack.BeginUpdate();
-                        cboVehicleGearSleaze.BeginUpdate();
-                        cboVehicleGearDataProcessing.BeginUpdate();
-                        cboVehicleGearFirewall.BeginUpdate();
-                        cboVehicleGearAttack.BindingContext = new BindingContext();
-                        cboVehicleGearAttack.ValueMember = "Value";
-                        cboVehicleGearAttack.DisplayMember = "Name";
-                        cboVehicleGearAttack.DataSource = objASDF;
-                        cboVehicleGearAttack.SelectedIndex = 0;
-                        cboVehicleGearAttack.Visible = true;
-                        cboVehicleGearSleaze.BindingContext = new BindingContext();
-                        cboVehicleGearSleaze.ValueMember = "Value";
-                        cboVehicleGearSleaze.DisplayMember = "Name";
-                        cboVehicleGearSleaze.DataSource = objASDF;
-                        cboVehicleGearSleaze.SelectedIndex = 1;
-                        cboVehicleGearDataProcessing.BindingContext = new BindingContext();
-                        cboVehicleGearDataProcessing.ValueMember = "Value";
-                        cboVehicleGearDataProcessing.DisplayMember = "Name";
-                        cboVehicleGearDataProcessing.DataSource = objASDF;
-                        cboVehicleGearDataProcessing.SelectedIndex = 2;
-                        cboVehicleGearFirewall.BindingContext = new BindingContext();
-                        cboVehicleGearFirewall.ValueMember = "Value";
-                        cboVehicleGearFirewall.DisplayMember = "Name";
-                        cboVehicleGearFirewall.DataSource = objASDF;
-                        cboVehicleGearFirewall.SelectedIndex = 3;
+                        objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
 
                         if (_objCharacter.Metatype == "A.I.")
                         {
                             chkVehicleHomeNode.Visible = true;
                             chkVehicleHomeNode.Checked = objCommlink.HomeNode;
                         }
-                        cboVehicleGearAttack.EndUpdate();
-                        cboVehicleGearSleaze.EndUpdate();
-                        cboVehicleGearDataProcessing.EndUpdate();
-                        cboVehicleGearFirewall.EndUpdate();
                     }
                 }
                 else
@@ -17026,6 +16866,8 @@ namespace Chummer
 
                     if (blnAccessory)
                     {
+                        if (objAccessory.IncludedInWeapon)
+                            cmdDeleteVehicle.Enabled = false;
                         lblVehicleName.Text = objAccessory.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponAccessory");
                         lblVehicleAvail.Text = objAccessory.TotalAvail;
@@ -17097,45 +16939,47 @@ namespace Chummer
                     }
                     else
                     {
-                            // If it's none of these, it must be an Underbarrel Weapon.
-                            Vehicle objFoundVehicle = new Vehicle(_objCharacter);
-                            objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
+                        // If it's none of these, it must be an Underbarrel Weapon.
+                        Vehicle objFoundVehicle = new Vehicle(_objCharacter);
+                        objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
 
-                            lblVehicleName.Text = objWeapon.DisplayNameShort;
-                            lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
-                            lblVehicleAvail.Text = objWeapon.TotalAvail;
-                            lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
-                            lblVehicleHandling.Text = string.Empty;
-                            lblVehicleAccel.Text = string.Empty;
-                            lblVehicleSpeed.Text = string.Empty;
-                            lblVehicleDevice.Text = string.Empty;
-                            lblVehiclePilot.Text = string.Empty;
-                            lblVehicleBody.Text = string.Empty;
-                            lblVehicleArmor.Text = string.Empty;
-                            lblVehicleSensor.Text = string.Empty;
-                            lblVehicleSlots.Text = string.Empty;
-                            lblVehiclePowertrainLabel.Visible = false;
-                            lblVehiclePowertrain.Text = string.Empty;
-                            lblVehicleCosmeticLabel.Visible = false;
-                            lblVehicleCosmetic.Text = string.Empty;
-                            lblVehicleElectromagneticLabel.Visible = false;
-                            lblVehicleElectromagnetic.Text = string.Empty;
-                            lblVehicleBodymodLabel.Visible = false;
-                            lblVehicleBodymod.Text = string.Empty;
-                            lblVehicleWeaponsmodLabel.Visible = false;
-                            lblVehicleWeaponsmod.Text = string.Empty;
-                            lblVehicleProtectionLabel.Visible = false;
-                            lblVehicleProtection.Text = string.Empty;
-                            lblVehicleDroneModSlotsLabel.Visible = false;
-                            lblVehicleDroneModSlots.Text = string.Empty;
-                            string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
-                            string strPage = objWeapon.Page;
-                            lblVehicleSource.Text = strBook + " " + strPage;
-                            _blnSkipRefresh = true;
-                            chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                            chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
-                            _blnSkipRefresh = false;
-                            tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+                        if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
+                            cmdDeleteVehicle.Enabled = false;
+                        lblVehicleName.Text = objWeapon.DisplayNameShort;
+                        lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
+                        lblVehicleAvail.Text = objWeapon.TotalAvail;
+                        lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0¥}";
+                        lblVehicleHandling.Text = string.Empty;
+                        lblVehicleAccel.Text = string.Empty;
+                        lblVehicleSpeed.Text = string.Empty;
+                        lblVehicleDevice.Text = string.Empty;
+                        lblVehiclePilot.Text = string.Empty;
+                        lblVehicleBody.Text = string.Empty;
+                        lblVehicleArmor.Text = string.Empty;
+                        lblVehicleSensor.Text = string.Empty;
+                        lblVehicleSlots.Text = string.Empty;
+                        lblVehiclePowertrainLabel.Visible = false;
+                        lblVehiclePowertrain.Text = string.Empty;
+                        lblVehicleCosmeticLabel.Visible = false;
+                        lblVehicleCosmetic.Text = string.Empty;
+                        lblVehicleElectromagneticLabel.Visible = false;
+                        lblVehicleElectromagnetic.Text = string.Empty;
+                        lblVehicleBodymodLabel.Visible = false;
+                        lblVehicleBodymod.Text = string.Empty;
+                        lblVehicleWeaponsmodLabel.Visible = false;
+                        lblVehicleWeaponsmod.Text = string.Empty;
+                        lblVehicleProtectionLabel.Visible = false;
+                        lblVehicleProtection.Text = string.Empty;
+                        lblVehicleDroneModSlotsLabel.Visible = false;
+                        lblVehicleDroneModSlots.Text = string.Empty;
+                        string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
+                        string strPage = objWeapon.Page;
+                        lblVehicleSource.Text = strBook + " " + strPage;
+                        _blnSkipRefresh = true;
+                        chkVehicleWeaponAccessoryInstalled.Enabled = true;
+                        chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
+                        _blnSkipRefresh = false;
+                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
                     }
                 }
             }
@@ -17154,6 +16998,8 @@ namespace Chummer
 
                 if (blnFound)
                 {
+                    if (objAccessory.IncludedInWeapon)
+                        cmdDeleteVehicle.Enabled = false;
                     lblVehicleName.Text = objAccessory.DisplayNameShort;
                     lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponAccessory");
                     lblVehicleAvail.Text = objAccessory.TotalAvail;
@@ -17228,6 +17074,8 @@ namespace Chummer
                     Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
                     Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
 
+                    if (objGear.IncludedInParent)
+                        cmdDeleteVehicle.Enabled = false;
                     if (objGear.MaxRating > 0)
                     {
                         _blnSkipRefresh = true;
@@ -17283,43 +17131,14 @@ namespace Chummer
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
-                        List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
-                        cboVehicleGearAttack.BeginUpdate();
-                        cboVehicleGearSleaze.BeginUpdate();
-                        cboVehicleGearDataProcessing.BeginUpdate();
-                        cboVehicleGearFirewall.BeginUpdate();
-                        cboVehicleGearAttack.BindingContext = new BindingContext();
-                        cboVehicleGearAttack.ValueMember = "Value";
-                        cboVehicleGearAttack.DisplayMember = "Name";
-                        cboVehicleGearAttack.DataSource = objASDF;
-                        cboVehicleGearAttack.SelectedIndex = 0;
-                        cboVehicleGearAttack.Visible = true;
-                        cboVehicleGearSleaze.BindingContext = new BindingContext();
-                        cboVehicleGearSleaze.ValueMember = "Value";
-                        cboVehicleGearSleaze.DisplayMember = "Name";
-                        cboVehicleGearSleaze.DataSource = objASDF;
-                        cboVehicleGearSleaze.SelectedIndex = 1;
-                        cboVehicleGearDataProcessing.BindingContext = new BindingContext();
-                        cboVehicleGearDataProcessing.ValueMember = "Value";
-                        cboVehicleGearDataProcessing.DisplayMember = "Name";
-                        cboVehicleGearDataProcessing.DataSource = objASDF;
-                        cboVehicleGearDataProcessing.SelectedIndex = 2;
-                        cboVehicleGearFirewall.BindingContext = new BindingContext();
-                        cboVehicleGearFirewall.ValueMember = "Value";
-                        cboVehicleGearFirewall.DisplayMember = "Name";
-                        cboVehicleGearFirewall.DataSource = objASDF;
-                        cboVehicleGearFirewall.SelectedIndex = 3;
+                        objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                         if (_objCharacter.Metatype == "A.I.")
                         {
                             chkVehicleHomeNode.Visible = true;
                             chkVehicleHomeNode.Checked = objCommlink.HomeNode;
                         }
-                        cboVehicleGearAttack.EndUpdate();
-                        cboVehicleGearSleaze.EndUpdate();
-                        cboVehicleGearDataProcessing.EndUpdate();
-                        cboVehicleGearFirewall.EndUpdate();
                     }
                 }
             }
@@ -17328,6 +17147,8 @@ namespace Chummer
                 Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
                 Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
 
+                if (objGear.IncludedInParent)
+                    cmdDeleteVehicle.Enabled = false;
                 if (objGear.MaxRating > 0)
                 {
                     _blnSkipRefresh = true;
@@ -17385,42 +17206,14 @@ namespace Chummer
                 if (objGear.GetType() == typeof(Commlink))
                 {
                     Commlink objCommlink = (Commlink)objGear;
-                    List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
-                    cboVehicleGearAttack.BeginUpdate();
-                    cboVehicleGearSleaze.BeginUpdate();
-                    cboVehicleGearDataProcessing.BeginUpdate();
-                    cboVehicleGearFirewall.BeginUpdate();
-                    cboVehicleGearAttack.BindingContext = new BindingContext();
-                    cboVehicleGearAttack.ValueMember = "Value";
-                    cboVehicleGearAttack.DisplayMember = "Name";
-                    cboVehicleGearAttack.DataSource = objASDF;
-                    cboVehicleGearAttack.SelectedIndex = 0;
-                    cboVehicleGearAttack.Visible = true;
-                    cboVehicleGearSleaze.BindingContext = new BindingContext();
-                    cboVehicleGearSleaze.ValueMember = "Value";
-                    cboVehicleGearSleaze.DisplayMember = "Name";
-                    cboVehicleGearSleaze.DataSource = objASDF;
-                    cboVehicleGearSleaze.SelectedIndex = 1;
-                    cboVehicleGearDataProcessing.BindingContext = new BindingContext();
-                    cboVehicleGearDataProcessing.ValueMember = "Value";
-                    cboVehicleGearDataProcessing.DisplayMember = "Name";
-                    cboVehicleGearDataProcessing.DataSource = objASDF;
-                    cboVehicleGearDataProcessing.SelectedIndex = 2;
-                    cboVehicleGearFirewall.BindingContext = new BindingContext();
-                    cboVehicleGearFirewall.ValueMember = "Value";
-                    cboVehicleGearFirewall.DisplayMember = "Name";
-                    cboVehicleGearFirewall.DataSource = objASDF;
-                    cboVehicleGearFirewall.SelectedIndex = 3;
+
+                    objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                     if (_objCharacter.Metatype == "A.I.")
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objCommlink.HomeNode;
                     }
-                    cboVehicleGearAttack.EndUpdate();
-                    cboVehicleGearSleaze.EndUpdate();
-                    cboVehicleGearDataProcessing.EndUpdate();
-                    cboVehicleGearFirewall.EndUpdate();
                 }
             }
         }
@@ -20384,54 +20177,60 @@ namespace Chummer
             intWidth = Math.Max(intWidth, lblVehicleElectromagneticLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
 
-            lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 47;
+            lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 60;
             lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
-            lblVehicleBodyLabel.Left = lblVehicleHandling.Left + 47;
+            lblVehicleBodyLabel.Left = lblVehicleHandling.Left + 60;
             lblVehicleBody.Left = lblVehicleBodyLabel.Left + intWidth + 6;
-            lblVehicleCostLabel.Left = lblVehicleHandling.Left + 47;
+            lblVehicleCostLabel.Left = lblVehicleHandling.Left + 60;
             lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
-            lblVehicleProtectionLabel.Left = lblVehicleHandling.Left + 47;
+            lblVehicleProtectionLabel.Left = lblVehicleHandling.Left + 60;
             lblVehicleProtection.Left = lblVehicleProtectionLabel.Left + intWidth + 6;
-            lblVehicleElectromagneticLabel.Left = lblVehicleHandling.Left + 47;
+            lblVehicleElectromagneticLabel.Left = lblVehicleHandling.Left + 60;
             lblVehicleElectromagnetic.Left = lblVehicleElectromagneticLabel.Left + intWidth + 6;
-            lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 47;
+            lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 60;
             cboVehicleGearSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
 
             chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
-            chkVehicleHomeNode.Left = lblVehicleAccel.Left;
 
             intWidth = Math.Max(lblVehicleSpeedLabel.Width, lblVehicleArmorLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleDataProcessingLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehiclePowertrainLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehicleCosmeticLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehicleDeviceLabel.Width);
 
-            lblVehicleSpeedLabel.Left = lblVehicleAccel.Left + 53;
+            lblVehicleSpeedLabel.Left = lblVehicleAccel.Left + 60;
             lblVehicleSpeed.Left = lblVehicleSpeedLabel.Left + intWidth + 6;
-            lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 53;
+            lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 60;
             lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
-            lblVehiclePowertrainLabel.Left = lblVehicleAccel.Left + 53;
+            lblVehiclePowertrainLabel.Left = lblVehicleAccel.Left + 60;
             lblVehiclePowertrain.Left = lblVehiclePowertrainLabel.Left + intWidth + 6;
-            lblVehicleCosmeticLabel.Left = lblVehicleAccel.Left + 53;
+            lblVehicleCosmeticLabel.Left = lblVehicleAccel.Left + 60;
             lblVehicleCosmetic.Left = lblVehicleCosmeticLabel.Left + intWidth + 6;
-            lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 53;
+            lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 60;
             cboVehicleGearDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblVehicleDeviceLabel.Width, lblVehicleSensorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleFirewallLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDroneModSlotsLabel.Width);
-
-
-            lblVehicleDeviceLabel.Left = lblVehicleSpeed.Left + 35;
+            lblVehicleDeviceLabel.Left = lblVehicleAccel.Left + 60;
             lblVehicleDevice.Left = lblVehicleDeviceLabel.Left + intWidth + 6;
-            lblVehicleSensorLabel.Left = lblVehicleSpeed.Left + 35;
+
+            intWidth = Math.Max(lblVehicleFirewallLabel.Width, lblVehicleSensorLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehicleSeatsLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehicleDroneModSlotsLabel.Width);
+            intWidth = Math.Max(intWidth, lblVehicleSlotsLabel.Width);
+
+            lblVehicleSensorLabel.Left = lblVehicleSpeed.Left + 60;
             lblVehicleSensor.Left = lblVehicleSensorLabel.Left + intWidth + 6;
-            lblVehicleFirewallLabel.Left = lblVehicleSpeed.Left + 35;
-            lblVehicleDroneModSlotsLabel.Left = lblVehicleSpeed.Left + 35;
+            lblVehicleSeatsLabel.Left = lblVehicleSpeed.Left + 60;
+            lblVehicleSeats.Left = lblVehicleSeatsLabel.Left + intWidth + 6;
+            lblVehicleFirewallLabel.Left = lblVehicleSpeed.Left + 60;
+            lblVehicleDroneModSlotsLabel.Left = lblVehicleSpeed.Left + 60;
             lblVehicleDroneModSlots.Left = lblVehicleDroneModSlotsLabel.Left + intWidth + 6;
 
             cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
 
-            lblVehicleSlotsLabel.Left = lblVehicleCost.Left + 94;
-            lblVehicleSlots.Left = lblVehicleSlotsLabel.Left + lblVehicleSlotsLabel.Width + 6;
-            chkVehicleWeaponAccessoryInstalled.Left = lblVehicleDeviceLabel.Left;
+            lblVehicleSlotsLabel.Left = lblVehicleSpeed.Left + 60;
+            lblVehicleSlots.Left = lblVehicleSlotsLabel.Left + intWidth + 6;
+
+            chkVehicleHomeNode.Left = lblVehicleSlotsLabel.Left;
+            chkVehicleWeaponAccessoryInstalled.Left = lblVehicleSlotsLabel.Left;
 
             // Character Info.
             intWidth = Math.Max(lblSex.Width, lblHeight.Width);
@@ -20969,23 +20768,20 @@ namespace Chummer
             Gear objNewGear = new Gear(_objCharacter);
             if (objXmlGearNode != null)
             {
-                switch (objXmlGearNode["category"].InnerText)
+                if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
                 {
-                    case "Commlinks":
-                    case "Cyberdecks":
-                    case "Rigger Command Consoles":
-                        Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Create(objXmlGearNode, _objCharacter, objNode, intRating, true, blnCreateChildren);
-                        objCommlink.Quantity = intQty;
-                        objNewGear = objCommlink;
-                        break;
-                    default:
-                        Gear objGear = new Gear(_objCharacter);
-                        objGear.Create(objXmlGearNode, _objCharacter, objNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, true, blnCreateChildren);
-                        objGear.Quantity = intQty;
-                        objNode.Text = objGear.DisplayName;
-                        objNewGear = objGear;
-                        break;
+                    Commlink objCommlink = new Commlink(_objCharacter);
+                    objCommlink.Create(objXmlGearNode, _objCharacter, objNode, intRating, true, blnCreateChildren);
+                    objCommlink.Quantity = intQty;
+                    objNewGear = objCommlink;
+                }
+                else
+                {
+                    Gear objGear = new Gear(_objCharacter);
+                    objGear.Create(objXmlGearNode, _objCharacter, objNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, true, blnCreateChildren);
+                    objGear.Quantity = intQty;
+                    objNode.Text = objGear.DisplayName;
+                    objNewGear = objGear;
                 }
             }
 
@@ -20995,6 +20791,10 @@ namespace Chummer
             {
                 ((Gear)objParentObject).Children.Add(objNewGear);
                 objNewGear.Parent = (Gear)objParentObject;
+                if ((objParentObject as Commlink)?.CanSwapAttributes == true)
+                {
+                    (objParentObject as Commlink).RefreshCyberdeckArray();
+                }
             }
             if (objParentObject.GetType() == typeof(Armor))
                 ((Armor)objParentObject).Gear.Add(objNewGear);
@@ -21232,21 +21032,6 @@ namespace Chummer
                 {
                     CommonFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[1], cmsCyberware, cmsCyberwareGear);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Change the active Commlink for the Character.
-        /// </summary>
-        /// <param name="objActiveCommlink"></param>
-        private void ChangeActiveCommlink(Commlink objActiveCommlink)
-        {
-            List<Commlink> lstCommlinks = CommonFunctions.FindCharacterCommlinks(_objCharacter.Gear);
-
-            foreach (Commlink objCommlink in lstCommlinks)
-            {
-                if (objCommlink.InternalId != objActiveCommlink.InternalId)
-                    objCommlink.IsActive = false;
             }
         }
         #endregion

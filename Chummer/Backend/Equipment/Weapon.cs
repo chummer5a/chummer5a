@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A Weapon.
     /// </summary>
-    public class Weapon : INamedParentWithGuid<Weapon>
+    public class Weapon : INamedParentWithGuidAndNode<Weapon>
     {
         private Guid _sourceID = new Guid();
         private Guid _guiID = new Guid();
@@ -67,6 +67,7 @@ namespace Chummer.Backend.Equipment
         private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
         private bool _blnCyberware = false;
+        private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
         private string _mount;
@@ -209,6 +210,7 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeaponNode =
                         objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
                     objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
                     _lstUnderbarrel.Add(objUnderbarrelWeapon);
@@ -260,11 +262,21 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode objXmlAccessoryGear in objXmlWeaponAccessory.SelectNodes("gears/usegear"))
                         {
                             int intGearRating = 0;
-                            string strForceValue = string.Empty;
-                            if (objXmlAccessoryGear.Attributes["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
-                            if (objXmlAccessoryGear.Attributes["select"] != null)
-                                strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
+                            int intGearQty = 1;
+                            string strChildForceSource = string.Empty;
+                            string strChildForcePage = string.Empty;
+                            string strChildForceValue = string.Empty;
+                            bool blnStartCollapsed = objXmlAccessoryGear["name"].Attributes?["startcollapsed"]?.InnerText == "yes";
+                            if (objXmlAccessoryGear["rating"] != null)
+                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
+                            if (objXmlAccessoryGear["name"].Attributes["qty"] != null)
+                                intGearQty = Convert.ToInt32(objXmlAccessoryGear["name"].Attributes["qty"].InnerText);
+                            if (objXmlAccessoryGear["name"].Attributes["select"] != null)
+                                strChildForceValue = objXmlAccessoryGear["name"].Attributes["select"].InnerText;
+                            if (objXmlAccessoryGear["source"] != null)
+                                strChildForceSource = objXmlAccessoryGear["source"].InnerText;
+                            if (objXmlAccessoryGear["page"] != null)
+                                strChildForcePage = objXmlAccessoryGear["page"].InnerText;
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
                             Gear objGear = new Gear(_objCharacter);
@@ -273,16 +285,26 @@ namespace Chummer.Backend.Equipment
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                            objGear.Create(objXmlGear, _objCharacter, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, true);
+                            objGear.Create(objXmlGear, _objCharacter, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue);
+                            objGear.Quantity = intGearQty;
                             objGear.Cost = "0";
-                            objGear.MaxRating = objGear.Rating;
-                            objGear.MinRating = objGear.Rating;
+                            objGear.MinRating = intGearRating;
+                            objGear.MaxRating = intGearRating;
                             objGear.IncludedInParent = true;
+                            if (!string.IsNullOrEmpty(strChildForceSource))
+                                objGear.Source = strChildForceSource;
+                            if (!string.IsNullOrEmpty(strChildForcePage))
+                                objGear.Page = strChildForcePage;
                             objAccessory.Gear.Add(objGear);
+
+                            // Change the Capacity of the child if necessary.
+                            if (objXmlAccessoryGear["capacity"] != null)
+                                objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
 
                             objGearNode.ContextMenuStrip = cmsWeaponAccessoryGear;
                             objAccessoryNode.Nodes.Add(objGearNode);
-                            objAccessoryNode.Expand();
+                            if (!blnStartCollapsed)
+                                objAccessoryNode.Expand();
                         }
                     }
 
@@ -338,6 +360,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("parentid", _strParentID);
             objWriter.WriteElementString("weaponname", _strWeaponName);
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
             objWriter.WriteElementString("installed", _blnInstalled.ToString());
@@ -449,6 +472,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
@@ -471,6 +495,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
             objNode.TryGetDoubleFieldQuickly("rangemultiply", ref _dblRangeMultiplier);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
+            if (Name == "Unarmed Attack")
+                _blnIncludedInWeapon = true; // Unarmed Attack can never be removed
             objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
 
@@ -1078,6 +1104,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// ID of the object that added this weapon (if any).
+        /// </summary>
+        public string ParentID
+        {
+            get
+            {
+                return _strParentID;
+            }
+            set
+            {
+                _strParentID = value;
+            }
+        }
+
+        /// <summary>
         /// Location.
         /// </summary>
         public string Location
@@ -1212,6 +1253,14 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _sourceID;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("weapons.xml")?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
             }
         }
         #endregion

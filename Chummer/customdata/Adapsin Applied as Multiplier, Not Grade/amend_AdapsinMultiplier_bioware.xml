@@ -18,14 +18,13 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <gears>
-      <gear>
-        <name>Ammo: Depleted Uranium</name>
-        <hide />
-      </gear>
-    <gear>
-      <name>Subliminal Subacoustics Software</name>
-      <hide />
-    </gear>
-  </gears>
+  <biowares>
+    <bioware>
+      <name>Adapsin</name>
+      <bonus>
+        <adapsin remove="yes" />
+		<cyberwaretotalessmultipliernonretroactive>90</cyberwaretotalessmultipliernonretroactive>
+      </bonus>
+    </bioware>
+  </biowares>
 </chummer>

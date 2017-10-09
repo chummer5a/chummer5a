@@ -73,7 +73,6 @@ namespace Chummer
             string[] strValues = _strLimitToCategories.Split(',');
 
             // Populate the Category list.
-            // Populate the Category list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
@@ -86,13 +85,25 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
-            cboCategory.EndUpdate();
 
-            BuildModList();
+            // Select the first Category in the list.
+            if (string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedIndex = 0;
+            else
+                cboCategory.SelectedValue = _strSelectCategory;
+
+            cboCategory.EndUpdate();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -109,87 +120,7 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Load the Vehicle information.
-            _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
-
-            XmlNode objXmlVehicleNode = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _objVehicle.SourceID + "\"]");
-
-            List<ListItem> lstMods = new List<ListItem>();
-            XmlNodeList objXmlModList = null;
-            // Populate the Mod list.
-            objXmlModList = cboCategory.SelectedValue != null && (string) cboCategory.SelectedValue != "All"
-            ? _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]")
-            : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
-            if (objXmlModList != null)
-                foreach (XmlNode objXmlMod in objXmlModList)
-                {
-                    if (objXmlMod["hide"] != null)
-                        continue;
-
-                    if (objXmlMod["forbidden"]?["vehicledetails"] != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
-                        {
-                            continue;
-                        }
-                    }
-                    if (objXmlMod["required"]?["vehicledetails"] != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (objXmlMod["forbidden"]?["oneof"] != null)
-                    {
-                        XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objForbiddenAccessory = new HashSet<string>();
-                        foreach (XmlNode node in objXmlForbiddenList)
-                        {
-                            objForbiddenAccessory.Add(node.InnerText);
-                        }
-
-                        if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (objXmlMod["required"]?["oneof"] != null)
-                    {
-                        XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objRequiredAccessory = new HashSet<string>();
-                        foreach (XmlNode node in objXmlRequiredList)
-                        {
-                            objRequiredAccessory.Add(node.InnerText);
-                        }
-
-                        if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
-                    {
-                        continue;
-                    }
-                    ListItem objItem = new ListItem {Value = objXmlMod["id"]?.InnerText};
-                    objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"]?.InnerText;
-                    lstMods.Add(objItem);
-                }
-            lstMod.BeginUpdate();
-            lstMod.DataSource = null;
-            lstMod.ValueMember = "Value";
-            lstMod.DisplayMember = "Name";
-            lstMod.DataSource = lstMods;
-            lstMod.EndUpdate();
+            BuildModList();
         }
 
         private void nudRating_ValueChanged(object sender, EventArgs e)
@@ -473,12 +404,6 @@ namespace Chummer
         private void BuildModList()
         {
 
-            // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else
-                cboCategory.SelectedValue = _strSelectCategory;
-
             foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith("["))
@@ -494,13 +419,34 @@ namespace Chummer
             // Load the Vehicle information.
             _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 
-            XmlNode objXmlVehicleNode = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _objVehicle.Name + "\"]");
+            XmlNode objXmlVehicleNode = _objVehicle.MyXmlNode;
 
+            string strCategoryFilter = string.Empty;
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+                strCategoryFilter = " and category = \"" + cboCategory.SelectedValue + "\"";
+            else
+            {
+                if (!string.IsNullOrEmpty(_strAllowedCategories))
+                {
+                    string[] strAllowed = _strAllowedCategories.Split(',');
+                    for (int index = 0; index < strAllowed.Length; index++)
+                    {
+                        if (index == 0)
+                        {
+                            strCategoryFilter = $"category = \"{strAllowed[index]}\"";
+                        }
+                        string strAllowedMount = strAllowed[index];
+                        if (!string.IsNullOrEmpty(strAllowedMount))
+                            strCategoryFilter += $" or category = \"{strAllowed[index]}\"";
+                    }
+                    strCategoryFilter = " and (" + strCategoryFilter + ")";
+                }
+            }
             // Retrieve the list of Mods for the selected Category.
             if (string.IsNullOrEmpty(txtSearch.Text))
-                objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category != \"Special\"]");
+                objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ")" + strCategoryFilter + "]");
             else
-                objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category != \"Special\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
+                objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ")" + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
             List<ListItem> lstMods = new List<ListItem>();
             if (objXmlModList != null)
                 foreach (XmlNode objXmlMod in objXmlModList)
@@ -572,10 +518,13 @@ namespace Chummer
                         }
                     }
 
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMod["id"].InnerText;
-                    objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
-                    lstMods.Add(objItem);
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlMod["id"].InnerText;
+                        objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
+                        lstMods.Add(objItem);
+                    }
                 NextItem:;
                 }
             SortListItem objSort = new SortListItem();

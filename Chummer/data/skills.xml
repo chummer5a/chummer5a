@@ -185,6 +185,8 @@
         <spec>Cooking</spec>
         <spec>Drawing</spec>
         <spec>Sculpting</spec>
+		<spec>Fashion</spec>
+		<spec>Writing</spec>
         <spec>[Discipline]</spec>
       </specs>
       <source>SR5</source>
@@ -590,6 +592,8 @@
         <spec>Corporate</spec>
         <spec>High Society</spec>
         <spec>Mafia</spec>
+		<spec>Magic</spec>
+		<spec>Matrix</spec>
         <spec>Media</spec>
         <spec>Mercenary</spec>
         <spec>Street</spec>
@@ -1026,6 +1030,7 @@
       <specs>
         <spec>Acting</spec>
         <spec>Comedy</spec>
+		<spec>Dance</spec>
         <spec>Presentation</spec>
         <spec>[Musical Instrument]</spec>
       </specs>

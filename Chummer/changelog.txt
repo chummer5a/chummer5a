@@ -88,9 +88,27 @@ Application Changes:
 - Select Armor, Select Cyberware, Select Bioware, Select Gear, Select Vehicle, and Select Weapon screens now all have a category that shows all items, and searching for items on those screens will now only search within the selected category. In the case of Select Cyberware and Select Bioware screens, the current selection will be saved when switching between grades and selecting a particular grade will automatically hide all items that cannot be taken in that grade. Selecting the Cultured Bioware category when the Used grade is selected will switch the selected grade back to Standard.
 - The Select Cyberware screen will now only display Cyberlimb Customizations and Cyberlimb Enhancements when adding a subsystem to a cyberlimb.
 - Fixed a bug where cost modifiers were not properly applied to gear with FixedValue costs.
-- Replaced support for <cost3>, <cost6>, <cost10>, <avail3>, <avail6>, and <avail10> nodes with a system that can support any number of <cost[n]> and <avail[n]> nodes (where n = rating above which the indicated cost or availability no longer necessarily apply). When a regular <cost> or <avail> node is absent, the system will look for the <cost[n]> or <avail[n]> node with the lowest n that is still greater than the item's rating; if none are found, then the node with the highest n is used instead.
+- Removed references to <cost3>, <cost6>, <cost10>, <avail3>, <avail6>, and <avail10> nodes, as they are obsolete. Added a legacy shim to handle these entry types from savefiles and convert them to just using <cost> and <avail> respectively.
 - Added support for bonuses that remove the ability to add cyberware, remove the ability to add bioware, or modify the essence cost of bioware or cyberware in a way that stacks multiplicatively with other modifiers instead of additively.
 - Added a houserule option to allow skill points to be used to buy specializations for karma-bought skills.
+- Added support for mixing of special cost and availability expressions. For example, one can now mix "FixedValues()" with "Parent Cost" and Chummer5 should know how to handle it. 
+- Added support for using expressions to define Attack, Sleaze, Data Processing, Firewall, and Device Rating.
+- Altered commlink system and related UI so that gear with the attributesarray tag is treated as being able to swap its Matrix attributes, while those without it cannot.
+- Altered commlink system so that any gear with a devicerating tag is marked and treated as a commlink, rather than it being hardcoded to a few, specific categories.
+- Added support for gear that modifies Matrix attributes, both in terms of modifying a cyberdeck array and in terms of modifying a specific Matrix attribute. Commlinks and cyberdecks modify their Matrix attributes by their children's stats.
+- Added support for essence cost modifiers (additively stacking multipliers) and total essence cost modifiers (multiplicatively stacking multipliers) that do not retroactively alter existing cyberware's essence costs.
+- Added support for cyberware to come with built-in gear.
+- Vehicles, weapons, armor mods, weapon accessories, and cyberware that are added by gear and/or cyberware or are included in their parents are now all colored gray when without notes and can no longer be removed without removing their parents. The Unarmed Attack entry in the weapons list can never be removed and is always colored gray if there are no notes attached.
+- Added support for gear that modifies its parent's Matrix condition monitor.
+- If an item has a higher rating than the number of entries in an attribute it has that uses a FixedValue() system, then Chummer5 will select the last item instead of crashing.
+- Standardized the code to retrieve an item's XML entry. As a side effect, some translation issues have been fixed.
+- Added support for the usegears sections of gear entries to start with their node collapsed, added support to define new source and page entries to usegear entries, and added support to make each usegear entry to not create the item's default children and/or not apply the item's improvements. Gear that is marked as "do not apply improvements" when created will also not have its children create improvements.
+- When a Custom Item entry is added as a default child of another item, it will no longer prompt the user to enter a price (it will always be 0), and if the select attribute in the entry's name tag is set, then that value will be the Custom Item's name as well.
+- Added support for gear that lets users choose between a selection of default children, via the <choosegear></choosegear> attributes. Each set of those tags inside of <gears></gears> is one choice that the user can make, and the user must choose between one of the <usegear></usegear> entries within each <choosegear></choosegear>.
+- Added support to tag gear as requiring a parent to be added, i.e. to mark the gear as an enhancement or plugin item.
+- Increased the size of the Rating box in SelectGear to accommodate larger ratings e.g. that credsticks might have.
+- Fixed a bug where selecting the "All" category in the form to select vehicle mods did not adhere to the category limit selection if one was set.
+- Fixed the "Hide Items Over Avail Limit" option on the vehicle mods selection screen so that it actually hides mods that are over the availability limit when checked.
 
 Data Changes:
 
@@ -154,6 +172,16 @@ Data Changes:
 - Added a set of custom rules that follows Shadowrun Missions 1.4 FAQ.
 - Fixed a bug where Sensitive System did not disallow the character from adding bioware.
 - Fixed an issue with the Taboo Transformer quality looking for an active skill version of Zoology for Mastery.
+- Added a few missing specializations to Active Skills that are present in the example characters and contacts in Run Faster.
+- Attack Dongles, Stealth Dongles, and Matrix attribute-modifying Electronic Modifications now all work the way they should and modify their parents' Matrix attributes when equipped.
+- Added entries for all the items that come with a Survival Kit and a Survival Knife.
+- Fixed Control Rig not coming with a built-in datajack or sim module. Fixed Datajack not coming with a meter of Universal Connector Cord.
+- Fixed all entries for commlinks, cyberdecks, and RCCs to properly represent the items they come with. Also fixed specialty cyberdecks so that they cannot rearrange their attributes.
+- Added an entry for the Hackpack Cyberdeck Form Factor. As per the core rulebook, it is free.
+- Fixed Sensors, Sensor Functions, Fake Licenses, all Audio Devices, all Video Devices, all Audio Enhancements, all Video Enhancements, all Armor Enhancements, Commlink/Cyberdeck Form Factors, and Altskin plugins from being able to accommodate incorrect plugins and/or from being added as an incorrect plugin.
+- Added a set of custom rules that makes Adapsin's essence multiplier apply as a generic multiplier after all others (the way it does in Hero Lab) instead of a multiplier to grade essence costs.
+- Removed the "All" category from vehicle mods because "Show All" is now always inserted at the beginning of the list of vehicle mod categories.
+- Smartskin properly provides armor based on its rating. Fixes #1949.
 
 New Strings:
 - Label_Options_SpellShapingFocus

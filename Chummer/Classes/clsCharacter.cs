@@ -1786,7 +1786,7 @@ namespace Chummer
                 {
                     blnFoundUnarmed = true;
                     break;
-            }
+                }
             }
 
             if (!blnFoundUnarmed)
@@ -1799,10 +1799,10 @@ namespace Chummer
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(this);
                     objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null);
-                    objGearWeaponNode.ForeColor = SystemColors.GrayText;
+                    objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                     _lstWeapons.Add(objWeapon);
                 }
-                }
+            }
 
             Timekeeper.Finish("load_char_unarmed");
             Timekeeper.Start("load_char_dwarffix");
@@ -2615,11 +2615,11 @@ namespace Chummer
                 Commlink objLivingPersona = new Commlink(this);
                 objLivingPersona.Name = LanguageManager.Instance.GetString("String_LivingPersona");
                 objLivingPersona.Category = LanguageManager.Instance.GetString("String_Commlink");
-                objLivingPersona.DeviceRating = RES.TotalValue;
-                objLivingPersona.Attack = CHA.TotalValue;
-                objLivingPersona.Sleaze = INT.TotalValue;
-                objLivingPersona.DataProcessing = LOG.TotalValue;
-                objLivingPersona.Firewall = WIL.TotalValue;
+                objLivingPersona.DeviceRating = RES.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.Attack = CHA.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.Sleaze = INT.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.DataProcessing = LOG.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.Firewall = WIL.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
                 objLivingPersona.Source = _objOptions.LanguageBookShort("SR5");
                 objLivingPersona.Page = "251";
                 objLivingPersona.IsLivingPersona = true;

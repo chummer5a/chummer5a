@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
@@ -8,7 +8,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle Modification.
     /// </summary>
-    public class WeaponMount : INamedItemWithGuid
+    public class WeaponMount : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private int _intMarkup;
@@ -99,14 +99,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
-                XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
+                XmlNode objModNode = MyXmlNode;
                 if (objModNode != null)
                 {
                     objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
                 objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
             }
@@ -182,14 +182,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
-                XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
+                XmlNode objModNode = MyXmlNode;
                 if (objModNode != null)
                 {
                     objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
                 objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
             }
@@ -592,6 +592,14 @@ namespace Chummer.Backend.Equipment
                 string strReturn = DisplayNameShort;
 
                 return strReturn;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
             }
         }
         #endregion

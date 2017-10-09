@@ -15,7 +15,7 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
-    public class Power : INotifyPropertyChanged, INamedItemWithGuid
+    public class Power : INotifyPropertyChanged, INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private Guid _sourceID = new Guid();
@@ -197,9 +197,9 @@ namespace Chummer
             {
                 if (objNode["adeptwayrequires"] == null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID + "\"]");
-                    if (objXmlPower != null) _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
+                    XmlNode objXmlPower = MyXmlNode;
+                    if (objXmlPower != null)
+                        _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
                 }
                 else
                 {
@@ -289,10 +289,8 @@ namespace Chummer
                 // Get the translated name if applicable.
                 else if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                        strReturn = objNode?["translate"]?.InnerText ?? strReturn;
-                    _strDisplayName = strReturn;
+                    _strDisplayName = MyXmlNode?["translate"]?.InnerText ?? strReturn;
+                    strReturn = _strDisplayName;
                 }
 
                 return strReturn;
@@ -517,15 +515,10 @@ namespace Chummer
         {
             get
             {
-                string strReturn = _strPage;
-
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                strReturn = objNode?["altpage"]?.InnerText;
-
-                return strReturn;
+                if (GlobalOptions.Instance.Language == "en-us")
+                    return _strPage;
+                return MyXmlNode?["altpage"]?.InnerText ?? _strPage;
             }
             set
             {
@@ -756,6 +749,14 @@ namespace Chummer
         public bool Deleting { internal get; set; }
 
         public string Category { get; set; }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID + "\"]");
+            }
+        }
 
         /// <summary>
         /// ToolTip that shows how the Power is calculating its Modified Rating.

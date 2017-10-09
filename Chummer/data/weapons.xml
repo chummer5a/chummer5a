@@ -1160,6 +1160,27 @@
       <source>SR5</source>
       <page>422</page>
     </weapon>
+	<weapon>
+      <id>a92933cb-0c81-4b54-aeb1-ddc24836775d</id>
+      <name>Knife (Survival Kit)</name>
+	  <hide />
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>-2</conceal>
+      <spec>Knives</spec>
+      <accuracy>5</accuracy>
+      <reach>0</reach>
+      <damage>(STR+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>10</cost>
+      <allowaccessory>true</allowaccessory>
+      <source>SR5</source>
+      <page>422</page>
+    </weapon>
     <weapon>
       <id>60f52b1f-6376-49fc-a746-b811c54197e7</id>
       <name>Pole Arm</name>
@@ -1219,6 +1240,14 @@
       <avail>0</avail>
       <cost>100</cost>
       <allowaccessory>true</allowaccessory>
+	  <accessories>
+        <accessory>
+          <name>Survival Knife Bonuses</name>
+        </accessory>
+        <accessory>
+          <name>Survival Knife Wireless Bonuses</name>
+        </accessory>
+      </accessories>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -13830,6 +13859,39 @@
       <cost>900</cost>
       <source>SAG</source>
       <page>35</page>
+    </accessory>
+	<accessory>
+      <id>c50723ab-8354-4b32-a1a8-b3720df0dd2d</id>
+      <name>Survival Knife Bonuses</name>
+      <mount />
+	  <hide />
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>0</cost>
+	  <gears>
+        <usegear select="GPS Monitor">Custom Item</usegear>
+		<usegear select="Mini-Multitool">Custom Item</usegear>
+		<usegear select="Micro-Lighter">Custom Item</usegear>
+		<usegear select="Hidden Compartment">Custom Item</usegear>
+		<usegear select="Phosphorescent Blade Coating">Custom Item</usegear>
+      </gears>
+      <source>SR5</source>
+      <page>422</page>
+    </accessory>
+	<accessory>
+      <id>471d2d54-34cc-493c-b888-e27498b28e39</id>
+      <name>Survival Knife Wireless Bonuses</name>
+      <mount />
+	  <hide />
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>0</cost>
+	  <gears>
+        <usegear select="ARO of Local Maps">Custom Item</usegear>
+		<usegear select="Can Make Commcalls">Custom Item</usegear>
+      </gears>
+      <source>SR5</source>
+      <page>422</page>
     </accessory>
   </accessories>
 </chummer>

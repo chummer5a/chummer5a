@@ -128,8 +128,13 @@
             // 
             this.nudRating.Enabled = false;
             this.nudRating.Location = new System.Drawing.Point(422, 127);
+            this.nudRating.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(37, 20);
+            this.nudRating.Size = new System.Drawing.Size(56, 20);
             this.nudRating.TabIndex = 11;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 

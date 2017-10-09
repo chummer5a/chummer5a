@@ -87,7 +87,13 @@ namespace Chummer
             if (objGear.Parent == null)
                 _objCharacter.Gear.Remove(objGear);
             else
+            {
                 objGear.Parent.Children.Remove(objGear);
+                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                {
+                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                }
+            }
 
             if (objDestination.Level == 0)
             {
@@ -105,6 +111,10 @@ namespace Chummer
                 objParent.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
+                if ((objParent as Commlink)?.CanSwapAttributes == true)
+                {
+                    (objParent as Commlink).RefreshCyberdeckArray();
+                }
             }
 
             TreeNode objClone = treGear.SelectedNode;
@@ -524,7 +534,13 @@ namespace Chummer
             if (objGear.Parent == null)
                 objVehicle.Gear.Remove(objGear);
             else
+            {
                 objGear.Parent.Children.Remove(objGear);
+                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                {
+                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                }
+            }
 
             if (blnDestinationLocation)
             {
@@ -539,6 +555,10 @@ namespace Chummer
                 objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
+                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                {
+                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                }
             }
 
             TreeNode objClone = treVehicles.SelectedNode;

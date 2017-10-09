@@ -1508,9 +1508,6 @@ namespace Chummer
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                     objGear.Create(objXmlGearItem, _objCharacter, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                     objGear.Cost = "0";
-                    objGear.Cost3 = "0";
-                    objGear.Cost6 = "0";
-                    objGear.Cost10 = "0";
                     _objCharacter.Gear.Add(objGear);
                 }
 

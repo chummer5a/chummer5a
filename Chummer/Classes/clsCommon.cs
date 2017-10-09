@@ -615,6 +615,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Change the active Commlink for the Character.
+        /// </summary>
+        /// <param name="objCommlink">Current commlink to process.</param>
+        /// <param name="blnActivateCommlink">Mark current commlink as active.</param>
+        public void ChangeActiveCommlink(Commlink objCommlink, bool blnActivateCommlink = true)
+        {
+            List<Commlink> lstCommlinks = CommonFunctions.FindCharacterCommlinks(_objCharacter.Gear);
+
+            bool blnHasNoActive = true;
+            foreach (Commlink objLoopCommlink in lstCommlinks)
+            {
+                objLoopCommlink.IsActive = (blnActivateCommlink && objLoopCommlink.InternalId == objCommlink.InternalId) ||
+                        (!blnActivateCommlink && objLoopCommlink.InternalId != objCommlink.InternalId && blnHasNoActive);
+                if (blnHasNoActive && objLoopCommlink.IsActive)
+                    blnHasNoActive = false;
+            }
+        }
+
+        /// <summary>
         /// Find and disable any other items selected as a home node.
         /// </summary>
         /// <param name="strGuid">GUID to whitelist when disabling other home nodes.</param>
@@ -718,6 +737,14 @@ namespace Chummer
                     }
                 }
             }
+
+            if (objGear.GetType() == typeof(Commlink))
+            {
+                if ((objGear as Commlink).IsActive)
+                {
+                    ChangeActiveCommlink(objGear as Commlink, false);
+                }
+            }
         }
 
         /// <summary>
@@ -761,6 +788,14 @@ namespace Chummer
                 }
                 if (objRemoveWeapon != null)
                     objVehicle.Weapons.Remove(objRemoveWeapon);
+            }
+
+            if (objGear.GetType() == typeof(Commlink))
+            {
+                if ((objGear as Commlink).IsActive)
+                {
+                    ChangeActiveCommlink(objGear as Commlink, false);
+                }
             }
         }
 
@@ -886,6 +921,10 @@ namespace Chummer
                 if (objGear != null)
                 {
                     objGear.Parent.Children.Remove(objGear);
+                    if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                    {
+                        (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                    }
                     DeleteGear(objGear, treWeapons);
                     objSelectedArmor.Gear.Remove(objGear);
                 }
@@ -923,6 +962,8 @@ namespace Chummer
                 objChildNode.ContextMenuStrip = objMenu;
                 if (!string.IsNullOrEmpty(objChild.Notes))
                     objChildNode.ForeColor = Color.SaddleBrown;
+                else if (objChild.IncludedInParent)
+                    objChildNode.ForeColor = SystemColors.GrayText;
                 objChildNode.ToolTipText = objChild.Notes;
 
                 objNode.Nodes.Add(objChildNode);
@@ -944,35 +985,39 @@ namespace Chummer
         /// <param name="objGearMenu">ContextMenuStrip that the new Gear TreeNodes should use.</param>
         public static void BuildCyberwareTree(Cyberware objCyberware, TreeNode objParentNode, ContextMenuStrip objMenu, ContextMenuStrip objGearMenu)
         {
-                TreeNode objNode = new TreeNode();
-                objNode.Text = objCyberware.DisplayName;
-                objNode.Tag = objCyberware.InternalId;
-                if (!string.IsNullOrEmpty(objCyberware.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = objCyberware.Notes;
-                objNode.ContextMenuStrip = objMenu;
+            TreeNode objNode = new TreeNode();
+            objNode.Text = objCyberware.DisplayName;
+            objNode.Tag = objCyberware.InternalId;
+            if (!string.IsNullOrEmpty(objCyberware.Notes))
+                objNode.ForeColor = Color.SaddleBrown;
+            else if (!string.IsNullOrEmpty(objCyberware.ParentID))
+                objNode.ForeColor = SystemColors.GrayText;
+            objNode.ToolTipText = objCyberware.Notes;
+            objNode.ContextMenuStrip = objMenu;
 
-                objParentNode.Nodes.Add(objNode);
-                objParentNode.Expand();
+            objParentNode.Nodes.Add(objNode);
+            objParentNode.Expand();
 
-                foreach (Cyberware objChild in objCyberware.Children)
-                    BuildCyberwareTree(objChild, objNode, objMenu, objGearMenu);
+            foreach (Cyberware objChild in objCyberware.Children)
+                BuildCyberwareTree(objChild, objNode, objMenu, objGearMenu);
 
-                foreach (Gear objGear in objCyberware.Gear)
-                {
-                    TreeNode objGearNode = new TreeNode();
-                    objGearNode.Text = objGear.DisplayName;
-                    objGearNode.Tag = objGear.InternalId;
-                    if (!string.IsNullOrEmpty(objGear.Notes))
-                        objGearNode.ForeColor = Color.SaddleBrown;
-                    objGearNode.ToolTipText = objGear.Notes;
-                    objGearNode.ContextMenuStrip = objGearMenu;
+            foreach (Gear objGear in objCyberware.Gear)
+            {
+                TreeNode objGearNode = new TreeNode();
+                objGearNode.Text = objGear.DisplayName;
+                objGearNode.Tag = objGear.InternalId;
+                if (!string.IsNullOrEmpty(objGear.Notes))
+                    objGearNode.ForeColor = Color.SaddleBrown;
+                else if (objGear.IncludedInParent)
+                    objGearNode.ForeColor = SystemColors.GrayText;
+                objGearNode.ToolTipText = objGear.Notes;
+                objGearNode.ContextMenuStrip = objGearMenu;
 
-                    BuildGearTree(objGear, objGearNode, objGearMenu);
+                BuildGearTree(objGear, objGearNode, objGearMenu);
 
-                    objNode.Nodes.Add(objGearNode);
-                    objNode.Expand();
-                }
+                objNode.Nodes.Add(objGearNode);
+                objNode.Expand();
+            }
 
         }
 
@@ -1004,6 +1049,8 @@ namespace Chummer
                 objChild.ContextMenuStrip = cmsArmorMod;
                 if (!string.IsNullOrEmpty(objMod.Notes))
                     objChild.ForeColor = Color.SaddleBrown;
+                else if (objMod.IncludedInArmor)
+                    objChild.ForeColor = SystemColors.GrayText;
                 objChild.ToolTipText = objMod.Notes;
                 objNode.Nodes.Add(objChild);
                 objNode.Expand();
@@ -1016,6 +1063,8 @@ namespace Chummer
                 objChild.Tag = objGear.InternalId;
                 if (!string.IsNullOrEmpty(objGear.Notes))
                     objChild.ForeColor = Color.SaddleBrown;
+                else if (objGear.IncludedInParent)
+                    objChild.ForeColor = SystemColors.GrayText;
                 objChild.ToolTipText = objGear.Notes;
 
                 BuildGearTree(objGear, objChild, cmsArmorGear);
@@ -1063,6 +1112,8 @@ namespace Chummer
             objNode.Tag = objVehicle.InternalId;
             if (!string.IsNullOrEmpty(objVehicle.Notes))
                 objNode.ForeColor = Color.SaddleBrown;
+            else if (!string.IsNullOrEmpty(objVehicle.ParentID))
+                objNode.ForeColor = SystemColors.GrayText;
             objNode.ToolTipText = objVehicle.Notes;
 
             // Populate the list of Vehicle Locations.
@@ -1081,10 +1132,10 @@ namespace Chummer
                 TreeNode objChildNode = new TreeNode();
                 objChildNode.Text = objMod.DisplayName;
                 objChildNode.Tag = objMod.InternalId;
-                if (objMod.IncludedInVehicle)
-                    objChildNode.ForeColor = SystemColors.GrayText;
                 if (!string.IsNullOrEmpty(objMod.Notes))
                     objChildNode.ForeColor = Color.SaddleBrown;
+                else if (objMod.IncludedInVehicle)
+                    objChildNode.ForeColor = SystemColors.GrayText;
                 objChildNode.ToolTipText = objMod.Notes;
 
                 // Cyberware.
@@ -1095,6 +1146,8 @@ namespace Chummer
                     objCyberwareNode.Tag = objCyberware.InternalId;
                     if (!string.IsNullOrEmpty(objCyberware.Notes))
                         objCyberwareNode.ForeColor = Color.SaddleBrown;
+                    else if (!string.IsNullOrEmpty(objCyberware.ParentID))
+                        objCyberwareNode.ForeColor = SystemColors.GrayText;
                     objCyberwareNode.ToolTipText = objCyberware.Notes;
                     objChildNode.Nodes.Add(objCyberwareNode);
                     objChildNode.Expand();
@@ -1123,6 +1176,8 @@ namespace Chummer
                 objGearNode.Tag = objGear.InternalId;
                 if (!string.IsNullOrEmpty(objGear.Notes))
                     objGearNode.ForeColor = Color.SaddleBrown;
+                else if (objGear.IncludedInParent)
+                    objGearNode.ForeColor = SystemColors.GrayText;
                 objGearNode.ToolTipText = objGear.Notes;
 
                 BuildGearTree(objGear, objGearNode, cmsVehicleGear);
@@ -1167,10 +1222,11 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             objNode.Text = objWeapon.DisplayName;
             objNode.Tag = WeaponID ?? objWeapon.InternalId;
-            if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || WeaponID != null)
-                objNode.ForeColor = SystemColors.GrayText;
             if (!string.IsNullOrEmpty(objWeapon.Notes))
                 objNode.ForeColor = Color.SaddleBrown;
+            else if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || WeaponID != null || !string.IsNullOrEmpty(objWeapon.ParentID))
+                objNode.ForeColor = SystemColors.GrayText;
+
             objNode.ToolTipText = objWeapon.Notes;
 
             // Add attached Weapon Accessories.
@@ -1182,6 +1238,8 @@ namespace Chummer
                 objChild.ContextMenuStrip = cmsWeaponAccessory;
                 if (!string.IsNullOrEmpty(objAccessory.Notes))
                     objChild.ForeColor = Color.SaddleBrown;
+                else if (objAccessory.IncludedInWeapon)
+                    objChild.ForeColor = SystemColors.GrayText;
                 objChild.ToolTipText = objAccessory.Notes;
 
                 // Add any Gear attached to the Weapon Accessory.
@@ -1192,6 +1250,8 @@ namespace Chummer
                     objGearChild.Tag = objGear.InternalId;
                     if (!string.IsNullOrEmpty(objGear.Notes))
                         objGearChild.ForeColor = Color.SaddleBrown;
+                    else if (objGear.IncludedInParent)
+                        objGearChild.ForeColor = SystemColors.GrayText;
                     objGearChild.ToolTipText = objGear.Notes;
 
                     BuildGearTree(objGear, objGearChild, cmsWeaponAccessoryGear);

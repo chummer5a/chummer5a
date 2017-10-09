@@ -31,7 +31,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Armor Modification.
     /// </summary>
-    public class ArmorMod : INamedItemWithGuid
+    public class ArmorMod : INamedItemWithGuidAndNode
     {
         private Guid _guiID = new Guid();
         private string _strName = string.Empty;
@@ -91,14 +91,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
-                XmlNode objArmorNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
+                XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
                 {
                     objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
@@ -173,6 +173,7 @@ namespace Chummer.Backend.Equipment
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objGearWeapon = new Weapon(_objCharacter);
                     objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
+                    objGearWeapon.ParentID = InternalId;
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     objWeaponNodes.Add(objGearWeaponNode);
                     objWeapons.Add(objGearWeapon);
@@ -265,14 +266,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
-                XmlNode objArmorNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
+                XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
                 {
                     objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
@@ -764,7 +765,7 @@ namespace Chummer.Backend.Equipment
                 if (strCapacity.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    strCapacity = strValues[Convert.ToInt32(_intRating) - 1];
+                    strCapacity = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
                 bool blnSquareBrackets = strCapacity.Contains('[');
                 if (blnSquareBrackets)
@@ -820,7 +821,7 @@ namespace Chummer.Backend.Equipment
                 else if (_strCost.StartsWith("FixedValues"))
                 {
                     string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    intReturn = Convert.ToInt32(strValues[Convert.ToInt32(_intRating) - 1]);
+                    intReturn = Convert.ToInt32(strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 else
                     intReturn = Convert.ToInt32(_strCost);
@@ -840,6 +841,14 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return TotalCost;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("armors.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
             }
         }
         #endregion

@@ -40,7 +40,7 @@ namespace Chummer
         private int _intCostMultiplier = 1;
 
         private string _strAllowedCategories = string.Empty;
-        private string _strParent = string.Empty;
+        private XmlNode _objParentNode = null;
         private int _intMaximumCapacity = -1;
         private bool _blnAddAgain = false;
         private static string _strSelectCategory = string.Empty;
@@ -56,7 +56,7 @@ namespace Chummer
         private List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
-        public frmSelectGear(Character objCharacter, bool blnCareer = false, int intAvailModifier = 0, int intCostMultiplier = 1, string strParent = "")
+        public frmSelectGear(Character objCharacter, bool blnCareer = false, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -66,7 +66,7 @@ namespace Chummer
             _intAvailModifier = intAvailModifier;
             _intCostMultiplier = intCostMultiplier;
             _objCharacter = objCharacter;
-            _strParent = strParent;
+            _objParentNode = objParentNode;
             // Stack Checkbox is only available in Career Mode.
             if (!_objCharacter.Created)
             {
@@ -145,6 +145,8 @@ namespace Chummer
                     if (_blnShowPositiveCapacityOnly)
                         strXPath += " and not(contains(capacity, \"[\"))";
                 }
+                if (_objParentNode == null)
+                    strXPath += " and not(requireparent)";
                 strXPath += "]";
 
                 XmlNodeList objItems = _objXmlDocument.SelectNodes(strXPath);
@@ -256,7 +258,7 @@ namespace Chummer
                         }
                         string strAllowedMount = strAllowed[index];
                         if (!string.IsNullOrEmpty(strAllowedMount))
-                            strSelectedCategoryPath += $"or category = \"{strAllowed[index]}\"";
+                            strSelectedCategoryPath += $" or category = \"{strAllowed[index]}\"";
                     }
                     strSelectedCategoryPath += ") and ";
                 }
@@ -277,17 +279,18 @@ namespace Chummer
                 }
             }
 
-            XmlNode objXmlGearNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strParent + "\"]");
-
             foreach (XmlNode objXmlGear in objXmlGearList)
             {
                 if (objXmlGear["hide"] != null)
                     continue;
 
+                if (objXmlGear["requireparent"] != null && _objParentNode == null)
+                    continue;
+
                 if (objXmlGear["forbidden"]?["geardetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (objXmlGearNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+                    if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
                     {
                         continue;
                     }
@@ -295,7 +298,7 @@ namespace Chummer
                 if (objXmlGear["required"]?["geardetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!objXmlGearNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+                    if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
                     {
                         continue;
                     }
@@ -372,11 +375,11 @@ namespace Chummer
                         {
                             if (index == 0)
                             {
-                                strSelectedCategoryPath = $"(category = \"{strAllowed[index]}\"";
+                                strSelectedCategoryPath = $"category = \"{strAllowed[index]}\"";
                             }
                             string strAllowedMount = strAllowed[index];
                             if (!string.IsNullOrEmpty(strAllowedMount))
-                                strSelectedCategoryPath += $"or category = \"{strAllowed[index]}\"";
+                                strSelectedCategoryPath += $" or category = \"{strAllowed[index]}\"";
                         }
                         strSelectedCategoryPath = " and (" + strSelectedCategoryPath + ")";
                     }
@@ -449,36 +452,42 @@ namespace Chummer
 
             string strCategoryFilter = string.Empty;
 
-            if (!string.IsNullOrEmpty(_strAllowedCategories))
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            {
+                strCategoryFilter = "and category = \"" + cboCategory.SelectedValue.ToString() + "\"";
+            }
+            else if (!string.IsNullOrEmpty(_strAllowedCategories))
             {
                 string[] strAllowed = _strAllowedCategories.Split(',');
                 for (int index = 0; index < strAllowed.Length; index++)
                 {
                     if (index == 0)
                     {
-                        strCategoryFilter = $"and category = \"{strAllowed[index]}\"";
+                        strCategoryFilter = $"category = \"{strAllowed[index]}\"";
                     }
                     string strAllowedMount = strAllowed[index];
                     if (!string.IsNullOrEmpty(strAllowedMount))
-                        strCategoryFilter += $"or category = \"{strAllowed[index]}\"";
+                        strCategoryFilter += $" or category = \"{strAllowed[index]}\"";
                 }
+                strCategoryFilter = " and (" + strCategoryFilter + ")";
             }
 
             // Treat everything as being uppercase so the search is case-insensitive.
             string strSearch = $"/chummer/gears/gear[({_objCharacter.Options.BookXPath()}) {strCategoryFilter} and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"{txtSearch.Text.ToUpper()}\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"{txtSearch.Text.ToUpper()}\"))]";
 
             XmlNodeList objXmlGearList = _objXmlDocument.SelectNodes(strSearch);
-            XmlNode objXmlGearNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strParent + "\"]");
             List<ListItem> lstGears = new List<ListItem>();
             bool blnAddToList;
             foreach (XmlNode objXmlGear in objXmlGearList)
             {
                 if (objXmlGear["hide"] != null)
                     continue;
+                if (objXmlGear["requireparent"] != null && _objParentNode == null)
+                    continue;
                 if (objXmlGear["forbidden"]?["geardetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (objXmlGearNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+                    if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
                     {
                         continue;
                     }
@@ -486,7 +495,7 @@ namespace Chummer
                 if (objXmlGear["required"]?["geardetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!objXmlGearNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+                    if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
                     {
                         continue;
                     }
@@ -648,17 +657,6 @@ namespace Chummer
             get
             {
                 return _blnAddAgain;
-            }
-        }
-
-        /// <summary>
-        /// Commlink's Response which will determine the highest Response Upgrade available.
-        /// </summary>
-        public int CommlinkResponse
-        {
-            set
-            {
-                _intMaxResponse = value + 2;
             }
         }
 
@@ -932,11 +930,11 @@ namespace Chummer
                             {
                                 if (index == 0)
                                 {
-                                    strSelectedCategoryPath = $"(category = \"{strAllowed[index]}\"";
+                                    strSelectedCategoryPath = $"category = \"{strAllowed[index]}\"";
                                 }
                                 string strAllowedMount = strAllowed[index];
                                 if (!string.IsNullOrEmpty(strAllowedMount))
-                                    strSelectedCategoryPath += $"or category = \"{strAllowed[index]}\"";
+                                    strSelectedCategoryPath += $" or category = \"{strAllowed[index]}\"";
                             }
                             strSelectedCategoryPath = " and (" + strSelectedCategoryPath + ")";
                         }
@@ -958,21 +956,10 @@ namespace Chummer
                 else
                     chkInherentProgram.Visible = false;
 
-                switch (objXmlGear["category"].InnerText)
-                {
-                    case "Commlinks":
-                    case "Cyberdecks":
-                    case "Commlink Upgrade":
-                        lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
-                        break;
-                    case "Commlink Operating System":
-                    case "Commlink Operating System Upgrade":
-                        lblGearDeviceRating.Text = string.Empty;
-                        break;
-                    default:
-                        lblGearDeviceRating.Text = string.Empty;
-                        break;
-                }
+                if (objXmlGear["devicerating"] != null)
+                    lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
+                else
+                    lblGearDeviceRating.Text = string.Empty;
 
                 /*if (objXmlGear["category"].InnerText.EndsWith("Software") || objXmlGear["category"].InnerText.EndsWith("Programs") || objXmlGear["category"].InnerText == "Program Options" || objXmlGear["category"].InnerText.StartsWith("Autosofts") || objXmlGear["category"].InnerText.StartsWith("Skillsoft") || objXmlGear["category"].InnerText == "Program Packages" || objXmlGear["category"].InnerText == "Software Suites")
                     chkHacked.Visible = true;
@@ -1317,7 +1304,7 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstGear.Text))
             {
-                XmlNode objNode;
+                XmlNode objNode = null;
 
                 if (lstGear.SelectedValue.ToString().Contains('^'))
                 {
@@ -1327,8 +1314,10 @@ namespace Chummer
                     string strCategory = lstGear.SelectedValue.ToString().Substring(intIndexOf + 1, lstGear.SelectedValue.ToString().Length - intIndexOf - 1);
                     objNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + strValue + "\" and category = \"" + strCategory + "\"]");
                 }
-                else
+                else if (cboCategory.SelectedValue?.ToString() != "Show All")
                     objNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + lstGear.SelectedValue + "\" and category = \"" + cboCategory.SelectedValue + "\"]");
+                else
+                    objNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + lstGear.SelectedValue + "\"]");
 
                 _strSelectedGear = objNode["name"].InnerText;
                 _strSelectedCategory = objNode["category"].InnerText;

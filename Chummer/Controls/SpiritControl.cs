@@ -779,9 +779,6 @@ namespace Chummer
                 List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                 objGear.Create(objXmlGearItem, objCharacter, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                 objGear.Cost = "0";
-                objGear.Cost3 = "0";
-                objGear.Cost6 = "0";
-                objGear.Cost10 = "0";
                 objCharacter.Gear.Add(objGear);
             }
 
@@ -793,6 +790,7 @@ namespace Chummer
                 TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
             }
 

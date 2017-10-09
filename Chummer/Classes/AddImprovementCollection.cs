@@ -2311,6 +2311,46 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // Check for Non-Retroactive Bioware Essence Cost modifiers that stack additively with base modifiers like grade.
+        public void biowareessmultipliernonretroactive(XmlNode bonusNode)
+        {
+            Log.Info("biowareessmultiplier");
+            Log.Info("biowareessmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Non-Retroactive Bioware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
+        public void biowaretotalessmultipliernonretroactive(XmlNode bonusNode)
+        {
+            Log.Info("biowaretotalessmultiplier");
+            Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Non-Retroactive Cybeware Essence Cost modifiers that stack additively with base modifiers like grade.
+        public void cyberwareessmultipliernonretroactive(XmlNode bonusNode)
+        {
+            Log.Info("cyberwareessmultiplier");
+            Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Non-Retroactive Cyberware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
+        public void cyberwaretotalessmultipliernonretroactive(XmlNode bonusNode)
+        {
+            Log.Info("cyberwaretotalessmultiplier");
+            Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Uneducated modifiers.
         public void uneducated(XmlNode bonusNode)
         {

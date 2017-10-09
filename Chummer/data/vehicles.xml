@@ -40,7 +40,6 @@
     <category>Drones: Missile</category>
   </categories>
   <modcategories>
-    <category>All</category>
     <category>Body</category>
     <category>Cosmetic</category>
     <category>Electromagnetic</category>
@@ -9525,7 +9524,7 @@
       <name>Pilot Program (Drone)</name>
       <page>126</page>
       <source>R5</source>
-      <avail>FixedValues(4,0,8R,12R,16F,24F</avail>
+      <avail>FixedValues(4,0,8R,12R,16F,24F)</avail>
       <category>All</category>
       <cost>FixedValues(100,400,1800,3200,10000,20000)</cost>
       <rating>6</rating>

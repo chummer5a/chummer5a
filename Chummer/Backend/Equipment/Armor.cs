@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A specific piece of Armor.
     /// </summary>
-    public class Armor : INamedItemWithGuid
+    public class Armor : INamedItemWithGuidAndNode
     {
         private Guid _sourceID = new Guid();
         private Guid _guiID = new Guid();
@@ -81,14 +81,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
-                XmlNode objArmorNode = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
+                XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
                 {
                     objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
@@ -331,6 +331,7 @@ namespace Chummer.Backend.Equipment
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objGearWeapon = new Weapon(_objCharacter);
                     objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
+                    objGearWeapon.ParentID = InternalId;
                     objWeapons.Add(objGearWeapon);
 
                     _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
@@ -428,8 +429,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (objNode["sourceid"] == null)
             {
-                XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
-                XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
+                XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
                 {
                     _sourceID = Guid.Parse(objArmorNode["id"].InnerText);
@@ -496,14 +496,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
-                XmlNode objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + _strName + "\"]");
+                XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
                 {
                     objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
                 objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
@@ -1425,6 +1425,14 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _strArmorName = value;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("armor.xml")?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
             }
         }
         #endregion

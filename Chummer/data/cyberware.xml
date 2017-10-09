@@ -239,6 +239,15 @@
       <page>452</page>
       <minrating>1</minrating>
       <rating>3</rating>
+	  <gears>
+		<usegear>
+          <name>Sim Module, Hot</name>
+		  <category>Commlink Accessories</category>
+        </usegear>
+	  </gears>
+	  <subsystems>
+        <subsystem>Datajack</subsystem>
+      </subsystems>
     </cyberware>
     <cyberware>
       <id>56e37c9d-9191-4f19-a733-33580888a560</id>
@@ -295,6 +304,12 @@
       <capacity>0</capacity>
       <avail>2</avail>
       <cost>1000</cost>
+	  <gears>
+		<usegear>
+          <name>Universal Connector Cord (Meter)</name>
+		  <category>Tools</category>
+        </usegear>
+	  </gears>
       <source>SR5</source>
       <page>452</page>
     </cyberware>
@@ -3399,6 +3414,9 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>151</page>
+	  <bonus>
+        <armor group="0">Rating</armor>
+      </bonus>
       <rating>6</rating>
     </cyberware>
     <!-- End Region -->

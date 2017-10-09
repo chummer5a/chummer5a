@@ -706,22 +706,16 @@ namespace Chummer.Backend.Shared_Methods
         public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, bool blnHide, int intRating = 0,
             int intAvailModifier = 0, bool blnAddToList = true)
         {
+            if (objXmlGear == null)
+                return false;
             XmlDocument objXmlDocument = new XmlDocument();
             //TODO: Better handler for restricted gear
             if (!blnHide || objCharacter.Created || objCharacter.RestrictedGear ||
                 objCharacter.IgnoreRules || !blnAddToList) return blnAddToList;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strAvailExpr = string.Empty;
+            string strAvailExpr = objXmlGear["avail"]?.InnerText ?? string.Empty;
             string strPrefix = string.Empty;
-            if (objXmlGear["avail"] != null)
-                strAvailExpr = objXmlGear["avail"].InnerText;
-            if (intRating <= 3 && objXmlGear["avail3"] != null)
-                strAvailExpr = objXmlGear["avail3"].InnerText;
-            else if (intRating <= 6 && objXmlGear["avail6"] != null)
-                strAvailExpr = objXmlGear["avail6"].InnerText;
-            else if (intRating >= 7 && objXmlGear["avail10"] != null)
-                strAvailExpr = objXmlGear["avail10"].InnerText;
             if (strAvailExpr.StartsWith("FixedValues"))
             {
                 var strValues = strAvailExpr.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
