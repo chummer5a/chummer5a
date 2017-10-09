@@ -109,6 +109,8 @@ Application Changes:
 - Increased the size of the Rating box in SelectGear to accommodate larger ratings e.g. that credsticks might have.
 - Fixed a bug where selecting the "All" category in the form to select vehicle mods did not adhere to the category limit selection if one was set.
 - Fixed the "Hide Items Over Avail Limit" option on the vehicle mods selection screen so that it actually hides mods that are over the availability limit when checked.
+- Fixed a bug where having a positive essence score of less than 0.01 (in case the number of essence decimal places is set to 3 or greater) would mark the character as invalid for career mode. Fixes #1951.
+- Removed the piece of code that selected all text in Translator's search box whenever focus was gained to it. Fixes #1945.
 
 Data Changes:
 

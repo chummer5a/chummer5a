@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -310,7 +310,7 @@ namespace Translator
         }
         private void txtSearch_GotFocus(object sender, EventArgs e)
         {
-            txtSearch.SelectAll();
+            //txtSearch.SelectAll();
         }
 
         private void txtSearch_KeyPressed(object sender, KeyPressEventArgs e)

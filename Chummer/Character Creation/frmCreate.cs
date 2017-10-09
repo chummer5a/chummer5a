@@ -17521,11 +17521,12 @@ namespace Chummer
             }
 
             // Check if the character's Essence is above 0.
-            decimal decEss = _objCharacter.Essence;
-            if (decEss < 0.01m && _objCharacter.ESS.MetatypeMaximum > 0)
+            double dblEss = Convert.ToDouble(_objCharacter.Essence);
+            double dblMinEss = Math.Pow(10.0, -_objCharacter.Options.EssenceDecimals);
+            if (dblEss < dblMinEss && _objCharacter.ESS.MetatypeMaximum > 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidEssenceExcess").Replace("{0}", ((decEss - 0.01m) * -1).ToString(GlobalOptions.CultureInfo));
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidEssenceExcess").Replace("{0}", ((dblEss - dblMinEss) * -1).ToString(GlobalOptions.CultureInfo));
             }
 
             // If the character has Magician enabled, make sure a Tradition has been selected.
