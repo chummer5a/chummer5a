@@ -114,6 +114,8 @@ Application Changes:
 - Added Bubble Die option to dice roller that fixes glitch chances on even-numbered dicepools. When rolling an even-numbered dicepool with it enabled, an extra, "bubble" die is rolled for the purposes of determining whether the test glitches or not. This causes glitch chances for even-numbered pools are no longer be ridiculously low: pools of 0 have the same glitch chances as pools of 1, pools of 2 have the same glitch chances as pools of 3, so on.
 - Corrected the code that calculates weapon dicepool for drones in Career mode. Also added identical functionality to Create mode.
 - Corrected a bug where re-rolling failures in the dice roller would ignore the "rush job" checkbox.
+- Corrected a bug where the dice roller determined glitches to occur when at least half of the dicepool are 1s (RAW requires more than half of the dicepool to be 1s).
+- Upgraded the random number generator used for dice rolling from a Linear Congruential RNG to a Mersenne Twister RNG. This should drastically reduce the "patterns" one might see in random results, as those "patterns" come about as a result of the very low quality of randomness of Linear Congruential RNGs.
 
 Data Changes:
 

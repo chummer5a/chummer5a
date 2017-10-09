@@ -98,9 +98,10 @@ namespace Chummer
         /// <param name="e"></param>
         private void btnOK_Click(object sender, EventArgs e)
         {
+            Random objRandom = MersenneTwister.SfmtRandom.Create();
             if (_character != null)
             {
-                _character.InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue;
+                _character.InitRoll = chkAutoRollInit.Checked ? objRandom.Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue;
                 _character.InitialInit = (int)nudInitStart.Value;
                 _character.Delayed = false;
                 _character.InitPasses = (int)nudInit.Value;
@@ -111,7 +112,7 @@ namespace Chummer
                 {
                     Name = txtName.Text,
                     InitPasses = (int)nudInit.Value,
-                    InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue,
+                    InitRoll = chkAutoRollInit.Checked ? objRandom.Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue,
                     Delayed = false,
                     InitialInit = (int)nudInitStart.Value
                 };

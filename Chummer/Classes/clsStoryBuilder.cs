@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ namespace Chummer
     {
         private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
         private Character _objCharacter;
-        Random random = new Random();
+        Random random = MersenneTwister.SfmtRandom.Create();
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter;

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ namespace Chummer
                 {
                     if (cboBaseLifestyle.SelectedValue.ToString() == "Traveler")
                     {
-                        Random rndTavelerLp = new Random();
+                        Random rndTavelerLp = MersenneTwister.SfmtRandom.Create();
                         _intTravelerRdmLP = rndTavelerLp.Next(1, 7);
                     }
                     //Characters with the Trust Fund Quality can have the lifestyle discounted.

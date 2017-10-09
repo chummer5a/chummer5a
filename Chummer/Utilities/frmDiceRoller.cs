@@ -26,6 +26,7 @@ namespace Chummer
     public partial class frmDiceRoller : Form
     {
         private readonly frmMain _frmMain;
+        private List<ListItem> _lstResults = new List<ListItem>(40);
 
         #region Control Events
         public frmDiceRoller(frmMain frmMainForm, List<Quality> lstQualities = null, int intDice = 1)
@@ -69,14 +70,14 @@ namespace Chummer
 
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
-            Random objRandom = new Random();
+            Random objRandom = MersenneTwister.SfmtRandom.Create();
             List<int> lstRandom = new List<int>();
             int intHitCount = 0;
             int intGlitchCount = 0;
             int intGlitchThreshold = 0;
             int intGlitchMin = 1;
 
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling(nudDice.Value / 2.0m));
+            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -104,10 +105,11 @@ namespace Chummer
                 }
             }
 
-            lstResults.Items.Clear();
+            _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                lstResults.Items.Add(intResult);
+                ListItem objBubbleDieItem = new ListItem(intResult.ToString(), intResult.ToString());
+                _lstResults.Add(objBubbleDieItem);
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -137,7 +139,7 @@ namespace Chummer
             {
                 int intBubbleDieResult = objRandom.Next(1, 7);
                 ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.Instance.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
-                lstResults.Items.Add(objBubbleDieItem);
+                _lstResults.Add(objBubbleDieItem);
                 if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intBubbleDieResult <= intGlitchMin)
@@ -175,6 +177,12 @@ namespace Chummer
                 else
                     lblResults.Text += LanguageManager.Instance.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
             }
+            lstResults.BeginUpdate();
+            lstResults.DataSource = null;
+            lstResults.ValueMember = "Value";
+            lstResults.DisplayMember = "Name";
+            lstResults.DataSource = _lstResults;
+            lstResults.EndUpdate();
         }
 
         private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -204,20 +212,23 @@ namespace Chummer
                     intKeepThreshold = 4;
             }
 
-            List<int> lstHits = new List<int>();
-            foreach (int intResult in lstResults.Items)
+            // Remove everything that is not a hit
+            for(int i = _lstResults.Count - 1; i >= 0; --i)
             {
-                if (intResult >= intKeepThreshold)
-                    lstHits.Add(intResult);
+                int intResult = 0;
+                if (!int.TryParse(_lstResults[i].Value, out intResult) || intResult < intKeepThreshold)
+                {
+                    _lstResults.RemoveAt(i);
+                }
             }
 
             Random objRandom = new Random();
             List<int> lstRandom = new List<int>();
-            int intHitCount = lstHits.Count;
+            int intHitCount = _lstResults.Count;
             int intGlitchCount = 0;
             int intGlitchThreshold = 0;
 
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling(nudDice.Value / 2.0m));
+            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -228,13 +239,7 @@ namespace Chummer
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
 
-            lstResults.Items.Clear();
-
-            // Add any kept Hits back.
-            foreach (int intResult in lstHits)
-                lstResults.Items.Add(intResult);
-
-            for (int intCounter = 1; intCounter <= nudDice.Value - lstHits.Count; intCounter++)
+            for (int intCounter = 1; intCounter <= nudDice.Value - intHitCount; intCounter++)
             {
                 if (chkRuleOf6.Checked)
                 {
@@ -254,7 +259,8 @@ namespace Chummer
 
             foreach (int intResult in lstRandom)
             {
-                lstResults.Items.Add(intResult);
+                ListItem objBubbleDieItem = new ListItem(intResult.ToString(), intResult.ToString());
+                _lstResults.Add(objBubbleDieItem);
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -284,7 +290,7 @@ namespace Chummer
             {
                 int intBubbleDieResult = objRandom.Next(1, 7);
                 ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.Instance.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
-                lstResults.Items.Add(objBubbleDieItem);
+                _lstResults.Add(objBubbleDieItem);
                 if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intBubbleDieResult <= intGlitchMin)
@@ -322,6 +328,12 @@ namespace Chummer
                 else
                     lblResults.Text += LanguageManager.Instance.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
             }
+            lstResults.BeginUpdate();
+            lstResults.DataSource = null;
+            lstResults.ValueMember = "Value";
+            lstResults.DisplayMember = "Name";
+            lstResults.DataSource = _lstResults;
+            lstResults.EndUpdate();
         }
         #endregion
 
