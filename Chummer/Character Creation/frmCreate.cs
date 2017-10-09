@@ -16513,12 +16513,16 @@ namespace Chummer
                     {
                         // Look for the selected Vehicle Weapon.
                         Weapon objWeapon = new Weapon(_objCharacter);
+                        Vehicle objCurrentVehicle = null;
 
                         foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                         {
                             objWeapon = CommonFunctions.DeepFindById(treVehicles.SelectedNode.Tag.ToString(), objVehicle.Weapons);
                             if (objWeapon != null)
+                            {
+                                objCurrentVehicle = objVehicle;
                                 break;
+                            }
                         }
 
                         nudVehicleRating.Enabled = false;
@@ -16559,6 +16563,23 @@ namespace Chummer
                         _blnSkipRefresh = true;
                         _blnSkipRefresh = false;
                         tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+
+                        // Determine the Dice Pool size.
+                        int intPilot = objCurrentVehicle.Pilot;
+                        int intAutosoft = 0;
+                        foreach (Gear objAutosoft in objCurrentVehicle.Gear)
+                        {
+                            if (objAutosoft.Extra == objWeapon.DisplayCategory && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
+                            {
+                                if (objAutosoft.Rating > intAutosoft)
+                                {
+                                    intAutosoft = objAutosoft.Rating;
+                                }
+                            }
+                        }
+                        if (intAutosoft == 0)
+                            intPilot -= 1;
+                        lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
                     }
                 }
                 if (blnVehicleMod)
@@ -16705,6 +16726,23 @@ namespace Chummer
                         _blnSkipRefresh = true;
                         _blnSkipRefresh = false;
                         tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+
+                        // Determine the Dice Pool size.
+                        int intPilot = objSelectedVehicle.Pilot;
+                        int intAutosoft = 0;
+                        foreach (Gear objAutosoft in objSelectedVehicle.Gear)
+                        {
+                            if (objAutosoft.Extra == objWeapon.DisplayCategory && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
+                            {
+                                if (objAutosoft.Rating > intAutosoft)
+                                {
+                                    intAutosoft = objAutosoft.Rating;
+                                }
+                            }
+                        }
+                        if (intAutosoft == 0)
+                            intPilot -= 1;
+                        lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
                     }
                     else
                     {
@@ -16980,6 +17018,23 @@ namespace Chummer
                         chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
                         _blnSkipRefresh = false;
                         tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+
+                        // Determine the Dice Pool size.
+                        int intPilot = objFoundVehicle.Pilot;
+                        int intAutosoft = 0;
+                        foreach (Gear objAutosoft in objFoundVehicle.Gear)
+                        {
+                            if (objAutosoft.Extra == objWeapon.DisplayCategory && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
+                            {
+                                if (objAutosoft.Rating > intAutosoft)
+                                {
+                                    intAutosoft = objAutosoft.Rating;
+                                }
+                            }
+                        }
+                        if (intAutosoft == 0)
+                            intPilot -= 1;
+                        lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
                     }
                 }
             }

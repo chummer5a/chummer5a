@@ -23260,20 +23260,13 @@ namespace Chummer
                         // Determine the Dice Pool size.
                         int intPilot = objCurrentVehicle.Pilot;
                         int intAutosoft = 0;
-                        bool blnAutosoftFound = false;
                         foreach (Gear objAutosoft in objCurrentVehicle.Gear)
                         {
-                            if (objAutosoft.Category.StartsWith("Autosofts") && objAutosoft.Name == "Targeting")
+                            if (objAutosoft.Extra == objWeapon.DisplayCategory && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
                             {
-                                if (!blnAutosoftFound)
+                                if (objAutosoft.Rating > intAutosoft)
                                 {
-                                    if (objAutosoft.Rating > intAutosoft)
-                                        intAutosoft = objAutosoft.Rating;
-                                    if (objAutosoft.Extra == objWeapon.DisplayCategory)
-                                    {
-                                        intAutosoft = objAutosoft.Rating;
-                                        blnAutosoftFound = true;
-                                    }
+                                    intAutosoft = objAutosoft.Rating;
                                 }
                             }
                         }
@@ -23470,20 +23463,13 @@ namespace Chummer
                         // Determine the Dice Pool size.
                         int intPilot = objCurrentVehicle.Pilot;
                         int intAutosoft = 0;
-                        bool blnAutosoftFound = false;
                         foreach (Gear objAutosoft in objCurrentVehicle.Gear)
                         {
-                            if (objAutosoft.Category.StartsWith("Autosofts") && objAutosoft.Name == "Targeting")
+                            if (objAutosoft.Extra == objWeapon.DisplayCategory && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
                             {
-                                if (!blnAutosoftFound)
+                                if (objAutosoft.Rating > intAutosoft)
                                 {
-                                    if (objAutosoft.Rating > intAutosoft)
-                                        intAutosoft = objAutosoft.Rating;
-                                    if (objAutosoft.Extra == objWeapon.DisplayCategory)
-                                    {
-                                        intAutosoft = objAutosoft.Rating;
-                                        blnAutosoftFound = true;
-                                    }
+                                    intAutosoft = objAutosoft.Rating;
                                 }
                             }
                         }
@@ -23795,27 +23781,20 @@ namespace Chummer
                             // Determine the Dice Pool size.
                             int intPilot = objCurrentVehicle.Pilot;
                             int intAutosoft = 0;
-                            bool blnAutosoftFound = false;
-                            foreach (Gear objAutosoft in objCurrentVehicle.Gear)
+                        foreach (Gear objAutosoft in objCurrentVehicle.Gear)
+                        {
+                            if (objAutosoft.Extra == objWeapon.DisplayCategory && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
                             {
-                                if (objAutosoft.Category.StartsWith("Autosofts") && objAutosoft.Name == "Targeting")
+                                if (objAutosoft.Rating > intAutosoft)
                                 {
-                                    if (!blnAutosoftFound)
-                                    {
-                                        if (objAutosoft.Rating > intAutosoft)
-                                            intAutosoft = objAutosoft.Rating;
-                                        if (objAutosoft.Extra == objWeapon.DisplayCategory)
-                                        {
-                                            intAutosoft = objAutosoft.Rating;
-                                            blnAutosoftFound = true;
-                                        }
-                                    }
+                                    intAutosoft = objAutosoft.Rating;
                                 }
                             }
-                            if (intAutosoft == 0)
-                                intPilot -= 1;
-                            lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
                         }
+                        if (intAutosoft == 0)
+                            intPilot -= 1;
+                        lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
+                    }
                 }
             }
             else if (treVehicles.SelectedNode.Level == 5)

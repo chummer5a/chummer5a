@@ -111,6 +111,9 @@ Application Changes:
 - Fixed the "Hide Items Over Avail Limit" option on the vehicle mods selection screen so that it actually hides mods that are over the availability limit when checked.
 - Fixed a bug where having a positive essence score of less than 0.01 (in case the number of essence decimal places is set to 3 or greater) would mark the character as invalid for career mode. Fixes #1951.
 - Removed the piece of code that selected all text in Translator's search box whenever focus was gained to it. Fixes #1945.
+- Added Bubble Die option to dice roller that fixes glitch chances on even-numbered dicepools. When rolling an even-numbered dicepool with it enabled, an extra, "bubble" die is rolled for the purposes of determining whether the test glitches or not. This causes glitch chances for even-numbered pools are no longer be ridiculously low: pools of 0 have the same glitch chances as pools of 1, pools of 2 have the same glitch chances as pools of 3, so on.
+- Corrected the code that calculates weapon dicepool for drones in Career mode. Also added identical functionality to Create mode.
+- Corrected a bug where re-rolling failures in the dice roller would ignore the "rush job" checkbox.
 
 Data Changes:
 
@@ -222,6 +225,8 @@ New Strings:
 - String_ShowAll
 - Checkbox_ShowOnlyAffordItems
 - Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills
+- Checkbox_DiceRoller_BubbleDie
+- String_BubbleDie
 
 Changes Strings:
 - Message_PositiveQualityLimit

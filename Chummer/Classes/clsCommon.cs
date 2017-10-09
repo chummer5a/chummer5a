@@ -118,6 +118,36 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Locate an object (Needle) within a list and its children (Haystack) based on name match and non-zero guid.
+        /// </summary>
+        /// <param name="strName">Name of the Needle to Find.</param>
+        /// <param name="lstHaystack">Haystack to search.</param>
+        public static T DeepFindByName<T>(string strName, List<T> lstHaystack) where T : INamedParentWithGuid<T>
+        {
+            if (!string.IsNullOrEmpty(strName))
+            {
+                T objNeedle;
+                foreach (T objLoop in lstHaystack)
+                {
+                    if (objLoop.Name == strName)
+                    {
+                        objNeedle = objLoop;
+                        if (objNeedle.InternalId != Guid.Empty.ToString())
+                            return objNeedle;
+                    }
+                    if (objLoop.Children.Count > 0)
+                    {
+                        objNeedle = DeepFindByName(strName, objLoop.Children);
+                        if (objNeedle.InternalId != Guid.Empty.ToString())
+                            return objNeedle;
+                    }
+                }
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
         /// Locate a Commlink.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>

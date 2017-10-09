@@ -5713,6 +5713,14 @@ Do you want to continue?</text>
       <key>Checkbox_DiceRoller_RushedJob</key>
       <text>Rushed Job (Glitch on 1 or 2)</text>
     </string>
+	<string>
+      <key>Checkbox_DiceRoller_BubbleDie</key>
+      <text>Bubble Die (Fix Even Dicepool Glitch Chances)</text>
+    </string>
+	<string>
+	  <key>String_BubbleDie</key>
+	  <text>Only for Glitching:</text>
+	</string>
     <string>
       <key>Label_DiceRoller_Result</key>
       <text>Result:</text>
