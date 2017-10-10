@@ -587,7 +587,7 @@ namespace Chummer
                 return true;
             }
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
-            else if (objAmendingNode.Attributes?["addifnotfound"]?.InnerText == "yes")
+            else if (objAmendingNode.Attributes?["addifnotfound"]?.InnerText != "no")
             {
                 return objDoc.SelectSingleNode(strXPath)?.AppendChild(objDoc.ImportNode(objAmendingNode, true)) != null;
             }
