@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -309,8 +309,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
                 {
                     _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
                 }
+            }
+            else if (!string.IsNullOrEmpty(strForceValue))
+            {
+                _strExtra = strForceValue;
             }
 
             // Metatype Qualities appear as grey text to show that they cannot be removed.
@@ -5051,8 +5054,6 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return strReturn;
                 var objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
