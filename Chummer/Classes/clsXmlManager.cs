@@ -519,7 +519,7 @@ namespace Chummer
                     }
                 }
             }
-            if (objNodeToEdit != null && (blnHasIdentifier || objAmendingNode.Attributes?["remove"]?.InnerText == "yes"))
+            if (objNodeToEdit != null && (blnHasIdentifier || objAmendingNode.HasChildNodes || objAmendingNode.Attributes?["remove"]?.InnerText == "yes"))
             {
                 // If the old node exists and the amending node has the attribute 'remove="yes"', then the old node is completely erased.
                 if (objAmendingNode.Attributes?["remove"]?.InnerText == "yes")
