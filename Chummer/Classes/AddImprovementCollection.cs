@@ -2960,6 +2960,28 @@ namespace Chummer.Classes
                 "disablecyberware");
         }
 
+        // Check for bonus that removes access to certain bioware grades (e.g. Cyber-Snob)
+        public void disablebiowaregrade(XmlNode bonusNode)
+        {
+            Log.Info("disablebiowaregrade");
+            Log.Info("disablebiowaregrade = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            string strGradeName = bonusNode.InnerText;
+            CreateImprovement(strGradeName, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableBiowareGrade,
+                "disablebiowaregrade");
+        }
+
+        // Check for bonus that removes access to certain cyberware grades (e.g. Regeneration critter power).
+        public void disablecyberwaregrade(XmlNode bonusNode)
+        {
+            Log.Info("disablecyberwaregrade");
+            Log.Info("disablecyberwaregrade = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            string strGradeName = bonusNode.InnerText;
+            CreateImprovement(strGradeName, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableCyberwareGrade,
+                "disablecyberwaregrade");
+        }
+
         // Check for Movement Percent.
         public void movementmultiplier(XmlNode bonusNode)
         {

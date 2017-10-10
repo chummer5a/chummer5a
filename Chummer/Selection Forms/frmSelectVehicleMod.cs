@@ -65,7 +65,7 @@ namespace Chummer
         private void frmSelectVehicleMod_Load(object sender, EventArgs e)
         {
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.Options.Availability.ToString());
+                    _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             // Load the Mod information.
             _objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");

@@ -140,7 +140,9 @@
       </xs:complexType>
     </xs:element>
 	<xs:element name="disablebioware" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="erased" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="essencemax" type="xs:integer" minOccurs="0" maxOccurs="1" />
 	<xs:element name="essencepenalty" type="xs:integer" minOccurs="0" maxOccurs="1" />

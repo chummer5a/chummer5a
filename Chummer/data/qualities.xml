@@ -10597,7 +10597,23 @@
       <name>Cyber-snob</name>
       <karma>-12</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+		<disablecyberwaregrade>Standard</disablecyberwaregrade>
+		<disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
+		<disablecyberwaregrade>Used</disablecyberwaregrade>
+		<disablecyberwaregrade>Alphaware</disablecyberwaregrade>
+		<disablecyberwaregrade>Omegaware</disablecyberwaregrade>
+		<disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Alphaware (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
+		<disablebiowaregrade>Standard</disablebiowaregrade>
+		<disablebiowaregrade>Standard (Burnout's Way)</disablebiowaregrade>
+		<disablebiowaregrade>Used</disablebiowaregrade>
+		<disablebiowaregrade>Alphaware</disablebiowaregrade>
+		<disablebiowaregrade>Omegaware</disablebiowaregrade>
+	  </bonus>
       <required>
         <oneof>
           <ess grade="Betaware">1</ess>

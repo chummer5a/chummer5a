@@ -85,6 +85,8 @@ namespace Chummer
             SoftWeave,
             DisableBioware,
             DisableCyberware,
+            DisableBiowareGrade,
+            DisableCyberwareGrade,
             ConditionMonitor,
             UnarmedDVPhysical,
             MovementPercent,

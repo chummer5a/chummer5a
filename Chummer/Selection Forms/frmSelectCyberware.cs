@@ -93,7 +93,7 @@ namespace Chummer
             }
 
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.Options.Availability.ToString());
+                    _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
 
             chkPrototypeTranshuman.Visible =
@@ -168,6 +168,7 @@ namespace Chummer
 
             if (cboGrade.Enabled)
             {
+                _strSelectedGrade = cboGrade.SelectedValue.ToString();
                 lstCyberware.SelectedIndexChanged -= lstCyberware_SelectedIndexChanged;
                 string strSelected = lstCyberware.SelectedValue?.ToString() ?? string.Empty;
                 PopulateCategories();
@@ -192,41 +193,45 @@ namespace Chummer
 
         private void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
+            if (cboGrade.Enabled)
+                cboGrade.SelectedValue = _strSelectedGrade;
             cboGrade_SelectedIndexChanged(sender, e);
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             _strSelectCategory = cboCategory.SelectedValue.ToString();
-            if (_objMode == Mode.Bioware)
-            {
-                // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
-                if (cboGrade.SelectedValue != null)
-                {
-                    string strSelectedValue = cboGrade.SelectedValue.ToString();
-                    if (PopulateGrades(cboCategory.SelectedValue != null &&
-                        (cboCategory.SelectedValue.ToString().Contains("Cultured") || cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
-                        cboCategory.SelectedValue.ToString() == "Symbionts" || cboCategory.SelectedValue.ToString() == "Genemods")))
-                    {
-                        cboGrade.SelectedValue = strSelectedValue;
-                        if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
-                            cboGrade.SelectedIndex = 0;
-                    }
-                }
-            }
-
+            string strForceGrade = string.Empty;
             // Update the list of Cyberware based on the selected Category.
             if (cboCategory.SelectedValue?.ToString().StartsWith("Genetech:") == true ||
                 cboCategory.SelectedValue.ToString() == "Symbionts" ||
                 cboCategory.SelectedValue.ToString() == "Genemods")
             {
                 cboGrade.Enabled = false;
-                cboGrade.SelectedValue = "Standard";
+                strForceGrade = "Standard";
             }
             else
             {
                 cboGrade.Enabled = !_blnLockGrade;
+                if (_blnLockGrade)
+                    strForceGrade = cboGrade.SelectedValue.ToString();
             }
+            if (_objMode == Mode.Bioware)
+            {
+                // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
+                if (cboGrade.SelectedValue != null)
+                {
+                    if (PopulateGrades(cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString().Contains("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used"))), false, strForceGrade))
+                    {
+                        if (cboGrade.Enabled)
+                            cboGrade.SelectedValue = _strSelectedGrade;
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(strForceGrade))
+                cboGrade.SelectedValue = strForceGrade;
+            if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
+                cboGrade.SelectedIndex = 0;
             BuildCyberwareList();
         }
 
@@ -308,10 +313,11 @@ namespace Chummer
             }
 
             string category = objXmlCyberware["category"]?.InnerText ?? string.Empty;
+            string strForceGrade = string.Empty;
             if (objXmlCyberware["forcegrade"] != null)
             {
                 // Force the Cyberware to be a particular Grade.
-                cboGrade.SelectedValue = objXmlCyberware["forcegrade"].InnerText;
+                strForceGrade = objXmlCyberware["forcegrade"].InnerText;
                 cboGrade.Enabled = false;
             }
             else
@@ -321,11 +327,13 @@ namespace Chummer
                     category.StartsWith("Genemods"))
                 {
                     cboGrade.Enabled = false;
-                    cboGrade.SelectedValue = "Standard";
+                    strForceGrade = "Standard";
                 }
                 else
                 {
                     cboGrade.Enabled = !_blnLockGrade;
+                    if (_blnLockGrade)
+                        strForceGrade = cboGrade.SelectedValue.ToString();
                 }
             }
 
@@ -334,16 +342,17 @@ namespace Chummer
                 // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
                 if (cboGrade.SelectedValue != null)
                 {
-                    string strSelectedGradeValue = cboGrade.SelectedValue.ToString() ?? string.Empty;
-                    if (PopulateGrades(category.StartsWith("Cultured") || (!cboGrade.Enabled && cboGrade.SelectedValue?.ToString().Contains("Used") == false)))
+                    if (PopulateGrades(category.StartsWith("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used")), false, strForceGrade))
                     {
-                        cboGrade.SelectedValue = strSelectedGradeValue;
-                        if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
-                            cboGrade.SelectedIndex = 0;
+                        if (cboGrade.Enabled)
+                            cboGrade.SelectedValue = _strSelectedGrade;
                     }
                 }
             }
-
+            if (!string.IsNullOrEmpty(strForceGrade))
+                cboGrade.SelectedValue = strForceGrade;
+            if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
+                cboGrade.SelectedIndex = 0;
             string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText);
             string strPage = objXmlCyberware["page"].InnerText;
             if (objXmlCyberware["altpage"] != null)
@@ -1061,14 +1070,24 @@ namespace Chummer
                         continue;
                     if (!_blnShowOnlySubsystems && objXmlCyberware["ess"]?.InnerText == "0" && objXmlCyberware["capacity"]?.InnerText.Contains("[") == true)
                         continue;
-                    if (cboGrade.SelectedValue != null)
+                    if (!string.IsNullOrEmpty(_strSelectedGrade))
                     {
-                        if (objXmlCyberware["forcegrade"] != null && cboGrade.SelectedValue.ToString() != objXmlCyberware["forcegrade"].InnerText)
-                            continue;
-                        if (cboGrade.SelectedValue.ToString() != "Standard" && objXmlCyberware["category"] != null &&
+                        bool blnIgnoreDisable = false;
+                        if (objXmlCyberware["forcegrade"] != null)
+                        {
+                            if (_strSelectedGrade != objXmlCyberware["forcegrade"].InnerText)
+                                continue;
+                            else
+                                blnIgnoreDisable = true;
+                        }
+                        if (objXmlCyberware["category"] != null &&
                             (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
                             objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
                             objXmlCyberware["category"].InnerText.StartsWith("Genemods")))
+                        {
+                            blnIgnoreDisable = true;
+                        }
+                        if (!blnIgnoreDisable && _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && _strSelectedGrade.Contains(x.ImprovedName) && x.Enabled))
                             continue;
                     }
                     if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
@@ -1109,7 +1128,11 @@ namespace Chummer
 
             _strSelectCategory = objCyberwareNode["category"]?.InnerText;
             SelectedCyberware = objCyberwareNode["name"]?.InnerText;
-            if (_objMode == Mode.Bioware)
+            if (!string.IsNullOrEmpty(objCyberwareNode["forcegrade"]?.InnerText))
+            {
+                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(objCyberwareNode["forcegrade"].InnerText);
+            }
+            else if (_objMode == Mode.Bioware)
             {
                 if (cboCategory.SelectedValue?.ToString().StartsWith("Genetech:") == true ||
                     cboCategory.SelectedValue?.ToString() == "Symbionts" ||
@@ -1122,12 +1145,12 @@ namespace Chummer
                 }
                 else
                 {
-                    SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+                    SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(_strSelectedGrade);
                 }
             }
             else
             {
-                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(_strSelectedGrade);
             }
 
             _strSelectedGrade = SelectedGrade.ToString();
@@ -1179,7 +1202,7 @@ namespace Chummer
         /// Populate the list of Cyberware Grades, returns true if anything changed.
         /// </summary>
         /// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
-        private bool PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false)
+        private bool PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "")
         {
             if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand)
             {
@@ -1189,6 +1212,10 @@ namespace Chummer
                 _lstGrade.Clear();
                 foreach (Grade objGrade in objGradeList)
                 {
+                    if ((string.IsNullOrEmpty(strForceGrade) || objGrade.Name != strForceGrade) &&
+                    _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode == Mode.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                    && objGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                        continue;
                     if ((!_blnIgnoreSecondHand || !objGrade.SecondHand) &&
                         (_objCharacter.BurnoutEnabled || !objGrade.Burnout) &&
                         (!_objCharacter.BurnoutEnabled || objGrade.Name != "Standard") &&
@@ -1201,10 +1228,13 @@ namespace Chummer
                     }
                 }
                 cboGrade.BeginUpdate();
+                bool blnOldEnabled = cboGrade.Enabled;
+                cboGrade.Enabled = false;
                 cboGrade.DataSource = null;
                 cboGrade.DataSource = _lstGrade;
                 cboGrade.ValueMember = "Value";
                 cboGrade.DisplayMember = "Name";
+                cboGrade.Enabled = blnOldEnabled;
                 cboGrade.EndUpdate();
                 return true;
             }
@@ -1247,7 +1277,7 @@ namespace Chummer
                     else if (!_blnShowOnlySubsystems)
                         blnAddItem = blnAddItem && (objXmlCategory.InnerText == "Cyberlimb" || objXmlCategory.InnerText?.Contains("Cyberlimb") == false);
 
-                    if (cboGrade.SelectedValue != null && cboGrade.SelectedValue.ToString().Contains("Used"))
+                    if (!string.IsNullOrEmpty(_strSelectedGrade) && _strSelectedGrade.Contains("Used"))
                         blnAddItem = blnAddItem && !objXmlCategory.InnerText.Contains("Cultured");
 
                     if (blnAddItem)

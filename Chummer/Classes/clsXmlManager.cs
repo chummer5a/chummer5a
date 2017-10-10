@@ -519,7 +519,19 @@ namespace Chummer
                     }
                 }
             }
-            if (objNodeToEdit != null && (blnHasIdentifier || objAmendingNode.HasChildNodes || objAmendingNode.Attributes?["remove"]?.InnerText == "yes"))
+            bool blnHasElementChildren = false;
+            if (objAmendingNode.HasChildNodes)
+            {
+                foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                {
+                    if (objChild.NodeType == XmlNodeType.Element)
+                    {
+                        blnHasElementChildren = true;
+                        break;
+                    }
+                }
+            }
+            if (objNodeToEdit != null && (blnHasIdentifier || blnHasElementChildren || objAmendingNode.Attributes?["remove"]?.InnerText == "yes"))
             {
                 // If the old node exists and the amending node has the attribute 'remove="yes"', then the old node is completely erased.
                 if (objAmendingNode.Attributes?["remove"]?.InnerText == "yes")
@@ -528,18 +540,6 @@ namespace Chummer
                 }
                 else
                 {
-                    bool blnHasElementChildren = false;
-                    if (objAmendingNode.HasChildNodes)
-                    {
-                        foreach (XmlNode objChild in objAmendingNode.ChildNodes)
-                        {
-                            if (objChild.NodeType == XmlNodeType.Element)
-                            {
-                                blnHasElementChildren = true;
-                                break;
-                            }
-                        }
-                    }
                     // Attributes are the only thing that is overwritten completely
                     if (objNodeToEdit.Attributes != null && objAmendingNode.Attributes != null && objAmendingNode.Attributes.Count > 0)
                     {

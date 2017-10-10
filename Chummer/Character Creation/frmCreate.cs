@@ -817,23 +817,8 @@ namespace Chummer
 
             RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
 
-            // Load the Cyberware information.
-            objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
-
             // Populate the Grade list.
-            List<ListItem> lstCyberwareGrades = new List<ListItem>();
-            foreach (Grade objGrade in GlobalOptions.CyberwareGrades)
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objGrade.Name;
-                objItem.Name = objGrade.DisplayName;
-                lstCyberwareGrades.Add(objItem);
-            }
-            cboCyberwareGrade.BeginUpdate();
-            cboCyberwareGrade.ValueMember = "Value";
-            cboCyberwareGrade.DisplayMember = "Name";
-            cboCyberwareGrade.DataSource = lstCyberwareGrades;
-            cboCyberwareGrade.EndUpdate();
+            PopulateCyberwareGradeList();
 
             _blnLoading = false;
 
@@ -6230,6 +6215,7 @@ namespace Chummer
             treQualities.SortCustom();
             ScheduleCharacterUpdate();
             RefreshContacts();
+            RefreshSelectedCyberware();
             _blnIsDirty = true;
             UpdateWindowTitle();
 
@@ -6379,6 +6365,7 @@ namespace Chummer
             RefreshAIPrograms();
             RefreshLimitModifiers();
             RefreshContacts();
+            RefreshSelectedCyberware();
             RefreshSpells(treSpells, cmsSpell, _objCharacter);
             RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
             _blnIsDirty = true;
@@ -6617,6 +6604,7 @@ namespace Chummer
                 RefreshLimitModifiers();
                 RefreshSpells(treSpells, cmsSpell, _objCharacter);
                 RefreshContacts();
+                RefreshSelectedCyberware();
                 _blnIsDirty = true;
                 UpdateWindowTitle();
             }
@@ -10448,6 +10436,7 @@ namespace Chummer
                         RefreshAIPrograms();
                         RefreshLimitModifiers();
                         RefreshContacts();
+                        RefreshSelectedCyberware();
                         RefreshSpells(treSpells, cmsSpell, _objCharacter);
                         RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                         _blnIsDirty = true;
@@ -10476,6 +10465,7 @@ namespace Chummer
                         RefreshLimitModifiers();
                         RefreshSpells(treSpells, cmsSpell, _objCharacter);
                         RefreshContacts();
+                        RefreshSelectedCyberware();
                         _blnIsDirty = true;
                         UpdateWindowTitle();
                     }
@@ -14159,9 +14149,6 @@ namespace Chummer
                 bool blnIgnoreSecondHand = false;
                 if (objCyberware.Category == "Cultured")
                     blnIgnoreSecondHand = true;
-                PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand);
-
-                cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
 
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
                 if (objCyberware.Parent == null)
@@ -14175,7 +14162,11 @@ namespace Chummer
                 // Cyberware Grade is not available for Genetech items.
                 if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
+                PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
 
+                cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
+                if (cboCyberwareGrade.SelectedIndex == -1 && cboCyberwareGrade.Items.Count > 0)
+                    cboCyberwareGrade.SelectedIndex = 0;
                 if (objCyberware.Category.Equals("Cyberlimb") || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                 {
                     lblCyberlimbAGI.Visible = true;
@@ -17276,7 +17267,7 @@ namespace Chummer
         /// <summary>
         /// Add or remove the Adapsin Cyberware Grade categories.
         /// </summary>
-        public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false)
+        public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
             // Load the Cyberware information.
             GradeList objGradeList;
@@ -17289,18 +17280,22 @@ namespace Chummer
             foreach (Grade objWareGrade in objGradeList)
             {
                 bool blnAddItem = true;
-
-                ListItem objItem = new ListItem();
-                objItem.Value = objWareGrade.Name;
-                objItem.Name = objWareGrade.DisplayName;
-
-                if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                if ((string.IsNullOrEmpty(strForceGrade) || objWareGrade.Name != strForceGrade) &&
+                    _objCharacter.Improvements.Any(x => ((blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (!blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                    && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                     blnAddItem = false;
-                if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
+                else if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                    blnAddItem = false;
+                else if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
                     blnAddItem = false;
 
                 if (blnAddItem)
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objWareGrade.Name;
+                    objItem.Name = objWareGrade.DisplayName;
                     lstCyberwareGrades.Add(objItem);
+                }
             }
             cboCyberwareGrade.BeginUpdate();
             //cboCyberwareGrade.DataSource = null;

@@ -119,6 +119,8 @@ Application Changes:
 - Fixed a bug where adding an item (e.g. a quality or adept power) that grants critter powers will not cause those critter powers to be removed should the item be removed. Fixes #1953.
 - Fixed a bug that caused bonuses that increased a skill's rating to act the same way as bonuses to the skill's dicepool, e.g. karma costs would not increase and specializations could not be taken if the skill had no points or karma allocated to increasing its rating. Fixes #1743.
 - Fixed a bug that prevented knowledge skills from having their names translated when printed out to a character sheet. Fixes #1668.
+- Added set of improvements that can disable access to specific grades of bioware and cyberware. These limits are bypassed for all 'ware that forces a particular grade, so any restrictions in those cases need to be applied to the specific piece of 'ware in question.
+- Fixed the "Hide Items Over Avail Limit" checkbox so that it displays the availability limit of the character in parentheses instead of the default availability value.
 
 Data Changes:
 
@@ -194,6 +196,7 @@ Data Changes:
 - Smartskin properly provides armor based on its rating. Fixes #1949.
 - Fixed Ruthenium Polymer Cloak coming with capacity to add armor mods.
 - Fixed GTS Tower not coming with the Retrans Unit mentioned in its fluff description ("the Tower pulls double-duty as a retransmission drone").
+- Cyber-Snob now properly disallows buying any 'ware below Alphaware grade. Regeneration critter power now properly disables access to all bioware, as well as all cyberware below Deltaware grade.
 
 New Strings:
 - Label_Options_SpellShapingFocus
