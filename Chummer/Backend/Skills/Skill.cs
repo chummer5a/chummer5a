@@ -72,6 +72,7 @@ namespace Chummer.Skills
 
         public void Print(XmlTextWriter objWriter)
         {
+            KnowledgeSkill objSkillAsKnowledgeSkill = this as KnowledgeSkill;
             objWriter.WriteStartElement("skill");
 
             int rating = PoolOtherAttribute(AttributeObject.TotalValue);
@@ -84,7 +85,10 @@ namespace Chummer.Skills
 
             int ratingModifiers = RatingModifiers, dicePoolModifiers = PoolModifiers;
 
-            objWriter.WriteElementString("name", DisplayName);
+            if (objSkillAsKnowledgeSkill == null)
+                objWriter.WriteElementString("name", DisplayName);
+            else
+                objWriter.WriteElementString("name", objSkillAsKnowledgeSkill.WriteableName);
             objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.Instance.GetString("String_None"));
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.Instance.GetString("String_None"));
             objWriter.WriteElementString("skillcategory", DisplayCategory);

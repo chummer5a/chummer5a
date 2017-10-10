@@ -117,7 +117,8 @@ Application Changes:
 - Corrected a bug where the dice roller determined glitches to occur when at least half of the dicepool are 1s (RAW requires more than half of the dicepool to be 1s).
 - Upgraded the random number generator used for dice rolling from a Linear Congruential RNG to a Mersenne Twister RNG. This should drastically reduce the "patterns" one might see in random results, as those "patterns" come about as a result of the very low quality of randomness of Linear Congruential RNGs.
 - Fixed a bug where adding an item (e.g. a quality or adept power) that grants critter powers will not cause those critter powers to be removed should the item be removed. Fixes #1953.
-- Fixed a bug that caused bonuses that increased a skill's rating to act the same way as bonuses to the skill's dicepool, e.g. karma costs would not increase and specializations could not be taken if the skill had no points or karma allocated to increasing its rating.
+- Fixed a bug that caused bonuses that increased a skill's rating to act the same way as bonuses to the skill's dicepool, e.g. karma costs would not increase and specializations could not be taken if the skill had no points or karma allocated to increasing its rating. Fixes #1743.
+- Fixed a bug that prevented knowledge skills from having their names translated when printed out to a character sheet. Fixes #1668.
 
 Data Changes:
 
