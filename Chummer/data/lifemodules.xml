@@ -774,7 +774,7 @@
         </knowledgeskilllevel>
       </bonus>
       <source>RF</source>
-      <story>$real was born in the northern part of America, in the Native AMerican Nations</story>
+      <story>$real was born in the northern part of America, in the Native American Nations</story>
       <page>67</page>
     </module>
     <!-- End Region -->
@@ -8493,6 +8493,7 @@
                       <knowledgeskilllevel>
                           <name>Amazonian Rainforest</name>
                           <group>Street</group>
+						  <val>2</val>
                       </knowledgeskilllevel>
                       <knowledgeskilllevel>
                           <name>Flora</name>
@@ -8512,9 +8513,6 @@
               </version>
           </versions>
           <bonus>
-              <skilllevel>
-                  <name>Computer</name>
-              </skilllevel>
               <knowledgeskilllevel>
                   <name>Football</name>
                   <group>Interest</group>
@@ -8542,7 +8540,7 @@
                   <group>Language</group>
               </knowledgeskilllevel>
           </bonus>
-          <story />
+          <story>$real was born in eastern South America, in the country now known as Amazonia.</story>
           <source>SFME</source>
           <page>31</page>
       </module>      
@@ -8556,15 +8554,21 @@
           <a2>A is for Aztechnology</a2>
           <c>C is for Celedyr</c>
           <d>D is for Dunkelzahn</d>
+		  <d2>D is for DocWagon</d2>
           <e>E is for Evo</e>
           <h>H is for Horizon</h>
           <h2>H is for Hualpa</h2>
+		  <l>L is for Lofwyr</l>
+		  <l2>L is for LoneStar</l2>
           <m>M is for Mitsuhama</m>
-          <n>N is for Neonet</n>
+		  <m2>M is for Monobe</m2>
+          <n>N is for NeoNET</n>
+		  <p>P is for Proteus</p>
           <r>R is for Renraku</r>
           <s>S is for Saeder-Krupp</s>
           <s2>S is for Shiawase</s2>
           <w>W is for Wuxing</w>
+		  <z>Z is for Zurich-Orbital</z>
         </random>
       </alphabet>
       <sticky>
@@ -8584,7 +8588,7 @@
         <random>
           <corp>corporate board meetings</corp>
           <ppv>paid porn sites</ppv>
-        </random>.
+        </random>
       </matrixhide>
       <slave>
         <random>
@@ -8604,7 +8608,7 @@
       <shadowchild>
         <random>
           <gun>which end of a gun bullets come out of</gun>
-          <mage>why and how one geek mages</mage>
+          <mage>why and how one geeks mages</mage>
           <s1>how to shoot straight</s1>
           <s2>how to conserve ammo</s2>
           <s3>why one must never deal with a dragon</s3>
@@ -8627,7 +8631,7 @@
         <random>
           <nazi>one of two elf supremacist nations</nazi>
           <prop>a magical utopia founded by elves, for elves</prop>
-          <conspiracy>a fascist dictatorship run by undying tyrants who predate written histor</conspiracy>
+          <conspiracy>a fascist dictatorship run by undying tyrants who predate written history</conspiracy>
         </random>
       </tirdesc>
       <farmdesc>
@@ -8659,7 +8663,7 @@
           <e>Evo</e>
           <h>Horizon</h>
           <m>Mitsuhama</m>
-          <n>Neonet</n>
+          <n>NeoNET</n>
           <r>Renraku</r>
           <s>Saeder-Krupp</s>
           <s2>Shiawase</s2>
@@ -8678,7 +8682,7 @@
           <e>Evo</e>
           <h>Horizon</h>
           <m>Mitsuhama</m>
-          <n>Neonet</n>
+          <n>NeoNET</n>
           <r>Renraku</r>
           <s>Saeder-Krupp</s>
           <s2>Shiawase</s2>
@@ -8777,6 +8781,7 @@
       <flee>
         <random>
           <feds>the feds</feds>
+		  <god>the Grid Overwatch Division</god>
           <corp>$RMEGA corporate security forces</corp>
           <riaa>RIAA Anti-Piracy Forces</riaa>
         </random>
@@ -8805,7 +8810,7 @@
           <aztech>Aztechnology</aztech>
           <evo>EVO</evo>
           <horizon>Horizon</horizon>
-          <neonet>Neonet</neonet>
+          <neonet>NeoNET</neonet>
           <mct>Mitsuhama</mct>
           <renraku>Renraku</renraku>
           <sk>Saeder-Krupp</sk>
@@ -8819,7 +8824,7 @@
           <aztech>Aztechnology</aztech>
           <evo>EVO</evo>
           <horizon>Horizon</horizon>
-          <neonet>Neonet</neonet>
+          <neonet>NeoNET</neonet>
           <mct>Mitsuhama</mct>
           <renraku>Renraku</renraku>
           <sk>Saeder-Krupp</sk>
@@ -8831,7 +8836,7 @@
         <random>
           <spring>Spring</spring>
           <summer>Summer</summer>
-          <atum>Atum</atum>
+          <atum>Autumn</atum>
           <winter>Winter</winter>
         </random>
       </season>

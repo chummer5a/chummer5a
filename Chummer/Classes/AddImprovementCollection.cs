@@ -3897,6 +3897,7 @@ namespace Chummer.Classes
 
             objPower.Create(objXmlPowerNode, objPowerNode, 0, strForcedValue);
             _objCharacter.CritterPowers.Add(objPower);
+            CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
         }
 
         public void critterpowers(XmlNode bonusNode)
@@ -3917,6 +3918,7 @@ namespace Chummer.Classes
 
                 objPower.Create(objXmlCritterPower, objPowerNode, intRating, strForcedValue);
                 _objCharacter.CritterPowers.Add(objPower);
+                CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
             }
         }
 

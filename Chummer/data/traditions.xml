@@ -197,23 +197,9 @@
         <spiritmanipulation>Task Spirit</spiritmanipulation>
       </spirits>
     </tradition>
-      <tradition>
-          <id>93604cb7-2e12-47be-9c2d-4b227439f07b</id>
-          <name>Quimbanda</name>
-          <drain>WIL + CHA</drain>
-          <source>SG</source>
-          <page>48</page>
-          <spirits>
-              <spiritcombat>Spirit of Air</spiritcombat>
-              <spiritdetection>Spirit of Earth</spiritdetection>
-              <spirithealth>Spirit of Fire</spirithealth>
-              <spiritillusion>Spirit of Water</spiritillusion>
-              <spiritmanipulation>Task Spirit</spiritmanipulation>
-          </spirits>
-      </tradition>
-      <tradition>
-      <id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
-      <name>Shinto</name>
+    <tradition>
+      <id>93604cb7-2e12-47be-9c2d-4b227439f07b</id>
+      <name>Quimbanda</name>
       <drain>WIL + CHA</drain>
       <source>SFME</source>
       <page>13</page>
@@ -222,6 +208,20 @@
         <spiritdetection>Spirit of Water</spiritdetection>
         <spirithealth>Spirit of Earth</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
+      <name>Shinto</name>
+      <drain>WIL + CHA</drain>
+      <source>SG</source>
+      <page>48</page>
+      <spirits>
+        <spiritcombat>Spirit of Air</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Beasts</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
     </tradition>

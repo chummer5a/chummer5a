@@ -116,6 +116,7 @@ Application Changes:
 - Corrected a bug where re-rolling failures in the dice roller would ignore the "rush job" checkbox.
 - Corrected a bug where the dice roller determined glitches to occur when at least half of the dicepool are 1s (RAW requires more than half of the dicepool to be 1s).
 - Upgraded the random number generator used for dice rolling from a Linear Congruential RNG to a Mersenne Twister RNG. This should drastically reduce the "patterns" one might see in random results, as those "patterns" come about as a result of the very low quality of randomness of Linear Congruential RNGs.
+- Fixed a bug where adding an item (e.g. a quality or adept power) that grants critter powers will not cause those critter powers to be removed should the item be removed. Fixes #1953.
 
 Data Changes:
 
@@ -189,6 +190,8 @@ Data Changes:
 - Added a set of custom rules that makes Adapsin's essence multiplier apply as a generic multiplier after all others (the way it does in Hero Lab) instead of a multiplier to grade essence costs.
 - Removed the "All" category from vehicle mods because "Show All" is now always inserted at the beginning of the list of vehicle mod categories.
 - Smartskin properly provides armor based on its rating. Fixes #1949.
+- Fixed Ruthenium Polymer Cloak coming with capacity to add armor mods.
+- Fixed GTS Tower not coming with the Retrans Unit mentioned in its fluff description ("the Tower pulls double-duty as a retransmission drone").
 
 New Strings:
 - Label_Options_SpellShapingFocus

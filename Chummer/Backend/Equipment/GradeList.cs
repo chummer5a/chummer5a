@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -25,6 +25,8 @@ namespace Chummer.Backend.Equipment
             
             foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade"))
             {
+                if (objNode["hide"] != null)
+                    continue;
                 Grade objGrade = new Grade();
                 objGrade.Load(objNode);
                 _lstGrades.Add(objGrade);

@@ -505,7 +505,21 @@ namespace Chummer
                 strNewXPath += "/" + objAmendingNode.Name;
             }
             objNodeToEdit = objDoc.SelectSingleNode(strNewXPath);
-            if (objNodeToEdit != null)
+            // We don't want to edit a random element if we don't have an identifier, so select the one whose text matches our own if it exists.
+            if (!blnHasIdentifier && objAmendingNode.Attributes?["requireinnertextmatch"]?.InnerText == "yes")
+            {
+                blnHasIdentifier = true;
+                objNodeToEdit = null;
+                foreach (XmlNode objLoopNode in objDoc.SelectNodes(strNewXPath))
+                {
+                    if (objLoopNode.Name == objAmendingNode.Name && objLoopNode.InnerText == objAmendingNode.InnerText)
+                    {
+                        objNodeToEdit = objLoopNode;
+                        break;
+                    }
+                }
+            }
+            if (objNodeToEdit != null && (blnHasIdentifier || objAmendingNode.Attributes?["remove"]?.InnerText == "yes"))
             {
                 // If the old node exists and the amending node has the attribute 'remove="yes"', then the old node is completely erased.
                 if (objAmendingNode.Attributes?["remove"]?.InnerText == "yes")
@@ -514,16 +528,6 @@ namespace Chummer
                 }
                 else
                 {
-                    // Attributes are the only thing that is overwritten completely
-                    if (objNodeToEdit.Attributes != null && objAmendingNode.Attributes != null && objAmendingNode.Attributes.Count > 0)
-                    {
-                        objNodeToEdit.Attributes.RemoveAll();
-                        foreach (XmlAttribute objNewAttribute in objAmendingNode.Attributes)
-                        {
-                            objNodeToEdit.Attributes.Append(objNewAttribute);
-                        }
-                    }
-                    // If the amending node has children elements, run this method on all of its children.
                     bool blnHasElementChildren = false;
                     if (objAmendingNode.HasChildNodes)
                     {
@@ -536,6 +540,17 @@ namespace Chummer
                             }
                         }
                     }
+                    // Attributes are the only thing that is overwritten completely
+                    if (objNodeToEdit.Attributes != null && objAmendingNode.Attributes != null && objAmendingNode.Attributes.Count > 0)
+                    {
+                        objNodeToEdit.Attributes.RemoveAll();
+                        foreach (XmlAttribute objNewAttribute in objAmendingNode.Attributes)
+                        {
+                            if (objNewAttribute.Name != "requireinnertextmatch" && objNewAttribute.Name != "remove" && objNewAttribute.Name != "addifnotfound")
+                                objNodeToEdit.Attributes.Append(objNewAttribute);
+                        }
+                    }
+                    // If the amending node has children elements, run this method on all of its children.
                     if (blnHasElementChildren)
                     {
                         foreach (XmlNode objChild in objAmendingNode.ChildNodes)
@@ -555,7 +570,7 @@ namespace Chummer
                         }
                     }
                     // If neither the amending node nor the old node has children elements, overwrite the old node with the amending one.
-                    else if (objNodeToEdit.HasChildNodes)
+                    else
                     {
                         foreach (XmlNode objChild in objNodeToEdit.ChildNodes)
                         {
@@ -571,8 +586,8 @@ namespace Chummer
                 }
                 return true;
             }
-            // If there aren't any old nodes found, the amending node does not have an identifier, and the amending node would not want to erase the old node, then append the entire amending node to the XPath.
-            else if (!blnHasIdentifier && objAmendingNode.Attributes?["remove"]?.InnerText != "yes")
+            // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
+            else if (objAmendingNode.Attributes?["addifnotfound"]?.InnerText == "yes")
             {
                 return objDoc.SelectSingleNode(strXPath)?.AppendChild(objDoc.ImportNode(objAmendingNode, true)) != null;
             }

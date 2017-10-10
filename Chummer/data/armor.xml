@@ -1924,7 +1924,7 @@
       <category>Cloaks</category>
       <rating>4</rating>
       <armor>0</armor>
-      <armorcapacity>Rating</armorcapacity>
+      <armorcapacity>0</armorcapacity>
       <avail>14F</avail>
       <cost>4000 * Rating</cost>
       <source>HT</source>

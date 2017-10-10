@@ -193,6 +193,7 @@ namespace Chummer
             AdeptPowerFreePoints,
             AIProgram,
             CritterPowerLevel,
+            CritterPower,
             SwapSkillSpecAttribute,
             SpellResistance,
             SpellKarmaDiscount,
@@ -355,7 +356,6 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
-            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             objNode.TryGetInt32FieldQuickly("min", ref _intMin);
             objNode.TryGetInt32FieldQuickly("max", ref _intMax);
@@ -1383,7 +1383,7 @@ namespace Chummer
                                 objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
                             }
                         }
-                }
+                    }
                         break;
                     case Improvement.ImprovementType.ContactMadeMan:
                         Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -1400,6 +1400,11 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Submersion:
                     objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.CritterPower:
+                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName);
+                        if (objCritterPower != null)
+                            objCharacter.CritterPowers.Remove(objCritterPower);
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                     objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));

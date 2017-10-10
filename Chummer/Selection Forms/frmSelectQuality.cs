@@ -362,6 +362,8 @@ namespace Chummer
 
                 foreach (XmlNode objXmlQuality in objXmlQualityList)
                 {
+                    if (objXmlQuality["hide"] != null)
+                        continue;
                     bool blnQualityAllowed = !blnNeedQualityWhitelist;
                     if (blnNeedQualityWhitelist)
                     {
@@ -373,7 +375,7 @@ namespace Chummer
                             blnQualityAllowed = true;
                     }
 
-                    if (objXmlQuality["hide"] == null && blnQualityAllowed)
+                    if (blnQualityAllowed)
                     {
                         if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
                         {
