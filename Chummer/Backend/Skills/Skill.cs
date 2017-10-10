@@ -456,7 +456,7 @@ namespace Chummer.Skills
 
         public bool CanUpgradeCareer
         {
-            get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > LearnedRating; }
+            get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > TotalBaseRating; }
         }
 
         public virtual bool AllowDelete
@@ -533,7 +533,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (LearnedRating == 0)
+                if (TotalBaseRating == 0)
                 {
                     return string.Empty; //Unleveled skills cannot have a specialization;
                 }
@@ -590,7 +590,7 @@ namespace Chummer.Skills
                 IEnumerable<Improvement> lstRelevantImprovements = RelevantImprovements();
 
                 StringBuilder s;
-                if (CyberwareRating() > LearnedRating)
+                if (CyberwareRating() > TotalBaseRating)
                 {
                     s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({CyberwareRating()})");
                 }

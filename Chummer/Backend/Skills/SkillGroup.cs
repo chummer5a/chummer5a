@@ -112,7 +112,7 @@ namespace Chummer.Skills
             {
                 if (_affectedSkills.Count == 0) return false;
 
-                if (_affectedSkills.Any(x => x.LearnedRating != _affectedSkills[0].LearnedRating))
+                if (_affectedSkills.Any(x => x.TotalBaseRating != _affectedSkills[0].TotalBaseRating))
                 {
                     return false;
                 }
@@ -124,7 +124,7 @@ namespace Chummer.Skills
 
                 if (Character.SkillsSection.Uncouth && HasSocialSkills) return false;
 
-                return _affectedSkills.Max(x => x.LearnedRating) < RatingMaximum;
+                return _affectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum;
             }
         }
 
@@ -352,7 +352,7 @@ namespace Chummer.Skills
                 {
                     return LanguageManager.Instance.GetString("Label_SkillGroup_Broken");
                 }
-                return GetEnumerable().Min(x => x.LearnedRating).ToString();
+                return GetEnumerable().Min(x => x.TotalBaseRating).ToString();
 
             }
         }
@@ -374,7 +374,7 @@ namespace Chummer.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), GetEnumerable().Min(x => x.LearnedRating) + 1, UpgradeKarmaCost()); }
+            get { return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), GetEnumerable().Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
         }
 
         public Guid Id { get; } = Guid.NewGuid();
@@ -453,7 +453,7 @@ namespace Chummer.Skills
         {
             if (_skillFromKarma == 0) return 0;
 
-            int upper = _affectedSkills.Min(x => x.LearnedRating);
+            int upper = _affectedSkills.Min(x => x.TotalBaseRating);
             int lower = upper - _skillFromKarma;
 
             int cost = upper*(upper + 1);
@@ -465,7 +465,7 @@ namespace Chummer.Skills
 
         public int UpgradeKarmaCost()
         {
-            int rating = GetEnumerable().Min(x => x.LearnedRating);
+            int rating = GetEnumerable().Min(x => x.TotalBaseRating);
 
             if (rating == 0)
             {

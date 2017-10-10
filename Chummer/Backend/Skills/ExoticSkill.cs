@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,7 +66,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            return RangeCost(Base + FreeKarma(), LearnedRating);
+            return RangeCost(Base + FreeKarma(), TotalBaseRating);
         }
 
         public override bool IsExoticSkill

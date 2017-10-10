@@ -84,7 +84,7 @@ namespace Chummer.Skills
                     _skillValueBackup[skill.SkillId] = skill;
                     Skills.RemoveAt(i);
 
-                    if (_character.Created && skill.LearnedRating > 0)
+                    if (_character.Created && skill.TotalBaseRating > 0)
                     {
                         KnowledgeSkill kno = new KnowledgeSkill(_character)
                         {
@@ -266,7 +266,7 @@ namespace Chummer.Skills
             Dictionary<string, Guid> dicSkills = new Dictionary<string, Guid>();
             foreach (Skill objLoopSkill in Skills)
             {
-                if (objLoopSkill.LearnedRating > 0 && !dicSkills.ContainsKey(objLoopSkill.Name))
+                if (objLoopSkill.TotalBaseRating > 0 && !dicSkills.ContainsKey(objLoopSkill.Name))
                 {
                     dicSkills.Add(objLoopSkill.Name, objLoopSkill.Id);
                 }

@@ -573,7 +573,7 @@ namespace Chummer.Backend.Shared_Methods
                             .Where(objSkill => objSkill.Name == node["name"]?.InnerText &&
                                                (node["spec"] == null ||
                                                 objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)))
-                            .FirstOrDefault(objSkill => objSkill.LearnedRating >= Convert.ToInt32(node["val"]?.InnerText));
+                            .FirstOrDefault(objSkill => objSkill.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText));
 
                         if (s != null)
                         {
@@ -595,7 +595,7 @@ namespace Chummer.Backend.Shared_Methods
                             .Where(objSkill => objSkill.Name == node["name"]?.InnerText &&
                                                (node["spec"] == null ||
                                                 objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)))
-                            .FirstOrDefault(objSkill => objSkill.LearnedRating >= Convert.ToInt32(node["val"]?.InnerText));
+                            .FirstOrDefault(objSkill => objSkill.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText));
 
                         if (s != null)
                         {
