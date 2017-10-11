@@ -3426,7 +3426,7 @@
       <name>Anti-Rad</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>14F</avail>
       <cost>Rating * 6000</cost>
       <source>CF</source>
@@ -3439,7 +3439,7 @@
       <name>Control Rig Booster</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 6000</cost>
       <source>CF</source>
@@ -3452,7 +3452,7 @@
       <name>Implant Medic</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Variable(0-1000000)</cost>
       <source>CF</source>
@@ -3468,7 +3468,7 @@
       <name>Nanite Hunters</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>16R</avail>
       <cost>Rating * 5000</cost>
       <source>CF</source>
@@ -3481,7 +3481,7 @@
       <name>Markers</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12</avail>
       <cost>Rating * 2000</cost>
       <source>CF</source>
@@ -3494,7 +3494,7 @@
       <name>Nanotattoos</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 1000</cost>
       <source>CF</source>
@@ -3507,7 +3507,7 @@
       <name>Taggants</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12</avail>
       <cost>Rating * 600</cost>
       <source>CF</source>
@@ -3520,7 +3520,7 @@
       <name>Trauma Control System</name>
       <category>Hard Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 4000</cost>
       <source>CF</source>
@@ -3535,7 +3535,7 @@
       <name>Anti-Tox</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 5000</cost>
       <source>CF</source>
@@ -3551,7 +3551,7 @@
       <name>Carcerand-Plus</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>10F</avail>
       <cost>Rating * 3000</cost>
       <source>CF</source>
@@ -3567,7 +3567,7 @@
       <name>Nanosymbiotes</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 6000</cost>
       <source>CF</source>
@@ -3580,7 +3580,7 @@
       <name>Nantidotes</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>8F</avail>
       <cost>Rating * 1500</cost>
       <source>CF</source>
@@ -3596,7 +3596,7 @@
       <name>Nanotattoos</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 500</cost>
       <source>CF</source>
@@ -3609,7 +3609,7 @@
       <name>Neural Amplifiers (Learning Stimulus)</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>14F</avail>
       <cost>Rating * 5000</cost>
       <source>CF</source>
@@ -3622,7 +3622,7 @@
       <name>Neural Amplifiers (Limbic)</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 7500</cost>
       <source>CF</source>
@@ -3646,7 +3646,7 @@
       <name>Neural Amplifiers (Neocortical)</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 7500</cost>
       <source>CF</source>
@@ -3670,7 +3670,7 @@
       <name>Neural Amplifiers (Recall)</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 3500</cost>
       <source>CF</source>
@@ -3686,7 +3686,7 @@
       <name>O-Cells</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 5000</cost>
       <source>CF</source>
@@ -3699,7 +3699,7 @@
       <name>Oxyrush</name>
       <category>Soft Nanoware</category>
       <ess>0</ess>
-      <capacity>[0]</capacity>
+      <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 1500</cost>
       <source>CF</source>
@@ -4686,6 +4686,7 @@
           <cyberware>Bone Lacing (Titanium)</cyberware>
         </oneof>
       </forbidden>
+	  <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>6dd9013a-52c4-45be-a4a2-7210f5caa53b</id>
@@ -4714,6 +4715,7 @@
           <cyberware>Siemens Cyberspine</cyberware>
         </allof>
       </required>
+	  <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>0f53caba-37ea-4676-8c6e-68b2d826ecd0</id>
@@ -4743,6 +4745,7 @@
           <cyberware>Siemens Cyberspine Upgrade (Elite Athletic)</cyberware>
         </allof>
       </required>
+	  <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>70d15d2b-739d-418b-a7fe-3f03dee79546</id>
@@ -4772,6 +4775,7 @@
           <cyberware>Siemens Cyberspine</cyberware>
         </allof>
       </required>
+	  <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>6a4ba6e2-0473-47dc-81f5-fd3a95e4b714</id>
@@ -4790,7 +4794,7 @@
           <val>1</val>
         </specificattribute>
       </bonus>
-      <!--<forbidden>
+      <forbidden>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
           <cyberware>Reaction Enhancers</cyberware>
@@ -4801,7 +4805,8 @@
           <cyberware>Siemens Cyberspine</cyberware>
           <cyberware>Siemens Cyberspine Upgrade (Elite Warrior)</cyberware>
         </allof>
-      </required>-->
+      </required>
+	  <forcegrade>Standard</forcegrade>
     </cyberware>
     <!-- End Region -->
     <!-- Region The Complete Trog -->
