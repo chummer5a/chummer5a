@@ -14162,6 +14162,11 @@ namespace Chummer
                 // Cyberware Grade is not available for Genetech items.
                 if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
+
+                // Cyberware Grade shouldn't be changeable for items having the forcegrade tag
+                if (objCyberware.ForceGrade != string.Empty)
+                    cboCyberwareGrade.Enabled = false;
+
                 PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
 
                 cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
