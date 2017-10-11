@@ -7581,6 +7581,38 @@
           </mods>
       </vehicle>
       <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+		<id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
+		<name>Ares Citymaster</name>
+		<handling>4/3</handling>
+		<speed>4/3</speed>
+		<accel>2</accel>
+		<body>18</body>
+		<armor>22</armor>
+		<pilot>5</pilot>	  
+		<sensor>5</sensor>
+		<seats>12</seats>  
+		<avail>0</avail>
+		<cost>0</cost>  
+		<source>SPS</source>
+		<page>40</page>
+		<category>Cars</category>	  
+		<gears>
+			<gear rating="5" maxrating="5">Sensor Array</gear>
+		</gears>
+		<mods>
+			<name>Rigger Interface</name>
+			<name select="Chemical Seal">Special Equipment</name>
+			<name>Heavy Weapon Mount</name>
+		</mods>
+		<weapons>
+        <weapon>
+          <name>Stoner-Ares M202</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+      <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
