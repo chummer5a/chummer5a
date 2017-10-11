@@ -213,7 +213,7 @@ namespace Chummer
             else
             {
                 cboGrade.Enabled = !_blnLockGrade;
-                if (_blnLockGrade)
+                if (_blnLockGrade && cboGrade.SelectedValue != null)
                     strForceGrade = cboGrade.SelectedValue.ToString();
             }
             if (_objMode == Mode.Bioware)
@@ -332,7 +332,7 @@ namespace Chummer
                 else
                 {
                     cboGrade.Enabled = !_blnLockGrade;
-                    if (_blnLockGrade)
+                    if (_blnLockGrade && cboGrade.SelectedValue != null)
                         strForceGrade = cboGrade.SelectedValue.ToString();
                 }
             }
