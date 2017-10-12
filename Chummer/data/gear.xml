@@ -13505,8 +13505,8 @@
       <name>Ammo: Gel Rounds (2050)</name>
       <category>Ammunition</category>
       <rating>0</rating>
-      <source>SR5</source>
-      <page>434</page>
+      <source>2050</source>
+      <page>190</page>
       <avail>4R</avail>
       <cost>30</cost>
       <costfor>10</costfor>
