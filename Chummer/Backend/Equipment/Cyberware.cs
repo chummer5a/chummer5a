@@ -324,8 +324,7 @@ namespace Chummer.Backend.Equipment
             objNode.Tag = _guiID.ToString();
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (!_strCategory.StartsWith("Genetech") && !_strCategory.StartsWith("Genetic Infusions") &&
-                !_strCategory.StartsWith("Genemods"))
+            if (MyXmlNode["forcegrade"]?.InnerText != "None")
             {
                 // Apply the character's Cyberware Essence cost multiplier if applicable.
                 if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
@@ -616,6 +615,13 @@ namespace Chummer.Backend.Equipment
             _nodAllowGear = objNode["allowgear"];
             if (objNode["improvementsource"] != null)
                 _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            // Legacy Sweep
+            if (_strForceGrade != "None" && (_strCategory.StartsWith("Genetech") || _strCategory.StartsWith("Genetic Infusions") || _strCategory.StartsWith("Genemods")))
+            {
+                _strForceGrade = MyXmlNode["forcegrade"].InnerText;
+                if (!string.IsNullOrEmpty(_strForceGrade))
+                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource);
+            }
             if (objNode["weaponguid"] != null)
             {
                 _guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
@@ -1749,8 +1755,12 @@ namespace Chummer.Backend.Equipment
             
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (!_strCategory.StartsWith("Genetech") && !_strCategory.StartsWith("Genetic Infusions") &&
-                !_strCategory.StartsWith("Genemods"))
+            if (_strForceGrade == "None")
+            {
+                decESSMultiplier = 1.0m;
+                decTotalESSMultiplier = 1.0m;
+            }
+            else
             {
                 decimal decMultiplier = 1;
                 // Apply the character's Cyberware Essence cost multiplier if applicable.
@@ -1790,15 +1800,14 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
-            }
-
-            // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-            if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost) != 0)
-            {
-                decimal decBasicMultiplier = _objCharacter.Improvements
-                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                    .Aggregate<Improvement, decimal>(1, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-                decESSMultiplier -= 1.0m - decBasicMultiplier;
+                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost) != 0)
+                {
+                    decimal decBasicMultiplier = _objCharacter.Improvements
+                        .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
+                        .Aggregate<Improvement, decimal>(1, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                    decESSMultiplier -= 1.0m - decBasicMultiplier;
+                }
             }
             decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 

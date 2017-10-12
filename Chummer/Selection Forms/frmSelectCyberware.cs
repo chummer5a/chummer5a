@@ -51,6 +51,7 @@ namespace Chummer
         private static string _strSelectCategory = string.Empty;
         private static string _strSelectedGrade = string.Empty;
         private bool _blnIgnoreSecondHand = false;
+        private string _strForceGrade = string.Empty;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly XPathNavigator _nav;
@@ -203,29 +204,16 @@ namespace Chummer
             _strSelectCategory = cboCategory.SelectedValue.ToString();
             string strForceGrade = string.Empty;
             // Update the list of Cyberware based on the selected Category.
-            if (cboCategory.SelectedValue?.ToString().StartsWith("Genetech:") == true ||
-                cboCategory.SelectedValue.ToString() == "Symbionts" ||
-                cboCategory.SelectedValue.ToString() == "Genemods")
+            cboGrade.Enabled = !_blnLockGrade;
+            if (_blnLockGrade && cboGrade.SelectedValue != null)
+                strForceGrade = cboGrade.SelectedValue.ToString();
+            // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
+            if (cboGrade.SelectedValue != null)
             {
-                cboGrade.Enabled = false;
-                strForceGrade = "Standard";
-            }
-            else
-            {
-                cboGrade.Enabled = !_blnLockGrade;
-                if (_blnLockGrade && cboGrade.SelectedValue != null)
-                    strForceGrade = cboGrade.SelectedValue.ToString();
-            }
-            if (_objMode == Mode.Bioware)
-            {
-                // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
-                if (cboGrade.SelectedValue != null)
+                if (PopulateGrades(cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString().Contains("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used"))), false, strForceGrade))
                 {
-                    if (PopulateGrades(cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString().Contains("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used"))), false, strForceGrade))
-                    {
-                        if (cboGrade.Enabled)
-                            cboGrade.SelectedValue = _strSelectedGrade;
-                    }
+                    if (cboGrade.Enabled)
+                        cboGrade.SelectedValue = _strSelectedGrade;
                 }
             }
             if (!string.IsNullOrEmpty(strForceGrade))
@@ -317,36 +305,23 @@ namespace Chummer
             if (objXmlCyberware["forcegrade"] != null)
             {
                 // Force the Cyberware to be a particular Grade.
-                strForceGrade = objXmlCyberware["forcegrade"].InnerText;
                 cboGrade.Enabled = false;
+                strForceGrade = objXmlCyberware["forcegrade"].InnerText;
             }
             else
             {
-                if (category.StartsWith("Genetech:") ||
-                    category.StartsWith("Symbionts") ||
-                    category.StartsWith("Genemods"))
-                {
-                    cboGrade.Enabled = false;
-                    strForceGrade = "Standard";
-                }
-                else
-                {
-                    cboGrade.Enabled = !_blnLockGrade;
-                    if (_blnLockGrade && cboGrade.SelectedValue != null)
-                        strForceGrade = cboGrade.SelectedValue.ToString();
-                }
+                cboGrade.Enabled = !_blnLockGrade;
+                if (_blnLockGrade && cboGrade.SelectedValue != null)
+                    strForceGrade = cboGrade.SelectedValue.ToString();
             }
 
-            if (_objMode == Mode.Bioware)
+            // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
+            if (cboGrade.SelectedValue != null)
             {
-                // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
-                if (cboGrade.SelectedValue != null)
+                if (PopulateGrades(category.StartsWith("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used")), false, strForceGrade))
                 {
-                    if (PopulateGrades(category.StartsWith("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used")), false, strForceGrade))
-                    {
-                        if (cboGrade.Enabled)
-                            cboGrade.SelectedValue = _strSelectedGrade;
-                    }
+                    if (cboGrade.Enabled)
+                        cboGrade.SelectedValue = _strSelectedGrade;
                 }
             }
             if (!string.IsNullOrEmpty(strForceGrade))
@@ -447,19 +422,15 @@ namespace Chummer
                 return;
             }
 
-            string strCategoryFilter = string.Empty;
+            string strCategoryFilter = "(";
             if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All")
-                strCategoryFilter = _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
+                strCategoryFilter += _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
             else
-                strCategoryFilter = "category = \"" + cboCategory.SelectedValue + "\" or ";
+                strCategoryFilter += "category = \"" + cboCategory.SelectedValue + "\" or ";
+            strCategoryFilter += "category = \"None\")";
 
             // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-            if (!string.IsNullOrEmpty(strCategoryFilter))
-                strSearch += " and (" + strCategoryFilter + ")";
-            // Remove the trailing " or " if we aren't selecting just one category;
-            strSearch = strSearch.Substring(0, strSearch.Length - 4);
-            strSearch += ")]";
+            string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and " + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
 
             BuildCyberwareList(_objXmlDocument.SelectNodes(strSearch));
         }
@@ -729,6 +700,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(lstCyberware.Text)) return;
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
             string strSelectCategory = objNode["category"].InnerText;
+            bool blnForceNoESSModifier = objNode["forcegrade"]?.InnerText == "None";
             // If the Transgenics checkbox has been checked, force it to the Genetech: Transgenics category instead.
             if (chkTransgenic.Checked)
                 strSelectCategory = "Genetech: Transgenics";
@@ -915,26 +887,25 @@ namespace Chummer
             if (!chkPrototypeTranshuman.Checked)
             {
                 // Place the Essence cost multiplier in a variable that can be safely modified.
-                double dblCharacterESSModifier = CharacterESSMultiplier;
+                double dblCharacterESSModifier = 1;
 
-                // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
-                if (strSelectCategory == "Basic")
-                    dblCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
-
-                if (nudESSDiscount.Visible)
+                if (!blnForceNoESSModifier)
                 {
-                    double dblDiscountModifier = Convert.ToDouble(nudESSDiscount.Value, GlobalOptions.CultureInfo) * 0.01;
-                    dblCharacterESSModifier *= (1.0 - dblDiscountModifier);
+                    dblCharacterESSModifier = CharacterESSMultiplier;
+                    // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
+                    if (strSelectCategory == "Basic")
+                        dblCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+
+                    if (nudESSDiscount.Visible)
+                    {
+                        double dblDiscountModifier = Convert.ToDouble(nudESSDiscount.Value, GlobalOptions.CultureInfo) * 0.01;
+                        dblCharacterESSModifier *= (1.0 - dblDiscountModifier);
+                    }
+
+                    dblCharacterESSModifier -= (1 - _dblESSMultiplier);
+
+                    dblCharacterESSModifier *= CharacterTotalESSMultiplier;
                 }
-
-                dblCharacterESSModifier -= (1 - _dblESSMultiplier);
-
-                dblCharacterESSModifier *= CharacterTotalESSMultiplier;
-
-                // Genetech and Genetic Infusions are not subject to Bioware cost multipliers, so if we're looking at either, suppress the multiplier.
-                if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") ||
-                    strSelectCategory.StartsWith("Genemods"))
-                    dblCharacterESSModifier = 1;
                 if (objXmlCyberware["ess"].InnerText.StartsWith("FixedValues"))
                 {
                     string[] strValues =
@@ -1050,7 +1021,7 @@ namespace Chummer
                     strCategoryFilter += _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
                 else
                     strCategoryFilter += "category = \"" + cboCategory.SelectedValue + "\" or ";
-                strCategoryFilter = strCategoryFilter.Substring(0, strCategoryFilter.Length - 4) + ")";
+                strCategoryFilter += "category = \"None\")";
                 if (_objCharacter.DEPEnabled && ParentVehicle == null)
                     objXmlCyberwareList =
                         _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" +
@@ -1075,17 +1046,10 @@ namespace Chummer
                         bool blnIgnoreDisable = false;
                         if (objXmlCyberware["forcegrade"] != null)
                         {
-                            if (_strSelectedGrade != objXmlCyberware["forcegrade"].InnerText)
+                            if (_strSelectedGrade != objXmlCyberware["forcegrade"].InnerText && objXmlCyberware["forcegrade"].InnerText != "None")
                                 continue;
                             else
                                 blnIgnoreDisable = true;
-                        }
-                        if (objXmlCyberware["category"] != null &&
-                            (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
-                            objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
-                            objXmlCyberware["category"].InnerText.StartsWith("Genemods")))
-                        {
-                            blnIgnoreDisable = true;
                         }
                         if (!blnIgnoreDisable && _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && _strSelectedGrade.Contains(x.ImprovedName) && x.Enabled))
                             continue;
@@ -1134,19 +1098,7 @@ namespace Chummer
             }
             else if (_objMode == Mode.Bioware)
             {
-                if (cboCategory.SelectedValue?.ToString().StartsWith("Genetech:") == true ||
-                    cboCategory.SelectedValue?.ToString() == "Symbionts" ||
-                    cboCategory.SelectedValue?.ToString() == "Genemods" ||
-                    _strSelectCategory?.StartsWith("Genetech:") == true ||
-                    _strSelectCategory == "Symbionts" ||
-                    _strSelectCategory == "Genemods")
-                {
-                    SelectedGrade = GlobalOptions.BiowareGrades.GetGrade("Standard");
-                }
-                else
-                {
-                    SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(_strSelectedGrade);
-                }
+                SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(_strSelectedGrade);
             }
             else
             {
@@ -1204,17 +1156,19 @@ namespace Chummer
         /// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
         private bool PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "")
         {
-            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand)
+            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade)
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
+                _strForceGrade = strForceGrade;
                 GradeList objGradeList = _objMode == Mode.Bioware ? GlobalOptions.BiowareGrades : GlobalOptions.CyberwareGrades;
 
                 _lstGrade.Clear();
                 foreach (Grade objGrade in objGradeList)
                 {
-                    if ((string.IsNullOrEmpty(strForceGrade) || objGrade.Name != strForceGrade) &&
-                    _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode == Mode.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
-                    && objGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                    if (objGrade.Name == "None" && (string.IsNullOrEmpty(_strForceGrade) || _strForceGrade != "None"))
+                        continue;
+                    if (_objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode == Mode.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                            && objGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                         continue;
                     if ((!_blnIgnoreSecondHand || !objGrade.SecondHand) &&
                         (_objCharacter.BurnoutEnabled || !objGrade.Burnout) &&

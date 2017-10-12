@@ -14150,18 +14150,13 @@ namespace Chummer
                 if (objCyberware.Category == "Cultured")
                     blnIgnoreSecondHand = true;
 
+                // Cyberware Grade is not available for Genetech items.
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
-                if (objCyberware.Parent == null)
-                    if (!objCyberware.Suite)
-                        cboCyberwareGrade.Enabled = true;
-                    else
-                        cboCyberwareGrade.Enabled = false;
+                if (objCyberware.Parent == null && !objCyberware.Suite && objCyberware.MyXmlNode["forcegrade"] == null)
+                    cboCyberwareGrade.Enabled = true;
                 else
                     cboCyberwareGrade.Enabled = false;
 
-                // Cyberware Grade is not available for Genetech items.
-                if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
-                    cboCyberwareGrade.Enabled = false;
                 PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
 
                 cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
@@ -17280,13 +17275,14 @@ namespace Chummer
             foreach (Grade objWareGrade in objGradeList)
             {
                 bool blnAddItem = true;
-                if ((string.IsNullOrEmpty(strForceGrade) || objWareGrade.Name != strForceGrade) &&
-                    _objCharacter.Improvements.Any(x => ((blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (!blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
-                    && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                     blnAddItem = false;
-                else if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                else if (_objCharacter.Improvements.Any(x => ((blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (!blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                        && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                     blnAddItem = false;
-                else if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
+                else if (blnAddItem && blnIgnoreSecondHand && objWareGrade.SecondHand)
+                    blnAddItem = false;
+                else if (blnAddItem && !_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
                     blnAddItem = false;
 
                 if (blnAddItem)

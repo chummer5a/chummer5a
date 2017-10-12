@@ -21,6 +21,15 @@
   <version>0</version>
   <grades>
     <!-- Region Standard -->
+	<grade>
+      <id>9352d1b0-5288-4bbf-82b5-00073f7effc2</id>
+      <name>None</name>
+      <ess>1</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
     <grade>
       <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
       <name>Standard</name>
@@ -3431,7 +3440,7 @@
       <cost>Rating * 6000</cost>
       <source>CF</source>
       <page>147</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3444,7 +3453,7 @@
       <cost>Rating * 6000</cost>
       <source>CF</source>
       <page>147</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3460,7 +3469,7 @@
       <bonus>
         <selectcyberware />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3473,7 +3482,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>147</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3486,7 +3495,7 @@
       <cost>Rating * 2000</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3499,7 +3508,7 @@
       <cost>Rating * 1000</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3512,7 +3521,7 @@
       <cost>Rating * 600</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3525,7 +3534,7 @@
       <cost>Rating * 4000</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <!-- End Region -->
@@ -3543,7 +3552,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
     <cyberware>
@@ -3559,7 +3568,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3572,7 +3581,7 @@
       <cost>Rating * 6000</cost>
       <source>CF</source>
       <page>149</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3588,7 +3597,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3601,7 +3610,7 @@
       <cost>Rating * 500</cost>
       <source>CF</source>
       <page>149</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3614,7 +3623,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3638,7 +3647,7 @@
           <bonus>1</bonus>
         </skillattribute>
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3662,7 +3671,7 @@
           <bonus>1</bonus>
         </skillattribute>
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3678,7 +3687,7 @@
       <bonus>
         <memory>Rating</memory>
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3691,7 +3700,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>150</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
     <cyberware>
@@ -3704,7 +3713,7 @@
       <cost>Rating * 1500</cost>
       <source>CF</source>
       <page>150</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>5</rating>
     </cyberware>
     <!-- End Region -->
