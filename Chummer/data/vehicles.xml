@@ -40,7 +40,6 @@
     <category>Drones: Missile</category>
   </categories>
   <modcategories>
-    <category>All</category>
     <category>Body</category>
     <category>Cosmetic</category>
     <category>Electromagnetic</category>
@@ -3844,6 +3843,7 @@
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
+		<name>Retrans Unit</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -5099,7 +5099,7 @@
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
-      <hidden />
+      <hide />
     </vehicle>
     <vehicle>
       <id>d187e9f7-b308-426f-ac35-957ba601c70c</id>
@@ -5584,7 +5584,7 @@
       <pilot>0</pilot>
       <sensor>0</sensor>
       <speed>0</speed>
-      <hidden />
+      <hide />
     </vehicle>
     <vehicle>
       <id>2013dff9-f313-441b-9207-3fdb8a44c8ba</id>
@@ -7559,25 +7559,59 @@
           <source>SFME</source>
           <accel>0</accel>
           <armor>10</armor>
-          <avail>11</avail>
+          <avail>10</avail>
           <body>14</body>
           <category>Rotorcraft</category>
-          <cost>18000</cost>
+          <cost>221500</cost>
           <handling>5</handling>
-          <pilot>4</pilot>
-          <sensor>4</sensor>
+          <pilot>3</pilot>
+          <sensor>3</sensor>
+		  <seats>5</seats>
           <speed>6</speed>
           <gears>
-              <gear rating="2" maxrating="4">Sensor Array</gear>
+              <gear rating="3" maxrating="3">Sensor Array</gear>
               <gear rating="2" select="Evasion">Skill Autosoft</gear>
               <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
-              <gear select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
+              <gear rating="2" select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
           </gears>
           <mods>
               <name>Rigger Interface</name>
+			  <name>Manual Controls</name>
+			  <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
           </mods>
-          <seats>5</seats>
       </vehicle>
+      <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+		<id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
+		<name>Ares Citymaster</name>
+		<handling>4/3</handling>
+		<speed>4/3</speed>
+		<accel>2</accel>
+		<body>18</body>
+		<armor>22</armor>
+		<pilot>5</pilot>	  
+		<sensor>5</sensor>
+		<seats>12</seats>  
+		<avail>0</avail>
+		<cost>0</cost>  
+		<source>SPS</source>
+		<page>40</page>
+		<category>Cars</category>	  
+		<gears>
+			<gear rating="5" maxrating="5">Sensor Array</gear>
+		</gears>
+		<mods>
+			<name>Rigger Interface</name>
+			<name select="Chemical Seal">Special Equipment</name>
+			<name>Heavy Weapon Mount</name>
+		</mods>
+		<weapons>
+        <weapon>
+          <name>Stoner-Ares M202</name>
+        </weapon>
+      </weapons>
+    </vehicle>
       <!-- End Region -->
   </vehicles>
   <mods>
@@ -7778,6 +7812,25 @@
       <required>
         <vehicledetails>
           <name operation="contains">Reloading Drone</name>
+        </vehicledetails>
+      </required>
+    </mod>
+	<mod>
+      <id>d3f7ebdb-bdf9-4b62-9934-a12b132c6731</id>
+      <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+      <page>31</page>
+      <source>SFME</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+	  <bonus>
+        <devicerating>1</devicerating>
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name operation="contains">Avibras-Nissan AN 822</name>
         </vehicledetails>
       </required>
     </mod>
@@ -9525,7 +9578,7 @@
       <name>Pilot Program (Drone)</name>
       <page>126</page>
       <source>R5</source>
-      <avail>FixedValues(4,0,8R,12R,16F,24F</avail>
+      <avail>FixedValues(4,0,8R,12R,16F,24F)</avail>
       <category>All</category>
       <cost>FixedValues(100,400,1800,3200,10000,20000)</cost>
       <rating>6</rating>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment
@@ -123,7 +123,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _strName.Contains("(Burnout's Way)");
+                return _strName.Contains("Burnout's Way");
             }
         }
 

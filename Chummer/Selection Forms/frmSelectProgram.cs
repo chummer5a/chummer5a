@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ namespace Chummer
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 
-        private bool _blnBiowireEnabled = false;
+        //private bool _blnBiowireEnabled = false;
 
         #region Control Events
         public frmSelectProgram(Character objCharacter)
@@ -71,12 +71,14 @@ namespace Chummer
                     blnCheckForOptional = true;
             }
 
+            /*
             // Check to see if the character has the Biowire Echo.
             foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
             {
                 if (objMetamagic.Name == "Biowire")
                     _blnBiowireEnabled = true;
             }
+            */
 
             trePrograms.TreeViewNodeSorter = new SortByName();
             foreach (XmlNode objXmlProgram in objXmlNodeList)

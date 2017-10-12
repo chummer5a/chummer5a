@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle.
     /// </summary>
-    public class Vehicle : INamedItemWithGuid
+    public class Vehicle : INamedItemWithGuidAndNode
     {
         private Guid _guiID = new Guid();
         private string _strName = string.Empty;
@@ -52,6 +52,7 @@ namespace Chummer.Backend.Equipment
         private List<string> _lstLocations = new List<string>();
         private bool _blnDealerConnectionDiscount = false;
         private bool _blnBlackMarketDiscount = false;
+        private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
 
@@ -176,14 +177,14 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
-                XmlNode objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _strName + "\"]");
+                XmlNode objVehicleNode = MyXmlNode;
                 if (objVehicleNode != null)
                 {
                     objVehicleNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objVehicleNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
                 objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objVehicleNode?.Attributes?["translate"]?.InnerText;
             }
@@ -293,6 +294,7 @@ namespace Chummer.Backend.Equipment
 
                     XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
                     objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                    objWeapon.ParentID = InternalId;
                     objWeapon.Cost = 0;
                     objWeapon.VehicleMounted = true;
 
@@ -368,6 +370,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            UpdateDealerConnectionDiscount();
         }
 
         /// <summary>
@@ -405,6 +408,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("cosmeticmodslots", _intAddCosmeticModSlots.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("parentid", _strParentID);
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
@@ -470,9 +474,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
             {
-                XmlDocument doc = XmlManager.Instance.Load("vehicles.xml");
-                XmlNode sourceNode = doc.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
-                sourceNode.TryGetField("id", Guid.TryParse, out _sourceID);
+                XmlNode sourceNode = XmlManager.Instance.Load("vehicles.xml")?.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
+                sourceNode?.TryGetField("id", Guid.TryParse, out _sourceID);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["handling"] != null)
@@ -541,20 +544,21 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("cosmeticmodslots", ref _intAddCosmeticModSlots);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
             objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
-                XmlNode objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + _strName + "\"]");
+                XmlNode objVehicleNode = MyXmlNode;
                 if (objVehicleNode != null)
                 {
                     objVehicleNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objVehicleNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
                 objVehicleNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objVehicleNode?.Attributes?["translate"]?.InnerText;
             }
@@ -623,6 +627,7 @@ namespace Chummer.Backend.Equipment
                     _lstLocations.Add(objXmlLocation.InnerText);
                 }
             }
+            UpdateDealerConnectionDiscount();
         }
 
         /// <summary>
@@ -1120,6 +1125,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// ID of the object that added this weapon (if any).
+        /// </summary>
+        public string ParentID
+        {
+            get
+            {
+                return _strParentID;
+            }
+            set
+            {
+                _strParentID = value;
+            }
+        }
+
+        /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
         public List<VehicleMod> Mods
@@ -1335,36 +1355,40 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection))
-                {
-                    if (
-                            (objImprovement.ImprovedName == "Drones" && (
-                                _strCategory.StartsWith("Drones"))) ||
-                            (objImprovement.ImprovedName == "Aircraft" && (
-                                _strCategory == "Fixed-Wing Aircraft" ||
-                                _strCategory == "LTAV" ||
-                                _strCategory == "Rotorcraft" ||
-                                _strCategory == "VTOL/VSTOL")) ||
-                            (objImprovement.ImprovedName == "Watercraft" && (
-                                _strCategory == "Boats" ||
-                                _strCategory == "Submarines")) ||
-                            (objImprovement.ImprovedName == "Groundcraft" && (
-                                _strCategory == "Bikes" ||
-                                _strCategory == "Cars" ||
-                                _strCategory == "Trucks" ||
-                                _strCategory == "Municipal/Construction" ||
-                                _strCategory == "Corpsec/Police/Military"))
-                            )
-                    {
-                        _blnDealerConnectionDiscount = true;
-                    }
-                }
-                return _blnDealerConnectionDiscount;
+                return _blnDealerConnectionDiscount = UpdateDealerConnectionDiscount();
             }
-            set
+        }
+
+        /// <summary>
+        /// Update info on Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
+        /// </summary>
+        public bool UpdateDealerConnectionDiscount()
+        {
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection))
             {
-                _blnDealerConnectionDiscount = value;
+                if (
+                        (objImprovement.UniqueName == "Drones" && (
+                            _strCategory.StartsWith("Drones"))) ||
+                        (objImprovement.UniqueName == "Aircraft" && (
+                            _strCategory == "Fixed-Wing Aircraft" ||
+                            _strCategory == "LTAV" ||
+                            _strCategory == "Rotorcraft" ||
+                            _strCategory == "VTOL/VSTOL")) ||
+                        (objImprovement.UniqueName == "Watercraft" && (
+                            _strCategory == "Boats" ||
+                            _strCategory == "Submarines")) ||
+                        (objImprovement.UniqueName == "Groundcraft" && (
+                            _strCategory == "Bikes" ||
+                            _strCategory == "Cars" ||
+                            _strCategory == "Trucks" ||
+                            _strCategory == "Municipal/Construction" ||
+                            _strCategory == "Corpsec/Police/Military"))
+                        )
+                {
+                    return true;
+                }
             }
+            return false;
         }
         #endregion
 
@@ -2463,6 +2487,14 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return intReturn;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("vehicles.xml")?.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _sourceID + "\"]");
             }
         }
         #endregion

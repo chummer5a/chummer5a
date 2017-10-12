@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,6 +78,8 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
+                if (objXmlCategory["hide"] != null)
+                    continue;
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
                 objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
@@ -368,19 +370,19 @@ namespace Chummer
                     {
                         continue;
                     }
-                            if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                            {
-                                if (objXmlQuality["hide"] == null)
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objXmlQuality["name"].InnerText;
-                                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
+                    {
+                        if (objXmlQuality["hide"] == null)
+                        {
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objXmlQuality["name"].InnerText;
+                            objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
 
-                                    lstLifestyleQuality.Add(objItem);
-                                }
-                            }
+                            lstLifestyleQuality.Add(objItem);
                         }
                     }
+                }
+            }
             SortListItem objSort = new SortListItem();
             lstLifestyleQuality.Sort(objSort.Compare);
             lstLifestyleQualities.BeginUpdate();
@@ -824,8 +826,7 @@ namespace Chummer
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
-                                ImprovementManager _objImprovementManager = new ImprovementManager(_objCharacter);
-                                if (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnOneOfMet = true;
                                 break;
                         }
@@ -1097,8 +1098,7 @@ namespace Chummer
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
-                                ImprovementManager _objImprovementManager = new ImprovementManager(_objCharacter);
-                                if (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnFound = true;
                                 break;
                         }

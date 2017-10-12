@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
@@ -10,7 +10,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Weapon Accessory.
     /// </summary>
-    public class WeaponAccessory : INamedItemWithGuid
+    public class WeaponAccessory : INamedItemWithGuidAndNode
     {
         private Guid _guiID = new Guid();
         private readonly Character _objCharacter;
@@ -172,10 +172,12 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-                XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + _strName + "\"]");
-                _strAltName = objAccessoryNode?["translate"]?.InnerText ?? string.Empty;
-                _strAltPage = objAccessoryNode?["altpage"]?.InnerText ?? string.Empty;
+                XmlNode objAccessoryNode = MyXmlNode;
+                if (objAccessoryNode != null)
+                {
+                    _strAltName = objAccessoryNode["translate"]?.InnerText ?? string.Empty;
+                    _strAltPage = objAccessoryNode["altpage"]?.InnerText ?? string.Empty;
+                }
             }
 
             objNode.Text = DisplayName;
@@ -313,8 +315,7 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-                XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + _strName + "\"]");
+                XmlNode objAccessoryNode = MyXmlNode;
                 if (objAccessoryNode != null)
                 {
                     objAccessoryNode.TryGetStringFieldQuickly("translate", ref _strAltName);
@@ -1117,6 +1118,14 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _blnBlackMarketDiscount = value;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("weapons.xml")?.SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]");
             }
         }
         #endregion

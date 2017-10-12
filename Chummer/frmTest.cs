@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -628,7 +628,6 @@ namespace Chummer
 
                 objXmlDocument = XmlManager.Instance.Load(strFile);
                 Character _objCharacter = new Character();
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 
                 try
                 {
@@ -778,7 +777,7 @@ namespace Chummer
                         if (objXmlPower.Attributes["select"] != null)
                             strForcedValue = objXmlPower.Attributes["select"].InnerText;
 
-                        objPower.Create(objXmlCritterPower, _objCharacter, objNode, intRating, strForcedValue);
+                        objPower.Create(objXmlCritterPower, objNode, intRating, strForcedValue);
                         _objCharacter.CritterPowers.Add(objPower);
                     }
 
@@ -909,9 +908,6 @@ namespace Chummer
                         List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                         objGear.Create(objXmlGearItem, _objCharacter, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                         objGear.Cost = "0";
-                        objGear.Cost3 = "0";
-                        objGear.Cost6 = "0";
-                        objGear.Cost10 = "0";
                         _objCharacter.Gear.Add(objGear);
                     }
                 }

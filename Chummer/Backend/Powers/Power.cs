@@ -15,7 +15,7 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
-    public class Power : INotifyPropertyChanged
+    public class Power : INotifyPropertyChanged, INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private Guid _sourceID = new Guid();
@@ -126,14 +126,14 @@ namespace Chummer
             }
             if (Bonus != null && Bonus.HasChildNodes)
             {
-                if (!CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
                 {
                     this.Deleting = true;
                     CharacterObject.Powers.Remove(this);
                     OnPropertyChanged(nameof(TotalRating));
                     return false;
                 }
-                Extra = CharacterObject.ObjImprovementManager.SelectedValue;
+                Extra = ImprovementManager.SelectedValue;
             }
             if (TotalMaximumLevels < Rating)
             {
@@ -176,7 +176,8 @@ namespace Chummer
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
                 XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (objXmlPower != null) _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
+                if (objXmlPower?["adeptway"] != null)
+                    _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
             LevelsEnabled = Convert.ToBoolean(objNode["levels"]?.InnerText);
@@ -196,9 +197,9 @@ namespace Chummer
             {
                 if (objNode["adeptwayrequires"] == null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID + "\"]");
-                    if (objXmlPower != null) _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
+                    XmlNode objXmlPower = MyXmlNode;
+                    if (objXmlPower != null)
+                        _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
                 }
                 else
                 {
@@ -288,10 +289,8 @@ namespace Chummer
                 // Get the translated name if applicable.
                 else if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                        strReturn = objNode?["translate"]?.InnerText ?? strReturn;
-                    _strDisplayName = strReturn;
+                    _strDisplayName = MyXmlNode?["translate"]?.InnerText ?? strReturn;
+                    strReturn = _strDisplayName;
                 }
 
                 return strReturn;
@@ -516,15 +515,10 @@ namespace Chummer
         {
             get
             {
-                string strReturn = _strPage;
-
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                strReturn = objNode?["altpage"]?.InnerText;
-
-                return strReturn;
+                if (GlobalOptions.Instance.Language == "en-us")
+                    return _strPage;
+                return MyXmlNode?["altpage"]?.InnerText ?? _strPage;
             }
             set
             {
@@ -696,23 +690,32 @@ namespace Chummer
                 {
                     return false;
                 }
-                XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements?.SelectNodes("required/oneof/quality");
-                if (objXmlRequiredList != null)
-                    foreach (XmlNode objNode in objXmlRequiredList)
+                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
+                {
+                    blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == "The Magician's Way");
+                }
+                if (!blnReturn)
+                {
+                    XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements?.SelectNodes("required/oneof/quality");
+                    if (objXmlRequiredList != null)
                     {
-                        if (objNode.Attributes?["extra"] != null)
+                        foreach (XmlNode objNode in objXmlRequiredList)
                         {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
-                            if (blnReturn)
-                                break;
-                        }
-                        else
-                        {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText); 
-                            if (blnReturn)
-                                break;
+                            if (objNode.Attributes?["extra"] != null)
+                            {
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
+                                if (blnReturn)
+                                    break;
+                            }
+                            else
+                            {
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText);
+                                if (blnReturn)
+                                    break;
+                            }
                         }
                     }
+                }
                 if (blnReturn == false && DiscountedAdeptWay)
                 {
                     DiscountedAdeptWay = false;
@@ -730,11 +733,11 @@ namespace Chummer
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
             if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating))
             {
-                CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
                 if (!Deleting)
                 {
-                    CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-                    CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
+                    ImprovementManager.ForcedValue = Extra;
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
                 }
             }
         }
@@ -746,6 +749,14 @@ namespace Chummer
         public bool Deleting { internal get; set; }
 
         public string Category { get; set; }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID + "\"]");
+            }
+        }
 
         /// <summary>
         /// ToolTip that shows how the Power is calculating its Modified Rating.

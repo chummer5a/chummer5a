@@ -5,9 +5,9 @@
   <xsl:template name="MugShot">
     <xsl:if test="mainmugshotbase64 != ''">
       <tr>
-        <td colspan="5" style="text-align:center;">
+        <td colspan="5" style="text-align:center; width: 100%;">
           <br />
-          <img src="data:image/png;base64,{mainmugshotbase64}"/>
+          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
         </td>
       </tr>
     </xsl:if>

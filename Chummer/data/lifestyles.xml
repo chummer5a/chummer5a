@@ -36,7 +36,7 @@
       <multiplier>0</multiplier>
       <source>SR5</source>
       <page>1</page>
-      <hidden />
+      <hide />
     </lifestyle>
     <lifestyle>
       <id>559653df-a9af-44e2-9e04-3044c1d1b421</id>

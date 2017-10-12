@@ -89,6 +89,10 @@
           {
           color: grey;
           }
+          td
+          {
+          page-break-inside: avoid;
+          }
           strong
           {
           font-size: 105%;
@@ -121,14 +125,39 @@
           .page_breaker_on
           {
           page-break-before: always;
-          display: none;
+          visibility: hidden;
           }
           .noprint
           {
           display: none;
           }
           }
+          .mugshot {
+          height: auto;
+          width: auto;
+          max-width: 100%;
+          object-fit: scale-down;
+          image-rendering: optimizeQuality;
+          }
+          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+          .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
+          }
         </style>
+        <!--[if IE]
+        <style type="text/css">
+        .mugshot {
+          height: auto;
+          width: inherit;
+          max-width: 100%;
+          object-fit: scale-down;
+          }
+        </style>
+        -->
 
         <style type="text/css" id="style_colored_headers">
           table.general {border-color: #6a6f29;}
@@ -361,19 +390,20 @@
           <xsl:when test="qualities/quality[name='Aspected Magician']"><td>Special</td><td><strong>Aspected Magician</strong></td></xsl:when>
           <xsl:when test="qualities/quality[name='Magician']"><td>Special</td><td><strong>Magician</strong></td></xsl:when>
           <xsl:when test="qualities/quality[name='Technomancer']"><td>Special</td><td><strong>Technomancer</strong></td></xsl:when>
+          <xsl:otherwise><td></td><td></td></xsl:otherwise>
         </xsl:choose>
       </tr>
-      <tr><td>Age</td><td><strong><xsl:value-of select="age" /></strong></td> <td>Skin</td><td><strong><xsl:value-of select="skin" /></strong></td></tr>
-      <tr><td>Hair</td><td><strong><xsl:value-of select="hair" /></strong></td> <td>Eyes</td><td><strong><xsl:value-of select="eyes" /></strong></td></tr>
-      <tr><td>Height</td><td><strong><xsl:value-of select="height" /></strong></td> <td>Weight</td><td><strong><xsl:value-of select="weight" /></strong></td></tr>
+      <tr><td>Age</td><td><strong><xsl:value-of select="age" /></strong></td> <td>Skin</td><td style="white-space: nowrap;"><strong><xsl:value-of select="skin" /></strong></td></tr>
+      <tr><td>Hair</td><td><strong><xsl:value-of select="hair" /></strong></td> <td>Eyes</td><td style="white-space: nowrap;"><strong><xsl:value-of select="eyes" /></strong></td></tr>
+      <tr><td>Height</td><td><strong><xsl:value-of select="height" /></strong></td> <td>Weight</td><td style="white-space: nowrap;"><strong><xsl:value-of select="weight" /></strong></td></tr>
       <tr><td colspan="4"><hr /></td></tr>
-      <tr><td>Karma</td><td><strong><xsl:value-of select="karma" /></strong></td> <td>Nuyen</td><td><strong><xsl:value-of select="nuyen" /> &#165;</strong></td></tr>
-      <tr><td>Streed Cred</td><td><strong><xsl:value-of select="totalstreetcred" /></strong></td> <td>Career Karma</td><td><strong><xsl:value-of select="totalkarma" /></strong></td></tr>
-      <tr><td>Notoriety</td><td><strong><xsl:value-of select="totalnotoriety" /></strong></td> <td>Public Awareness</td><td><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
+      <tr><td>Karma</td><td><strong><xsl:value-of select="karma" /></strong></td> <td>Nuyen</td><td style="white-space: nowrap;"><strong><xsl:value-of select="nuyen" /> &#165;</strong></td></tr>
+      <tr><td>Streed Cred</td><td><strong><xsl:value-of select="totalstreetcred" /></strong></td> <td>Career Karma</td><td style="white-space: nowrap;"><strong><xsl:value-of select="totalkarma" /></strong></td></tr>
+      <tr><td>Notoriety</td><td><strong><xsl:value-of select="totalnotoriety" /></strong></td> <td>Public Awareness</td><td style="white-space: nowrap;"><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
       <tr><td colspan="4"><hr /></td></tr>
-      <tr><td>Composure</td><td><strong><xsl:value-of select="composure" /></strong></td> <td>Judge Intentions</td><td><strong><xsl:value-of select="judgeintentions" /></strong></td></tr>
-      <tr><td>Memory</td><td><strong><xsl:value-of select="memory" /></strong></td> <td>Lift and Carry</td><td><strong><xsl:value-of select="liftandcarry" /></strong></td></tr>
-      <tr><td>Movement</td><td><strong><xsl:value-of select="movement" /></strong></td> <td>Lift/Carry Weight</td><td><strong><xsl:value-of select="liftweight" />/<xsl:value-of select="carryweight" /></strong></td></tr>
+      <tr><td>Composure</td><td><strong><xsl:value-of select="composure" /></strong></td> <td>Judge Intentions</td><td style="white-space: nowrap;"><strong><xsl:value-of select="judgeintentions" /></strong></td></tr>
+      <tr><td>Memory</td><td><strong><xsl:value-of select="memory" /></strong></td> <td>Lift and Carry</td><td style="white-space: nowrap;"><strong><xsl:value-of select="liftandcarry" /></strong></td></tr>
+      <tr><td>Movement</td><td><strong><xsl:value-of select="movement" /></strong></td> <td>Lift/Carry Weight</td><td style="white-space: nowrap;"><strong><xsl:value-of select="liftweight" />/<xsl:value-of select="carryweight" /></strong></td></tr>
       <tr><td colspan="4"><hr /></td></tr>
       <tr><td>Physical</td><td><strong><xsl:value-of select="limitphysical" /></strong></td> <td>Mental</td><td><strong><xsl:value-of select="limitmental" /></strong></td></tr>
       <tr><td>Social</td><td><strong><xsl:value-of select="limitsocial" /></strong></td> <td>Astral</td><td><strong><xsl:value-of select="limitastral" /></strong></td></tr>
@@ -459,9 +489,9 @@
   <xsl:template name="print_mugshot_and_priorities">
     <table class="stats general">
       <tr><td colspan="2"><div class="bigheader">[Mugshot]</div></td></tr>
-      <tr><td colspan="2">
+      <tr><td colspan="2" style="text-align:center; width: 100%;">
         <xsl:if test="mainmugshotbase64 != ''">
-          <img src="data:image/png;base64,{mainmugshotbase64}" />
+          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
         </xsl:if>
       </td></tr>
       <xsl:if test="prioritymetatype != ''">
@@ -1872,8 +1902,8 @@
               <td width="33%" style="text-align:center;">
                 <table width="100%" cellspacing="0" cellpadding="0" border="0" style="empty-cells:show;">
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 1]">
-                    <tr><td width="100%" style="text-align:center;">
-                      <img>
+                    <tr><td width="100%" style="text-align:center; width: 100%;">
+                      <img class="mugshot">
                         <xsl:attribute name="src">
                           data:image/png;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
@@ -1888,8 +1918,8 @@
                     <tr><td/></tr>
                   </xsl:if>
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 2]">
-                    <tr><td width="100%" style="text-align:center;">
-                      <img>
+                    <tr><td width="100%" style="text-align:center; width: 100%;">
+                      <img class="mugshot">
                         <xsl:attribute name="src">
                           data:image/png;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>
@@ -1904,8 +1934,8 @@
                     <tr><td/></tr>
                   </xsl:if>
                   <xsl:for-each select="othermugshots/mugshot[position() mod 3 = 0]">
-                    <tr><td width="100%" style="text-align:center;">
-                      <img>
+                    <tr><td width="100%" style="text-align:center; width: 100%;">
+                      <img class="mugshot">
                         <xsl:attribute name="src">
                           data:image/png;base64,<xsl:value-of select='stringbase64' />
                         </xsl:attribute>

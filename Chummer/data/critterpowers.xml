@@ -405,6 +405,21 @@
       <action>Auto</action>
       <range>Self</range>
       <duration>Always</duration>
+	  <bonus>
+		<disablecyberwaregrade>Standard</disablecyberwaregrade>
+		<disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
+		<disablecyberwaregrade>Used</disablecyberwaregrade>
+		<disablecyberwaregrade>Alphaware</disablecyberwaregrade>
+		<disablecyberwaregrade>Betaware</disablecyberwaregrade>
+		<disablecyberwaregrade>Omegaware</disablecyberwaregrade>
+		<disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Alphaware (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Betaware (Adapsin)</disablecyberwaregrade>
+		<disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
+		<disablebioware />
+	  </bonus>
       <source>SR5</source>
       <page>400</page>
     </power>

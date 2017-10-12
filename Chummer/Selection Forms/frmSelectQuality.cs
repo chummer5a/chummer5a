@@ -321,9 +321,21 @@ namespace Chummer
                 {
                     strSearch += " and not (metagenetic = 'yes')";
                 }
-                if (nudMinimumBP.Value != 0)
+                if (nudValueBP.Value != 0)
                 {
-                    strSearch += "and karma => " + nudMinimumBP.Value;
+                    strSearch += "and karma = " + nudValueBP.Value;
+                }
+                else
+                {
+                    if (nudMinimumBP.Value != 0)
+                    {
+                        strSearch += "and karma >= " + nudMinimumBP.Value;
+                    }
+
+                    if (nudMaximumBP.Value != 0)
+                    {
+                        strSearch += "and karma <= " + nudMaximumBP.Value;
+                    }
                 }
                 strSearch += "]";
 
@@ -350,6 +362,8 @@ namespace Chummer
 
                 foreach (XmlNode objXmlQuality in objXmlQualityList)
                 {
+                    if (objXmlQuality["hide"] != null)
+                        continue;
                     bool blnQualityAllowed = !blnNeedQualityWhitelist;
                     if (blnNeedQualityWhitelist)
                     {
@@ -361,7 +375,7 @@ namespace Chummer
                             blnQualityAllowed = true;
                     }
 
-                    if (objXmlQuality["hide"] == null && blnQualityAllowed)
+                    if (blnQualityAllowed)
                     {
                         if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
                         {

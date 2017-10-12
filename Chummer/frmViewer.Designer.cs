@@ -75,7 +75,7 @@ namespace Chummer
             this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
-            this.tsSaveAsXml.Click += new EventHandler(this.tsSaveAsXml_Click);
+            this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
             // 
             // tsSaveAsPdf
             // 
@@ -83,7 +83,7 @@ namespace Chummer
             this.tsSaveAsPdf.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
             this.tsSaveAsPdf.Text = "Save as PDF";
-            this.tsSaveAsPdf.Click += new EventHandler(this.tsSaveAsPdf_Click);
+            this.tsSaveAsPdf.Click += new System.EventHandler(this.tsSaveAsPdf_Click);
             // 
             // cmsPrintButton
             // 
@@ -117,9 +117,10 @@ namespace Chummer
             // 
             // cboXSLT
             // 
+            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(509, 14);
+            this.cboXSLT.Location = new System.Drawing.Point(540, 14);
             this.cboXSLT.Name = "cboXSLT";
             this.cboXSLT.Size = new System.Drawing.Size(216, 21);
             this.cboXSLT.TabIndex = 4;
@@ -127,8 +128,9 @@ namespace Chummer
             // 
             // lblCharacterSheet
             // 
+            this.lblCharacterSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCharacterSheet.AutoSize = true;
-            this.lblCharacterSheet.Location = new System.Drawing.Point(416, 17);
+            this.lblCharacterSheet.Location = new System.Drawing.Point(447, 17);
             this.lblCharacterSheet.Name = "lblCharacterSheet";
             this.lblCharacterSheet.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterSheet.TabIndex = 3;

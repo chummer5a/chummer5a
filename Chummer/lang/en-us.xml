@@ -811,6 +811,10 @@
       <key>Checkbox_HideOverAvailLimit</key>
       <text>Hide Items Over Avail Limit ({0})</text>
     </string>
+	<string>
+      <key>Checkbox_ShowOnlyAffordItems</key>
+      <text>Show Only Items I Can Afford</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -1703,6 +1707,10 @@
       <key>Message_DeleteQuality</key>
       <text>Are you sure you want to delete this Quality?</text>
     </string>
+	<string>
+      <key>Message_LowerQualityLevel</key>
+      <text>Are you sure you want to remove a level from this Quality?</text>
+    </string>
     <string>
       <key>Message_DeleteMetatypeQuality</key>
       <text>Are you sure you want to remove this Metatype Quality for {0}?</text>
@@ -1719,6 +1727,10 @@
       <key>Message_DeletePositiveQualityCareer</key>
       <text>Are you sure you want to delete this Positive Quality? You will not receiving any Karma for removing it.</text>
     </string>
+	<string>
+	  <key>Message_LowerPositiveQualityLevelCareer</key>
+	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receiving any Karma for removing it.</text>
+	</string>
     <string>
       <key>Message_DeleteImprovement</key>
       <text>Are you sure you want to delete this Improvement?</text>
@@ -1814,6 +1826,10 @@
     <string>
       <key>Message_MetavariantQuality</key>
       <text>You cannot remove Qualities that come from your Metatype/Metavariant.</text>
+    </string>
+	<string>
+      <key>Message_ImprovementQuality</key>
+      <text>This Quality was added by {0}. You must remove it in order to remove this quality.</text>
     </string>
     <string>
       <key>MessageTitle_MetavariantQuality</key>
@@ -2443,6 +2459,10 @@
       <key>Message_ConfirmKarmaExpenseRemove</key>
       <text>Are you sure you want to spend {1} Karma on removing {0}?</text>
     </string>
+	<string>
+	  <key>Message_ConfirmKarmaExpenseLowerLevel</key>
+	  <text>Are you sure you want to spend {1} Karma on removing a level from {0}?</text>
+	</string>
     <string>
       <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
       <text>Are you sure you want to add this Complex Form Option for {0} Karma?</text>
@@ -3602,6 +3622,10 @@
       <key>Button_SwapQuality</key>
       <text>Swap Quality</text>
     </string>
+	<string>
+		<key>Label_QualityLevel</key>
+		<text>Quality Level:</text>
+	</string>
     <string>
       <key>Button_AddContact</key>
       <text>&amp;Add Contact</text>
@@ -4578,10 +4602,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Mugshot:</text>
     </string>
     <string>
-      <key>Label_MugshotDimensions</key>
-      <text>210px X 310px</text>
-    </string>
-    <string>
       <key>Checkbox_Created</key>
       <text>Mark character as Created</text>
     </string>
@@ -4862,6 +4882,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
       <text>Hide items that are over the Availability Limit during character creation</text>
+    </string>
+	<string>
+      <key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
+      <text>Allow skill points to be used to buy specializations for karma-bought skills</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>
@@ -5689,6 +5713,14 @@ Do you want to continue?</text>
       <key>Checkbox_DiceRoller_RushedJob</key>
       <text>Rushed Job (Glitch on 1 or 2)</text>
     </string>
+	<string>
+      <key>Checkbox_DiceRoller_BubbleDie</key>
+      <text>Bubble Die (Fix Even Dicepool Glitch Chances)</text>
+    </string>
+	<string>
+	  <key>String_BubbleDie</key>
+	  <text>Only for Glitching:</text>
+	</string>
     <string>
       <key>Label_DiceRoller_Result</key>
       <text>Result:</text>
@@ -8462,6 +8494,74 @@ Do you want to continue?</text>
       <key>Message_InvalidCharacters</key>
       <text>This text contains one or more invalid characters. Invalid character(s): "\n Please remove any invalid characters and try again.</text>
     </string>
+	<string>
+	  <key>String_DealerConnection_Drones</key>
+	  <text>Drones</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Groundcraft</key>
+	  <text>Groundcraft</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Watercraft</key>
+	  <text>Watercraft</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Aircraft</key>
+	  <text>Aircraft</text>
+	</string>
+	<string>
+	  <key>Message_MissingSourceBooks</key>
+	  <text>This character was created with the following books that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+	</string>
+	<string>
+	  <key>Message_MissingSourceBooks_Title</key>
+	  <text>Missing Books</text>
+	</string>
+	<string>
+	  <key>Message_MissingCustomDataDirectories</key>
+	  <text>This character was created with the following custom data directories that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+	</string>
+	<string>
+	  <key>Message_MissingCustomDataDirectories_Title</key>
+	  <text>Missing Custom Data Directories</text>
+	</string>
+	<string>
+	  <key>Message_Duplicate_CustomDataDirectoryName</key>
+	  <text>Custom data directory of this name already exists.</text>
+	</string>
+	<string>
+	  <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+	  <text>Duplicate Custom Data Directory Name</text>
+	</string>
+	<string>
+	  <key>Label_CustomDataDirectories</key>
+	  <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+	</string>
+	<string>
+	  <key>Button_AddCustomDirectory</key>
+	  <text>Add Directory</text>
+	</string>
+	<string>
+	  <key>Button_RenameCustomDataDirectory</key>
+	  <text>Rename Entry</text>
+	</string>
+	<string>
+	  <key>Button_RemoveCustomDirectory</key>
+	  <text>Remove Directory</text>
+	</string>
+	<string>
+	  <key>Button_IncreaseCustomDirectoryLoadOrder</key>
+	  <text>Increase Load Order</text>
+	</string>
+	<string>
+	  <key>Button_DecreaseCustomDirectoryLoadOrder</key>
+	  <text>Decrease Load Order</text>
+	</string>
+	<string>
+	  <key>String_ShowAll</key>
+	  <text>Show All</text>
+	</string>
     <!-- End Region -->
     <!-- End Region -->
     <string>

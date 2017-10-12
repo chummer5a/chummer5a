@@ -280,7 +280,7 @@ namespace Chummer
         private void btnReset_Click(object sender, EventArgs e)
         {
             // for every checked character, we re-roll init
-            Random random = new Random();
+            Random random = MersenneTwister.SfmtRandom.Create();
             for (int i = 0; i < characters.Count; i++)
             {
                 if (chkBoxChummer.CheckedIndices.Contains(i))

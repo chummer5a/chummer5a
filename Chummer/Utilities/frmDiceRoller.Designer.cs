@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmDiceRoller
     {
@@ -44,6 +44,7 @@
             this.chkRushJob = new System.Windows.Forms.CheckBox();
             this.nudThreshold = new System.Windows.Forms.NumericUpDown();
             this.lblThreshold = new System.Windows.Forms.Label();
+            this.chkBubbleDie = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudThreshold)).BeginInit();
@@ -83,9 +84,9 @@
             // cmdRollDice
             // 
             this.cmdRollDice.AutoSize = true;
-            this.cmdRollDice.Location = new System.Drawing.Point(250, 4);
+            this.cmdRollDice.Location = new System.Drawing.Point(249, 6);
             this.cmdRollDice.Name = "cmdRollDice";
-            this.cmdRollDice.Size = new System.Drawing.Size(86, 23);
+            this.cmdRollDice.Size = new System.Drawing.Size(87, 23);
             this.cmdRollDice.TabIndex = 10;
             this.cmdRollDice.Tag = "Button_DiceRoller_Roll";
             this.cmdRollDice.Text = "&Roll";
@@ -114,7 +115,7 @@
             // lblResults
             // 
             this.lblResults.AutoSize = true;
-            this.lblResults.Location = new System.Drawing.Point(138, 138);
+            this.lblResults.Location = new System.Drawing.Point(138, 157);
             this.lblResults.Name = "lblResults";
             this.lblResults.Size = new System.Drawing.Size(45, 13);
             this.lblResults.TabIndex = 8;
@@ -124,7 +125,7 @@
             // lblGremlins
             // 
             this.lblGremlins.AutoSize = true;
-            this.lblGremlins.Location = new System.Drawing.Point(138, 108);
+            this.lblGremlins.Location = new System.Drawing.Point(138, 127);
             this.lblGremlins.Name = "lblGremlins";
             this.lblGremlins.Size = new System.Drawing.Size(50, 13);
             this.lblGremlins.TabIndex = 6;
@@ -133,7 +134,7 @@
             // 
             // nudGremlins
             // 
-            this.nudGremlins.Location = new System.Drawing.Point(201, 106);
+            this.nudGremlins.Location = new System.Drawing.Point(201, 125);
             this.nudGremlins.Maximum = new decimal(new int[] {
             4,
             0,
@@ -167,7 +168,7 @@
             // cmdReroll
             // 
             this.cmdReroll.AutoSize = true;
-            this.cmdReroll.Location = new System.Drawing.Point(249, 33);
+            this.cmdReroll.Location = new System.Drawing.Point(249, 29);
             this.cmdReroll.Name = "cmdReroll";
             this.cmdReroll.Size = new System.Drawing.Size(87, 23);
             this.cmdReroll.TabIndex = 11;
@@ -189,7 +190,7 @@
             // 
             // nudThreshold
             // 
-            this.nudThreshold.Location = new System.Drawing.Point(201, 80);
+            this.nudThreshold.Location = new System.Drawing.Point(201, 99);
             this.nudThreshold.Name = "nudThreshold";
             this.nudThreshold.Size = new System.Drawing.Size(45, 20);
             this.nudThreshold.TabIndex = 14;
@@ -197,19 +198,31 @@
             // lblThreshold
             // 
             this.lblThreshold.AutoSize = true;
-            this.lblThreshold.Location = new System.Drawing.Point(138, 82);
+            this.lblThreshold.Location = new System.Drawing.Point(138, 101);
             this.lblThreshold.Name = "lblThreshold";
             this.lblThreshold.Size = new System.Drawing.Size(57, 13);
             this.lblThreshold.TabIndex = 13;
             this.lblThreshold.Tag = "Label_DiceRoller_Threshold";
             this.lblThreshold.Text = "Threshold:";
             // 
+            // chkBubbleDie
+            // 
+            this.chkBubbleDie.AutoSize = true;
+            this.chkBubbleDie.Location = new System.Drawing.Point(141, 79);
+            this.chkBubbleDie.Name = "chkBubbleDie";
+            this.chkBubbleDie.Size = new System.Drawing.Size(248, 17);
+            this.chkBubbleDie.TabIndex = 15;
+            this.chkBubbleDie.Tag = "Checkbox_DiceRoller_BubbleDie";
+            this.chkBubbleDie.Text = "Bubble Die (Fix Even Dicepool Glitch Chances)";
+            this.chkBubbleDie.UseVisualStyleBackColor = true;
+            // 
             // frmDiceRoller
             // 
             this.AcceptButton = this.cmdRollDice;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(348, 268);
+            this.ClientSize = new System.Drawing.Size(389, 268);
+            this.Controls.Add(this.chkBubbleDie);
             this.Controls.Add(this.nudThreshold);
             this.Controls.Add(this.lblThreshold);
             this.Controls.Add(this.chkRushJob);
@@ -259,5 +272,6 @@
         private System.Windows.Forms.CheckBox chkRushJob;
         private System.Windows.Forms.NumericUpDown nudThreshold;
         private System.Windows.Forms.Label lblThreshold;
+        private System.Windows.Forms.CheckBox chkBubbleDie;
     }
 }

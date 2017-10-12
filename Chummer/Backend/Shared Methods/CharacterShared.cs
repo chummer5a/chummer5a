@@ -158,12 +158,11 @@ namespace Chummer
             //Improvement manager defines the functions we need to manipulate improvements
             //When the locals (someday) gets moved to this class, this can be removed and use
             //the local
-            Lazy<ImprovementManager> manager = new Lazy<ImprovementManager>(() => new ImprovementManager(_objCharacter));
 
             // Remove which qualites have been removed or which values have changed
             foreach (Improvement improvement in lstSeekerImprovements)
             {
-                manager.Value.RemoveImprovements(improvement.ImproveSource, improvement.SourceName);
+                ImprovementManager.RemoveImprovements(_objCharacter, improvement.ImproveSource, improvement.SourceName);
             }
 
             // Add new improvements or old improvements with new values
@@ -171,21 +170,18 @@ namespace Chummer
             {
                 if (attribute == "BOX")
                 {
-                    manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
+                    ImprovementManager.CreateImprovement(_objCharacter, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.PhysicalCM,
                         Guid.NewGuid().ToString(), count*-3);
                 }
                 else
                 {
-                    manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
+                    ImprovementManager.CreateImprovement(_objCharacter, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.Attribute,
                         Guid.NewGuid().ToString(), count, 1, 0, 0, count);
                 }
             }
-            if (manager.IsValueCreated)
-            {
-                manager.Value.Commit(); //REFACTOR! WHEN MOVING MANAGER, change this to bool
-            }
+            ImprovementManager.Commit(_objCharacter);
         }
 
         /// <summary>
@@ -195,8 +191,7 @@ namespace Chummer
         /// <param name="lblStun"></param>
         /// <param name="tipTooltip"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip,
-            ImprovementManager _objImprovementManager)
+        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip)
         {
             // Condition Monitor.
             int intBOD = _objCharacter.BOD.TotalValue;
@@ -208,14 +203,14 @@ namespace Chummer
             lblPhysical.Text = intCMPhysical.ToString();
             lblStun.Text = intCMStun.ToString();
             string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
-            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
+            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
                 strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                         _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) + ")";
+                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) + ")";
             tipTooltip.SetToolTip(lblPhysical, strCM);
             strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
-            if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
+            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
                 strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                         _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) + ")";
+                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) + ")";
             tipTooltip.SetToolTip(lblStun, strCM);
         }
 
@@ -226,8 +221,7 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         /// <param name="objImprovementManager"></param>
         /// <param name="lblCMArmor"></param>
-        protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, ImprovementManager objImprovementManager,
-            Label lblCMArmor = null)
+        protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, Label lblCMArmor = null)
         {
             // Armor Ratings.
             lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
@@ -243,13 +237,13 @@ namespace Chummer
             }
 
             // Remove any Improvements from Armor Encumbrance.
-            objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
             // Create the Armor Encumbrance Improvements.
             if (_objCharacter.ArmorEncumbrance < 0)
             {
-                objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+                ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-                objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+                ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
             }
         }
@@ -439,21 +433,37 @@ namespace Chummer
         {
             //Count the child nodes in each treenode.
             int intQualityCount = 0;
-            foreach (TreeNode objTreeNode in treQualities.Nodes)
+            if (!blnForce)
             {
-                intQualityCount += objTreeNode.Nodes.Count;
+                foreach (TreeNode objTreeNode in treQualities.Nodes)
+                {
+                    intQualityCount += objTreeNode.Nodes.Count;
+                }
             }
 
             //If the node count is the same as the quality count, there's no need to do anything.
-            if (intQualityCount != _objCharacter.Qualities.Count || blnForce)
+            if (blnForce || intQualityCount != _objCharacter.Qualities.Count)
             {
+                // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
+                HashSet<string> strQualitiesToPrint = new HashSet<string>();
                 foreach (TreeNode objTreeNode in treQualities.Nodes)
                 {
                     objTreeNode.Nodes.Clear();
                 }
+                foreach (Quality objQuality in _objCharacter.Qualities)
+                {
+                    if (!strQualitiesToPrint.Contains(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                    {
+                        strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    }
+                }
                 // Populate the Qualities list.
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
+                    if (strQualitiesToPrint.Contains(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                        strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    else
+                        continue;
                     TreeNode objNode = new TreeNode();
                     objNode.Text = objQuality.DisplayName;
                     objNode.Tag = objQuality.InternalId;
@@ -461,11 +471,11 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(objQuality.Notes))
                         objNode.ForeColor = Color.SaddleBrown;
-                    else
+                    else if (objQuality.OriginSource == QualitySource.Metatype ||
+                            objQuality.OriginSource == QualitySource.MetatypeRemovable ||
+                            objQuality.OriginSource == QualitySource.Improvement)
                     {
-                        if (objQuality.OriginSource == QualitySource.Metatype ||
-                            objQuality.OriginSource == QualitySource.MetatypeRemovable)
-                            objNode.ForeColor = SystemColors.GrayText;
+                        objNode.ForeColor = SystemColors.GrayText;
                     }
                     objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
 
@@ -489,13 +499,38 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Refreshes all the names of qualities in the nodes
+        /// </summary>
+        /// <param name="treQualities">Treeview to insert the qualities into.</param>
+        protected void RefreshQualityNames(TreeView treQualities)
+        {
+            TreeNode objSelectedNode = null;
+            foreach (Quality objQuality in _objCharacter.Qualities)
+            {
+                for (int i = 0; i <= 1; i++)
+                {
+                    foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
+                    {
+                        if (objSelectedNode == null && objTreeNode == treQualities.SelectedNode)
+                            objSelectedNode = objTreeNode;
+                        if (objTreeNode.Tag.ToString() == objQuality.InternalId)
+                        {
+                            objTreeNode.Text = objQuality.DisplayName;
+                        }
+                    }
+                }
+            }
+            if (objSelectedNode != null)
+                treQualities.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
         /// <param name="treQualities"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities,
-            ImprovementManager _objImprovementManager)
+        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities)
         {
             foreach (XmlNode objNode in objNodeList)
             {
@@ -503,25 +538,30 @@ namespace Chummer
                 {
                     if (objQuality.Name == objNode.InnerText)
                     {
-                        switch (objQuality.Type)
-                        {
-                            case QualityType.Positive:
-                                foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
-                                {
-                                    if (nodQuality.Text == objQuality.Name)
-                                        nodQuality.Remove();
-                                }
-                                break;
-                            case QualityType.Negative:
-                                foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
-                                {
-                                    if (nodQuality.Text == objQuality.Name)
-                                        nodQuality.Remove();
-                                }
-                                break;
-                        }
                         _objCharacter.Qualities.Remove(objQuality);
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                        if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.Name == objQuality.Name && objExistingQuality.Extra == objQuality.Extra))
+                        {
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
+                                    {
+                                        if (nodQuality.Text == objQuality.Name)
+                                            nodQuality.Remove();
+                                    }
+                                    break;
+                                case QualityType.Negative:
+                                    foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
+                                    {
+                                        if (nodQuality.Text == objQuality.Name)
+                                            nodQuality.Remove();
+                                    }
+                                    break;
+                            }
+                        }
+                        else
+                            RefreshQualityNames(treQualities);
                         break;
                     }
                 }
@@ -588,6 +628,10 @@ namespace Chummer
                 objImageStream.Close();
             }
 
+            if (imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width)
+                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            else
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             picMugshot.Image = imgMugshot;
 
             return true;
@@ -625,7 +669,7 @@ namespace Chummer
         /// <param name="attributeText"></param>
         /// <param name="valueText"></param>
         /// <param name="tooltip"></param>
-        public void CalculateTraditionDrain(string strDrain, ImprovementManager objImprovementManager, Improvement.ImprovementType drain, Label attributeText, Label valueText, ToolTip tooltip)
+        public void CalculateTraditionDrain(string strDrain, Improvement.ImprovementType drain, Label attributeText, Label valueText, ToolTip tooltip)
         {
             if (string.IsNullOrWhiteSpace(strDrain))
                 return;
@@ -644,7 +688,7 @@ namespace Chummer
             XPathExpression xprFading = nav.Compile(strDrain);
             object o = nav.Evaluate(xprFading);
             if (o != null) intDrain = Convert.ToInt32(o.ToString());
-            intDrain += objImprovementManager.ValueOf(drain);
+            intDrain += ImprovementManager.ValueOf(_objCharacter, drain);
             attributeText.Text = strDisplayDrain;
             valueText.Text = intDrain.ToString();
             strTip = Character.AttributeStrings.Select(strAttribute => _objCharacter.GetAttribute(strAttribute)).Aggregate(strTip, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")"));

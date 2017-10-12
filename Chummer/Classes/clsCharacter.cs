@@ -52,7 +52,6 @@ namespace Chummer
         private XmlNode oldSkillsBackup;
         private XmlNode oldSKillGroupBackup;
 
-        private readonly ImprovementManager _objImprovementManager;
         private readonly CharacterOptions _objOptions;
 
         private string _strFileName = string.Empty;
@@ -225,6 +224,7 @@ namespace Chummer
 
         // Lists.
         private List<string> _lstSources = new List<string>();
+        private List<string> _lstCustomDataDirectoryNames = new List<string>();
         private List<Improvement> _lstImprovements = new List<Improvement>();
         private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
@@ -327,7 +327,6 @@ namespace Chummer
             ESS._objCharacter = this;
             DEP._objCharacter = this;
 
-            _objImprovementManager = new ImprovementManager(this);
             _objOptions = new CharacterOptions(this);
             SkillsSection = new SkillsSection(this);
             SkillsSection.Reset();
@@ -931,6 +930,15 @@ namespace Chummer
             objWriter.WriteEndElement();
             // </sources>
 
+            // <sources>
+            objWriter.WriteStartElement("customdatadirectorynames");
+            foreach (string strItem in _lstCustomDataDirectoryNames)
+            {
+                objWriter.WriteElementString("directoryname", strItem);
+            }
+            objWriter.WriteEndElement();
+            // </sources>
+
             // </character>
             objWriter.WriteEndElement();
 
@@ -1028,30 +1036,48 @@ namespace Chummer
                 return false;
 
             // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                if (objXmlCharacter["sources"] != null)
-                {
-                    bool blnMissingBooks = false;
+            if (objXmlCharacter["sources"] != null)
+            {
                 string strMissingBooks = string.Empty;
-                    //Does the list of enabled books contain the current item?
+                //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in objXmlCharacter["sources"].ChildNodes)
-                    {
+                {
                     if (objXmlNode.InnerText.Length > 0 && !_objOptions.Books.Contains(objXmlNode.InnerText))
                     {
                         strMissingBooks += (objXmlNode.InnerText + ";");
-                        blnMissingBooks = true;
                     }
                 }
-                    if (blnMissingBooks)
+                if (!string.IsNullOrEmpty(strMissingBooks))
                 {
-                    string strMessage =
-                        "This character was created with the following books that are not enabled:\n {0} \nThis may cause issues. Do you want to continue loading the character?"
-                            .Replace("{0}", TranslatedBookList(strMissingBooks));
-                    if (MessageBox.Show(strMessage, "Missing Books", MessageBoxButtons.YesNo) == DialogResult.No)
-                        {
-                            return false;
-                        }
+                    string strMessage = LanguageManager.Instance.GetString("Message_MissingSourceBooks").Replace("{0}", TranslatedBookList(strMissingBooks));
+                    if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("Message_MissingSourceBooks_Title"), MessageBoxButtons.YesNo) == DialogResult.No)
+                    {
+                        return false;
                     }
                 }
+            }
+
+            // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
+            if (objXmlCharacter["customdatadirectorynames"] != null)
+            {
+                string strMissingSourceNames = string.Empty;
+                //Does the list of enabled books contain the current item?
+                foreach (XmlNode objXmlNode in objXmlCharacter["customdatadirectorynames"].ChildNodes)
+                {
+                    if (objXmlNode.InnerText.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(objXmlNode.InnerText))
+                    {
+                        strMissingSourceNames += (objXmlNode.InnerText + ";\n");
+                    }
+                }
+                if (!string.IsNullOrEmpty(strMissingSourceNames))
+                {
+                    string strMessage = LanguageManager.Instance.GetString("Message_MissingCustomDataDirectories").Replace("{0}", strMissingSourceNames);
+                    if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("Message_MissingCustomDataDirectories_Title"), MessageBoxButtons.YesNo) == DialogResult.No)
+                    {
+                        return false;
+                    }
+                }
+            }
 
             if (objXmlCharacter["essenceatspecialstart"] != null)
             {
@@ -1232,9 +1258,12 @@ namespace Chummer
             {
                 if (objXmlQuality["name"] != null)
                 {
-                    Quality objQuality = new Quality(this);
-                    objQuality.Load(objXmlQuality);
-                    _lstQualities.Add(objQuality);
+                    if (!CorrectedUnleveledQuality(objXmlQuality))
+                    {
+                        Quality objQuality = new Quality(this);
+                        objQuality.Load(objXmlQuality);
+                        _lstQualities.Add(objQuality);
+                    }
                 }
                 else
                 {
@@ -1757,7 +1786,7 @@ namespace Chummer
                 {
                     blnFoundUnarmed = true;
                     break;
-            }
+                }
             }
 
             if (!blnFoundUnarmed)
@@ -1770,10 +1799,10 @@ namespace Chummer
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(this);
                     objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null);
-                    objGearWeaponNode.ForeColor = SystemColors.GrayText;
+                    objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                     _lstWeapons.Add(objWeapon);
                 }
-                }
+            }
 
             Timekeeper.Finish("load_char_unarmed");
             Timekeeper.Start("load_char_dwarffix");
@@ -1852,7 +1881,7 @@ namespace Chummer
                 {
                     XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
                     XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[name = \"" + mentorQuality.Extra + "\"]");
-                    _objImprovementManager.CreateImprovement("", Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
+                    ImprovementManager.CreateImprovement(this, "", Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
                         Improvement.ImprovementType.MentorSpirit, mentorDoc["id"].InnerText);
                 }
             }
@@ -2002,6 +2031,7 @@ namespace Chummer
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
                 objWriter.WriteStartElement("othermugshots");
+                int i = 0;
                 foreach (string strMugshot in Mugshots)
                 {
                     if (strMugshot == MainMugshot)
@@ -2013,12 +2043,13 @@ namespace Chummer
                     objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
                     objImageStream.Write(bytImage, 0, bytImage.Length);
                     imgMugshot = Image.FromStream(objImageStream, true);
-                    imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + ".img");
+                    imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
                     objWriter.WriteEndElement();
-            }
+                    ++i;
+                }
                 // </mugshots>
                 objWriter.WriteEndElement();
             }
@@ -2155,7 +2186,7 @@ namespace Chummer
                 XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
+                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
                 objWriter.WriteStartElement("drainattribute");
@@ -2227,7 +2258,7 @@ namespace Chummer
                 XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Fading Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
+                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
             }
@@ -2269,7 +2300,9 @@ namespace Chummer
             // <cmthreshold>
             objWriter.WriteElementString("cmthreshold", CMThreshold.ToString());
             // <cmthresholdoffset>
-            objWriter.WriteElementString("cmthresholdoffset", CMThresholdOffset.ToString());
+            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString());
+            // <cmthresholdoffset>
+            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString());
             // <cmoverflow>
             objWriter.WriteElementString("cmoverflow", CMOverflow.ToString());
 
@@ -2278,7 +2311,7 @@ namespace Chummer
             objWriter.WriteElementString("init", Initiative);
             objWriter.WriteElementString("initdice", InitiativeDice.ToString());
             objWriter.WriteElementString("initvalue", InitiativeValue.ToString());
-            objWriter.WriteElementString("initbonus", Math.Max(_objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative), 0).ToString());
+            objWriter.WriteElementString("initbonus", Math.Max(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative), 0).ToString());
 
             // Astral Initiative.
             if (MAGEnabled)
@@ -2525,10 +2558,28 @@ namespace Chummer
             XmlManager.Instance.Load("qualities.xml");
 
             // <qualities>
+            // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
+            Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(_lstQualities.Count);
+            foreach (Quality objQuality in _lstQualities)
+            {
+                if (strQualitiesToPrint.ContainsKey(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                {
+                    strQualitiesToPrint[objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra] += 1;
+                }
+                else
+                {
+                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra, 1);
+                }
+            }
+            int intLoopRating = 0;
             objWriter.WriteStartElement("qualities");
             foreach (Quality objQuality in _lstQualities)
             {
-                objQuality.Print(objWriter);
+                if (strQualitiesToPrint.TryGetValue(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra, out intLoopRating))
+                {
+                    objQuality.Print(objWriter, intLoopRating);
+                    strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                }
             }
             // </qualities>
             objWriter.WriteEndElement();
@@ -2564,11 +2615,11 @@ namespace Chummer
                 Commlink objLivingPersona = new Commlink(this);
                 objLivingPersona.Name = LanguageManager.Instance.GetString("String_LivingPersona");
                 objLivingPersona.Category = LanguageManager.Instance.GetString("String_Commlink");
-                objLivingPersona.DeviceRating = RES.TotalValue;
-                objLivingPersona.Attack = CHA.TotalValue;
-                objLivingPersona.Sleaze = INT.TotalValue;
-                objLivingPersona.DataProcessing = LOG.TotalValue;
-                objLivingPersona.Firewall = WIL.TotalValue;
+                objLivingPersona.DeviceRating = RES.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.Attack = CHA.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.Sleaze = INT.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.DataProcessing = LOG.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
+                objLivingPersona.Firewall = WIL.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
                 objLivingPersona.Source = _objOptions.LanguageBookShort("SR5");
                 objLivingPersona.Page = "251";
                 objLivingPersona.IsLivingPersona = true;
@@ -2627,7 +2678,7 @@ namespace Chummer
             objWriter.WriteStartElement("calendar");
             //_lstCalendar.Sort();
             foreach (CalendarWeek objWeek in _lstCalendar)
-                objWeek.Print(objWriter);
+                objWeek.Print(objWriter, Options.PrintNotes);
             // </expenses>
             objWriter.WriteEndElement();
 
@@ -4444,6 +4495,7 @@ namespace Chummer
             {
                 bool blnOldValue = _blnRESEnabled;
                 _blnRESEnabled = value;
+                ImprovementManager.ClearCachedValue(Improvement.ImprovementType.MatrixInitiativeDice);
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                     if (blnOldValue != value)
@@ -4572,8 +4624,8 @@ namespace Chummer
                                 decBioware += objCyberware.CalculatedESS();
                         }
                     }
-                decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenalty));
-                decESS += Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
+                decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty));
+                decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
 
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
@@ -4629,7 +4681,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToDecimal(ESS.MetatypeMaximum + _objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
+                return Convert.ToDecimal(ESS.MetatypeMaximum + ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -4641,7 +4693,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to RES and DEP.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
 
@@ -4653,7 +4705,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum, but taking into account essence modifiers that only affect MAG. Round the remaining amount up to get the total penalty to MAG.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
+                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
             }
         }
 
@@ -4679,7 +4731,7 @@ namespace Chummer
         {
             get
             {
-                int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativeDiceAdd));
+                int intExtraIP = 1 + Convert.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd));
 
                 return Math.Min(intExtraIP, 5);
             }
@@ -4690,7 +4742,7 @@ namespace Chummer
             get
             {
                 int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifiers;
-                intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative);
+                intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative);
                 if (intINI < 0)
                     intINI = 0;
                 return intINI;
@@ -4787,12 +4839,12 @@ namespace Chummer
                 int intReturn;
                 // A.I.s always have 4 Matrix Initiative Dice.
                 if (_strMetatype == "A.I.")
-                    intReturn = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice);
+                    intReturn = 4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice);
                 else
                     intReturn = InitiativeDice;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
-                intReturn += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDiceAdd);
+                intReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd);
 
                 return Math.Min(intReturn, 5);
             }
@@ -4828,7 +4880,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeValue;
                 }
-                return INT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+                return INT.TotalValue + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
             }
         }
 
@@ -4843,7 +4895,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeDice;
                 }
-                return Math.Min(3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice),5);
+                return Math.Min(3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice),5);
             }
         }
 #endregion
@@ -4877,7 +4929,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeValue;
             }
-                return INT.TotalValue + WoundModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiative); ;
+                return INT.TotalValue + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
             }
         }
 
@@ -4892,7 +4944,7 @@ namespace Chummer
                 {
                     return MatrixInitiativeDice;
             }
-                return Math.Min(4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativeDice), 5);
+                return Math.Min(4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice), 5);
             }
         }
 #endregion
@@ -4906,7 +4958,7 @@ namespace Chummer
         {
             get
             {
-                return _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellResistance);
+                return ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance);
             }
         }
 #endregion
@@ -4919,7 +4971,7 @@ namespace Chummer
         {
             get
             {
-                return WIL.TotalValue + CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Composure);
+                return WIL.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
             }
         }
 
@@ -4930,7 +4982,7 @@ namespace Chummer
         {
             get
             {
-                return INT.TotalValue + CHA.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.JudgeIntentions);
+                return INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions);
             }
         }
 
@@ -4941,7 +4993,7 @@ namespace Chummer
         {
             get
             {
-                return STR.TotalValue + BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.LiftAndCarry);
+                return STR.TotalValue + BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
             }
         }
 
@@ -4952,7 +5004,7 @@ namespace Chummer
         {
             get
             {
-                return LOG.TotalValue + WIL.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.Memory);
+                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
             }
         }
 #endregion
@@ -5011,7 +5063,7 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = _objImprovementManager.ValueOf(Improvement.ImprovementType.Notoriety);
+                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);
 
                 foreach (Contact objContact in _lstContacts)
                 {
@@ -5084,10 +5136,7 @@ namespace Chummer
                     intReturn = (TotalStreetCred + TotalNotoriety) / 3;
                 }
 
-                ImprovementManager manager = new ImprovementManager(this);
-
-
-                return intReturn + manager.ValueOf(Improvement.ImprovementType.PublicAwareness);
+                return intReturn + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PublicAwareness);
             }
         }
 
@@ -5536,7 +5585,7 @@ namespace Chummer
         {
             get
             {
-                return ArmorRating + _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);
+                return ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
             }
         }
 
@@ -5547,7 +5596,7 @@ namespace Chummer
         {
             get
             {
-                return _objImprovementManager.ValueOf(Improvement.ImprovementType.Dodge);
+                return ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
             }
         }
 
@@ -5619,7 +5668,7 @@ namespace Chummer
                     intCMPhysical += (BOD.TotalValue + 1) / 2;
                 }
                 // Include Improvements in the Condition Monitor values.
-                intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
+                intCMPhysical += ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
                 return intCMPhysical;
             }
         }
@@ -5637,7 +5686,7 @@ namespace Chummer
                 {
                     intCMStun = 8 + (WIL.TotalValue + 1) / 2;
                 // Include Improvements in the Condition Monitor values.
-                intCMStun += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM));
+                intCMStun += ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
                 }
                 return intCMStun;
             }
@@ -5650,20 +5699,36 @@ namespace Chummer
         {
             get
             {
-                int intCMThreshold = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThreshold);
+                int intCMThreshold = 3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThreshold);
                 return intCMThreshold;
             }
         }
 
         /// <summary>
-        /// Number of additioal boxes appear before the first Condition Monitor penalty.
+        /// Number of additioal boxes appear before the first Physical Condition Monitor penalty.
         /// </summary>
-        public int CMThresholdOffset
+        public int PhysicalCMThresholdOffset
         {
             get
             {
-                int intCMThresholdOffset = _objImprovementManager.ValueOf(Improvement.ImprovementType.CMThresholdOffset);
-                return intCMThresholdOffset;
+                int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
+                // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
+                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(StunCMFilled - CMThreshold, 0);
+                return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
+            }
+        }
+
+        /// <summary>
+        /// Number of additioal boxes appear before the first Stun Condition Monitor penalty.
+        /// </summary>
+        public int StunCMThresholdOffset
+        {
+            get
+            {
+                int intCMThresholdOffset = ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
+                // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
+                int intCMSharedThresholdOffset = intCMThresholdOffset + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset) - Math.Max(PhysicalCMFilled - CMThreshold, 0);
+                return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
             }
         }
 
@@ -5679,7 +5744,7 @@ namespace Chummer
                 if (!(_strMetatype.Contains("A.I.") || _strMetatypeCategory == "Protosapients"))
                 {
                 // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
-                    intCMOverflow = BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.CMOverflow) + 1;
+                    intCMOverflow = BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMOverflow) + 1;
                 }
                 return intCMOverflow;
             }
@@ -5831,7 +5896,7 @@ namespace Chummer
         {
             get
             {
-                decimal decImprovement = Convert.ToDecimal(_objImprovementManager.ValueOf(Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.InvariantCultureInfo);
+                decimal decImprovement = Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.InvariantCultureInfo);
                 if (_objBuildMethod == CharacterBuildMethod.Karma)
                     decImprovement *= 2.0m;
 
@@ -5884,7 +5949,7 @@ namespace Chummer
                 {
                     intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
                 }
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
+                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
                 return Convert.ToString(intLimit);
             }
         }
@@ -5918,7 +5983,7 @@ namespace Chummer
                         }
                     }
                 }
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
+                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
                 return intLimit;
             }
         }
@@ -5946,7 +6011,7 @@ namespace Chummer
                 {
                     intLimit = (CHA.TotalValue * 2 + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
                 }
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.SocialLimit);
+                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit);
                 return intLimit;
             }
         }
@@ -6069,10 +6134,8 @@ namespace Chummer
             string[] strReturn = _strWalk.Split('/');
 
             int intTmp = 0;
-            if (Improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
+            if (Improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
             {
-                int impValue = 0;
                 Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType);
                 return imp.Value;
             }
@@ -6163,19 +6226,19 @@ namespace Chummer
         private string CalculatedMovement(Improvement.ImprovementType objImprovementType, string strMovementType, bool blnUseCyberlegs = false)
         {
             string strReturn;
-                int intMultiply = 1;
-                // If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
-                if (strMovementType == "Fly" && _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) < 0)
-                {
-                    intMultiply = _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) * -1;
-                }
-                double dblPercent = _objImprovementManager.ValueOf(objImprovementType) / 100.0;
+            int intMultiply = 1;
+            // If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
+            if (strMovementType == "Fly" && ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) < 0)
+            {
+                intMultiply = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) * -1;
+            }
+            double dblPercent = ImprovementManager.ValueOf(this, objImprovementType) / 100.0;
 
-                int intRun = 0;
-                int intWalk = 0;
+            int intRun = 0;
+            int intWalk = 0;
             int intSprint = SprintingRate(strMovementType) * intMultiply;
-            int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
-            int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+            int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
+            int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
 
             intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
             intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
@@ -6771,17 +6834,7 @@ namespace Chummer
         {
             get
             {
-                bool blnReturn = false;
-                foreach (Quality objQuality in _lstQualities)
-                {
-                    if (objQuality.Name == "The Burnout's Way")
-                    {
-                        blnReturn = true;
-                        break;
-                    }
-                }
-
-                return blnReturn;
+                return _lstQualities.Any(objQuality => objQuality.Name == "The Burnout's Way");
             }
         }
 
@@ -7059,9 +7112,465 @@ namespace Chummer
 
             return strTemp;
         }
-#endregion
 
-#region Temporary Properties : Dashboard
+        /// <summary>
+        /// Check for older instances of certain qualities that were manually numbered to be replaced with multiple instances of the first level quality (so that it works with the level system)
+        /// Returns true if it's a corrected quality, false otherwise
+        /// </summary>
+        /// <param name="strQuality">String to parse.</param>
+        private bool CorrectedUnleveledQuality(XmlNode objOldXmlQuality)
+        {
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlNode objXmlNewQuality = null;
+            int intRanks = 0;
+            switch (objOldXmlQuality["name"].InnerText)
+            {
+                case "Focused Concentration (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Focused Concentration (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Focused Concentration (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Focused Concentration (Rating 4)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Focused Concentration (Rating 5)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 5;
+                        break;
+                    }
+                case "Focused Concentration (Rating 6)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        intRanks = 6;
+                        break;
+                    }
+                case "High Pain Tolerance (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "High Pain Tolerance (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "High Pain Tolerance (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Magic Resistance (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Magic Resistance (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Magic Resistance (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Magic Resistance (Rating 4)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Will to Live (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Will to Live (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Will to Live (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Gremlins (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Gremlins (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Gremlins (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Gremlins (Rating 4)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Aged (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Aged (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Aged (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Illness (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Illness (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Illness (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Perceptive I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Perceptive II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Spike Resistance I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Spike Resistance II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Spike Resistance III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Tough as Nails Physical I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Tough as Nails Physical II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Tough as Nails Physical III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Tough as Nails Stun I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Tough as Nails Stun II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Tough as Nails Stun III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Dimmer Bulb I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Dimmer Bulb II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Dimmer Bulb III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "In Debt I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "In Debt II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "In Debt III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "In Debt IV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "In Debt V":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 5;
+                        break;
+                    }
+                case "In Debt VI":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 6;
+                        break;
+                    }
+                case "In Debt VII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 7;
+                        break;
+                    }
+                case "In Debt VIII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 8;
+                        break;
+                    }
+                case "In Debt IX":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 9;
+                        break;
+                    }
+                case "In Debt X":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 10;
+                        break;
+                    }
+                case "In Debt XI":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 11;
+                        break;
+                    }
+                case "In Debt XII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 12;
+                        break;
+                    }
+                case "In Debt XIII":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 13;
+                        break;
+                    }
+                case "In Debt XIV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 14;
+                        break;
+                    }
+                case "In Debt XV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        intRanks = 15;
+                        break;
+                    }
+                case "Infirm I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Infirm II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Infirm III":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Infirm IV":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 4;
+                        break;
+                    }
+                case "Infirm V":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        intRanks = 5;
+                        break;
+                    }
+                case "Shiva Arms (1 Pair)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Shiva Arms (2 Pair)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Arcane Arrester I":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Arcane Arrester II":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Pilot Origins (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Pilot Origins (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Pilot Origins (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        intRanks = 3;
+                        break;
+                    }
+                case "Social Appearance Anxiety (Rating 1)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        intRanks = 1;
+                        break;
+                    }
+                case "Social Appearance Anxiety (Rating 2)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        intRanks = 2;
+                        break;
+                    }
+                case "Social Appearance Anxiety (Rating 3)":
+                    {
+                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        intRanks = 3;
+                        break;
+                    }
+            }
+            if (intRanks > 0)
+            {
+                for (int i = 0; i < intRanks; ++i)
+                {
+                    Quality objQuality = new Quality(this);
+                    Guid guidOld;
+                    if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out guidOld))
+                        objQuality.setGUID(guidOld);
+                    QualitySource objQualitySource = QualitySource.Selected;
+                    if (objOldXmlQuality["qualitysource"] != null)
+                        objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"].InnerText);
+                    objQuality.Create(objXmlNewQuality, this, objQualitySource, new TreeNode(), new List<Weapon>(), new List<TreeNode>(), objOldXmlQuality["extra"]?.InnerText);
+                    int intOldBP;
+                    if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out intOldBP))
+                        objQuality.BP = intOldBP / intRanks;
+
+                    _lstQualities.Add(objQuality);
+                }
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region Temporary Properties : Dashboard
         // This region is for properties that are applicable to the Dashboard
         /// <summary>
         /// The Current Initiative roll result including base Initiative
@@ -7248,11 +7757,6 @@ namespace Chummer
 
         public SkillsSection SkillsSection { get; }
 
-        public ImprovementManager ObjImprovementManager
-        {
-            get { return _objImprovementManager; }
-        }
-
 
         public int RedlinerBonus
         {
@@ -7296,8 +7800,8 @@ namespace Chummer
         }
 
         //I also think this prevents GC. But there is no good way to do it...
-        internal event Action<List<Improvement>, ImprovementManager> SkillImprovementEvent;
-        internal event Action<List<Improvement>, ImprovementManager> AttributeImprovementEvent;
+        internal event Action<List<Improvement>> SkillImprovementEvent;
+        internal event Action<List<Improvement>> AttributeImprovementEvent;
 
         //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down
         private static readonly Improvement.ImprovementType[] skillRelated = {
@@ -7318,6 +7822,7 @@ namespace Chummer
             Improvement.ImprovementType.SkillKnowledgeForced, //A skill gained from a knowsoft
             Improvement.ImprovementType.SpecialSkills,
             Improvement.ImprovementType.ReflexRecorderOptimization,
+            Improvement.ImprovementType.DisableSpecializationEffects,
         };
 
         //List of events that might be able to affect attributes. TODO: Should this just be merged into skillRelated?
@@ -7330,15 +7835,15 @@ namespace Chummer
         //Ugly, ugly done, but we cannot get events out of it today
         // FUTURE REFACTOR HERE
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        internal void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
+        internal void ImprovementHook(List<Improvement> _lstTransaction)
         {
             if (_lstTransaction.Any(x => skillRelated.Any(y => y == x.ImproveType)))
             {
-                SkillImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+                SkillImprovementEvent?.Invoke(_lstTransaction);
             }
             if (_lstTransaction.Any(x => attribRelated.Any(y => y == x.ImproveType)))
             {
-                AttributeImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+                AttributeImprovementEvent?.Invoke(_lstTransaction);
             }
         }
 

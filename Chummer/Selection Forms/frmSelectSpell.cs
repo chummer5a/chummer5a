@@ -70,7 +70,7 @@ namespace Chummer
 
             //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
             //in Career Mode. Create mode manages itself.
-            int intFreeGenericSpells = _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeSpells);
+            int intFreeGenericSpells = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpells);
             int intFreeTouchOnlySpells = 0;
             foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
             {
@@ -84,7 +84,7 @@ namespace Chummer
             }
             foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
             {
-                int intSkillValue = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName).LearnedRating;
+                int intSkillValue = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName).TotalBaseRating;
                 if (imp.UniqueName.Contains("half"))
                     intSkillValue = (intSkillValue + 1) / 2;
                 if (imp.UniqueName.Contains("touchonly"))

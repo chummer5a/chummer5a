@@ -157,9 +157,9 @@
             // lstMod
             // 
             this.lstMod.FormattingEnabled = true;
-            this.lstMod.Location = new System.Drawing.Point(15, 31);
+            this.lstMod.Location = new System.Drawing.Point(15, 44);
             this.lstMod.Name = "lstMod";
-            this.lstMod.Size = new System.Drawing.Size(237, 368);
+            this.lstMod.Size = new System.Drawing.Size(237, 355);
             this.lstMod.TabIndex = 22;
             this.lstMod.SelectedIndexChanged += new System.EventHandler(this.lstMod_SelectedIndexChanged);
             this.lstMod.DoubleClick += new System.EventHandler(this.lstMod_DoubleClick);

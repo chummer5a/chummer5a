@@ -50,7 +50,8 @@ namespace Chummer
         Metatype = 1,
         MetatypeRemovable = 2,
         BuiltIn = 3,
-        LifeModule = 4
+        LifeModule = 4,
+        Improvement = 5
     }
 
     /// <summary>
@@ -70,7 +71,7 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
-    public class Quality : INamedItemWithGuid
+    public class Quality : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -85,10 +86,10 @@ namespace Chummer
         private bool _blnPrint = true;
         private bool _blnDoubleCostCareer = true;
         private bool _blnCanBuyWithSpellPoints = false;
-        private int _intBP;
-        private int _intLP;
+        private int _intBP = 0;
         private QualityType _objQualityType = QualityType.Positive;
         private QualitySource _objQualitySource = QualitySource.Selected;
+        private string _strSourceName = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
@@ -126,7 +127,7 @@ namespace Chummer
         /// Convert a string to a QualitySource.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public QualitySource ConvertToQualitySource(string strValue)
+        public static QualitySource ConvertToQualitySource(string strValue)
         {
             switch (strValue)
             {
@@ -138,6 +139,8 @@ namespace Chummer
                     return QualitySource.LifeModule;
                 case "Built-In":
                     return QualitySource.BuiltIn;
+                case "Improvement":
+                    return QualitySource.Improvement;
                 default:
                     return QualitySource.Selected;
             }
@@ -151,6 +154,10 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
+        public void setGUID(Guid guidExisting)
+        {
+            _guiID = guidExisting;
+        }
 
         /// <summary>
         /// Create a Quality from an XmlNode and return the TreeNodes for it.
@@ -162,15 +169,16 @@ namespace Chummer
         /// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
+        public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", string strSourceName = "")
         {
+            _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlQuality.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
             // Check for a Variable Cost.
             if (objXmlQuality["karma"] != null)
             {
-            if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
-            {
+                if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
+                {
                     int intMin;
                     int intMax = 0;
                     string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
@@ -195,13 +203,12 @@ namespace Chummer
                         frmPickNumber.ShowDialog();
                         _intBP = frmPickNumber.SelectedValue;
                     }
+                }
+                else
+                {
+                    _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+                }
             }
-            else
-            {
-                _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
-            }
-            }
-            objXmlQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             if (objXmlQuality["category"] != null)
                 _objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
             _objQualitySource = objQualitySource;
@@ -225,8 +232,7 @@ namespace Chummer
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
-                XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+                XmlNode objQualityNode = MyXmlNode;
                 if (objQualityNode != null)
                 {
                     objQualityNode.TryGetStringFieldQuickly("translate", ref _strAltName);
@@ -240,20 +246,24 @@ namespace Chummer
                 XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
+                if (objXmlWeaponDocument != null)
                 {
-                    var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
+                    foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
+                    {
+                        var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
+                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
+                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-                    TreeNode objGearWeaponNode = new TreeNode();
-                    Weapon objGearWeapon = new Weapon(objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
-                    objGearWeaponNode.ForeColor = SystemColors.GrayText;
-                    objWeaponNodes.Add(objGearWeaponNode);
-                    objWeapons.Add(objGearWeapon);
+                        TreeNode objGearWeaponNode = new TreeNode();
+                        Weapon objGearWeapon = new Weapon(objCharacter);
+                        objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
+                        objGearWeapon.ParentID = InternalId;
+                        objGearWeaponNode.ForeColor = SystemColors.GrayText;
+                        objWeaponNodes.Add(objGearWeaponNode);
+                        objWeapons.Add(objGearWeapon);
 
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                        _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    }
                 }
             }
 
@@ -301,17 +311,25 @@ namespace Chummer
             // If the item grants a bonus, pass the information to the Improvement Manager.
             if (objXmlQuality["bonus"]?.ChildNodes.Count > 0)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.ForcedValue = strForceValue;
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["bonus"], false, 1, DisplayNameShort))
+                ImprovementManager.ForcedValue = strForceValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                    _strExtra = ImprovementManager.SelectedValue;
+                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
+                }
+            }
+            if (objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0 && Levels == 0)
+            {
+                ImprovementManager.ForcedValue = strForceValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["firstlevelbonus"], false, 1, DisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
                 }
             }
 
@@ -349,6 +367,7 @@ namespace Chummer
                 objWriter.WriteElementString("mutant", _strMutant);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("sourcename", _strSourceName);
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
@@ -395,6 +414,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("mutant", ref _strMutant);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
             _nodDiscounts = objNode["costdiscount"];
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
@@ -408,8 +428,7 @@ namespace Chummer
 
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
-                XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
+                XmlNode objQualityNode = MyXmlNode;
                 if (objQualityNode != null)
                 {
                     objQualityNode.TryGetStringFieldQuickly("translate", ref _strAltName);
@@ -422,21 +441,27 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, int intRating)
         {
             if (_blnPrint)
             {
+                string strRatingString = string.Empty;
+                if (intRating > 1)
+                    strRatingString = " " + intRating.ToString(GlobalOptions.CultureInfo);
+                string strSourceName = string.Empty;
+                if (!string.IsNullOrWhiteSpace(SourceName))
+                    strSourceName = " (" + SourceName + ")";
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort);
-                objWriter.WriteElementString("name_english", Name);
-                objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+                objWriter.WriteElementString("name_english", Name + strRatingString);
+                objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", _intBP.ToString());
                 string strQualityType = _objQualityType.ToString();
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
                     XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
 
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
+                    XmlNode objNode = objXmlDocument?.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
                         strQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
@@ -518,6 +543,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Name of the Improvement that added this quality.
+        /// </summary>
+        public string SourceName
+        {
+            get
+            {
+                return LanguageManager.Instance.TranslateExtra(_strSourceName);
+            }
+            set => _strSourceName = value;
+        }
+
+        /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus
@@ -552,15 +589,7 @@ namespace Chummer
             get => CalculatedBP();
             set => _intBP = value;
         }
-
-        /// <summary>
-        /// Number of Build Points the Quality costs.
-        /// </summary>
-        public int LP
-        {
-            get => _intLP;
-            set => _intLP = value;
-        }
+        
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -577,6 +606,7 @@ namespace Chummer
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
         public string DisplayName
         {
@@ -590,7 +620,24 @@ namespace Chummer
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
                 }
+
+                int intLevels = Levels;
+                if (intLevels > 1)
+                    strReturn += " " + intLevels.ToString(GlobalOptions.CultureInfo);
+                
                 return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Returns how many instances of this quality there are in the character's quality list
+        /// TODO: Actually implement a proper rating system for qualities that plays nice with the Improvements Manager.
+        /// </summary>
+        public int Levels
+        {
+            get
+            {
+                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName);
             }
         }
 
@@ -718,45 +765,32 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+            }
+        }
+
         /// <summary>
         /// Evaluates whether the Quality qualifies for any discounts/increases to its cost and returns the total cost.
         /// </summary>
         /// <returns></returns>
         private int CalculatedBP()
-                {
-            if (_nodDiscounts == null || !_nodDiscounts.HasChildNodes)
-                    {
-                return _intBP;
-                    }
+        {
             int intReturn = _intBP;
-            bool blnFound = false;
-            foreach (XmlNode objNode in _nodDiscounts)
-                    {
-                if (objNode.Name == "required")
-                    {
-                    if (objNode["oneof"].Cast<XmlNode>().Any(objRequiredNode => objRequiredNode.Name == "quality" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == objRequiredNode.InnerText)))
-                    {
-                        blnFound = true;
-                        break;
-                    }
-                    if (objNode["oneof"].Cast<XmlNode>().Any(objRequiredNode => objRequiredNode.Name == "power" && _objCharacter.Powers.Any(objPower => objPower.Name == objRequiredNode.InnerText)))
-                    {
-                        blnFound = true;
-                        break;
-                    }
+            if (_nodDiscounts?["value"] != null && _nodDiscounts.HasChildNodes && Backend.Shared_Methods.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
+            {
+                if (Type == QualityType.Positive)
+                {
+                    intReturn += Convert.ToInt32(_nodDiscounts["value"].InnerText);
+                }
+                else if (Type == QualityType.Negative)
+                {
+                    intReturn -= Convert.ToInt32(_nodDiscounts["value"].InnerText);
                 }
             }
-            if (blnFound)
-        {
-                if (Type == QualityType.Positive)
-            {
-                    intReturn += Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
-            }
-                else if (Type == QualityType.Negative)
-            {
-                    intReturn -= Convert.ToInt32(_nodDiscounts["value"]?.InnerText);
-            }
-        }
             return intReturn;
         }
         #endregion
@@ -956,7 +990,7 @@ namespace Chummer
     /// <summary>
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
-    public class Spirit
+    public class Spirit : INamedItemWithGuidAndNode
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -1043,8 +1077,7 @@ namespace Chummer
         {
             // Translate the Critter name if applicable.
             string strName = _strName;
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml");
-            XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strName + "\"]");
+            XmlNode objXmlCritterNode = MyXmlNode;
             if (GlobalOptions.Instance.Language != "en-us")
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText;
@@ -1275,13 +1308,21 @@ namespace Chummer
             get => _guiId.ToString();
             set => _guiId = Guid.Parse(value);
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml")?.SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// A Magician Spell.
     /// </summary>
-    public class Spell : INamedItemWithGuid
+    public class Spell : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -1341,18 +1382,17 @@ namespace Chummer
                     _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
 
-            ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-            objImprovementManager.ForcedValue = strForcedValue;
+            ImprovementManager.ForcedValue = strForcedValue;
             if (objXmlSpellNode["bonus"] != null)
             {
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
+                    _strExtra = ImprovementManager.SelectedValue;
                 }
             }
 
@@ -1938,7 +1978,6 @@ namespace Chummer
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
                     XPathExpression xprDV;
-                    int intPos = 0;
                     string dv = string.Empty;
                     //Navigator can't do math on a single value, so inject a mathable value.
                     if (strReturn == "F")
@@ -2169,8 +2208,7 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell Category.
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                intReturn += objImprovementManager.ValueOf(Improvement.ImprovementType.SpellCategory, false, _strCategory);
+                intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, _strCategory);
 
                 return intReturn;
             }
@@ -2218,11 +2256,19 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell Category.
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                if (objImprovementManager.ValueOf(Improvement.ImprovementType.SpellCategory, false, _strCategory) != 0)
-                    strReturn += " + " + DisplayCategory + " (" + objImprovementManager.ValueOf(Improvement.ImprovementType.SpellCategory, false, _strCategory).ToString() + ")";
+                int intSpellImprovements = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, _strCategory);
+                if (intSpellImprovements != 0)
+                    strReturn += " + " + DisplayCategory + " (" + intSpellImprovements.ToString() + ")";
 
                 return strReturn;
+            }
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("spells.xml")?.SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -2511,7 +2557,7 @@ namespace Chummer
     /// <summary>
     /// A Metamagic or Echo.
     /// </summary>
-    public class Metamagic : INamedItemWithGuid
+    public class Metamagic : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -2538,7 +2584,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlMetamagicNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlMetamagicNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
             objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -2554,14 +2600,13 @@ namespace Chummer
                 else
                     intRating = _objCharacter.InitiateGrade;
 
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strName += " (" + objImprovementManager.SelectedValue + ")";
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
@@ -2679,22 +2724,8 @@ namespace Chummer
                 string strReturn = _strName;
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                string strXmlFile = string.Empty;
-                string strXPath = string.Empty;
-                if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
-                {
-                    strXmlFile = "metamagic.xml";
-                    strXPath = "/chummer/metamagics/metamagic";
-                }
-                else
-                {
-                    strXmlFile = "echoes.xml";
-                    strXPath = "/chummer/echoes/echo";
-                }
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
-                XmlNode objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
 
-                return objNode?["translate"]?.InnerText ?? strReturn;
+                return MyXmlNode?["translate"]?.InnerText ?? strReturn;
             }
         }
 
@@ -2740,20 +2771,7 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    string strXmlFile = string.Empty;
-                    string strXPath = string.Empty;
-                    if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
-                    {
-                        strXmlFile = "metamagic.xml";
-                        strXPath = "/chummer/metamagics/metamagic";
-                    }
-                    else
-                    {
-                        strXmlFile = "echoes.xml";
-                        strXPath = "/chummer/echoes/echo";
-                    }
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
-                    XmlNode objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
+                    XmlNode objNode = MyXmlNode;
                     if (objNode != null)
                     {
                         if (objNode["altpage"] != null)
@@ -2783,13 +2801,26 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
+                {
+                    return XmlManager.Instance.Load("metamagic.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                }
+                else
+                    return XmlManager.Instance.Load("echoes.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// An Art.
     /// </summary>
-    public class Art : INamedItemWithGuid
+    public class Art : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -2815,7 +2846,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlArtNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
             objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -2825,14 +2856,13 @@ namespace Chummer
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strName += " (" + objImprovementManager.SelectedValue + ")";
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
             objNode.Text = LanguageManager.Instance.GetString("Label_Art") + " " + DisplayName;
@@ -2940,11 +2970,7 @@ namespace Chummer
             {
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return _strName;
-                string strXmlFile = "metamagic.xml";
-                string strXPath = "/chummer/arts/art";
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
-                XmlNode objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                return objNode?["translate"]?.InnerText ?? _strName;
+                return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
 
@@ -2990,10 +3016,7 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    string strXmlFile = "metamagic.xml";
-                    string strXPath = "/chummer/metamagics/metamagic";
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
-                    XmlNode objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
+                    XmlNode objNode = MyXmlNode;
                     if (objNode != null)
                     {
                         if (objNode["altpage"] != null)
@@ -3014,13 +3037,21 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("metamagic.xml")?.SelectSingleNode("/chummer/arts/art[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// An Enhancement.
     /// </summary>
-    public class Enhancement : INamedItemWithGuid
+    public class Enhancement : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3047,7 +3078,7 @@ namespace Chummer
         /// <param name="objCharacter">Character the Enhancement is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlArtNode, Character objCharacter, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
             objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -3057,14 +3088,13 @@ namespace Chummer
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString(), _nodBonus, true, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
-                    _strName += " (" + objImprovementManager.SelectedValue + ")";
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
             objNode.Text = LanguageManager.Instance.GetString("Label_Enhancement") + " " + DisplayName;
@@ -3172,10 +3202,7 @@ namespace Chummer
             {
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return _strName;;
-                var objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                var strXPath = "/chummer/enhancements/enhancement";
-                var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                return objNode?["translate"]?.InnerText ?? _strName;
+                return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
 
@@ -3221,10 +3248,7 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    string strXmlFile = "metamagic.xml";
-                    string strXPath = "/chummer/metamagics/metamagic";
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
-                    XmlNode objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
+                    XmlNode objNode = MyXmlNode;
                     if (objNode != null)
                     {
                         if (objNode["altpage"] != null)
@@ -3254,13 +3278,21 @@ namespace Chummer
             get => _objParent;
             set => _objParent = value;
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("powers.xml")?.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// A Technomancer Program or Complex Form.
     /// </summary>
-    public class ComplexForm : INamedItemWithGuid
+    public class ComplexForm : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3284,31 +3316,30 @@ namespace Chummer
         }
 
         /// Create a Complex Form from an XmlNode.
-        /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
+        /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, string strExtra = "")
+        public void Create(XmlNode objXmlComplexFormNode, Character objCharacter, TreeNode objNode, string strExtra = "")
         {
+            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
+            _strExtra = strExtra;
             if (GlobalOptions.Instance.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
-                XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + _strName + "\"]");
-                if (objSpellNode != null)
+                XmlNode objComplexFormNode = MyXmlNode;
+                if (objComplexFormNode != null)
                 {
-                    objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                    objComplexFormNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objComplexFormNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
             }
-            objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
-            objXmlProgramNode.TryGetStringFieldQuickly("target", ref _strTarget);
-            objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objXmlProgramNode.TryGetStringFieldQuickly("duration", ref _strDuration);
-            objXmlProgramNode.TryGetStringFieldQuickly("fv", ref _strFV);
-            _strExtra = strExtra;
 
-            objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
@@ -3403,15 +3434,18 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                var objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
-                var strXPath = "/chummer/complexforms/complexform";
-                var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
+                if (GlobalOptions.Instance.Language != "en-us")
+                    strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
-                return objNode?["translate"]?.InnerText ?? _strName;
+                if (!string.IsNullOrEmpty(_strExtra))
+                {
+                    string strExtra = _strExtra;
+                    if (GlobalOptions.Instance.Language != "en-us")
+                        strExtra = LanguageManager.Instance.TranslateExtra(_strExtra);
+                    strReturn += " (" + strExtra + ")";
+                }
+                return strReturn;
             }
         }
 
@@ -3472,16 +3506,14 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                //if (GlobalOptions.Instance.Language != "en-us")
-                //{
-                //    XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
-                //    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + _strName + "\"]");
-                //    if (objNode != null)
-                //    {
-                //        if (objNode["altpage"] != null)
-                //            strReturn = objNode["altpage"].InnerText;
-                //    }
-                //}
+                if (GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlNode objNode = MyXmlNode;
+                    if (objNode?["altpage"] != null)
+                    {
+                        strReturn = objNode["altpage"].InnerText;
+                    }
+                }
 
                 return strReturn;
             }
@@ -3496,13 +3528,21 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
-        #endregion
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("complexforms.xml")?.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]");
             }
+        }
+        #endregion
+    }
 
     /// <summary>
     /// An AI Program or Advanced Program.
     /// </summary>
-    public class AIProgram : INamedItemWithGuid
+    public class AIProgram : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3532,16 +3572,6 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
-            if (GlobalOptions.Instance.Language != "en-us")
-            {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
-                XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + _strName + "\"]");
-                if (objSpellNode != null)
-            {
-                    objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-            }
             objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
             _strRequiresProgram = LanguageManager.Instance.GetString("String_None");
             _boolCanDelete = boolCanDelete;
@@ -3550,6 +3580,16 @@ namespace Chummer
             objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
             _strExtra = strExtra;
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
+
+            if (GlobalOptions.Instance.Language != "en-us")
+            {
+                XmlNode objProgramNode = MyXmlNode;
+                if (objProgramNode != null)
+                {
+                    objProgramNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objProgramNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                }
+            }
 
             objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
@@ -3648,14 +3688,18 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                var objXmlDocument = XmlManager.Instance.Load("programs.xml");
-                var strXPath = "/chummer/programs/program";
-                var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                return objNode?["translate"]?.InnerText ?? _strName;
+                if (GlobalOptions.Instance.Language != "en-us")
+                    strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
+
+                if (!string.IsNullOrEmpty(_strExtra))
+                {
+                    string strExtra = _strExtra;
+                    if (GlobalOptions.Instance.Language != "en-us")
+                        strExtra = LanguageManager.Instance.TranslateExtra(_strExtra);
+                    strReturn += " (" + strExtra + ")";
+                }
+                return strReturn;
             }
         }
 
@@ -3697,9 +3741,7 @@ namespace Chummer
                     strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                var objXmlDocument = XmlManager.Instance.Load("programs.xml");
-                var strXPath = "/chummer/programs/program";
-                var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + RequiresProgram + "\"]");
+                XmlNode objNode = XmlManager.Instance.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
                 return objNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3731,16 +3773,14 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                //if (GlobalOptions.Instance.Language != "en-us")
-                //{
-                //    XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
-                //    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + _strName + "\"]");
-                //    if (objNode != null)
-                //    {
-                //        if (objNode["altpage"] != null)
-                //            strReturn = objNode["altpage"].InnerText;
-                //    }
-                //}
+                if (GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlNode objNode = MyXmlNode;
+                    if (objNode?["altpage"] != null)
+                    {
+                        strReturn = objNode["altpage"].InnerText;
+                    }
+                }
 
                 return strReturn;
             }
@@ -3761,13 +3801,20 @@ namespace Chummer
         /// </summary>
         public bool IsAdvancedProgram => _boolIsAdvancedProgram;
 
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// A Martial Art.
     /// </summary>
-    public class MartialArt : INamedItemWithGuid
+    public class MartialArt : INamedItemWithGuidAndNode
     {
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
@@ -3789,10 +3836,8 @@ namespace Chummer
         /// Create a Martial Art from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        /// <param name="objCharacter">Character the Martial Art is being added to.</param>
-        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Character objCharacter)
+        public void Create(XmlNode objXmlArtNode, TreeNode objNode)
         {
-            _objCharacter = objCharacter;
             objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -3800,8 +3845,7 @@ namespace Chummer
 
             if (objXmlArtNode["bonus"] != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArt, InternalId,
+                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, InternalId,
                     objXmlArtNode["bonus"], false, 1, DisplayNameShort);
             }
 
@@ -3904,13 +3948,10 @@ namespace Chummer
         {
             get
             {
-                string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                var objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                var strXPath = "/chummer/martialarts/martialart";
-                var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-                return objNode?["translate"]?.InnerText ?? _strName;
+                if (GlobalOptions.Instance.Language == "en-us")
+                    return _strName;
+                return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
 
@@ -3947,8 +3988,7 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + _strName + "\"]");
+                    XmlNode objNode = MyXmlNode;
                     if (objNode != null)
                     {
                         if (objNode["altpage"] != null)
@@ -3992,13 +4032,21 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("martialarts.xml")?.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// A Martial Arts Advantage.
     /// </summary>
-    public class MartialArtAdvantage : INamedItemWithGuid
+    public class MartialArtAdvantage : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4019,7 +4067,7 @@ namespace Chummer
         /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlAdvantageNode, Character objCharacter, TreeNode objNode)
+        public void Create(XmlNode objXmlAdvantageNode, TreeNode objNode)
         {
             objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -4027,8 +4075,7 @@ namespace Chummer
 
             if (objXmlAdvantageNode["bonus"] != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayName))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlAdvantageNode["bonus"], false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -4111,9 +4158,7 @@ namespace Chummer
                 string strReturn = _strName;
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart/techniques/technique[. = \"" + _strName + "\"]");
-                return objNode?.Attributes?["translate"]?.InnerText ?? strReturn;
+                return MyXmlNode?.Attributes?["translate"]?.InnerText ?? strReturn;
             }
         }
 
@@ -4143,13 +4188,21 @@ namespace Chummer
             get => _strPage;
             set => _strPage = value;
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("martialarts.xml")?.SelectSingleNode("/chummer/techniques/technique[name = \"" + Name + "\"]");
+            }
+        }
         #endregion
     }
 
     /// <summary>
     /// A Martial Art Maneuver.
     /// </summary>
-    public class MartialArtManeuver : INamedItemWithGuid
+    public class MartialArtManeuver : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4252,12 +4305,10 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + _strName + "\"]");
-                    if (objNode != null)
+                    XmlNode objNode = MyXmlNode;
+                    if (objNode?["translate"] != null)
                     {
-                        if (objNode["translate"] != null)
-                            strReturn = objNode["translate"].InnerText;
+                        strReturn = objNode["translate"].InnerText;
                     }
                 }
 
@@ -4298,12 +4349,10 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + _strName + "\"]");
-                    if (objNode != null)
+                    XmlNode objNode = MyXmlNode;
+                    if (objNode?["altpage"] != null)
                     {
-                        if (objNode["altpage"] != null)
-                            strReturn = objNode["altpage"].InnerText;
+                        strReturn = objNode["altpage"].InnerText;
                     }
                 }
 
@@ -4319,6 +4368,14 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("martialarts.xml")?.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
+            }
         }
         #endregion
     }
@@ -4358,14 +4415,13 @@ namespace Chummer
         /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlLimitModifierNode, Character objCharacter, TreeNode objNode)
+        public void Create(XmlNode objXmlLimitModifierNode, TreeNode objNode)
         {
             _strName = objXmlLimitModifierNode["name"].InnerText;
 
             if (objXmlLimitModifierNode["bonus"] != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString(), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -4891,7 +4947,7 @@ namespace Chummer
     /// <summary>
     /// A Critter Power.
     /// </summary>
-    public class CritterPower : INamedItemWithGuid
+    public class CritterPower : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4921,11 +4977,10 @@ namespace Chummer
 
         /// Create a Critter Power from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlPowerNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlPowerNode, Character objCharacter, TreeNode objNode, int intRating = 0, string strForcedValue = "")
+        public void Create(XmlNode objXmlPowerNode, TreeNode objNode, int intRating = 0, string strForcedValue = "")
         {
             objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName);
             _intRating = intRating;
@@ -4933,17 +4988,16 @@ namespace Chummer
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (_nodBonus != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                objImprovementManager.ForcedValue = strForcedValue;
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
+                ImprovementManager.ForcedValue = strForcedValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(objImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                    _strExtra = ImprovementManager.SelectedValue;
+                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
                 else if (intRating != 0)
                     _strExtra = intRating.ToString();
@@ -5092,15 +5146,18 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + _strExtra + ")";
-                // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                var objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-                var strXPath = "/chummer/powers/power";
-                var objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
+                if (GlobalOptions.Instance.Language != "en-us")
+                    strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
-                return objNode?["translate"]?.InnerText ?? _strName;
+                if (!string.IsNullOrEmpty(_strExtra))
+                {
+                    string strExtra = _strExtra;
+                    if (GlobalOptions.Instance.Language != "en-us")
+                        strExtra = LanguageManager.Instance.TranslateExtra(_strExtra);
+                    strReturn += " (" + strExtra + ")";
+                }
+
+                return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
 
@@ -5152,12 +5209,10 @@ namespace Chummer
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strName + "\"]");
-                    if (objNode != null)
+                    XmlNode objNode = MyXmlNode;
+                    if (objNode?["altpage"] != null)
                     {
-                        if (objNode["altpage"] != null)
-                            strReturn = objNode["altpage"].InnerText;
+                        strReturn = objNode["altpage"].InnerText;
                     }
                 }
 
@@ -5184,8 +5239,7 @@ namespace Chummer
             {
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language == "en-us") return _strCategory;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+                XmlNode objNode = XmlManager.Instance.Load("critterpowers.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 return objNode.Attributes?["translate"]?.InnerText ?? _strCategory;
             }
         }
@@ -5379,6 +5433,14 @@ namespace Chummer
         {
             get => _intKarma;
             set => _intKarma = value;
+        }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("critterpowers.xml")?.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+            }
         }
         #endregion
     }
@@ -5639,13 +5701,14 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, bool blnPrintNotes = true)
         {
             objWriter.WriteStartElement("week");
             objWriter.WriteElementString("year", _intYear.ToString());
             objWriter.WriteElementString("month", Month.ToString());
             objWriter.WriteElementString("week", MonthWeek.ToString());
-            objWriter.WriteElementString("notes", _strNotes);
+            if (blnPrintNotes)
+                objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
         #endregion

@@ -41,6 +41,7 @@ namespace Chummer
         private bool _blnAutomaticCopyProtection = true;
         private bool _blnAutomaticRegistration = true;
         private bool _blnStrictSkillGroupsInCreateMode;
+        private bool _blnAllowPointBuySpecializationsOnKarmaSkills = false;
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnCapSkillRating;
         private bool _blnConfirmDelete = true;
@@ -176,6 +177,9 @@ namespace Chummer
         private string _strBuildMethod = "Karma";
         private int _intBuildPoints = 800;
         private int _intAvailability = 12;
+
+        // List of names of custom data directories
+        private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
 
         // Sourcebook list.
         private readonly List<string> _lstBooks = new List<string>();
@@ -384,6 +388,8 @@ namespace Chummer
             objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
             // <breakskillgroupsincreatemode />
             objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
+            // <allowpointbuyspecializationsonkarmaskills />
+            objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString());
             // <extendanydetectionspell />
             objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
             // <allowskilldicerolling />
@@ -554,6 +560,15 @@ namespace Chummer
                 objWriter.WriteElementString("book", strBook);
             // </books>
             objWriter.WriteEndElement();
+
+
+            // <customdatadirectorynames>
+            objWriter.WriteStartElement("customdatadirectorynames");
+            foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
+                objWriter.WriteElementString("directoryname", strDirectoryName);
+            // </customdatadirectorynames>
+            objWriter.WriteEndElement();
+            // <hascustomdirectories>
 
             // <defaultbuild>
             objWriter.WriteStartElement("defaultbuild");
@@ -763,6 +778,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("usecontactpoints", ref _blnUseContactPoints);
             // Whether or not the user can break Skill Groups while in Create Mode.
             objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
+            // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+            objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills", ref _blnAllowPointBuySpecializationsOnKarmaSkills);
             // Whether or not any Detection Spell can be taken as Extended range version.
             objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
             // Whether or not dice rolling id allowed for Skills.
@@ -866,6 +883,11 @@ namespace Chummer
             foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/settings/books/book"))
                 _lstBooks.Add(objXmlBook.InnerText);
             RecalculateBookXPath();
+
+            // Load Custom Data Directory names.
+            _lstCustomDataDirectoryNames.Clear();
+            foreach (XmlNode objXmlDirectoryName in objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
 
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
@@ -1015,7 +1037,7 @@ namespace Chummer
             foreach (string strBookCode in strBooks)
             {
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-                if (objXmlBook?["code"] != null)
+                if (objXmlBook?["code"] != null && objXmlBook["hide"] == null)
                 {
                     _lstBooks.Add(objXmlBook["code"].InnerText);
                 }
@@ -1122,30 +1144,20 @@ namespace Chummer
             string strPath = _strBookXPath;
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                if (GlobalOptions.Instance.MissionsOnly)
-                {
-                    strPath += " and not(nomission)";
-                }
-
-                if (!GlobalOptions.Instance.Dronemods)
-                {
-                    strPath += " and not(optionaldrone)";
-                }
+                strPath += " and not(hide)";
             }
             else
             {
-                if (GlobalOptions.Instance.MissionsOnly)
-                {
-                    strPath += "not(nomission)";
-                    if (!GlobalOptions.Instance.Dronemods)
-                    {
-                        strPath += " and not(optionaldrone)";
-                    }
-                }
-                else if (!GlobalOptions.Instance.Dronemods)
-                {
-                    strPath += "not(optionaldrone)";
-                }
+                strPath += "not(hide)";
+            }
+            if (GlobalOptions.Instance.MissionsOnly)
+            {
+                strPath += " and not(nomission)";
+            }
+
+            if (!GlobalOptions.Instance.Dronemods)
+            {
+                strPath += " and not(optionaldrone)";
             }
             return strPath;
         }
@@ -1662,6 +1674,17 @@ namespace Chummer
             get
             {
                 return _lstBooks;
+            }
+        }
+
+        /// <summary>
+        /// Names of custom data directories
+        /// </summary>
+        public List<string> CustomDataDirectoryNames
+        {
+            get
+            {
+                return _lstCustomDataDirectoryNames;
             }
         }
 
@@ -2187,6 +2210,21 @@ namespace Chummer
             set
             {
                 _blnStrictSkillGroupsInCreateMode = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// </summary>
+        public bool AllowPointBuySpecializationsOnKarmaSkills
+        {
+            get
+            {
+                return _blnAllowPointBuySpecializationsOnKarmaSkills;
+            }
+            set
+            {
+                _blnAllowPointBuySpecializationsOnKarmaSkills = value;
             }
         }
 

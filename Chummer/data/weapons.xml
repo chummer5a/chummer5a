@@ -648,7 +648,8 @@
         </accessory>
       </accessories>
       <useskill>Longarms</useskill>
-      <range>Shotguns (flechette)</range>
+      <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>RG</source>
       <page>37</page>
     </weapon>
@@ -1159,6 +1160,27 @@
       <source>SR5</source>
       <page>422</page>
     </weapon>
+	<weapon>
+      <id>a92933cb-0c81-4b54-aeb1-ddc24836775d</id>
+      <name>Knife (Survival Kit)</name>
+	  <hide />
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>-2</conceal>
+      <spec>Knives</spec>
+      <accuracy>5</accuracy>
+      <reach>0</reach>
+      <damage>(STR+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>10</cost>
+      <allowaccessory>true</allowaccessory>
+      <source>SR5</source>
+      <page>422</page>
+    </weapon>
     <weapon>
       <id>60f52b1f-6376-49fc-a746-b811c54197e7</id>
       <name>Pole Arm</name>
@@ -1218,6 +1240,14 @@
       <avail>0</avail>
       <cost>100</cost>
       <allowaccessory>true</allowaccessory>
+	  <accessories>
+        <accessory>
+          <name>Survival Knife Bonuses</name>
+        </accessory>
+        <accessory>
+          <name>Survival Knife Wireless Bonuses</name>
+        </accessory>
+      </accessories>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1667,7 +1697,8 @@
       <avail>8R</avail>
       <cost>800</cost>
       <allowaccessory>true</allowaccessory>
-      <range>Light Crossbows</range>
+      <range>Harpoon Gun</range>
+	  <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <source>RG</source>
       <page>22</page>
     </weapon>
@@ -1787,7 +1818,8 @@
       <avail>6R</avail>
       <cost>200</cost>
       <allowaccessory>true</allowaccessory>
-      <range>Light Crossbows</range>
+      <range>Harpoon Gun</range>
+	  <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <source>RG</source>
       <page>22</page>
     </weapon>
@@ -2072,7 +2104,7 @@
       <name>Chakram</name>
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
-      <conceal>-2</conceal>
+      <conceal>0</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>(STR)P</damage>
@@ -2216,7 +2248,7 @@
       <avail>16F</avail>
       <cost>2200</cost>
       <allowaccessory>true</allowaccessory>
-      <range>Tasers</range>
+      <range>Flamethrowers</range>
       <source>RG</source>
       <page>50</page>
     </weapon>
@@ -2283,7 +2315,7 @@
       <cost>200</cost>
       <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
-      <range>Aerodynamic Grenade</range>
+      <range>Thrown Knife</range>
       <source>RG</source>
       <page>25</page>
     </weapon>
@@ -2834,7 +2866,7 @@
       <cost>25</cost>
       <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
-      <range>Thrown Knife</range>
+      <range>Shuriken</range>
       <source>SR5</source>
       <page>424</page>
     </weapon>
@@ -2856,7 +2888,7 @@
       <cost>750</cost>
       <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
-      <range>Thrown Knife</range>
+      <range>Shuriken</range>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -4857,6 +4889,7 @@
       <id>923ba564-7883-49e8-82a2-415cbfa96685</id>
       <name>Auto-Assault 16</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -4884,6 +4917,7 @@
       <id>31269939-24bb-405a-aa5e-a1b77458a1df</id>
       <name>Cavalier Falchion</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -4925,6 +4959,7 @@
       <id>97cab27f-620b-45d7-8da4-3136c1e69f2b</id>
       <name>Cyber Shotgun</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <hide>yes</hide>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -4951,6 +4986,7 @@
       <id>c2c0e756-a099-4f9d-b6bb-18f412d670a3</id>
       <name>Defiance T-250</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5006,6 +5042,7 @@
       <id>622bd915-0e0c-431b-9da5-e0c0c31e2122</id>
       <name>Enfield AS-7</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5038,6 +5075,7 @@
       <id>76e0ae30-a3cf-4d4f-b278-ad49a10df4d2</id>
       <name>Franchi SPAS-24</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5073,6 +5111,7 @@
       <id>8818b584-e084-4fcb-94b8-632728015c6f</id>
       <name>Krime Boss</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>3</accuracy>
@@ -5100,6 +5139,7 @@
       <id>228a2a5d-01e5-4f58-90bf-1d61602ad1c5</id>
       <name>Mossberg AM-CMDT</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -5132,6 +5172,7 @@
       <id>62221199-7958-4a76-a538-0c8e0a516608</id>
       <name>PJSS Model 55</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -5164,6 +5205,7 @@
       <id>67f18a4a-e516-4946-984a-5254b3ba850f</id>
       <name>Remington 990</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5199,6 +5241,7 @@
       <id>3af9c1f7-8582-4849-8b1e-b49dd14c207f</id>
       <name>Shiawase Arms Rain</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5231,6 +5274,7 @@
       <id>eaef40ea-c1ff-4f64-a4fe-31720b250860</id>
       <name>Winchester Model 201</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>8</accuracy>
@@ -5258,6 +5302,7 @@
       <id>93869598-2945-412f-8b42-90764ddc1e59</id>
       <name>Winchester Model 2054</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5293,6 +5338,7 @@
       <id>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</id>
       <name>Winchester Model 2066</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5722,7 +5768,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Shotguns</range>
+      <range>Shotguns (flechette)</range>
       <source>RG</source>
       <page>26</page>
     </weapon>
@@ -5839,7 +5885,7 @@
       <cost>150</cost>
       <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Heavy Pistols</range>
+      <range>Tasers</range>
       <source>RG</source>
       <page>27</page>
     </weapon>
@@ -5881,7 +5927,7 @@
       <cost>750</cost>
       <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Heavy Pistols</range>
+      <range>Tasers</range>
       <source>RG</source>
       <page>27</page>
     </weapon>
@@ -5934,7 +5980,7 @@
         <mount>Side</mount>
       </accessorymounts>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Sniper Rifles</range>
+      <range>Sporting Rifles</range>
       <source>SR5</source>
       <page>430</page>
     </weapon>
@@ -7123,6 +7169,7 @@
       </accessories>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>RG</source>
       <page>38</page>
     </weapon>
@@ -7515,7 +7562,7 @@
       <cyberware>yes</cyberware>
       <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Light Pistols</range>
+      <range>Tasers</range>
       <source>CF</source>
       <page>91</page>
     </weapon>
@@ -8148,7 +8195,7 @@
       <cost>775</cost>
       <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Tasers</range>
+      <range>Flamethrowers</range>
       <source>HT</source>
       <page>184</page>
     </weapon>
@@ -8195,7 +8242,7 @@
         <mount>Under</mount>
       </accessorymounts>
       <useskill>Exotic Ranged Weapon</useskill>
-      <range>Shotgun</range>
+      <range>Shotgun (flechette)</range>
       <source>HT</source>
       <page>184</page>
     </weapon>
@@ -8221,7 +8268,7 @@
     </weapon>
     <weapon>
       <id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
-      <name>Colt Manhunter</name>
+      <name>Colt Manhunter A1</name>
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
@@ -8326,6 +8373,7 @@
       <cost>1000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts />
+	  <range>Medium Crossbows</range>
       <source>HT</source>
       <page>182</page>
     </weapon>
@@ -8348,6 +8396,8 @@
       <cost>600</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts />
+	  <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>HT</source>
       <page>182</page>
     </weapon>
@@ -8500,7 +8550,8 @@
       <accessorymounts />
       <accessories />
       <useskill>Longarms</useskill>
-      <range>Shotguns (flechette)</range>
+      <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB</source>
       <page>0</page>
     </weapon>
@@ -8602,7 +8653,8 @@
       <allowaccessory>false</allowaccessory>
       <accessorymounts />
       <useskill>Longarms</useskill>
-      <range>Shotguns (flechette)</range>
+      <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB</source>
       <page>0</page>
     </weapon>
@@ -8637,6 +8689,7 @@
       </accessorymounts>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB</source>
       <page>0</page>
     </weapon>
@@ -9184,6 +9237,7 @@
       <id>3011640d-c504-4af1-bbb5-25f42492a7ff</id>
       <name>Cyber Shotgun (2050)</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <hide>yes</hide>
       <type>Ranged</type>
       <conceal>-6</conceal>
@@ -10708,6 +10762,7 @@
       <id>ea074ca2-6309-4af9-ba63-1a39223c721a</id>
       <name>Enfield AS-7 (2050)</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10738,6 +10793,7 @@
       <id>12dfa7c1-209a-4cb9-ac3d-8012c369177b</id>
       <name>Mossberg CMDT (2050)</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10765,6 +10821,7 @@
       <id>28952d02-310f-43ab-90f3-1f04374d7231</id>
       <name>Mossberg CMDT/SM (2050)</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -11546,6 +11603,7 @@
       </accessorymounts>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SAG</source>
       <page>31</page>
     </weapon>
@@ -11641,6 +11699,7 @@
       <id>59cd61ef-4fb0-45e4-96cf-74c62c2b4fe8</id>
       <name>Altmayr SPX2</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -11668,6 +11727,7 @@
       <id>37cc0c65-6944-46cd-90e1-43ad35d441e8</id>
       <name>Onotari Arms Pressure KS-X</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>2</conceal>
       <accuracy>4</accuracy>
@@ -11705,6 +11765,7 @@
       <id>a4809028-f1bb-4ba0-b4d5-8b5b6d1d0aed</id>
       <name>PJSS Model 75</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11737,6 +11798,7 @@
       <id>d7d1f16d-9e55-4629-ae3f-f5d3bd57e52f</id>
       <name>PJSS Model 75-III (Shotgun Barrel)</name>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11773,6 +11835,7 @@
       <name>PJSS Model 75-III (Rifle Barrel)</name>
       <hide>yes</hide>
       <category>Shotguns</category>
+	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -13796,6 +13859,39 @@
       <cost>900</cost>
       <source>SAG</source>
       <page>35</page>
+    </accessory>
+	<accessory>
+      <id>c50723ab-8354-4b32-a1a8-b3720df0dd2d</id>
+      <name>Survival Knife Bonuses</name>
+      <mount />
+	  <hide />
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>0</cost>
+	  <gears>
+        <usegear select="GPS Monitor">Custom Item</usegear>
+		<usegear select="Mini-Multitool">Custom Item</usegear>
+		<usegear select="Micro-Lighter">Custom Item</usegear>
+		<usegear select="Hidden Compartment">Custom Item</usegear>
+		<usegear select="Phosphorescent Blade Coating">Custom Item</usegear>
+      </gears>
+      <source>SR5</source>
+      <page>422</page>
+    </accessory>
+	<accessory>
+      <id>471d2d54-34cc-493c-b888-e27498b28e39</id>
+      <name>Survival Knife Wireless Bonuses</name>
+      <mount />
+	  <hide />
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>0</cost>
+	  <gears>
+        <usegear select="ARO of Local Maps">Custom Item</usegear>
+		<usegear select="Can Make Commcalls">Custom Item</usegear>
+      </gears>
+      <source>SR5</source>
+      <page>422</page>
     </accessory>
   </accessories>
 </chummer>

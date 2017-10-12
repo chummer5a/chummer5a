@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
@@ -9,7 +9,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Lifestyle.
     /// </summary>
-    public class Lifestyle : INamedItemWithGuid
+    public class Lifestyle : INamedItemWithGuidAndNode
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -238,9 +238,7 @@ namespace Chummer.Backend.Equipment
             // Retrieve the Advanced Lifestyle information if applicable.
             if (!string.IsNullOrEmpty(_strBaseLifestyle))
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-
-                XmlNode objXmlAspect = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID + "\"]");
+                XmlNode objXmlAspect = MyXmlNode;
                 if (objXmlAspect != null)
                 {
                     if (objXmlAspect["translate"] != null)
@@ -328,13 +326,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strReturn = _strBaseLifestyle;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-
-                return objNode?["translate"]?.InnerText ?? strReturn;
+                if (GlobalOptions.Instance.Language == "en-us")
+                    return _strBaseLifestyle;
+                return MyXmlNode?["translate"]?.InnerText ?? _strBaseLifestyle;
             }
         }
 
@@ -380,8 +375,7 @@ namespace Chummer.Backend.Equipment
                 // Get the translated name if applicable.
                 if (GlobalOptions.Instance.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                    XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
                         strReturn = objNode["altpage"].InnerText;
                 }
@@ -679,6 +673,14 @@ namespace Chummer.Backend.Equipment
                 _blnTrustFund = value;
             }
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("lifestyles.xml").SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+            }
+        }
         #endregion
 
         #region Complex Properties
@@ -701,11 +703,10 @@ namespace Chummer.Backend.Equipment
                     intReturn = Cost;
                     return intReturn;
                 }
-
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                decimal decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
+                
+                decimal decMultiplier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
                 if (_objType == LifestyleType.Standard)
-                    decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
+                    decMultiplier += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
                 decimal decExtraMultiplierBaseOnly = 0;
 
                 decimal decBaseCost = Cost;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -444,7 +444,7 @@ namespace Chummer.UI.Skills
 
 
             XmlDocument document = XmlManager.Instance.Load("skills.xml");
-            frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill();
+            frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_character);
             frmPickExoticSkill.ShowDialog(this);
 
             if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)

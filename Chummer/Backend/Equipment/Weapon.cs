@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A Weapon.
     /// </summary>
-    public class Weapon : INamedParentWithGuid<Weapon>
+    public class Weapon : INamedParentWithGuidAndNode<Weapon>
     {
         private Guid _sourceID = new Guid();
         private Guid _guiID = new Guid();
@@ -40,6 +40,7 @@ namespace Chummer.Backend.Equipment
         private string _strAvail = string.Empty;
         private int _intCost = 0;
         private string _strRange = string.Empty;
+        private string _strAlternateRange = string.Empty;
         private double _dblRangeMultiplier = 1;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -66,6 +67,7 @@ namespace Chummer.Backend.Equipment
         private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
         private bool _blnCyberware = false;
+        private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
         private string _mount;
@@ -182,6 +184,10 @@ namespace Chummer.Backend.Equipment
                 if (objXmlWeapon["range"].Attributes["multiply"] != null)
                     _dblRangeMultiplier = Convert.ToDouble(objXmlWeapon["range"].Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
+            if (objXmlWeapon["alternaterange"] != null)
+            {
+                _strAlternateRange = objXmlWeapon["alternaterange"].InnerText;
+            }
 
             objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
@@ -204,6 +210,7 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeaponNode =
                         objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
                     objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
                     _lstUnderbarrel.Add(objUnderbarrelWeapon);
@@ -255,11 +262,21 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode objXmlAccessoryGear in objXmlWeaponAccessory.SelectNodes("gears/usegear"))
                         {
                             int intGearRating = 0;
-                            string strForceValue = string.Empty;
-                            if (objXmlAccessoryGear.Attributes["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear.Attributes["rating"].InnerText);
-                            if (objXmlAccessoryGear.Attributes["select"] != null)
-                                strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
+                            int intGearQty = 1;
+                            string strChildForceSource = string.Empty;
+                            string strChildForcePage = string.Empty;
+                            string strChildForceValue = string.Empty;
+                            bool blnStartCollapsed = objXmlAccessoryGear["name"].Attributes?["startcollapsed"]?.InnerText == "yes";
+                            if (objXmlAccessoryGear["rating"] != null)
+                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
+                            if (objXmlAccessoryGear["name"].Attributes["qty"] != null)
+                                intGearQty = Convert.ToInt32(objXmlAccessoryGear["name"].Attributes["qty"].InnerText);
+                            if (objXmlAccessoryGear["name"].Attributes["select"] != null)
+                                strChildForceValue = objXmlAccessoryGear["name"].Attributes["select"].InnerText;
+                            if (objXmlAccessoryGear["source"] != null)
+                                strChildForceSource = objXmlAccessoryGear["source"].InnerText;
+                            if (objXmlAccessoryGear["page"] != null)
+                                strChildForcePage = objXmlAccessoryGear["page"].InnerText;
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
                             Gear objGear = new Gear(_objCharacter);
@@ -268,16 +285,26 @@ namespace Chummer.Backend.Equipment
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                            objGear.Create(objXmlGear, _objCharacter, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, true);
+                            objGear.Create(objXmlGear, _objCharacter, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue);
+                            objGear.Quantity = intGearQty;
                             objGear.Cost = "0";
-                            objGear.MaxRating = objGear.Rating;
-                            objGear.MinRating = objGear.Rating;
+                            objGear.MinRating = intGearRating;
+                            objGear.MaxRating = intGearRating;
                             objGear.IncludedInParent = true;
+                            if (!string.IsNullOrEmpty(strChildForceSource))
+                                objGear.Source = strChildForceSource;
+                            if (!string.IsNullOrEmpty(strChildForcePage))
+                                objGear.Page = strChildForcePage;
                             objAccessory.Gear.Add(objGear);
+
+                            // Change the Capacity of the child if necessary.
+                            if (objXmlAccessoryGear["capacity"] != null)
+                                objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
 
                             objGearNode.ContextMenuStrip = cmsWeaponAccessoryGear;
                             objAccessoryNode.Nodes.Add(objGearNode);
-                            objAccessoryNode.Expand();
+                            if (!blnStartCollapsed)
+                                objAccessoryNode.Expand();
                         }
                     }
 
@@ -327,11 +354,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("cost", _intCost.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("useskill", _strUseSkill);
             objWriter.WriteElementString("range", _strRange);
+            objWriter.WriteElementString("alternaterange", _strAlternateRange);
             objWriter.WriteElementString("rangemultiply", _dblRangeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("parentid", _strParentID);
             objWriter.WriteElementString("weaponname", _strWeaponName);
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
             objWriter.WriteElementString("installed", _blnInstalled.ToString());
@@ -443,6 +472,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
@@ -453,9 +483,20 @@ namespace Chummer.Backend.Equipment
             {
                 _strRange = "Holdouts";
             }
+            if (!objNode.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
+            {
+                XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+                XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
+                if (objWeaponNode?["alternaterange"] != null)
+                {
+                    _strAlternateRange = objWeaponNode["alternaterange"].InnerText;
+                }
+            }
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
             objNode.TryGetDoubleFieldQuickly("rangemultiply", ref _dblRangeMultiplier);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
+            if (Name == "Unarmed Attack")
+                _blnIncludedInWeapon = true; // Unarmed Attack can never be removed
             objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
 
@@ -558,13 +599,23 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
 
+            Dictionary<string, string> dictionaryRanges = RangeStrings;
             // <ranges>
             objWriter.WriteStartElement("ranges");
-            objWriter.WriteElementString("short", RangeShort);
-            objWriter.WriteElementString("medium", RangeMedium);
-            objWriter.WriteElementString("long", RangeLong);
-            objWriter.WriteElementString("extreme", RangeExtreme);
+            objWriter.WriteElementString("short", dictionaryRanges["short"]);
+            objWriter.WriteElementString("medium", dictionaryRanges["medium"]);
+            objWriter.WriteElementString("long", dictionaryRanges["long"]);
+            objWriter.WriteElementString("extreme", dictionaryRanges["extreme"]);
             // </ranges>
+            objWriter.WriteEndElement();
+
+            // <alternateranges>
+            objWriter.WriteStartElement("alternateranges");
+            objWriter.WriteElementString("short", dictionaryRanges["alternateshort"]);
+            objWriter.WriteElementString("medium", dictionaryRanges["alternatemedium"]);
+            objWriter.WriteElementString("long", dictionaryRanges["alternatelong"]);
+            objWriter.WriteElementString("extreme", dictionaryRanges["alternateextreme"]);
+            // </alternateranges>
             objWriter.WriteEndElement();
 
             if (_lstUnderbarrel.Count > 0)
@@ -1053,6 +1104,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// ID of the object that added this weapon (if any).
+        /// </summary>
+        public string ParentID
+        {
+            get
+            {
+                return _strParentID;
+            }
+            set
+            {
+                _strParentID = value;
+            }
+        }
+
+        /// <summary>
         /// Location.
         /// </summary>
         public string Location
@@ -1189,6 +1255,14 @@ namespace Chummer.Backend.Equipment
                 return _sourceID;
             }
         }
+
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Instance.Load("weapons.xml")?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
+            }
+        }
         #endregion
 
         #region Complex Properties
@@ -1218,8 +1292,7 @@ namespace Chummer.Backend.Equipment
             */
 
             // Factor in the character's Concealability modifiers.
-            ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-            intReturn += objImprovementManager.ValueOf(Improvement.ImprovementType.Concealability);
+            intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability);
 
             string strReturn = string.Empty;
             if (intReturn >= 0)
@@ -1249,8 +1322,6 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-
                 if (_blnCyberware)
                 {
                     int intSTR = _objCharacter.STR.TotalValue;
@@ -1280,7 +1351,7 @@ namespace Chummer.Backend.Equipment
                         intSTR = intUseSTR;
 
                     if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
-                        intSTR += objImprovementManager.ValueOf(Improvement.ImprovementType.ThrowSTR);
+                        intSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
 
                     strDamage = strDamageExpression.Replace("STR", intSTR.ToString());
                 }
@@ -1288,7 +1359,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intThrowDV = 0;
                     if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
-                        intThrowDV = objImprovementManager.ValueOf(Improvement.ImprovementType.ThrowSTR);
+                        intThrowDV = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
 
                     // A STR value has been passed, so use that instead.
                     if (intUseSTR > 0)
@@ -1403,7 +1474,7 @@ namespace Chummer.Backend.Equipment
             // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
             else if (Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
             {
-                intImprove += _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedDV);
+                intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
             }
             bool blnDamageReplaced = false;
 
@@ -2001,7 +2072,7 @@ namespace Chummer.Backend.Equipment
                         // Add any UnarmedAP bonus for the Unarmed Attack item.
                         if (_strName == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                         {
-                            intAP += _objCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedAP);
+                            intAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
                         }
                     }
                 }
@@ -2470,26 +2541,65 @@ namespace Chummer.Backend.Equipment
         public string ModificationSlots => _strWeaponSlots;
 
         /// <summary>
-        /// Permanently alters the Weapon's Range category.
+        /// The string for the Weapon's Range category (setter is English-only).
         /// </summary>
-        /// <param name="strRange">name of the new Range category to use.</param>
-        public void SetRange(string strRange)
+        public string Range
         {
-            _strRange = strRange;
+            get
+            {
+                string strRange = _strRange;
+                if (string.IsNullOrWhiteSpace(strRange))
+                    strRange = _strCategory;
+                if (!string.IsNullOrWhiteSpace(strRange) && GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+                    XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
+                    if (objWeaponNode?.Attributes?["translate"] != null)
+                        strRange = objWeaponNode.Attributes["translate"].InnerText;
+                }
+                return strRange;
+            }
+            set => _strRange = value;
+        }
+
+        /// <summary>
+        /// The string for the Weapon's Range category (setter is English-only).
+        /// </summary>
+        public string AlternateRange
+        {
+            get
+            {
+                string strRange = _strAlternateRange.Trim();
+                if (!string.IsNullOrEmpty(strRange) && GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+                    XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
+                    if (objWeaponNode?.Attributes?["translate"] != null)
+                        strRange = objWeaponNode.Attributes["translate"].InnerText.Trim();
+                }
+                return strRange;
+            }
+            set => _strAlternateRange = value;
         }
 
         /// <summary>
         /// Evalulate and return the requested Range for the Weapon.
         /// </summary>
         /// <param name="strFindRange">Range node to use.</param>
-        private int Range(string strFindRange)
+        private int GetRange(string strFindRange, bool blnUseAlternateRange)
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("ranges.xml");
-
             string strRangeCategory = _strCategory;
-            if (!string.IsNullOrEmpty(_strRange))
+            if (blnUseAlternateRange)
+            {
+                strRangeCategory = _strAlternateRange;
+                if (string.IsNullOrWhiteSpace(strRangeCategory))
+                    return -1;
+            }
+            else if (!string.IsNullOrEmpty(_strRange))
                 strRangeCategory = _strRange;
 
+
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("ranges.xml");
             XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRangeCategory + "\"]");
             if (objXmlCategoryNode?[strFindRange] == null)
             {
@@ -2505,8 +2615,7 @@ namespace Chummer.Backend.Equipment
             // If this is a Throwing Weapon, include the ThrowRange bonuses in the character's STR.
             if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
             {
-                ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-                intSTR += objImprovementManager.ValueOf(Improvement.ImprovementType.ThrowRange);
+                intSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
             }
 
             strRange = strRange.Replace("STR", intSTR.ToString());
@@ -2557,74 +2666,55 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Weapon's Short Range.
+        /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
-        public string RangeShort
+        public Dictionary<string, string> RangeStrings
         {
             get
             {
-                int intRangeBonus = RangeBonus;
-                int intMin = (Range("min") * (100 + intRangeBonus) + 99) / 100;
-                int intMax = (Range("short") * (100 + intRangeBonus) + 99) / 100;
+                int intRangeModifier = RangeBonus + 100;
+                int intMin = GetRange("min", false);
+                int intShort = GetRange("short", false);
+                int intMedium = GetRange("medium", false);
+                int intLong = GetRange("long", false);
+                int intExtreme = GetRange("extreme", false);
+                int intAlternateMin = GetRange("min", true);
+                int intAlternateShort = GetRange("short", true);
+                int intAlternateMedium = GetRange("medium", true);
+                int intAlternateLong = GetRange("long", true);
+                int intAlternateExtreme = GetRange("extreme", true);
+                if (intMin > 0)
+                    intMin = (intMin * (intRangeModifier) + 99) / 100;
+                if (intShort > 0)
+                    intShort = (intShort * (intRangeModifier) + 99) / 100;
+                if (intMedium > 0)
+                    intMedium = (intMedium * (intRangeModifier) + 99) / 100;
+                if (intLong > 0)
+                    intLong = (intLong * (intRangeModifier) + 99) / 100;
+                if (intExtreme > 0)
+                    intExtreme = (intExtreme * (intRangeModifier) + 99) / 100;
+                if (intAlternateMin > 0)
+                    intAlternateMin = (intAlternateMin * (intRangeModifier) + 99) / 100;
+                if (intAlternateShort > 0)
+                    intAlternateShort = (intAlternateShort * (intRangeModifier) + 99) / 100;
+                if (intAlternateMedium > 0)
+                    intAlternateMedium = (intAlternateMedium * (intRangeModifier) + 99) / 100;
+                if (intAlternateLong > 0)
+                    intAlternateLong = (intAlternateLong * (intRangeModifier) + 99) / 100;
+                if (intAlternateExtreme > 0)
+                    intAlternateExtreme = (intAlternateExtreme * (intRangeModifier) + 99) / 100;
 
-                if (intMin == -1 && intMax == -1)
-                    return string.Empty;
-                else
-                    return intMin.ToString() + "-" + intMax.ToString();
-            }
-        }
+                Dictionary<string, string> retDictionary = new Dictionary<string, string>(8);
+                retDictionary.Add("short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin + 1).ToString() + "-" + intShort.ToString());
+                retDictionary.Add("medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString() + "-" + intMedium.ToString());
+                retDictionary.Add("long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString() + "-" + intLong.ToString());
+                retDictionary.Add("extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString() + "-" + intExtreme.ToString());
+                retDictionary.Add("alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin + 1).ToString() + "-" + intAlternateShort.ToString());
+                retDictionary.Add("alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString() + "-" + intAlternateMedium.ToString());
+                retDictionary.Add("alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString() + "-" + intAlternateLong.ToString());
+                retDictionary.Add("alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString() + "-" + intAlternateExtreme.ToString());
 
-        /// <summary>
-        /// Weapon's Medium Range.
-        /// </summary>
-        public string RangeMedium
-        {
-            get
-            {
-                int intRangeBonus = RangeBonus;
-                int intMin = (Range("short") * (100 + intRangeBonus) + 99) / 100;
-                int intMax = (Range("medium") * (100 + intRangeBonus) + 99) / 100;
-
-                if (intMin == -1 && intMax == -1)
-                    return string.Empty;
-                else
-                    return (intMin + 1).ToString() + "-" + intMax.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Weapon's Long Range.
-        /// </summary>
-        public string RangeLong
-        {
-            get
-            {
-                int intRangeBonus = RangeBonus;
-                int intMin = (Range("medium") * (100 + intRangeBonus) + 99) / 100;
-                int intMax = (Range("long") * (100 + intRangeBonus) + 99) / 100;
-
-                if (intMin == -1 && intMax == -1)
-                    return string.Empty;
-                else
-                    return (intMin + 1).ToString() + "-" + intMax.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Weapon's Extreme Range.
-        /// </summary>
-        public string RangeExtreme
-        {
-            get
-            {
-                int intRangeBonus = RangeBonus;
-                int intMin = (Range("long") * (100 + intRangeBonus) + 99) / 100;
-                int intMax = (Range("extreme") * (100 + intRangeBonus) + 99) / 100;
-
-                if (intMin == -1 && intMax == -1)
-                    return string.Empty;
-                else
-                    return (intMin + 1).ToString() + "-" + intMax.ToString();
+                return retDictionary;
             }
         }
 
@@ -2717,6 +2807,10 @@ namespace Chummer.Backend.Equipment
                 if (objSkill != null)
                 {
                     intDicePool = objSkill.Pool;
+                }
+                foreach(Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category))
+                {
+                    intDicePoolModifier += objImprovement.Value;
                 }
 
                 int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;

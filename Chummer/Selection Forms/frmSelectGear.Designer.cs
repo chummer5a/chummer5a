@@ -65,6 +65,7 @@
             this.chkAerodynamic = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -127,8 +128,13 @@
             // 
             this.nudRating.Enabled = false;
             this.nudRating.Location = new System.Drawing.Point(422, 127);
+            this.nudRating.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(37, 20);
+            this.nudRating.Size = new System.Drawing.Size(56, 20);
             this.nudRating.TabIndex = 11;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
@@ -283,6 +289,11 @@
             this.nudGearQty.Location = new System.Drawing.Point(422, 153);
             this.nudGearQty.Maximum = new decimal(new int[] {
             100000,
+            0,
+            0,
+            0});
+            this.nudGearQty.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
@@ -475,6 +486,18 @@
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
+            // chkShowOnlyAffordItems
+            // 
+            this.chkShowOnlyAffordItems.AutoSize = true;
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(362, 355);
+            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
+            this.chkShowOnlyAffordItems.TabIndex = 66;
+            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+            // 
             // frmSelectGear
             // 
             this.AcceptButton = this.cmdOK;
@@ -482,6 +505,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(646, 414);
+            this.Controls.Add(this.chkShowOnlyAffordItems);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.chkBlackMarketDiscount);
             this.Controls.Add(this.chkAerodynamic);
@@ -574,5 +598,6 @@
         private System.Windows.Forms.CheckBox chkAerodynamic;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
     }
 }

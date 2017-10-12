@@ -50,6 +50,7 @@ namespace Chummer
         private bool _blnShowOnlyLimbs;
         private static string _strSelectCategory = string.Empty;
         private static string _strSelectedGrade = string.Empty;
+        private bool _blnIgnoreSecondHand = false;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly XPathNavigator _nav;
@@ -92,7 +93,7 @@ namespace Chummer
             }
 
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.Options.Availability.ToString());
+                    _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
 
             chkPrototypeTranshuman.Visible =
@@ -108,54 +109,23 @@ namespace Chummer
                     break;
             }
 
-            XmlNodeList objXmlCategoryList;
-            if (_strSubsystems.Length > 0)
+            PopulateCategories();
+            // Select the first Category in the list.
+            if (string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedIndex = 0;
+            else if (cboCategory.Items.Contains(_strSelectCategory))
             {
-                // Populate the Cyberware Category list.
-                string strSubsystem = ". = \"";
-                if (_strSubsystems.Contains(','))
-                {
-                    strSubsystem += _strSubsystems.Replace(",", "\" or . = \"");
-                }
-                else
-                {
-                    strSubsystem += _strSubsystems;
-                }
-                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[" + strSubsystem + "\"]");
+                cboCategory.SelectedValue = _strSelectCategory;
             }
-            else
-            {
-                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            }
-            if (objXmlCategoryList != null)
-                foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                {
-                    // Make sure the Category isn't in the exclusion list.
-                    bool blnAddItem = true;
 
-                    if (objXmlCategory.Attributes["show"] != null)
-                        blnAddItem = _blnAllowModularPlugins;
-
-                    if (_blnShowOnlyLimbs)
-                        blnAddItem = objXmlCategory.InnerText == "Cyberlimb";
-
-                    if (blnAddItem)
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlCategory.InnerText;
-                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                        _lstCategory.Add(objItem);
-                    }
-                }
-            cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
-            cboCategory.DataSource = _lstCategory;
+            if (cboCategory.SelectedIndex == -1)
+                cboCategory.SelectedIndex = 0;
+            cboCategory.EndUpdate();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            PopulateGrades();
+            PopulateGrades(false, true);
 
             if (string.IsNullOrEmpty(_strSetGrade))
             {
@@ -169,18 +139,6 @@ namespace Chummer
 
             if (cboGrade.SelectedIndex == -1)
                 cboGrade.SelectedIndex = 0;
-
-            // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else if (cboCategory.Items.Contains(_strSelectCategory))
-            {
-                cboCategory.SelectedValue = _strSelectCategory;
-            }
-
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
 
             lblESSDiscountLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
             lblESSDiscountPercentLabel.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
@@ -208,55 +166,72 @@ namespace Chummer
                 _intAvailModifier = Convert.ToInt32(objXmlGrade["avail"]?.InnerText);
             }
 
-            var selected = lstCyberware.SelectedValue?.ToString() ?? "";
-            txtSearch_TextChanged(sender, e);
-
-            for (var index = 0; index < lstCyberware.Items.Count; index++)
+            if (cboGrade.Enabled)
             {
-                var item = (ListItem) lstCyberware.Items[index];
-                if (item.Value != selected) continue;
-                lstCyberware.SetSelected(index, true);
-                break;
+                _strSelectedGrade = cboGrade.SelectedValue.ToString();
+                lstCyberware.SelectedIndexChanged -= lstCyberware_SelectedIndexChanged;
+                string strSelected = lstCyberware.SelectedValue?.ToString() ?? string.Empty;
+                PopulateCategories();
+                // Select the first Category in the list.
+                if (string.IsNullOrEmpty(_strSelectCategory))
+                    cboCategory.SelectedIndex = 0;
+                else if (cboCategory.Items.Contains(_strSelectCategory))
+                {
+                    cboCategory.SelectedValue = _strSelectCategory;
+                }
+
+                if (cboCategory.SelectedIndex == -1)
+                    cboCategory.SelectedIndex = 0;
+                cboCategory.EndUpdate();
+                txtSearch_TextChanged(sender, e);
+                lstCyberware.SelectedValue = strSelected;
+                lstCyberware.SelectedIndexChanged += lstCyberware_SelectedIndexChanged;
             }
+
             UpdateCyberwareInfo();
+        }
+
+        private void cboGrade_EnabledChanged(object sender, EventArgs e)
+        {
+            if (cboGrade.Enabled)
+                cboGrade.SelectedValue = _strSelectedGrade;
+            cboGrade_SelectedIndexChanged(sender, e);
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _strSelectCategory = cboCategory.SelectedValue.ToString();
+            string strForceGrade = string.Empty;
+            // Update the list of Cyberware based on the selected Category.
+            if (cboCategory.SelectedValue?.ToString().StartsWith("Genetech:") == true ||
+                cboCategory.SelectedValue.ToString() == "Symbionts" ||
+                cboCategory.SelectedValue.ToString() == "Genemods")
+            {
+                cboGrade.Enabled = false;
+                strForceGrade = "Standard";
+            }
+            else
+            {
+                cboGrade.Enabled = !_blnLockGrade;
+                if (_blnLockGrade && cboGrade.SelectedValue != null)
+                    strForceGrade = cboGrade.SelectedValue.ToString();
+            }
             if (_objMode == Mode.Bioware)
             {
                 // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
                 if (cboGrade.SelectedValue != null)
                 {
-                    string strSelectedValue = cboGrade.SelectedValue.ToString();
-                    bool blnCultured = cboCategory.SelectedValue.ToString() == "Cultured";
-                    PopulateGrades(blnCultured);
-                    cboGrade.SelectedValue = strSelectedValue;
+                    if (PopulateGrades(cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString().Contains("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used"))), false, strForceGrade))
+                    {
+                        if (cboGrade.Enabled)
+                            cboGrade.SelectedValue = _strSelectedGrade;
+                    }
                 }
-                if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
-                    cboGrade.SelectedIndex = 0;
             }
-
-            // Update the list of Cyberware based on the selected Category.
-            if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
-                cboCategory.SelectedValue.ToString() == "Symbionts" ||
-                cboCategory.SelectedValue.ToString() == "Genemods" ||
-                _blnLockGrade)
-            {
-                cboGrade.Enabled = false;
-
-            }
-            else
-            {
-                cboGrade.Enabled = true;
-            }
-
-            if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
-                cboCategory.SelectedValue.ToString() == "Symbionts" ||
-                cboCategory.SelectedValue.ToString() == "Genemods")
-            {
-                cboGrade.SelectedValue = "Standard";
-            }
+            if (!string.IsNullOrEmpty(strForceGrade))
+                cboGrade.SelectedValue = strForceGrade;
+            if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
+                cboGrade.SelectedIndex = 0;
             BuildCyberwareList();
         }
 
@@ -338,33 +313,46 @@ namespace Chummer
             }
 
             string category = objXmlCyberware["category"]?.InnerText ?? string.Empty;
-            if (category.StartsWith("Genetech:") ||
-                category.StartsWith("Symbionts") ||
-                category.StartsWith("Genemods") ||
-                _blnLockGrade)
-            {
-                cboGrade.Enabled = false;
-
-            }
-            else
-            {
-                cboGrade.Enabled = true;
-            }
-
-            if (category.StartsWith("Genetech:") ||
-                category.StartsWith("Symbionts") ||
-                category.StartsWith("Genemods"))
-            {
-                cboGrade.SelectedValue = "Standard";
-            }
-
+            string strForceGrade = string.Empty;
             if (objXmlCyberware["forcegrade"] != null)
             {
                 // Force the Cyberware to be a particular Grade.
-                cboGrade.SelectedValue = objXmlCyberware["forcegrade"].InnerText;
+                strForceGrade = objXmlCyberware["forcegrade"].InnerText;
                 cboGrade.Enabled = false;
             }
+            else
+            {
+                if (category.StartsWith("Genetech:") ||
+                    category.StartsWith("Symbionts") ||
+                    category.StartsWith("Genemods"))
+                {
+                    cboGrade.Enabled = false;
+                    strForceGrade = "Standard";
+                }
+                else
+                {
+                    cboGrade.Enabled = !_blnLockGrade;
+                    if (_blnLockGrade && cboGrade.SelectedValue != null)
+                        strForceGrade = cboGrade.SelectedValue.ToString();
+                }
+            }
 
+            if (_objMode == Mode.Bioware)
+            {
+                // If the window is currently showing Bioware, we may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as as Grade.
+                if (cboGrade.SelectedValue != null)
+                {
+                    if (PopulateGrades(category.StartsWith("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used")), false, strForceGrade))
+                    {
+                        if (cboGrade.Enabled)
+                            cboGrade.SelectedValue = _strSelectedGrade;
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(strForceGrade))
+                cboGrade.SelectedValue = strForceGrade;
+            if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
+                cboGrade.SelectedIndex = 0;
             string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText);
             string strPage = objXmlCyberware["page"].InnerText;
             if (objXmlCyberware["altpage"] != null)
@@ -459,15 +447,19 @@ namespace Chummer
                 return;
             }
 
-            string strCategoryFilter = _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
+            string strCategoryFilter = string.Empty;
+            if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All")
+                strCategoryFilter = _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
+            else
+                strCategoryFilter = "category = \"" + cboCategory.SelectedValue + "\" or ";
 
             // Treat everything as being uppercase so the search is case-insensitive.
             string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
             if (!string.IsNullOrEmpty(strCategoryFilter))
                 strSearch += " and (" + strCategoryFilter + ")";
-            // Remove the trailing " or ";
-            strSearch = strSearch.Substring(0, strSearch.Length - 4) + ")";
-            strSearch += "]";
+            // Remove the trailing " or " if we aren't selecting just one category;
+            strSearch = strSearch.Substring(0, strSearch.Length - 4);
+            strSearch += ")]";
 
             BuildCyberwareList(_objXmlDocument.SelectNodes(strSearch));
         }
@@ -555,6 +547,11 @@ namespace Chummer
         /// Essence cost multiplier from the character.
         /// </summary>
         public double CharacterESSMultiplier { get; set; } = 1.0;
+
+        /// <summary>
+        /// Total Essence cost multiplier from the character (stacks multiplicatively at the very last step.
+        /// </summary>
+        public double CharacterTotalESSMultiplier { get; set; } = 1.0;
 
         /// <summary>
         /// Cost multiplier for Genetech.
@@ -932,6 +929,8 @@ namespace Chummer
 
                 dblCharacterESSModifier -= (1 - _dblESSMultiplier);
 
+                dblCharacterESSModifier *= CharacterTotalESSMultiplier;
+
                 // Genetech and Genetic Infusions are not subject to Bioware cost multipliers, so if we're looking at either, suppress the multiplier.
                 if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") ||
                     strSelectCategory.StartsWith("Genemods"))
@@ -957,15 +956,6 @@ namespace Chummer
                         Math.Round(
                             Convert.ToDouble(_nav.Evaluate(xprEssence), GlobalOptions.InvariantCultureInfo) *
                             dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-                }
-                // Check if the character has Sensitive System.
-                if (_objMode == Mode.Cyberware)
-                {
-                    dblESS =
-                        _objCharacter.Improvements.Where(
-                                objImprovement =>
-                                    objImprovement.ImproveType == Improvement.ImprovementType.SensitiveSystem && objImprovement.Enabled)
-                            .Aggregate(dblESS, (current, objImprovement) => current * 2.0);
                 }
             }
             lblEssence.Text = dblESS.ToString(GlobalOptions.CultureInfo);
@@ -1045,32 +1035,61 @@ namespace Chummer
 
         private void BuildCyberwareList(XmlNodeList objXmlCyberwareList = null)
         {
+            if (!string.IsNullOrEmpty(txtSearch.Text) && objXmlCyberwareList == null)
+            {
+                txtSearch_TextChanged(null, EventArgs.Empty);
+                return;
+            }
             List<ListItem> lstCyberwares = new List<ListItem>();
 
             // Retrieve the list of Cyberware for the selected Category.
             if (objXmlCyberwareList == null)
             {
+                string strCategoryFilter = "(";
+                if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All")
+                    strCategoryFilter += _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
+                else
+                    strCategoryFilter += "category = \"" + cboCategory.SelectedValue + "\" or ";
+                strCategoryFilter = strCategoryFilter.Substring(0, strCategoryFilter.Length - 4) + ")";
                 if (_objCharacter.DEPEnabled && ParentVehicle == null)
                     objXmlCyberwareList =
-                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" +
-                                                    cboCategory.SelectedValue +
-                                                    "\" and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" +
+                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" +
                                                     _objCharacter.Options.BookXPath() + ")]");
                 else if (_blnShowOnlySubsystems)
                     objXmlCyberwareList =
-                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" +
-                                                    cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() +
+                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (" + _objCharacter.Options.BookXPath() +
                                                     ") and contains(capacity, \"[\")]");
                 else
                     objXmlCyberwareList =
-                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[category = \"" +
-                                                    cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
             }
             if (objXmlCyberwareList != null)
                 foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
                 {
                     if (objXmlCyberware["hide"] != null)
                         continue;
+                    if (!_blnShowOnlySubsystems && objXmlCyberware["ess"]?.InnerText == "0" && objXmlCyberware["capacity"]?.InnerText.Contains("[") == true)
+                        continue;
+                    if (!string.IsNullOrEmpty(_strSelectedGrade))
+                    {
+                        bool blnIgnoreDisable = false;
+                        if (objXmlCyberware["forcegrade"] != null)
+                        {
+                            if (_strSelectedGrade != objXmlCyberware["forcegrade"].InnerText)
+                                continue;
+                            else
+                                blnIgnoreDisable = true;
+                        }
+                        if (objXmlCyberware["category"] != null &&
+                            (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
+                            objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
+                            objXmlCyberware["category"].InnerText.StartsWith("Genemods")))
+                        {
+                            blnIgnoreDisable = true;
+                        }
+                        if (!blnIgnoreDisable && _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && _strSelectedGrade.Contains(x.ImprovedName) && x.Enabled))
+                            continue;
+                    }
                     if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
                         chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier)) continue;
                     ListItem objItem = new ListItem
@@ -1109,22 +1128,29 @@ namespace Chummer
 
             _strSelectCategory = objCyberwareNode["category"]?.InnerText;
             SelectedCyberware = objCyberwareNode["name"]?.InnerText;
-            if (_objMode == Mode.Bioware)
+            if (!string.IsNullOrEmpty(objCyberwareNode["forcegrade"]?.InnerText))
             {
-                if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
-                    cboCategory.SelectedValue.ToString() == "Symbionts" ||
-                    cboCategory.SelectedValue.ToString() == "Genemods")
+                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(objCyberwareNode["forcegrade"].InnerText);
+            }
+            else if (_objMode == Mode.Bioware)
+            {
+                if (cboCategory.SelectedValue?.ToString().StartsWith("Genetech:") == true ||
+                    cboCategory.SelectedValue?.ToString() == "Symbionts" ||
+                    cboCategory.SelectedValue?.ToString() == "Genemods" ||
+                    _strSelectCategory?.StartsWith("Genetech:") == true ||
+                    _strSelectCategory == "Symbionts" ||
+                    _strSelectCategory == "Genemods")
                 {
                     SelectedGrade = GlobalOptions.BiowareGrades.GetGrade("Standard");
                 }
                 else
                 {
-                    SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+                    SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(_strSelectedGrade);
                 }
             }
             else
             {
-                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(_strSelectedGrade);
             }
 
             _strSelectedGrade = SelectedGrade.ToString();
@@ -1173,40 +1199,111 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Populate the list of Cyberware Grades.
+        /// Populate the list of Cyberware Grades, returns true if anything changed.
         /// </summary>
         /// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
-        private void PopulateGrades(bool blnIgnoreSecondHand = false)
+        private bool PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "")
         {
-            GradeList objGradeList = _objMode == Mode.Bioware ? GlobalOptions.BiowareGrades : GlobalOptions.CyberwareGrades;
-
-            _lstGrade.Clear();
-            foreach (Grade objGrade in objGradeList)
+            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand)
             {
-                bool blnAddItem = true;
+                _blnIgnoreSecondHand = blnIgnoreSecondHand;
+                GradeList objGradeList = _objMode == Mode.Bioware ? GlobalOptions.BiowareGrades : GlobalOptions.CyberwareGrades;
 
-                ListItem objItem = new ListItem();
-                objItem.Value = objGrade.Name;
-                objItem.Name = objGrade.DisplayName;
-
-                if (objGrade.Burnout && !_objCharacter.BurnoutEnabled)
-                    blnAddItem = false;
-                else if (objGrade.DisplayName == "Standard" && _objCharacter.BurnoutEnabled)
-                    blnAddItem = false;
-                else if (blnIgnoreSecondHand && objGrade.SecondHand)
-                    blnAddItem = false;
-                else if (!_objCharacter.AdapsinEnabled && objGrade.Adapsin)
-                    blnAddItem = false;
-
-                if (blnAddItem)
-                    _lstGrade.Add(objItem);
+                _lstGrade.Clear();
+                foreach (Grade objGrade in objGradeList)
+                {
+                    if ((string.IsNullOrEmpty(strForceGrade) || objGrade.Name != strForceGrade) &&
+                    _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode == Mode.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                    && objGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                        continue;
+                    if ((!_blnIgnoreSecondHand || !objGrade.SecondHand) &&
+                        (_objCharacter.BurnoutEnabled || !objGrade.Burnout) &&
+                        (!_objCharacter.BurnoutEnabled || objGrade.Name != "Standard") &&
+                        (_objCharacter.AdapsinEnabled || !objGrade.Adapsin))
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objGrade.Name;
+                        objItem.Name = objGrade.DisplayName;
+                        _lstGrade.Add(objItem);
+                    }
+                }
+                cboGrade.BeginUpdate();
+                bool blnOldEnabled = cboGrade.Enabled;
+                cboGrade.Enabled = false;
+                cboGrade.DataSource = null;
+                cboGrade.DataSource = _lstGrade;
+                cboGrade.ValueMember = "Value";
+                cboGrade.DisplayMember = "Name";
+                cboGrade.Enabled = blnOldEnabled;
+                cboGrade.EndUpdate();
+                return true;
             }
-            cboGrade.BeginUpdate();
-            cboGrade.DataSource = null;
-            cboGrade.DataSource = _lstGrade;
-            cboGrade.ValueMember = "Value";
-            cboGrade.DisplayMember = "Name";
-            cboGrade.EndUpdate();
+            return false;
+        }
+
+        private void PopulateCategories()
+        {
+            XmlNodeList objXmlCategoryList;
+            if (_strSubsystems.Length > 0)
+            {
+                // Populate the Cyberware Category list.
+                string strSubsystem = ". = \"";
+                if (_strSubsystems.Contains(','))
+                {
+                    strSubsystem += _strSubsystems.Replace(",", "\" or . = \"");
+                }
+                else
+                {
+                    strSubsystem += _strSubsystems;
+                }
+                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[" + strSubsystem + "\"]");
+            }
+            else
+            {
+                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+            }
+            _lstCategory.Clear();
+            if (objXmlCategoryList != null)
+                foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                {
+                    // Make sure the Category isn't in the exclusion list.
+                    bool blnAddItem = true;
+
+                    if (objXmlCategory.Attributes["show"] != null)
+                        blnAddItem = blnAddItem && _blnAllowModularPlugins;
+
+                    if (_blnShowOnlyLimbs)
+                        blnAddItem = blnAddItem && objXmlCategory.InnerText == "Cyberlimb";
+                    else if (!_blnShowOnlySubsystems)
+                        blnAddItem = blnAddItem && (objXmlCategory.InnerText == "Cyberlimb" || objXmlCategory.InnerText?.Contains("Cyberlimb") == false);
+
+                    if (!string.IsNullOrEmpty(_strSelectedGrade) && _strSelectedGrade.Contains("Used"))
+                        blnAddItem = blnAddItem && !objXmlCategory.InnerText.Contains("Cultured");
+
+                    if (blnAddItem)
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlCategory.InnerText;
+                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                        _lstCategory.Add(objItem);
+                    }
+                }
+
+            SortListItem objSort = new SortListItem();
+            _lstCategory.Sort(objSort.Compare);
+
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
+
+            cboCategory.BeginUpdate();
+            cboCategory.ValueMember = "Value";
+            cboCategory.DisplayMember = "Name";
+            cboCategory.DataSource = _lstCategory;
         }
 
         private void MoveControls()
@@ -1230,6 +1327,5 @@ namespace Chummer
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
         #endregion
-
     }
 }

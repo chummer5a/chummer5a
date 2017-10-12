@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Chummer
 {
@@ -30,7 +30,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.treCharacterList = new Chummer.helpers.TreeView();
             this.picMugshot = new System.Windows.Forms.PictureBox();
             this.tabCharacterText = new System.Windows.Forms.TabControl();
             this.panCharacterBio = new System.Windows.Forms.TabPage();
@@ -57,6 +56,7 @@ namespace Chummer
             this.lblEssenceLabel = new System.Windows.Forms.Label();
             this.lblFilePath = new System.Windows.Forms.Label();
             this.lblFilePathLabel = new System.Windows.Forms.Label();
+            this.treCharacterList = new Chummer.helpers.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -66,28 +66,18 @@ namespace Chummer
             this.panGameNotes.SuspendLayout();
             this.SuspendLayout();
             // 
-            // treCharacterList
-            // 
-            this.treCharacterList.AllowDrop = true;
-            this.treCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.treCharacterList.Location = new System.Drawing.Point(8, 8);
-            this.treCharacterList.Name = "treCharacterList";
-            this.treCharacterList.ShowNodeToolTips = true;
-            this.treCharacterList.Size = new System.Drawing.Size(192, 536);
-            this.treCharacterList.TabIndex = 0;
-            this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
-            this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
-            this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_KeyDown);
-            // 
             // picMugshot
             // 
             this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picMugshot.Location = new System.Drawing.Point(560, 8);
+            this.picMugshot.Location = new System.Drawing.Point(448, 8);
+            this.picMugshot.Margin = new System.Windows.Forms.Padding(13);
+            this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
-            this.picMugshot.Size = new System.Drawing.Size(208, 328);
+            this.picMugshot.Size = new System.Drawing.Size(324, 324);
+            this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 21;
             this.picMugshot.TabStop = false;
+            this.picMugshot.SizeChanged += new System.EventHandler(this.picMugshot_SizeChanged);
             // 
             // tabCharacterText
             // 
@@ -154,7 +144,7 @@ namespace Chummer
             this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtCharacterConcept.Size = new System.Drawing.Size(554, 176);
             this.txtCharacterConcept.TabIndex = 2;
-            this.txtCharacterConcept.Tag = string.Empty;
+            this.txtCharacterConcept.Tag = "";
             // 
             // panCharacterBackground
             // 
@@ -180,7 +170,7 @@ namespace Chummer
             this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtCharacterBackground.Size = new System.Drawing.Size(554, 176);
             this.txtCharacterBackground.TabIndex = 0;
-            this.txtCharacterBackground.Tag = string.Empty;
+            this.txtCharacterBackground.Tag = "";
             // 
             // panCharacterNotes
             // 
@@ -206,7 +196,7 @@ namespace Chummer
             this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtCharacterNotes.Size = new System.Drawing.Size(554, 176);
             this.txtCharacterNotes.TabIndex = 2;
-            this.txtCharacterNotes.Tag = string.Empty;
+            this.txtCharacterNotes.Tag = "";
             // 
             // panGameNotes
             // 
@@ -232,7 +222,7 @@ namespace Chummer
             this.txtGameNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtGameNotes.Size = new System.Drawing.Size(554, 176);
             this.txtGameNotes.TabIndex = 3;
-            this.txtGameNotes.Tag = string.Empty;
+            this.txtGameNotes.Tag = "";
             // 
             // lblCharacterName
             // 
@@ -366,6 +356,20 @@ namespace Chummer
             this.lblFilePathLabel.TabIndex = 37;
             this.lblFilePathLabel.Tag = "Label_Roster_File_Name";
             this.lblFilePathLabel.Text = "File Name";
+            // 
+            // treCharacterList
+            // 
+            this.treCharacterList.AllowDrop = true;
+            this.treCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.treCharacterList.Location = new System.Drawing.Point(8, 8);
+            this.treCharacterList.Name = "treCharacterList";
+            this.treCharacterList.ShowNodeToolTips = true;
+            this.treCharacterList.Size = new System.Drawing.Size(192, 536);
+            this.treCharacterList.TabIndex = 0;
+            this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
+            this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
+            this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_KeyDown);
             // 
             // frmCharacterRoster
             // 

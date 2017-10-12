@@ -265,7 +265,7 @@ namespace Chummer.UI.Powers
                 }
 
                 // Add any Power Point Improvements to MAG.
-                intMAG += ObjCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
+                intMAG += ImprovementManager.ValueOf(ObjCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
                 return intMAG;
             }

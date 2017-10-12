@@ -88,6 +88,52 @@ namespace Chummer
         #endregion
     }
 
+    public class CustomDataDirectoryInfo
+    {
+        private string _strName = string.Empty;
+        private string _strPath = string.Empty;
+        private bool _blnEnabled = false;
+
+        #region Properties
+
+        public string Name
+        {
+            get
+            {
+                return _strName;
+            }
+            set
+            {
+                _strName = value;
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                return _strPath;
+            }
+            set
+            {
+                _strPath = value;
+            }
+        }
+
+        public bool Enabled
+        {
+            get
+            {
+                return _blnEnabled;
+            }
+            set
+            {
+                _blnEnabled = value;
+            }
+        }
+        #endregion
+    }
+
     /// <summary>
     /// Global Options. A single instance class since Options are common for all characters, reduces execution time and memory usage.
     /// </summary>
@@ -135,6 +181,9 @@ namespace Chummer
         private static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
         private static bool _blnUseLogging = false;
         private static string _strCharacterRosterPath;
+
+        // Custom Data Directory information.
+        private static List<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfo = new List<CustomDataDirectoryInfo>();
 
         #region Constructor and Instance
         /// <summary>
@@ -244,11 +293,85 @@ namespace Chummer
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
+            // Retrieve CustomDataDirectoryInfo objects
+            bool blnPopulatefromCustomDataFolder = true;
+            RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
+            if (objCustomDataDirectoryKey != null)
+            {
+                // If the subkey is empty and not just filled with invalid paths, do not re-check customdata folder
+                blnPopulatefromCustomDataFolder = objCustomDataDirectoryKey.SubKeyCount > 0;
+                List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int> > (objCustomDataDirectoryKey.SubKeyCount);
+
+                string[] astrCustomDataDirectoryNames = objCustomDataDirectoryKey.GetSubKeyNames();
+                int intMinLoadOrderValue = int.MaxValue;
+                int intMaxLoadOrderValue = int.MinValue;
+                for (int i = 0; i < astrCustomDataDirectoryNames.Count(); ++i)
+                {
+                    RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(astrCustomDataDirectoryNames[i]);
+                    string strPath = string.Empty;
+                    object objRegistryResult = objLoopKey.GetValue("Path");
+                    if (objRegistryResult != null)
+                        strPath = objRegistryResult.ToString();
+                    if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
+                    {
+                        CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo();
+                        objCustomDataDirectory.Name = astrCustomDataDirectoryNames[i];
+                        objCustomDataDirectory.Path = strPath;
+                        objRegistryResult = objLoopKey.GetValue("Enabled");
+                        if (objRegistryResult != null)
+                        {
+                            bool blnTemp;
+                            if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
+                                objCustomDataDirectory.Enabled = blnTemp;
+                        }
+                        int intLoadOrder = 0;
+                        objRegistryResult = objLoopKey.GetValue("LoadOrder");
+                        if (objRegistryResult != null && int.TryParse(objRegistryResult.ToString(), out intLoadOrder))
+                        {
+                            // First load the infos alongside their load orders into a list whose order we don't care about
+                            intMaxLoadOrderValue = Math.Max(intMaxLoadOrderValue, intLoadOrder);
+                            intMinLoadOrderValue = Math.Min(intMinLoadOrderValue, intLoadOrder);
+                            lstUnorderedCustomDataDirectories.Add(new KeyValuePair<CustomDataDirectoryInfo, int>(objCustomDataDirectory, intLoadOrder));
+                        }
+                        else
+                            lstUnorderedCustomDataDirectories.Add(new KeyValuePair<CustomDataDirectoryInfo, int>(objCustomDataDirectory, int.MinValue));
+                        blnPopulatefromCustomDataFolder = false;
+                    }
+                }
+
+                // Now translate the list of infos whose order we don't care about into the list where we do care about the order of infos
+                for (int i = intMinLoadOrderValue; i <= intMaxLoadOrderValue; ++i)
+                {
+                    KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair = lstUnorderedCustomDataDirectories.FirstOrDefault(x => x.Value == i);
+                    if (!objLoopPair.Equals(default(KeyValuePair<CustomDataDirectoryInfo, int>)))
+                        _lstCustomDataDirectoryInfo.Add(objLoopPair.Key);
+                }
+                foreach (KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair in lstUnorderedCustomDataDirectories.Where(x => x.Value == int.MinValue))
+                {
+                    _lstCustomDataDirectoryInfo.Add(objLoopPair.Key);
+                }
+            }
+            // First run of Chummer5 with custom data directory info, populate based on folders in customdata
+            if (blnPopulatefromCustomDataFolder)
+            {
+                string strCustomDataRootPath = Path.Combine(Application.StartupPath, "customdata");
+                if (Directory.Exists(strCustomDataRootPath))
+                {
+                    foreach(string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
+                    {
+                        CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo();
+                        objCustomDataDirectory.Name = Path.GetFileName(strLoopDirectoryPath);
+                        objCustomDataDirectory.Path = strLoopDirectoryPath;
+                        _lstCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                    }
+                }
+            }
+
             // Retrieve the SourcebookInfo objects.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
             foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/chummer/books/book"))
             {
-                if (objXmlBook["code"] != null)
+                if (objXmlBook["code"] != null && objXmlBook["hide"] == null)
                 {
                     SourcebookInfo objSource = new SourcebookInfo();
                     objSource.Code = objXmlBook["code"].InnerText;
@@ -632,6 +755,21 @@ namespace Chummer
             set
             {
                 _lstSourcebookInfo = value;
+            }
+        }
+
+        /// <summary>
+        /// List of CustomDataDirectoryInfo.
+        /// </summary>
+        public List<CustomDataDirectoryInfo> CustomDataDirectoryInfo
+        {
+            get
+            {
+                return _lstCustomDataDirectoryInfo;
+            }
+            set
+            {
+                _lstCustomDataDirectoryInfo = value;
             }
         }
 

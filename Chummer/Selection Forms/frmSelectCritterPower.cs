@@ -337,14 +337,14 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 
             trePowers.Nodes.Clear();
 
             if (cboCategory.SelectedValue.ToString() == "Toxic Critter Powers")
             {
                 // Display the special Toxic Critter Powers.
-                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[toxic = \"yes\"]"))
+                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[toxic = \"yes\" and (" + _objCharacter.Options.BookXPath() + ")]"))
                 {
                     TreeNode objNode = new TreeNode();
                     objNode.Tag = objXmlPower["id"].InnerText;
@@ -355,7 +355,7 @@ namespace Chummer
             else if (cboCategory.SelectedValue.ToString() == "Weakness")
             {
                 // Display the special Toxic Critter Powers.
-                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"Weakness\"]"))
+                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"Weakness\" and (" + _objCharacter.Options.BookXPath() + ")]"))
                 {
                     TreeNode objNode = new TreeNode();
                     objNode.Tag = objXmlPower["id"].InnerText;
@@ -370,7 +370,7 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("optionalpowers/power"))
                     {
-                        XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\"]");
+                        XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
                         TreeNode objNode = new TreeNode();
                         objNode.Tag = objXmlPower["id"].InnerText;
                         objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
@@ -409,7 +409,7 @@ namespace Chummer
 
                         if (blnAddPower)
                         {
-                            XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\"]");
+                            XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
                             TreeNode objNode = new TreeNode();
                             objNode.Tag = objXmlPower["id"].InnerText;
                             objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
@@ -430,7 +430,7 @@ namespace Chummer
                                     }
                                     if (!blnFound)
                                     {
-                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\"]");
+                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\" and (" + _objCharacter.Options.BookXPath() + ")]");
                                         TreeNode objPossessionNode = new TreeNode();
                                         objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
                                         objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
@@ -441,7 +441,7 @@ namespace Chummer
 
                                     if (!blnFound)
                                     {
-                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
+                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\" and (" + _objCharacter.Options.BookXPath() + ")]");
                                         TreeNode objPossessionNode = new TreeNode();
                                         objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
                                         objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
@@ -454,7 +454,7 @@ namespace Chummer
                 }
                 else
                 {
-                    foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"" + cboCategory.SelectedValue + "\"]"))
+                    foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
                     {
                         TreeNode objNode = new TreeNode();
                         objNode.Tag = objXmlPower["id"].InnerText;

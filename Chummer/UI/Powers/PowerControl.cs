@@ -112,7 +112,7 @@ namespace Chummer
                 }
             }
             PowerObject.Deleting = true;
-            PowerObject.CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, PowerObject.InternalId);
+            ImprovementManager.RemoveImprovements(PowerObject.CharacterObject, Improvement.ImprovementSource.Power, PowerObject.InternalId);
             PowerObject.CharacterObject.Powers.Remove(PowerObject);
             
             if (_objPower.CharacterObject.Created)

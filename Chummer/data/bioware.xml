@@ -181,9 +181,14 @@
       <cost>Rating * 2000</cost>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset>Rating</thresholdoffset>
+		  <sharedthresholdoffset>Rating</sharedthresholdoffset>
         </conditionmonitor>
       </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>High Pain Tolerance</quality>
+        </oneof>
+      </forbidden>
       <rating>12</rating>
       <source>SR5</source>
       <page>460</page>
@@ -2690,6 +2695,11 @@
           <thresholdoffset>Rating</thresholdoffset>
         </conditionmonitor>
       </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>High Pain Tolerance</quality>
+        </oneof>
+      </forbidden>
       <rating>12</rating>
       <source>2050</source>
       <page>205</page>

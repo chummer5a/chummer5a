@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  */
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -25,6 +26,7 @@ namespace Chummer
     public partial class frmDiceRoller : Form
     {
         private readonly frmMain _frmMain;
+        private List<ListItem> _lstResults = new List<ListItem>(40);
 
         #region Control Events
         public frmDiceRoller(frmMain frmMainForm, List<Quality> lstQualities = null, int intDice = 1)
@@ -35,14 +37,9 @@ namespace Chummer
             nudDice.Value = intDice;
             if (lstQualities != null)
             {
-                foreach (Quality objQuality in lstQualities)
-                {
-                    if (objQuality.Name.StartsWith("Gremlins"))
-                    {
-                        int intRating = Convert.ToInt32(objQuality.Name.Substring(objQuality.Name.Length - 2, 1));
-                        nudGremlins.Value = intRating;
-                    }
-                }
+                int intGremlinsRating = lstQualities.Where(x => x.Name == "Gremlins").Count();
+                if (intGremlinsRating > 0)
+                    nudGremlins.Value = intGremlinsRating;
             }
             MoveControls();
 
@@ -73,14 +70,14 @@ namespace Chummer
 
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
-            Random objRandom = new Random();
+            Random objRandom = MersenneTwister.SfmtRandom.Create();
             List<int> lstRandom = new List<int>();
             int intHitCount = 0;
             int intGlitchCount = 0;
             int intGlitchThreshold = 0;
             int intGlitchMin = 1;
 
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling(nudDice.Value / 2.0m));
+            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -89,8 +86,6 @@ namespace Chummer
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
-            else
-                intGlitchMin = 1;
 
             for (int intCounter = 1; intCounter <= nudDice.Value; intCounter++)
             {
@@ -110,10 +105,11 @@ namespace Chummer
                 }
             }
 
-            lstResults.Items.Clear();
+            _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                lstResults.Items.Add(intResult);
+                ListItem objBubbleDieItem = new ListItem(intResult.ToString(), intResult.ToString());
+                _lstResults.Add(objBubbleDieItem);
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -137,6 +133,17 @@ namespace Chummer
                 else if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 {
                     intHitCount += intResult;
+                }
+            }
+            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && Convert.ToInt32(nudDice.Value) % 2 == 0)
+            {
+                int intBubbleDieResult = objRandom.Next(1, 7);
+                ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.Instance.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
+                _lstResults.Add(objBubbleDieItem);
+                if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                {
+                    if (intBubbleDieResult <= intGlitchMin)
+                        intGlitchCount++;
                 }
             }
 
@@ -170,6 +177,12 @@ namespace Chummer
                 else
                     lblResults.Text += LanguageManager.Instance.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
             }
+            lstResults.BeginUpdate();
+            lstResults.DataSource = null;
+            lstResults.ValueMember = "Value";
+            lstResults.DisplayMember = "Name";
+            lstResults.DataSource = _lstResults;
+            lstResults.EndUpdate();
         }
 
         private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -199,32 +212,34 @@ namespace Chummer
                     intKeepThreshold = 4;
             }
 
-            List<int> lstHits = new List<int>();
-            foreach (int intResult in lstResults.Items)
+            // Remove everything that is not a hit
+            for(int i = _lstResults.Count - 1; i >= 0; --i)
             {
-                if (intResult >= intKeepThreshold)
-                    lstHits.Add(intResult);
+                int intResult = 0;
+                if (!int.TryParse(_lstResults[i].Value, out intResult) || intResult < intKeepThreshold)
+                {
+                    _lstResults.RemoveAt(i);
+                }
             }
 
             Random objRandom = new Random();
             List<int> lstRandom = new List<int>();
-            int intHitCount = lstHits.Count;
+            int intHitCount = _lstResults.Count;
             int intGlitchCount = 0;
             int intGlitchThreshold = 0;
 
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling(nudDice.Value / 2.0m));
+            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
-            lstResults.Items.Clear();
+            // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
+            int intGlitchMin = 1;
+            if (chkRushJob.Checked)
+                intGlitchMin = 2;
 
-            // Add any kept Hits back.
-            foreach (int intResult in lstHits)
-                lstResults.Items.Add(intResult);
-
-            for (int intCounter = 1; intCounter <= nudDice.Value - lstHits.Count; intCounter++)
+            for (int intCounter = 1; intCounter <= nudDice.Value - intHitCount; intCounter++)
             {
                 if (chkRuleOf6.Checked)
                 {
@@ -244,7 +259,8 @@ namespace Chummer
 
             foreach (int intResult in lstRandom)
             {
-                lstResults.Items.Add(intResult);
+                ListItem objBubbleDieItem = new ListItem(intResult.ToString(), intResult.ToString());
+                _lstResults.Add(objBubbleDieItem);
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -255,19 +271,30 @@ namespace Chummer
 
                     if (intResult >= intTarget)
                         intHitCount++;
-                    if (intResult == 1)
+                    if (intResult <= intGlitchMin)
                         intGlitchCount++;
                 }
                 else if (cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intResult >= 3)
                         intHitCount++;
-                    if (intResult == 1)
+                    if (intResult <= intGlitchMin)
                         intGlitchCount++;
                 }
                 else if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 {
                     intHitCount += intResult;
+                }
+            }
+            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && Convert.ToInt32(nudDice.Value) % 2 == 0)
+            {
+                int intBubbleDieResult = objRandom.Next(1, 7);
+                ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.Instance.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
+                _lstResults.Add(objBubbleDieItem);
+                if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                {
+                    if (intBubbleDieResult <= intGlitchMin)
+                        intGlitchCount++;
                 }
             }
 
@@ -301,6 +328,12 @@ namespace Chummer
                 else
                     lblResults.Text += LanguageManager.Instance.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
             }
+            lstResults.BeginUpdate();
+            lstResults.DataSource = null;
+            lstResults.ValueMember = "Value";
+            lstResults.DisplayMember = "Name";
+            lstResults.DataSource = _lstResults;
+            lstResults.EndUpdate();
         }
         #endregion
 
@@ -351,7 +384,7 @@ namespace Chummer
             int intMax = Math.Max(lblThreshold.Width, lblGremlins.Width);
             nudThreshold.Left = lblThreshold.Left + intMax + 6;
             nudGremlins.Left = lblGremlins.Left + intMax + 6;
-            Width = cmdReroll.Left + cmdReroll.Width + 16;
+            Width = Math.Max(cmdReroll.Left + cmdReroll.Width + 16, chkBubbleDie.Left + chkBubbleDie.Width + 16);
         }
         #endregion
     }

@@ -324,7 +324,8 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
+            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
+                !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
             {
                 chkKarma.Checked = true;
             }
@@ -339,7 +340,7 @@ namespace Chummer.UI.Skills
 
         private void RatingChanged(object sender, EventArgs e)
         {
-            if (_skill.LearnedRating == 0 && _skill.Specializations.Count > 0)
+            if (_skill.TotalBaseRating == 0 && _skill.Specializations.Count > 0)
             {
                 _skill.Specializations.Clear();
             }
