@@ -227,7 +227,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        protected int FreeBase
+        public int FreeBase
         {
             get
             {
@@ -1228,38 +1228,23 @@ namespace Chummer.Backend.Attributes
 
         public virtual int TotalKarmaCost()
         {
-            int intCost = 0;
-            if (!_objCharacter.Options.AlternateMetatypeAttributeKarma)
+            if (Karma == 0)
+                return 0;
+
+            int intTotalBase = TotalBase;
+            if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
+                intTotalBase = 1;
+
+            // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
+            // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
+            int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
+
+            // Since Myostatin Inhibitor just gives a flat -2 per karma level, its effect can be calculated by simple multiplication
+            if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x => x.Name == "Myostatin Inhibitor") != null)
             {
-                for (int i = 1; i <= Karma; i++)
-                {
-                    if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
-                        x.Name == "Myostatin Inhibitor") != null)
-                    {
-                        intCost += ((Convert.ToInt32(TotalBase) + i)*_objCharacter.Options.KarmaAttribute) - 2;
-                    }
-                    else
-                    {
-                        intCost += ((Convert.ToInt32(TotalBase) + i)*_objCharacter.Options.KarmaAttribute);
-                    }
-                }
+                intCost -= 2 * Karma;
             }
-            else
-            {
-                for (int i = 1; i <= Karma; i++)
-                {
-                    if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
-                        x.Name == "Myostatin Inhibitor") != null)
-                    {
-                        intCost += (Convert.ToInt32(1 + i) * _objCharacter.Options.KarmaAttribute) - 2;
-                    }
-                    else
-                    {
-                        intCost += (Convert.ToInt32(1 + i) * _objCharacter.Options.KarmaAttribute);
-                    }
-                    
-                }
-            }
+
             return intCost;
         }
 

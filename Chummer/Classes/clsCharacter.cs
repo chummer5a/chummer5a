@@ -1240,17 +1240,26 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("groupname", ref _strGroupName);
             objXmlCharacter.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
             Timekeeper.Finish("load_char_misc");
+            bool blnImprovementError = false;
             Timekeeper.Start("load_char_imp");
             // Improvements.
             XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/character/improvements/improvement");
             foreach (XmlNode objXmlImprovement in objXmlNodeList)
             {
                 Improvement objImprovement = new Improvement();
-                objImprovement.Load(objXmlImprovement);
-                _lstImprovements.Add(objImprovement);
+                try
+                {
+                    objImprovement.Load(objXmlImprovement);
+                    _lstImprovements.Add(objImprovement);
+                }
+                catch (ArgumentException e)
+                {
+                    blnImprovementError = true;
+                }
             }
             Timekeeper.Finish("load_char_imp");
-
+            if (blnImprovementError)
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementLoadError"), LanguageManager.Instance.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             Timekeeper.Start("load_char_quality");
             // Qualities
             objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");

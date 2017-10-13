@@ -1573,7 +1573,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
+                XmlNode objReturn = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
+                if (objReturn == null)
+                {
+                    objReturn = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
+                    if (objReturn == null)
+                    {
+                        objReturn = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
+                    }
+                }
+                return objReturn;
             }
         }
         #endregion

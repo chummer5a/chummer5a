@@ -128,6 +128,8 @@ Application Changes:
 - Fixed a bug that caused 'ware grades to not obey the enabled sourcebook rules, e.g. Omegaware would show up even if Chrome Flesh was not enabled.
 - Fixed a bug where the Power selection dialog allowed the user to select a power that was marked as hidden or was from a sourcebook that the user did not have enabled.
 - Unhardcoded Cultured bioware's restriction from Used grade. Now any piece of bioware or cyberware can be marked as being ineligible for Used grade.
+- If Chummer5 encounters an error while loading improvements from a savefile, it will now warn the user to re-apply improvements and continue loading the character instead of crashing.
+- Added a new item in the Special options menu that calculates the total karma value of a character during character creation.
 
 Data Changes:
 
@@ -246,6 +248,14 @@ New Strings:
 - Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills
 - Checkbox_DiceRoller_BubbleDie
 - String_BubbleDie
+- MessageTitle_ImprovementLoadError
+- Message_ImprovementLoadError
+- MessageTitle_KarmaValue
+- Message_KarmaValue
+- Menu_KarmaValue
+- String_Total
+- String_FreeSpells
+- String_FreeCFs
 
 Changes Strings:
 - Message_PositiveQualityLimit

@@ -13665,7 +13665,7 @@ namespace Chummer
                     tssBP.ForeColor = SystemColors.ControlText;
             }
 
-            return Convert.ToInt32(tssBPRemain.Text);
+            return intKarmaPointsRemain;
         }
 
         private void UpdateSkillRelatedInfo()
@@ -19859,7 +19859,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblBuildNuyen, LanguageManager.Instance.GetString("Tip_CommonNuyen").Replace("{0}",
                 $"{_objOptions.NuyenPerBP:###,###,##0}"));
             tipTooltip.SetToolTip(lblBuildSkillGroups, LanguageManager.Instance.GetString("Tip_SkillsSkillGroups").Replace("{0}", _objOptions.BPSkillGroup.ToString()));
-            tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.Instance.GetString("Tip_SkillsActiveSkills").Replace("{0}", _objOptions.BPActiveSkill.ToString()).Replace("{1}", _objOptions.BPActiveSkillSpecialization.ToString()));
+            tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.Instance.GetString("Tip_SkillsActiveSkills").Replace("{0}", _objOptions.KarmaSpecialization.ToString()).Replace("{1}", _objOptions.BPActiveSkillSpecialization.ToString()));
             tipTooltip.SetToolTip(lblBuildKnowledgeSkills, LanguageManager.Instance.GetString("Tip_SkillsKnowledgeSkills").Replace("{0}", _objOptions.FreeKnowledgeMultiplier.ToString()).Replace("{1}", _objOptions.BPKnowledgeSkill.ToString()));
             tipTooltip.SetToolTip(lblBuildSpells, LanguageManager.Instance.GetString("Tip_SpellsSelectedSpells").Replace("{0}", _objOptions.BPSpell.ToString()));
             tipTooltip.SetToolTip(lblBuildFoci, LanguageManager.Instance.GetString("Tip_BuildFoci").Replace("{0}", _objOptions.BPFocus.ToString()));
@@ -21764,6 +21764,148 @@ namespace Chummer
                 picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
             else
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+        }
+
+        public void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
+        {
+            string strMessage = LanguageManager.Instance.GetString("Message_KarmaValue") + "\n";
+
+            int intReturn = _objCharacter.BuildKarma;
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                // Subtract extra karma cost of a metatype in priority
+                intReturn -= _objCharacter.MetatypeBP;
+            }
+            strMessage += "\n" + LanguageManager.Instance.GetString("Label_Base") + ": " + intReturn.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                int intMetatypeQualitiesValue = 0;
+                // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
+                foreach (Quality objQuality in _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
+                {
+                    if (objQuality.MyXmlNode?["onlyprioritygiven"] == null)
+                    {
+                        intMetatypeQualitiesValue += Convert.ToInt32(objQuality.MyXmlNode?["karma"]?.InnerText);
+                    }
+                }
+                intReturn += intMetatypeQualitiesValue;
+
+                int intTemp = 0;
+                int intTemp2 = 0;
+                // Value from attribute points and raised attribute minimums
+                foreach (string strAttributeName in Character.AttributeStrings)
+                {
+                    if (strAttributeName != "ESS")
+                    {
+                        CharacterAttrib objLoopAttrib = _objCharacter.GetAttribute(strAttributeName);
+                        int intLoopAttribValue = objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.TotalMinimum + objLoopAttrib.AttributeValueModifiers;
+                        if (intLoopAttribValue > 1)
+                        {
+                            intTemp += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) * _objCharacter.Options.KarmaAttribute;
+                            if (strAttributeName != "MAG" && strAttributeName != "RES" && strAttributeName != "DEP")
+                            {
+                                int intVanillaAttribValue = objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.AttributeValueModifiers + 1;
+                                intTemp2 += ((intVanillaAttribValue + 1) * intVanillaAttribValue / 2 - 1) * _objCharacter.Options.KarmaAttribute;
+                            }
+                            else
+                                intTemp2 += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) * _objCharacter.Options.KarmaAttribute;
+                        }
+                    }
+                }
+                if (intTemp - intTemp2 + intMetatypeQualitiesValue != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("Label_SumtoTenHeritage") + " " + (intTemp - intTemp2 + intMetatypeQualitiesValue).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                }
+                if (intTemp2 != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("Label_SumtoTenAttributes") + " " + intTemp2.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                }
+                intReturn += intTemp;
+
+                intTemp = 0;
+                // This is where we add in "Talent" qualities like Adept and Technomancer
+                foreach (Quality objQuality in _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
+                {
+                    if (objQuality.MyXmlNode?["onlyprioritygiven"] != null)
+                    {
+                        intTemp += Convert.ToInt32(objQuality.MyXmlNode?["karma"]?.InnerText);
+                    }
+                }
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("String_Qualities") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    intReturn += intTemp;
+                }
+
+                // Value from free spells
+                intTemp = _objCharacter.SpellLimit * _objCharacter.Options.KarmaSpell;
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("String_FreeSpells") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    intReturn += intTemp;
+                }
+
+                // Value from free complex forms
+                intTemp = _objCharacter.CFPLimit * _objCharacter.Options.KarmaNewComplexForm;
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("String_FreeCFs") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    intReturn += intTemp;
+                }
+
+                intTemp = 0;
+                // Value from skill points
+                foreach (Skill objLoopActiveSkill in _objCharacter.SkillsSection.Skills)
+                {
+                    if (!(objLoopActiveSkill.SkillGroupObject?.Base > 0))
+                    {
+                        int intLoopRating = objLoopActiveSkill.Base;
+                        if (intLoopRating > 0)
+                        {
+                            intTemp += _objCharacter.Options.KarmaNewActiveSkill;
+                            intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * _objCharacter.Options.KarmaImproveActiveSkill;
+                            if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+                                intTemp += objLoopActiveSkill.Specializations.Where(x => x.Free).Count() * _objCharacter.Options.KarmaSpecialization;
+                            else if (!objLoopActiveSkill.BuyWithKarma)
+                                intTemp += objLoopActiveSkill.Specializations.Count * _objCharacter.Options.KarmaSpecialization;
+                        }
+                    }
+                }
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("String_SkillPoints") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    intReturn += intTemp;
+                }
+
+                intTemp = 0;
+                // Value from skill group points
+                foreach (SkillGroup objLoopSkillGroup in _objCharacter.SkillsSection.SkillGroups)
+                {
+                    int intLoopRating = objLoopSkillGroup.Base;
+                    if (intLoopRating > 0)
+                    {
+                        intTemp += _objCharacter.Options.KarmaNewSkillGroup;
+                        intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * _objCharacter.Options.KarmaImproveSkillGroup;
+                    }
+                }
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("String_SkillGroupPoints") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    intReturn += intTemp;
+                }
+
+                // Starting Nuyen karma value
+                intTemp = (_objCharacter.StartingNuyen + _objOptions.NuyenPerBP - 1) / _objOptions.NuyenPerBP;
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.Instance.GetString("Checkbox_CreatePACKSKit_StartingNuyen") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                    intReturn += intTemp;
+                }
+            }
+
+            strMessage += "\n\n" + LanguageManager.Instance.GetString("String_Total") + ": " + intReturn.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+            MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_KarmaValue"), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

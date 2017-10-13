@@ -504,7 +504,7 @@
       <name>Resistance to Pathogens/Toxins</name>
       <karma>8</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus />
       <source>SR5</source>
       <page>77</page>
@@ -735,9 +735,9 @@
     <quality>
       <id>8ec5c9bb-aeb9-42f2-a436-a60f764adfe4</id>
       <name>Low-Light Vision</name>
-      <karma>0</karma>
+      <karma>4</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus />
       <source>SR5</source>
       <page>66</page>
@@ -745,9 +745,9 @@
     <quality>
       <id>02e76a38-304e-4a0e-93a3-ad2938306afc</id>
       <name>Thermographic Vision</name>
-      <karma>0</karma>
+      <karma>3</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus />
       <source>SR5</source>
       <page>66</page>
@@ -914,7 +914,7 @@
       <id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
       <name>Aware</name>
       <contributetolimit>False</contributetolimit>
-      <hide>yes</hide>
+      <hide />
       <karma>15</karma>
       <category>Positive</category>
 	  <onlyprioritygiven />
@@ -3873,7 +3873,7 @@
     <quality>
       <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
       <name>Magic Sense</name>
-      <karma>0</karma>
+      <karma>7</karma>
       <category>Positive</category>
       <required>
         <allof>
@@ -3902,7 +3902,7 @@
       <name>Astral Perception</name>
       <karma>0</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus>
         <unlockskills name="Assensing">Name</unlockskills>
       </bonus>

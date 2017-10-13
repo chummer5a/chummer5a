@@ -8453,6 +8453,32 @@ Do you want to continue?</text>
       <text>Cannot Load Character</text>
     </string>
     <!-- End Region-->
+	<!-- Region Karma Value Strings -->
+	<string>
+      <key>MessageTitle_KarmaValue</key>
+      <text>Character Karma Value</text>
+    </string>
+	<string>
+      <key>Message_KarmaValue</key>
+      <text>Besides knowledge points from life modules, and ignoring metatype effects for which karma value cannot be objectively judged, this character has the following karma value:</text>
+    </string>
+	<string>
+      <key>Menu_KarmaValue</key>
+      <text>Calculate Karma Value</text>
+    </string>
+	<string>
+      <key>String_Total</key>
+      <text>Total</text>
+    </string>
+	<string>
+      <key>String_FreeSpells</key>
+      <text>Free Spells</text>
+    </string>
+	<string>
+      <key>String_FreeCFs</key>
+      <text>Free Complex Forms</text>
+    </string>
+	<!-- End Region-->
     <!-- Region Special Strings -->
     <string>
       <key>String_SkillCommand</key>
@@ -8561,6 +8587,14 @@ Do you want to continue?</text>
 	<string>
 	  <key>String_ShowAll</key>
 	  <text>Show All</text>
+	</string>
+	<string>
+	  <key>MessageTitle_ImprovementLoadError</key>
+	  <text>Error Encountered While Loading Improvements</text>
+	</string>
+	<string>
+	  <key>Message_ImprovementLoadError</key>
+	  <text>Chummer5 encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\nChummer5 will continue loading this character, but to fix the issue, please Re-apply Improvements for this character once it has loaded.</text>
 	</string>
     <!-- End Region -->
     <!-- End Region -->
