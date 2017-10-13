@@ -121,6 +121,10 @@ Application Changes:
 - Fixed a bug that prevented knowledge skills from having their names translated when printed out to a character sheet. Fixes #1668.
 - Added set of improvements that can disable access to specific grades of bioware and cyberware. These limits are bypassed for all 'ware that forces a particular grade, so any restrictions in those cases need to be applied to the specific piece of 'ware in question.
 - Fixed the "Hide Items Over Avail Limit" checkbox so that it displays the availability limit of the character in parentheses instead of the default availability value.
+- Added the ability for pre-installed subsystems in cyberare to include bioware and pre-installed subsystems in bioware to include cyberware. Added the ability for pre-installed cyberware and bioware subsystems to come with their own pre-installed gear and pre-installed subsystems.
+- Restrictions via the <forbidden> and <required> tags for bioware and cyberware will now also check subsystems, not just top-level cyberware and bioware.
+- Fixed names for improvement sources originating from nested cyberware, bioware, and gear not showing up properly.
+- Fixed bonuses for nested 'ware not getting removed when the parent is removed if the given piece of 'ware is a grandchild or later descendant of the 'ware getting removed.
 
 Data Changes:
 
@@ -197,6 +201,7 @@ Data Changes:
 - Fixed Ruthenium Polymer Cloak coming with capacity to add armor mods.
 - Fixed GTS Tower not coming with the Retrans Unit mentioned in its fluff description ("the Tower pulls double-duty as a retransmission drone").
 - Cyber-Snob now properly disallows buying any 'ware below Alphaware grade. Regeneration critter power now properly disables access to all bioware, as well as all cyberware below Deltaware grade.
+- Added cybersuites from Chrome Flesh and Boston Lockdown, as well as the commlinks included in those cybersuites.
 
 New Strings:
 - Label_Options_SpellShapingFocus

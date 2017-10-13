@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />

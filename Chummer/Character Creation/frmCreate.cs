@@ -35,6 +35,7 @@ using Chummer.Backend.Equipment;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Chummer.UI.Attributes;
+using Chummer.Backend.Extensions;
 
 namespace Chummer
 {
@@ -4281,9 +4282,10 @@ namespace Chummer
                     }
 
                     // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
-                    foreach (Cyberware objChildCyberware in objCyberware.Children)
+                    List<Cyberware> objDescendantsList = new List<Cyberware>(objCyberware.GetAllDescendants());
+                    foreach (Cyberware objChildCyberware in objDescendantsList)
                     {
-                        ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objChildCyberware.InternalId);
+                        ImprovementManager.RemoveImprovements(_objCharacter, objChildCyberware.SourceType, objChildCyberware.InternalId);
                         if (objChildCyberware.WeaponID != Guid.Empty.ToString())
                         {
                             // Remove the Weapon from the TreeView.
@@ -14158,6 +14160,11 @@ namespace Chummer
                     cboCyberwareGrade.Enabled = false;
 
                 PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
+
+                if (!string.IsNullOrEmpty(objCyberware.ParentID))
+                    nudCyberwareRating.Enabled = false;
+                else
+                    nudCyberwareRating.Enabled = true;
 
                 cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
                 if (cboCyberwareGrade.SelectedIndex == -1 && cboCyberwareGrade.Items.Count > 0)

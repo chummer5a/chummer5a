@@ -2302,6 +2302,27 @@
         </usegear>
       </gears>
     </gear>
+	<gear>
+      <id>852430de-6634-45ac-be56-b5f75468ba59</id>
+      <name>Shiawase Jishi</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>93</page>
+      <avail>6</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <capacity>0</capacity>
+      <cost>1000</cost>
+	  <devicerating>3</devicerating>
+      <dataprocessing>3</dataprocessing>
+      <firewall>3</firewall>
+	  <gears>
+		<usegear>
+          <name>Commlink Functionality</name>
+		  <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
     <gear>
       <id>da11a064-34bb-409d-a5c5-8fad6ef602e4</id>
       <name>Matrix Systems GridGopher</name>
@@ -2365,6 +2386,27 @@
         </usegear>
       </gears>
     </gear>
+	<gear>
+      <id>b1897e5e-2384-4e99-8720-bb377447c6cc</id>
+      <name>Sony Ronin</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>LCD</source>
+      <page>207</page>
+      <avail>8</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <capacity>0</capacity>
+      <cost>2500</cost>
+	  <devicerating>4</devicerating>
+      <dataprocessing>4</dataprocessing>
+      <firewall>4</firewall>
+	  <gears>
+		<usegear>
+          <name>Commlink Functionality</name>
+		  <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
     <gear>
       <id>117bb53e-3f24-4e53-b861-29564bad7281</id>
       <name>Novatech NetNinja</name>
@@ -2376,6 +2418,27 @@
       <armorcapacity>[2]</armorcapacity>
       <capacity>0</capacity>
       <cost>3000</cost>
+	  <devicerating>5</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+	  <gears>
+		<usegear>
+          <name>Commlink Functionality</name>
+		  <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+	<gear>
+      <id>68a74e34-feac-425b-a71d-0989bd9c32cb</id>
+      <name>MCT-5000</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>LCD</source>
+      <page>207</page>
+      <avail>10</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <capacity>0</capacity>
+      <cost>5000</cost>
 	  <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>

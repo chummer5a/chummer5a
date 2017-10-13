@@ -920,6 +920,7 @@ namespace Chummer.Backend.Attributes
 
                 List<string> lstUniqueName = new List<string>();
                 List<string[,]> lstUniquePair = new List<string[,]>();
+                int intBaseValue = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.Enabled && !objImprovement.Custom)
@@ -953,8 +954,11 @@ namespace Chummer.Backend.Attributes
                             if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
                                 objImprovement.ImprovedName == _strAbbrev &&
                                 !(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                            {
                                 strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
                                                (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
+                                intBaseValue += objImprovement.Augmented * objImprovement.Rating;
+                            }
                         }
                     }
                 }
@@ -963,8 +967,9 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve only the highest precedence0 value.
                     // Run through the list of UniqueNames and pick out the highest value for each one.
-                    int intHighest = -999;
+                    int intHighest = int.MinValue;
 
+                    string strNewModifier = string.Empty;
                     foreach (string[,] strValues in lstUniquePair)
                     {
                         if (strValues[0, 0] == "precedence0")
@@ -972,7 +977,7 @@ namespace Chummer.Backend.Attributes
                             if (Convert.ToInt32(strValues[0, 1]) > intHighest)
                             {
                                 intHighest = Convert.ToInt32(strValues[0, 1]);
-                                strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                strNewModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
                             }
                         }
                     }
@@ -983,20 +988,29 @@ namespace Chummer.Backend.Attributes
                             if (strValues[0, 0] == "precedence-1")
                             {
                                 intHighest += Convert.ToInt32(strValues[0, 1]);
-                                strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                strNewModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
                             }
                         }
                     }
+
+                    if (intHighest > intBaseValue)
+                        strModifier = strNewModifier;
                 }
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
-                    strModifier = "";
+                    int intHighest = int.MinValue;
+                    string strNewModifier = string.Empty;
                     foreach (string[,] strValues in lstUniquePair)
                     {
                         if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
-                            strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                        {
+                            strNewModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                            intHighest += Convert.ToInt32(strValues[0, 1]);
+                        }
                     }
+                    if (intHighest > intBaseValue)
+                        strModifier = strNewModifier;
                 }
                 else
                 {
@@ -1070,7 +1084,7 @@ namespace Chummer.Backend.Attributes
                             if (Convert.ToInt32(strValues[0, 1]) > intHighest)
                             {
                                 intHighest = Convert.ToInt32(strValues[0, 1]);
-                                strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
                             }
                         }
                     }
