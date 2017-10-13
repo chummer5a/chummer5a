@@ -202,6 +202,7 @@ Data Changes:
 - Fixed GTS Tower not coming with the Retrans Unit mentioned in its fluff description ("the Tower pulls double-duty as a retransmission drone").
 - Cyber-Snob now properly disallows buying any 'ware below Alphaware grade. Regeneration critter power now properly disables access to all bioware, as well as all cyberware below Deltaware grade.
 - Added cybersuites from Chrome Flesh and Boston Lockdown, as well as the commlinks included in those cybersuites.
+- Added the missing Cybersuites from State of the Art - ADL
 
 New Strings:
 - Label_Options_SpellShapingFocus
