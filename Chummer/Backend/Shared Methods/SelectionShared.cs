@@ -136,7 +136,6 @@ namespace Chummer.Backend.Shared_Methods
                     case "cyberware":
                     case "bioware":
                         {
-                            objListToCheck = objCharacter.Cyberware;
                             blnCheckCyberwareChildren = true;
                             break;
                         }
@@ -151,14 +150,10 @@ namespace Chummer.Backend.Shared_Methods
                 int intExtendedCount = 0;
                 if (objListToCheck != null)
                 {
-                    intCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                     if (blnCheckCyberwareChildren)
-                    {
-                        foreach (INamedParent<Cyberware> objLoopChild in objCharacter.Cyberware)
-                        {
-                            intCount += objLoopChild.DeepCountChildren(x => x.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
-                        }
-                    }
+                        intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                    else
+                        intCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                     intExtendedCount = intCount;
                     // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
                     if (objXmlNode["includeinlimit"] != null)
@@ -167,14 +162,11 @@ namespace Chummer.Backend.Shared_Methods
                         {
                             lstNamesIncludedInLimit.Add(objChildXml.InnerText);
                         }
-                        intExtendedCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                        
                         if (blnCheckCyberwareChildren)
-                        {
-                            foreach (INamedParent<Cyberware> objLoopChild in objCharacter.Cyberware)
-                            {
-                                intExtendedCount += objLoopChild.DeepCountChildren(x => x.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
-                            }
-                        }
+                            intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                        else
+                            intExtendedCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                     }
                 }
                 int intLimit = Convert.ToInt32(strLimitString);
@@ -368,16 +360,9 @@ namespace Chummer.Backend.Shared_Methods
                         name += node.Name == "cyberware"
                             ? "\n\t" + LanguageManager.Instance.GetString("Label_Cyberware") + node.InnerText
                             : "\n\t" + LanguageManager.Instance.GetString("Label_Bioware") + node.InnerText;
-                        int intBaseCount = character.Cyberware.Count(objCyberware =>
+                        return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
-                               node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location);
-                        foreach (INamedParent<Cyberware> objLoopChild in character.Cyberware)
-                        {
-                            intBaseCount += objLoopChild.DeepCountChildren(objCyberware =>
-                               objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
-                               node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location);
-                        }
-                        return intBaseCount >= count;
+                               node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
                     }
                 case "biowarecontains":
                 case "cyberwarecontains":
@@ -392,16 +377,9 @@ namespace Chummer.Backend.Shared_Methods
                         {
                             source = Improvement.ImprovementSource.Bioware;
                         }
-                        int intBaseCount = character.Cyberware.Count(objCyberware =>
+                        return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
                             objCyberware.SourceType == source && objCyberware.Name.Contains(node.InnerText) && node.Attributes?["select"] == null ||
-                            node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location);
-                        foreach (INamedParent<Cyberware> objLoopChild in character.Cyberware)
-                        {
-                            intBaseCount += objLoopChild.DeepCountChildren(objCyberware =>
-                                objCyberware.SourceType == source && objCyberware.Name.Contains(node.InnerText) && node.Attributes?["select"] == null ||
-                                node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location);
-                        }
-                        return intBaseCount >= count;
+                            node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
                 }
                 case "damageresistance":
                     // Damage Resistance must be a particular value.

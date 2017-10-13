@@ -284,52 +284,44 @@ namespace Chummer
 
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
-
-                    if (objXmlWeapon["mount"] != null && !blnHide)
-                    {
-                        blnHide = !Mounts.Contains(objXmlWeapon["mount"].InnerText);
-                    }
-                    if (objXmlWeapon["extramount"] != null && !blnHide)
-                    {
-                        blnHide = !Mounts.Contains(objXmlWeapon["extramount"].InnerText);
-                    }
-                    if (!blnHide && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
-                    {
+                    if (objXmlWeapon["cyberware"]?.InnerText == "yes")
                         continue;
-                    }
-                    if (!blnHide)
+                    if (!string.IsNullOrEmpty(objXmlWeapon["mount"]?.InnerText) && !Mounts.Contains(objXmlWeapon["mount"].InnerText))
+                        continue;
+                    if (!string.IsNullOrEmpty(objXmlWeapon["extramount"]?.InnerText) && !Mounts.Contains(objXmlWeapon["extramount"].InnerText))
+                        continue;
+                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+                        continue;
+
+                    TreeNode objNode = new TreeNode();
+                    Weapon objWeapon = new Weapon(_objCharacter);
+                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
+
+                    string strID = objWeapon.SourceID.ToString();
+                    string strWeaponName = objWeapon.DisplayName;
+                    string strDice = objWeapon.DicePool;
+                    int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
+                    string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
+                    string strAP = objWeapon.TotalAP;
+                    if (strAP == "-")
+                        strAP = "0";
+                    int intRC;
+                    int.TryParse(objWeapon.TotalRC, out intRC);
+                    string strAmmo = objWeapon.Ammo;
+                    string strMode = objWeapon.Mode;
+                    string strReach = objWeapon.TotalReach.ToString();
+                    string strAccessories = string.Empty;
+                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        TreeNode objNode = new TreeNode();
-                        Weapon objWeapon = new Weapon(_objCharacter);
-                        objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
-
-                        string strID = objWeapon.SourceID.ToString();
-                        string strWeaponName = objWeapon.DisplayName;
-                        string strDice = objWeapon.DicePool;
-                        int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
-                        string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
-                        string strAP = objWeapon.TotalAP;
-                        if (strAP == "-")
-                            strAP = "0";
-                        int intRC;
-                        int.TryParse(objWeapon.TotalRC, out intRC);
-                        string strAmmo = objWeapon.Ammo;
-                        string strMode = objWeapon.Mode;
-                        string strReach = objWeapon.TotalReach.ToString();
-                        string strAccessories = string.Empty;
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            if (strAccessories.Length > 0)
-                                strAccessories += "\n";
-                            strAccessories += objAccessory.DisplayName;
-                        }
-                        string strAvail = objWeapon.TotalAvail;
-                        string strSource = objWeapon.Source + " " + objWeapon.Page;
-                        int intCost = objWeapon.Cost;
-
-                        tabWeapons.Rows.Add(strID,strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, intCost);
+                        if (strAccessories.Length > 0)
+                            strAccessories += "\n";
+                        strAccessories += objAccessory.DisplayName;
                     }
+                    string strAvail = objWeapon.TotalAvail;
+                    string strSource = objWeapon.Source + " " + objWeapon.Page;
+                    int intCost = objWeapon.Cost;
+
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, intCost);
                 }
 
                 DataSet set = new DataSet("weapons");

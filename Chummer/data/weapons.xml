@@ -1176,7 +1176,7 @@
       <rc>0</rc>
       <ammo>0</ammo>
       <avail>0</avail>
-      <cost>10</cost>
+      <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>

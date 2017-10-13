@@ -6,7 +6,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Grade of Cyberware or Bioware.
     /// </summary>
-    public class Grade
+    public class Grade : INamedItem
     {
         private string _strName = "Standard";
         private string _strAltName = string.Empty;
@@ -44,6 +44,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _strName;
+            }
+            set
+            {
+                _strName = value;
             }
         }
 

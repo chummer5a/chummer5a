@@ -451,9 +451,6 @@ namespace Chummer
             if (objXmlModList != null)
                 foreach (XmlNode objXmlMod in objXmlModList)
                 {
-                    if (objXmlMod["hide"] != null)
-                        continue;
-
                     if (objXmlMod["forbidden"]?["vehicledetails"] != null)
                     {
                         // Assumes topmost parent is an AND node

@@ -78,12 +78,13 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                if (objXmlCategory["hide"] != null)
-                    continue;
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                _lstCategory.Add(objItem);
+                if (_objXmlDocument.SelectSingleNode("/chummer/qualities/quality[" + _objCharacter.Options.BookXPath() + "]") != null)
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objXmlCategory.InnerText;
+                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                    _lstCategory.Add(objItem);
+                }
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -327,8 +328,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-                strSearch += "]";
+                string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
 
                 XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
                 foreach (XmlNode objXmlQuality in objXmlQualityList)
@@ -337,26 +337,23 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (objXmlQuality["hide"] == null)
+                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
-                        if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlQuality["name"].InnerText;
+                        objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+
+                        if (objXmlQuality["category"] != null)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlQuality["name"].InnerText;
-                            objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText);
 
-                            if (objXmlQuality["category"] != null)
+                            if (objFoundItem != null)
                             {
-                                ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText);
-
-                                if (objFoundItem != null)
-                                {
-                                    objItem.Name += " [" + objFoundItem.Name + "]";
+                                objItem.Name += " [" + objFoundItem.Name + "]";
                             }
-                            }
-
-                            lstLifestyleQuality.Add(objItem);
                         }
+
+                        lstLifestyleQuality.Add(objItem);
                     }
                 }
             }
@@ -372,14 +369,11 @@ namespace Chummer
                     }
                     if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
-                        if (objXmlQuality["hide"] == null)
-                        {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlQuality["name"].InnerText;
-                            objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlQuality["name"].InnerText;
+                        objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
 
-                            lstLifestyleQuality.Add(objItem);
-                        }
+                        lstLifestyleQuality.Add(objItem);
                     }
                 }
             }

@@ -1377,10 +1377,16 @@ namespace Chummer
                             {
                                 // Determine which GradeList to use for the Cyberware.
                                 GradeList objGradeList;
-                                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                    objGradeList = GlobalOptions.BiowareGrades;
-                                else
-                                    objGradeList = GlobalOptions.CyberwareGrades;
+                                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                                    {
+                                        GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
+                                        objGradeList = GlobalOptions.BiowareGrades;
+                                    }
+                                    else
+                                    {
+                                        GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
+                                        objGradeList = GlobalOptions.CyberwareGrades;
+                                    }
 
                                 objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
                             }

@@ -4282,8 +4282,7 @@ namespace Chummer
                     }
 
                     // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
-                    List<Cyberware> objDescendantsList = new List<Cyberware>(objCyberware.GetAllDescendants());
-                    foreach (Cyberware objChildCyberware in objDescendantsList)
+                    foreach (Cyberware objChildCyberware in objCyberware.Children.GetAllDescendants(x => x.Children))
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, objChildCyberware.SourceType, objChildCyberware.InternalId);
                         if (objChildCyberware.WeaponID != Guid.Empty.ToString())
@@ -10495,9 +10494,15 @@ namespace Chummer
 
                 GradeList objGradeList;
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
                     objGradeList = GlobalOptions.BiowareGrades;
+                }
                 else
+                {
+                    GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
                     objGradeList = GlobalOptions.CyberwareGrades;
+                }
 
                 // Updated the selected Cyberware Grade.
                 objCyberware.Grade = objGradeList.GetGrade(cboCyberwareGrade.SelectedValue.ToString());
@@ -17274,9 +17279,15 @@ namespace Chummer
             // Load the Cyberware information.
             GradeList objGradeList;
             if (blnBioware)
+            {
+                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
                 objGradeList = GlobalOptions.BiowareGrades;
+            }
             else
+            {
+                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
                 objGradeList = GlobalOptions.CyberwareGrades;
+            }
             List<ListItem> lstCyberwareGrades = new List<ListItem>();
 
             foreach (Grade objWareGrade in objGradeList)

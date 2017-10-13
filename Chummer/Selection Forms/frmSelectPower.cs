@@ -57,26 +57,20 @@ namespace Chummer
             _objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
             // Populate the Powers list.
-            XmlNodeList objXmlPowerList;
+            string strFilter = string.Empty;
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
-                string strFilter = "(";
+                strFilter = "(";
                 string[] strValue = _strLimitToPowers.Split(',');
                 foreach (string strPower in strValue)
                     strFilter += "name = \"" + strPower.Trim() + "\" or ";
                 // Remove the trailing " or ".
                 strFilter = strFilter.Substring(0, strFilter.Length - 4);
-                strFilter += ")";
-                objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
+                strFilter += ") and ";
             }
-            else
-            {
-                objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
-            }
+            XmlNodeList objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                if (objXmlPower["hide"] != null)
-                    continue;
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 if (objXmlPower["limit"] != null && !IgnoreLimits)
                 {
@@ -102,7 +96,7 @@ namespace Chummer
 
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPower["name"].InnerText;
-                    objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                objItem.Name = objXmlPower["translate"]?.InnerText ?? objItem.Value;
                 lstPower.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -175,20 +169,16 @@ namespace Chummer
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                bool blnAdd = true;
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                if (_dblLimitToRating > 0)
+                if (_dblLimitToRating > 0 && dblPoints > _dblLimitToRating)
                 {
-                    blnAdd = dblPoints <= _dblLimitToRating;
+                    continue;
                 }
-                if (blnAdd)
-                {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPower["name"].InnerText;
-                    objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                objItem.Name = objXmlPower["translate"]?.InnerText ?? objItem.Value;
                 lstPower.Add(objItem);
-            }
             }
             SortListItem objSort = new SortListItem();
             lstPower.Sort(objSort.Compare);

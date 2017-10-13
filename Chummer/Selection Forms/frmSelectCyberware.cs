@@ -1037,8 +1037,6 @@ namespace Chummer
             if (objXmlCyberwareList != null)
                 foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
                 {
-                    if (objXmlCyberware["hide"] != null)
-                        continue;
                     if (!_blnShowOnlySubsystems && objXmlCyberware["ess"]?.InnerText == "0" && objXmlCyberware["capacity"]?.InnerText.Contains("[") == true)
                         continue;
                     if (!string.IsNullOrEmpty(_strSelectedGrade))
@@ -1160,7 +1158,17 @@ namespace Chummer
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
-                GradeList objGradeList = _objMode == Mode.Bioware ? GlobalOptions.BiowareGrades : GlobalOptions.CyberwareGrades;
+                GradeList objGradeList = null;
+                if (_objMode == Mode.Bioware)
+                {
+                    GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
+                    objGradeList = GlobalOptions.BiowareGrades;
+                }
+                else
+                {
+                    GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
+                    objGradeList = GlobalOptions.CyberwareGrades;
+                }
 
                 _lstGrade.Clear();
                 foreach (Grade objGrade in objGradeList)

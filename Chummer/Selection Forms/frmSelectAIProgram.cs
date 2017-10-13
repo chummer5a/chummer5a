@@ -271,8 +271,6 @@ namespace Chummer
 
             foreach (XmlNode objXmlProgram in objXmlNodeList)
             {
-                if (objXmlProgram["hide"] != null)
-                    continue;
                 bool blnAdd = true;
                 if (chkLimitList.Checked && objXmlProgram["require"] != null)
                 {

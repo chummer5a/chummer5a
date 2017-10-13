@@ -2876,230 +2876,80 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Bioware:
                 case Improvement.ImprovementSource.Cyberware:
-                    foreach (Cyberware objCyberware in _lstCyberware)
-                    {
-                        if (objCyberware.InternalId == objImprovement.SourceName)
-                        {
-                            return objCyberware.DisplayNameShort;
-                        }
-                        else
-                        {
-                            Cyberware objDeepSearchResult = objCyberware.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                            if (objDeepSearchResult != null)
-                                return objDeepSearchResult.DisplayNameShort;
-                        }
-                    }
+                    Cyberware objReturnCyberware = _lstCyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                    if (objReturnCyberware != null)
+                        return objReturnCyberware.DisplayNameShort;
                     foreach (Vehicle objVehicle in _lstVehicles)
                     {
                         foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                         {
-                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
-                            {
-                                if (objCyberware.InternalId == objImprovement.SourceName)
-                                {
-                                    return objCyberware.DisplayNameShort;
-                                }
-                                else
-                                {
-                                    Cyberware objDeepSearchResult = objCyberware.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                    if (objDeepSearchResult != null)
-                                        return objDeepSearchResult.DisplayNameShort;
-                                }
-                            }
+                            objReturnCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                            if (objReturnCyberware != null)
+                                return objReturnCyberware.DisplayNameShort;
                         }
                     }
                     break;
                 case Improvement.ImprovementSource.Gear:
-                    foreach (Gear objGear in _lstGear)
-                    {
-                        if (objGear.InternalId == objImprovement.SourceName)
-                        {
-                            strReturn = objGear.DisplayNameShort;
-                            break;
-                        }
-                        else
-                        {
-                            Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                            if (objDeepSearchResult != null)
-                                return objDeepSearchResult.DisplayNameShort;
-                        }
-                    }
+                    Gear objReturnGear = _lstGear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                    if (objReturnGear != null)
+                        return objReturnGear.DisplayNameShort;
                     foreach (Weapon objWeapon in _lstWeapons)
                     {
-                        List<Weapon> objDeepSearchWeaponsWithAccessories = new List<Weapon>(objWeapon.DeepWhere(x => x.WeaponAccessories.Any(y => y.Gear.Any())));
-                        foreach (Weapon objChildWeapon in objDeepSearchWeaponsWithAccessories)
+                        foreach (Weapon objChildWeapon in _lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                         {
                             foreach (WeaponAccessory objAccessory in objChildWeapon.WeaponAccessories)
                             {
-                                foreach (Gear objGear in objAccessory.Gear)
-                                {
-                                    if (objGear.InternalId == objImprovement.SourceName)
-                                    {
-                                        strReturn = objGear.DisplayNameShort;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        if (objDeepSearchResult != null)
-                                            return objDeepSearchResult.DisplayNameShort;
-                                    }
-                                }
+                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                if (objReturnGear != null)
+                                    return objReturnGear.DisplayNameShort;
                             }
                         }
                     }
                     foreach (Armor objArmor in _lstArmor)
                     {
-                        foreach (Gear objGear in objArmor.Gear)
-                        {
-                            if (objGear.InternalId == objImprovement.SourceName)
-                            {
-                                strReturn = objGear.DisplayNameShort;
-                                break;
-                            }
-                            else
-                            {
-                                Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                if (objDeepSearchResult != null)
-                                    return objDeepSearchResult.DisplayNameShort;
-                            }
-                        }
+                        objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                        if (objReturnGear != null)
+                            return objReturnGear.DisplayNameShort;
                     }
                     foreach (Cyberware objCyberware in _lstCyberware)
                     {
-                        foreach (Gear objGear in objCyberware.Gear)
+                        foreach (Cyberware objChildCyberware in _lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                         {
-                            if (objGear.InternalId == objImprovement.SourceName)
-                            {
-                                strReturn = objGear.DisplayNameShort;
-                                break;
-                            }
-                            else
-                            {
-                                Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                if (objDeepSearchResult != null)
-                                    return objDeepSearchResult.DisplayNameShort;
-                            }
-                        }
-                        List<Cyberware> objDeepSearchCyberwaresWithGear = new List<Cyberware>(objCyberware.DeepWhere(x => x.Gear.Any()));
-                        foreach (Cyberware objChildCyberware in objDeepSearchCyberwaresWithGear)
-                        {
-                            foreach (Gear objGear in objChildCyberware.Gear)
-                            {
-                                if (objGear.InternalId == objImprovement.SourceName)
-                                {
-                                    strReturn = objGear.DisplayNameShort;
-                                    break;
-                                }
-                                else
-                                {
-                                    Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                    if (objDeepSearchResult != null)
-                                        return objDeepSearchResult.DisplayNameShort;
-                                }
-                            }
+                            objReturnGear = objChildCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                            if (objReturnGear != null)
+                                return objReturnGear.DisplayNameShort;
                         }
                     }
                     foreach (Vehicle objVehicle in _lstVehicles)
                     {
-                        foreach (Gear objGear in objVehicle.Gear)
+                        objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                        if (objReturnGear != null)
+                            return objReturnGear.DisplayNameShort;
+                        foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                         {
-                            if (objGear.InternalId == objImprovement.SourceName)
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
-                                strReturn = objGear.DisplayNameShort;
-                                break;
-                            }
-                            else
-                            {
-                                Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                if (objDeepSearchResult != null)
-                                    return objDeepSearchResult.DisplayNameShort;
-                            }
-                        }
-                        foreach (Weapon objWeapon in objVehicle.Weapons)
-                        {
-                            List<Weapon> objDeepSearchWeaponsWithAccessories = new List<Weapon>(objWeapon.DeepWhere(x => x.WeaponAccessories.Any(y => y.Gear.Any())));
-                            foreach (Weapon objChildWeapon in objDeepSearchWeaponsWithAccessories)
-                            {
-                                foreach (WeaponAccessory objAccessory in objChildWeapon.WeaponAccessories)
-                                {
-                                    foreach (Gear objGear in objAccessory.Gear)
-                                    {
-                                        if (objGear.InternalId == objImprovement.SourceName)
-                                        {
-                                            strReturn = objGear.DisplayNameShort;
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                            if (objDeepSearchResult != null)
-                                                return objDeepSearchResult.DisplayNameShort;
-                                        }
-                                    }
-                                }
+                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                if (objReturnGear != null)
+                                    return objReturnGear.DisplayNameShort;
                             }
                         }
                         foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                         {
-                            foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                             {
-                                List<Weapon> objDeepSearchWeaponsWithAccessories = new List<Weapon>(objWeapon.DeepWhere(x => x.WeaponAccessories.Any(y => y.Gear.Any())));
-                                foreach (Weapon objChildWeapon in objDeepSearchWeaponsWithAccessories)
+                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    foreach (WeaponAccessory objAccessory in objChildWeapon.WeaponAccessories)
-                                    {
-                                        foreach (Gear objGear in objAccessory.Gear)
-                                        {
-                                            if (objGear.InternalId == objImprovement.SourceName)
-                                            {
-                                                strReturn = objGear.DisplayNameShort;
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                                if (objDeepSearchResult != null)
-                                                    return objDeepSearchResult.DisplayNameShort;
-                                            }
-                                        }
-                                    }
+                                    objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                    if (objReturnGear != null)
+                                        return objReturnGear.DisplayNameShort;
                                 }
                             }
-                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                             {
-                                foreach (Gear objGear in objCyberware.Gear)
-                                {
-                                    if (objGear.InternalId == objImprovement.SourceName)
-                                    {
-                                        strReturn = objGear.DisplayNameShort;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        if (objDeepSearchResult != null)
-                                            return objDeepSearchResult.DisplayNameShort;
-                                    }
-                                }
-                                List<Cyberware> objDeepSearchCyberwaresWithGear = new List<Cyberware>(objCyberware.DeepWhere(x => x.Gear.Any()));
-                                foreach (Cyberware objChildCyberware in objDeepSearchCyberwaresWithGear)
-                                {
-                                    foreach (Gear objGear in objChildCyberware.Gear)
-                                    {
-                                        if (objGear.InternalId == objImprovement.SourceName)
-                                        {
-                                            strReturn = objGear.DisplayNameShort;
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            Gear objDeepSearchResult = objGear.DeepFirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                            if (objDeepSearchResult != null)
-                                                return objDeepSearchResult.DisplayNameShort;
-                                        }
-                                    }
-                                }
+                                objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                                if (objReturnGear != null)
+                                    return objReturnGear.DisplayNameShort;
                             }
                         }
                     }

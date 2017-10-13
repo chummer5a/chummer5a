@@ -392,19 +392,15 @@ namespace Chummer
 
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                bool blnHide = (objXmlMod["hide"] != null);
-                if (!blnHide)
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,
+                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
                 {
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,
-                        chkHideOverAvailLimit.Checked,Convert.ToInt32(nudRating.Value)))
+                    ListItem objItem = new ListItem
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objXmlMod["name"].InnerText,
-                            Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                        };
-                        lstMods.Add(objItem);
-                    }
+                        Value = objXmlMod["name"].InnerText,
+                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
+                    };
+                    lstMods.Add(objItem);
                 }
             }
             SortListItem objSort = new SortListItem();

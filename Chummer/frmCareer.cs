@@ -4157,8 +4157,7 @@ namespace Chummer
                         }
 
                         // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
-                        List<Cyberware> objDescendantsList = new List<Cyberware>(objCyberware.GetAllDescendants());
-                        foreach (Cyberware objChildCyberware in objDescendantsList)
+                        foreach (Cyberware objChildCyberware in objCyberware.Children.GetAllDescendants(x => x.Children))
                         {
                             ImprovementManager.RemoveImprovements(_objCharacter, objChildCyberware.SourceType, objChildCyberware.InternalId);
                             if (objChildCyberware.WeaponID != Guid.Empty.ToString())
@@ -26601,7 +26600,12 @@ namespace Chummer
         {
             if (_blnLoading || !_objCharacter.Overclocker)
                 return;
-            Commlink objCommlink = CommonFunctions.FindCommlink(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+            List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
+            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+            {
+                lstGearToSearch.AddRange(objCyberware.Gear);
+            }
+            Commlink objCommlink = CommonFunctions.FindCommlink(treCyberware.SelectedNode.Tag.ToString(), lstGearToSearch);
             objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
             objCommlink.RefreshCommlinkCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
         }

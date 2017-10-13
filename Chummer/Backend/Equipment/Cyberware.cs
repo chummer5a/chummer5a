@@ -69,6 +69,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objSource == Improvement.ImprovementSource.Bioware)
             {
+                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
                 foreach (Grade objGrade in GlobalOptions.BiowareGrades)
                 {
                     if (objGrade.Name == strValue)
@@ -79,6 +80,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
                 foreach (Grade objGrade in GlobalOptions.CyberwareGrades)
                 {
                     if (objGrade.Name == strValue)

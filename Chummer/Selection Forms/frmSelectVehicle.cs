@@ -141,8 +141,6 @@ namespace Chummer
             {
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
                 {
-                    if (objXmlVehicle["hide"] != null)
-                        continue;
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
                     objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
                     lstVehicles.Add(objItem);
@@ -209,8 +207,6 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (objXmlVehicle["hide"] != null)
-                    continue;
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};

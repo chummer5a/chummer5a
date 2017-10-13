@@ -1141,14 +1141,10 @@ namespace Chummer
         /// </summary>
         public string BookXPath()
         {
-            string strPath = _strBookXPath;
+            string strPath = "not(hide)";
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                strPath += " and not(hide)";
-            }
-            else
-            {
-                strPath += "not(hide)";
+                strPath += " and " + _strBookXPath;
             }
             if (GlobalOptions.Instance.MissionsOnly)
             {

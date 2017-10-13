@@ -16,17 +16,19 @@ namespace Chummer.Backend.Equipment
         /// Fill the list of CyberwareGrades from the XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
-        public void LoadList(Improvement.ImprovementSource objSource)
+        public void LoadList(Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions = null)
         {
+            _lstGrades.Clear();
             string strXmlFile = "cyberware.xml";
             if (objSource == Improvement.ImprovementSource.Bioware)
                 strXmlFile = "bioware.xml";
             XmlDocument objXMlDocument = XmlManager.Instance.Load(strXmlFile);
-            
-            foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade"))
+
+            string strBookFilter = string.Empty;
+            if (objCharacterOptions != null)
+                strBookFilter = "[(" + objCharacterOptions.BookXPath() + ")]";
+            foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade" + strBookFilter))
             {
-                if (objNode["hide"] != null)
-                    continue;
                 Grade objGrade = new Grade();
                 objGrade.Load(objNode);
                 _lstGrades.Add(objGrade);
@@ -38,17 +40,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Grade GetGrade(string strGrade)
         {
-            Grade objReturn = new Grade();
             foreach (Grade objGrade in _lstGrades)
             {
                 if (objGrade.Name == strGrade)
                 {
-                    objReturn = objGrade;
-                    break;
+                    return objGrade;
                 }
             }
 
-            return objReturn;
+            return null;
         }
         #endregion
 

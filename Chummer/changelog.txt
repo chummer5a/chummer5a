@@ -125,6 +125,8 @@ Application Changes:
 - Restrictions via the <forbidden> and <required> tags for bioware and cyberware will now also check subsystems, not just top-level cyberware and bioware.
 - Fixed names for improvement sources originating from nested cyberware, bioware, and gear not showing up properly.
 - Fixed bonuses for nested 'ware not getting removed when the parent is removed if the given piece of 'ware is a grandchild or later descendant of the 'ware getting removed.
+- Fixed a bug that caused 'ware grades to not obey the enabled sourcebook rules, e.g. Omegaware would show up even if Chrome Flesh was not enabled.
+- Fixed a bug where the Power selection dialog allowed the user to select a power that was marked as hidden or was from a sourcebook that the user did not have enabled.
 
 Data Changes:
 
@@ -202,7 +204,7 @@ Data Changes:
 - Fixed GTS Tower not coming with the Retrans Unit mentioned in its fluff description ("the Tower pulls double-duty as a retransmission drone").
 - Cyber-Snob now properly disallows buying any 'ware below Alphaware grade. Regeneration critter power now properly disables access to all bioware, as well as all cyberware below Deltaware grade.
 - Added cybersuites from Chrome Flesh and Boston Lockdown, as well as the commlinks included in those cybersuites.
-- Added the missing Cybersuites from State of the Art - ADL
+- Added the missing Cybersuites from State of the Art - ADL.
 
 New Strings:
 - Label_Options_SpellShapingFocus

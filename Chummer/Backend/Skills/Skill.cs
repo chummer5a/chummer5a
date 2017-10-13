@@ -911,7 +911,7 @@ namespace Chummer.Skills
                     improvement.ImproveType == Improvement.ImprovementType.Hardwire && improvement.ImprovedName == Name &&
                     improvement.Enabled).ToList();
 
-            if (hardwire.Any())
+            if (hardwire.Count > 0)
             {
                 return _cachedWareRating = hardwire.Max(x => x.Value);
             }
