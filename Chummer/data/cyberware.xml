@@ -5886,17 +5886,22 @@
       <cost>72600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <armor>1</armor>
-        <damageresistance>1</damageresistance>
-        <initiativepass precedence="0">1</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>2</val>
-        </specificattribute>
-        <unarmeddv>1</unarmeddv>
-        <unarmeddvphysical />
-      </bonus>
+      <subsystems>
+		<cyberware>
+			<name>Wired Reflexes</name>
+			<rating>1</rating>
+		</cyberware>
+		<cyberware>
+			<name>Reaction Enhancers</name>
+			<rating>1</rating>
+		</cyberware>
+		<cyberware>
+			<name>Bone Lacing (Plastic)</name>
+		</cyberware>
+		<cyberware>
+			<name>Biomonitor</name>
+		</cyberware>
+	  </subsystems>
       <forbidden>
         <oneof>
           <bioware>Bone Density Augmentation</bioware>
@@ -5919,18 +5924,12 @@
       <cost>15600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+		<cyberware>
+			<name>Reaction Enhancers</name>
+			<rating>2</rating>
+		</cyberware>
+	  </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
@@ -5948,18 +5947,12 @@
       <cost>15600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+            <subsystems>
+		<cyberware>
+			<name>Reaction Enhancers</name>
+			<rating>3</rating>
+		</cyberware>
+	  </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
@@ -5978,19 +5971,12 @@
       <cost>132000</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <initiativepass precedence="0">2</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+		<cyberware>
+			<name>Wired Reflexes</name>
+			<rating>2</rating>
+		</cyberware>
+	  </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
@@ -6008,19 +5994,12 @@
       <cost>81600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <initiativepass precedence="0">3</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+		<cyberware>
+			<name>Wired Reflexes</name>
+			<rating>3</rating>
+		</cyberware>
+	  </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
@@ -6028,6 +6007,234 @@
         </allof>
       </required>
 	  <forcegrade>Standard</forcegrade>
+    </cyberware>
+    <cyberware>
+      <id>a8cff88e-9ea2-41da-9f72-9c45a438a418</id>
+      <name>Zeiss Consortium MET2000 Elitepilot</name>
+      <category>Cybersuite</category>
+      <ess>2.23</ess>
+      <capacity>0</capacity>
+      <avail>12R</avail>
+      <cost>162000</cost>
+      <source>SAG</source>
+      <page>81</page>
+      <subsystems>
+		<cyberware>
+			<name>Attention Coprocessor</name>
+		</cyberware>
+		<cyberware>
+			<name>Gastric Neurostimulator</name>
+		</cyberware>
+		<cyberware>
+			<name>Reaction Enhancers</name>
+			<rating>2</rating>
+		</cyberware>
+		<cyberware>
+			<name>Control Rig</name>
+			<rating>2</rating>
+		</cyberware>
+	  </subsystems>
+	  <forbidden>
+        <oneof>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+	  <forcegrade>Standard</forcegrade>
+    </cyberware>
+	<cyberware>
+		<id>1d574ac6-b07f-46dd-ba06-c896ed2de5e8</id>
+		<name>Zeiss Consortium MET2000 Fernspäher</name>
+		<category>Cybersuite</category>
+		<ess>1.22</ess>
+		<capacity>0</capacity>
+		<avail>11R</avail>
+		<cost>64200</cost>
+		<source>SAG</source>
+		<page>81</page>
+		<subsystems>
+			<cyberware>
+				<name>Attention Coprocessor</name>
+			</cyberware>
+			<cyberware>
+				<name>Cybereyes Basic System</name>
+				<rating>3</rating>
+				<subsystems>
+					<cyberware>
+						<name>Flare Compensation</name>
+					</cyberware>
+					<cyberware>
+						<name>Thermographic Vision</name>
+					</cyberware>
+					<cyberware>
+						<name>Low-Light Vision</name>
+					</cyberware>
+					<cyberware>
+						<name>Vision Enhancement</name>
+						<rating>2</rating>
+					</cyberware>
+					<cyberware>
+						<name>Smartlink</name>
+					</cyberware>
+				</subsystems>
+			</cyberware>
+			<cyberware>
+				<name>Cyberears</name>
+				<rating>1</rating>
+				<subsystems>
+					<cyberware>
+						<name>Spatial Recognizer</name>
+					</cyberware>
+					<cyberware>
+						<name>Audio Enhancement</name>
+						<rating>2</rating>
+					</cyberware>
+				</subsystems>
+			</cyberware>
+			<cyberware>
+				<name>Datajack</name>
+			</cyberware>
+			<cyberware>
+				<name>Orientation System</name>
+			</cyberware>
+			<cyberware>
+				<name>Radar Sensor</name>
+				<rating>2</rating>
+			</cyberware>
+		</subsystems>
+		<forbidden>
+			<oneof>
+				<cyberware>Cybereyes Basic System</cyberware>
+				<cyberware>Cyberears</cyberware>
+			</oneof>
+		</forbidden>
+		<forcegrade>Standard</forcegrade>
+    </cyberware>
+	<cyberware>
+		<id>011bedb4-1145-4934-9bd9-dcd92cf296b5</id>
+		<name>Zeiss Consortium MET2000 Sturmpionier</name>
+		<category>Cybersuite</category>
+		<ess>1.4</ess>
+		<capacity>0</capacity>
+		<avail>11R</avail>
+		<cost>74100</cost>
+		<source>SAG</source>
+		<page>81</page>
+		<subsystems>
+			<cyberware>
+				<name>Cybereyes Basic System</name>
+				<rating>3</rating>
+				<subsystems>
+					<cyberware>
+						<name>Flare Compensation</name>
+					</cyberware>
+					<cyberware>
+						<name>Thermographic Vision</name>
+					</cyberware>
+					<cyberware>
+						<name>Low-Light Vision</name>
+					</cyberware>
+					<cyberware>
+						<name>Vision Enhancement</name>
+						<rating>2</rating>
+					</cyberware>
+					<cyberware>
+						<name>Smartlink</name>
+					</cyberware>
+				</subsystems>
+			</cyberware>
+			<cyberware>
+				<name>Internal Air Tank</name>
+				<rating>1</rating>
+			</cyberware>
+			<cyberware>
+				<name>Muscle Replacement</name>
+				<rating>1</rating>
+			</cyberware>
+			<cyberware>
+				<name>Modular Mount</name>
+			</cyberware>
+			<cyberware>
+				<name>Skilljack</name>
+				<rating>4</rating>
+			</cyberware>
+			<cyberware>
+				<name>Visualizer</name>
+			</cyberware>
+		</subsystems>
+		<forbidden>
+			<oneof>
+				<cyberware>Cybereyes Basic System</cyberware>
+				<cyberware>Muscle Replacement</cyberware>
+				<cyberware>Skilljack</cyberware>
+			</oneof>
+		</forbidden>
+		<forcegrade>Standard</forcegrade>
+    </cyberware>
+	<cyberware>
+		<id>78cfabfa-cf45-4ea0-830d-f092fa9b3a5f</id>
+		<name>Zeiss Consortium MET2000 Sturmpionier - Trench Wires</name>
+		<category>Cybersuite</category>
+		<ess>1.69</ess>
+		<capacity>0</capacity>
+		<avail>14R</avail>
+		<cost>170100</cost>
+		<source>SAG</source>
+		<page>81</page>
+		<subsystems>
+			<cyberware>
+				<name>Cybereyes Basic System</name>
+				<rating>3</rating>
+				<subsystems>
+					<cyberware>
+						<name>Flare Compensation</name>
+					</cyberware>
+					<cyberware>
+						<name>Thermographic Vision</name>
+					</cyberware>
+					<cyberware>
+						<name>Low-Light Vision</name>
+					</cyberware>
+					<cyberware>
+						<name>Vision Enhancement</name>
+						<rating>2</rating>
+					</cyberware>
+					<cyberware>
+						<name>Smartlink</name>
+					</cyberware>
+				</subsystems>
+			</cyberware>
+			<cyberware>
+				<name>Internal Air Tank</name>
+				<rating>1</rating>
+			</cyberware>
+			<cyberware>
+				<name>Muscle Replacement</name>
+				<rating>1</rating>
+			</cyberware>
+			<cyberware>
+				<name>Modular Mount</name>
+			</cyberware>
+			<cyberware>
+				<name>Skilljack</name>
+				<rating>4</rating>
+			</cyberware>
+			<cyberware>
+				<name>Visualizer</name>
+			</cyberware>
+			<cyberware>
+				<name>Skillwires</name>
+				<rating>4</rating>
+			</cyberware>
+		</subsystems>
+		<forbidden>
+			<oneof>
+				<cyberware>Cybereyes Basic System</cyberware>
+				<cyberware>Muscle Replacement</cyberware>
+				<cyberware>Skilljack</cyberware>
+				<cyberware>Skillwires</cyberware>
+			</oneof>
+		</forbidden>
+		<forcegrade>Standard</forcegrade>
     </cyberware>
     <!-- End Region -->
     <!-- Region The Complete Trog -->
