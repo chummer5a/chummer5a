@@ -166,6 +166,7 @@
       <id>81b40aa8-98d1-4a5d-89d6-9b6d438006da</id>
       <name>Cerebral Booster</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>Rating * 6</avail>
@@ -184,6 +185,7 @@
       <id>c46fbaba-d941-44b5-9bdc-643c5c6f4b24</id>
       <name>Damage Compensators</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>(Rating * 3)F</avail>
@@ -229,6 +231,7 @@
       <id>b2289ebe-4bb0-49d0-a151-38fc1261bba8</id>
       <name>Mnemonic Enhancer</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>Rating * 5</avail>
@@ -321,6 +324,7 @@
       <id>add913d1-6174-41d6-8021-b8bf35345e7a</id>
       <name>Pain Editor</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>18F</avail>
@@ -355,6 +359,7 @@
       <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
       <name>Reflex Recorder (Skill)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>10</avail>
@@ -383,6 +388,7 @@
       <id>5ffb0e03-c281-4aee-bc13-639576d932ab</id>
       <name>Sleep Regulator</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -436,6 +442,7 @@
       <id>4a4e1079-5872-4f3f-a450-48c30a5504f3</id>
       <name>Synaptic Booster</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.5</ess>
       <capacity>0</capacity>
       <avail>(Rating * 6)R</avail>
@@ -1398,6 +1405,7 @@
       <id>afbf823f-3116-4967-93d2-0e334bb35d3a</id>
       <name>Cerebellum Booster</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>Rating * 8</avail>
@@ -1416,6 +1424,7 @@
       <id>1abeac7c-79c5-4774-ad45-cd355ebc1476</id>
       <name>Boosted Reflexes</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>1</ess>
       <capacity>0</capacity>
       <avail>8R</avail>
@@ -1430,6 +1439,7 @@
       <id>aece83ad-cec8-4117-adbd-3ec5e2049372</id>
       <name>Knowledge Infusion</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>12</avail>
@@ -1441,6 +1451,7 @@
       <id>19000eeb-099e-4d63-9e1f-39a321569abe</id>
       <name>Limb replacement (Finger/Toe)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -1455,6 +1466,7 @@
       <id>7346dc96-af61-48f4-a98c-3bbe5fa64005</id>
       <name>Limb replacement (Hand/foot)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>8</avail>
@@ -1469,6 +1481,7 @@
       <id>4a61e7db-b4e2-48e3-8744-6a44bff453a7</id>
       <name>Limb replacement (Half arm/leg)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>12</avail>
@@ -1483,6 +1496,7 @@
       <id>67be6b07-11e4-49e6-8f6f-6931a3f8bf1f</id>
       <name>Limb replacement (Full arm/leg)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.02</ess>
       <capacity>0</capacity>
       <avail>12</avail>
@@ -1497,6 +1511,7 @@
       <id>f0aa87d0-2d86-482c-808d-667f1078f357</id>
       <name>Neuro Retention Amplification</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -1513,6 +1528,7 @@
       <id>0dc21074-6b2c-446a-aadc-e8304c9c124f</id>
       <name>Reproductive Replacement, Male</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
@@ -1524,6 +1540,7 @@
       <id>31b609ee-6856-44bb-b1f5-19066c0a74c0</id>
       <name>Reproductive Replacement, Female</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -1535,6 +1552,7 @@
       <id>e99097a1-84d5-4038-8525-761d199c58a7</id>
       <name>Trauma Damper</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>(Rating * 4)R</avail>
@@ -1547,6 +1565,7 @@
       <id>e78a9465-d399-4e94-bea8-7e98c8fc960d</id>
       <name>Tremor Reducer</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>Rating * 6</avail>
@@ -1559,6 +1578,7 @@
       <id>5f2c33a4-3472-4643-a0bb-9a6e52554c2f</id>
       <name>Reception Enhancer</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -2529,6 +2549,7 @@
       <id>0f5b811f-a761-410a-b675-fca5c5821b31</id>
       <name>Spur Pocket</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -2634,6 +2655,7 @@
       <id>aa992c89-3fc0-47bf-9275-f31acf83a615</id>
       <name>Mnemonic Enhancer (2050)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -2756,6 +2778,7 @@
       <id>20658b19-28c0-4e38-8523-768636510c7b</id>
       <name>Reflex Recorder (2050)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>5</avail>
@@ -2773,6 +2796,7 @@
       <id>9300c974-1591-4dca-95d4-53755c27126e</id>
       <name>Damage Compensators (2050)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>10F</avail>
@@ -2795,6 +2819,7 @@
       <id>93325d96-77fd-4914-ad9d-e3fb4f5ba4db</id>
       <name>Pain Editor (2050)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>6F</avail>
@@ -2818,6 +2843,7 @@
       <id>418fc791-2ae8-4457-80ec-e89244f1497b</id>
       <name>Synaptic Accelerator (2050)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.5</ess>
       <capacity>0</capacity>
       <avail>6R</avail>
@@ -2866,6 +2892,7 @@
       <id>773956b3-427b-4ed0-9510-8db622f01b66</id>
       <name>Cerebral Booster (2050)</name>
       <category>Cultured</category>
+	  <nosecondhand />
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>6</avail>

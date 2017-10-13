@@ -14153,9 +14153,7 @@ namespace Chummer
                     nudCyberwareRating.Enabled = true;
                 }
 
-                bool blnIgnoreSecondHand = false;
-                if (objCyberware.Category == "Cultured")
-                    blnIgnoreSecondHand = true;
+                bool blnIgnoreSecondHand = objCyberware.MyXmlNode["nosecondhand"] != null;
 
                 // Cyberware Grade is not available for Genetech items.
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).

@@ -210,7 +210,7 @@ namespace Chummer
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             if (cboGrade.SelectedValue != null)
             {
-                if (PopulateGrades(cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString().Contains("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used"))), false, strForceGrade))
+                if (PopulateGrades(cboCategory.SelectedValue != null && !cboGrade.Enabled && !strForceGrade.Contains("Used"), false, strForceGrade))
                 {
                     if (cboGrade.Enabled)
                         cboGrade.SelectedValue = _strSelectedGrade;
@@ -318,7 +318,7 @@ namespace Chummer
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             if (cboGrade.SelectedValue != null)
             {
-                if (PopulateGrades(category.StartsWith("Cultured") || (!cboGrade.Enabled && !strForceGrade.Contains("Used")), false, strForceGrade))
+                if (PopulateGrades(objXmlCyberware["nosecondhand"] != null || (!cboGrade.Enabled && !strForceGrade.Contains("Used")), false, strForceGrade))
                 {
                     if (cboGrade.Enabled)
                         cboGrade.SelectedValue = _strSelectedGrade;
@@ -1035,6 +1035,9 @@ namespace Chummer
                         _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
             }
             if (objXmlCyberwareList != null)
+            {
+                bool blnCyberwareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberware && x.Enabled);
+                bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
                 foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
                 {
                     if (!_blnShowOnlySubsystems && objXmlCyberware["ess"]?.InnerText == "0" && objXmlCyberware["capacity"]?.InnerText.Contains("[") == true)
@@ -1052,8 +1055,16 @@ namespace Chummer
                         if (!blnIgnoreDisable && _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && _strSelectedGrade.Contains(x.ImprovedName) && x.Enabled))
                             continue;
                     }
+                    if (blnCyberwareDisabled && objXmlCyberware.SelectSingleNode("subsystems/cyberware") != null)
+                    {
+                        continue;
+                    }
+                    if (blnBiowareDisabled && objXmlCyberware.SelectSingleNode("subsystems/bioware") != null)
+                    {
+                        continue;
+                    }
                     if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier)) continue;
+                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier)) continue;
                     ListItem objItem = new ListItem
                     {
                         Value = objXmlCyberware["name"]?.InnerText,
@@ -1061,6 +1072,7 @@ namespace Chummer
                     };
                     lstCyberwares.Add(objItem);
                 }
+            }
             SortListItem objSort = new SortListItem();
             lstCyberwares.Sort(objSort.Compare);
             lstCyberware.BeginUpdate();
@@ -1228,27 +1240,26 @@ namespace Chummer
             if (objXmlCategoryList != null)
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
-                    // Make sure the Category isn't in the exclusion list.
-                    bool blnAddItem = true;
+                    if (objXmlCategory.Attributes["show"] != null && !_blnAllowModularPlugins)
+                        continue;
 
-                    if (objXmlCategory.Attributes["show"] != null)
-                        blnAddItem = blnAddItem && _blnAllowModularPlugins;
+                    if (_blnShowOnlyLimbs && objXmlCategory.InnerText != "Cyberlimb")
+                        continue;
+                    else if (!_blnShowOnlySubsystems && objXmlCategory.InnerText != "Cyberlimb" && objXmlCategory.InnerText?.Contains("Cyberlimb") == true)
+                        continue;
 
-                    if (_blnShowOnlyLimbs)
-                        blnAddItem = blnAddItem && objXmlCategory.InnerText == "Cyberlimb";
-                    else if (!_blnShowOnlySubsystems)
-                        blnAddItem = blnAddItem && (objXmlCategory.InnerText == "Cyberlimb" || objXmlCategory.InnerText?.Contains("Cyberlimb") == false);
-
+                    // Make sure the category contains items that we can actually display
+                    string strItemFilter = "[category = \"" + objXmlCategory.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")";
                     if (!string.IsNullOrEmpty(_strSelectedGrade) && _strSelectedGrade.Contains("Used"))
-                        blnAddItem = blnAddItem && !objXmlCategory.InnerText.Contains("Cultured");
+                        strItemFilter += " and not(nosecondhand)";
+                    strItemFilter += "]";
+                    if (_objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + strItemFilter) == null)
+                        continue;
 
-                    if (blnAddItem)
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlCategory.InnerText;
-                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                        _lstCategory.Add(objItem);
-                    }
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objXmlCategory.InnerText;
+                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                    _lstCategory.Add(objItem);
                 }
 
             SortListItem objSort = new SortListItem();

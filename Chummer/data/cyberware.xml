@@ -3794,7 +3794,6 @@
 		  <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
     </cyberware>
 	<cyberware>
       <id>42c65dfa-8135-4757-ac6e-d2ecbcf10c60</id>
@@ -3824,7 +3823,6 @@
 			<name>Low-Light Vision</name>
 		</cyberware>
 	  </subsystems>
-	  <forcegrade>Standard</forcegrade>
     </cyberware>
 	<cyberware>
       <id>188068fe-fe38-4d67-afef-0fc3967e5ae1</id>
@@ -3871,7 +3869,6 @@
 		  <cyberware>Taste Booster</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
     </cyberware>
 	<cyberware>
       <id>7e341285-c2db-4399-a592-68ab427d2b2e</id>
@@ -3904,7 +3901,6 @@
 		  <cyberware>Skillwires</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
     </cyberware>
 	<cyberware>
       <id>eee58e0b-acaf-4c7b-a59d-3667dcbcc95d</id>
@@ -3943,7 +3939,6 @@
 			<name>Attention Coprocessor</name>
 		</cyberware>
 	  </subsystems>
-	  <forcegrade>Standard</forcegrade>
     </cyberware>
 	<cyberware>
       <id>bd5ef116-0e9b-47c0-8285-231a2e3de4b5</id>
@@ -3975,7 +3970,6 @@
 			<name>Sound Link</name>
 		</cyberware>
 	  </subsystems>
-	  <forcegrade>Standard</forcegrade>
     </cyberware>
 	<!-- End Region -->
     <!-- End Region -->
@@ -4122,7 +4116,7 @@
 		  <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>27a86814-3486-446e-acf0-10ad3ca2ddc1</id>
@@ -4172,7 +4166,7 @@
 		  <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>d245d0f4-191f-4b10-9662-75c27aac41f3</id>
@@ -4222,7 +4216,7 @@
 		  <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>d6286a7d-e5a5-4277-b1a7-772c23fbeee1</id>
@@ -4304,7 +4298,7 @@
 		  <cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>b5406b3c-44a5-4727-bafc-58ed4cda84b5</id>
@@ -4388,7 +4382,7 @@
 		  <cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>5eb13cce-2c2a-41d0-bd5c-5bdc25e5afbd</id>
@@ -4471,7 +4465,7 @@
 		  <cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>c34d37ff-8bc4-4b8f-809a-c1ad61452a75</id>
@@ -4534,7 +4528,7 @@
 		  <cyberware>Skillwires</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>8c156d89-e919-48f9-997e-8d7271c76818</id>
@@ -4597,7 +4591,7 @@
 		  <cyberware>Skillwires</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>63d7f3e9-058e-49c6-96fd-02e16a28d550</id>
@@ -4675,7 +4669,7 @@
 		  <cyberware>Reaction Enhancers</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>77d5df71-6e69-495d-b51f-98036d01edc4</id>
@@ -4738,7 +4732,7 @@
 		  <cyberware>Wired Reflexes</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>2a7e2b70-d6c4-415c-bf57-23678e2d104e</id>
@@ -4788,7 +4782,7 @@
 		  <cyberware>Wired Reflexes</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>d565a072-af08-47dd-85fb-9ca22eab2bec</id>
@@ -4856,7 +4850,7 @@
 		  <cyberware>Wired Reflexes</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>7143a27a-6544-4dea-a6dc-e9e350e9d306</id>
@@ -4906,7 +4900,7 @@
 		  <cyberware>Wired Reflexes</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>92c835be-2152-4623-aa2f-a7967e456fe7</id>
@@ -4944,7 +4938,7 @@
 		  <cyberware>Wired Reflexes</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
 	<cyberware>
       <id>6796a057-b452-4a74-96be-eb710a38977e</id>
@@ -5016,7 +5010,7 @@
 		  <cyberware>Dermal Plating</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+	  <nosecondhand />
     </cyberware>
     <!-- End Region -->
     <!-- Region Howling Shadows -->

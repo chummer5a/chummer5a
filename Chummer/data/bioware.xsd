@@ -2,6 +2,7 @@
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xs:include schemaLocation="../data../bonuses.xsd" />
     <xs:include schemaLocation="../data../conditions.xsd" />
+	<xs:include schemaLocation="../data../gear.xsd" />
     <xs:element name="chummer">
         <xs:complexType>
             <xs:sequence>
@@ -48,6 +49,7 @@
                                     <xs:sequence>
                                         <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="nosecondhand" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="ess" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -75,6 +77,7 @@
                                         <xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+										<xs:element ref="subsystems" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                                     </xs:sequence>
@@ -86,6 +89,36 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+	
+	<xs:element name="subsystems">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cyberware" nillable="true" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+							<xs:element name="forced" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="subsystems" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="gears" minOccurs="0" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="bioware" nillable="true" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+							<xs:element name="forced" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="subsystems" minOccurs="0" maxOccurs="1" />
+							<xs:element ref="gears" minOccurs="0" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
     <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">

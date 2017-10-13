@@ -1038,7 +1038,7 @@
       <id>5ec246dc-c129-4e61-a27a-c4d82b223bea</id>
       <name>Hand Blade</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>-2</conceal>
       <spec>Cyber Implants</spec>
@@ -1061,7 +1061,7 @@
       <id>16fe95d3-9c66-4ac6-b4e3-562de5e5619e</id>
       <name>Hand Razors</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>-2</conceal>
       <spec>Cyber Implants</spec>
@@ -1204,7 +1204,7 @@
       <id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
       <name>Spurs</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -1664,7 +1664,7 @@
       <id>9c960f46-ba6c-4674-8141-26dad10508d9</id>
       <name>Stun Dongle</name>
       <category>Clubs</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>-4</conceal>
       <accuracy>4</accuracy>
@@ -1827,7 +1827,7 @@
       <id>a47e8191-869a-456e-b376-ed04ba7a59f0</id>
       <name>Ballistic Shield</name>
       <category>Exotic Melee Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>8</conceal>
       <spec>Shields</spec>
@@ -1968,7 +1968,7 @@
       <id>e66ab7ea-3408-4a3b-9ab9-7bc26a8e8a6e</id>
       <name>Riot Shield</name>
       <category>Exotic Melee Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>8</conceal>
       <spec>Shields</spec>
@@ -2122,7 +2122,7 @@
       <id>4f1d1416-5af6-4853-a1b3-2bb44a132d8f</id>
       <name>Stimtouch Hosiery</name>
       <category>Exotic Melee Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
@@ -2142,7 +2142,7 @@
       <id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>
       <name>Grapple Gun</name>
       <category>Exotic Ranged Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Grapple Gun</spec>
@@ -2164,7 +2164,7 @@
       <id>87a94632-b229-44b7-a150-9808388cfa20</id>
       <name>Hold-Fast Sprayer</name>
       <category>Exotic Ranged Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sprayer</spec>
@@ -2186,7 +2186,7 @@
       <id>fac9d052-4f7d-43cd-a649-8703b4c0b9c2</id>
       <name>Micro Flare Launcher</name>
       <category>Exotic Ranged Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-2</conceal>
       <spec>Flare Launcher</spec>
@@ -2977,7 +2977,7 @@
       <id>5fe3a884-8213-4fe3-a538-750eba3bda27</id>
       <name>Cyber Microgrenade Launcher</name>
       <category>Grenade Launchers</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>8</conceal>
       <accuracy>4</accuracy>
@@ -3285,7 +3285,7 @@
       <id>158224db-e409-407f-b2f0-4617886ad80f</id>
       <name>Heavy Cyber Pistol</name>
       <category>Heavy Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>0</conceal>
       <spec>Semi-Automatics</spec>
@@ -3458,7 +3458,7 @@
       <id>c87b03f7-403d-4db9-987a-022ab525b4be</id>
       <name>Cyber Hold-Out</name>
       <category>Holdouts</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-4</conceal>
       <spec>Semi-Automatics</spec>
@@ -4247,7 +4247,7 @@
       <id>261165ce-6111-4a51-9519-46c41edac9b0</id>
       <name>Light Cyber Pistol</name>
       <category>Light Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-2</conceal>
       <spec>Semi-Automatics</spec>
@@ -4469,7 +4469,7 @@
       <id>496e4b81-8437-41fb-adf5-2e4709df656e</id>
       <name>Cyber Machine Pistol</name>
       <category>Machine Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>0</conceal>
       <spec>Semi-Automatics</spec>
@@ -4960,7 +4960,7 @@
       <name>Cyber Shotgun</name>
       <category>Shotguns</category>
 	  <alternaterange>Shotguns (flechette)</alternaterange>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -6522,7 +6522,7 @@
       <id>95295a59-46b3-4cc0-8a1d-ac869cf9912c</id>
       <name>Cyber Submachine Gun</name>
       <category>Submachine Guns</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>2</conceal>
       <accuracy>4</accuracy>
@@ -6840,7 +6840,7 @@
       <id>3b12990b-afcb-4e0c-943d-ee215ffcfde1</id>
       <name>Defiance EX Shocker (Melee Contacts)</name>
       <category>Clubs</category>
-      <hide>yes</hide>
+      <hide />
       <avail>0</avail>
       <type>Melee</type>
       <conceal>-2</conceal>
@@ -6956,7 +6956,7 @@
       <id>fec4a4f8-4432-4bdc-b3b9-83c032d71d63</id>
       <name>Shock Hand</name>
       <category>Unarmed</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -6998,7 +6998,7 @@
       <id>ae58f859-37ee-4fac-befa-365acd3c7da7</id>
       <name>AK-98 Grenade Launcher</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>3</accuracy>
@@ -7029,7 +7029,7 @@
       <id>e9bea546-f35d-4ecc-9d15-8b30df9bdb28</id>
       <name>Ares Alpha Grenade Launcher</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -7060,7 +7060,7 @@
       <id>5df8388e-9ca9-4455-9ac0-3d83ffd77d0d</id>
       <name>Underbarrel Grenade Launcher</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -7093,7 +7093,7 @@
       <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
       <name>HK XM30 Grenade Launcher</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Grenade Launchers</spec>
@@ -7136,7 +7136,7 @@
       <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
       <name>Nissan Optiumum II Shotgun</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
@@ -7250,7 +7250,7 @@
       <category>Quality</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <hide>yes</hide>
+      <hide />
       <accuracy>Physical</accuracy>
       <reach>0</reach>
       <damage>(STR)P</damage>
@@ -7270,7 +7270,7 @@
       <name>Razor Claws</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7291,7 +7291,7 @@
       <name>Retractable Claws</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7312,7 +7312,7 @@
       <name>Raptor Beak</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7333,7 +7333,7 @@
       <name>Fangs</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>-1</reach>
@@ -7354,7 +7354,7 @@
       <name>Functional Tail (Thagomizer)</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>1</reach>
@@ -7375,7 +7375,7 @@
       <name>Goring Horns</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7396,7 +7396,7 @@
       <name>Larger Tusks</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7417,7 +7417,7 @@
       <name>Proboscis</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7438,7 +7438,7 @@
       <name>Kick (Centaur)</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>1</reach>
@@ -7459,7 +7459,7 @@
       <name>Bite (Infected)</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>-1</reach>
@@ -7480,7 +7480,7 @@
       <name>Bite (Naga)</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>-1</reach>
@@ -7501,7 +7501,7 @@
       <name>Claws (Sasquatch)</name>
       <category>Quality</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>1</reach>
@@ -7525,7 +7525,7 @@
       <id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
       <name>Oral Slasher</name>
       <category>Cyberweapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>-4</conceal>
       <accuracy>Physical</accuracy>
@@ -7548,7 +7548,7 @@
       <name>Flametosser</name>
       <category>Flamethrowers</category>
       <type>Ranged</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
@@ -7571,7 +7571,7 @@
       <name>Cyberfangs</name>
       <category>Cyberweapon</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>-4</conceal>
       <accuracy>Physical-2</accuracy>
       <reach>0</reach>
@@ -7593,7 +7593,7 @@
       <name>Extreme Cyberimplant</name>
       <category>Cyberweapon</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7615,7 +7615,7 @@
       <name>Junkyard Jaw</name>
       <category>Cyberweapon</category>
       <type>Melee</type>
-      <hide>yes</hide>
+      <hide />
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -7638,7 +7638,7 @@
       <id>1d37e560-0e33-4129-95a9-a38217c00c0d</id>
       <name>Claws (Bio-Weapon)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
@@ -7659,7 +7659,7 @@
       <id>8472cb1d-d3a3-4995-86d8-f07aca06b3a9</id>
       <name>Retractable Claws (Bio-Weapon)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
@@ -7680,7 +7680,7 @@
       <id>99cbc9c0-11b6-4906-9dba-adc217592b92</id>
       <name>Electrical Discharge</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
@@ -7701,7 +7701,7 @@
       <id>bdb9e0d7-fba7-48ed-ba16-2b540f8ce151</id>
       <name>Fangs (Bio-Weapon)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>3</accuracy>
@@ -7722,7 +7722,7 @@
       <id>576770af-b5da-4b76-afdf-5559e7401e2d</id>
       <name>Retractable Fangs (Bio-Weapon)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>3</accuracy>
@@ -7743,7 +7743,7 @@
       <id>f15fe505-99a2-45b0-99d9-a1cbf83dc1c4</id>
       <name>Horns (Bio-Weapon)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>4</accuracy>
@@ -7764,7 +7764,7 @@
       <id>380c0512-a672-4f94-a969-83a7679e52c6</id>
       <name>Large Stinger</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
@@ -7785,7 +7785,7 @@
       <id>5527b38d-2ecf-4729-8b7b-421e0985bab2</id>
       <name>Medium Stinger</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
@@ -7806,7 +7806,7 @@
       <id>57e51d68-076b-4f05-ac6f-0fb493333e2d</id>
       <name>Medium Tusk(s)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>4</accuracy>
@@ -7827,7 +7827,7 @@
       <id>a2812fb9-0ad0-424d-98d6-9a48861c664f</id>
       <name>Large Tusk(s)</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>4</accuracy>
@@ -7848,7 +7848,7 @@
       <id>b6989b15-0ddb-4d0d-b178-312560e8bce2</id>
       <name>Raptor Foot</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical-1</accuracy>
@@ -7869,7 +7869,7 @@
       <id>7daa50cc-67d5-43d1-b779-28d444a9d519</id>
       <name>Grapple Fist</name>
       <category>Bio-Weapon</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>0</conceal>
       <spec>Grapple Gun</spec>
@@ -7961,7 +7961,7 @@
       <id>d036885b-4238-4ed7-ae9d-5dba97071e19</id>
       <name>Foot Blade</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -7984,7 +7984,7 @@
       <id>7b928bc3-c44e-4002-b8ac-17a2bdd01d5a</id>
       <name>Bone Spike I</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -8007,7 +8007,7 @@
       <id>2ef46f42-8890-48fd-bb94-67c34c12f0fb</id>
       <name>Bone Spike II</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -8030,7 +8030,7 @@
       <id>3babb9d3-a3bb-4c8f-96ce-73f27b6ec7a6</id>
       <name>Bone Spike III</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -8203,7 +8203,7 @@
       <id>82aa8d25-179a-4c21-9a3c-61a171705f65</id>
       <name>Shiawase Arms Simoom</name>
       <category>Exotic Ranged Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-4</conceal>
       <accuracy>5</accuracy>
@@ -8335,7 +8335,7 @@
       <id>e6c0ceab-ac8f-4b69-bb00-8f6e05396a64</id>
       <name>Lemat 2072 (Shotgun Barrel)</name>
       <category>Heavy Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>0</conceal>
       <spec>Revolvers</spec>
@@ -8533,7 +8533,7 @@
       <id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
       <name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
       <category>Shotguns</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
@@ -8637,7 +8637,7 @@
       <id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
       <name>Mannlicher Dirmingen SX BD: Shotgun Barrel</name>
       <category>Shotguns</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
@@ -8697,7 +8697,7 @@
       <id>deaf5a3d-7428-4a58-be14-c8447716b0f8</id>
       <name>Mannlicher Dirmingen SX BD: Small Caliber</name>
       <category>Sporting Rifles</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
@@ -9013,7 +9013,7 @@
       <id>b84e7ffe-acae-461c-a7ce-67056976a96e</id>
       <name>Ares Briefcase Shield</name>
       <category>Exotic Melee Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>8</conceal>
       <spec>Shields</spec>
@@ -9035,7 +9035,7 @@
       <id>50b36198-aeed-4bcb-af46-5e8c18771c47</id>
       <name>Hand Razors (fixed) (2050)</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>-2</conceal>
       <spec>Cyber Implants</spec>
@@ -9058,7 +9058,7 @@
       <id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
       <name>Hand Razors (retractable) (2050)</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -9081,7 +9081,7 @@
       <id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
       <name>Spur, Fixed (2050)</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -9104,7 +9104,7 @@
       <id>9c003405-8e41-4a2e-bde3-dc67709a71e7</id>
       <name>Spur, Retractable (2050)</name>
       <category>Blades</category>
-      <hide>yes</hide>
+      <hide />
       <type>Melee</type>
       <conceal>0</conceal>
       <spec>Cyber Implants</spec>
@@ -9127,7 +9127,7 @@
       <id>5c6a9db2-9518-4a60-a291-8a4041b60a71</id>
       <name>Cyber Holdout Pistol (2050)</name>
       <category>Holdouts</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
       <spec>Semi-Automatics</spec>
@@ -9149,7 +9149,7 @@
       <id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
       <name>Cyber Light Pistol (2050)</name>
       <category>Light Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
       <spec>Semi-Automatics</spec>
@@ -9171,7 +9171,7 @@
       <id>7aba7a44-45eb-449f-bd05-5bee308eed3c</id>
       <name>Cyber Machine Pistol (2050)</name>
       <category>Machine Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
       <spec>Semi-Automatics</spec>
@@ -9193,7 +9193,7 @@
       <id>dfddf65d-6275-456a-bfd9-8904ab4dc4cd</id>
       <name>Cyber Heavy Pistol (2050)</name>
       <category>Heavy Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
       <spec>Semi-Automatics</spec>
@@ -9215,7 +9215,7 @@
       <id>b75bf551-8ad5-469a-a0ae-7cc4fa62a663</id>
       <name>Cyber Submachine Gun (2050)</name>
       <category>Machine Pistols</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
       <spec>Semi-Automatics</spec>
@@ -9238,7 +9238,7 @@
       <name>Cyber Shotgun (2050)</name>
       <category>Shotguns</category>
 	  <alternaterange>Shotguns (flechette)</alternaterange>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
       <accuracy>4</accuracy>
@@ -10003,7 +10003,7 @@
       <id>8d399d02-9829-4943-8b60-7c32698c0888</id>
       <name>Colt M22A2 Grenade Launcher (2050)</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>3</accuracy>
@@ -10261,7 +10261,7 @@
       <id>5e116545-08b4-4eae-8dab-6f1546786296</id>
       <name>Styre AUG-CSL SMG (2050)</name>
       <category>Submachine Guns</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -10294,7 +10294,7 @@
       <id>ef76228b-c339-4262-b8e3-597de652d9b4</id>
       <name>Styre AUG-CSL Carbine (2050)</name>
       <category>Sniper Rifles</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -10327,7 +10327,7 @@
       <id>4c09761e-d2a2-4958-9113-5b61db145a20</id>
       <name>Styre AUG-CSL Assault Rifles (2050)</name>
       <category>Assault Rifles</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -10360,7 +10360,7 @@
       <id>39a5d782-6537-4b6d-93f9-f5d30d90d8ef</id>
       <name>Styre AUG-CSL LMG (2050)</name>
       <category>Light Machine Guns</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -11254,7 +11254,7 @@
       <id>f7f4e4b6-49c7-4c08-870c-0ad9bd3594ff</id>
       <name>HK Urban Enforcer Microgrenade Launcher</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11328,7 +11328,7 @@
       <id>037bfd07-2130-4fcf-bbd5-2413f74ca23f</id>
       <name>Steyr AUG-CSL III (Carbine)</name>
       <category>Assault Rifles</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Submachine Guns</spec>
@@ -11369,7 +11369,7 @@
     <weapon>
       <id>36da55bb-52bf-4bbd-bef5-8acdeae95039</id>
       <name>Steyr AUG-CSL III (LMG)</name>
-      <hide>yes</hide>
+      <hide />
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -11411,7 +11411,7 @@
     <weapon>
       <id>c4192384-d538-4ca7-b3ec-693e46f94cc3</id>
       <name>Steyr AUG-CSL III (Sniper Rifle)</name>
-      <hide>yes</hide>
+      <hide />
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -11510,7 +11510,7 @@
       <id>e4adef4a-3f34-4315-8575-e3906e8c6f66</id>
       <name>HK G12A4 Grenade Launcher</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11579,7 +11579,7 @@
       <id>5057a725-87eb-409b-8fd1-004b3e3d614f</id>
       <name>Steyr UCR Underbarrel Shotgun</name>
       <category>Underbarrel Weapons</category>
-      <hide>yes</hide>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -11833,7 +11833,7 @@
     <weapon>
       <id>43c1c5b4-250f-4f44-8b23-20aa4173b768</id>
       <name>PJSS Model 75-III (Rifle Barrel)</name>
-      <hide>yes</hide>
+      <hide />
       <category>Shotguns</category>
 	  <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
@@ -13306,7 +13306,7 @@
       <name>Mounted Crossbow</name>
       <mount>Under/Barrel</mount>
       <extramount>Under/Barrel</extramount>
-      <hide>yes</hide>
+      <hide />
       <rating>0</rating>
       <avail>8R</avail>
       <cost>1000</cost>
@@ -13333,7 +13333,7 @@
       <id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
       <name>Underbarrel Laser</name>
       <mount>Under/Side</mount>
-      <hide>yes</hide>
+      <hide />
       <extramount>Under/Side</extramount>
       <rating>0</rating>
       <avail>16F</avail>
@@ -13345,7 +13345,7 @@
       <id>13d90aa2-6a67-47e5-a211-89aabea5f837</id>
       <name>Underbarrel Shotgun</name>
       <mount>Under</mount>
-      <hide>yes</hide>
+      <hide />
       <rating>0</rating>
       <avail>5R</avail>
       <cost>600</cost>

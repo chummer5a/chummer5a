@@ -127,6 +127,7 @@ Application Changes:
 - Fixed bonuses for nested 'ware not getting removed when the parent is removed if the given piece of 'ware is a grandchild or later descendant of the 'ware getting removed.
 - Fixed a bug that caused 'ware grades to not obey the enabled sourcebook rules, e.g. Omegaware would show up even if Chrome Flesh was not enabled.
 - Fixed a bug where the Power selection dialog allowed the user to select a power that was marked as hidden or was from a sourcebook that the user did not have enabled.
+- Unhardcoded Cultured bioware's restriction from Used grade. Now any piece of bioware or cyberware can be marked as being ineligible for Used grade.
 
 Data Changes:
 
