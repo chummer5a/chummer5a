@@ -545,7 +545,7 @@ namespace Chummer
                 }
             }
             else
-                lblAvail.Text = "";
+                lblAvail.Text = string.Empty;
             lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
             if (!chkFreeItem.Checked)
             {

@@ -209,11 +209,11 @@ namespace Chummer
                     bool add = !chkLimitList.Checked ||
                                   (chkLimitList.Checked &&
                                    Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter,
-                                       _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s));
+                                       _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s));
                     if (!add) continue;
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlMetamagic["name"]?.InnerText;
-                    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText;
+                    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objItem.Value;
                     lstMetamagics.Add(objItem);
                 }
             else
@@ -246,7 +246,7 @@ namespace Chummer
                 : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
 
             string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, "", s))
+            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
                 return;
             DialogResult = DialogResult.OK;
         }

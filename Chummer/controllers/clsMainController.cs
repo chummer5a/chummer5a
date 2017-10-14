@@ -49,7 +49,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new idnex.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public void MoveGearParent(int intNewIndex, TreeNode objDestination, TreeView treGear, ContextMenuStrip cmsGear)
+        public void MoveGearParent(TreeNode objDestination, TreeView treGear, ContextMenuStrip cmsGear)
         {
             // The item cannot be dropped onto itself.
             if (objDestination == treGear.SelectedNode)
@@ -111,9 +111,10 @@ namespace Chummer
                 objParent.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
-                if ((objParent as Commlink)?.CanSwapAttributes == true)
+                Commlink objCommlink = objParent as Commlink;
+                if (objCommlink?.CanSwapAttributes == true)
                 {
-                    (objParent as Commlink).RefreshCyberdeckArray();
+                    objCommlink.RefreshCyberdeckArray();
                 }
             }
 
@@ -452,9 +453,8 @@ namespace Chummer
         /// <summary>
         /// Move a Vehicle Gear TreeNode after Drag and Drop.
         /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public void MoveVehicleGearParent(int intNewIndex, TreeNode objDestination, TreeView treVehicles, ContextMenuStrip cmsVehicleGear)
+        public void MoveVehicleGearParent(TreeNode objDestination, TreeView treVehicles, ContextMenuStrip cmsVehicleGear)
         {
             // The item cannot be dropped onto itself.
             if (objDestination == treVehicles.SelectedNode)

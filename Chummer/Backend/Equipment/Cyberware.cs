@@ -264,7 +264,7 @@ namespace Chummer.Backend.Equipment
 
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objGearWeapon = new Weapon(objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
+                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
                     objGearWeapon.ParentID = InternalId;
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     objWeaponNodes.Add(objGearWeaponNode);
@@ -733,7 +733,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) / 3;
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
+                objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility.ToString() + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength.ToString() + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
             }
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("ess", CalculatedESS().ToString(GlobalOptions.CultureInfo));
@@ -1468,11 +1468,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
                 {
-                    return XmlManager.Instance.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID + "\"]");
+                    return XmlManager.Instance.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\"]");
                 }
                 else
                 {
-                    return XmlManager.Instance.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID + "\"]");
+                    return XmlManager.Instance.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\"]");
                 }
             }
         }

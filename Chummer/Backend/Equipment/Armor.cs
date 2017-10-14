@@ -330,7 +330,7 @@ namespace Chummer.Backend.Equipment
 
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
+                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
                     objGearWeapon.ParentID = InternalId;
                     objWeapons.Add(objGearWeapon);
 

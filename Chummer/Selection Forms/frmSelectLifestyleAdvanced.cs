@@ -423,8 +423,8 @@ namespace Chummer
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
-            lblQualitySource.Text = "";
-            lblQualityLp.Text = "";
+            lblQualitySource.Text = string.Empty;
+            lblQualityLp.Text = string.Empty;
             tipTooltip.SetToolTip(lblQualitySource, null);
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0)
             {

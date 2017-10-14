@@ -178,7 +178,7 @@ namespace Chummer
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
-        private static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
+        private static HashSet<SourcebookInfo> _lstSourcebookInfo = new HashSet<SourcebookInfo>();
         private static bool _blnUseLogging = false;
         private static string _strCharacterRosterPath;
 
@@ -389,12 +389,16 @@ namespace Chummer
                                     objSource.Offset = intTmp;
                             }
                         }
-                        _lstSourcebookInfo.Add(objSource);
                     }
-                    catch (Exception)
+                    catch (System.Security.SecurityException)
                     {
 
                     }
+                    catch (UnauthorizedAccessException)
+                    {
+
+                    }
+                    _lstSourcebookInfo.Add(objSource);
                 }
             }
 
@@ -743,7 +747,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public List<SourcebookInfo> SourcebookInfo
+        public HashSet<SourcebookInfo> SourcebookInfo
         {
             get
             {
@@ -851,12 +855,12 @@ namespace Chummer
             }
             for (int i = 0; i < 10; i++)
             {
-                if (_objBaseChummerKey.GetValue(strMRUType + i) != null)
-                    _objBaseChummerKey.DeleteValue(strMRUType + i);
+                if (_objBaseChummerKey.GetValue(strMRUType + i.ToString()) != null)
+                    _objBaseChummerKey.DeleteValue(strMRUType + i.ToString());
             }
             for (int i = 0; i < strFiles.Count; i++)
             {
-                _objBaseChummerKey.SetValue(strMRUType + (i + 1), strFiles[i]);
+                _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
             }
             MRUChanged?.Invoke();
         }

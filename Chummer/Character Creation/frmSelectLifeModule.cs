@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (Quality.IsValid(_objCharacter, xmlNode) || !chkLimitList.Checked)
+                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode();

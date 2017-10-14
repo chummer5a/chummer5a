@@ -244,7 +244,7 @@ namespace Chummer.Backend.Equipment
 
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objGearWeapon = new Weapon(objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
+                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
                     objGearWeapon.ParentID = InternalId;
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     if (blnAerodynamic)
@@ -309,10 +309,6 @@ namespace Chummer.Backend.Equipment
                         objPlugin1.Capacity = "[0]";
                         objPlugin1.Parent = this;
                         _objChildren.Add(objPlugin1);
-                        if ((this as Commlink)?.CanSwapAttributes == true)
-                        {
-                            (this as Commlink).RefreshCyberdeckArray();
-                        }
                         objNode.Nodes.Add(objPlugin1Node);
                     }
 
@@ -326,10 +322,6 @@ namespace Chummer.Backend.Equipment
                         objPlugin2.Capacity = "[0]";
                         objPlugin2.Parent = this;
                         _objChildren.Add(objPlugin2);
-                        if ((this as Commlink)?.CanSwapAttributes == true)
-                        {
-                            (this as Commlink).RefreshCyberdeckArray();
-                        }
                         objNode.Nodes.Add(objPlugin2Node);
                         objNode.Expand();
                     }
@@ -344,10 +336,6 @@ namespace Chummer.Backend.Equipment
                         objPlugin3.Capacity = "[0]";
                         objPlugin3.Parent = this;
                         _objChildren.Add(objPlugin3);
-                        if ((this as Commlink)?.CanSwapAttributes == true)
-                        {
-                            (this as Commlink).RefreshCyberdeckArray();
-                        }
                         objNode.Nodes.Add(objPlugin3Node);
 
                         Gear objPlugin4 = new Gear(_objCharacter);
@@ -360,10 +348,6 @@ namespace Chummer.Backend.Equipment
                         objPlugin4.Capacity = "[0]";
                         objPlugin4.Parent = this;
                         _objChildren.Add(objPlugin4);
-                        if ((this as Commlink)?.CanSwapAttributes == true)
-                        {
-                            (this as Commlink).RefreshCyberdeckArray();
-                        }
                         objNode.Nodes.Add(objPlugin4Node);
                         objNode.Expand();
                     }
@@ -530,9 +514,10 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strChildForcePage))
                 objChild.Page = strChildForcePage;
             objParent.Children.Add(objChild);
-            if ((objParent as Commlink)?.CanSwapAttributes == true)
+            Commlink objCommlink = objParent as Commlink;
+            if (objCommlink?.CanSwapAttributes == true)
             {
-                (objParent as Commlink).RefreshCyberdeckArray();
+                objCommlink.RefreshCyberdeckArray();
             }
 
             // Change the Capacity of the child if necessary.
@@ -1627,13 +1612,13 @@ namespace Chummer.Backend.Equipment
                     strAvailExpression = strAvailExpression.Substring(0, strAvailExpression.Length - 1);
                 }
                 XPathExpression xprAvail = nav.Compile(strAvailExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture)));
-                strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
+                strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
             }
             else
             {
                 // Just a straight cost, so return the value.
                 strCalculated = strAvailExpression.Contains("F") || strAvailExpression.Contains("R")
-                    ? Convert.ToInt32(strAvailExpression.Substring(0, strAvailExpression.Length - 1)) + strAvailExpression.Substring(strAvailExpression.Length - 1, 1)
+                    ? Convert.ToInt32(strAvailExpression.Substring(0, strAvailExpression.Length - 1)).ToString() + strAvailExpression.Substring(strAvailExpression.Length - 1, 1)
                     : Convert.ToInt32(strAvailExpression).ToString();
             }
 
@@ -1677,7 +1662,7 @@ namespace Chummer.Backend.Equipment
             if (_objParent != null)
                 intAvail += _objParent.ChildAvailModifier;
 
-            string strReturn = intAvail + strAvailText;
+            string strReturn = intAvail.ToString() + strAvailText;
 
             // Translate the Avail string.
             if (!blnForceEnglish)
@@ -2063,9 +2048,9 @@ namespace Chummer.Backend.Equipment
                 string strReturn = DisplayNameShort;
 
                 if (_intQty > 1)
-                    strReturn = _intQty + " " + strReturn;
+                    strReturn = _intQty.ToString() + " " + strReturn;
                 if (_intRating > 0)
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating + ")";
+                    strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 if (!string.IsNullOrEmpty(_strExtra))
                     strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
 

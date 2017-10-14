@@ -205,12 +205,12 @@ namespace Chummer
             string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
                 strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) + ")";
+                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
             tipTooltip.SetToolTip(lblPhysical, strCM);
             strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
                 strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) + ")";
+                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
             tipTooltip.SetToolTip(lblStun, strCM);
         }
 
@@ -225,10 +225,10 @@ namespace Chummer
         {
             // Armor Ratings.
             lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-            string strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating + ")";
+            string strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
             if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
                 strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
-                                   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating) + ")";
+                                   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
             tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
             if (lblCMArmor != null)
             {
@@ -297,12 +297,12 @@ namespace Chummer
 
         private readonly Lazy<Skill> _gunneryCached;
 
-        protected int MountedGunManualOperationDicePool(Weapon weapon)
+        protected int MountedGunManualOperationDicePool(/*Weapon weapon*/)
         {
             return _gunneryCached.Value.Pool;
         }
 
-        protected int MountedGunCommandDeviceDicePool(Weapon weapon)
+        protected int MountedGunCommandDeviceDicePool(/*Weapon weapon*/)
         {
             return _gunneryCached.Value.PoolOtherAttribute(_objCharacter.LOG.TotalValue);
         }
@@ -353,7 +353,7 @@ namespace Chummer
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit,
-                strCondition, _objCharacter, objNode);
+                strCondition, objNode);
             objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
@@ -571,8 +571,7 @@ namespace Chummer
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
-        /// <param name="picMugshot"></param>
-        protected bool AddMugshot(PictureBox picMugshot)
+        protected bool AddMugshot()
         {
             bool blnSuccess = false;
             OpenFileDialog openFileDialog = new OpenFileDialog();

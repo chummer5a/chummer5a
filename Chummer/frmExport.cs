@@ -127,7 +127,7 @@ namespace Chummer
         private void ExportNormal()
         {
             // Look for the file extension information.
-            string strLine = "";
+            string strLine = string.Empty;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
             StreamReader objFile = new StreamReader(exportSheetPath);

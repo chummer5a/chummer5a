@@ -997,7 +997,8 @@ namespace Chummer
             ResetCharacter();
 
             // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
-            if (!string.IsNullOrEmpty(objXmlCharacter["gameedition"]?.InnerText) && objXmlCharacter["gameedition"].InnerText != "SR5")
+            string strGameEdition = objXmlCharacter["gameedition"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5")
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_IncorrectGameVersion_SR4"),
                     LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo,
@@ -1040,12 +1041,14 @@ namespace Chummer
             if (objXmlCharacter["sources"] != null)
             {
                 string strMissingBooks = string.Empty;
+                string strLoopString = string.Empty;
                 //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in objXmlCharacter["sources"].ChildNodes)
                 {
-                    if (objXmlNode.InnerText.Length > 0 && !_objOptions.Books.Contains(objXmlNode.InnerText))
+                    strLoopString = objXmlNode.InnerText;
+                    if (strLoopString.Length > 0 && !_objOptions.Books.Contains(strLoopString))
                     {
-                        strMissingBooks += (objXmlNode.InnerText + ";");
+                        strMissingBooks += strLoopString + ";";
                     }
                 }
                 if (!string.IsNullOrEmpty(strMissingBooks))
@@ -1062,12 +1065,14 @@ namespace Chummer
             if (objXmlCharacter["customdatadirectorynames"] != null)
             {
                 string strMissingSourceNames = string.Empty;
+                string strLoopString = string.Empty;
                 //Does the list of enabled books contain the current item?
                 foreach (XmlNode objXmlNode in objXmlCharacter["customdatadirectorynames"].ChildNodes)
                 {
-                    if (objXmlNode.InnerText.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(objXmlNode.InnerText))
+                    strLoopString = objXmlNode.InnerText;
+                    if (strLoopString.Length > 0 && !_objOptions.CustomDataDirectoryNames.Contains(strLoopString))
                     {
-                        strMissingSourceNames += (objXmlNode.InnerText + ";\n");
+                        strMissingSourceNames += strLoopString + ";\n";
                     }
                 }
                 if (!string.IsNullOrEmpty(strMissingSourceNames))
@@ -1808,7 +1813,7 @@ namespace Chummer
                 {
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(this);
-                    objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null);
+                    objWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
                     objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                     _lstWeapons.Add(objWeapon);
                 }
@@ -1891,7 +1896,7 @@ namespace Chummer
                 {
                     XmlDocument doc = XmlManager.Instance.Load("mentors.xml");
                     XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[name = \"" + mentorQuality.Extra + "\"]");
-                    ImprovementManager.CreateImprovement(this, "", Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
+                    ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
                         Improvement.ImprovementType.MentorSpirit, mentorDoc["id"].InnerText);
                 }
             }
@@ -1917,7 +1922,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objStream">MemoryStream to use.</param>
         /// <param name="objWriter">XmlTextWriter to write to.</param>
+#if DEBUG
         public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter)
+#else
+        public void PrintToStream(XmlTextWriter objWriter)
+#endif
         {
             XmlDocument objXmlDocument;
 
@@ -1947,8 +1956,10 @@ namespace Chummer
             }
 
             Guid guiImage = Guid.NewGuid();
+#if DEBUG
             // This line left in for debugging. Write the output to a fixed file name.
-            //FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+#endif
 
             // <character>
             objWriter.WriteStartElement("character");
@@ -2198,7 +2209,7 @@ namespace Chummer
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
 
-                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain + ")");
+                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
                 objWriter.WriteStartElement("drainattribute");
                 foreach (string drainAttribute in strDrainAtt.Replace('+', ' ').Split(new [] {' '} , StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -2724,7 +2735,11 @@ namespace Chummer
             // </characters>
             objWriter.WriteStartElement("characters");
 
+#if DEBUG
             PrintToStream(objStream, objWriter);
+#else
+            PrintToStream(objWriter);
+#endif
 
             // </characters>
             objWriter.WriteEndElement();
@@ -2902,16 +2917,13 @@ namespace Chummer
                     Gear objReturnGear = _lstGear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnGear != null)
                         return objReturnGear.DisplayNameShort;
-                    foreach (Weapon objWeapon in _lstWeapons)
+                    foreach (Weapon objWeapon in _lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                     {
-                        foreach (Weapon objChildWeapon in _lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            foreach (WeaponAccessory objAccessory in objChildWeapon.WeaponAccessories)
-                            {
-                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
-                                if (objReturnGear != null)
-                                    return objReturnGear.DisplayNameShort;
-                            }
+                            objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                            if (objReturnGear != null)
+                                return objReturnGear.DisplayNameShort;
                         }
                     }
                     foreach (Armor objArmor in _lstArmor)
@@ -2968,8 +2980,7 @@ namespace Chummer
                     {
                         if (objSpell.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objSpell.DisplayNameShort;
-                            break;
+                            return objSpell.DisplayNameShort;
                         }
                     }
                     break;
@@ -2978,8 +2989,7 @@ namespace Chummer
                     {
                         if (objPower.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objPower.DisplayNameShort;
-                            break;
+                            return objPower.DisplayNameShort;
                         }
                     }
                     break;
@@ -2988,8 +2998,7 @@ namespace Chummer
                     {
                         if (objPower.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objPower.DisplayNameShort;
-                            break;
+                            return objPower.DisplayNameShort;
                         }
                     }
                     break;
@@ -2999,8 +3008,7 @@ namespace Chummer
                     {
                         if (objMetamagic.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objMetamagic.DisplayNameShort;
-                            break;
+                            return objMetamagic.DisplayNameShort;
                         }
                     }
                     break;
@@ -3009,8 +3017,7 @@ namespace Chummer
                     {
                         if (objArt.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objArt.DisplayNameShort;
-                            break;
+                            return objArt.DisplayNameShort;
                         }
                     }
                     break;
@@ -3019,8 +3026,7 @@ namespace Chummer
                     {
                         if (objEnhancement.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objEnhancement.DisplayNameShort;
-                            break;
+                            return objEnhancement.DisplayNameShort;
                         }
                     }
                     break;
@@ -3029,8 +3035,7 @@ namespace Chummer
                     {
                         if (objArmor.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objArmor.DisplayNameShort;
-                            break;
+                            return objArmor.DisplayNameShort;
                         }
                     }
                     break;
@@ -3041,8 +3046,7 @@ namespace Chummer
                         {
                             if (objMod.InternalId == objImprovement.SourceName)
                             {
-                                strReturn = objMod.DisplayNameShort;
-                                break;
+                                return objMod.DisplayNameShort;
                             }
                         }
                     }
@@ -3052,8 +3056,7 @@ namespace Chummer
                     {
                         if (objProgram.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objProgram.DisplayNameShort;
-                            break;
+                            return objProgram.DisplayNameShort;
                         }
                     }
                     break;
@@ -3062,25 +3065,20 @@ namespace Chummer
                     {
                         if (objProgram.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objProgram.DisplayNameShort;
-                            break;
+                            return objProgram.DisplayNameShort;
                         }
                     }
                     break;
                 case Improvement.ImprovementSource.Quality:
                     if (objImprovement.SourceName == "SEEKER_WIL")
-                    {
-                        strReturn = "Cyber-Singularty Seeker";
-                    } else if (objImprovement.SourceName.StartsWith("SEEKER"))
-                    {
-                        strReturn = "Redliner";
-                    }
+                        return "Cyber-Singularty Seeker";
+                    else if (objImprovement.SourceName.StartsWith("SEEKER"))
+                        return "Redliner";
                     foreach (Quality objQuality in _lstQualities)
                     {
                         if (objQuality.InternalId == objImprovement.SourceName)
                         {
-                            strReturn = objQuality.DisplayNameShort;
-                            break;
+                            return objQuality.DisplayNameShort;
                         }
                     }
                     break;
@@ -3091,26 +3089,20 @@ namespace Chummer
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {
-                                strReturn = objAdvantage.DisplayName;
-                                break;
+                                return objAdvantage.DisplayName;
                             }
                         }
                     }
                     break;
                 default:
                     if (objImprovement.SourceName == "Armor Encumbrance")
-                        strReturn = LanguageManager.Instance.GetString("String_ArmorEncumbrance");
-                    else
-                    {
-                        // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
-                        if (!string.IsNullOrEmpty(objImprovement.CustomName))
-                            strReturn = objImprovement.CustomName;
-                        else
-                            strReturn = objImprovement.SourceName;
-                    }
-                    break;
+                        return LanguageManager.Instance.GetString("String_ArmorEncumbrance");
+                    // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
+                    if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                        return objImprovement.CustomName;
+                    return objImprovement.SourceName;
             }
-            return strReturn;
+            return string.Empty;
         }
 
         /// <summary>
@@ -4756,8 +4748,8 @@ namespace Chummer
             }
         }
 
-        #region Initiative
-        #region Physical
+#region Initiative
+#region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
@@ -7615,9 +7607,9 @@ namespace Chummer
             }
             return false;
         }
-        #endregion
+#endregion
 
-        #region Temporary Properties : Dashboard
+#region Temporary Properties : Dashboard
         // This region is for properties that are applicable to the Dashboard
         /// <summary>
         /// The Current Initiative roll result including base Initiative

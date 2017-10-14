@@ -105,7 +105,7 @@ namespace Chummer.Classes
         public void spellresistance(XmlNode bonusNode)
         {
             Log.Info("spellresistance");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -1172,7 +1172,7 @@ namespace Chummer.Classes
             }
 
             Spell spell = new Spell(_objCharacter);
-            spell.Create(node, _objCharacter, new TreeNode(), strExtra);
+            spell.Create(node, new TreeNode(), strExtra);
             if (spell.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -1240,7 +1240,7 @@ namespace Chummer.Classes
 
                 TreeNode objNode = new TreeNode();
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(objXmlProgram, _objCharacter, objNode,
+                objProgram.Create(objXmlProgram, objNode,
                     objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId == Guid.Empty.ToString())
                     return;
@@ -1310,7 +1310,7 @@ namespace Chummer.Classes
 
                 TreeNode objNode = new TreeNode();
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(objXmlProgram, _objCharacter, objNode,
+                objProgram.Create(objXmlProgram, objNode,
                     objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId == Guid.Empty.ToString())
                     return;
@@ -1471,7 +1471,7 @@ namespace Chummer.Classes
             }
             else
             {
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, string.Empty,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Essence, string.Empty,
                     Convert.ToInt32(bonusNode["val"].InnerText));
             }
         }
@@ -1653,12 +1653,12 @@ namespace Chummer.Classes
             //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
 
             int val = bonusNode["val"] != null ? ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating) : 1;
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, string.Empty, val);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, string.Empty, val);
         }
 
         public void knowledgeskillpoints(XmlNode bonusNode)
         {
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, Convert.ToInt32(bonusNode.Value)));
         }
 
@@ -1685,7 +1685,7 @@ namespace Chummer.Classes
             Log.Info("nuyenmaxbp");
             Log.Info("nuyenmaxbp = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.NuyenMaxBP, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NuyenMaxBP, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -1696,7 +1696,7 @@ namespace Chummer.Classes
             Log.Info("physicallimit = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
             CreateImprovement("Physical", _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalLimit,
-                "",
+                string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -1707,7 +1707,7 @@ namespace Chummer.Classes
             Log.Info("mentallimit = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
             CreateImprovement("Mental", _objImprovementSource, SourceName, Improvement.ImprovementType.MentalLimit,
-                "",
+                string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -1718,7 +1718,7 @@ namespace Chummer.Classes
             Log.Info("sociallimit = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
             CreateImprovement("Social", _objImprovementSource, SourceName, Improvement.ImprovementType.SocialLimit,
-                "",
+                string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -1728,7 +1728,7 @@ namespace Chummer.Classes
             Log.Info("nuyenamt");
             Log.Info("nuyenamt = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -1741,7 +1741,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("physical"))
             {
                 Log.Info("Calling CreateImprovement for Physical");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCM, _strUnique,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCM, _strUnique,
                     ValueToInt(_objCharacter, bonusNode["physical"].InnerText, _intRating));
             }
 
@@ -1749,7 +1749,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("stun"))
             {
                 Log.Info("Calling CreateImprovement for Stun");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.StunCM, _strUnique,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StunCM, _strUnique,
                     ValueToInt(_objCharacter, bonusNode["stun"].InnerText, _intRating));
             }
 
@@ -1761,7 +1761,7 @@ namespace Chummer.Classes
                     strUseUnique = "precedence" + bonusNode["threshold"].Attributes["precedence"].InnerText;
 
                 Log.Info("Calling CreateImprovement for Threshold");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CMThreshold, strUseUnique,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThreshold, strUseUnique,
                     ValueToInt(_objCharacter, bonusNode["threshold"].InnerText, _intRating));
             }
 
@@ -1773,7 +1773,7 @@ namespace Chummer.Classes
                     strUseUnique = "precedence" + bonusNode["thresholdoffset"].Attributes["precedence"].InnerText;
 
                 Log.Info("Calling CreateImprovement for Threshold Offset");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
                     strUseUnique, ValueToInt(_objCharacter, bonusNode["thresholdoffset"].InnerText, _intRating));
             }
             // Condition Monitor Threshold Offset that must be shared between the two. (Additioal boxes appear before the FIRST Condition Monitor penalty)
@@ -1784,7 +1784,7 @@ namespace Chummer.Classes
                     strUseUnique = "precedence" + bonusNode["sharedthresholdoffset"].Attributes["precedence"].InnerText;
 
                 Log.Info("Calling CreateImprovement for Threshold Offset");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CMSharedThresholdOffset,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMSharedThresholdOffset,
                     strUseUnique, ValueToInt(_objCharacter, bonusNode["sharedthresholdoffset"].InnerText, _intRating));
             }
 
@@ -1792,7 +1792,7 @@ namespace Chummer.Classes
             if (bonusNode["overflow"] != null)
             {
                 Log.Info("Calling CreateImprovement for Overflow");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CMOverflow, _strUnique,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMOverflow, _strUnique,
                     ValueToInt(_objCharacter, bonusNode["overflow"].InnerText, _intRating));
             }
         }
@@ -1806,7 +1806,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("response"))
             {
                 Log.Info("Calling CreateImprovement for response");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaResponse,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaResponse,
                     _strUnique, ValueToInt(_objCharacter, bonusNode["response"].InnerText, _intRating));
             }
 
@@ -1814,7 +1814,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("signal"))
             {
                 Log.Info("Calling CreateImprovement for signal");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSignal,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSignal,
                     _strUnique,
                     ValueToInt(_objCharacter, bonusNode["signal"].InnerText, _intRating));
             }
@@ -1823,7 +1823,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("firewall"))
             {
                 Log.Info("Calling CreateImprovement for firewall");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall,
                     _strUnique, ValueToInt(_objCharacter, bonusNode["firewall"].InnerText, _intRating));
             }
 
@@ -1831,7 +1831,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("system"))
             {
                 Log.Info("Calling CreateImprovement for system");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSystem,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSystem,
                     _strUnique,
                     ValueToInt(_objCharacter, bonusNode["system"].InnerText, _intRating));
             }
@@ -1840,7 +1840,7 @@ namespace Chummer.Classes
             if (bonusNode.InnerXml.Contains("biofeedback"))
             {
                 Log.Info("Calling CreateImprovement for biofeedback");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaBiofeedback,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaBiofeedback,
                     _strUnique, ValueToInt(_objCharacter, bonusNode["biofeedback"].InnerText, _intRating));
             }
         }
@@ -1882,13 +1882,13 @@ namespace Chummer.Classes
                 CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0,
                     0,
-                    "", blnAddToRating);
+                    string.Empty, blnAddToRating);
             }
         }
 
         public void reflexrecorderoptimization(XmlNode bonusNode)
         {
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.ReflexRecorderOptimization,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ReflexRecorderOptimization,
                 _strUnique);
         }
 
@@ -2038,7 +2038,7 @@ namespace Chummer.Classes
             Log.Info("skillarticulation = " + bonusNode.OuterXml.ToString());
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EnhancedArticulation,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnhancedArticulation,
                 _strUnique,
                 ValueToInt(_objCharacter, bonusNode["bonus"].InnerText, _intRating));
         }
@@ -2058,7 +2058,7 @@ namespace Chummer.Classes
             {
                 strUseUnique = "group" + bonusNode.Attributes["group"].InnerText;
             }
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Armor, strUseUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Armor, strUseUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2077,7 +2077,7 @@ namespace Chummer.Classes
             {
                 strUseUnique = "group" + bonusNode.Attributes["group"].InnerText;
             }
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Dodge, strUseUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Dodge, strUseUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2087,7 +2087,7 @@ namespace Chummer.Classes
             Log.Info("reach");
             Log.Info("reach = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Reach, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2097,7 +2097,7 @@ namespace Chummer.Classes
             Log.Info("unarmeddv");
             Log.Info("unarmeddv = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDV, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDV, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2107,7 +2107,7 @@ namespace Chummer.Classes
             Log.Info("unarmeddvphysical");
             Log.Info("unarmeddvphysical = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDVPhysical, string.Empty);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDVPhysical, string.Empty);
         }
 
         // Check for Unarmed Armor Penetration.
@@ -2116,7 +2116,7 @@ namespace Chummer.Classes
             Log.Info("unarmedap");
             Log.Info("unarmedap = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedAP, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedAP, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2126,7 +2126,7 @@ namespace Chummer.Classes
             Log.Info("unarmedreach");
             Log.Info("unarmedreach = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2136,7 +2136,7 @@ namespace Chummer.Classes
             Log.Info("initiative");
             Log.Info("initiative = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Initiative, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Initiative, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2157,7 +2157,7 @@ namespace Chummer.Classes
             if (bonusNode.Attributes["precedence"] != null)
                 strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
 
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDice,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDice,
                 strUseUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2173,7 +2173,7 @@ namespace Chummer.Classes
             Log.Info("initiativediceadd");
             Log.Info("initiativediceadd = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDiceAdd, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDiceAdd, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2183,7 +2183,7 @@ namespace Chummer.Classes
             Log.Info("matrixinitiative");
             Log.Info("matrixinitiative = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiative, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiative, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2199,7 +2199,7 @@ namespace Chummer.Classes
             Log.Info("matrixinitiativedice");
             Log.Info("matrixinitiativedice = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 "matrixinitiativepass", ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2215,7 +2215,7 @@ namespace Chummer.Classes
             Log.Info("matrixinitiativediceadd");
             Log.Info("matrixinitiativediceadd = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -2226,7 +2226,7 @@ namespace Chummer.Classes
             Log.Info("lifestylecost");
             Log.Info("lifestylecost = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2236,7 +2236,7 @@ namespace Chummer.Classes
             Log.Info("basiclifestylecost");
             Log.Info("basiclifestylecost = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2246,7 +2246,7 @@ namespace Chummer.Classes
             Log.Info("genetechcostmultiplier");
             Log.Info("genetechcostmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechCostMultiplier,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechCostMultiplier,
                 _strUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2256,7 +2256,7 @@ namespace Chummer.Classes
             Log.Info("transgenicsgenetechcost");
             Log.Info("transgenicsgenetechcost = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.TransgenicsBiowareCost,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TransgenicsBiowareCost,
                 _strUnique, ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2266,7 +2266,7 @@ namespace Chummer.Classes
             Log.Info("basicbiowareessmultiplier");
             Log.Info("basicbiowareessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BasicBiowareEssCost,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicBiowareEssCost,
                 _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -2277,7 +2277,7 @@ namespace Chummer.Classes
             Log.Info("biowareessmultiplier");
             Log.Info("biowareessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2287,7 +2287,7 @@ namespace Chummer.Classes
             Log.Info("biowaretotalessmultiplier");
             Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2297,7 +2297,7 @@ namespace Chummer.Classes
             Log.Info("cyberwareessmultiplier");
             Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2307,7 +2307,7 @@ namespace Chummer.Classes
             Log.Info("cyberwaretotalessmultiplier");
             Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2317,7 +2317,7 @@ namespace Chummer.Classes
             Log.Info("biowareessmultiplier");
             Log.Info("biowareessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2327,7 +2327,7 @@ namespace Chummer.Classes
             Log.Info("biowaretotalessmultiplier");
             Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2337,7 +2337,7 @@ namespace Chummer.Classes
             Log.Info("cyberwareessmultiplier");
             Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2347,7 +2347,7 @@ namespace Chummer.Classes
             Log.Info("cyberwaretotalessmultiplier");
             Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2357,7 +2357,7 @@ namespace Chummer.Classes
             Log.Info("uneducated");
             Log.Info("uneducated = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Uneducated, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Uneducated, _strUnique);
             _objCharacter.SkillsSection.Uneducated = true;
         }
 
@@ -2367,7 +2367,7 @@ namespace Chummer.Classes
             Log.Info("collegeeducation");
             Log.Info("collegeeducation = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CollegeEducation, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CollegeEducation, _strUnique);
             _objCharacter.SkillsSection.CollegeEducation = true;
         }
 
@@ -2377,7 +2377,7 @@ namespace Chummer.Classes
             Log.Info("jackofalltrades");
             Log.Info("jackofalltrades = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.JackOfAllTrades, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JackOfAllTrades, _strUnique);
             _objCharacter.SkillsSection.JackOfAllTrades = true;
         }
 
@@ -2388,7 +2388,7 @@ namespace Chummer.Classes
             Log.Info("prototypetranshuman = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
 
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
             _objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
 
         }
@@ -2399,7 +2399,7 @@ namespace Chummer.Classes
             Log.Info("uncouth");
             Log.Info("uncouth = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Uncouth, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Uncouth, _strUnique);
             _objCharacter.SkillsSection.Uncouth = true;
         }
 
@@ -2409,7 +2409,7 @@ namespace Chummer.Classes
             Log.Info("friendsinhighplaces");
             Log.Info("friendsinhighplaces = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FriendsInHighPlaces,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FriendsInHighPlaces,
                 _strUnique);
             _objCharacter.FriendsInHighPlaces = true;
         }
@@ -2420,7 +2420,7 @@ namespace Chummer.Classes
             Log.Info("schoolofhardknocks");
             Log.Info("schoolofhardknocks = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SchoolOfHardKnocks, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SchoolOfHardKnocks, _strUnique);
             _objCharacter.SkillsSection.SchoolOfHardKnocks = true;
         }
 
@@ -2430,7 +2430,7 @@ namespace Chummer.Classes
             Log.Info("ExCon");
             Log.Info("ExCon = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.ExCon, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ExCon, _strUnique);
             _objCharacter.ExCon = true;
         }
 
@@ -2440,7 +2440,7 @@ namespace Chummer.Classes
             Log.Info("TrustFund");
             Log.Info("TrustFund = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.TrustFund,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TrustFund,
                 _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
             _objCharacter.TrustFund = ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
@@ -2452,7 +2452,7 @@ namespace Chummer.Classes
             Log.Info("techschool");
             Log.Info("techschool = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.TechSchool, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TechSchool, _strUnique);
             _objCharacter.SkillsSection.TechSchool = true;
         }
 
@@ -2462,7 +2462,7 @@ namespace Chummer.Classes
             Log.Info("MadeMan");
             Log.Info("MadeMan = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MadeMan, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MadeMan, _strUnique);
             _objCharacter.MadeMan = true;
         }
 
@@ -2472,7 +2472,7 @@ namespace Chummer.Classes
             Log.Info("Linguist");
             Log.Info("Linguist = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Linguist, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Linguist, _strUnique);
             _objCharacter.SkillsSection.Linguist = true;
         }
 
@@ -2482,7 +2482,7 @@ namespace Chummer.Classes
             Log.Info("LightningReflexes");
             Log.Info("LightningReflexes = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LightningReflexes, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LightningReflexes, _strUnique);
             _objCharacter.LightningReflexes = true;
         }
 
@@ -2492,7 +2492,7 @@ namespace Chummer.Classes
             Log.Info("Fame");
             Log.Info("Fame = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Fame, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Fame, _strUnique);
             _objCharacter.Fame = true;
         }
 
@@ -2502,7 +2502,7 @@ namespace Chummer.Classes
             Log.Info("BornRich");
             Log.Info("BornRich = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BornRich, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BornRich, _strUnique);
             _objCharacter.BornRich = true;
         }
 
@@ -2512,7 +2512,7 @@ namespace Chummer.Classes
             Log.Info("Erased");
             Log.Info("Erased = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Erased, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Erased, _strUnique);
             _objCharacter.Erased = true;
         }
 
@@ -2522,7 +2522,7 @@ namespace Chummer.Classes
             Log.Info("OverClocker");
             Log.Info("Overclocker = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Overclocker, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Overclocker, _strUnique);
             _objCharacter.Overclocker = true;
         }
 
@@ -2532,7 +2532,7 @@ namespace Chummer.Classes
             Log.Info("restrictedgear");
             Log.Info("restrictedgear = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.RestrictedGear, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.RestrictedGear, _strUnique);
             _objCharacter.RestrictedGear = true;
         }
 
@@ -2542,7 +2542,7 @@ namespace Chummer.Classes
             Log.Info("nativelanguagelimit");
             Log.Info("nativelanguagelimit = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.NativeLanguageLimit,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NativeLanguageLimit,
                 _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -2553,7 +2553,7 @@ namespace Chummer.Classes
             Log.Info("Ambidextrous");
             Log.Info("Ambidextrous = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Ambidextrous, _strUnique);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Ambidextrous, _strUnique);
             _objCharacter.Ambidextrous = true;
         }
 
@@ -2826,7 +2826,7 @@ namespace Chummer.Classes
                 _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
             }
 
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
 
             if (frmPickMentorSpirit.MentorsMask)
             {
@@ -2870,7 +2870,7 @@ namespace Chummer.Classes
             if (_blnConcatSelectedValue)
                 SourceName += " (" + SelectedValue + ")";
 
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
 
             if (frmPickMentorSpirit.BonusNode != null)
             {
@@ -2919,7 +2919,7 @@ namespace Chummer.Classes
             Log.Info("smartlink");
             Log.Info("smartlink = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Smartlink, "smartlink");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Smartlink, "smartlink");
         }
 
         // Check for Adapsin bonus.
@@ -2928,7 +2928,7 @@ namespace Chummer.Classes
             Log.Info("adapsin");
             Log.Info("adapsin = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Adapsin, "adapsin");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Adapsin, "adapsin");
         }
 
         // Check for SoftWeave bonus.
@@ -2937,7 +2937,7 @@ namespace Chummer.Classes
             Log.Info("softweave");
             Log.Info("softweave = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SoftWeave, "softweave");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SoftWeave, "softweave");
         }
 
         // Check for bonus that removes the ability to take any bioware (e.g. Sensitive System)
@@ -2946,7 +2946,7 @@ namespace Chummer.Classes
             Log.Info("disablebioware");
             Log.Info("disablebioware = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.DisableBioware,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableBioware,
                 "disablebioware");
         }
 
@@ -2956,7 +2956,7 @@ namespace Chummer.Classes
             Log.Info("disablecyberware");
             Log.Info("disablecyberware = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.DisableCyberware,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableCyberware,
                 "disablecyberware");
         }
 
@@ -2988,7 +2988,7 @@ namespace Chummer.Classes
             Log.Info("movementmultiplier");
             Log.Info("movementmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MovementMultiplier, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MovementMultiplier, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -2998,7 +2998,7 @@ namespace Chummer.Classes
             Log.Info("movementpercent");
             Log.Info("movementpercent = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MovementPercent, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MovementPercent, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3008,7 +3008,7 @@ namespace Chummer.Classes
             Log.Info("swimpercent");
             Log.Info("swimpercent = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SwimPercent, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SwimPercent, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3018,7 +3018,7 @@ namespace Chummer.Classes
             Log.Info("flypercent");
             Log.Info("flypercent = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FlyPercent, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FlyPercent, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3028,7 +3028,7 @@ namespace Chummer.Classes
             Log.Info("flyspeed");
             Log.Info("flyspeed = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FlySpeed, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FlySpeed, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3038,7 +3038,7 @@ namespace Chummer.Classes
             Log.Info("freepositivequalities");
             Log.Info("freepositivequalities = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreePositiveQualities, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreePositiveQualities, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3048,7 +3048,7 @@ namespace Chummer.Classes
             Log.Info("freenegativequalities");
             Log.Info("freenegativequalities = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeNegativeQualities, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeNegativeQualities, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3080,7 +3080,7 @@ namespace Chummer.Classes
             Log.Info("freespiritpowerpoints");
             Log.Info("freespiritpowerpoints = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpiritPowerPoints, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpiritPowerPoints, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3090,7 +3090,7 @@ namespace Chummer.Classes
             Log.Info("adeptpowerpoints");
             Log.Info("adeptpowerpoints = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3222,7 +3222,7 @@ namespace Chummer.Classes
             Log.Info("armorencumbrancepenalty");
             Log.Info("armorencumbrancepenalty = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.ArmorEncumbrancePenalty, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ArmorEncumbrancePenalty, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3232,7 +3232,7 @@ namespace Chummer.Classes
             Log.Info("initiation");
             Log.Info("initiation = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Initiation, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Initiation, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
             _objCharacter.InitiateGrade += ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
         }
@@ -3243,7 +3243,7 @@ namespace Chummer.Classes
             Log.Info("submersion");
             Log.Info("submersion = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Submersion, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Submersion, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
             _objCharacter.SubmersionGrade += ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
         }
@@ -3254,7 +3254,7 @@ namespace Chummer.Classes
             Log.Info("skillwire");
             Log.Info("skillwire = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Skillwire, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillwire, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3325,7 +3325,7 @@ namespace Chummer.Classes
             Log.Info("damageresistance");
             Log.Info("damageresistance = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.DamageResistance, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DamageResistance, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3335,7 +3335,7 @@ namespace Chummer.Classes
             Log.Info("restricteditemcount");
             Log.Info("restricteditemcount = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.RestrictedItemCount, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.RestrictedItemCount, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3345,7 +3345,7 @@ namespace Chummer.Classes
             Log.Info("judgeintentions");
             Log.Info("judgeintentions = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentions, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentions, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3355,7 +3355,7 @@ namespace Chummer.Classes
             Log.Info("composure");
             Log.Info("composure = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Composure, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Composure, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3365,7 +3365,7 @@ namespace Chummer.Classes
             Log.Info("liftandcarry");
             Log.Info("liftandcarry = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.LiftAndCarry, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LiftAndCarry, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3375,7 +3375,7 @@ namespace Chummer.Classes
             Log.Info("memory");
             Log.Info("memory = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Memory, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Memory, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3385,7 +3385,7 @@ namespace Chummer.Classes
             Log.Info("concealability");
             Log.Info("concealability = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Concealability, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Concealability, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3395,7 +3395,7 @@ namespace Chummer.Classes
             Log.Info("drainresist");
             Log.Info("drainresist = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.DrainResistance, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainResistance, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3405,7 +3405,7 @@ namespace Chummer.Classes
             Log.Info("fadingresist");
             Log.Info("fadingresist = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FadingResistance, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingResistance, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3415,7 +3415,7 @@ namespace Chummer.Classes
             Log.Info("notoriety");
             Log.Info("notoriety = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Notoriety, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Notoriety, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3425,7 +3425,7 @@ namespace Chummer.Classes
             Log.Info("complexformlimit");
             Log.Info("complexformlimit = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.ComplexFormLimit, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ComplexFormLimit, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3435,7 +3435,7 @@ namespace Chummer.Classes
             Log.Info("spelllimit");
             Log.Info("spelllimit = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellLimit, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellLimit, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3472,7 +3472,7 @@ namespace Chummer.Classes
             else
             {
                 Log.Info("Calling CreateImprovement");
-                CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, string.Empty,
+                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, string.Empty,
                     ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
             }
         }
@@ -3498,7 +3498,7 @@ namespace Chummer.Classes
             Log.Info("throwrange");
             Log.Info("throwrange = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRange, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRange, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3508,7 +3508,7 @@ namespace Chummer.Classes
             Log.Info("throwstr");
             Log.Info("throwstr = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowSTR, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowSTR, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3518,7 +3518,7 @@ namespace Chummer.Classes
             Log.Info("skillsoftaccess");
             Log.Info("skillsoftaccess = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SkillsoftAccess, string.Empty);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillsoftAccess, string.Empty);
             _objCharacter.SkillsSection.KnowledgeSkills.AddRange(_objCharacter.SkillsSection.KnowsoftSkills);
         }
 
@@ -3528,7 +3528,7 @@ namespace Chummer.Classes
             Log.Info("quickeningmetamagic");
             Log.Info("quickeningmetamagic = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.QuickeningMetamagic, string.Empty);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.QuickeningMetamagic, string.Empty);
         }
 
         // Check for ignore Stun CM Penalty.
@@ -3537,7 +3537,7 @@ namespace Chummer.Classes
             Log.Info("ignorecmpenaltystun");
             Log.Info("ignorecmpenaltystun = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.IgnoreCMPenaltyStun, string.Empty);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.IgnoreCMPenaltyStun, string.Empty);
         }
 
         // Check for ignore Physical CM Penalty.
@@ -3546,7 +3546,7 @@ namespace Chummer.Classes
             Log.Info("ignorecmpenaltyphysical");
             Log.Info("ignorecmpenaltyphysical = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, string.Empty);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, string.Empty);
         }
 
         // Check for a Cyborg Essence which will permanently set the character's ESS to 0.1.
@@ -3555,7 +3555,7 @@ namespace Chummer.Classes
             Log.Info("cyborgessence");
             Log.Info("cyborgessence = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.CyborgEssence, string.Empty);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyborgEssence, string.Empty);
         }
 
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
@@ -3564,7 +3564,7 @@ namespace Chummer.Classes
             Log.Info("essencepenalty");
             Log.Info("essencepenalty = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3574,7 +3574,7 @@ namespace Chummer.Classes
             Log.Info("essencepenaltyt100");
             Log.Info("essencepenaltyt100 = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyT100, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyT100, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3584,7 +3584,7 @@ namespace Chummer.Classes
             Log.Info("essencepenaltymagonlyt100");
             Log.Info("essencepenaltymagonlyt100 = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3594,7 +3594,7 @@ namespace Chummer.Classes
             Log.Info("essencemax");
             Log.Info("essencemax = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.EssenceMax, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssenceMax, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3629,7 +3629,7 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AddSprite,
-                "");
+                string.Empty);
         }
 
         // Check for Black Market Discount.
@@ -3638,7 +3638,7 @@ namespace Chummer.Classes
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.BlackMarketDiscount,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BlackMarketDiscount,
                 _strUnique);
             _objCharacter.BlackMarketDiscount = true;
         }
@@ -3960,7 +3960,7 @@ namespace Chummer.Classes
 
         public void publicawareness(XmlNode bonusNode)
         {
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
                 ValueToInt(_objCharacter, bonusNode.InnerText, 1));
         }
 
@@ -4076,7 +4076,7 @@ namespace Chummer.Classes
                     strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
                 
                 // Makes sure we aren't over our limits for this particular quality from this overall source
-                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, null, null, objXmlDocument, "", LanguageManager.Instance.GetString("String_Quality"), _strFriendlyName))
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, null, null, objXmlDocument, string.Empty, LanguageManager.Instance.GetString("String_Quality"), _strFriendlyName))
                 {
                     TreeNode objAddQualityNode = new TreeNode();
                     List<Weapon> objWeapons = new List<Weapon>();
@@ -4113,7 +4113,7 @@ namespace Chummer.Classes
                     strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
 
                 // Makes sure we aren't over our limits for this particular quality from this overall source
-                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAddQuality, false, _objCharacter, null, null, objXmlDocument, "", LanguageManager.Instance.GetString("String_Quality"), _strFriendlyName))
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAddQuality, false, _objCharacter, null, null, objXmlDocument, string.Empty, LanguageManager.Instance.GetString("String_Quality"), _strFriendlyName))
                 {
                     XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                     ListItem objItem = new ListItem();
@@ -4204,7 +4204,7 @@ namespace Chummer.Classes
             Log.Info("spellkarmadiscount");
             Log.Info("spellkarmadiscount = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SpellKarmaDiscount, string.Empty,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellKarmaDiscount, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 

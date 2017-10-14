@@ -237,7 +237,7 @@ namespace Chummer
         /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower { get; private set; } = "";
+        public string SelectedPower { get; private set; } = string.Empty;
 
 
         /// <summary>

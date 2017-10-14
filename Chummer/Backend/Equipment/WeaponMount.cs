@@ -148,9 +148,8 @@ namespace Chummer.Backend.Equipment
         /// Load the VehicleMod from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="objVehicle">Vehicle that the mod is attached to.</param>
         /// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
-        public void Load(XmlNode objNode, Vehicle objVehicle, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy)
             {
@@ -507,7 +506,7 @@ namespace Chummer.Backend.Equipment
                 // Just a straight cost, so return the value.
                 if (strCalculated.Contains("F") || strCalculated.Contains("R"))
                 {
-                    strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)) + strCalculated.Substring(strCalculated.Length - 1, 1);
+                    strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)).ToString() + strCalculated.Substring(strCalculated.Length - 1, 1);
                 }
                 else
                     strCalculated = Convert.ToInt32(strCalculated).ToString();
@@ -522,7 +521,7 @@ namespace Chummer.Backend.Equipment
                 else
                     intAvail = Convert.ToInt32(strCalculated);
 
-                string strReturn = intAvail + strAvailText;
+                string strReturn = intAvail.ToString() + strAvailText;
 
                 // Translate the Avail string.
                 strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));

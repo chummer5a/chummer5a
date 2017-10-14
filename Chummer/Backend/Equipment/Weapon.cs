@@ -84,12 +84,11 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Weapon from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character that the Weapon is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true)
+        public void Create(XmlNode objXmlWeapon, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true)
         {
             objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
@@ -210,7 +209,7 @@ namespace Chummer.Backend.Equipment
                     TreeNode objUnderbarrelNode = new TreeNode();
                     XmlNode objXmlWeaponNode =
                         objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-                    objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    objUnderbarrelWeapon.Create(objXmlWeaponNode, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                     objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
@@ -2559,7 +2558,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         if (strPowerSkill == strSkill)
-                            if (strSpec != string.Empty)
+                            if (!string.IsNullOrEmpty(strSpec))
                             {
                                 if (_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name.StartsWith("Exotic") && objSkill.DisplaySpecialization == strSpec))
                                 {

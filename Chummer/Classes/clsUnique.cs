@@ -175,13 +175,15 @@ namespace Chummer
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlQuality.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
             // Check for a Variable Cost.
-            if (objXmlQuality["karma"] != null)
+            XmlNode objKarmaNode = objXmlQuality["karma"];
+            if (objKarmaNode != null)
             {
-                if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
+                string strKarmaNodeTest = objKarmaNode.InnerText;
+                if (strKarmaNodeTest.StartsWith("Variable"))
                 {
                     int intMin;
                     int intMax = 0;
-                    string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    string strCost = strKarmaNodeTest.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
@@ -206,7 +208,7 @@ namespace Chummer
                 }
                 else
                 {
-                    _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+                    _intBP = Convert.ToInt32(strKarmaNodeTest);
                 }
             }
             if (objXmlQuality["category"] != null)
@@ -248,15 +250,17 @@ namespace Chummer
                 // More than one Weapon can be added, so loop through all occurrences.
                 if (objXmlWeaponDocument != null)
                 {
+                    string strLoopID = string.Empty;
                     foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
                     {
-                        var objXmlWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
-                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
-                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
+                        strLoopID = objXmlAddWeapon.InnerText;
+                        var objXmlWeapon = helpers.Guid.IsGuid(strLoopID)
+                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
                         TreeNode objGearWeaponNode = new TreeNode();
                         Weapon objGearWeapon = new Weapon(objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
+                        objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
                         objGearWeapon.ParentID = InternalId;
                         objGearWeaponNode.ForeColor = SystemColors.GrayText;
                         objWeaponNodes.Add(objGearWeaponNode);
@@ -274,28 +278,28 @@ namespace Chummer
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
                     if (objXmlNaturalWeapon["name"] != null)
-                    objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+                        objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
                     objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
                     objWeapon.WeaponType = "Melee";
                     if (objXmlNaturalWeapon["reach"] != null)
-                    objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+                        objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
                     if (objXmlNaturalWeapon["accuracy"] != null)
-                    objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
+                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
                     if (objXmlNaturalWeapon["damage"] != null)
                         objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
                     if (objXmlNaturalWeapon["ap"] != null)
-                    objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+                        objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
                     objWeapon.Mode = "0";
                     objWeapon.RC = "0";
                     objWeapon.Concealability = 0;
                     objWeapon.Avail = "0";
                     objWeapon.Cost = 0;
                     if (objXmlNaturalWeapon["useskill"] != null)
-                    objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
                     if (objXmlNaturalWeapon["source"] != null)
-                    objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+                        objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
                     if (objXmlNaturalWeapon["page"] != null)
-                    objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+                        objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     objGearWeaponNode.Text = objWeapon.Name;
                     objGearWeaponNode.Tag = objWeapon.InternalId;
@@ -323,7 +327,7 @@ namespace Chummer
                     objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
             }
-            if (objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0 && Levels == 0)
+            if (Levels == 0 && objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0)
             {
                 ImprovementManager.ForcedValue = strForceValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["firstlevelbonus"], false, 1, DisplayNameShort))
@@ -1359,12 +1363,11 @@ namespace Chummer
 
         /// Create a Spell from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlSpellNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
-        public void Create(XmlNode objXmlSpellNode, Character objCharacter, TreeNode objNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
+        public void Create(XmlNode objXmlSpellNode, TreeNode objNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
             objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
             _blnExtended = blnExtended;
@@ -1846,7 +1849,7 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i + ": " + intDV;
+                        strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
                     }
                     else
                     {
@@ -3317,10 +3320,9 @@ namespace Chummer
 
         /// Create a Complex Form from an XmlNode.
         /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlComplexFormNode, Character objCharacter, TreeNode objNode, string strExtra = "")
+        public void Create(XmlNode objXmlComplexFormNode, TreeNode objNode, string strExtra = "")
         {
             objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
@@ -3567,10 +3569,9 @@ namespace Chummer
 
         /// Create a Program from an XmlNode.
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
+        public void Create(XmlNode objXmlProgramNode, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
             objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
             _strRequiresProgram = LanguageManager.Instance.GetString("String_None");
@@ -3814,7 +3815,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Art.
     /// </summary>
-    public class MartialArt : INamedItemWithGuidAndNode
+    public class MartialArt : INamedParentWithGuidAndNode<MartialArtAdvantage>
     {
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
@@ -4023,6 +4024,7 @@ namespace Chummer
         /// Selected Martial Arts Advantages.
         /// </summary>
         public List<MartialArtAdvantage> Advantages => _lstAdvantages;
+        public List<MartialArtAdvantage> Children => Advantages;
 
         /// <summary>
         /// Notes.
@@ -4436,9 +4438,8 @@ namespace Chummer
         /// <param name="strName">The name of the modifier.</param>
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
-        /// <param name="objCharacter">Character the modifier is being added to.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(string strName, int intBonus, string strLimit, string strCondition, Character objCharacter, TreeNode objNode)
+        public void Create(string strName, int intBonus, string strLimit, string strCondition, TreeNode objNode)
         {
             _strName = strName;
             _strLimit = strLimit;
