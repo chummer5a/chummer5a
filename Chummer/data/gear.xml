@@ -7228,7 +7228,6 @@
         <skillattribute>
           <name precedence="0">MAG</name>
           <bonus>Rating</bonus>
-          <exclude>Counterspelling</exclude>
         </skillattribute>
       </bonus>
       <cost>Rating * 18000</cost>

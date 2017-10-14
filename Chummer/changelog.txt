@@ -197,6 +197,7 @@ Data Changes:
 - Cyber-Snob now properly disallows buying any 'ware below Alphaware grade. Regeneration critter power now properly disables access to all bioware, as well as all cyberware below Deltaware grade.
 - Added cybersuites from Chrome Flesh and Boston Lockdown, as well as the commlinks included in those cybersuites.
 - Added the missing Cybersuites from State of the Art - ADL.
+- Power Foci now properly also boost the dicepool of the Counterspelling skill. Fixes #1944. If you have any existing, bonded Power Foci in your savefiles, please remove and then re-add them for the change to take effect.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
