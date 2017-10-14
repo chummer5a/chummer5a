@@ -26,7 +26,7 @@ namespace Chummer
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
-        private Dictionary<string, KeyValuePair<string, string>> _lstPowers = new Dictionary<string, KeyValuePair<string, string>>();
+        private List<Tuple<string, KeyValuePair<string, string>>> _lstPowers = new List<Tuple<string, KeyValuePair<string, string>>>();
 
         #region Control Events
         public frmSelectOptionalPower()
@@ -37,7 +37,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            KeyValuePair<string, string> objSelectedItem = ((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value;
+            KeyValuePair<string, string> objSelectedItem = ((Tuple<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Item2;
             _strReturnPower = objSelectedItem.Key;
             _strReturnExtra = objSelectedItem.Value;
             DialogResult = DialogResult.OK;
@@ -126,7 +126,7 @@ namespace Chummer
                 {
                     strName += " (" + lstObject.Value + ")";
                 }
-                _lstPowers.Add(strName, lstObject);
+                _lstPowers.Add(new Tuple<string, KeyValuePair<string, string>>(strName, lstObject));
             }
             cboPower.BeginUpdate();
             cboPower.DataSource = null;
