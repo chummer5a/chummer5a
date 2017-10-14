@@ -1956,10 +1956,8 @@ namespace Chummer
             }
 
             Guid guiImage = Guid.NewGuid();
-#if DEBUG
             // This line left in for debugging. Write the output to a fixed file name.
-            FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-#endif
+            //FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 
             // <character>
             objWriter.WriteStartElement("character");
