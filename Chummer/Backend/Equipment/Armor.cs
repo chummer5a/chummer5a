@@ -98,7 +98,7 @@ namespace Chummer.Backend.Equipment
                 _strCost = "0";
             else if (objXmlArmorNode["cost"] != null)
             {
-                if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable"))
+                if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable") && blnSkipSelectForms)
                 {
                     int intMin;
                     int intMax = 0;
@@ -144,7 +144,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlArmorNode["bonus"] != null && !blnSkipCost)
+            if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString(), objXmlArmorNode["bonus"], false, 1, DisplayNameShort))
                 {
