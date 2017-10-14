@@ -98,7 +98,7 @@ namespace Chummer.Backend.Equipment
                 _strCost = "0";
             else if (objXmlArmorNode["cost"] != null)
             {
-                if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable") && blnSkipSelectForms)
+                if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable") && !blnSkipSelectForms)
                 {
                     int intMin;
                     int intMax = 0;
