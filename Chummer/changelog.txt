@@ -1,14 +1,7 @@
-Build 195
+Future Build 196
 
 Application Changes:
 
-- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
-- Fixed translation for weapon availability in the Select Weapon table. 
-- Fixed optional values for Foci not being saved properly. 
-- Fixes an issue in which editing basic lifestyles wouldn't reselect previous qualities. 
-- Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
-- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
-- Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
 - Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
 - Fixed quirks with attribute point warnings when moving to career mode. 
 - Fixed an issue when loading critters that caused them to have lower attribute values than intended.
@@ -130,14 +123,10 @@ Application Changes:
 - Unhardcoded Cultured bioware's restriction from Used grade. Now any piece of bioware or cyberware can be marked as being ineligible for Used grade.
 - If Chummer5 encounters an error while loading improvements from a savefile, it will now warn the user to re-apply improvements and continue loading the character instead of crashing.
 - Added a new item in the Special options menu that calculates the total karma value of a character during character creation.
+- Fixed the Updater crashing when a .pdb file or .exe file is in use. Also made the updater display a permissions warning if it cannot rename or remove old files instead of having it crash.
 
 Data Changes:
 
-- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
-- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
-- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
-- Critter Body Armor now properly grants armor equal to the Rating. 
-- Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
 - Fixed behaviour of spellcasting foci to scale based on Force. 
 - Fixed missing increased seating bonus for the Amenities (Squatter) vehicle modification.
 - Added entries for Chakram from the Run & Gun errata and the Horizon BoomerEye from the bottom of Boomerang's statblock in Run & Gun.
@@ -210,12 +199,6 @@ Data Changes:
 - Added the missing Cybersuites from State of the Art - ADL.
 
 New Strings:
-- Label_Options_SpellShapingFocus
-- Label_Options_RitualSpellcastingFocus
-- Label_Options_QiFocus
-- Label_Options_FlexibleSignatureFocus
-- Label_Options_DisenchantingFocus
-- Label_Options_AlchemicalFocus
 - Message_Improvement_EmptySelectionList
 - Message_Improvement_EmptySelectionListNamed
 - Message_Insufficient_Permissions_Warning
@@ -263,6 +246,34 @@ Changes Strings:
 
 Removed Strings:
 - Label_MugshotDimensions
+
+Build 195
+
+Application Changes:
+
+- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
+- Fixed translation for weapon availability in the Select Weapon table. 
+- Fixed optional values for Foci not being saved properly. 
+- Fixes an issue in which editing basic lifestyles wouldn't reselect previous qualities. 
+- Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
+- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
+- Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
+
+Data Changes:
+
+- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
+- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
+- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
+- Critter Body Armor now properly grants armor equal to the Rating. 
+- Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
+
+New Strings:
+- Label_Options_SpellShapingFocus
+- Label_Options_RitualSpellcastingFocus
+- Label_Options_QiFocus
+- Label_Options_FlexibleSignatureFocus
+- Label_Options_DisenchantingFocus
+- Label_Options_AlchemicalFocus
 
 Build 194
 

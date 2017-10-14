@@ -263,20 +263,36 @@ namespace Chummer
                 //Create a backup file in the temp directory. 
                 string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
                 Log.Info("Creating archive from application path: ", _strAppPath);
-                if (!File.Exists(strBackupZipPath))
+                try
                 {
-                    ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
+                    if (!File.Exists(strBackupZipPath))
+                    {
+                        ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
+                    }
+                    // Delete the old Chummer5 executables, libraries, and other files whose current versions are in use, then rename the current versions.
+                    foreach (string strLoopExeName in Directory.GetFiles(_strAppPath, "*.exe", SearchOption.AllDirectories))
+                    {
+                        if (File.Exists(strLoopExeName + ".old"))
+                            File.Delete(strLoopExeName + ".old");
+                        File.Move(strLoopExeName, strLoopExeName + ".old");
+                    }
+                    foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll", SearchOption.AllDirectories))
+                    {
+                        if (File.Exists(strLoopDllName + ".old"))
+                            File.Delete(strLoopDllName + ".old");
+                        File.Move(strLoopDllName, strLoopDllName + ".old");
+                    }
+                    foreach (string strLoopPdbName in Directory.GetFiles(_strAppPath, "*.pdb", SearchOption.AllDirectories))
+                    {
+                        if (File.Exists(strLoopPdbName + ".old"))
+                            File.Delete(strLoopPdbName + ".old");
+                        File.Move(strLoopPdbName, strLoopPdbName + ".old");
+                    }
                 }
-                // Delete the old Chummer5 executable.
-                if (File.Exists(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old"))
-                    File.Delete(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old");
-                // Rename the current Chummer5 executable.
-                File.Move(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName, _strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old");
-                foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll"))
+                catch (UnauthorizedAccessException)
                 {
-                    if (File.Exists(strLoopDllName + ".old"))
-                        File.Delete(strLoopDllName + ".old");
-                    File.Move(strLoopDllName, strLoopDllName + ".old");
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                    return;
                 }
 
                 // Copy over the archive from the temp directory.
