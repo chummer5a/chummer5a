@@ -753,7 +753,7 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Load(nodChild, blnCopy);
 
-                    if (objGear.MyXmlNode["devicerating"] != null)
+                    if (objGear.MyXmlNode?["devicerating"] != null)
                     {
                         Commlink objCommlink = new Commlink(_objCharacter);
                         objCommlink.Load(nodChild, blnCopy);
