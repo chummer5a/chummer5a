@@ -167,9 +167,9 @@ namespace Chummer
                 _intAvailModifier = Convert.ToInt32(objXmlGrade["avail"]?.InnerText);
             }
 
+            _strSelectedGrade = cboGrade.SelectedValue.ToString();
             if (cboGrade.Enabled)
             {
-                _strSelectedGrade = cboGrade.SelectedValue.ToString();
                 lstCyberware.SelectedIndexChanged -= lstCyberware_SelectedIndexChanged;
                 string strSelected = lstCyberware.SelectedValue?.ToString() ?? string.Empty;
                 PopulateCategories();
