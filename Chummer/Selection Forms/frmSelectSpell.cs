@@ -144,28 +144,23 @@ namespace Chummer
             {
                 TreeNode nodSpell = new TreeNode();
                 TreeNode nodParent = new TreeNode();
-                bool blnInclude = false;
 
-                if (_blnIgnoreRequirements)
+                if (!_blnIgnoreRequirements)
                 {
-                    blnInclude = true;
+                    if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
+                    {
+                        if (!((objXmlSpell["category"].InnerText == "Rituals" && !objXmlSpell["descriptor"].InnerText.Contains("Spell")) ||
+                            (_blnCanTouchOnlySpellBeFree && objXmlSpell["range"].InnerText == "T")))
+                            continue;
+                    }
+                    else if (!_objCharacter.AdeptEnabled && objXmlSpell["descriptor"].InnerText.Contains("Adept"))
+                    {
+                        continue;
+                    }
                 }
-                else if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                {
-                    blnInclude = (objXmlSpell["category"].InnerText == "Rituals" && !objXmlSpell["descriptor"].InnerText.Contains("Spell")) ||
-                        (_blnCanTouchOnlySpellBeFree && objXmlSpell["range"].InnerText == "T");
-                }
-                else if (!_objCharacter.AdeptEnabled)
-                {
-                    blnInclude = !objXmlSpell["descriptor"].InnerText.Contains("Adept");
-                }
-                else
-                    blnInclude = true;
 
-                if (blnInclude)
-                    blnInclude = SelectionShared.RequirementsMet(objXmlSpell, false, _objCharacter);
-
-                if (!blnInclude) continue;
+                if (!SelectionShared.RequirementsMet(objXmlSpell, false, _objCharacter))
+                    continue;
                 nodSpell.Text = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
                 nodSpell.Tag = objXmlSpell["id"].InnerText;
                 // Check to see if there is already a Category node for the Spell's category.
