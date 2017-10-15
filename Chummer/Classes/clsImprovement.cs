@@ -303,7 +303,7 @@ namespace Chummer
         public ImprovementSource ConvertToImprovementSource(string strValue)
         {
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
-            }
+        }
 
         #endregion
 
@@ -393,7 +393,7 @@ namespace Chummer
         {
             get { return _blnCustom; }
             set { _blnCustom = value; }
-            }
+        }
 
         /// <summary>
         /// User-entered name for the custom Improvement.
@@ -402,7 +402,7 @@ namespace Chummer
         {
             get { return _strCustomName; }
             set { _strCustomName = value; }
-            }
+        }
 
         /// <summary>
         /// ID from the Improvements file. Only used for custom-made (manually created) Improvements.
@@ -411,7 +411,7 @@ namespace Chummer
         {
             get { return _strCustomId; }
             set { _strCustomId = value; }
-            }
+        }
 
         /// <summary>
         /// Group name for the Custom Improvement.
@@ -420,7 +420,7 @@ namespace Chummer
         {
             get { return _strCustomGroup; }
             set { _strCustomGroup = value; }
-            }
+        }
 
         /// <summary>
         /// User-entered notes for the custom Improvement.
@@ -429,7 +429,7 @@ namespace Chummer
         {
             get { return _strNotes; }
             set { _strNotes = value; }
-            }
+        }
 
         /// <summary>
         /// Name of the Skill or CharacterAttribute that the Improvement is improving.
@@ -438,7 +438,7 @@ namespace Chummer
         {
             get { return _strImprovedName; }
             set { _strImprovedName = value; }
-            }
+        }
 
         /// <summary>
         /// Name of the source that granted this Improvement.
@@ -447,7 +447,7 @@ namespace Chummer
         {
             get { return _strSourceName; }
             set { _strSourceName = value; }
-            }
+        }
 
         /// <summary>
         /// The type of Object that the Improvement is improving.
@@ -486,7 +486,7 @@ namespace Chummer
         {
             get { return _intMin; }
             set { _intMin = value; }
-            }
+        }
 
         /// <summary>
         /// Maximum value modifier.
@@ -495,7 +495,7 @@ namespace Chummer
         {
             get { return _intMax; }
             set { _intMax = value; }
-            }
+        }
 
         /// <summary>
         /// Augmented Maximum value modifier.
@@ -504,7 +504,7 @@ namespace Chummer
         {
             get { return _intAugMax; }
             set { _intAugMax = value; }
-            }
+        }
 
         /// <summary>
         /// Augmented score modifier.
@@ -513,7 +513,7 @@ namespace Chummer
         {
             get { return _intAug; }
             set { _intAug = value; }
-            }
+        }
 
         /// <summary>
         /// Value modifier.
@@ -522,7 +522,7 @@ namespace Chummer
         {
             get { return _intVal; }
             set { _intVal = value; }
-            }
+        }
 
         /// <summary>
         /// The Rating value for the Improvement. This is 1 by default.
@@ -531,7 +531,7 @@ namespace Chummer
         {
             get { return _intRating; }
             set { _intRating = value; }
-            }
+        }
 
         /// <summary>
         /// A list of child items that should not receive the Improvement's benefit (typically for excluding a Skill from a Skill Group bonus).
@@ -540,7 +540,7 @@ namespace Chummer
         {
             get { return _strExclude; }
             set { _strExclude = value; }
-            }
+        }
 
         /// <summary>
         /// A Unique name for the Improvement. Only the highest value of any one Improvement that is part of this Unique Name group will be applied.
@@ -599,7 +599,7 @@ namespace Chummer
         {
             get { return _intOrder; }
             set { _intOrder = value; }
-            }
+        }
 
         #endregion
     }
@@ -624,7 +624,7 @@ namespace Chummer
         {
             get { return _strLimitSelection; }
             set { _strLimitSelection = value; }
-            }
+        }
 
         /// <summary>
         /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
@@ -632,7 +632,7 @@ namespace Chummer
         public static string SelectedValue
         {
             get { return _strSelectedValue; }
-            }
+        }
 
         /// <summary>
         /// Force any dialogue windows that open to use this string as their selected value.
@@ -640,7 +640,7 @@ namespace Chummer
         public static string ForcedValue
         {
             set { _strForcedValue = value; }
-            }
+        }
 
         public static void ClearCachedValue(Improvement.ImprovementType eImprovementType)
         {
@@ -679,8 +679,8 @@ namespace Chummer
                 return intCachedValue;
             }
 
-            List<string> lstUniqueName = new List<string>();
-            List<Tuple<string, int>> lstUniquePair = new List<Tuple<string, int>>();
+            HashSet<string> lstUniqueName = new HashSet<string>();
+            HashSet<Tuple<string, int>> lstUniquePair = new HashSet<Tuple<string, int>>();
             int intValue = 0;
             foreach (Improvement objImprovement in objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == objImprovementType))
             {
@@ -700,16 +700,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == strUniqueName)
-                                {
-                                    blnFound = true;
-                                break;
-                            }
-                            }
-                            if (!blnFound)
+                            if (!lstUniqueName.Contains(strUniqueName))
                                 lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
@@ -717,7 +708,7 @@ namespace Chummer
                         }
                         else
                         {
-                                intValue += objImprovement.Value;
+                            intValue += objImprovement.Value;
                         }
                     }
                 }
@@ -727,23 +718,23 @@ namespace Chummer
             {
                 // Retrieve only the highest precedence0 value.
                 // Run through the list of UniqueNames and pick out the highest value for each one.
-                int intHighest = (from strValues in lstUniquePair where strValues.Item1 == "precedence0" select strValues.Item2).Concat(new[] { -999 }).Max();
+                int intHighest = (from strValues in lstUniquePair where strValues.Item1 == "precedence0" select strValues.Item2).Concat(new[] { int.MinValue }).Max();
                 if (lstUniqueName.Contains("precedence-1"))
                 {
                     intHighest += lstUniquePair.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
-                    }
-                intValue = Math.Max(intValue, intHighest);
                 }
+                intValue = Math.Max(intValue, intHighest);
+            }
             else if (lstUniqueName.Contains("precedence1"))
-                {
+            {
                 // Retrieve all of the items that are precedence1 and nothing else.
                 intValue = Math.Max(intValue, lstUniquePair.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
             }
             else
-                    {
+            {
                 // Run through the list of UniqueNames and pick out the highest value for each one.
-                intValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] { -999 }).Max());
-                        }
+                intValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] { int.MinValue }).Max());
+            }
 
             // Factor in Custom Improvements.
             lstUniqueName.Clear();
@@ -767,16 +758,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == strUniqueName)
-                                {
-                                    blnFound = true;
-                                break;
-                            }
-                            }
-                            if (!blnFound)
+                            if (!lstUniqueName.Contains(strUniqueName))
                                 lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
@@ -784,14 +766,14 @@ namespace Chummer
                         }
                         else
                         {
-                                intCustomValue += objImprovement.Value;
+                            intCustomValue += objImprovement.Value;
                         }
                     }
-            }
+                }
             }
 
             // Run through the list of UniqueNames and pick out the highest value for each one.
-            intCustomValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] {-999}).Max());
+            intCustomValue += lstUniqueName.Sum(strName => (from strValues in lstUniquePair where strValues.Item1 == strName select strValues.Item2).Concat(new[] {int.MinValue}).Max());
 
             //Log.Exit("ValueOf");
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
@@ -821,9 +803,17 @@ namespace Chummer
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         private static int ValueToInt(Character objCharacter, string strValue, int intRating)
         {
-   //         Log.Enter("ValueToInt");
-   //         Log.Info("strValue = " + strValue);
+            //         Log.Enter("ValueToInt");
+            //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
+            if (strValue.Contains("FixedValues"))
+            {
+                string[] strValues = strValue.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                if (strValues.Length >= intRating)
+                    strValue = strValues[intRating - 1];
+                else
+                    strValue = strValues[strValues.Length - 1];
+            }
             if (strValue.Contains("Rating") || Character.AttributeStrings.Any(strValue.Contains))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString());
@@ -850,16 +840,7 @@ namespace Chummer
             {
                 //Log.Exit("ValueToInt");
                 int intReturn = 0;
-                if (strValue.Contains("FixedValues"))
-                {
-                    string[] strValues = strValue.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
-                    if (strValues.Length >= intRating)
-                        int.TryParse(strValues[intRating - 1], out intReturn);
-                }
-                else
-                {
-                    int.TryParse(strValue, out intReturn);
-                }
+                int.TryParse(strValue, out intReturn);
                 return intReturn;
             }
         }
@@ -876,7 +857,7 @@ namespace Chummer
             //Log.Info("strName = " + strName);
 
             return objXmlNode?.SelectSingleNode(strName) != null;
-            }
+        }
 
         #endregion
 
@@ -1033,8 +1014,7 @@ namespace Chummer
 
         }
         private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
-            bool blnConcatSelectedValue,
-            int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
+            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
         {
             if (bonusNode == null)
                 return false;
@@ -1192,69 +1172,86 @@ namespace Chummer
                         {
                             switch (objImprovement.ImprovedName)
                             {
-                                        case "MAG":
+                                case "MAG":
                                     objCharacter.MAGEnabled = false;
-                                            break;
-                                        case "RES":
+                                    break;
+                                case "RES":
                                     objCharacter.RESEnabled = false;
-                                            break;
-                                        case "DEP":
+                                    break;
+                                case "DEP":
                                     objCharacter.DEPEnabled = false;
-                                            break;
+                                    break;
                             }
                         }
                         objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers),objImprovement.ImprovedName);
                         break;
                     case Improvement.ImprovementType.SpecialTab:
-                // Determine if access to any special tabs have been lost.
+                        // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate)
-                {
+                        {
                             if (objImprovement.UniqueName == "enabletab")
                             {
-                    switch (objImprovement.ImprovedName)
-                    {
-                        case "Magician":
-                                objCharacter.MagicianEnabled = false;
-                            break;
-                        case "Adept":
-                                objCharacter.AdeptEnabled = false;
-                            break;
-                        case "Technomancer":
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Magician":
+                                        objCharacter.MagicianEnabled = false;
+                                        break;
+                                    case "Adept":
+                                        objCharacter.AdeptEnabled = false;
+                                        break;
+                                    case "Technomancer":
                                         objCharacter.TechnomancerEnabled = false;
                                         break;
                                     case "Advanced Programs":
                                         objCharacter.AdvancedProgramsEnabled = false;
-                            break;
-                        case "Critter":
-                                objCharacter.CritterEnabled = false;
-                            break;
-                        case "Initiation":
-                                objCharacter.InitiationEnabled = false;
-                            break;
-                    }
-                }
+                                        break;
+                                    case "Critter":
+                                        objCharacter.CritterEnabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationEnabled = false;
+                                        break;
+                                }
+                            }
                             // Determine if access to any special tabs has been regained
                             else if (objImprovement.UniqueName == "disabletab")
-                        {
-                                switch (objImprovement.ImprovedName)
                             {
+                                switch (objImprovement.ImprovedName)
+                                {
                                     case "Cyberware":
                                         objCharacter.CyberwareDisabled = false;
-                                break;
+                                        break;
+                                }
                             }
                         }
-                    }
                         break;
                     case Improvement.ImprovementType.BlackMarketDiscount:
                         if (!blnHasDuplicate)
-                    {
-                        objCharacter.BlackMarketDiscount = false;
-                        if (!objCharacter.Created)
                         {
-                            foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                            objCharacter.BlackMarketDiscount = false;
+                            if (!objCharacter.Created)
                             {
-                                objVehicle.BlackMarketDiscount = false;
-                                foreach (Weapon objWeapon in objVehicle.Weapons)
+                                foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                                {
+                                    objVehicle.BlackMarketDiscount = false;
+                                    foreach (Weapon objWeapon in objVehicle.Weapons)
+                                    {
+                                        objWeapon.DiscountCost = false;
+                                        foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+                                        {
+                                            objWeaponAccessory.DiscountCost = false;
+                                        }
+                                    }
+                                    foreach (Gear objGear in objVehicle.Gear)
+                                    {
+                                        objGear.DiscountCost = false;
+                                    }
+                                    foreach (VehicleMod objMod in objVehicle.Mods)
+                                    {
+                                        objMod.DiscountCost = false;
+                                    }
+                                }
+                                foreach (Weapon objWeapon in objCharacter.Weapons)
                                 {
                                     objWeapon.DiscountCost = false;
                                     foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
@@ -1262,135 +1259,118 @@ namespace Chummer
                                         objWeaponAccessory.DiscountCost = false;
                                     }
                                 }
-                                foreach (Gear objGear in objVehicle.Gear)
+                                foreach (Gear objGear in objCharacter.Gear)
                                 {
                                     objGear.DiscountCost = false;
-                                }
-                                foreach (VehicleMod objMod in objVehicle.Mods)
-                                {
-                                    objMod.DiscountCost = false;
-                                }
-                            }
-                            foreach (Weapon objWeapon in objCharacter.Weapons)
-                            {
-                                objWeapon.DiscountCost = false;
-                                foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
-                                {
-                                    objWeaponAccessory.DiscountCost = false;
-                                }
-                            }
-                            foreach (Gear objGear in objCharacter.Gear)
-                            {
-                                objGear.DiscountCost = false;
 
-                                foreach (Gear objChild in objGear.Children)
-                                {
-                                    objChild.DiscountCost = false;
+                                    foreach (Gear objChild in objGear.Children)
+                                    {
+                                        objChild.DiscountCost = false;
+                                    }
                                 }
                             }
                         }
-                    }
-                                break;
+                        break;
                     case Improvement.ImprovementType.Uneducated:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.Uneducated = false;
-                                break;
+                            objCharacter.SkillsSection.Uneducated = false;
+                        break;
                     case Improvement.ImprovementType.Uncouth:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.Uncouth = false;
-                                break;
+                            objCharacter.SkillsSection.Uncouth = false;
+                        break;
                     case Improvement.ImprovementType.FriendsInHighPlaces:
                         if (!blnHasDuplicate)
-                        objCharacter.FriendsInHighPlaces = false;
-                                break;
+                            objCharacter.FriendsInHighPlaces = false;
+                        break;
                     case Improvement.ImprovementType.SchoolOfHardKnocks:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.SchoolOfHardKnocks = false;
-                                 break;
+                            objCharacter.SkillsSection.SchoolOfHardKnocks = false;
+                        break;
                     case Improvement.ImprovementType.ExCon:
                         if (!blnHasDuplicate)
-                         objCharacter.ExCon = false;
-                                break;
+                            objCharacter.ExCon = false;
+                        break;
                     case Improvement.ImprovementType.JackOfAllTrades:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.JackOfAllTrades = false;
-                                break;
+                            objCharacter.SkillsSection.JackOfAllTrades = false;
+                        break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
                         if (!blnHasDuplicate)
-                        objCharacter.PrototypeTranshuman = 0;
-                                break;
+                            objCharacter.PrototypeTranshuman = 0;
+                        break;
                     case Improvement.ImprovementType.CollegeEducation:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.CollegeEducation = false;
-                                break;
+                            objCharacter.SkillsSection.CollegeEducation = false;
+                        break;
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
-                        objCharacter.Erased = false;
-                                break;
+                            objCharacter.Erased = false;
+                        break;
                     case Improvement.ImprovementType.BornRich:
                         if (!blnHasDuplicate)
-                        objCharacter.BornRich = false;
-                                break;
+                            objCharacter.BornRich = false;
+                        break;
                     case Improvement.ImprovementType.Fame:
                         if (!blnHasDuplicate)
-                        objCharacter.Fame = false;
-                                break;
+                            objCharacter.Fame = false;
+                        break;
                     case Improvement.ImprovementType.LightningReflexes:
                         if (!blnHasDuplicate)
-                        objCharacter.LightningReflexes = false;
-                                break;
+                            objCharacter.LightningReflexes = false;
+                        break;
                     case Improvement.ImprovementType.Linguist:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.Linguist = false;
-                                break;
+                            objCharacter.SkillsSection.Linguist = false;
+                        break;
                     case Improvement.ImprovementType.MadeMan:
                         if (!blnHasDuplicate)
-                        objCharacter.MadeMan = false;
-                                break;
+                            objCharacter.MadeMan = false;
+                        break;
                     case Improvement.ImprovementType.Ambidextrous:
                         if (!blnHasDuplicate)
-                        objCharacter.Ambidextrous = false;
-                                break;
+                            objCharacter.Ambidextrous = false;
+                        break;
                     case Improvement.ImprovementType.Overclocker:
                         if (!blnHasDuplicate)
                         objCharacter.Overclocker = false;
                                 break;
                     case Improvement.ImprovementType.RestrictedGear:
                         if (!blnHasDuplicate)
-                        objCharacter.RestrictedGear = false;
-                                break;
+                            objCharacter.RestrictedGear = false;
+                        break;
                     case Improvement.ImprovementType.TechSchool:
                         if (!blnHasDuplicate)
-                        objCharacter.SkillsSection.TechSchool = false;
-                                break;
+                            objCharacter.SkillsSection.TechSchool = false;
+                        break;
                     case Improvement.ImprovementType.TrustFund:
                         if (!blnHasDuplicate)
-                        objCharacter.TrustFund = 0;
-                                break;
+                            objCharacter.TrustFund = 0;
+                        break;
                     case Improvement.ImprovementType.Adapsin:
-                    if (!objCharacter.AdapsinEnabled)
-                    {
-                        foreach (Cyberware objCyberware in objCharacter.Cyberware)
+                        if (!objCharacter.AdapsinEnabled)
                         {
-                            if (objCyberware.Grade.Adapsin)
+                            foreach (Cyberware objCyberware in objCharacter.Cyberware)
                             {
-                                // Determine which GradeList to use for the Cyberware.
-                                GradeList objGradeList;
-                                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                    {
-                                        GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
-                                        objGradeList = GlobalOptions.BiowareGrades;
-                                    }
-                                    else
-                                    {
-                                        GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
-                                        objGradeList = GlobalOptions.CyberwareGrades;
-                                    }
+                                if (objCyberware.Grade.Adapsin)
+                                {
+                                    // Determine which GradeList to use for the Cyberware.
+                                    GradeList objGradeList;
+                                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                                        {
+                                            GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
+                                            objGradeList = GlobalOptions.BiowareGrades;
+                                        }
+                                        else
+                                        {
+                                            GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
+                                            objGradeList = GlobalOptions.CyberwareGrades;
+                                        }
 
-                                objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
+                                    objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
+                                }
                             }
                         }
-                    }
                         break;
                     case Improvement.ImprovementType.ContactMadeMan:
                         Contact MadeManContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
@@ -1403,10 +1383,10 @@ namespace Chummer
                             objCharacter.Contacts.Remove(NewContact);
                         break;
                     case Improvement.ImprovementType.Initiation:
-                    objCharacter.InitiateGrade -= objImprovement.Value;
+                        objCharacter.InitiateGrade -= objImprovement.Value;
                         break;
                     case Improvement.ImprovementType.Submersion:
-                    objCharacter.SubmersionGrade -= objImprovement.Value;
+                        objCharacter.SubmersionGrade -= objImprovement.Value;
                         break;
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName);
@@ -1414,7 +1394,8 @@ namespace Chummer
                             objCharacter.CritterPowers.Remove(objCritterPower);
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
-                    objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
+                        if (!blnHasDuplicate)
+                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
@@ -1422,13 +1403,13 @@ namespace Chummer
                             objCharacter.Qualities.Remove(objQuality);
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
-                    Skill objSkill = objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
-                    if (objSkill != null)
-                    {
-                        SkillSpecialization objSkillSpec = objSkill.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
-                            if (objSkillSpec != null)
-                        objSkill.Specializations.Remove(objSkillSpec);
-                    }
+                        Skill objSkill = objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
+                        if (objSkill != null)
+                        {
+                            SkillSpecialization objSkillSpec = objSkill.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                                if (objSkillSpec != null)
+                            objSkill.Specializations.Remove(objSkillSpec);
+                        }
                         break;
                     case Improvement.ImprovementType.AIProgram:
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);

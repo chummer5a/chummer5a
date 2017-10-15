@@ -130,6 +130,7 @@ Application Changes:
 - Fixed Home Node-based stat calculation issues for AIs. The presence of a home node and any stats calculated from it will now be handled correctly. Fixes #1963.
 - Added support for up to 3 free skills to be selected from priorities. If more than 3 skills are defined in a priority entry, Chummer5 will now display the first 3 instead of displaying none. Fixes #1964.
 - Fixed a crash when using Re-apply Improvements while having qualities that add other qualities.
+- Adding multiple instances of overlapping SpecialSkills improvements will no longer duplicate skills, and removing a SpecialSkills improvement will no longer remove skills if another SpecialSkills improvement still exists that would enable the same skills. Fixes #1513.
 
 Data Changes:
 

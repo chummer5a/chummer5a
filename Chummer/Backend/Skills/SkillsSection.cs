@@ -49,7 +49,7 @@ namespace Chummer.Skills
             }
         }
 
-        internal void AddSkills(FilterOptions skills,string strName = "")
+        internal void AddSkills(FilterOptions skills, string strName = "")
         {
             var list = GetSkillList(_character, skills, strName);
 
@@ -73,6 +73,27 @@ namespace Chummer.Skills
                     category = "Resonance Active";
                     break;
                 default:
+                    return;
+            }
+            // Check for duplicates (we'd normally want to make sure it's enabled, but SpecialSkills doesn't process the Enabled property properly)
+            foreach (Improvement objImprovement in _character.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
+            {
+                FilterOptions eLoopFilter = (FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName);
+                string strLoopCategory = string.Empty;
+                switch (eLoopFilter)
+                {
+                    case FilterOptions.Magician:
+                    case FilterOptions.Sorcery:
+                    case FilterOptions.Conjuring:
+                    case FilterOptions.Enchanting:
+                    case FilterOptions.Adept:
+                        strLoopCategory = "Magical Active";
+                        break;
+                    case FilterOptions.Technomancer:
+                        strLoopCategory = "Resonance Active";
+                        break;
+                }
+                if (strLoopCategory == category)
                     return;
             }
 
