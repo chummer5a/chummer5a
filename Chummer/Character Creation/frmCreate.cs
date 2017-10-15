@@ -13683,7 +13683,11 @@ namespace Chummer
             }
             if (_objCharacter.SkillsSection.Skills.TotalCostKarma() > 0)
             {
-                s += $": {_objCharacter.SkillsSection.Skills.TotalCostKarma()} {karma}";
+                if (s != def)
+                    { s += $": {_objCharacter.SkillsSection.Skills.TotalCostKarma()} {karma}"; }
+                else
+                    { s  = $"{_objCharacter.SkillsSection.Skills.TotalCostKarma()} {karma}"; }
+                
             }
             lblActiveSkillsBP.Text = s;
             //Knowledge skills
@@ -13694,7 +13698,10 @@ namespace Chummer
             }
             if (_objCharacter.SkillsSection.Skills.TotalCostKarma() > 0)
             {
-                s += $": {_objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma()} {karma}";
+                if (s != def)
+                    { s += $": {_objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma()} {karma}";}
+                else
+                    { s  = $"{_objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma()} {karma}"; }
             }
             lblKnowledgeSkillsBP.Text = s;
             //Groups
@@ -13705,7 +13712,11 @@ namespace Chummer
             }
             if (_objCharacter.SkillsSection.SkillGroups.TotalCostKarma() > 0)
             {
-                s += $": {_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {karma}";
+                if (s != def)
+                { s += $": {_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {karma}"; }
+                else
+                { s  = $"{_objCharacter.SkillsSection.SkillGroups.TotalCostKarma()} {karma}"; }
+                
             }
             lblSkillGroupsBP.Text = s;
         }

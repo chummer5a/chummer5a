@@ -171,7 +171,9 @@ namespace Chummer.Skills
         /// </summary>
         public int TotalBaseRating
         {
-            get { return LearnedRating + RatingModifiers; }
+            get { if (CharacterObject.Created){
+                  return LearnedRating + RatingModifiers; }
+            else  return LearnedRating; }
         }
 
         /// <summary>

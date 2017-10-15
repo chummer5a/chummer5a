@@ -130,6 +130,9 @@ Application Changes:
 - Unhardcoded Cultured bioware's restriction from Used grade. Now any piece of bioware or cyberware can be marked as being ineligible for Used grade.
 - If Chummer5 encounters an error while loading improvements from a savefile, it will now warn the user to re-apply improvements and continue loading the character instead of crashing.
 - Added a new item in the Special options menu that calculates the total karma value of a character during character creation.
+- Fixed a prompt for modications to items when browsing the Select Armor window.
+- Fixed an incorrect Karma cost change when using the Improved Ability (skill) power in create mode. 
+- Fixed display of karma costs for skills in create mode to not show Karma twice.
 
 Data Changes:
 
