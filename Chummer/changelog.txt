@@ -128,6 +128,7 @@ Application Changes:
 - Fixed display of karma costs for skills in create mode to not show Karma twice.
 - Fixed the Updater crashing when a .pdb file or .exe file is in use. Also made the updater display a permissions warning if it cannot rename or remove old files instead of having it crash.
 - Fixed Home Node-based stat calculation issues for AIs. The presence of a home node and any stats calculated from it will now be handled correctly. Fixes #1963.
+- Added support for up to 3 free skills to be selected from priorities. If more than 3 skills are defined in a priority entry, Chummer5 will now display the first 3 instead of displaying none. Fixes #1964.
 
 Data Changes:
 

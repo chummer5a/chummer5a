@@ -102,7 +102,6 @@ namespace Chummer
         private string _strPrimaryArm = "Right";
 
         // AI Home Node
-        private bool _blnHasHomeNode = false;
         private Commlink _objHomeNodeCommlink = null;
         private Vehicle _objHomeNodeVehicle = null;
 
@@ -213,9 +212,7 @@ namespace Chummer
         private string _strPrioritySkills = string.Empty;
         private string _strPriorityResources = string.Empty;
         private string _strPriorityTalent = string.Empty;
-        private string _strSkill1 = string.Empty;
-        private string _strSkill2 = string.Empty;
-        private string _strSkillGroup = string.Empty;
+        private List<string> _lstPrioritySkills = new List<string>();
         private int _intMaxNuyen = 0;
         private int _intMaxKarma = 0;
         private int _intContactMultiplier = 0;
@@ -393,12 +390,14 @@ namespace Chummer
             objWriter.WriteElementString("priorityresources", _strPriorityResources);
             // <priorityresources />
             objWriter.WriteElementString("prioritytalent", _strPriorityTalent);
-            // <priorityskill1 />
-            objWriter.WriteElementString("priorityskill1", _strSkill1);
-            // <priorityskill2 />
-            objWriter.WriteElementString("priorityskill2", _strSkill2);
-            // <priorityskillgroup />
-            objWriter.WriteElementString("priorityskillgroup", _strSkillGroup);
+            // <priorityskills >
+            objWriter.WriteStartElement("priorityskills");
+            foreach (string strSkill in _lstPrioritySkills)
+            {
+                objWriter.WriteElementString("priorityskill", strSkill);
+            }
+            // </priorityskills>
+            objWriter.WriteEndElement();
 
             // <essenceatspecialstart />
             objWriter.WriteElementString("essenceatspecialstart", _decEssenceAtSpecialStart.ToString(GlobalOptions.InvariantCultureInfo));
@@ -1158,9 +1157,21 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("priorityskills", ref _strPrioritySkills);
             objXmlCharacter.TryGetStringFieldQuickly("priorityresources", ref _strPriorityResources);
             objXmlCharacter.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityskill1", ref _strSkill1);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityskill2", ref _strSkill2);
-            objXmlCharacter.TryGetStringFieldQuickly("priorityskillgroup", ref _strSkillGroup);
+            _lstPrioritySkills.Clear();
+            XmlNodeList objXmlPrioritySkillsList = objXmlDocument.SelectNodes("/character/priorityskills/priorityskill");
+            if (objXmlPrioritySkillsList != null)
+            {
+                foreach (XmlNode objXmlSkillName in objXmlPrioritySkillsList)
+                {
+                    _lstPrioritySkills.Add(objXmlSkillName.InnerText);
+                }
+            }
+            string strSkill1 = string.Empty;
+            string strSkill2 = string.Empty;
+            if (objXmlCharacter.TryGetStringFieldQuickly("priorityskill1", ref strSkill1) && !string.IsNullOrEmpty(strSkill1))
+                _lstPrioritySkills.Add(strSkill1);
+            if (objXmlCharacter.TryGetStringFieldQuickly("priorityskill2", ref strSkill2) && !string.IsNullOrEmpty(strSkill2))
+                _lstPrioritySkills.Add(strSkill2);
 
             objXmlCharacter.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
 
@@ -1998,12 +2009,14 @@ namespace Chummer
             objWriter.WriteElementString("priorityskills", _strPrioritySkills);
             // <priorityresources />
             objWriter.WriteElementString("priorityresources", _strPriorityResources);
-            // <priorityskill1 />
-            objWriter.WriteElementString("priorityskill1", _strSkill1);
-            // <priorityskill2 />
-            objWriter.WriteElementString("priorityskill2", _strSkill2);
-            // <priorityskillgroup />
-            objWriter.WriteElementString("priorityskillgroup", _strSkillGroup);
+            // <priorityskills >
+            objWriter.WriteStartElement("priorityskills");
+            foreach (string strSkill in _lstPrioritySkills)
+            {
+                objWriter.WriteElementString("priorityskill", strSkill);
+            }
+            // </priorityskills>
+            objWriter.WriteEndElement();
             // <handedness />
             objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
@@ -3459,47 +3472,17 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Character's 1st bonus skill.
+        /// Character's list of priority bonus skills.
         /// </summary>
-        public string PriorityBonusSkill1
+        public List<string> PriorityBonusSkillList
         {
             get
             {
-                return _strSkill1;
+                return _lstPrioritySkills;
             }
             set
             {
-                _strSkill1 = value;
-            }
-        }
-
-        /// <summary>
-        /// Character's 2nd bonus skill.
-        /// </summary>
-        public string PriorityBonusSkill2
-        {
-            get
-            {
-                return _strSkill2;
-            }
-            set
-            {
-                _strSkill2 = value;
-            }
-        }
-
-        /// <summary>
-        /// Character's bonus skill group.
-        /// </summary>
-        public string PriorityBonusSkillGroup
-        {
-            get
-            {
-                return _strSkillGroup;
-            }
-            set
-            {
-                _strSkillGroup = value;
+                _lstPrioritySkills = value;
             }
         }
 

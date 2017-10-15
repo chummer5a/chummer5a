@@ -19686,9 +19686,7 @@ namespace Chummer
                     SelectedMetavariant = _objCharacter.Metavariant,
                     SelectedMetatypeCategory = _objCharacter.MetatypeCategory,
                     SelectedTalent = _objCharacter.TalentPriority,
-                    PriorityBonusSkill1 = _objCharacter.PriorityBonusSkill1,
-                    PriorityBonusSkill2 = _objCharacter.PriorityBonusSkill2
-
+                    PriorityBonusSkillList = _objCharacter.PriorityBonusSkillList
                 };
                 frmSelectMetatype.ShowDialog(this);
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
