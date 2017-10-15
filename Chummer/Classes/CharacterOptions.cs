@@ -182,7 +182,7 @@ namespace Chummer
         private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
 
         // Sourcebook list.
-        private readonly List<string> _lstBooks = new List<string>();
+        private readonly HashSet<string> _lstBooks = new HashSet<string>();
         private bool _mysaddPpCareer;
         private bool _blnReverseAttributePriorityOrder;
         private bool _blnHhideItemsOverAvailLimit = true;
@@ -1665,7 +1665,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public List<string> Books
+        public HashSet<string> Books
         {
             get
             {

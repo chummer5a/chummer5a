@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ namespace Chummer
                                (chkLimitList.Checked &&
                                 Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false,
                                     _objCharacter, null,
-                                    null, _objQualityDocument, "", _strLocalName)));
+                                    null, _objQualityDocument, string.Empty, _strLocalName)));
                 if (!add) continue;
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlMetamagic["name"].InnerText;
@@ -260,7 +260,7 @@ namespace Chummer
             else
                 objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Rituals\" and name = \"" + lstArt.SelectedValue + "\"]");
 
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, null, null, _objQualityDocument, "", _strLocalName))
+            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
                 return;
 
             DialogResult = DialogResult.OK;

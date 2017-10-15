@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -177,11 +177,13 @@ namespace Chummer
             frmCharacter.Show();
         }
 
+        /*
         public sealed override string Text
         {
             get { return base.Text; }
             set { base.Text = value; }
         }
+        */
 
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -293,7 +295,7 @@ namespace Chummer
             {
                 TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objWeapon.Create(objXmlWeapon, objDummy, null, null);
                 objCharacter.Weapons.Add(objWeapon);
             }
 
@@ -646,7 +648,7 @@ namespace Chummer
             {
                 TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objWeapon.Create(objXmlWeapon, objDummy, null, null);
                 objCharacter.Weapons.Add(objWeapon);
             }
 

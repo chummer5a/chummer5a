@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,7 +67,9 @@ namespace Chummer
             }
         }
 
+#if DEBUG
         private static readonly bool _blnDebug = false;
+#endif
         private static string _strLanguage = string.Empty;
         static readonly LanguageManager _objInstance = new LanguageManager();
         private static readonly Dictionary<string, string> _objDictionary = new Dictionary<string, string>();
@@ -78,12 +80,14 @@ namespace Chummer
         #region Constructor and Instance
         static LanguageManager()
         {
+#if DEBUG
             string[] strArgs = Environment.GetCommandLineArgs();
             if (strArgs.GetUpperBound(0) > 0)
             {
                 if (strArgs[1] == "/debug")
                     _blnDebug = true;
             }
+#endif
             RefreshStrings();
         }
 
@@ -404,7 +408,7 @@ namespace Chummer
             }
             if (!blnReturnError)
             {
-                return "";
+                return string.Empty;
             }
             return "Error finding string for key - " + strKey;
         }
@@ -473,7 +477,7 @@ namespace Chummer
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (_strLanguage != "en-us" && !string.IsNullOrEmpty(strExtra.Trim()))
+            if (_strLanguage != "en-us" && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)
@@ -515,10 +519,11 @@ namespace Chummer
                         strReturn = GetString("String_AttributeDEPShort");
                         break;
                     default:
+                        string strExtraNoQuotes = strExtra.Replace("\"", string.Empty);
                         XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
                         XmlNode objNode =
                             objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?.Attributes?["translate"] != null)
                         {
                             return objNode.Attributes["translate"].InnerText;
@@ -527,7 +532,7 @@ namespace Chummer
                         // Look in Weapons.
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?["translate"] != null)
                         {
                             return objNode["translate"].InnerText;
@@ -537,7 +542,7 @@ namespace Chummer
                         objXmlDocument = XmlManager.Instance.Load("skills.xml");
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?["translate"] != null)
                         {
                             return objNode["translate"].InnerText;
@@ -557,7 +562,7 @@ namespace Chummer
                         // Look in Skill Groups.
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?.Attributes?["translate"] != null)
                         {
                             return objNode.Attributes["translate"].InnerText;
@@ -567,7 +572,7 @@ namespace Chummer
                         objXmlDocument = XmlManager.Instance.Load("licenses.xml");
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/licenses/license[. = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?.Attributes?["translate"] != null)
                         {
                             return objNode.Attributes["translate"].InnerText;
@@ -577,14 +582,14 @@ namespace Chummer
                         objXmlDocument = XmlManager.Instance.Load("mentors.xml");
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?["translate"] != null)
                         {
                             return objNode["translate"].InnerText;
                         }
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?["translate"] != null)
                         {
                             return objNode["translate"].InnerText;
@@ -594,14 +599,14 @@ namespace Chummer
                         objXmlDocument = XmlManager.Instance.Load("paragons.xml");
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?["translate"] != null)
                         {
                             return objNode["translate"].InnerText;
                         }
                         objNode =
                             objXmlDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
-                                                            strExtra.Replace("\"", string.Empty) + "\"]");
+                                                            strExtraNoQuotes + "\"]");
                         if (objNode?["translate"] != null)
                         {
                             return objNode["translate"].InnerText;

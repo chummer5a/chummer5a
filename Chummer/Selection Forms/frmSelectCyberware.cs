@@ -363,7 +363,7 @@ namespace Chummer
         private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading) return;
-            var selected = lstCyberware.SelectedValue?.ToString() ?? "";
+            var selected = lstCyberware.SelectedValue?.ToString() ?? string.Empty;
             txtSearch_TextChanged(sender, e);
 
             for (var index = 0; index < lstCyberware.Items.Count; index++)

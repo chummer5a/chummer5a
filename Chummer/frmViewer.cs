@@ -236,7 +236,11 @@ namespace Chummer
             objWriter.WriteStartElement("characters");
 
             foreach (Character objCharacter in _lstCharacters)
+#if DEBUG
                 objCharacter.PrintToStream(objStream, objWriter);
+#else
+                objCharacter.PrintToStream(objWriter);
+#endif
 
             // </characters>
             objWriter.WriteEndElement();
@@ -278,7 +282,7 @@ namespace Chummer
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
-            if (strSaveFile == "")
+            if (string.IsNullOrEmpty(strSaveFile))
                 return;
             PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
             objpdf.Save(strSaveFile);

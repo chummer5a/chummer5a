@@ -139,7 +139,7 @@ namespace Chummer.Skills
             if (name == null) return;
             //TODO: Should this be targeted against guid for uniqueness? Creating a knowledge skill in career always generates a new SkillId instead of using the one from skills.
             XmlNode skillNode = XmlManager.Instance.Load("skills.xml").SelectSingleNode($"chummer/knowledgeskills/skill[name = \"{name}\"]");
-            _type = skillNode?["category"].InnerText ?? "";
+            _type = skillNode?["category"].InnerText ?? string.Empty;
             AttributeObject = CharacterObject.GetAttribute(skillNode?["attribute"].InnerText ?? "LOG");
         }
 

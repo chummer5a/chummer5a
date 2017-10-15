@@ -76,7 +76,7 @@ namespace Chummer
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
-                if (_strLimitToCategories != "" && strValues.All(value => value != objXmlCategory.InnerText))
+                if (!string.IsNullOrEmpty(_strLimitToCategories) && strValues.All(value => value != objXmlCategory.InnerText))
                     continue;
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;

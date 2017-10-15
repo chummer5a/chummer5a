@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace Chummer
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
-        private List<KeyValuePair<string, KeyValuePair<string, string>>> _lstPowers = new List<KeyValuePair<string, KeyValuePair<string, string>>>();
+        private List<Tuple<string, KeyValuePair<string, string>>> _lstPowers = new List<Tuple<string, KeyValuePair<string, string>>>();
 
         #region Control Events
         public frmSelectOptionalPower()
@@ -37,8 +37,9 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strReturnPower = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Key;
-            _strReturnExtra = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Value;
+            KeyValuePair<string, string> objSelectedItem = ((Tuple<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Item2;
+            _strReturnPower = objSelectedItem.Key;
+            _strReturnExtra = objSelectedItem.Value;
             DialogResult = DialogResult.OK;
         }
 
@@ -114,18 +115,18 @@ namespace Chummer
         /// <summary>
         /// Limit the list to a few Powers.
         /// </summary>
-        /// <param name="lstValue">List of Powers.</param>
-        public void LimitToList(List<KeyValuePair<string, string>> lstValue)
+        /// <param name="dicValue">List of Powers.</param>
+        public void LimitToList(IEnumerable<KeyValuePair<string, string>> dicValue)
         {
             _lstPowers.Clear();
-            foreach (KeyValuePair<string, string> lstObject in lstValue)
+            foreach (KeyValuePair<string, string> lstObject in dicValue)
             {
                 string strName = lstObject.Key;
                 if (!string.IsNullOrEmpty(lstObject.Value))
                 {
                     strName += " (" + lstObject.Value + ")";
                 }
-                _lstPowers.Add(new KeyValuePair<string, KeyValuePair<string, string>>(strName, lstObject));
+                _lstPowers.Add(new Tuple<string, KeyValuePair<string, string>>(strName, lstObject));
             }
             cboPower.BeginUpdate();
             cboPower.DataSource = null;

@@ -758,7 +758,7 @@ namespace Chummer
                 XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
                 TreeNode objNode = new TreeNode();
                 ComplexForm objProgram = new ComplexForm(objCharacter);
-                objProgram.Create(objXmlProgram, objCharacter, objNode, strForceValue);
+                objProgram.Create(objXmlProgram, objNode, strForceValue);
                 objCharacter.ComplexForms.Add(objProgram);
             }
 
@@ -789,7 +789,7 @@ namespace Chummer
             {
                 TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objWeapon.Create(objXmlWeapon, objDummy, null, null);
                 objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
             }

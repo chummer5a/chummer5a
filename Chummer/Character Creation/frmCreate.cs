@@ -1819,7 +1819,7 @@ namespace Chummer
             {
                 intResult = (intThreshold - intWILResult) * 10;
             }
-            ImprovementManager.CreateImprovement(_objCharacter, "", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Qualities", Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);
+            ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Qualities", Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);
 
             // Convert the character.
             // Characters lose access to Resonance.
@@ -4069,7 +4069,7 @@ namespace Chummer
             lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
             Spell objSpell = new Spell(_objCharacter);
             TreeNode objNode = new TreeNode();
-            objSpell.Create(objXmlSpell, _objCharacter, objNode, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
+            objSpell.Create(objXmlSpell, objNode, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
             objNode.ContextMenuStrip = cmsSpell;
             if (objSpell.InternalId == Guid.Empty.ToString())
                 return;
@@ -4483,7 +4483,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             ComplexForm objProgram = new ComplexForm(_objCharacter);
-            objProgram.Create(objXmlProgram, _objCharacter, objNode, strExtra);
+            objProgram.Create(objXmlProgram, objNode, strExtra);
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -4541,7 +4541,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             AIProgram objProgram = new AIProgram(_objCharacter);
-            objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra);
+            objProgram.Create(objXmlProgram, objNode, objXmlProgram["category"].InnerText == "Advanced Programs", strExtra);
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -4669,7 +4669,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
             if (frmPickWeapon.FreeCost)
@@ -5589,7 +5589,7 @@ namespace Chummer
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
         {
-            _blnIsDirty = AddMugshot(picMugshot);
+            _blnIsDirty = AddMugshot();
             if (_blnIsDirty)
             {
                 lblNumMugshots.Text = "/ " + _objCharacter.Mugshots.Count.ToString();
@@ -6634,7 +6634,7 @@ namespace Chummer
             LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
             string strLimit = treLimit.SelectedNode.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition, _objCharacter, objNode);
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition, objNode);
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -7458,7 +7458,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
             if (frmPickWeapon.FreeCost)
@@ -7598,7 +7598,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
             if (frmPickWeapon.FreeCost)
@@ -8118,7 +8118,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
@@ -11210,7 +11210,7 @@ namespace Chummer
                     _objController.MoveGearRoot(intNewIndex, nodDestination, treGear);
             }
             if (_objDragButton == MouseButtons.Right)
-                _objController.MoveGearParent(intNewIndex, nodDestination, treGear, cmsGear);
+                _objController.MoveGearParent(nodDestination, treGear, cmsGear);
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
@@ -11682,7 +11682,7 @@ namespace Chummer
                 if (_objDragButton == MouseButtons.Left)
                     return;
                 else
-                    _objController.MoveVehicleGearParent(intNewIndex, nodDestination, treVehicles, cmsVehicleGear);
+                    _objController.MoveVehicleGearParent(nodDestination, treVehicles, cmsVehicleGear);
             }
 
             // Clear the background color for all Nodes.
@@ -13803,11 +13803,11 @@ namespace Chummer
                     ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
                     /*
                      ImprovementManager.CreateImprovement("MAGBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
-                        Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
                     ImprovementManager.CreateImprovement("RESBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
-                        Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
                     ImprovementManager.CreateImprovement("DEPBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
-                        Improvement.ImprovementType.Attribute, "", 0, intReduction * -1, 0, 1, 1, 0);
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
                     */
                 }
                 if (intMagReduction > 0)
@@ -14680,7 +14680,7 @@ namespace Chummer
                         if (objGear.GetType() == typeof(Commlink))
                         {
                             Commlink objCommlink = (Commlink)objGear;
-                            lblWeaponDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                            lblWeaponDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                             lblWeaponAttack.Text = objCommlink.TotalAttack.ToString();
                             lblWeaponSleaze.Text = objCommlink.TotalSleaze.ToString();
                             lblWeaponDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
@@ -14882,7 +14882,7 @@ namespace Chummer
                     if (objSelectedGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objSelectedGear;
-                        lblArmorDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                        lblArmorDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                         lblArmorAttack.Text = objCommlink.TotalAttack.ToString();
                         lblArmorSleaze.Text = objCommlink.TotalSleaze.ToString();
                         lblArmorDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
@@ -14939,7 +14939,7 @@ namespace Chummer
                 if (objSelectedGear.GetType() == typeof(Commlink))
                 {
                     Commlink objCommlink = (Commlink)objSelectedGear;
-                    lblArmorDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                    lblArmorDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                     lblArmorAttack.Text = objCommlink.TotalAttack.ToString();
                     lblArmorSleaze.Text = objCommlink.TotalSleaze.ToString();
                     lblArmorDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
@@ -17630,7 +17630,7 @@ namespace Chummer
 
             // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
             bool blnRestrictedGearUsed = false;
-            string strRestrictedItem = "";
+            string strRestrictedItem = string.Empty;
             // Gear Availability.
             foreach (Gear objGear in _objCharacter.Gear)
             {
@@ -18673,7 +18673,7 @@ namespace Chummer
 
                     TreeNode objNode = new TreeNode();
                     ComplexForm objProgram = new ComplexForm(_objCharacter);
-                    objProgram.Create(objXmlProgramNode, _objCharacter, objNode, strForceValue);
+                    objProgram.Create(objXmlProgramNode, objNode, strForceValue);
 
                     treComplexForms.Nodes[0].Nodes.Add(objNode);
                     treComplexForms.Nodes[0].Expand();
@@ -18700,7 +18700,7 @@ namespace Chummer
 
                     TreeNode objNode = new TreeNode();
                     AIProgram objProgram = new AIProgram(_objCharacter);
-                    objProgram.Create(objXmlProgramNode, _objCharacter, objNode, boolIsAdvancedProgram);
+                    objProgram.Create(objXmlProgramNode, objNode, boolIsAdvancedProgram);
                     objNode.Text = objProgram.DisplayName;
                     objNode.Tag = objProgram.InternalId;
                     if (!string.IsNullOrEmpty(objProgram.Notes))
@@ -18750,7 +18750,7 @@ namespace Chummer
 
                         Spell objSpell = new Spell(_objCharacter);
                         TreeNode objNode = new TreeNode();
-                        objSpell.Create(objXmlSpellNode, _objCharacter, objNode, strForceValue);
+                        objSpell.Create(objXmlSpellNode, objNode, strForceValue);
                         objNode.ContextMenuStrip = cmsSpell;
                         _objCharacter.Spells.Add(objSpell);
 
@@ -18983,7 +18983,7 @@ namespace Chummer
 
                     Weapon objWeapon = new Weapon(_objCharacter);
                     TreeNode objNode = new TreeNode();
-                    objWeapon.Create(objXmlWeaponNode, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
+                    objWeapon.Create(objXmlWeaponNode, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
                     _objCharacter.Weapons.Add(objWeapon);
 
                     // Look for Weapon Accessories.
@@ -19023,7 +19023,7 @@ namespace Chummer
 
                         Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
                         TreeNode objUnderbarrelNode = new TreeNode();
-                        objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
+                        objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, blnCreateChildren);
                         objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
                         objNode.Nodes.Add(objUnderbarrelNode);
                         objNode.Expand();
@@ -19339,7 +19339,7 @@ namespace Chummer
                             Weapon objWeapon = new Weapon(_objCharacter);
 
                             XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                            objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
+                            objWeapon.Create(objXmlWeaponNode, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
                             objWeapon.VehicleMounted = true;
 
                             // Find the first Weapon Mount in the Vehicle.
@@ -21270,7 +21270,7 @@ namespace Chummer
             objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
             objSource = Improvement.ImprovementSource.Initiation;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, string.Empty, false, false, false, objSource);
+            objNewSpell.Create(objXmlArt, objNode, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
             objNode.ContextMenuStrip = cmsInitiationNotes;
             if (objNewSpell.InternalId == Guid.Empty.ToString())
@@ -21336,7 +21336,7 @@ namespace Chummer
             objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
             objSource = Improvement.ImprovementSource.Initiation;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, string.Empty, false, false, false, objSource);
+            objNewSpell.Create(objXmlArt, objNode, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
             objNode.ContextMenuStrip = cmsInitiationNotes;
             if (objNewSpell.InternalId == Guid.Empty.ToString())

@@ -34,8 +34,6 @@ namespace Chummer
         private int _intSelectedQty = 1;
         private int _intMarkup = 0;
 
-        private int _intMaxResponse = 0;
-
         private int _intAvailModifier = 0;
         private int _intCostMultiplier = 1;
 

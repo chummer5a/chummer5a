@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ namespace Chummer
         /// Limit the list to a few Attributes.
         /// </summary>
         /// <param name="strValue">List of Attributes.</param>
-        public void LimitToList(List<string> strValue)
+        public void LimitToList(IEnumerable<string> strValue)
         {
             _lstAttributes.Clear();
             foreach (string strAttribute in strValue)
@@ -248,7 +248,7 @@ namespace Chummer
         /// Exclude the list of Attributes.
         /// </summary>
         /// <param name="strValue">List of Attributes.</param>
-        public void RemoveFromList(List<string> strValue)
+        public void RemoveFromList(IEnumerable<string> strValue)
         {
             foreach (string strAttribute in strValue)
             {

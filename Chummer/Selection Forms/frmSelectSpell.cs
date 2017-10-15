@@ -261,7 +261,7 @@ namespace Chummer
                             return;
 
                         }
-                        if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, null, null, _objXmlDocument, "", LanguageManager.Instance.GetString("String_DescSpell")))
+                        if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, null, null, _objXmlDocument, string.Empty, LanguageManager.Instance.GetString("String_DescSpell")))
                         {
                             return;
                         }

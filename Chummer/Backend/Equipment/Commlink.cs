@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _blnCanSwapAttributes = true;
-                string[] strArray = objXmlGear["attributearray"].InnerText.ToString().Split(',');
+                string[] strArray = objXmlGear["attributearray"].InnerText.Split(',');
                 _strAttack = strArray[0];
                 _strSleaze = strArray[1];
                 _strDataProcessing = strArray[2];
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWeaponNodes">List of Weapon TreeNodes created by copying the item.</param>
         public void Copy(Commlink objGear, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
         {
-            base.Copy(objGear, objNode, new List<Weapon>(), new List<TreeNode>());
+            base.Copy(objGear, objNode, objWeapons, objWeaponNodes);
             _strOverclocked = objGear.Overclocked;
             _strAttack = objGear.Attack;
             _strDataProcessing = objGear.DataProcessing;
@@ -737,13 +737,14 @@ namespace Chummer.Backend.Equipment
             lstStatsArray.Sort();
             lstStatsArray.Reverse();
 
-            string[] strCyberdeckArray = MyXmlNode["attributearray"].InnerText.ToString().Split(',');
+            string[] strCyberdeckArray = MyXmlNode["attributearray"].InnerText.Split(',');
             foreach (Gear objChild in Children)
             {
                 XmlNode objLoopNode = objChild.MyXmlNode;
-                if (!string.IsNullOrEmpty(objLoopNode["modattributearray"]?.InnerText))
+                string strLoopArrayText = objLoopNode["modattributearray"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLoopArrayText))
                 {
-                    string[] strLoopArray = objLoopNode["modattributearray"].InnerText.ToString().Split(',');
+                    string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
                         strCyberdeckArray[i] += "+(" + strLoopArray[i] + ")";

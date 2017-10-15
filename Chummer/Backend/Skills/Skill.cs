@@ -654,7 +654,7 @@ namespace Chummer.Skills
                 int wound = WoundModifier;
                 if (wound != 0)
                 {
-                    s.Append(" - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound + ")");
+                    s.Append(" - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound.ToString() + ")");
                 }
 
                 if (AttributeObject.Abbrev == "STR" || AttributeObject.Abbrev == "AGI")

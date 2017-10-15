@@ -59,6 +59,7 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
+#if DEBUG
         public QualitySource ConvertToLifestyleQualitySource(string strValue)
         {
             switch (strValue)
@@ -66,11 +67,16 @@ namespace Chummer.Backend.Equipment
                 default:
                     return QualitySource.Selected;
             }
+#else
+        public QualitySource ConvertToLifestyleQualitySource()
+        {
+            return QualitySource.Selected;
+#endif
         }
-        #endregion
+    #endregion
 
-        #region Constructor, Create, Save, Load, and Print Methods
-        public LifestyleQuality(Character objCharacter)
+    #region Constructor, Create, Save, Load, and Print Methods
+    public LifestyleQuality(Character objCharacter)
         {
             // Create the GUID for the new LifestyleQuality.
             _guiID = Guid.NewGuid();
@@ -198,8 +204,12 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
                 _objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
+#if DEBUG
             if (objNode["lifestylequalitysource"] != null)
                 _objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
+#else
+            _objLifestyleQualitySource = QualitySource.Selected;
+#endif
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;
@@ -311,9 +321,9 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
         /// <summary>
         /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
@@ -664,6 +674,6 @@ namespace Chummer.Backend.Equipment
                 return XmlManager.Instance.Load("lifestyles.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
             }
         }
-        #endregion
+#endregion
     }
 }

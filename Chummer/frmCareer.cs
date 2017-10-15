@@ -1613,7 +1613,11 @@ namespace Chummer
             // </characters>
             objWriter.WriteStartElement("characters");
 
+#if DEBUG
             _objCharacter.PrintToStream(objStream, objWriter);
+#else
+            _objCharacter.PrintToStream(objWriter);
+#endif
 
             // </characters>
             objWriter.WriteEndElement();
@@ -3238,9 +3242,9 @@ namespace Chummer
         {
             AddCyberwareSuite(Improvement.ImprovementSource.Bioware);
         }
-        #endregion
+#endregion
 
-        #region AttributeControl Events
+#region AttributeControl Events
         private void objAttribute_ValueChanged(Object sender)
         {
             // Handle the AttributeValueChanged Event for the AttributeControl object.
@@ -3249,9 +3253,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region SpellDefense Events
+#region SpellDefense Events
         private void UpdateSpellDefence()
         {
             // Update the Spell Defence labels.
@@ -3365,9 +3369,9 @@ namespace Chummer
         {
             UpdateSpellDefence();
         }
-        #endregion
+#endregion
 
-        #region ContactControl Events
+#region ContactControl Events
         private void objContact_ConnectionRatingChanged(Object sender)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
@@ -3449,9 +3453,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region EnemyControl Events
+#region EnemyControl Events
         private void objEnemy_ConnectionRatingChanged(Object sender)
         {
             ScheduleCharacterUpdate();
@@ -3542,9 +3546,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region PetControl Events
+#region PetControl Events
         private void objPet_DeleteContact(Object sender)
         {
             if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteContact")))
@@ -3579,9 +3583,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region SpiritControl Events
+#region SpiritControl Events
         private void objSpirit_ForceChanged(Object sender)
         {
             _blnIsDirty = true;
@@ -3672,9 +3676,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region SpriteControl (SpiritControl) Events
+#region SpriteControl (SpiritControl) Events
         private void objSprite_ForceChanged(Object sender)
         {
             _blnIsDirty = true;
@@ -3732,9 +3736,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Martial Tab Control Events
+#region Martial Tab Control Events
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treMartialArts.SelectedNode != null)
@@ -3776,9 +3780,9 @@ namespace Chummer
                 }
             }
             }
-        #endregion
+#endregion
 
-        #region Button Events
+#region Button Events
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -3913,7 +3917,7 @@ namespace Chummer
 
             Spell objSpell = new Spell(_objCharacter);
             TreeNode objNode = new TreeNode();
-            objSpell.Create(objXmlSpell, _objCharacter, objNode, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
+            objSpell.Create(objXmlSpell, objNode, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
             objNode.ContextMenuStrip = cmsSpell;
             if (objSpell.InternalId == Guid.Empty.ToString())
                 return;
@@ -4395,7 +4399,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             ComplexForm objProgram = new ComplexForm(_objCharacter);
-            objProgram.Create(objXmlProgram, _objCharacter, objNode, strExtra);
+            objProgram.Create(objXmlProgram, objNode, strExtra);
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -4618,7 +4622,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
             int intCost = objWeapon.TotalCost;
@@ -5642,7 +5646,7 @@ namespace Chummer
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
         {
-            _blnIsDirty = AddMugshot(picMugshot);
+            _blnIsDirty = AddMugshot();
             if (_blnIsDirty)
             {
                 lblNumMugshots.Text = "/ " + _objCharacter.Mugshots.Count.ToString();
@@ -8415,9 +8419,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region ContextMenu Events
+#region ContextMenu Events
         private void ContextMenu_Opening(object sender, CancelEventArgs e)
         {
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
@@ -9033,7 +9037,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
             objWeapon.VehicleMounted = true;
 
             int intCost = objWeapon.TotalCost;
@@ -9260,7 +9264,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.VehicleMounted = true;
             objWeapon.IsUnderbarrelWeapon = true;
@@ -11484,7 +11488,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
 
@@ -11631,7 +11635,7 @@ namespace Chummer
             // Attempt to locate the selected Vehicle.
             Vehicle objSelectedVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
-            frmSelectNexus frmPickNexus = new frmSelectNexus(_objCharacter, true);
+            frmSelectNexus frmPickNexus = new frmSelectNexus(_objCharacter);
             frmPickNexus.ShowDialog(this);
 
             if (frmPickNexus.DialogResult == DialogResult.Cancel)
@@ -15263,9 +15267,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Additional Common Tab Control Events
+#region Additional Common Tab Control Events
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
@@ -15284,16 +15288,16 @@ namespace Chummer
             tipTooltip.SetToolTip(lblQualitySource, _objOptions.LanguageBookLong(objQuality.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objQuality.Page);
             lblQualityBP.Text = (objQuality.BP * _objOptions.KarmaQuality).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
         }
-        #endregion
+#endregion
 
-        #region Additional Cyberware Tab Control Events
+#region Additional Cyberware Tab Control Events
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
         }
-        #endregion
+#endregion
 
-        #region Additional Street Gear Tab Control Events
+#region Additional Street Gear Tab Control Events
         private void treWeapons_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedWeapon();
@@ -16168,7 +16172,7 @@ namespace Chummer
                     _objController.MoveGearRoot(intNewIndex, nodDestination, treGear);
             }
             if (_objDragButton == MouseButtons.Right)
-                _objController.MoveGearParent(intNewIndex, nodDestination, treGear, cmsGear);
+                _objController.MoveGearParent(nodDestination, treGear, cmsGear);
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
@@ -17133,9 +17137,9 @@ namespace Chummer
                 return;
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Vehicle Tab Control Events
+#region Additional Vehicle Tab Control Events
         private void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedVehicle();
@@ -17184,13 +17188,15 @@ namespace Chummer
             }
 
             if (!_blnDraggingGear)
+            {
                 _objController.MoveVehicleNode(intNewIndex, nodDestination, treVehicles);
+            }
             else
             {
                 if (_objDragButton == MouseButtons.Left)
                     return;
                 else
-                    _objController.MoveVehicleGearParent(intNewIndex, nodDestination, treVehicles, cmsVehicleGear);
+                    _objController.MoveVehicleGearParent(nodDestination, treVehicles, cmsVehicleGear);
             }
 
             // Clear the background color for all Nodes.
@@ -17571,9 +17577,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Additional Spells and Spirits Tab Control Events
+#region Additional Spells and Spirits Tab Control Events
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treSpells.SelectedNode.Level > 0)
@@ -18224,9 +18230,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Additional Sprites and Complex Forms Tab Control Events
+#region Additional Sprites and Complex Forms Tab Control Events
         private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedComplexForm();
@@ -18265,9 +18271,9 @@ namespace Chummer
                 cmdDeleteComplexForm_Click(sender, e);
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Initiation Tab Control Events
+#region Additional Initiation Tab Control Events
         private void chkInitiationGroup_CheckedChanged(object sender, EventArgs e)
         {
             UpdateInitiationCost();
@@ -18473,9 +18479,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Additional Critter Powers Tab Control Events
+#region Additional Critter Powers Tab Control Events
         private void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Look for the selected Critter Power.
@@ -18536,9 +18542,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Additional Karma and Nuyen Tab Control Events
+#region Additional Karma and Nuyen Tab Control Events
         private void lstKarma_DoubleClick(object sender, EventArgs e)
         {
             ListViewItem objItem;
@@ -18701,16 +18707,16 @@ namespace Chummer
             }
             lstNuyen.Sort();
         }
-        #endregion
+#endregion
 
-        #region Additional Calendar Tab Control Events
+#region Additional Calendar Tab Control Events
         private void lstCalendar_DoubleClick(object sender, EventArgs e)
         {
             cmdEditWeek_Click(sender, e);
         }
-        #endregion
+#endregion
 
-        #region Additional Improvements Tab Control Events
+#region Additional Improvements Tab Control Events
         private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
         {
             lblImprovementType.Text = string.Empty;
@@ -18927,9 +18933,9 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Character Info Tab Event
+#region Character Info Tab Event
         private void txtSex_TextChanged(object sender, EventArgs e)
         {
             _objCharacter.Sex = txtSex.Text;
@@ -19044,18 +19050,18 @@ namespace Chummer
             UpdateReputation();
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Notes Tab Events
+#region Notes Tab Events
         private void txtGameNotes_TextChanged(object sender, EventArgs e)
         {
             _objCharacter.GameNotes = txtGameNotes.Text;
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
-        #endregion
+#endregion
 
-        #region Tree KeyDown Events
+#region Tree KeyDown Events
         private void treQualities_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -19151,9 +19157,9 @@ namespace Chummer
                 cmdDeleteImprovement_Click(sender, e);
             }
         }
-        #endregion
+#endregion
 
-        #region Splitter Resize Events
+#region Splitter Resize Events
         
 
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
@@ -19187,9 +19193,9 @@ namespace Chummer
                 }
             }
             }
-        #endregion
+#endregion
 
-        #region Other Control Events
+#region Other Control Events
         private void txtCharacterName_TextChanged(object sender, EventArgs e)
         {
             _objCharacter.Name = txtCharacterName.Text;
@@ -19261,9 +19267,9 @@ namespace Chummer
         {
             RefreshPasteStatus();
         }
-        #endregion
+#endregion
 
-        #region Clear Tab Contents
+#region Clear Tab Contents
         /// <summary>
         /// Clear the contents of the Spells and Spirits Tab.
         /// </summary>
@@ -19336,9 +19342,9 @@ namespace Chummer
             _blnIsDirty = true;
             ScheduleCharacterUpdate();
         }
-        #endregion
+#endregion
 
-        #region Condition Monitors
+#region Condition Monitors
         private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox box = (CheckBox)sender;
@@ -19680,9 +19686,9 @@ namespace Chummer
                 UpdateWindowTitle();
             }
         }
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
         /// <summary>
         /// Character's name to use when loading them in a new tab.
         /// </summary>
@@ -19697,9 +19703,9 @@ namespace Chummer
                 return LanguageManager.Instance.GetString("String_UnnamedCharacter");
             }
         }
-        #endregion
+#endregion
 
-        #region Sourcebook Label Events
+#region Sourcebook Label Events
         private void lblMetatypeSource_Click(object sender, EventArgs e)
         {
             _objFunctions.OpenPDF(lblMetatypeSource.Text);
@@ -19769,9 +19775,9 @@ namespace Chummer
         {
             _objFunctions.OpenPDF(lblVehicleSource.Text);
         }
-        #endregion
+#endregion
 
-        #region Custom Methods
+#region Custom Methods
         /// <summary>
         /// Let the application know that a Metatype has been selected.
         /// </summary>
@@ -21223,7 +21229,7 @@ namespace Chummer
                                 Commlink objCommlink = (Commlink)objGear;
 
                                 objCommlink.RefreshCommlinkCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                                lblWeaponDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                                lblWeaponDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                                 lblWeaponAttackLabel.Visible = true;
                                 lblWeaponSleazeLabel.Visible = true;
                                 lblWeaponDataProcessingLabel.Visible = true;
@@ -21398,7 +21404,7 @@ namespace Chummer
                     if (objSelectedGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objSelectedGear;
-                        lblArmorDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                        lblArmorDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                         lblArmorAttack.Text = objCommlink.TotalAttack.ToString();
                         lblArmorSleaze.Text = objCommlink.TotalSleaze.ToString();
                         lblArmorDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
@@ -21428,7 +21434,7 @@ namespace Chummer
                 if (objSelectedGear.GetType() == typeof(Commlink))
                 {
                     Commlink objCommlink = (Commlink)objSelectedGear;
-                    lblArmorDeviceRating.Text = objCommlink.DeviceRating.ToString();
+                    lblArmorDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
                     lblArmorAttack.Text = objCommlink.TotalAttack.ToString();
                     lblArmorSleaze.Text = objCommlink.TotalSleaze.ToString();
                     lblArmorDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
@@ -25651,7 +25657,7 @@ namespace Chummer
             UpdateWindowTitle();
             ScheduleCharacterUpdate();
         }
-        #endregion
+#endregion
 
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
@@ -25672,7 +25678,7 @@ namespace Chummer
                 LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
                 string strLimit = treLimit.SelectedNode.Text;
                 string strCondition = frmPickLimitModifier.SelectedCondition;
-                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition, _objCharacter, objNode);
+                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition, objNode);
                 if (objLimitModifier.InternalId == Guid.Empty.ToString())
                     return;
 
@@ -26079,7 +26085,7 @@ namespace Chummer
             objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
             objSource = Improvement.ImprovementSource.Initiation;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, string.Empty, false, false, false, objSource);
+            objNewSpell.Create(objXmlArt, objNode, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
             objNode.ContextMenuStrip = cmsInitiationNotes;
             if (objNewSpell.InternalId == Guid.Empty.ToString())
@@ -26188,7 +26194,7 @@ namespace Chummer
             objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
             objSource = Improvement.ImprovementSource.Initiation;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, string.Empty, false, false, false, objSource);
+            objNewSpell.Create(objXmlArt, objNode, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
             objNode.ContextMenuStrip = cmsInitiationNotes;
             if (objNewSpell.InternalId == Guid.Empty.ToString())
@@ -26667,7 +26673,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             AIProgram objProgram = new AIProgram(_objCharacter);
-            objProgram.Create(objXmlProgram, _objCharacter, objNode, boolIsAdvancedProgram, strExtra);
+            objProgram.Create(objXmlProgram, objNode, boolIsAdvancedProgram, strExtra);
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 

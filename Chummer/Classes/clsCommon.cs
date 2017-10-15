@@ -537,9 +537,9 @@ namespace Chummer
         /// Find all of the Commlinks carried by the character.
         /// </summary>
         /// <param name="lstGear">List of Gear to search within for Commlinks.</param>
-        public static List<Commlink> FindCharacterCommlinks(IEnumerable<Gear> lstGear)
+        public static HashSet<Commlink> FindCharacterCommlinks(IEnumerable<Gear> lstGear)
         {
-            List<Commlink> lstReturn = new List<Commlink>();
+            HashSet<Commlink> lstReturn = new HashSet<Commlink>();
             foreach (Gear objGear in lstGear.DeepWhere(x => x.Children, x => x.GetType() == typeof(Commlink)))
             {
                 lstReturn.Add(objGear as Commlink);
@@ -596,7 +596,7 @@ namespace Chummer
                     }
                 }
             }
-            List<Commlink> lstCommlinks = FindCharacterCommlinks(lstGearToSearch);
+            HashSet<Commlink> lstCommlinks = FindCharacterCommlinks(lstGearToSearch);
 
             bool blnHasNoActive = true;
             foreach (Commlink objLoopCommlink in lstCommlinks)
@@ -681,7 +681,7 @@ namespace Chummer
             // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
             if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
             {
-                List<Focus> lstRemoveFoci = new List<Focus>();
+                HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
                 foreach (Focus objFocus in _objCharacter.Foci)
                 {
                     if (objFocus.GearId == objGear.InternalId)
@@ -689,6 +689,7 @@ namespace Chummer
                 }
                 foreach (Focus objFocus in lstRemoveFoci)
                 {
+                    /*
                     foreach (Power objPower in _objCharacter.Powers)
                     {
                         if (objPower.BonusSource == objFocus.GearId)
@@ -696,29 +697,24 @@ namespace Chummer
                             //objPower.FreeLevels -= (objFocus.Rating / 4);
                         }
                     }
+                    */
                     _objCharacter.Foci.Remove(objFocus);
                 }
             }
             // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
             else if (objGear.Category == "Stacked Focus")
             {
-                foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
+                if (objStack != null)
                 {
-                    if (objStack.GearId == objGear.InternalId)
-                    {
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                        _objCharacter.StackedFoci.Remove(objStack);
-                        break;
-                    }
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                    _objCharacter.StackedFoci.Remove(objStack);
                 }
             }
 
-            if (objGear.GetType() == typeof(Commlink))
+            if ((objGear as Commlink)?.IsActive == true)
             {
-                if ((objGear as Commlink).IsActive)
-                {
-                    ChangeActiveCommlink(objGear as Commlink, false);
-                }
+                ChangeActiveCommlink(objGear as Commlink, false);
             }
         }
 
@@ -765,12 +761,10 @@ namespace Chummer
                     objVehicle.Weapons.Remove(objRemoveWeapon);
             }
 
-            if (objGear.GetType() == typeof(Commlink))
+            Commlink objCommlink = objGear as Commlink;
+            if (objCommlink?.IsActive == true)
             {
-                if ((objGear as Commlink).IsActive)
-                {
-                    ChangeActiveCommlink(objGear as Commlink, false);
-                }
+                ChangeActiveCommlink(objCommlink, false);
             }
         }
 
@@ -820,7 +814,7 @@ namespace Chummer
                 foreach (Gear objGear in objArmor.Gear)
                     DeleteGear(objGear, treWeapons);
 
-                List<Weapon> lstRemoveWeapons = new List<Weapon>();
+                HashSet<Weapon> lstRemoveWeapons = new HashSet<Weapon>();
                 // Remove the Weapon from the Character.
                 foreach (Weapon objWeapon in _objCharacter.Weapons.Where(objWeapon => objWeapon.InternalId == objArmor.WeaponID))
                 {

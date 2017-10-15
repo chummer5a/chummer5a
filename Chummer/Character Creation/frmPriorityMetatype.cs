@@ -1470,7 +1470,7 @@ namespace Chummer
                     XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
                     TreeNode objNode = new TreeNode();
                     ComplexForm objProgram = new ComplexForm(_objCharacter);
-                    objProgram.Create(objXmlProgram, _objCharacter, objNode, strForceValue);
+                    objProgram.Create(objXmlProgram, objNode, strForceValue);
                     _objCharacter.ComplexForms.Add(objProgram);
                 }
 
@@ -1486,7 +1486,7 @@ namespace Chummer
                     {
                         TreeNode objNode = new TreeNode();
                         AIProgram objProgram = new AIProgram(_objCharacter);
-                        objProgram.Create(objXmlProgram, _objCharacter, objNode, objXmlProgram["category"]?.InnerText == "Advanced Programs", strForceValue);
+                        objProgram.Create(objXmlProgram, objNode, objXmlProgram["category"]?.InnerText == "Advanced Programs", strForceValue);
                         _objCharacter.AIPrograms.Add(objProgram);
                     }
                 }
