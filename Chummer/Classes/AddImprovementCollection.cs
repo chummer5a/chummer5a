@@ -63,11 +63,12 @@ namespace Chummer.Classes
                 intValue, intRating, intMinimum, intMaximum, intAugmented,
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget);
         }
-        private bool CreateImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName,
+        private void CreateImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName,
             XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "")
         {
-            return ImprovementManager.CreateImprovements(_objCharacter, objImprovementSource, strSourceName, nodBonus, blnConcatSelectedValue, intRating,
-                strFriendlyName);
+            if (!ImprovementManager.CreateImprovements(_objCharacter, objImprovementSource, strSourceName, nodBonus, blnConcatSelectedValue, intRating,
+                strFriendlyName))
+                throw new AbortedException();
         }
 
 
@@ -1168,6 +1169,11 @@ namespace Chummer.Classes
                     LanguageManager.Instance.GetString("String_Improvement_SelectText")
                         .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText);
                 frmPickText.ShowDialog();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickText.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
                 strExtra = frmPickText.SelectedValue;
             }
 
@@ -1234,6 +1240,11 @@ namespace Chummer.Classes
                             LanguageManager.Instance.GetString("String_Improvement_SelectText")
                                 .Replace("{0}", frmPickProgram.SelectedProgram);
                         frmPickText.ShowDialog();
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
                         strExtra = frmPickText.SelectedValue;
                     }
                 }
@@ -1304,6 +1315,11 @@ namespace Chummer.Classes
                             LanguageManager.Instance.GetString("String_Improvement_SelectText")
                                 .Replace("{0}", frmPickProgram.SelectedProgram);
                         frmPickText.ShowDialog();
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
                         strExtra = frmPickText.SelectedValue;
                     }
                 }
@@ -2781,11 +2797,8 @@ namespace Chummer.Classes
 
             if (frmPickMentorSpirit.BonusNode != null)
             {
-                if (!CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName))
-                {
-                    throw new AbortedException();
-                }
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.BonusNode,
+                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
             }
 
             if (frmPickMentorSpirit.Choice1BonusNode != null)
@@ -2797,12 +2810,8 @@ namespace Chummer.Classes
                 else
                     ForcedValue = string.Empty;
                 Log.Info("Calling CreateImprovement");
-                bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice1BonusNode,
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice1BonusNode,
                     _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                if (!blnSuccess)
-                {
-                    throw new AbortedException();
-                }
                 ForcedValue = strForce;
                 _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice1;
             }
@@ -2816,12 +2825,8 @@ namespace Chummer.Classes
                 else
                     ForcedValue = string.Empty;
                 Log.Info("Calling CreateImprovement");
-                bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
                     _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                if (!blnSuccess)
-                {
-                    throw new AbortedException();
-                }
                 ForcedValue = strForce;
                 _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
             }
@@ -2832,14 +2837,10 @@ namespace Chummer.Classes
             {
                 Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
                 Log.Info("Calling CreateImprovement");
-                bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
                     _blnConcatSelectedValue, _intRating, _strFriendlyName);
                 CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
                 CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
-                if (!blnSuccess)
-                {
-                    throw new AbortedException();
-                }
             }
 
             SelectedValue = strHoldValue;
@@ -2874,24 +2875,16 @@ namespace Chummer.Classes
 
             if (frmPickMentorSpirit.BonusNode != null)
             {
-                bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.BonusNode,
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.BonusNode,
                     _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                if (!blnSuccess)
-                {
-                    throw new AbortedException();
-                }
             }
 
             if (frmPickMentorSpirit.Choice1BonusNode != null)
             {
                 string strForce = ForcedValue;
                 ForcedValue = frmPickMentorSpirit.Choice1;
-                bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice1BonusNode,
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice1BonusNode,
                     _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                if (!blnSuccess)
-                {
-                    throw new AbortedException();
-                }
                 ForcedValue = strForce;
                 _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice1;
             }
@@ -2900,12 +2893,8 @@ namespace Chummer.Classes
             {
                 string strForce = ForcedValue;
                 ForcedValue = frmPickMentorSpirit.Choice2;
-                bool blnSuccess = CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
+                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
                     _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                if (!blnSuccess)
-                {
-                    throw new AbortedException();
-                }
                 ForcedValue = strForce;
                 _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
             }
