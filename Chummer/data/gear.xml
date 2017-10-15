@@ -1612,6 +1612,12 @@
 	  <hide />
 	  <gears startcollapsed="yes">
 		<usegear>
+		  <name>Persona Firmware</name>
+		  <category>Electronic Modification</category>
+		  <source>SR5</source>
+		  <page>438</page>
+		</usegear>
+		<usegear>
 		  <name select="Music Player">Custom Item</name>
 		  <category>Custom</category>
 		  <source>SR5</source>
