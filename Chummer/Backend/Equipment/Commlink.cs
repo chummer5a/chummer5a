@@ -83,7 +83,8 @@ namespace Chummer.Backend.Equipment
         public override void SaveInner(XmlTextWriter objWriter)
         {
             base.SaveInner(objWriter);
-            objWriter.WriteElementString("overclocked", _blnHomeNode.ToString());
+            objWriter.WriteElementString("iscommlink", System.Boolean.TrueString);
+            objWriter.WriteElementString("overclocked", _strOverclocked);
             objWriter.WriteElementString("attack", _strAttack);
             objWriter.WriteElementString("sleaze", _strSleaze);
             objWriter.WriteElementString("dataprocessing", _strDataProcessing);
@@ -107,6 +108,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             objNode.TryGetBoolFieldQuickly("livingpersona", ref _blnIsLivingPersona);
             objNode.TryGetBoolFieldQuickly("active", ref _blnActiveCommlink);
+            if (_blnHomeNode)
+            {
+                _objCharacter.HomeNodeCommlink = this;
+                _objCharacter.HomeNodeVehicle = null;
+            }
             if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
             {
                 // Legacy shim

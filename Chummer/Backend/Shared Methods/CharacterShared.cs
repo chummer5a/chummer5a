@@ -258,7 +258,7 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, HtmlToolTip tipTooltip)
         {
-            lblPhysical.Text = _objCharacter.LimitPhysical;
+            lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
             lblMental.Text = _objCharacter.LimitMental.ToString();
             lblSocial.Text = _objCharacter.LimitSocial.ToString();
 

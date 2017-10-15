@@ -127,6 +127,7 @@ Application Changes:
 - Fixed an incorrect Karma cost change when using the Improved Ability (skill) power in create mode. 
 - Fixed display of karma costs for skills in create mode to not show Karma twice.
 - Fixed the Updater crashing when a .pdb file or .exe file is in use. Also made the updater display a permissions warning if it cannot rename or remove old files instead of having it crash.
+- Fixed Home Node-based stat calculation issues for AIs. The presence of a home node and any stats calculated from it will now be handled correctly. Fixes #1963.
 
 Data Changes:
 

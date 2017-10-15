@@ -16248,22 +16248,27 @@ namespace Chummer
 
         private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            Commlink objCommlink = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-            if (objCommlink == null)
-                return;
-            objCommlink.HomeNode = chkGearHomeNode.Checked;
-            _objCharacter.HomeNodeCategory = "Gear";
-            _objCharacter.HomeNodeDataProcessing = objCommlink.TotalDataProcessing;
-            _objCharacter.HomeNodePilot = 0;
-            _objCharacter.HomeNodeHandling = "0";
-            _objCharacter.HomeNodeSensor = 0;
-            CommonFunctions.ReplaceHomeNodes(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear, _objCharacter.Vehicles);
-            _objCharacter.HasHomeNode = chkGearHomeNode.Checked;
-            RefreshSelectedGear();
-            ScheduleCharacterUpdate();
+            string strGuid = treGear.SelectedNode?.Tag.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGuid))
+            {
+                Commlink objCommlink = CommonFunctions.FindCommlink(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children));
+                if (objCommlink != null)
+                {
+                    objCommlink.HomeNode = chkGearHomeNode.Checked;
+                    CommonFunctions.ReplaceHomeNodes(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children), _objCharacter.Vehicles);
+                    _objCharacter.HomeNodeVehicle = null;
+                    _objCharacter.HomeNodeCommlink = null;
+                    if (chkGearHomeNode.Checked)
+                    {
+                        _objCharacter.HomeNodeCommlink = objCommlink;
+                    }
+                    RefreshSelectedGear();
+                    ScheduleCharacterUpdate();
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
+                }
+            }
         }
 
         private void cmdWeaponBuyAmmo_Click(object sender, EventArgs e)
@@ -17536,46 +17541,46 @@ namespace Chummer
 
         private void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode.Level == 1)
+            string strGuid = treVehicles.SelectedNode?.Tag.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGuid))
             {
-                Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                if (objVehicle == null)
-                    return;
-
-                objVehicle.HomeNode = chkVehicleHomeNode.Checked;
-                _objCharacter.HasHomeNode = chkVehicleHomeNode.Checked;
-                _objCharacter.HomeNodeCategory = "Vehicle";
-                _objCharacter.HomeNodeDataProcessing = 0;
-                _objCharacter.HomeNodePilot = objVehicle.Pilot;
-                _objCharacter.HomeNodeHandling = objVehicle.TotalHandling;
-                _objCharacter.HomeNodeSensor = objVehicle.CalculatedSensor;
-            }
-            else
-            {
-                Commlink objCommlink = new Commlink(_objCharacter);
-                Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
-                objCommlink = (Commlink)CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
-                if (objCommlink == null)
+                if (treVehicles.SelectedNode.Level == 1)
                 {
-                    return;
+                    Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(strGuid, _objCharacter.Vehicles);
+                    if (objVehicle == null)
+                        return;
+
+                    objVehicle.HomeNode = chkVehicleHomeNode.Checked;
+                    _objCharacter.HomeNodeVehicle = null;
+                    _objCharacter.HomeNodeCommlink = null;
+                    if (chkGearHomeNode.Checked)
+                    {
+                        _objCharacter.HomeNodeVehicle = objVehicle;
+                    }
                 }
-                objCommlink.HomeNode = chkVehicleHomeNode.Checked;
-                _objCharacter.HasHomeNode = chkVehicleHomeNode.Checked;
-                _objCharacter.HomeNodeCategory = "Gear";
-                _objCharacter.HomeNodeDataProcessing = objCommlink.TotalDataProcessing;
-                _objCharacter.HomeNodePilot = 0;
-                _objCharacter.HomeNodeHandling = "0";
-                _objCharacter.HomeNodeSensor = 0;
+                else
+                {
+                    Vehicle objSelectedVehicle = null;
+                    Commlink objGear = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles, out objSelectedVehicle) as Commlink;
+                    if (objGear == null)
+                        return;
+
+                    objGear.HomeNode = chkVehicleHomeNode.Checked;
+                    _objCharacter.HomeNodeVehicle = null;
+                    _objCharacter.HomeNodeCommlink = null;
+                    if (chkGearHomeNode.Checked)
+                    {
+                        _objCharacter.HomeNodeCommlink = objGear;
+                    }
+                }
+
+                CommonFunctions.ReplaceHomeNodes(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children), _objCharacter.Vehicles);
+                RefreshSelectedVehicle();
+                ScheduleCharacterUpdate();
+
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
-
-            _objCharacter.HasHomeNode = chkVehicleHomeNode.Checked;
-            CommonFunctions.ReplaceHomeNodes(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Gear, _objCharacter.Vehicles);
-
-            RefreshSelectedVehicle();
-            ScheduleCharacterUpdate();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
         }
 #endregion
 

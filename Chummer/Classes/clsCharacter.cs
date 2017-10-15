@@ -103,11 +103,8 @@ namespace Chummer
 
         // AI Home Node
         private bool _blnHasHomeNode = false;
-        private string _strHomeNodeCategory = string.Empty;
-        private string _strHomeNodeHandling = string.Empty;
-        private int _intHomeNodePilot = 0;
-        private int _intHomeNodeSensor = 0;
-        private int _intHomeNodeDataProcessing = 3;
+        private Commlink _objHomeNodeCommlink = null;
+        private Vehicle _objHomeNodeVehicle = null;
 
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated = false;
@@ -1638,20 +1635,18 @@ namespace Chummer
             objXmlNodeList = objXmlDocument.SelectNodes("/character/gears/gear");
             foreach (XmlNode objXmlGear in objXmlNodeList)
             {
-                switch (objXmlGear["category"].InnerText)
+                if (objXmlGear["iscommlink"]?.InnerText == System.Boolean.TrueString || (objXmlGear["category"].InnerText == "Commlinks" ||
+                    objXmlGear["category"].InnerText == "Commlink Accessories" || objXmlGear["category"].InnerText == "Cyberdecks" || objXmlGear["category"].InnerText == "Rigger Command Consoles"))
                 {
-                    case "Commlinks":
-                    case "Cyberdecks":
-                    case "Rigger Command Consoles":
-                        Commlink objCommlink = new Commlink(this);
-                        objCommlink.Load(objXmlGear);
-                        _lstGear.Add(objCommlink);
-                        break;
-                    default:
-                        Gear objGear = new Gear(this);
-                        objGear.Load(objXmlGear);
-                        _lstGear.Add(objGear);
-                        break;
+                    Commlink objCommlink = new Commlink(this);
+                    objCommlink.Load(objXmlGear);
+                    _lstGear.Add(objCommlink);
+                }
+                else
+                {
+                    Gear objGear = new Gear(this);
+                    objGear.Load(objXmlGear);
+                    _lstGear.Add(objGear);
                 }
             }
 
@@ -2102,7 +2097,7 @@ namespace Chummer
             objWriter.WriteElementString("gamenotes", _strGameNotes);
 
             // <limitphysical />
-            objWriter.WriteElementString("limitphysical", LimitPhysical);
+            objWriter.WriteElementString("limitphysical", LimitPhysical.ToString());
             // <limitmental />
             objWriter.WriteElementString("limitmental", LimitMental.ToString());
             // <limitsocial />
@@ -4849,17 +4844,19 @@ namespace Chummer
                 if (_strMetatype == "A.I.")
                 {
                     int intINI = (INT.TotalValue) + WoundModifiers;
-                    if (_blnHasHomeNode)
+                    if (HomeNodeVehicle != null || HomeNodeCommlink != null)
                     {
-                        if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+                        int intHomeNodePilot = HomeNodeVehicle?.Pilot ?? 0;
+                        int intHomeNodeDP = Math.Max(HomeNodeCommlink?.TotalDataProcessing ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                        if (intHomeNodeDP > intHomeNodePilot)
                         {
-                            intINI += _intHomeNodeDataProcessing;
+                            intINI += intHomeNodeDP;
                         }
                         else
                         {
-                            intINI += _intHomeNodePilot;
+                            intINI += intHomeNodePilot;
                         }
-                }
+                    }
                     return intINI;
                 }
                 return InitiativeValue;
@@ -5961,33 +5958,23 @@ namespace Chummer
         {
             get
             {
-                int intLimit = Math.Max(LimitMental, LimitSocial);
-                return intLimit;
+                return Math.Max(LimitMental, LimitSocial);
             }
         }
 
         /// <summary>
         /// The calculated Physical Limit.
         /// </summary>
-        public string LimitPhysical
+        public int LimitPhysical
         {
             get
             {
-                int intLimit;
                 if (_strMetatype == "A.I.")
                 {
-                    if (_blnHasHomeNode && _strHomeNodeCategory == "Vehicle")
-                    {
-                        return _strHomeNodeHandling;
-                    }
-                    return "0";
+                    return HomeNodeVehicle?.Handling ?? 0;
                 }
-                else
-                {
-                    intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
-                }
-                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
-                return Convert.ToString(intLimit);
+                int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
+                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
             }
         }
 
@@ -5999,29 +5986,28 @@ namespace Chummer
             get
             {
                 int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
-                if (_strMetatype == "A.I." && _blnHasHomeNode)
+                if (_strMetatype == "A.I.")
                 {
-                    if (_strHomeNodeCategory == "Vehicle")
+                    if (HomeNodeVehicle != null)
                     {
-                        if (_intHomeNodeSensor > intLimit)
+                        if (HomeNodeVehicle.CalculatedSensor > intLimit)
                         {
-                            intLimit = _intHomeNodeSensor;
+                            intLimit = HomeNodeVehicle.CalculatedSensor;
                         }
-                        if (_intHomeNodeDataProcessing > intLimit)
+                        if (HomeNodeVehicle.DeviceRating > intLimit)
                         {
-                            intLimit = _intHomeNodeDataProcessing;
+                            intLimit = HomeNodeVehicle.DeviceRating;
                         }
                     }
-                    else if (_strHomeNodeCategory == "Gear")
+                    else if (HomeNodeCommlink != null)
                     {
-                        if (_intHomeNodeDataProcessing > intLimit)
+                        if (HomeNodeCommlink.TotalDataProcessing > intLimit)
                         {
-                            intLimit = _intHomeNodeDataProcessing;
+                            intLimit = HomeNodeCommlink.TotalDataProcessing;
                         }
                     }
                 }
-                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
-                return intLimit;
+                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
             }
         }
 
@@ -6033,23 +6019,24 @@ namespace Chummer
             get
             {
                 int intLimit;
-                if (_strMetatype == "A.I." && _blnHasHomeNode)
+                if (_strMetatype == "A.I." && (HomeNodeVehicle != null || HomeNodeCommlink != null))
                 {
-                    if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
+                    int intHomeNodePilot = _objHomeNodeVehicle?.Pilot ?? 0;
+                    int intHomeNodeDP = Math.Max(_objHomeNodeCommlink?.TotalDataProcessing ?? 0, _objHomeNodeVehicle?.DeviceRating ?? 0);
+                    if (intHomeNodeDP >= intHomeNodePilot)
                     {
-                        intLimit = (CHA.TotalValue + _intHomeNodeDataProcessing + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+                        intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
                     }
                     else
                     {
-                        intLimit = (CHA.TotalValue + _intHomeNodePilot + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+                        intLimit = (CHA.TotalValue + intHomeNodePilot + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
                     }
                 }
                 else
                 {
                     intLimit = (CHA.TotalValue * 2 + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
                 }
-                intLimit += ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit);
-                return intLimit;
+                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit);
             }
         }
 
@@ -7703,92 +7690,32 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Category of the Home Node. Expected values are Gear and Vehicle.
+        /// Commlink Home Node. Returns null if home node is not a commlink.
         /// </summary>
-        public string HomeNodeCategory
+        public Commlink HomeNodeCommlink
         {
             get
             {
-                return _strHomeNodeCategory;
+                return _objHomeNodeCommlink;
             }
             set
             {
-                _strHomeNodeCategory = value;
+                _objHomeNodeCommlink = value;
             }
         }
 
         /// <summary>
-        /// Handling rating of the Home Node.
+        /// Vehicle Home Node. Returns null if home node is not a vehicle.
         /// </summary>
-        public string HomeNodeHandling
+        public Vehicle HomeNodeVehicle
         {
             get
             {
-                return _strHomeNodeHandling;
+                return _objHomeNodeVehicle;
             }
             set
             {
-                _strHomeNodeHandling = value;
-            }
-        }
-
-        /// <summary>
-        /// Pilot rating of the Home Node.
-        /// </summary>
-        public int HomeNodePilot
-        {
-            get
-            {
-                return _intHomeNodePilot;
-            }
-            set
-            {
-                _intHomeNodePilot = value;
-            }
-        }
-
-        /// <summary>
-        /// Sensor Rating of the Home Node.
-        /// </summary>
-        public int HomeNodeSensor
-        {
-            get
-            {
-                return _intHomeNodeSensor;
-            }
-            set
-            {
-                _intHomeNodeSensor = value;
-            }
-        }
-
-        /// <summary>
-        /// Data Processing Rating of the Home Node.
-        /// </summary>
-        public int HomeNodeDataProcessing
-        {
-            get
-            {
-                return _intHomeNodeDataProcessing;
-            }
-            set
-            {
-                _intHomeNodeDataProcessing = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether a character currently has a Home Node.
-        /// </summary>
-        public bool HasHomeNode
-        {
-            get
-            {
-                return _blnHasHomeNode;
-            }
-            set
-            {
-                _blnHasHomeNode = value;
+                _objHomeNodeVehicle = value;
             }
         }
 

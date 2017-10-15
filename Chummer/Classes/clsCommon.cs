@@ -146,6 +146,11 @@ namespace Chummer
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
                     objReturn = DeepFindById(strGuid, objVehicle.Gear);
+                    if (!string.IsNullOrEmpty(objReturn?.Name))
+                    {
+                        objFoundVehicle = objVehicle;
+                        return objReturn;
+                    }
 
                     // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
                     foreach (VehicleMod objMod in objVehicle.Mods)

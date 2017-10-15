@@ -2438,7 +2438,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strAccuracy.StartsWith("Physical"))
                 {
-                    strAccuracy = strAccuracy.Replace("Physical", _objCharacter.LimitPhysical);
+                    strAccuracy = strAccuracy.Replace("Physical", _objCharacter.LimitPhysical.ToString());
 
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -2447,7 +2447,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (strAccuracy.StartsWith("Missile"))
                 {
-                    strAccuracy = strAccuracy.Replace("Missile", _objCharacter.LimitPhysical);
+                    strAccuracy = strAccuracy.Replace("Missile", _objCharacter.LimitPhysical.ToString());
 
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();

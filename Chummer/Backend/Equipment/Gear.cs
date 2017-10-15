@@ -848,11 +848,11 @@ namespace Chummer.Backend.Equipment
             //objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
             objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
             objWriter.WriteElementString("isprogram", IsProgram.ToString());
-            objWriter.WriteElementString("isos", false.ToString());
+            objWriter.WriteElementString("isos", System.Boolean.FalseString);
             if (_strName == "Fake SIN")
-                objWriter.WriteElementString("issin", true.ToString());
+                objWriter.WriteElementString("issin", System.Boolean.TrueString);
             else
-                objWriter.WriteElementString("issin", false.ToString());
+                objWriter.WriteElementString("issin", System.Boolean.FalseString);
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));

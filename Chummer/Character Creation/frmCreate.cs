@@ -3054,20 +3054,18 @@ namespace Chummer
 
                     if (objXmlNode != null)
                     {
-                        switch (objXmlNode["category"].InnerText)
+                        if (objXmlNode["iscommlink"]?.InnerText == System.Boolean.TrueString || (objXmlNode["category"].InnerText == "Commlinks" ||
+                        objXmlNode["category"].InnerText == "Commlink Accessories" || objXmlNode["category"].InnerText == "Cyberdecks" || objXmlNode["category"].InnerText == "Rigger Command Consoles"))
                         {
-                            case "Commlinks":
-                            case "Cyberdecks":
-                            case "Rigger Command Consoles":
-                                Commlink objCommlink = new Commlink(_objCharacter);
-                                objCommlink.Load(objXmlNode, true);
-                                objGear = objCommlink;
-                                break;
-                            default:
-                                Gear objNewGear = new Gear(_objCharacter);
-                                objNewGear.Load(objXmlNode, true);
-                                objGear = objNewGear;
-                                break;
+                            Gear objCommlink = new Commlink(_objCharacter);
+                            objCommlink.Load(objXmlNode, true);
+                            objGear = objCommlink;
+                        }
+                        else
+                        {
+                            Gear objNewGear = new Gear(_objCharacter);
+                            objNewGear.Load(objXmlNode, true);
+                            objGear = objNewGear;
                         }
 
                         foreach (Armor objCharacterArmor in _objCharacter.Armor)
@@ -3113,20 +3111,18 @@ namespace Chummer
                     XmlNode objXmlNode = GlobalOptions.Instance.Clipboard.SelectSingleNode("/character/gear");
                     if (objXmlNode != null)
                     {
-                        switch (objXmlNode["category"].InnerText)
+                        if (objXmlNode["iscommlink"]?.InnerText == System.Boolean.TrueString || (objXmlNode["category"].InnerText == "Commlinks" ||
+                        objXmlNode["category"].InnerText == "Commlink Accessories" || objXmlNode["category"].InnerText == "Cyberdecks" || objXmlNode["category"].InnerText == "Rigger Command Consoles"))
                         {
-                            case "Commlinks":
-                            case "Cyberdecks":
-                            case "Rigger Command Consoles":
-                                Commlink objCommlink = new Commlink(_objCharacter);
-                                objCommlink.Load(objXmlNode, true);
-                                objGear = objCommlink;
-                                break;
-                            default:
-                                Gear objNewGear = new Gear(_objCharacter);
-                                objNewGear.Load(objXmlNode, true);
-                                objGear = objNewGear;
-                                break;
+                            Gear objCommlink = new Commlink(_objCharacter);
+                            objCommlink.Load(objXmlNode, true);
+                            objGear = objCommlink;
+                        }
+                        else
+                        {
+                            Gear objNewGear = new Gear(_objCharacter);
+                            objNewGear.Load(objXmlNode, true);
+                            objGear = objNewGear;
                         }
 
                         objGear.Parent = null;
@@ -3203,25 +3199,21 @@ namespace Chummer
                     XmlNode objXmlNode = GlobalOptions.Instance.Clipboard.SelectSingleNode("/character/gear");
                     if (objXmlNode != null)
                     {
-                        switch (objXmlNode["category"].InnerText)
+                        if (objXmlNode["iscommlink"]?.InnerText == System.Boolean.TrueString || (objXmlNode["category"].InnerText == "Commlinks" ||
+                        objXmlNode["category"].InnerText == "Commlink Accessories" || objXmlNode["category"].InnerText == "Cyberdecks" || objXmlNode["category"].InnerText == "Rigger Command Consoles"))
                         {
-                            case "Commlinks":
-                            case "Cyberdecks":
-                            case "Rigger Command Consoles":
-                                Commlink objCommlink = new Commlink(_objCharacter);
-                                objCommlink.Load(objXmlNode, true);
-                                _objCharacter.Gear.Add(objCommlink);
-                                objGear = objCommlink;
-                                break;
-                            default:
-                                Gear objNewGear = new Gear(_objCharacter);
-                                objNewGear.Load(objXmlNode, true);
-                                _objCharacter.Gear.Add(objNewGear);
-                                objGear = objNewGear;
-                                break;
+                            Gear objCommlink = new Commlink(_objCharacter);
+                            objCommlink.Load(objXmlNode, true);
+                            objGear = objCommlink;
                         }
-
+                        else
+                        {
+                            Gear objNewGear = new Gear(_objCharacter);
+                            objNewGear.Load(objXmlNode, true);
+                            objGear = objNewGear;
+                        }
                         objGear.Parent = null;
+                        _objCharacter.Gear.Add(objGear);
 
                         TreeNode objNode = new TreeNode();
                         objNode.Text = objGear.DisplayName;
@@ -3296,20 +3288,18 @@ namespace Chummer
 
                 if (objXmlNode != null)
                 {
-                    switch (objXmlNode["category"].InnerText)
+                    if (objXmlNode["iscommlink"]?.InnerText == System.Boolean.TrueString || (objXmlNode["category"].InnerText == "Commlinks" ||
+                        objXmlNode["category"].InnerText == "Commlink Accessories" || objXmlNode["category"].InnerText == "Cyberdecks" || objXmlNode["category"].InnerText == "Rigger Command Consoles"))
                     {
-                        case "Commlinks":
-                        case "Cyberdecks":
-                        case "Rigger Command Consoles":
-                            Commlink objCommlink = new Commlink(_objCharacter);
-                            objCommlink.Load(objXmlNode, true);
-                            objGear = objCommlink;
-                            break;
-                        default:
-                            Gear objNewGear = new Gear(_objCharacter);
-                            objNewGear.Load(objXmlNode, true);
-                            objGear = objNewGear;
-                            break;
+                        Gear objCommlink = new Commlink(_objCharacter);
+                        objCommlink.Load(objXmlNode, true);
+                        objGear = objCommlink;
+                    }
+                    else
+                    {
+                        Gear objNewGear = new Gear(_objCharacter);
+                        objNewGear.Load(objXmlNode, true);
+                        objGear = objNewGear;
                     }
 
                     // Paste the Gear into a Vehicle.
@@ -11267,15 +11257,27 @@ namespace Chummer
 
         private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            Commlink objCommlink = CommonFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-            objCommlink.HomeNode = chkGearHomeNode.Checked;
-            _objCharacter.HasHomeNode = chkGearHomeNode.Checked;
-            CommonFunctions.ReplaceHomeNodes(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear, _objCharacter.Vehicles);
-            RefreshSelectedGear();
-            ScheduleCharacterUpdate();
+            string strGuid = treGear.SelectedNode?.Tag.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGuid))
+            {
+                Commlink objCommlink = CommonFunctions.FindCommlink(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children));
+                if (objCommlink != null)
+                {
+                    objCommlink.HomeNode = chkGearHomeNode.Checked;
+                    _objCharacter.HomeNodeVehicle = null;
+                    _objCharacter.HomeNodeCommlink = null;
+                    if (chkGearHomeNode.Checked)
+                    {
+                        _objCharacter.HomeNodeCommlink = objCommlink;
+                    }
+                    CommonFunctions.ReplaceHomeNodes(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children), _objCharacter.Vehicles);
+                    RefreshSelectedGear();
+                    ScheduleCharacterUpdate();
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
+                }
+            }
         }
 
         private void chkIncludedInArmor_CheckedChanged(object sender, EventArgs e)
@@ -11836,27 +11838,46 @@ namespace Chummer
 
         private void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode.Level == 1)
+            string strGuid = treVehicles.SelectedNode?.Tag.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGuid))
             {
-                Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                if (objVehicle == null)
-                    return;
+                if (treVehicles.SelectedNode.Level == 1)
+                {
+                    Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(strGuid, _objCharacter.Vehicles);
+                    if (objVehicle == null)
+                        return;
 
-                objVehicle.HomeNode = chkVehicleHomeNode.Checked;
+                    objVehicle.HomeNode = chkVehicleHomeNode.Checked;
+                    _objCharacter.HomeNodeVehicle = null;
+                    _objCharacter.HomeNodeCommlink = null;
+                    if (chkGearHomeNode.Checked)
+                    {
+                        _objCharacter.HomeNodeVehicle = objVehicle;
+                    }
+                }
+                else
+                {
+                    Vehicle objSelectedVehicle = null;
+                    Commlink objGear = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles, out objSelectedVehicle) as Commlink;
+                    if (objGear == null)
+                        return;
+
+                    objGear.HomeNode = chkVehicleHomeNode.Checked;
+                    _objCharacter.HomeNodeVehicle = null;
+                    _objCharacter.HomeNodeCommlink = null;
+                    if (chkGearHomeNode.Checked)
+                    {
+                        _objCharacter.HomeNodeCommlink = objGear;
+                    }
+                }
+
+                CommonFunctions.ReplaceHomeNodes(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children), _objCharacter.Vehicles);
+                RefreshSelectedVehicle();
+                ScheduleCharacterUpdate();
+
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
-            else
-            {
-                Vehicle objSelectedVehicle = null;
-                Commlink objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle) as Commlink;
-                objGear.HomeNode = chkVehicleHomeNode.Checked;
-            }
-
-            CommonFunctions.ReplaceHomeNodes(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Gear, _objCharacter.Vehicles);
-            RefreshSelectedVehicle();
-            ScheduleCharacterUpdate();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
         }
         #endregion
 
@@ -20601,20 +20622,18 @@ namespace Chummer
                         XmlNode objXmlNode = GlobalOptions.Instance.Clipboard.SelectSingleNode("/character/gear");
                         if (objXmlNode != null)
                         {
-                            switch (objXmlNode["category"].InnerText)
+                            if (objXmlNode["iscommlink"]?.InnerText == System.Boolean.TrueString || (objXmlNode["category"].InnerText == "Commlinks" ||
+                        objXmlNode["category"].InnerText == "Commlink Accessories" || objXmlNode["category"].InnerText == "Cyberdecks" || objXmlNode["category"].InnerText == "Rigger Command Consoles"))
                             {
-                                case "Commlinks":
-                                case "Cyberdecks":
-                                case "Rigger Command Consoles":
-                                    Commlink objCommlink = new Commlink(_objCharacter);
-                                    objCommlink.Load(objXmlNode, true);
-                                    objGear = objCommlink;
-                                    break;
-                                default:
-                                    Gear objNewGear = new Gear(_objCharacter);
-                                    objNewGear.Load(objXmlNode, true);
-                                    objGear = objNewGear;
-                                    break;
+                                Gear objCommlink = new Commlink(_objCharacter);
+                                objCommlink.Load(objXmlNode, true);
+                                objGear = objCommlink;
+                            }
+                            else
+                            {
+                                Gear objNewGear = new Gear(_objCharacter);
+                                objNewGear.Load(objXmlNode, true);
+                                objGear = objNewGear;
                             }
 
                             objGear.Parent = null;
