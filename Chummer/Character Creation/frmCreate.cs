@@ -1962,31 +1962,30 @@ namespace Chummer
 
             // Refresh Qualities.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
-            foreach (Quality objQuality in _objCharacter.Qualities)
+            // We cannot use foreach because qualities can add more qualities
+            for (int j = 0; j < _objCharacter.Qualities.Count; j++)
             {
+                Quality objQuality = _objCharacter.Qualities[j];
+                if (objQuality.OriginSource == QualitySource.Improvement)
+                    continue;
                 string strSelected = objQuality.Extra;
 
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-                if (objNode != null)
+                if (objNode?["bonus"] != null)
                 {
-                    // Because all improvements are wiped at the start, no need to go and remove them again
-                    //ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                    if (objNode["bonus"] != null)
-                    {
-                        ImprovementManager.ForcedValue = strSelected;
-                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId, objNode["bonus"], false, 1, objQuality.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                            objQuality.Extra = ImprovementManager.SelectedValue;
+                    ImprovementManager.ForcedValue = strSelected;
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId, objNode["bonus"], false, 1, objQuality.DisplayNameShort);
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        objQuality.Extra = ImprovementManager.SelectedValue;
 
-                        for (int i = 0; i <= 1; i++)
+                    for (int i = 0; i <= 1; i++)
+                    {
+                        foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
                         {
-                            foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
+                            if (objTreeNode.Tag.ToString() == objQuality.InternalId)
                             {
-                                if (objTreeNode.Tag.ToString() == objQuality.InternalId)
-                                {
-                                    objTreeNode.Text = objQuality.DisplayName;
-                                    break;
-                                }
+                                objTreeNode.Text = objQuality.DisplayName;
+                                break;
                             }
                         }
                     }
