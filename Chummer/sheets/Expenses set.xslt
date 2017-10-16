@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Expenses -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -23,6 +23,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
             font-family: 'courier new', tahoma, 'trebuchet ms', arial;

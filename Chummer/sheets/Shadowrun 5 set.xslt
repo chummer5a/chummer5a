@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Character sheet based on the Shadowrun 5th Edition Character Sheet (English - US) -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -496 -->
@@ -53,6 +53,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
           font-family: segoe, tahoma, 'trebuchet ms', arial;

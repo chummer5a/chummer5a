@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Character sheet with fancy blocks for teh modularity-->
 <!-- Created by AngelForest -->
 <!-- Prototype by Adam Schmidt -->
@@ -20,6 +20,7 @@
     <html>
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <title><xsl:value-of select="$TitleName" /></title>
         <style type="text/css">
           *

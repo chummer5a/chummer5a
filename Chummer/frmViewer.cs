@@ -25,7 +25,8 @@ using System.Xml;
 using System.Xml.Xsl;
 using System.ComponentModel;
  using System.Linq;
- using PdfSharp.Pdf;
+using Codaxy.WkHtmlToPdf;
+using System.Diagnostics;
 
 namespace Chummer
 {
@@ -284,8 +285,62 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
-            objpdf.Save(strSaveFile);
+            //PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
+            //objpdf.Save(strSaveFile);
+
+            if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_File_Cannot_Be_Accessed"));
+                return;
+            }
+            if (File.Exists(strSaveFile))
+            {
+                try
+                {
+                    File.Delete(strSaveFile);
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_File_Cannot_Be_Accessed"));
+                    return;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.Instance.GetString("Message_File_Cannot_Be_Accessed"));
+                    return;
+                }
+            }
+
+            Dictionary<string, string> dicParams = new Dictionary<string, string>();
+            dicParams.Add("encoding", "UTF-8");
+            dicParams.Add("dpi", "300");
+            dicParams.Add("image-quality", "100");
+            dicParams.Add("print-media-type", "");
+            PdfConvert.ConvertHtmlToPdf(new PdfDocument
+            {
+                Html = webBrowser1.DocumentText,
+                ExtraParams = dicParams
+            }, new PdfConvertEnvironment
+            {
+                WkHtmlToPdfPath = Path.Combine(Application.StartupPath,"wkhtmltopdf.exe"),
+                Timeout = 60000,
+                TempFolderPath = Path.GetTempPath()
+            }, new PdfOutput
+            {
+                OutputFilePath = strSaveFile
+            });
+
+            Uri uriPath = new Uri(strSaveFile);
+            string strParams = GlobalOptions.Instance.PDFParameters;
+            strParams = strParams.Replace("{page}", 1.ToString());
+            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+            ProcessStartInfo objProgress = new ProcessStartInfo
+            {
+                FileName = GlobalOptions.Instance.PDFAppPath,
+                Arguments = strParams
+            };
+            Process.Start(objProgress);
         }
         private List<ListItem> GetXslFilesFromSheetsDirectory()
         {

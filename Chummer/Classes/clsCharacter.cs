@@ -1996,7 +1996,7 @@ namespace Chummer
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString());
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("maxnuyen", $"{_decMaxNuyen:###,###,##0.##}");
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString());
             // <prioritymetatype />
@@ -2164,7 +2164,7 @@ namespace Chummer
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("nuyen", $"{_decNuyen:###,###,##0.##}");
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
             // <adept />

@@ -136,6 +136,7 @@ Application Changes:
 - Fixed a null reference when selecting weapons with built-in gear.
 - Fixed a bug where trying to change the quantity of a gear plugin in Create mode would not work.
 - Added support for costs, gear quantities, and gear capacities that are not integers. All nuyen costs should now be tracked to decimal precision (precision depends on how large the number is), though Chummer5 will only display up to 2 decimal places.
+- Updated the tool that saves character sheets to PDF so that it shouldn't mess up sheet formatting as much as the previous one.
 
 Data Changes:
 
@@ -254,6 +255,7 @@ New Strings:
 - String_Total
 - String_FreeSpells
 - String_FreeCFs
+- Message_File_Cannot_Be_Accessed
 
 Changes Strings:
 - Message_PositiveQualityLimit

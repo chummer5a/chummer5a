@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Game Master character summary sheet -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
@@ -21,6 +21,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
             font-family: tahoma, 'trebuchet ms', arial;
