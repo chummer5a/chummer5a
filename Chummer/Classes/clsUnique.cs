@@ -181,29 +181,30 @@ namespace Chummer
                 string strKarmaNodeTest = objKarmaNode.InnerText;
                 if (strKarmaNodeTest.StartsWith("Variable"))
                 {
-                    int intMin;
-                    int intMax = 0;
-                    string strCost = strKarmaNodeTest.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    decimal decMin = 0.0m;
+                    decimal decMax = decimal.MaxValue;
+                    char[] charParentheses = { '(', ')' };
+                    string strCost = strKarmaNodeTest.Replace("Variable", string.Empty).Trim(charParentheses);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(false);
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _intBP = frmPickNumber.SelectedValue;
+                        _intBP = Convert.ToInt32(frmPickNumber.SelectedValue);
                     }
                 }
                 else

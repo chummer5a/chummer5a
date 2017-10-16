@@ -1067,7 +1067,7 @@ namespace Chummer
                     Gear objGear = new Gear(_objCharacter);
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                    objGear.Create(objXmlGearItem, _objCharacter, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
+                    objGear.Create(objXmlGearItem, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                     objGear.Cost = "0";
                     _objCharacter.Gear.Add(objGear);
                 }

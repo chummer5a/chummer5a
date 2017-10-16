@@ -34,9 +34,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Gear Rating.</param>
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
-        public void Create(XmlNode objXmlGear, Character objCharacter, TreeNode objNode, int intRating, bool blnAddImprovements = true, bool blnCreateChildren = true, string strForceValue = "")
+        public void Create(XmlNode objXmlGear, TreeNode objNode, int intRating, bool blnAddImprovements = true, bool blnCreateChildren = true, string strForceValue = "")
         {
-            base.Create(objXmlGear, objCharacter, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), strForceValue, false, false, blnAddImprovements, blnCreateChildren);
+            base.Create(objXmlGear, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), strForceValue, false, false, blnAddImprovements, blnCreateChildren);
 
             if (string.IsNullOrEmpty(objXmlGear["attributearray"]?.InnerText))
             {

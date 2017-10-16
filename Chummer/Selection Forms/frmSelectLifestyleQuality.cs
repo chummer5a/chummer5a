@@ -152,7 +152,7 @@ namespace Chummer
                 }
                 else
                 {
-                lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
+                lblCost.Text = String.Format("{0:###,###,##0.00¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
                 }
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;

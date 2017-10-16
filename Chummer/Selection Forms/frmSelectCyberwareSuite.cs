@@ -33,7 +33,7 @@ namespace Chummer
         private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
         private string _strType = "cyberware";
         private Character _objCharacter;
-        private int _intCost = 0;
+        private decimal _decCost = 0;
 
         List<Cyberware> _lstCyberware = new List<Cyberware>();
 
@@ -122,7 +122,7 @@ namespace Chummer
             XmlNode objXmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + lstCyberware.Text + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 
             decimal decTotalESS = 0.0m;
-            int intTotalCost = 0;
+            decimal decTotalCost = 0;
 
             // Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
@@ -130,19 +130,19 @@ namespace Chummer
             XPathNavigator nav = _objXmlDocument.CreateNavigator();
             lblCyberware.Text = string.Empty;
 
-            Grade objGrade = new Cyberware(_objCharacter).ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
             ParseNode(objXmlSuite, objGrade, null);
             foreach (Cyberware objCyberware in _lstCyberware)
             {
                 WriteList(objCyberware, 0);
-                intTotalCost += objCyberware.TotalCost;
+                decTotalCost += objCyberware.TotalCost;
                 decTotalESS += objCyberware.CalculatedESS();
             }
 
             lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
-            lblCost.Text = $"{intTotalCost:###,###,##0¥}";
+            lblCost.Text = $"{decTotalCost:###,###,##0.00¥}";
             lblGrade.Text = objXmlSuite["grade"].InnerText;
-            _intCost = intTotalCost;
+            _decCost = decTotalCost;
         }
         #endregion
 
@@ -172,11 +172,11 @@ namespace Chummer
         /// <summary>
         /// Total cost of the Cyberware Suite. This is done to make it easier to obtain the actual cost in Career Mode.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
-                return _intCost;
+                return _decCost;
             }
         }
         #endregion

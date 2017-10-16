@@ -112,26 +112,26 @@ namespace Chummer.Backend.Equipment
 
                 if (objXmlArmorCostNode.InnerText.StartsWith("Variable"))
                 {
-                    int intMin;
-                    int intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlArmorCostNode.InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    decimal decMin = 0.0m;
+                    decimal decMax = decimal.MaxValue;
+                    char[] charParentheses = { '(', ')' };
+                    string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
                         frmSelectNumber frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
@@ -794,49 +794,46 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Armor Mod.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
-                int intReturn;
+                decimal decReturn = 0.0m;
+                string strCostExpr = _strCost;
+                if (strCostExpr.StartsWith("FixedValues"))
+                {
+                    string[] strValues = strCostExpr.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    if (_intRating > 0)
+                        strCostExpr = strValues[Math.Min(_intRating, strValues.Length) - 1];
+                }
+                decimal decArmorCost = 0.0m;
+                if (_objParent != null)
+                    decArmorCost = _objParent.Cost;
 
-                if (_strCost.Contains("Armor Cost"))
+                if (strCostExpr.Contains("Armor Cost") || strCostExpr.Contains("Rating"))
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-                    string strCostExpr = _strCost.Replace("Armor Cost", _objParent.Cost.ToString());
+                    strCostExpr = strCostExpr.Replace("Armor Cost", decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
+                    strCostExpr = strCostExpr.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strCostExpr);
-                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.CultureInfo)));
-                }
-                else if (_strCost.Contains("Rating"))
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strCostExpr = _strCost.Replace("Rating", _intRating.ToString());
-                    XPathExpression xprCost = nav.Compile(strCostExpr);
-                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.CultureInfo)));
-                }
-                else if (_strCost.StartsWith("FixedValues"))
-                {
-                    string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    intReturn = Convert.ToInt32(strValues[Math.Min(_intRating, strValues.Length) - 1]);
+                    decReturn = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
                 else
-                    intReturn = Convert.ToInt32(_strCost);
+                    decReturn = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
-                    intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.CultureInfo) * 0.9);
+                    decReturn *= 0.9m;
 
-                return intReturn;
+                return decReturn;
             }
         }
 
         /// <summary>
         /// Cost for just the Armor Mod.
         /// </summary>
-        public int OwnCost
+        public decimal OwnCost
         {
             get
             {

@@ -142,35 +142,34 @@ namespace Chummer.Backend.Equipment
             if (objXmlVehicle["cost"] != null)
             {
                 // Check for a Variable Cost.
-                if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
+                _strCost = objXmlVehicle["cost"].InnerText;
+                if (_strCost.StartsWith("Variable"))
                 {
-                    int intMin;
-                    int intMax = 0;
-                    string strCost = objXmlVehicle["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = _strCost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        int.TryParse(strValues[0], out intMin);
-                        int.TryParse(strValues[1], out intMax);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        int.TryParse(strCost.Replace("+", string.Empty), out intMin);
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
                         frmSelectNumber frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
                     }
                 }
-                else
-                    _strCost = objXmlVehicle["cost"].InnerText;
             }
             objXmlVehicle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlVehicle.TryGetStringFieldQuickly("page", ref _strPage);
@@ -244,7 +243,7 @@ namespace Chummer.Backend.Equipment
                         TreeNode objGearNode = new TreeNode();
                         Gear objGear = new Gear(_objCharacter);
                         int intRating = 0;
-                        int intQty = 1;
+                        decimal decQty = 1;
                         string strForceValue = string.Empty;
 
                         if (objXmlVehicleGear.Attributes["rating"] != null)
@@ -255,16 +254,23 @@ namespace Chummer.Backend.Equipment
                             intMaxRating = Convert.ToInt32(objXmlVehicleGear.Attributes["maxrating"].InnerText);
 
                         if (objXmlVehicleGear.Attributes["qty"] != null)
-                            intQty = Convert.ToInt32(objXmlVehicleGear.Attributes["qty"].InnerText);
+                            decQty = Convert.ToDecimal(objXmlVehicleGear.Attributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
                         if (objXmlVehicleGear.Attributes["select"] != null)
                             strForceValue = objXmlVehicleGear.Attributes["select"].InnerText;
 
                         List<Weapon> objWeapons = new List<Weapon>();
                         List<TreeNode> objWeaponNodes = new List<TreeNode>();
-                        objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+                        if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
+                        {
+                            Commlink objCommlink = new Commlink(_objCharacter);
+                            objCommlink.Create(objXmlGear, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+                            objGear = objCommlink;
+                        }
+                        else
+                            objGear.Create(objXmlGear, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
                         objGear.Cost = "0";
-                        objGear.Quantity = intQty;
+                        objGear.Quantity = decQty;
                         objGear.MaxRating = intMaxRating;
                         objGear.IncludedInParent = true;
                         objGearNode.Text = objGear.DisplayName;
@@ -1523,54 +1529,48 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Vehicle including all after-market Modification.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
-                int intCost = Convert.ToInt32(_strCost);
-                if (BlackMarketDiscount)
-                    intCost = intCost * 9 / 10;
-
-                if (DealerConnectionDiscount)
-                    intCost = intCost * 9 / 10;
+                decimal decCost = OwnCost;
 
                 foreach (VehicleMod objMod in _lstVehicleMods)
                 {
                     // Do not include the price of Mods that are part of the base configureation.
                     if (!objMod.IncludedInVehicle)
                     {
-                        intCost += objMod.TotalCost;
+                        decCost += objMod.TotalCost;
                     }
                     else
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        intCost += objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost);
-                        intCost += objMod.Cyberware.Sum(objCyberware => objCyberware.TotalCost);
+                        decCost += objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost);
+                        decCost += objMod.Cyberware.Sum(objCyberware => objCyberware.TotalCost);
                     }
                 }
 
-                intCost += _lstGear.Sum(objGear => objGear.TotalCost);
+                decCost += _lstGear.Sum(objGear => objGear.TotalCost);
 
-                return intCost;
+                return decCost;
             }
         }
 
         /// <summary>
         /// The cost of just the Vehicle itself.
         /// </summary>
-        public int OwnCost
+        public decimal OwnCost
         {
             get
             {
-                int intCost = Convert.ToInt32(_strCost);
-
+                decimal decCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
                 if (BlackMarketDiscount)
-                    intCost = intCost * 9 / 10;
+                    decCost *= 0.9m;
 
                 if (DealerConnectionDiscount)
-                    intCost = intCost * 9 / 10;
+                    decCost *= 0.9m;
 
-                return intCost;
+                return decCost;
             }
         }
 

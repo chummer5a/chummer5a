@@ -34,7 +34,7 @@ namespace Chummer
 
         private bool _blnAddAgain;
         private static string _strSelectCategory = string.Empty;
-        private int _intMarkup;
+        private decimal _decMarkup;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly Character _objCharacter;
@@ -386,11 +386,11 @@ namespace Chummer
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
         }
 
@@ -461,10 +461,10 @@ namespace Chummer
                                 strAccessories += objGear.DisplayName;
                             }
                             string strSource = objArmor.Source + " " + objArmor.Page;
-                            int intCost = objArmor.Cost;
+                            decimal decCost = objArmor.Cost;
 
                             tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, intCapacity, strAvail, strAccessories,
-                                strSource, intCost);
+                                strSource, decCost);
                         }
                     }
 
@@ -531,7 +531,7 @@ namespace Chummer
             {
                 _strSelectCategory = objNode["category"]?.InnerText;
                 _strSelectedArmor = objNode["name"]?.InnerText;
-                _intMarkup = Convert.ToInt32(nudMarkup.Value);
+                _decMarkup = nudMarkup.Value;
                 _intRating = Convert.ToInt32(nudRating.Value);
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
@@ -575,30 +575,35 @@ namespace Chummer
             XmlElement xmlCostElement = objXmlArmor["cost"];
             if (xmlCostElement != null)
             {
-                int intItemCost;
-                if (xmlCostElement.InnerText.StartsWith("Variable"))
+                decimal decItemCost = 0.0m;
+                if (chkFreeItem.Checked)
                 {
-                    int intMin;
-                    int intMax = int.MaxValue;
+                    lblCost.Text = $"{0:###,###,##0.00¥}";
+                    decItemCost = 0;
+                }
+                else if (xmlCostElement.InnerText.StartsWith("Variable"))
+                {
+                    decimal decMin;
+                    decimal decMax = decimal.MaxValue;
                     string strCost = xmlCostElement.InnerText.Replace("Variable(", string.Empty)
                         .Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMax == int.MaxValue)
+                    if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{intMin:###,###,##0¥+}";
+                        lblCost.Text = $"{decMin:###,###,##0.00¥+}";
                     }
                     else
-                        lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+                        lblCost.Text = $"{decMin:###,###,##0.00} - {decMax:###,###,##0.00¥}";
 
-                    intItemCost = intMin;
+                    decItemCost = decMin;
                 }
                 else if (xmlCostElement.InnerText.Contains("Rating"))
                 {
@@ -606,35 +611,27 @@ namespace Chummer
                     XPathExpression xprCost =
                         nav.Compile(xmlCostElement.InnerText.Replace("Rating",
                             nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                    double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    decItemCost = (Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    decItemCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {
-                        dblCost = dblCost - (dblCost * 0.90);
+                        decItemCost *= 0.9m;
                     }
-                    intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
-                    lblCost.Text = $"{intItemCost:###,###,##0¥}";
+                    lblCost.Text = $"{decItemCost:###,###,##0.00¥}";
                 }
                 else
                 {
-                    double dblCost = Convert.ToDouble(xmlCostElement.InnerText, GlobalOptions.InvariantCultureInfo);
-                    dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+                    decItemCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {
-                        dblCost = dblCost * 0.90;
+                        decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{dblCost:###,###,##0¥}";
-                    intItemCost = Convert.ToInt32(dblCost, GlobalOptions.InvariantCultureInfo);
+                    lblCost.Text = $"{decItemCost:###,###,##0.00¥}";
                 }
 
                 lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;
 
-                if (chkFreeItem.Checked)
-                {
-                    lblCost.Text = $"{0:###,###,##0¥}";
-                    intItemCost = 0;
-                }
-
-                lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
 
                 string strBook = _objCharacter.Options.LanguageBookShort(objXmlArmor["source"]?.InnerText);
                 string strPage = objXmlArmor["page"]?.InnerText;

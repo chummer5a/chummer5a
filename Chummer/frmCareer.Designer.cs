@@ -9944,7 +9944,7 @@ namespace Chummer
             // lblGearCost
             // 
             this.lblGearCost.AutoSize = true;
-            this.lblGearCost.Location = new System.Drawing.Point(568, 82);
+            this.lblGearCost.Location = new System.Drawing.Point(684, 82);
             this.lblGearCost.Name = "lblGearCost";
             this.lblGearCost.Size = new System.Drawing.Size(34, 13);
             this.lblGearCost.TabIndex = 62;
@@ -9953,7 +9953,7 @@ namespace Chummer
             // lblGearCostLabel
             // 
             this.lblGearCostLabel.AutoSize = true;
-            this.lblGearCostLabel.Location = new System.Drawing.Point(531, 82);
+            this.lblGearCostLabel.Location = new System.Drawing.Point(618, 82);
             this.lblGearCostLabel.Name = "lblGearCostLabel";
             this.lblGearCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblGearCostLabel.TabIndex = 61;
@@ -9963,7 +9963,7 @@ namespace Chummer
             // lblGearAvail
             // 
             this.lblGearAvail.AutoSize = true;
-            this.lblGearAvail.Location = new System.Drawing.Point(456, 82);
+            this.lblGearAvail.Location = new System.Drawing.Point(549, 82);
             this.lblGearAvail.Name = "lblGearAvail";
             this.lblGearAvail.Size = new System.Drawing.Size(36, 13);
             this.lblGearAvail.TabIndex = 60;
@@ -9972,7 +9972,7 @@ namespace Chummer
             // lblGearAvailLabel
             // 
             this.lblGearAvailLabel.AutoSize = true;
-            this.lblGearAvailLabel.Location = new System.Drawing.Point(417, 82);
+            this.lblGearAvailLabel.Location = new System.Drawing.Point(482, 82);
             this.lblGearAvailLabel.Name = "lblGearAvailLabel";
             this.lblGearAvailLabel.Size = new System.Drawing.Size(33, 13);
             this.lblGearAvailLabel.TabIndex = 59;

@@ -80,35 +80,34 @@ namespace Chummer.Backend.Equipment
                 _strCost = "0";
             else if (objXmlAccessory["cost"] != null)
             {
-                if (objXmlAccessory["cost"].InnerText.StartsWith("Variable"))
+                _strCost = objXmlAccessory["cost"].InnerText;
+                if (_strCost.StartsWith("Variable"))
                 {
-                    int intMin = 0;
-                    int intMax = 0;
-                    string strCost = objXmlAccessory["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = _strCost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
                         frmSelectNumber frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
                     }
                 }
-                else
-                    _strCost = objXmlAccessory["cost"].InnerText;
             }
 
             objXmlAccessory.TryGetStringFieldQuickly("source", ref _strSource);
@@ -157,7 +156,14 @@ namespace Chummer.Backend.Equipment
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                    if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
+                    {
+                        Commlink objCommlink = new Commlink(_objCharacter);
+                        objCommlink.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                        objGear = objCommlink;
+                    }
+                    else
+                        objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
                     objGear.Cost = "0";
                     objGear.MaxRating = objGear.Rating;
                     objGear.MinRating = objGear.Rating;
@@ -911,11 +917,28 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Weapon Accessory.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
-                int intReturn = 0;
+                decimal decReturn = OwnCost;
+
+                // Add in the cost of any Gear the Weapon Accessory has attached to it.
+                foreach (Gear objGear in _lstGear)
+                    decReturn += objGear.TotalCost;
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
+        /// The cost of just the Weapon Accessory itself.
+        /// </summary>
+        public decimal OwnCost
+        {
+            get
+            {
+                decimal decReturn = 0;
 
                 XmlDocument objXmlDocument = new XmlDocument();
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -926,50 +949,12 @@ namespace Chummer.Backend.Equipment
                 strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
                 strCost = strCost.Replace("Rating", _intRating.ToString());
                 XPathExpression xprCost = nav.Compile(strCost);
-                intReturn = (Convert.ToInt32(nav.Evaluate(xprCost).ToString()) * _objParent.CostMultiplier);
+                decReturn = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
 
                 if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
+                    decReturn *= 0.9m;
 
-                // Add in the cost of any Gear the Weapon Accessory has attached to it.
-                foreach (Gear objGear in _lstGear)
-                    intReturn += objGear.TotalCost;
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// The cost of just the Weapon Accessory itself.
-        /// </summary>
-        public int OwnCost
-        {
-            get
-            {
-                int intReturn = 0;
-
-                if (_strCost.Contains("Rating") || _strCost.Contains("Weapon Cost"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strCost = string.Empty;
-                    string strCostExpression = _strCost;
-
-                    strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-                    strCost = strCost.Replace("Weapon Cost", _objParent.Cost.ToString());
-                    XPathExpression xprCost = nav.Compile(strCost);
-                    double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblCost);
-                }
-                else
-                    intReturn = Convert.ToInt32(_strCost) * _objParent.CostMultiplier;
-
-                if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
-
-                return intReturn;
+                return decReturn;
             }
         }
 

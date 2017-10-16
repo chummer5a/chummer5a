@@ -11,7 +11,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = "Standard";
         private string _strAltName = string.Empty;
         private decimal _decEss = 1.0m;
-        private double _dblCost = 1.0;
+        private decimal _decCost = 1.0m;
         private int _intAvail = 0;
         private string _strSource = "SR5";
 
@@ -29,7 +29,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
             objNode.TryGetDecFieldQuickly("ess", ref _decEss);
-            objNode.TryGetDoubleFieldQuickly("cost", ref _dblCost);
+            objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
         }
@@ -79,11 +79,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Grade's cost multiplier.
         /// </summary>
-        public double Cost
+        public decimal Cost
         {
             get
             {
-                return _dblCost;
+                return _decCost;
             }
         }
 

@@ -217,6 +217,7 @@ namespace Chummer
             this.mnuSpecialReapplyImprovements = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialBPAvailLimit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialConfirmValidity = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSpecialKarmaValue = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
             this.tsbPrint = new System.Windows.Forms.ToolStripButton();
@@ -876,7 +877,6 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSpecialKarmaValue = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -2594,7 +2594,7 @@ namespace Chummer
             this.tsbSeparator,
             this.tsbCopy,
             this.tsbPaste});
-            this.toolStrip.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1066, 25);
             this.toolStrip.TabIndex = 53;
@@ -7108,7 +7108,7 @@ namespace Chummer
             // 
             this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearDataProcessing.FormattingEnabled = true;
-            this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 180);
+            this.cboGearDataProcessing.Location = new System.Drawing.Point(621, 163);
             this.cboGearDataProcessing.Name = "cboGearDataProcessing";
             this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
             this.cboGearDataProcessing.TabIndex = 159;
@@ -7119,7 +7119,7 @@ namespace Chummer
             // 
             this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearFirewall.FormattingEnabled = true;
-            this.cboGearFirewall.Location = new System.Drawing.Point(733, 180);
+            this.cboGearFirewall.Location = new System.Drawing.Point(687, 163);
             this.cboGearFirewall.Name = "cboGearFirewall";
             this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
             this.cboGearFirewall.TabIndex = 158;
@@ -7130,7 +7130,7 @@ namespace Chummer
             // 
             this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearSleaze.FormattingEnabled = true;
-            this.cboGearSleaze.Location = new System.Drawing.Point(598, 180);
+            this.cboGearSleaze.Location = new System.Drawing.Point(552, 163);
             this.cboGearSleaze.Name = "cboGearSleaze";
             this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
             this.cboGearSleaze.TabIndex = 157;
@@ -7141,7 +7141,7 @@ namespace Chummer
             // 
             this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGearAttack.FormattingEnabled = true;
-            this.cboGearAttack.Location = new System.Drawing.Point(531, 180);
+            this.cboGearAttack.Location = new System.Drawing.Point(485, 163);
             this.cboGearAttack.Name = "cboGearAttack";
             this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
             this.cboGearAttack.TabIndex = 156;
@@ -7150,7 +7150,7 @@ namespace Chummer
             // 
             // lblGearFirewallLabel
             // 
-            this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 166);
+            this.lblGearFirewallLabel.Location = new System.Drawing.Point(687, 149);
             this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
             this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
             this.lblGearFirewallLabel.TabIndex = 154;
@@ -7160,7 +7160,7 @@ namespace Chummer
             // 
             // lblGearDataProcessingLabel
             // 
-            this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 166);
+            this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(621, 149);
             this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
             this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
             this.lblGearDataProcessingLabel.TabIndex = 152;
@@ -7170,7 +7170,7 @@ namespace Chummer
             // 
             // lblGearSleazeLabel
             // 
-            this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 166);
+            this.lblGearSleazeLabel.Location = new System.Drawing.Point(552, 149);
             this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
             this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
             this.lblGearSleazeLabel.TabIndex = 150;
@@ -7180,7 +7180,7 @@ namespace Chummer
             // 
             // lblGearAttackLabel
             // 
-            this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 166);
+            this.lblGearAttackLabel.Location = new System.Drawing.Point(485, 149);
             this.lblGearAttackLabel.Name = "lblGearAttackLabel";
             this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
             this.lblGearAttackLabel.TabIndex = 148;
@@ -7366,7 +7366,7 @@ namespace Chummer
             // lblGearDeviceRating
             // 
             this.lblGearDeviceRating.AutoSize = true;
-            this.lblGearDeviceRating.Location = new System.Drawing.Point(406, 166);
+            this.lblGearDeviceRating.Location = new System.Drawing.Point(406, 164);
             this.lblGearDeviceRating.Name = "lblGearDeviceRating";
             this.lblGearDeviceRating.Size = new System.Drawing.Size(19, 13);
             this.lblGearDeviceRating.TabIndex = 66;
@@ -7375,7 +7375,7 @@ namespace Chummer
             // lblGearDeviceRatingLabel
             // 
             this.lblGearDeviceRatingLabel.AutoSize = true;
-            this.lblGearDeviceRatingLabel.Location = new System.Drawing.Point(307, 166);
+            this.lblGearDeviceRatingLabel.Location = new System.Drawing.Point(307, 164);
             this.lblGearDeviceRatingLabel.Name = "lblGearDeviceRatingLabel";
             this.lblGearDeviceRatingLabel.Size = new System.Drawing.Size(78, 13);
             this.lblGearDeviceRatingLabel.TabIndex = 65;
@@ -7397,7 +7397,7 @@ namespace Chummer
             0,
             0});
             this.nudGearQty.Name = "nudGearQty";
-            this.nudGearQty.Size = new System.Drawing.Size(48, 20);
+            this.nudGearQty.Size = new System.Drawing.Size(102, 20);
             this.nudGearQty.TabIndex = 64;
             this.nudGearQty.Value = new decimal(new int[] {
             1,
@@ -7419,7 +7419,7 @@ namespace Chummer
             // lblGearCost
             // 
             this.lblGearCost.AutoSize = true;
-            this.lblGearCost.Location = new System.Drawing.Point(568, 82);
+            this.lblGearCost.Location = new System.Drawing.Point(684, 82);
             this.lblGearCost.Name = "lblGearCost";
             this.lblGearCost.Size = new System.Drawing.Size(34, 13);
             this.lblGearCost.TabIndex = 62;
@@ -7428,7 +7428,7 @@ namespace Chummer
             // lblGearCostLabel
             // 
             this.lblGearCostLabel.AutoSize = true;
-            this.lblGearCostLabel.Location = new System.Drawing.Point(531, 82);
+            this.lblGearCostLabel.Location = new System.Drawing.Point(618, 82);
             this.lblGearCostLabel.Name = "lblGearCostLabel";
             this.lblGearCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblGearCostLabel.TabIndex = 61;
@@ -7438,7 +7438,7 @@ namespace Chummer
             // lblGearAvail
             // 
             this.lblGearAvail.AutoSize = true;
-            this.lblGearAvail.Location = new System.Drawing.Point(456, 82);
+            this.lblGearAvail.Location = new System.Drawing.Point(549, 82);
             this.lblGearAvail.Name = "lblGearAvail";
             this.lblGearAvail.Size = new System.Drawing.Size(36, 13);
             this.lblGearAvail.TabIndex = 60;
@@ -7447,7 +7447,7 @@ namespace Chummer
             // lblGearAvailLabel
             // 
             this.lblGearAvailLabel.AutoSize = true;
-            this.lblGearAvailLabel.Location = new System.Drawing.Point(417, 82);
+            this.lblGearAvailLabel.Location = new System.Drawing.Point(482, 82);
             this.lblGearAvailLabel.Name = "lblGearAvailLabel";
             this.lblGearAvailLabel.Size = new System.Drawing.Size(33, 13);
             this.lblGearAvailLabel.TabIndex = 59;
@@ -7521,7 +7521,7 @@ namespace Chummer
             0,
             0});
             this.nudGearRating.Name = "nudGearRating";
-            this.nudGearRating.Size = new System.Drawing.Size(48, 20);
+            this.nudGearRating.Size = new System.Drawing.Size(102, 20);
             this.nudGearRating.TabIndex = 52;
             this.nudGearRating.ValueChanged += new System.EventHandler(this.nudGearRating_ValueChanged);
             // 
@@ -7572,7 +7572,7 @@ namespace Chummer
             // 
             this.cmdAddGear.AutoSize = true;
             this.cmdAddGear.ContextMenuStrip = this.cmsGearButton;
-            this.cmdAddGear.Location = new System.Drawing.Point(3, 7);
+            this.cmdAddGear.Location = new System.Drawing.Point(6, 7);
             this.cmdAddGear.Name = "cmdAddGear";
             this.cmdAddGear.Size = new System.Drawing.Size(80, 23);
             this.cmdAddGear.SplitMenuStrip = this.cmsGearButton;

@@ -100,26 +100,26 @@ namespace Chummer.Backend.Equipment
             {
                 if (objXmlArmorNode["cost"].InnerText.StartsWith("Variable") && !blnSkipSelectForms)
                 {
-                    int intMin;
-                    int intMax = 0;
+                    decimal decMin = 0.0m;
+                    decimal decMax = decimal.MaxValue;
                     char[] charParentheses = { '(', ')' };
                     string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
                         frmSelectNumber frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
@@ -303,7 +303,14 @@ namespace Chummer.Backend.Equipment
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                    if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
+                    {
+                        Commlink objCommlink = new Commlink(_objCharacter);
+                        objCommlink.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                        objGear = objCommlink;
+                    }
+                    else
+                        objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
                     objGear.Cost = "0";
@@ -800,7 +807,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Armor's Cost.
         /// </summary>
-        public int Cost
+        public decimal Cost
         {
             get
             {
@@ -821,11 +828,11 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
-                    return Convert.ToInt32(strReturn);
+                    return Convert.ToDecimal(strReturn, GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
-                    return Convert.ToInt32(_strCost);
+                    return Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
                 }
             }
             set
@@ -972,11 +979,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Armor's total Cost including Modifications.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
-                int intTotalCost;
+                decimal decTotalCost = 0.0m;
                 if (_strCost.Contains("Rating"))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
@@ -987,35 +994,35 @@ namespace Chummer.Backend.Equipment
 
                     string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strCost);
-                    intTotalCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                    decTotalCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
-                    intTotalCost = Convert.ToInt32(_strCost);
+                    decTotalCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
                 }
                 if (DiscountCost)
-                    intTotalCost = intTotalCost * 9 / 10;
+                    decTotalCost *= 0.9m;
 
                 // Go through all of the Mods for this piece of Armor and add the Cost value.
                 foreach (ArmorMod objMod in _lstArmorMods)
-                    intTotalCost += objMod.TotalCost;
+                    decTotalCost += objMod.TotalCost;
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
                 foreach (Gear objGear in _lstGear)
-                    intTotalCost += objGear.TotalCost;
+                    decTotalCost += objGear.TotalCost;
 
-                return intTotalCost;
+                return decTotalCost;
             }
         }
 
         /// <summary>
         /// Cost for just the Armor.
         /// </summary>
-        public int OwnCost
+        public decimal OwnCost
         {
             get
             {
-                int intTotalCost;
+                decimal decTotalCost = 0.0m;
                 if (_strCost.Contains("Rating"))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
@@ -1026,17 +1033,17 @@ namespace Chummer.Backend.Equipment
 
                     string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strCost);
-                    intTotalCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+                    decTotalCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
-                    intTotalCost = Convert.ToInt32(_strCost);
+                    decTotalCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
                 }
 
                 if (DiscountCost)
-                    intTotalCost = intTotalCost * 9 / 10;
+                    decTotalCost *= 0.9m;
 
-                return intTotalCost;
+                return decTotalCost;
             }
         }
 

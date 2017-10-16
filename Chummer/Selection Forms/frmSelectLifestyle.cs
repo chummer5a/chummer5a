@@ -252,13 +252,13 @@ namespace Chummer
             _objLifestyle.Name = txtLifestyleName.Text;
             _objLifestyle.LifestyleName = cboLifestyle.SelectedValue.ToString();
             _objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
-            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+            _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
             _objLifestyle.LifestyleQualities.Clear();
             _objLifestyle.StyleType = _objType;
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
-            _objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
+            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
 
             Guid source;
             if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out source))
@@ -338,10 +338,10 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value /100);
-                lblCost.Text += " (" + $"{Convert.ToInt32(decDiscount):###,###,##0¥}" + ")";
+                lblCost.Text += " (" + $"{Convert.ToInt32(decDiscount):###,###,##0.00¥}" + ")";
             }
             int intNuyen = Convert.ToInt32(decNuyen);
-            lblCost.Text = $"{intNuyen:###,###,##0¥}";
+            lblCost.Text = $"{intNuyen:###,###,##0.00¥}";
             return intNuyen;
         }
 

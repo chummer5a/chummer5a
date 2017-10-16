@@ -64,8 +64,8 @@ namespace Chummer
         private int _intNotoriety = 0;
         private int _intPublicAwareness = 0;
         private int _intBurntStreetCred = 0;
-        private int _intNuyen = 0;
-        private int _intStartingNuyen = 0;
+        private decimal _decNuyen = 0;
+        private decimal _decStartingNuyen = 0;
         private int _intMaxAvail = 12;
         private decimal _decEssenceAtSpecialStart = 6.0m;
         private int _intSpecial = 0;
@@ -111,8 +111,8 @@ namespace Chummer
         // Build Points
         private int _intSumtoTen = 10;
         private int _intBuildPoints = 800;
-        private decimal _decNuyenMaximumBP = 50m;
-        private decimal _decNuyenBP = 0m;
+        private decimal _decNuyenMaximumBP = 50;
+        private decimal _decNuyenBP = 0;
         private int _intBuildKarma = 0;
         private int _intAdeptWayDiscount = 0;
         private int _intGameplayOptionQualityLimit = 25;
@@ -213,7 +213,7 @@ namespace Chummer
         private string _strPriorityResources = string.Empty;
         private string _strPriorityTalent = string.Empty;
         private List<string> _lstPrioritySkills = new List<string>();
-        private int _intMaxNuyen = 0;
+        private decimal _decMaxNuyen = 0;
         private int _intMaxKarma = 0;
         private int _intContactMultiplier = 0;
 
@@ -489,9 +489,9 @@ namespace Chummer
             // <maxavail />
             objWriter.WriteElementString("maxavail", _intMaxAvail.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _intNuyen.ToString());
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <nuyen />
-            objWriter.WriteElementString("startingnuyen", _intStartingNuyen.ToString());
+            objWriter.WriteElementString("startingnuyen", _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
             // <sumtoten />
@@ -507,7 +507,7 @@ namespace Chummer
             // <gameplayoptionqualitylimit />
             objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString());
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _intMaxNuyen.ToString());
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString());
             // <contactmultiplier />
@@ -1148,7 +1148,7 @@ namespace Chummer
                 _strPrimaryArm = "Right";
 
             objXmlCharacter.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption);
-            objXmlCharacter.TryGetInt32FieldQuickly("maxnuyen", ref _intMaxNuyen);
+            objXmlCharacter.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen);
             objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
             objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma);
             objXmlCharacter.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
@@ -1198,8 +1198,8 @@ namespace Chummer
             objXmlCharacter.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
             objXmlCharacter.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
             objXmlCharacter.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
-            objXmlCharacter.TryGetInt32FieldQuickly("nuyen", ref _intNuyen);
-            objXmlCharacter.TryGetInt32FieldQuickly("startingnuyen", ref _intStartingNuyen);
+            objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
+            objXmlCharacter.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
             objXmlCharacter.TryGetInt32FieldQuickly("adeptwaydiscount", ref _intAdeptWayDiscount);
 
             // Sum to X point value.
@@ -1213,8 +1213,8 @@ namespace Chummer
                 {
                 if (string.IsNullOrEmpty(_strGameplayOption))
                     _strGameplayOption = "Prime Runner";
-                if (_intMaxNuyen == 0)
-                    _intMaxNuyen = 25;
+                if (_decMaxNuyen == 0)
+                    _decMaxNuyen = 25;
                 }
             //Maximum number of Karma that can be spent/gained on Qualities.
             objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
@@ -1879,7 +1879,7 @@ namespace Chummer
                     strContactMultiplier = _objOptions.FreeContactsMultiplier.ToString();
                 }
                 _intMaxKarma = Convert.ToInt32(strKarma);
-                _intMaxNuyen = Convert.ToInt32(strNuyen);
+                    _decMaxNuyen = Convert.ToDecimal(strNuyen);
                 _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
                 _intContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
             }
@@ -1996,7 +1996,7 @@ namespace Chummer
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString());
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _intMaxKarma.ToString());
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.CultureInfo));
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString());
             // <prioritymetatype />
@@ -2164,7 +2164,7 @@ namespace Chummer
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _intNuyen.ToString());
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.CultureInfo));
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
             // <adept />
@@ -2798,7 +2798,7 @@ namespace Chummer
             _intSumtoTen = 10;
 
 
-            _decNuyenMaximumBP = 50m;
+            _decNuyenMaximumBP = 50;
             _intSpellLimit = 0;
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
@@ -3354,15 +3354,15 @@ namespace Chummer
         /// <summary>
         /// Character's maximum nuyen at character creation.
         /// </summary>
-        public int MaxNuyen
+        public decimal MaxNuyen
         {
             get
             {
-                return _intMaxNuyen;
+                return _decMaxNuyen;
             }
             set
             {
-                _intMaxNuyen = value;
+                _decMaxNuyen = value;
             }
         }
 
@@ -4006,7 +4006,7 @@ namespace Chummer
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if (objEntry.Type == ExpenseType.Karma && objEntry.Amount > 0 && objEntry.Refund == false)
-                        intKarma += objEntry.Amount;
+                        intKarma += Convert.ToInt32(objEntry.Amount);
                 }
 
                 return intKarma;
@@ -4016,20 +4016,20 @@ namespace Chummer
         /// <summary>
         /// Total amount of Nuyen the character has earned over the career.
         /// </summary>
-        public int CareerNuyen
+        public decimal CareerNuyen
         {
             get
             {
-                int intNuyen = 0;
+                decimal decNuyen = 0;
 
                 foreach (ExpenseLogEntry objEntry in _lstExpenseLog)
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if (objEntry.Type == ExpenseType.Nuyen && objEntry.Amount > 0 && objEntry.Refund == false)
-                        intNuyen += objEntry.Amount;
+                        decNuyen += objEntry.Amount;
                 }
 
-                return intNuyen;
+                return decNuyen;
             }
         }
 
@@ -5849,30 +5849,30 @@ namespace Chummer
         /// <summary>
         /// Amount of Nuyen the character has.
         /// </summary>
-        public int Nuyen
+        public decimal Nuyen
         {
             get
             {
-                return _intNuyen;
+                return _decNuyen;
             }
             set
             {
-                _intNuyen = value;
+                _decNuyen = value;
             }
         }
 
         /// <summary>
         /// Amount of Nuyen the character started with via the priority system.
         /// </summary>
-        public int StartingNuyen
+        public decimal StartingNuyen
         {
             get
             {
-                return _intStartingNuyen;
+                return _decStartingNuyen;
             }
             set
             {
-                _intStartingNuyen = value;
+                _decStartingNuyen = value;
             }
         }
 
@@ -5913,7 +5913,7 @@ namespace Chummer
         {
             get
             {
-                decimal decImprovement = Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP), GlobalOptions.InvariantCultureInfo);
+                decimal decImprovement = ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP);
                 if (_objBuildMethod == CharacterBuildMethod.Karma)
                     decImprovement *= 2.0m;
 
@@ -5923,7 +5923,7 @@ namespace Chummer
                     if (_intBuildKarma > 0)
                         return _intBuildKarma;
                     else
-                        return 1000;
+                        return 1000.0m;
                 }
                 else
                     return Math.Max(_decNuyenMaximumBP, decImprovement);
@@ -6778,7 +6778,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intCost">Item's cost.</param>
         /// <param name="strAvail">Item's Availability.</param>
-        public string AvailTest(int intCost, string strAvail)
+        public string AvailTest(decimal decCost, string strAvail)
         {
             string strReturn;
             int intAvail;
@@ -6789,11 +6789,11 @@ namespace Chummer
                 string strInterval;
                 int intTest = 0;
                 // Determine the interval based on the item's price.
-                if (intCost <= 100)
+                if (decCost <= 100.0m)
                     strInterval = "12 " + LanguageManager.Instance.GetString("String_Hours");
-                else if (intCost > 100 && intCost <= 1000)
+                else if (decCost > 100.0m && decCost <= 1000.0m)
                     strInterval = "1 " + LanguageManager.Instance.GetString("String_Day");
-                else if (intCost > 1000 && intCost <= 10000)
+                else if (decCost > 1000.0m && decCost <= 10000.0m)
                     strInterval = "2 " + LanguageManager.Instance.GetString("String_Days");
                 else
                     strInterval = "1 " + LanguageManager.Instance.GetString("String_Week");

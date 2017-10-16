@@ -93,7 +93,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, null, null, null, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -166,7 +166,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, 1, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -218,7 +218,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, null, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -299,7 +299,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, new Tuple<string, string>("" , string.Empty), 0, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -343,7 +343,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, null, 0, objWeapons);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -435,10 +435,10 @@ namespace Chummer
                     Gear objTemp = new Gear(objCharacter);
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstNodes = new List<TreeNode>();
-                    objTemp.Create(objXmlGear, objCharacter, objTempNode, 1, lstWeapons, lstNodes);
+                    objTemp.Create(objXmlGear, objTempNode, 1, lstWeapons, lstNodes);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -471,7 +471,7 @@ namespace Chummer
                     }
                     try
                     {
-                        int objValue = objTemp.CalculatedCost;
+                        decimal objValue = objTemp.CalculatedCost;
                     }
                     catch
                     {
@@ -523,7 +523,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -906,7 +906,7 @@ namespace Chummer
                         Gear objGear = new Gear(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                        objGear.Create(objXmlGearItem, _objCharacter, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
+                        objGear.Create(objXmlGearItem, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                         objGear.Cost = "0";
                         _objCharacter.Gear.Add(objGear);
                     }

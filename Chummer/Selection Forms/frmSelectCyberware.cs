@@ -678,7 +678,7 @@ namespace Chummer
         /// </summary>
         public Vehicle ParentVehicle { set; get; }
 
-        public int Markup { get; set; }
+        public decimal Markup { get; set; }
 
         /// <summary>
         /// Whether the bioware should be discounted by Prototype Transhuman.
@@ -790,7 +790,7 @@ namespace Chummer
             double dblItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = $"{0:###,###,##0¥}";
+                lblCost.Text = $"{0:###,###,##0.00¥}";
                 dblItemCost = 0;
             }
             else if (objXmlCyberware["cost"] != null)
@@ -811,7 +811,7 @@ namespace Chummer
                     else
                         intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
 
-                    lblCost.Text = intMax == 0 ? $"{intMin:###,###,##0¥+}" : $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+                    lblCost.Text = intMax == 0 ? $"{intMin:###,###,##0.00¥+}" : $"{intMin:###,###,##0} - {intMax:###,###,##0.00¥}";
 
                     dblItemCost = intMin;
                 }
@@ -827,7 +827,7 @@ namespace Chummer
                         }
                         double multiplier = 1 + Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0;
                         dblItemCost *= multiplier;
-                        lblCost.Text = $"{dblItemCost:###,###,##0¥}";
+                        lblCost.Text = $"{dblItemCost:###,###,##0.00¥}";
                     }
                 }
                 else
@@ -872,11 +872,11 @@ namespace Chummer
                         dblItemCost -= Convert.ToInt32(dblItemCost * 0.10);
                     }
 
-                    lblCost.Text = $"{dblItemCost:###,###,##0¥}";
+                    lblCost.Text = $"{dblItemCost:###,###,##0.00¥}";
                 }
             }
             else
-                lblCost.Text = $"{dblItemCost:###,###,##0¥}";
+                lblCost.Text = $"{dblItemCost:###,###,##0.00¥}";
 
             // Test required to find the item.
             lblTest.Text = _objCharacter.AvailTest(Convert.ToInt32(dblItemCost), lblAvail.Text);

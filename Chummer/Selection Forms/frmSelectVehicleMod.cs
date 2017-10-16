@@ -669,10 +669,10 @@ namespace Chummer
                     if (intMax == 0)
                     {
                         intMax = 1000000;
-                        lblCost.Text = string.Format("{0:###,###,##0¥+}", intMin);
+                        lblCost.Text = string.Format("{0:###,###,##0.00¥+}", intMin);
                     }
                     else
-                        lblCost.Text = string.Format("{0:###,###,##0}", intMin) + "-" + string.Format("{0:###,###,##0¥}", intMax);
+                        lblCost.Text = string.Format("{0:###,###,##0}", intMin) + "-" + string.Format("{0:###,###,##0.00¥}", intMax);
 
                     intItemCost = intMin;
                 }
@@ -714,7 +714,7 @@ namespace Chummer
                     }
 
                     intCost = Convert.ToInt32(dblCost);
-                    lblCost.Text = string.Format("{0:###,###,##0¥}", intCost);
+                    lblCost.Text = string.Format("{0:###,###,##0.00¥}", intCost);
 
                     intItemCost = intCost;
                 }

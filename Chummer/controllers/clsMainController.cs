@@ -487,8 +487,7 @@ namespace Chummer
             // Make sure the destination is another piece of Gear or a Location.
             bool blnDestinationGear = true;
             bool blnDestinationLocation = false;
-            Vehicle objTempVehicle;
-            Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
+            Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles);
             if (objDestinationGear == null)
                 blnDestinationGear = false;
 
@@ -508,8 +507,10 @@ namespace Chummer
                 return;
 
             // Locate the currently selected piece of Gear.
-            Vehicle objVehicle;
-            Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+            Vehicle objVehicle = null;
+            WeaponAccessory objWeaponAccessory = null;
+            Cyberware objCyberware = null;
+            Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
 
             // Gear cannot be moved to one of its children.
             bool blnAllowMove = true;
@@ -532,13 +533,21 @@ namespace Chummer
 
             // Remove the Gear from the Vehicle.
             if (objGear.Parent == null)
-                objVehicle.Gear.Remove(objGear);
+            {
+                if (objCyberware != null)
+                    objCyberware.Gear.Remove(objGear);
+                else if (objWeaponAccessory != null)
+                    objWeaponAccessory.Gear.Remove(objGear);
+                else
+                    objVehicle.Gear.Remove(objGear);
+            }
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                Commlink objCommlink = objGear.Parent as Commlink;
+                if (objCommlink?.CanSwapAttributes == true)
                 {
-                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                    objCommlink.RefreshCyberdeckArray();
                 }
             }
 
@@ -555,9 +564,10 @@ namespace Chummer
                 objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
-                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                Commlink objCommlink = objDestinationGear as Commlink;
+                if (objCommlink?.CanSwapAttributes == true)
                 {
-                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                    objCommlink.RefreshCyberdeckArray();
                 }
             }
 

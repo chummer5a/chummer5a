@@ -29,8 +29,8 @@ namespace Chummer
         private string _strSelectedVehicle = string.Empty;
         private bool _blnUsedVehicle = false;
         private string _strUsedAvail = string.Empty;
-        private int _intUsedCost = 0;
-        private int _intMarkup = 0;
+        private decimal _decUsedCost = 0;
+        private decimal _decMarkup = 0;
 
         private bool _blnAddAgain = false;
         private static string _strSelectCategory = string.Empty;
@@ -350,11 +350,11 @@ namespace Chummer
         /// <summary>
         /// Cost of the Vehicle's cost by when it is used.
         /// </summary>
-        public int UsedCost
+        public decimal UsedCost
         {
             get
             {
-                return _intUsedCost;
+                return _decUsedCost;
             }
         }
 
@@ -383,11 +383,11 @@ namespace Chummer
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
         }
         #endregion
@@ -401,7 +401,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(lstVehicle.Text))
                 return;
 
-            double dblCostModifier = 1.0;
+            decimal decCostModifier = 1.0m;
 
             // Retireve the information for the selected Vehicle.
             XmlNode objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + lstVehicle.SelectedValue + "\"]");
@@ -409,7 +409,7 @@ namespace Chummer
                 return;
 
             if (chkUsedVehicle.Checked)
-                dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.InvariantCultureInfo);
+                decCostModifier = 1.0m - (nudUsedVehicleDiscount.Value / 100.0m);
 
             lblVehicleHandling.Text = objXmlVehicle["handling"]?.InnerText;
             lblVehicleAccel.Text = objXmlVehicle["accel"]?.InnerText;
@@ -451,25 +451,23 @@ namespace Chummer
             }
             else
             {
-                int intCost = 0;
-                objXmlVehicle.TryGetInt32FieldQuickly("cost", ref intCost);
-
-                // Apply the markup if applicable.
-                double dblCost = Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * dblCostModifier;
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
-
-                if (chkBlackMarketDiscount.Checked)
+                decimal decCost = 0.0m;
+                if (!chkFreeItem.Checked)
                 {
-                    dblCost *= 0.90;
+                    objXmlVehicle.TryGetDecFieldQuickly("cost", ref decCost);
+
+                    // Apply the markup if applicable.
+                    decCost *= decCostModifier;
+                    decCost *= 1 + (nudMarkup.Value / 100.0m);
+
+                    if (chkBlackMarketDiscount.Checked)
+                    {
+                        decCost *= 0.9m;
+                    }
                 }
 
-                intCost = Convert.ToInt32(dblCost);
-
-                if (chkFreeItem.Checked)
-                    intCost = 0;
-
-                lblVehicleCost.Text = $"{intCost:###,###,##0¥}";
-                lblTest.Text = _objCharacter.AvailTest(intCost, lblVehicleAvail.Text);
+                lblVehicleCost.Text = $"{decCost:###,###,##0.00¥}";
+                lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
             }
 
 
@@ -493,19 +491,19 @@ namespace Chummer
 
             if (chkUsedVehicle.Checked)
             {
-                double dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.CultureInfo);
-                int intCost = Convert.ToInt32(objXmlVehicle["cost"]?.InnerText);
-                intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * dblCostModifier));
+                decimal decCostModifier = 1 - (nudUsedVehicleDiscount.Value / 100.0m);
+                decimal decCost = Convert.ToDecimal(objXmlVehicle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                decCost *= decCostModifier;
 
                 _blnUsedVehicle = true;
                 _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), "F");
-                _intUsedCost = intCost;
+                _decUsedCost = decCost;
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
             _strSelectCategory = objXmlVehicle["category"]?.InnerText;
             _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
-            _intMarkup = Convert.ToInt32(nudMarkup.Value);
+            _decMarkup = nudMarkup.Value;
 
             DialogResult = DialogResult.OK;
         }

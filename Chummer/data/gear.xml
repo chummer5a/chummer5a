@@ -39,6 +39,7 @@
     <category>Communications and Countermeasures</category>
     <category>Contracts/Upkeep</category>
     <category>Critter Gear</category>
+	<category>Currency</category>
     <category>Custom</category>
     <category>Cyberdeck Modules</category>
     <category>Cyberdecks</category>
@@ -4818,61 +4819,242 @@
       <cost>Rating * 60</cost>
     </gear>
     <!-- End Region -->
+	<!-- Region Currencies -->
+	<gear>
+      <id>45b1f2c4-99a3-421b-8c83-a7f574ecd39f</id>
+      <name>Nuyen (¥)</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>442</page>
+      <avail>0</avail>
+      <cost>1</cost>
+	  <capacity>[1]</capacity>
+	  <requireparent />
+    </gear>
+	<gear>
+      <id>863a5600-1e4f-4f33-9fca-b2715857dee4</id>
+      <name>Euro (€)</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>SR5G</source>
+      <page>442</page>
+      <avail>0</avail>
+      <cost>1</cost>
+	  <capacity>[1]</capacity>
+    </gear>
+	<gear>
+      <id>ee174974-ff69-4dee-9803-034d809a0344</id>
+      <name>UCAS Dollar ($)</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.5</cost>
+	  <capacity>[0.5]</capacity>
+    </gear>
+	<gear>
+      <id>f647b451-5a2b-4e40-9d4d-4804dae6d440</id>
+      <name>Tír Ryal</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>1.1111111111111</cost>
+	  <capacity>[1.1111111111111]</capacity>
+    </gear>
+	<gear>
+      <id>3a092eee-6542-4c82-a01d-1c0d8a71affe</id>
+      <name>Southeast Asian Ringgit (RM)</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.02</cost>
+	  <capacity>[0.02]</capacity>
+    </gear>
+	<gear>
+      <id>8e48a689-d818-4fe6-9b8f-8344ad96e608</id>
+      <name>Aztlan Peso (¢)</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.016666666666667</cost>
+	  <capacity>[0.016666666666667]</capacity>
+    </gear>
+	<gear>
+      <id>47642f1f-749c-4334-abe8-19242a9ddfd4</id>
+      <name>Saeder-Krupp Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>1.25</cost>
+	  <capacity>[1.25]</capacity>
+    </gear>
+	<gear>
+      <id>74ff3f1f-5637-489d-b3d4-dc4518711291</id>
+      <name>Shiawase Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>1</cost>
+	  <capacity>[1]</capacity>
+    </gear>
+	<gear>
+      <id>b04ffdbf-906b-471e-9002-c649248da004</id>
+      <name>MCT Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.99009900990099</cost>
+	  <capacity>[0.99009900990099]</capacity>
+    </gear>
+	<gear>
+      <id>be270c04-fe87-497f-a6e0-227407562689</id>
+      <name>Wuxing Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.33333333333333</cost>
+	  <capacity>[0.33333333333333]</capacity>
+    </gear>
+	<gear>
+      <id>fb9b3266-9881-4cef-8a03-a9e76d923faf</id>
+      <name>Ares Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.28571428571429</cost>
+	  <capacity>[0.28571428571429]</capacity>
+    </gear>
+	<gear>
+      <id>60544b61-cca8-4292-859a-20713c803cbd</id>
+      <name>Evo Scrip</name>
+      <category>Currency</category>
+      <rating>1000000</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.2</cost>
+	  <capacity>[0.2]</capacity>
+    </gear>
+	<gear>
+      <id>b807478b-583e-4427-9edc-4d4152c58c5b</id>
+      <name>Renraku Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.1</cost>
+	  <capacity>[0.1]</capacity>
+    </gear>
+	<gear>
+      <id>3c008f5f-2e26-4da0-a559-7b7359a7a270</id>
+      <name>Horizon Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.066666666666667</cost>
+	  <capacity>[0.066666666666667]</capacity>
+    </gear>
+	<gear>
+      <id>3881ecd3-3a6c-4efd-8ba8-4d4f0bcbe085</id>
+      <name>Aztechnology Scrip</name>
+      <category>Currency</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>174</page>
+      <avail>0</avail>
+      <cost>0.05</cost>
+	  <capacity>[0.05]</capacity>
+    </gear>
+	<!-- End Region -->
     <!-- Region ID/Credsticks -->
     <gear>
       <id>c56554d1-4102-446f-8d3e-acd0c7404c3a</id>
       <name>Certified Credstick, Standard</name>
       <category>ID/Credsticks</category>
-      <rating>5000</rating>
+	  <rating>0</rating>
+      <capacity>5000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>0</avail>
-      <cost>5 + Rating</cost>
+      <cost>5</cost>
       <minrating>0</minrating>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>4f5b4fbc-78c4-4aa4-a5c2-7739f12e9b39</id>
       <name>Certified Credstick, Silver</name>
       <category>ID/Credsticks</category>
-      <rating>20000</rating>
+	  <rating>0</rating>
+      <capacity>20000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>0</avail>
-      <cost>20 + Rating</cost>
+      <cost>20</cost>
       <minrating>0</minrating>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>697ef5f4-8cde-434d-aca6-1bddd4d526d3</id>
       <name>Certified Credstick, Gold</name>
       <category>ID/Credsticks</category>
-      <rating>100000</rating>
+	  <rating>0</rating>
+      <capacity>100000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>5</avail>
-      <cost>100 + Rating</cost>
+      <cost>100</cost>
       <minrating>0</minrating>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>a19055f0-02ab-4bc2-ab43-0ef82e1b9100</id>
       <name>Certified Credstick, Platinum</name>
       <category>ID/Credsticks</category>
-      <rating>500000</rating>
+	  <rating>0</rating>
+      <capacity>500000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>10</avail>
-      <cost>500 + Rating</cost>
-      <minrating>0</minrating>
+      <cost>500</cost>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>fd2c8afe-7c0f-4b98-ae93-a6108531b236</id>
       <name>Certified Credstick, Ebony</name>
       <category>ID/Credsticks</category>
-      <rating>1000000</rating>
+	  <rating>0</rating>
+      <capacity>1000000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>20</avail>
-      <cost>1000 + Rating</cost>
-      <minrating>0</minrating>
+      <cost>1000</cost>
+      <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>8a16bbb2-8028-4c74-b22b-7aad9d001073</id>

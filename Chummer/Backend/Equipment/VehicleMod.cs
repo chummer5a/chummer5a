@@ -21,7 +21,7 @@ namespace Chummer.Backend.Equipment
         private int _intRating;
         private string _strMaxRating = "0";
         private string _strCost = string.Empty;
-        private int _intMarkup;
+        private decimal _decMarkup;
         private string _strAvail = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
@@ -65,7 +65,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="intMarkup">Discount or markup that applies to the base cost of the mod.</param>
-        public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, Vehicle objParent, int intMarkup = 0)
+        public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, Vehicle objParent, decimal decMarkup = 0)
         {
             if (objParent == null) throw new ArgumentNullException(nameof(objParent));
             Parent = objParent;
@@ -103,38 +103,36 @@ namespace Chummer.Backend.Equipment
             // Check for a Variable Cost.
             if (objXmlMod["cost"] != null)
             {
-                if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+                _strCost = objXmlMod["cost"].InnerText;
+                if (_strCost.StartsWith("Variable"))
                 {
-                    int intMin;
-                    var intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = _strCost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        var frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
                     }
                 }
-                else
-                    _strCost = objXmlMod["cost"].InnerText;
             }
-            _intMarkup = intMarkup;
+            _decMarkup = decMarkup;
 
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
@@ -184,7 +182,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("markup", _intMarkup.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("markup", _decMarkup.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -246,7 +244,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-            objNode.TryGetInt32FieldQuickly("markup", ref _intMarkup);
+            objNode.TryGetDecFieldQuickly("markup", ref _decMarkup);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
             objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
@@ -578,15 +576,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Markup.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
             set
             {
-                _intMarkup = value;
+                _decMarkup = value;
             }
         }
 
@@ -1045,7 +1043,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the VehicleMod.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
@@ -1056,7 +1054,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Vehicle Mod itself.
         /// </summary>
-        public int OwnCost
+        public decimal OwnCost
         {
             get
             {
@@ -1068,7 +1066,8 @@ namespace Chummer.Backend.Equipment
                 if (_strCost.StartsWith("FixedValues"))
                 {
                     string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    strCostExpression = (strValues[Convert.ToInt32(_intRating) - 1]);
+                    if (_intRating > 0)
+                        strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
                 strCost = strCost.Replace("Vehicle Cost", Parent.OwnCost.ToString());
@@ -1078,20 +1077,18 @@ namespace Chummer.Backend.Equipment
                 strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
                 strCost = strCost.Replace("Handling", Parent.Handling.ToString());
                 XPathExpression xprCost = nav.Compile(strCost);
-                int intReturn = Convert.ToInt32(nav.Evaluate(xprCost)?.ToString());
+                decimal decReturn = Convert.ToDecimal(nav.Evaluate(xprCost)?.ToString(), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
+                    decReturn *= 0.9m;
 
                 // Apply a markup if applicable.
-                if (_intMarkup != 0)
+                if (_decMarkup != 0)
                 {
-                    double dblCost = Convert.ToDouble(intReturn, GlobalOptions.InvariantCultureInfo);
-                    dblCost *= 1 + (Convert.ToDouble(_intMarkup, GlobalOptions.InvariantCultureInfo) / 100.0);
-                    intReturn = Convert.ToInt32(dblCost);
+                    decReturn *= 1 + (_decMarkup / 100.0m);
                 }
 
-                return intReturn;
+                return decReturn;
             }
         }
 

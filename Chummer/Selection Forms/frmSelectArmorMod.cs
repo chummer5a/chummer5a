@@ -32,8 +32,8 @@ namespace Chummer
 
         private string _strAllowedCategories = string.Empty;
         private bool _blnAddAgain = false;
-        private int _intArmorCost = 0;
-        private int _intMarkup = 0;
+        private decimal _decArmorCost = 0;
+        private decimal _decMarkup = 0;
         private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
@@ -126,11 +126,11 @@ namespace Chummer
         /// <summary>
         /// Armor's Cost.
         /// </summary>
-        public int ArmorCost
+        public decimal ArmorCost
         {
             set
             {
-                _intArmorCost = value;
+                _decArmorCost = value;
             }
         }
 
@@ -210,11 +210,11 @@ namespace Chummer
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
         }
 
@@ -287,39 +287,38 @@ namespace Chummer
             // Cost.
             if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
             {
-                int intMin = 0;
-                int intMax = int.MaxValue;
+                decimal decMin = 0;
+                decimal decMax = decimal.MaxValue;
                 string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                 if (strCost.Contains("-"))
                 {
                     string[] strValues = strCost.Split('-');
-                    intMin = Convert.ToInt32(strValues[0]);
-                    intMax = Convert.ToInt32(strValues[1]);
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
-                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                    decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                if (intMax == int.MaxValue)
+                if (decMax == decimal.MaxValue)
                 {
-                    lblCost.Text = $"{intMin:###,###,##0¥+}";
+                    lblCost.Text = $"{decMin:###,###,##0.00¥+}";
                 }
                 else
-                    lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+                    lblCost.Text = $"{decMin:###,###,##0.00} - {decMax:###,###,##0.00¥}";
             }
             else
             {
                 string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Armor Cost", _intArmorCost.ToString());
+                strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString());
                 XPathExpression xprCost = nav.Compile(strCost);
 
                 // Apply any markup.
-                double dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
+                decimal decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                lblCost.Text = $"{dblCost:###,###,##0¥}";
+                lblCost.Text = $"{decCost:###,###,##0.00¥}";
 
-                int intCost = Convert.ToInt32(dblCost);
-                lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+                lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
             }
 
             // Capacity.
@@ -351,7 +350,7 @@ namespace Chummer
             }
 
             if (chkFreeItem.Checked)
-                lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
+                lblCost.Text = String.Format("{0:###,###,##0.00¥}", 0);
 
             string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText);
             string strPage = objXmlMod["page"].InnerText;
@@ -418,7 +417,7 @@ namespace Chummer
         private void AcceptForm()
         {
             _strSelectedArmorMod = lstMod.SelectedValue.ToString();
-            _intMarkup = Convert.ToInt32(nudMarkup.Value);
+            _decMarkup = nudMarkup.Value;
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
             DialogResult = DialogResult.OK;
         }

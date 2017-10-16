@@ -99,7 +99,7 @@ namespace Chummer
         private int _intFreeKnowledgeMultiplier = 2;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
-        private int _intNuyenPerBP = 2000;
+        private decimal _decNuyenPerBP = 2000.0m;
         private int _intRestrictedCostMultiplier = 1;
         private bool _automaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
@@ -268,7 +268,7 @@ namespace Chummer
             // <printexpenses />
             objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
             // <nuyenperbp />
-            objWriter.WriteElementString("nuyenperbp", _intNuyenPerBP.ToString());
+            objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <hideitemsoveravaillimit />
             objWriter.WriteElementString("hideitemsoveravaillimit", _blnHhideItemsOverAvailLimit.ToString());
             // <UnarmedImprovementsApplyToWeapons />
@@ -651,7 +651,7 @@ namespace Chummer
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
             // Nuyen per Build Point
-            objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
+            objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Hide Items Over Avail Limit in Create Mode
             objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHhideItemsOverAvailLimit);
             // Knucks use Unarmed
@@ -918,15 +918,30 @@ namespace Chummer
         /// <summary>
         /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private void LoadInt32FromRegistry(ref int intStorage, string strBoolName)
+        private void LoadInt32FromRegistry(ref int intStorage, string strIntName)
         {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
+            object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
             if (objRegistryResult != null)
             {
                 int intTemp;
                 if (int.TryParse(objRegistryResult.ToString(), out intTemp))
                     intStorage = intTemp;
-                _objBaseChummerKey.DeleteValue(strBoolName);
+                _objBaseChummerKey.DeleteValue(strIntName);
+            }
+        }
+
+        /// <summary>
+        /// Load a Decimal Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private void LoadDecFromRegistry(ref decimal decStorage, string strDecName)
+        {
+            object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
+            if (objRegistryResult != null)
+            {
+                decimal decTemp;
+                if (decimal.TryParse(objRegistryResult.ToString(), out decTemp))
+                    decStorage = decTemp;
+                _objBaseChummerKey.DeleteValue(strDecName);
             }
         }
 
@@ -965,7 +980,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
 
             // Nuyen per Build Point
-            LoadInt32FromRegistry(ref _intNuyenPerBP, "nuyenperbp");
+            LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp");
 
             // Free Contacts Multiplier Enabled
             LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled");
@@ -1299,15 +1314,15 @@ namespace Chummer
         /// <summary>
         /// Amount of Nuyen gained per BP spent.
         /// </summary>
-        public int NuyenPerBP
+        public decimal NuyenPerBP
         {
             get
             {
-                return _intNuyenPerBP;
+                return _decNuyenPerBP;
             }
             set
             {
-                _intNuyenPerBP = value;
+                _decNuyenPerBP = value;
             }
         }
 

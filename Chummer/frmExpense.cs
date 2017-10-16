@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,14 +65,14 @@ namespace Chummer
         /// <summary>
         /// Amount gained or spent.
         /// </summary>
-        public int Amount
+        public decimal Amount
         {
             get
             {
                 decimal decReturn = nudAmount.Value;
                 if (_objMode == ExpenseType.Nuyen)
-                    decReturn *= (nudPercent.Value / 100);
-                return Convert.ToInt32(Math.Round(decReturn, 0));
+                    decReturn *= (nudPercent.Value / 100.0m);
+                return decReturn;
             }
             set
             {

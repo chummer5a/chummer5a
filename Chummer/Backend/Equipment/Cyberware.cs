@@ -65,11 +65,11 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a Grade.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource)
+        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions)
         {
             if (objSource == Improvement.ImprovementSource.Bioware)
             {
-                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
+                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacterOptions);
                 foreach (Grade objGrade in GlobalOptions.BiowareGrades)
                 {
                     if (objGrade.Name == strValue)
@@ -80,7 +80,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
+                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacterOptions);
                 foreach (Grade objGrade in GlobalOptions.CyberwareGrades)
                 {
                     if (objGrade.Name == strValue)
@@ -218,26 +218,26 @@ namespace Chummer.Backend.Equipment
             {
                 if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
                 {
-                    int intMin = 0;
-                    int intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlCyberware["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    decimal decMin = 0.0m;
+                    decimal decMax = decimal.MaxValue;
+                    char[] charParentheses = { '(', ')' };
+                    string strCost = objXmlCyberware["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
                         frmSelectNumber frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
@@ -448,7 +448,7 @@ namespace Chummer.Backend.Equipment
                 {
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlChild["name"].InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
                     int intChildRating = 0;
-                    int intChildQty = 1;
+                    decimal decChildQty = 1;
                     string strChildForceSource = string.Empty;
                     string strChildForcePage = string.Empty;
                     string strChildForceValue = string.Empty;
@@ -456,7 +456,7 @@ namespace Chummer.Backend.Equipment
                     if (objXmlChild["rating"] != null)
                         intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
                     if (objXmlChild["name"].Attributes["qty"] != null)
-                        intChildQty = Convert.ToInt32(objXmlChild["name"].Attributes["qty"].InnerText);
+                        decChildQty = Convert.ToDecimal(objXmlChild["name"].Attributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
                     if (objXmlChild["name"].Attributes["select"] != null)
                         strChildForceValue = objXmlChild["name"].Attributes["select"].InnerText;
                     if (objXmlChild["source"] != null)
@@ -471,8 +471,8 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(objXmlChild["devicerating"]?.InnerText))
                     {
                         Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Create(objXmlGear, _objCharacter, objChildNode, intChildRating, true, true, strChildForceValue);
-                        objCommlink.Quantity = intChildQty;
+                        objCommlink.Create(objXmlGear, objChildNode, intChildRating, true, true, strChildForceValue);
+                        objCommlink.Quantity = decChildQty;
                         objChildNode.Text = objCommlink.DisplayName;
 
                         objChild = objCommlink;
@@ -480,8 +480,8 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Gear objGear = new Gear(_objCharacter);
-                        objGear.Create(objXmlGear, _objCharacter, objChildNode, intChildRating, objChildWeapons, objChildWeaponNodes, strChildForceValue);
-                        objGear.Quantity = intChildQty;
+                        objGear.Create(objXmlGear, objChildNode, intChildRating, objChildWeapons, objChildWeaponNodes, strChildForceValue);
+                        objGear.Quantity = decChildQty;
                         objChildNode.Text = objGear.DisplayName;
 
                         objChild = objGear;
@@ -628,7 +628,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
             if (objNode["grade"] != null)
-                _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource);
+                _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter.Options);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             objNode.TryGetBoolFieldQuickly("suite", ref _blnSuite);
             objNode.TryGetInt32FieldQuickly("essdiscount", ref _intEssenceDiscount);
@@ -651,7 +651,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strForceGrade = MyXmlNode["forcegrade"].InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
-                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource);
+                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter.Options);
             }
             if (objNode["weaponguid"] != null)
             {
@@ -1849,120 +1849,79 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Total cost of the Cyberware and its plugins.
+        /// Total cost of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
-        public int TotalCost
+        public decimal OwnCostPreMultipliers
         {
             get
             {
-                int intCost = 0;
-                int intReturn = 0;
+                decimal decCost = 0;
+                string strCostExpression = _strCost;
 
-                if (_strCost.Contains("Rating") || _strCost.Contains("MinRating"))
+                if (strCostExpression.StartsWith("FixedValues"))
+                {
+                    string[] strValues = strCostExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    if (_intRating > 0)
+                        strCostExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                }
+
+                string strParentCost = string.Empty;
+                if (_objParent != null)
+                {
+                    if (strCostExpression.Contains("Parent Cost"))
+                        strParentCost = _objParent.Cost;
+                }
+
+                if (string.IsNullOrEmpty(strCostExpression))
+                    return 0;
+
+                if (strCostExpression.Contains("Rating") || strCostExpression.Contains("MinRating") || strCostExpression.Contains("Parent Cost"))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strCost = string.Empty;
-                    string strCostExpression = _strCost;
-
-                    strCost = strCostExpression.Replace("MinRating", _intMinRating.ToString());
-                    strCost = strCost.Replace("Rating", _intRating.ToString());
-                    XPathExpression xprCost = nav.Compile(strCost);
-                    intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
-                }
-                else if (_strCost.StartsWith("Parent Cost"))
-                {
-                    if (_objParent != null)
-                    {
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                        string strCostExpression = _strCost;
-                        string strCost = "0";
-
-                        strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost);
-                        if (strCost.Contains("Rating"))
-                        {
-                            strCost = strCost.Replace("Rating", _objParent.Rating.ToString());
-                        }
-                        XPathExpression xprCost = nav.Compile(strCost);
-                        // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                        intCost = Convert.ToInt32(dblCost);
-                    }
-                    else
-                        intCost = 0;
+                    if (string.IsNullOrEmpty(strParentCost))
+                        strParentCost = "0";
+                    strCostExpression = strCostExpression.Replace("Parent Cost", strParentCost);
+                    strCostExpression = strCostExpression.Replace("MinRating", _intMinRating.ToString());
+                    strCostExpression = strCostExpression.Replace("Rating", _intRating.ToString());
+                    XPathExpression xprCost = nav.Compile(strCostExpression);
+                    decCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
-                    if (_strCost.StartsWith("FixedValues"))
+                    // Just a straight cost, so return the value.
+                    try
                     {
-                        char[] chrParentheses = { '(', ')' };
-                        string[] strValues = _strCost.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
-                        if (_intRating <= strValues.Length)
-                            intCost = Convert.ToInt32(strValues[Math.Min(_intRating, strValues.Length) - 1], GlobalOptions.InvariantCultureInfo);
+                        decCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
                     }
-                    else
+                    catch (FormatException)
                     {
-                        // Just a straight cost, so return the value.
-                        try
-                        {
-                            intCost = Convert.ToInt32(_strCost, GlobalOptions.InvariantCultureInfo);
-                        }
-                        catch (FormatException)
-                        {
-                            intCost = 0;
-                        }
+                        decCost = 0;
                     }
                 }
 
-                // Factor in the Cost multiplier of the selected CyberwareGrade.
-                intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * Grade.Cost);
+                return decCost;
+            }
+        }
 
-                intReturn = intCost;
-
-                if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
-
-                // Add in the cost of all child components.
-                foreach (Cyberware objChild in _objChildren)
-                {
-                    if (objChild.Capacity != "[*]")
-                    {
-                        // If the child cost starts with "*", multiply the item's base cost.
-                        if (objChild.Cost.StartsWith("*"))
-                        {
-                            int intPluginCost = 0;
-                            string strMultiplier = objChild.Cost;
-                            strMultiplier = strMultiplier.Replace("*", string.Empty);
-                            intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.InvariantCultureInfo) - 1));
-
-                            if (objChild.DiscountCost)
-                                intPluginCost = Convert.ToInt32(Convert.ToDouble(intPluginCost, GlobalOptions.InvariantCultureInfo) * 0.9);
-
-                            intReturn += intPluginCost;
-                        }
-                        else
-                            intReturn += objChild.TotalCostWithoutModifiers;
-                    }
-                }
-
-                // Add in the cost of all Gear plugins.
-                foreach (Gear objGear in _lstGear)
-                {
-                    intReturn += objGear.TotalCost;
-                }
+        /// <summary>
+        /// Total cost of the Cyberware and its plugins.
+        /// </summary>
+        public decimal TotalCost
+        {
+            get
+            {
+                decimal decReturn = TotalCostWithoutModifiers;
 
                 // Retrieve the Genetech Cost Multiplier if available.
-                double dblMultiplier = 1;
+                decimal decMultiplier = 1.0m;
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
                 {
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                 }
 
@@ -1972,73 +1931,36 @@ namespace Chummer.Backend.Equipment
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                 }
 
-                if (dblMultiplier == 0)
-                    dblMultiplier = 1;
+                if (decMultiplier == 0)
+                    decMultiplier = 1;
 
-                double dblSuiteMultiplier = 1.0;
+                decimal decSuiteMultiplier = 1.0m;
                 if (_blnSuite)
-                    dblSuiteMultiplier = 0.9;
+                    decSuiteMultiplier = 0.9m;
 
-                return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.InvariantCultureInfo) * dblMultiplier * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
+                return decReturn * decMultiplier * decSuiteMultiplier;
             }
         }
 
         /// <summary>
         /// Identical to TotalCost, but without the Improvement and Suite multpliers which would otherwise be doubled.
         /// </summary>
-        private int TotalCostWithoutModifiers
+        private decimal TotalCostWithoutModifiers
         {
             get
             {
-                int intCost = 0;
-                int intReturn = 0;
-
-                if (_strCost.Contains("Rating"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strCost = string.Empty;
-                    string strCostExpression = _strCost;
-                    strCost = strCostExpression.Replace("MinRating", _intMinRating.ToString());
-                    strCost = strCost.Replace("Rating", _intRating.ToString());
-                    XPathExpression xprCost = nav.Compile(strCost);
-                    intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
-                }
-                else
-                {
-                    if (_strCost.StartsWith("FixedValues"))
-                    {
-                        string[] strValues = _strCost.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
-                        if (_intRating <= strValues.Length)
-                            intCost = Convert.ToInt32(strValues[Math.Min(_intRating, strValues.Length) - 1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                    {
-                        // Just a straight cost, so return the value.
-                        try
-                        {
-                            intCost = Convert.ToInt32(_strCost, GlobalOptions.InvariantCultureInfo);
-                        }
-                        catch (FormatException)
-                        {
-                            intCost = 0;
-                        }
-                    }
-                }
+                decimal decCost = OwnCostPreMultipliers;
+                decimal decReturn = decCost;
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
-                intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * Grade.Cost);
-
-                intReturn = intCost;
+                decReturn *= Grade.Cost;
 
                 if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
+                    decReturn *= 0.9m;
 
                 // Add in the cost of all child components.
                 foreach (Cyberware objChild in _objChildren)
@@ -2048,110 +1970,55 @@ namespace Chummer.Backend.Equipment
                         // If the child cost starts with "*", multiply the item's base cost.
                         if (objChild.Cost.StartsWith("*"))
                         {
-                            int intPluginCost = 0;
+                            decimal decPluginCost = 0;
                             string strMultiplier = objChild.Cost;
                             strMultiplier = strMultiplier.Replace("*", string.Empty);
-                            intPluginCost = Convert.ToInt32(intCost * (Convert.ToDouble(strMultiplier, GlobalOptions.InvariantCultureInfo) - 1));
+                            decPluginCost = decCost * (Convert.ToDecimal(strMultiplier, GlobalOptions.InvariantCultureInfo) - 1);
 
                             if (objChild.DiscountCost)
-                                intPluginCost = intPluginCost * 9 / 10;
+                                decPluginCost *= 0.9m;
 
-                            intReturn += intPluginCost;
+                            decReturn += decPluginCost;
                         }
                         else
-                            intReturn += objChild.TotalCostWithoutModifiers;
+                            decReturn += objChild.TotalCostWithoutModifiers;
                     }
                 }
 
                 // Add in the cost of all Gear plugins.
                 foreach (Gear objGear in _lstGear)
                 {
-                    intReturn += objGear.TotalCost;
+                    decReturn += objGear.TotalCost;
                 }
 
-                const double dblMultiplier = 1;
-                const double dblSuiteMultiplier = 1.0;
-
-                return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.InvariantCultureInfo) * dblMultiplier * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
+                return decReturn;
             }
         }
 
         /// <summary>
         /// Cost of just the Cyberware itself.
         /// </summary>
-        public int OwnCost
+        public decimal OwnCost
         {
             get
             {
-                int intCost = 0;
-                int intReturn = 0;
-
-                if (_strCost.Contains("Rating"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strCost = string.Empty;
-                    string strCostExpression = _strCost;
-                    strCost = strCostExpression.Replace("MinRating", _intMinRating.ToString());
-                    strCost = strCost.Replace("Rating", _intRating.ToString());
-                    XPathExpression xprCost = nav.Compile(strCost);
-                    intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
-                }
-                else if (_strCost.StartsWith("Parent Cost"))
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strCostExpression = _strCost;
-                    string strCost = "0";
-
-                    strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost);
-                    XPathExpression xprCost = nav.Compile(strCost);
-                    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                    intCost = Convert.ToInt32(dblCost);
-                }
-                else
-                {
-                    if (_strCost.StartsWith("FixedValues"))
-                    {
-                        char[] chrParentheses = { '(', ')' };
-                        string[] strValues = _strCost.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
-                        if (_intRating <= strValues.Length)
-                            intCost = Convert.ToInt32(strValues[Math.Min(_intRating, strValues.Length) - 1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                    {
-                        // Just a straight cost, so return the value.
-                        try
-                        {
-                            intCost = Convert.ToInt32(_strCost, GlobalOptions.InvariantCultureInfo);
-                        }
-                        catch (FormatException)
-                        {
-                            intCost = 0;
-                        }
-                    }
-                }
+                decimal decCost = OwnCostPreMultipliers;
+                decimal decReturn = decCost;
 
                 // Factor in the Cost multiplier of the selected CyberwareGrade.
-                intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * Grade.Cost);
-
-                intReturn = intCost;
+                decReturn *= Grade.Cost;
 
                 if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
+                    decReturn *= 0.9m;
 
                 // Retrieve the Genetech Cost Multiplier if available.
-                double dblMultiplier = 1;
+                decimal decMultiplier = 1.0m;
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && _objImprovementSource == Improvement.ImprovementSource.Bioware && _strCategory.StartsWith("Genetech"))
                 {
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                 }
 
@@ -2161,18 +2028,18 @@ namespace Chummer.Backend.Equipment
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
                 }
 
-                if (dblMultiplier == 0)
-                    dblMultiplier = 1;
+                if (decMultiplier == 0)
+                    decMultiplier = 1;
 
-                double dblSuiteMultiplier = 1.0;
+                decimal decSuiteMultiplier = 1.0m;
                 if (_blnSuite)
-                    dblSuiteMultiplier = 0.9;
+                    decSuiteMultiplier = 0.9m;
 
-                return Convert.ToInt32(Math.Round((Convert.ToDouble(intReturn, GlobalOptions.InvariantCultureInfo) * dblMultiplier * dblSuiteMultiplier), 2, MidpointRounding.AwayFromZero));
+                return decReturn * decMultiplier * decSuiteMultiplier;
             }
         }
 
