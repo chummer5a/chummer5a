@@ -430,7 +430,12 @@ namespace Chummer
             strCategoryFilter += "category = \"None\")";
 
             // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and " + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
+            string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and " + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
+            if (_objCharacter.DEPEnabled && ParentVehicle == null)
+                strSearch += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" )";
+            else if (_blnShowOnlySubsystems)
+                strSearch += " and contains(capacity, \"[\")";
+            strSearch += "]";
 
             BuildCyberwareList(_objXmlDocument.SelectNodes(strSearch));
         }
@@ -1023,15 +1028,11 @@ namespace Chummer
                     strCategoryFilter += "category = \"" + cboCategory.SelectedValue + "\" or ";
                 strCategoryFilter += "category = \"None\")";
                 if (_objCharacter.DEPEnabled && ParentVehicle == null)
-                    objXmlCyberwareList =
-                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (name = \"Essence Hole\" or name = \"Essence Antihole\" ) and (" +
-                                                    _objCharacter.Options.BookXPath() + ")]");
+                    strCategoryFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" )";
                 else if (_blnShowOnlySubsystems)
-                    objXmlCyberwareList =
-                        _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (" + _objCharacter.Options.BookXPath() +
-                                                    ") and contains(capacity, \"[\")]");
-                else
-                    objXmlCyberwareList =
+                    strCategoryFilter += " and contains(capacity, \"[\")";
+
+                objXmlCyberwareList =
                         _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
             }
             if (objXmlCyberwareList != null)
