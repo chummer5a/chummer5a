@@ -266,6 +266,10 @@ namespace Chummer.Backend.Equipment
                             string strChildForcePage = string.Empty;
                             string strChildForceValue = string.Empty;
                             bool blnStartCollapsed = objXmlAccessoryGear["name"].Attributes?["startcollapsed"]?.InnerText == "yes";
+                            bool blnChildCreateChildren = objXmlAccessoryGear["name"].Attributes?["createchildren"]?.InnerText != "no";
+                            bool blnAddChildImprovements = true;
+                            if (objXmlAccessoryGear["name"].Attributes?["addimprovements"]?.InnerText == "no")
+                                blnAddChildImprovements = false;
                             if (objXmlAccessoryGear["rating"] != null)
                                 intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
                             if (objXmlAccessoryGear["name"].Attributes["qty"] != null)
@@ -277,7 +281,7 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGear["page"] != null)
                                 strChildForcePage = objXmlAccessoryGear["page"].InnerText;
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear["name"].InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                             Gear objGear = new Gear(_objCharacter);
 
                             TreeNode objGearNode = new TreeNode();
@@ -287,11 +291,11 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
                             {
                                 Commlink objCommlink = new Commlink(_objCharacter);
-                                objCommlink.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue);
+                                objCommlink.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, false, false, blnAddChildImprovements, blnChildCreateChildren);
                                 objGear = objCommlink;
                             }
                             else
-                                objGear.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue);
+                                objGear.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, false, false, blnAddChildImprovements, blnChildCreateChildren);
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
                             objGear.MinRating = intGearRating;

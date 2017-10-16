@@ -219,6 +219,7 @@ namespace Chummer
             _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             if (_objBaseChummerKey == null)
                 return;
+            _objBaseChummerKey.CreateSubKey("Sourcebook");
 
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))

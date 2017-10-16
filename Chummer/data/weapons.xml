@@ -208,15 +208,28 @@
         <accessory>
           <name>Weapon Commlink</name>
           <gears>
-            <usegear rating="4">Ogre Hammer SWS Assault Cannon (Commlink)</usegear>
+			<usegear>
+			  <name>Ogre Hammer SWS Assault Cannon (Commlink)</name>
+			  <category>Commlinks</category>
+			  <rating>4</rating>
+			</usegear>
           </gears>
         </accessory>
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-            <usegear>Image Link</usegear>
-            <usegear>Flare Compensation</usegear>
-            <usegear>Low Light</usegear>
+            <usegear>
+			  <name>Image Link</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Flare Compensation</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Low Light</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
           </gears>
         </accessory>
       </accessories>
@@ -725,7 +738,11 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-            <usegear rating="1">Vision Enhancement</usegear>
+		    <usegear>
+			  <name>Vision Enhancement</name>
+			  <category>Vision Enhancements</category>
+			  <rating>1</rating>
+			</usegear>
           </gears>
         </accessory>
       </accessories>
@@ -865,9 +882,18 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-            <usegear>Image Link</usegear>
-            <usegear>Flare Compensation</usegear>
-            <usegear>Low Light</usegear>
+            <usegear>
+			  <name>Image Link</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Flare Compensation</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Low Light</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
           </gears>
         </accessory>
         <accessory>
@@ -5695,7 +5721,11 @@
         <accessory>
           <name>Weapon Commlink</name>
           <gears>
-            <usegear rating="5">Terracotta Arms AM-47 (Commlink)</usegear>
+			<usegear>
+			  <name>Terracotta Arms AM-47 (Commlink)</name>
+			  <category>Commlinks</category>
+			  <rating>5</rating>
+			</usegear>
           </gears>
         </accessory>
         <accessory>
@@ -5704,8 +5734,14 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-            <usegear>Image Link</usegear>
-            <usegear>Low Light</usegear>
+            <usegear>
+			  <name>Image Link</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Low Light</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
           </gears>
         </accessory>
         <accessory>
@@ -6193,8 +6229,15 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-            <usegear>Low Light</usegear>
-            <usegear rating="2">Vision Enhancement</usegear>
+            <usegear>
+			  <name>Image Link</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Vision Enhancement</name>
+			  <category>Vision Enhancements</category>
+			  <rating>2</rating>
+			</usegear>
           </gears>
         </accessory>
         <accessory>
@@ -6265,8 +6308,15 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-            <usegear>Image Link</usegear>
-            <usegear rating="1">Vision Enhancement</usegear>
+            <usegear>
+			  <name>Image Link</name>
+			  <category>Vision Enhancements</category>
+			</usegear>
+			<usegear>
+			  <name>Vision Enhancement</name>
+			  <category>Vision Enhancements</category>
+			  <rating>1</rating>
+			</usegear>
           </gears>
         </accessory>
       </accessories>
@@ -12118,9 +12168,15 @@
       <rating>0</rating>
       <avail>2</avail>
       <cost>300</cost>
-      <gears>
-        <usegear>Camera, Micro</usegear>
-        <usegear>Vision Magnification</usegear>
+	  <gears>
+	    <usegear>
+		  <name>Camera, Micro</name>
+		  <category>Vision Devices</category>
+		</usegear>
+		<usegear>
+		  <name>Vision Magnification</name>
+		  <category>Vision Enhancements</category>
+		</usegear>
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
@@ -12136,7 +12192,10 @@
       <avail>2</avail>
       <cost>300</cost>
       <gears>
-        <usegear>Vision Magnification</usegear>
+		<usegear>
+		  <name>Vision Magnification</name>
+		  <category>Vision Enhancements</category>
+		</usegear>
       </gears>
       <source>SR5</source>
       <page>432</page>
@@ -12297,9 +12356,15 @@
       <rating>0</rating>
       <avail>+2R</avail>
       <cost>Weapon Cost</cost>
-      <gears>
-        <usegear>Laser Range Finder</usegear>
-        <usegear>Camera, Micro</usegear>
+	  <gears>
+	    <usegear>
+		  <name>Laser Range Finder</name>
+		  <category>Sensor Functions</category>
+		</usegear>
+	    <usegear>
+		  <name>Camera, Micro</name>
+		  <category>Vision Devices</category>
+		</usegear>
       </gears>
       <source>SR5</source>
       <page>433</page>
@@ -12323,8 +12388,14 @@
       <avail>4R</avail>
       <cost>200</cost>
       <gears>
-        <usegear>Laser Range Finder</usegear>
-        <usegear>Camera, Micro</usegear>
+	    <usegear>
+		  <name>Laser Range Finder</name>
+		  <category>Sensor Functions</category>
+		</usegear>
+	    <usegear>
+		  <name>Camera, Micro</name>
+		  <category>Vision Devices</category>
+		</usegear>
       </gears>
       <source>SR5</source>
       <page>433</page>
@@ -13819,7 +13890,10 @@
       <avail>3</avail>
       <cost>500</cost>
       <gears>
-        <usegear>Vision Magnification</usegear>
+		<usegear>
+		  <name>Vision Magnification</name>
+		  <category>Vision Enhancements</category>
+		</usegear>
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
@@ -13869,11 +13943,36 @@
       <avail>0</avail>
       <cost>0</cost>
 	  <gears>
-        <usegear select="GPS Monitor">Custom Item</usegear>
-		<usegear select="Mini-Multitool">Custom Item</usegear>
-		<usegear select="Micro-Lighter">Custom Item</usegear>
-		<usegear select="Hidden Compartment">Custom Item</usegear>
-		<usegear select="Phosphorescent Blade Coating">Custom Item</usegear>
+	    <usegear>
+		  <name select="GPS Monitor">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
+		<usegear>
+		  <name select="Mini-Multitool">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
+		<usegear>
+		  <name select="Micro-Lighter">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
+		<usegear>
+		  <name select="Hidden Compartment">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
+		<usegear>
+		  <name select="Phosphorescent Blade Coating">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
       </gears>
       <source>SR5</source>
       <page>422</page>
@@ -13887,8 +13986,18 @@
       <avail>0</avail>
       <cost>0</cost>
 	  <gears>
-        <usegear select="ARO of Local Maps">Custom Item</usegear>
-		<usegear select="Can Make Commcalls">Custom Item</usegear>
+		<usegear>
+		  <name select="ARO of Local Maps">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
+		<usegear>
+		  <name select="Can Make Commcalls">Custom Item</name>
+		  <category>Custom</category>
+		  <source>SR5</source>
+          <page>422</page>
+		</usegear>
       </gears>
       <source>SR5</source>
       <page>422</page>
