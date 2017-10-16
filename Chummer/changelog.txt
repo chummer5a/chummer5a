@@ -132,6 +132,8 @@ Application Changes:
 - Fixed a crash when using Re-apply Improvements while having qualities that add other qualities.
 - Adding multiple instances of overlapping SpecialSkills improvements will no longer duplicate skills, and removing a SpecialSkills improvement will no longer remove skills if another SpecialSkills improvement still exists that would enable the same skills. Fixes #1513.
 - Fixed the Improvements manager not properly detecting some cases of cancelled dialogs. Fixes #1830.
+- Fixed a null reference stack overflow if launching Chummer for the first time without a Sourcebook key in the registry. 
+- Fixed a null reference when selecting weapons with built-in gear.
 
 Data Changes:
 
