@@ -578,7 +578,7 @@ namespace Chummer
                 decimal decItemCost = 0.0m;
                 if (chkFreeItem.Checked)
                 {
-                    lblCost.Text = $"{0:###,###,##0.00¥}";
+                    lblCost.Text = $"{0:###,###,##0.##¥}";
                     decItemCost = 0;
                 }
                 else if (xmlCostElement.InnerText.StartsWith("Variable"))
@@ -598,10 +598,10 @@ namespace Chummer
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{decMin:###,###,##0.00¥+}";
+                        lblCost.Text = $"{decMin:###,###,##0.##¥+}";
                     }
                     else
-                        lblCost.Text = $"{decMin:###,###,##0.00} - {decMax:###,###,##0.00¥}";
+                        lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
 
                     decItemCost = decMin;
                 }
@@ -617,7 +617,7 @@ namespace Chummer
                     {
                         decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{decItemCost:###,###,##0.00¥}";
+                    lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
                 }
                 else
                 {
@@ -626,7 +626,7 @@ namespace Chummer
                     {
                         decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{decItemCost:###,###,##0.00¥}";
+                    lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
                 }
 
                 lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;

@@ -338,10 +338,10 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value /100);
-                lblCost.Text += " (" + $"{Convert.ToInt32(decDiscount):###,###,##0.00¥}" + ")";
+                lblCost.Text += " (" + $"{Convert.ToInt32(decDiscount):###,###,##0.##¥}" + ")";
             }
             int intNuyen = Convert.ToInt32(decNuyen);
-            lblCost.Text = $"{intNuyen:###,###,##0.00¥}";
+            lblCost.Text = $"{intNuyen:###,###,##0.##¥}";
             return intNuyen;
         }
 

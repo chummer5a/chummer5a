@@ -754,7 +754,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString(GlobalOptions.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString("N2", GlobalOptions.CultureInfo);
             }
         }
 
@@ -1039,10 +1039,14 @@ namespace Chummer
                 if (chkDoItYourself.Checked)
                     decMultiplier *= 0.5m;
 
+                bool blnIsCurrency = objXmlGear["category"].InnerText == "Currency";
                 // Cost.
                 if (chkFreeItem.Checked)
                 {
-                    lblCost.Text = $"{0:###,###,##0.00¥}";
+                    if (blnIsCurrency)
+                        lblCost.Text = $"{0:###,###,##0.00¥}";
+                    else
+                        lblCost.Text = $"{0:###,###,##0.##¥}";
                     decItemCost = 0;
                 }
                 else
@@ -1085,7 +1089,10 @@ namespace Chummer
                                 decCost *= 0.9m;
                             if (chkHacked.Checked)
                                 decCost *= 0.1m;
-                            lblCost.Text = String.Format("{0:###,###,##0.00¥}", decCost * _intCostMultiplier);
+                            if (blnIsCurrency)
+                                lblCost.Text = String.Format("{0:###,###,##0.00¥}", decCost * _intCostMultiplier);
+                            else
+                                lblCost.Text = String.Format("{0:###,###,##0.##¥}", decCost * _intCostMultiplier);
                             decItemCost = decCost;
                         }
                         catch (XPathException)
@@ -1095,6 +1102,10 @@ namespace Chummer
                             if (decimal.TryParse(objCostNode.InnerText, out decTemp))
                             {
                                 decItemCost = decTemp;
+                                if (blnIsCurrency)
+                                    lblCost.Text = String.Format("{0:###,###,##0.00¥}", decItemCost * _intCostMultiplier);
+                                else
+                                    lblCost.Text = String.Format("{0:###,###,##0.##¥}", decItemCost * _intCostMultiplier);
                             }
                         }
 
@@ -1110,7 +1121,10 @@ namespace Chummer
                                 decCost *= 0.9m;
                             if (chkHacked.Checked)
                                 decCost *= 0.1m;
-                            lblCost.Text = String.Format("{0:###,###,##0.00¥+}", decCost * _intCostMultiplier);
+                            if (blnIsCurrency)
+                                lblCost.Text = String.Format("{0:###,###,##0.00¥+}", decCost * _intCostMultiplier);
+                            else
+                                lblCost.Text = String.Format("{0:###,###,##0.##¥+}", decCost * _intCostMultiplier);
                             decItemCost = decCost;
                         }
                         else if (objCostNode.InnerText.StartsWith("Variable"))
@@ -1129,10 +1143,15 @@ namespace Chummer
 
                             if (decMax == decimal.MaxValue)
                             {
-                                lblCost.Text = $"{decMin:###,###,##0.00¥+}";
+                                if (blnIsCurrency)
+                                    lblCost.Text = $"{decMin:###,###,##0.00¥+}";
+                                else
+                                    lblCost.Text = $"{decMin:###,###,##0.##¥+}";
                             }
-                            else
+                            else if (blnIsCurrency)
                                 lblCost.Text = $"{decMin:###,###,##0.00} - {decMax:###,###,##0.00¥}";
+                            else
+                                lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
 
                             decItemCost = decMin;
                         }
@@ -1176,10 +1195,10 @@ namespace Chummer
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else
-                                        lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
+                                        lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                                 }
                                 else
-                                    lblCapacity.Text = nav.Evaluate(xprCapacity).ToString();
+                                    lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                             }
                             if (blnSquareBrackets)
                                 lblCapacity.Text = "[" + lblCapacity.Text + "]";
@@ -1211,20 +1230,13 @@ namespace Chummer
                                     string strCalculatedCapacity = string.Empty;
                                     try
                                     {
-                                        strCalculatedCapacity = nav.Evaluate(xprCapacity).ToString();
+                                        strCalculatedCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                                     }
                                     catch (XPathException)
                                     {
                                         lblCapacity.Text = "0";
                                     }
-                                    if (strCalculatedCapacity.Contains('.'))
-                                    {
-                                        decimal decCalculatedCapacity = Convert.ToDecimal(strCalculatedCapacity, GlobalOptions.InvariantCultureInfo);
-                                        if (decCalculatedCapacity < 1)
-                                            decCalculatedCapacity = 1;
-                                        lblCapacity.Text = decCalculatedCapacity.ToString(GlobalOptions.CultureInfo);
-                                    }
-                                    else if (!string.IsNullOrEmpty(strCalculatedCapacity))
+                                    if (!string.IsNullOrEmpty(strCalculatedCapacity))
                                         lblCapacity.Text = strCalculatedCapacity;
                                 }
                             }

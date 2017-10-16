@@ -766,16 +766,19 @@ namespace Chummer.Backend.Equipment
             }
 
             // Legacy Shim
-            if (_intRating != 0 && _strName.Contains("Certified Credstick"))
+            if (_intMaxRating != 0 && _strName.Contains("Certified Credstick"))
             {
                 XmlNode objNuyenNode = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
-                    Gear objNuyenGear = new Gear(_objCharacter);
-                    objNuyenGear.Create(objNuyenNode, new TreeNode(), 0, new List<Weapon>(), new List<TreeNode>());
-                    objNuyenGear.Parent = this;
-                    objNuyenGear.Quantity = _intRating;
-                    _objChildren.Add(objNuyenGear);
+                    if (_intRating > 0)
+                    {
+                        Gear objNuyenGear = new Gear(_objCharacter);
+                        objNuyenGear.Create(objNuyenNode, new TreeNode(), 0, new List<Weapon>(), new List<TreeNode>());
+                        objNuyenGear.Parent = this;
+                        objNuyenGear.Quantity = _intRating;
+                        _objChildren.Add(objNuyenGear);
+                    }
                     MyXmlNode.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
                     MyXmlNode.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
                     _intRating = Math.Max(Math.Min(0, _intMaxRating), _intMinRating);
@@ -1727,7 +1730,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = nav.Evaluate(xprCapacity).ToString();
+                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                     strReturn += "/" + strSecondHalf;
                     return strReturn;
                 }
@@ -1748,15 +1751,20 @@ namespace Chummer.Backend.Equipment
                     decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
                     if (decNumber < 1)
                         decNumber = 1;
-                    string strReturn = decNumber.ToString(GlobalOptions.CultureInfo);
+                    string strReturn = decNumber.ToString("N2", GlobalOptions.CultureInfo);
 
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
                     return strReturn;
                 }
+                else if (string.IsNullOrEmpty(_strCapacity))
+                    return "0";
+                decimal decReturn;
+                if (decimal.TryParse(_strCapacity, out decReturn))
+                    return decReturn.ToString("N2", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
-                return string.IsNullOrEmpty(_strCapacity) ? "0" : _strCapacity;
+                return _strCapacity;
             }
         }
 
@@ -1785,14 +1793,14 @@ namespace Chummer.Backend.Equipment
                     string strReturn;
                     if (_strArmorCapacity == "[*]")
                         strReturn = "*";
-                    else if(_strArmorCapacity.StartsWith("FixedValues"))
+                    else if (_strArmorCapacity.StartsWith("FixedValues"))
                     {
                         char[] chrParentheses = { '(', ')' };
                         string[] strValues = _strArmorCapacity.Replace("FixedValues", string.Empty).Trim(chrParentheses).Split(',');
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = nav.Evaluate(xprCapacity).ToString();
+                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
                     strReturn += "/" + strSecondHalf;
@@ -1811,7 +1819,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn = nav.Evaluate(xprCapacity).ToString();
+                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -1821,7 +1829,12 @@ namespace Chummer.Backend.Equipment
                 else if (string.IsNullOrEmpty(_strArmorCapacity))
                     return "0";
                 else
+                {
+                    decimal decReturn;
+                    if (decimal.TryParse(_strArmorCapacity, out decReturn))
+                        return decReturn.ToString("N2", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
+                }
             }
         }
 
@@ -2056,8 +2069,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = DisplayNameShort;
 
-                if (_decQty > 1)
-                    strReturn = _decQty.ToString(GlobalOptions.CultureInfo) + " " + strReturn;
+                if (_decQty != 1.0m || Category == "Currency")
+                    strReturn = _decQty.ToString(Category == "Currency" ? "N2" : "N0", GlobalOptions.CultureInfo) + " " + strReturn;
                 if (_intRating > 0)
                     strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 if (!string.IsNullOrEmpty(_strExtra))

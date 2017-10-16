@@ -203,10 +203,10 @@ namespace Chummer
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblWeaponCost.Text = $"{decMin:###,###,##0.00¥+}";
+                        lblWeaponCost.Text = $"{decMin:###,###,##0.##¥+}";
                     }
                     else
-                        lblWeaponCost.Text = $"{decMin:###,###,##0.00} - {decMax:###,###,##0.00¥}";
+                        lblWeaponCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
 
                     decItemCost = decMin;
                 }
@@ -218,12 +218,12 @@ namespace Chummer
                     {
                         decCost *= 0.9m;
                     }
-                    lblWeaponCost.Text = $"{decCost:###,###,##0.00¥}";
+                    lblWeaponCost.Text = $"{decCost:###,###,##0.##¥}";
                     decItemCost = decCost;
 
                     if (chkFreeItem.Checked)
                     {
-                        lblWeaponCost.Text = $"{0:###,###,##0.00¥}";
+                        lblWeaponCost.Text = $"{0:###,###,##0.##¥}";
                         decItemCost = 0;
                     }
                 }

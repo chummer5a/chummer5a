@@ -651,30 +651,30 @@ namespace Chummer
                 lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
 
                 // Cost.
-                int intItemCost = 0;
+                decimal decItemCost = 0;
                 if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
                 {
-                    int intMin = 0;
-                    int intMax = 0;
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
                     string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMax == 0)
+                    if (decMax == decimal.MaxValue)
                     {
-                        intMax = 1000000;
-                        lblCost.Text = string.Format("{0:###,###,##0.00¥+}", intMin);
+                        decMax = 1000000;
+                        lblCost.Text = string.Format("{0:###,###,##0.##¥+}", decMin);
                     }
                     else
-                        lblCost.Text = string.Format("{0:###,###,##0}", intMin) + "-" + string.Format("{0:###,###,##0.00¥}", intMax);
+                        lblCost.Text = string.Format("{0:###,###,##0.##}", decMin) + "-" + string.Format("{0:###,###,##0.##¥}", decMax);
 
-                    intItemCost = intMin;
+                    decItemCost = decMin;
                 }
                 else
                 {
@@ -701,26 +701,22 @@ namespace Chummer
                     }
 
                     XPathExpression xprCost = nav.Compile(strCost);
-                    int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                    intCost *= _intModMultiplier;
+                    decItemCost = Convert.ToDecimal(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    decItemCost *= _intModMultiplier;
 
                     // Apply any markup.
-                    double dblCost = Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo);
-                    dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
+                    decItemCost *= 1 + (nudMarkup.Value / 100.0m);
 
                     if (chkBlackMarketDiscount.Checked)
                     {
-                        dblCost = dblCost - (dblCost*0.90);
+                        decItemCost *= 0.9m;
                     }
 
-                    intCost = Convert.ToInt32(dblCost);
-                    lblCost.Text = string.Format("{0:###,###,##0.00¥}", intCost);
-
-                    intItemCost = intCost;
+                    lblCost.Text = string.Format("{0:###,###,##0.##¥}", decItemCost);
                 }
 
                 // Update the Avail Test Label.
-                lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
 
                 // Slots.
 

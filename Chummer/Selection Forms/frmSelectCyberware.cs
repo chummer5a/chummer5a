@@ -32,7 +32,7 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
 
-        private double _dblCostMultiplier = 1.0;
+        private decimal _decCostMultiplier = 1.0m;
         private double _dblESSMultiplier = 1.0;
         private int _intAvailModifier;
         private readonly bool _blnCareer;
@@ -40,7 +40,7 @@ namespace Chummer
         private string _strSetGrade = string.Empty;
         private bool _blnShowOnlySubsystems;
         private string _strSubsystems = string.Empty;
-        private int _intMaximumCapacity = -1;
+        private decimal _decMaximumCapacity = -1;
         private bool _blnLockGrade;
         private bool _blnLoading = true;
 
@@ -162,7 +162,7 @@ namespace Chummer
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
             if (objXmlGrade != null)
             {
-                _dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                _decCostMultiplier = Convert.ToDecimal(objXmlGrade["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _dblESSMultiplier = Convert.ToDouble(objXmlGrade["ess"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _intAvailModifier = Convert.ToInt32(objXmlGrade["avail"]?.InnerText);
             }
@@ -229,7 +229,7 @@ namespace Chummer
                 return;
 
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0 || _blnCareer)
+            if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0m || _blnCareer)
                 chkFree.Visible = true;
             else
             {
@@ -495,7 +495,7 @@ namespace Chummer
             else
                 cboGrade.Enabled = true;
 
-            if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0 || _blnCareer)
+            if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0m || _blnCareer)
                 chkFree.Visible = true;
             else
             {
@@ -532,7 +532,7 @@ namespace Chummer
         /// <summary>
         /// Cost multiplier for Genetech.
         /// </summary>
-        public double GenetechCostMultiplier { get; set; } = 1.0;
+        public decimal GenetechCostMultiplier { get; set; } = 1.0m;
 
         /// <summary>
         /// Essence cost multiplier for Basic Bioware.
@@ -542,7 +542,7 @@ namespace Chummer
         /// <summary>
         /// Cost multiplier for Transgenics Bioware.
         /// </summary>
-        public double TransgenicsBiowareCostMultiplier { get; set; } = 1.0;
+        public decimal TransgenicsBiowareCostMultiplier { get; set; } = 1.0m;
 
         /// <summary>
         /// Whether or not the item has no cost.
@@ -576,13 +576,13 @@ namespace Chummer
         /// <summary>
         /// Set the maximum Capacity the piece of Cyberware is allowed to be.
         /// </summary>
-        public int MaximumCapacity
+        public decimal MaximumCapacity
         {
-            get { return _intMaximumCapacity; }
+            get { return _decMaximumCapacity; }
             set
             {
-                _intMaximumCapacity = value;
-                lblMaximumCapacity.Text = $"{LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed")} {_intMaximumCapacity}";
+                _decMaximumCapacity = value;
+                lblMaximumCapacity.Text = $"{LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed")} {_decMaximumCapacity:###,###,##0.##}";
             }
         }
 
@@ -711,14 +711,14 @@ namespace Chummer
                 strSelectCategory = "Genetech: Transgenics";
 
             // Place the Genetech cost multiplier in a varaible that can be safely modified.
-            double dblGenetechCostModifier = 1;
+            decimal decGenetechCostModifier = 1;
             // Genetech cost modifier only applies to Genetech.
             if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
-                dblGenetechCostModifier = GenetechCostMultiplier;
+                decGenetechCostModifier = GenetechCostMultiplier;
 
             // If Genetech: Transgenics is selected, apply the Transgenetics Bioware ESS Multiplier.
             if (strSelectCategory == "Genetech: Transgenics")
-                dblGenetechCostModifier -= (1 - TransgenicsBiowareCostMultiplier);
+                decGenetechCostModifier -= (1 - TransgenicsBiowareCostMultiplier);
 
             // Retireve the information for the selected piece of Cyberware.
             XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
@@ -792,11 +792,10 @@ namespace Chummer
             }
 
             // Cost.
-            double dblItemCost = 0;
+            decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = $"{0:###,###,##0.00¥}";
-                dblItemCost = 0;
+                lblCost.Text = $"{0:###,###,##0.##¥}";
             }
             else if (objXmlCyberware["cost"] != null)
             {
@@ -804,35 +803,34 @@ namespace Chummer
                 // Check for a Variable Cost.
                 if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
                 {
-                    int intMin;
-                    int intMax = 0;
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
                     strCost = strCost.Replace("Variable", string.Empty).Trim("()".ToCharArray());
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    lblCost.Text = intMax == 0 ? $"{intMin:###,###,##0.00¥+}" : $"{intMin:###,###,##0} - {intMax:###,###,##0.00¥}";
+                    lblCost.Text = decMax == decimal.MaxValue ? $"{decMin:###,###,##0.##¥+}" : $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
 
-                    dblItemCost = intMin;
+                    decItemCost = decMin;
                 }
                 else if (strCost.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCost.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
-                    if (strValues.Length >= Convert.ToInt32(nudRating.Value))
+                    if (Convert.ToInt32(nudRating.Value) > 0)
                     {
-                        dblItemCost = Convert.ToDouble(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier * dblGenetechCostModifier;
+                        decItemCost = Convert.ToDecimal(strValues[Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1], GlobalOptions.InvariantCultureInfo) * _decCostMultiplier * decGenetechCostModifier;
                         if (chkBlackMarketDiscount.Checked)
                         {
-                            dblItemCost -= Convert.ToInt32(dblItemCost * 0.10);
+                            decItemCost *= 0.9m;
                         }
-                        double multiplier = 1 + Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0;
-                        dblItemCost *= multiplier;
-                        lblCost.Text = $"{dblItemCost:###,###,##0.00¥}";
+                        decItemCost *= 1 + (nudMarkup.Value / 100.0m);
+                        lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
                     }
                 }
                 else
@@ -867,24 +865,23 @@ namespace Chummer
                         }
                     }
                     XPathExpression xprCost = _nav.Compile(strCost.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                    double dblCost = (Convert.ToDouble(_nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * _dblCostMultiplier *
-                                      dblGenetechCostModifier);
-                    dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.InvariantCultureInfo) / 100.0);
-                    dblItemCost = dblCost;
+                    decItemCost = (Convert.ToDecimal(_nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * _decCostMultiplier *
+                                      decGenetechCostModifier);
+                    decItemCost *= 1 + (nudMarkup.Value / 100.0m);
 
                     if (chkBlackMarketDiscount.Checked)
                     {
-                        dblItemCost -= Convert.ToInt32(dblItemCost * 0.10);
+                        decItemCost *= 0.9m;
                     }
 
-                    lblCost.Text = $"{dblItemCost:###,###,##0.00¥}";
+                    lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
                 }
             }
             else
-                lblCost.Text = $"{dblItemCost:###,###,##0.00¥}";
+                lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
 
             // Test required to find the item.
-            lblTest.Text = _objCharacter.AvailTest(Convert.ToInt32(dblItemCost), lblAvail.Text);
+            lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
 
             // Essence.
 
@@ -1129,28 +1126,26 @@ namespace Chummer
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                 string strCapacity = objCyberwareNode["capacity"].InnerText;
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                int intCapacity;
+                decimal decCapacity = 0;
 
                 XPathExpression xprCapacity = _nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
-                if (strCapacity == "*")
-                    intCapacity = 0;
-                else
+                if (strCapacity != "*")
                 {
                     if (strCapacity.StartsWith("FixedValues"))
                     {
                         string[] strValues = strCapacity.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
-                        intCapacity = Convert.ToInt32(strValues[Convert.ToInt32(nudRating.Value) - 1]);
+                        decCapacity = Convert.ToDecimal(strValues[Convert.ToInt32(nudRating.Value) - 1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intCapacity = Convert.ToInt32(_nav.Evaluate(xprCapacity));
+                        decCapacity = Convert.ToDecimal(_nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
                 }
-                if (MaximumCapacity - intCapacity < 0)
+                if (MaximumCapacity - decCapacity < 0)
                 {
                     MessageBox.Show(
                         LanguageManager.Instance.GetString("Message_OverCapacityLimit")
-                            .Replace("{0}", MaximumCapacity.ToString())
-                            .Replace("{1}", intCapacity.ToString()),
+                            .Replace("{0}", MaximumCapacity.ToString("N2", GlobalOptions.CultureInfo))
+                            .Replace("{1}", decCapacity.ToString("N2", GlobalOptions.CultureInfo)),
                         LanguageManager.Instance.GetString("MessageTitle_OverCapacityLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;

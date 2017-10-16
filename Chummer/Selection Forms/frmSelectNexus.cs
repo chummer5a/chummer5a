@@ -120,7 +120,7 @@ namespace Chummer
         /// </summary>
         private void CalculateNexus()
         {
-            int intCost = 0;
+            decimal decCost = 0;
 
             int intProcessor = Convert.ToInt32(nudProcessor.Value);
             int intSystem = Convert.ToInt32(nudSystem.Value);
@@ -217,19 +217,19 @@ namespace Chummer
                     break;
             }
 
-            intCost = intResponseCost + intSystemCost + intFirewallCost + intSignalCost;
+            decCost = intResponseCost + intSystemCost + intFirewallCost + intSignalCost;
             if (chkFreeItem.Checked)
-                intCost = 0;
+                decCost = 0;
 
             // Update the labels.
             lblResponseAvail.Text = strResponseAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
             lblSystemAvail.Text = strSystemAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
             lblFirewallAvail.Text = strFirewallAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-            lblCost.Text = String.Format("{0:###,###,##0.00¥}", Convert.ToInt32(intCost));
+            lblCost.Text = String.Format("{0:###,###,##0.##¥}", decCost);
 
             Gear objNexus = new Gear(_objCharacter);
             objNexus.Name = LanguageManager.Instance.GetString("String_SelectNexus_Nexus") + " (" + LanguageManager.Instance.GetString("String_SelectNexus_Processor") + " " + intProcessor.ToString() + ")";
-            objNexus.Cost = intCost.ToString();
+            objNexus.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
             objNexus.Avail = "0";
             objNexus.Category = "Nexus";
             objNexus.Source = "UN";

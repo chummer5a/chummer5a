@@ -773,17 +773,9 @@ namespace Chummer.Backend.Equipment
                 XPathExpression xprCapacity = nav.Compile(strCapacity);
 
                 decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
-                string strReturn;
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                if (decCapacity > 0)
-                {
-                    strReturn = Math.Ceiling(decCapacity).ToString(GlobalOptions.CultureInfo);
-                }
-                else
-                {
-                    strReturn = Math.Floor(decCapacity).ToString(GlobalOptions.CultureInfo);
-                }
+                string strReturn = decCapacity.ToString("N2", GlobalOptions.CultureInfo);
                 if (blnSquareBrackets)
                     strReturn = "[" + strReturn + "]";
 

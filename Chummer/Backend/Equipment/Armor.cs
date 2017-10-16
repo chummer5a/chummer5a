@@ -772,7 +772,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn = nav.Evaluate(xprCapacity).ToString();
+                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -780,6 +780,9 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
+                    decimal decReturn;
+                    if (decimal.TryParse(_strArmorCapacity, out decReturn))
+                        return decReturn.ToString("N2", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }
             }
@@ -818,17 +821,12 @@ namespace Chummer.Backend.Equipment
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
 
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = _strArmorCapacity.Contains('[');
-                    string strCapacity = _strArmorCapacity;
-                    if (blnSquareBrackets)
-                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+                    string strCost = _strCost;
+                    if (strCost.Contains('['))
+                        strCost = strCost.Substring(1, strCost.Length - 2);
+                    XPathExpression xprCapacity = nav.Compile(strCost.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn = nav.Evaluate(xprCapacity).ToString();
-                    if (blnSquareBrackets)
-                        strReturn = "[" + strReturn + "]";
-
-                    return Convert.ToDecimal(strReturn, GlobalOptions.InvariantCultureInfo);
+                    return Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
@@ -1246,7 +1244,11 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    strReturn = _strArmorCapacity;
+                    decimal decReturn;
+                    if (decimal.TryParse(_strArmorCapacity, out decReturn))
+                        strReturn = decReturn.ToString("N2", GlobalOptions.CultureInfo);
+                    else
+                        strReturn = _strArmorCapacity;
                 }
 
                 foreach (ArmorMod objArmorMod in ArmorMods)
@@ -1267,7 +1269,7 @@ namespace Chummer.Backend.Equipment
                         XPathExpression xprCapacity = nav.Compile(strCapacity);
 
                         strCapacity = nav.Evaluate(xprCapacity).ToString();
-                        strCapacity = Math.Ceiling(Convert.ToDouble(strCapacity) + Convert.ToDouble(strReturn)).ToString(GlobalOptions.CultureInfo);
+                        strCapacity = (Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString("N2", GlobalOptions.CultureInfo);
                         strReturn = strCapacity;
                     }
                 }
@@ -1279,16 +1281,16 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The amount of Capacity remaining in the Gear.
         /// </summary>
-        public int CapacityRemaining
+        public decimal CapacityRemaining
         {
             get
             {
                 // Get the Armor base Capacity.
-                int intCapacity = Convert.ToInt32(CalculatedCapacity);
+                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
 
                 // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
                 // Capacity since it's disabled and return 0 instead.
-                if (intCapacity == 0)
+                if (decCapacity == 0)
                     return 0;
 
                 // Calculate the remaining Capacity for a Suit of Armor.
@@ -1319,7 +1321,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        intCapacity -= Convert.ToInt32(strCapacity);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
 
                     // Run through its Gear and deduct the Armor Capacity costs.
@@ -1337,7 +1339,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        intCapacity -= Convert.ToInt32(strCapacity);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
                 }
 
@@ -1348,22 +1350,22 @@ namespace Chummer.Backend.Equipment
                     foreach (ArmorMod objMod in _lstArmorMods)
                     {
                         if (objMod.Rating > 0)
-                            intCapacity -= objMod.Rating;
+                            decCapacity -= objMod.Rating;
                         else
-                            intCapacity -= 1;
+                            decCapacity -= 1;
                     }
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
                     foreach (Gear objGear in _lstGear)
                     {
                         if (objGear.Rating > 0)
-                            intCapacity -= objGear.Rating;
+                            decCapacity -= objGear.Rating;
                         else
-                            intCapacity -= 1;
+                            decCapacity -= 1;
                     }
                 }
 
-                return intCapacity;
+                return decCapacity;
             }
         }
 

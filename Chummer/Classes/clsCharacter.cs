@@ -1265,7 +1265,7 @@ namespace Chummer
                     objImprovement.Load(objXmlImprovement);
                     _lstImprovements.Add(objImprovement);
                 }
-                catch (ArgumentException e)
+                catch (ArgumentException)
                 {
                     blnImprovementError = true;
                 }
@@ -2771,8 +2771,10 @@ namespace Chummer
             // If a Viewer window already exists for this character, use it instead.
             if (_frmPrintView == null)
             {
-                List<Character> lstCharacters = new List<Character>();
-                lstCharacters.Add(this);
+                List<Character> lstCharacters = new List<Character>
+                {
+                    this
+                };
                 frmViewer frmViewCharacter = new frmViewer();
                 frmViewCharacter.Characters = lstCharacters;
                 frmViewCharacter.CharacterXML = objCharacterXML;

@@ -931,7 +931,7 @@ namespace Chummer.Backend.Equipment
                         {
                             try
                             {
-                                strReturn = nav.Evaluate(xprCapacity).ToString();
+                                strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                             }
                             catch (XPathException)
                             {
@@ -946,7 +946,7 @@ namespace Chummer.Backend.Equipment
                     {
                         strSecondHalf = strSecondHalf.Replace("[", string.Empty).Replace("]", string.Empty);
                         xprCapacity = nav.Compile(strSecondHalf.Replace("Rating", _intRating.ToString()));
-                        strSecondHalf = "[" + nav.Evaluate(xprCapacity).ToString() + "]";
+                        strSecondHalf = "[" + Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo) + "]";
                     }
 
                     strReturn += "/" + strSecondHalf;
@@ -964,7 +964,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    strReturn = nav.Evaluate(xprCapacity).ToString();
+                    strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }
@@ -984,6 +984,9 @@ namespace Chummer.Backend.Equipment
                 }
                 if (string.IsNullOrEmpty(strReturn))
                     strReturn = "0";
+                decimal decReturn;
+                if (decimal.TryParse(strReturn, out decReturn))
+                    return decReturn.ToString("N2", GlobalOptions.CultureInfo);
                 return strReturn;
             }
         }
@@ -991,18 +994,19 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The amount of Capacity remaining in the Cyberware.
         /// </summary>
-        public int CapacityRemaining
+        public decimal CapacityRemaining
         {
             get
             {
-                int intCapacity = 0;
-                if (string.IsNullOrEmpty(_strCapacity))return intCapacity;
+                if (string.IsNullOrEmpty(_strCapacity))
+                    return 0.0m;
+                decimal decCapacity = 0;
                 if (_strCapacity.Contains("/["))
                 {
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = CalculatedCapacity;
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                    intCapacity = Convert.ToInt32(strBaseCapacity);
+                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in _lstCyberware)
@@ -1014,13 +1018,13 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        intCapacity -= Convert.ToInt32(strCapacity);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
                 }
                 else if (!_strCapacity.Contains("["))
                 {
                     // Get the Cyberware base Capacity.
-                    intCapacity = Convert.ToInt32(CalculatedCapacity);
+                    decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in _lstCyberware)
@@ -1032,11 +1036,11 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
-                        intCapacity -= Convert.ToInt32(strCapacity);
+                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
                 }
 
-                return intCapacity;
+                return decCapacity;
             }
         }
 

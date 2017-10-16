@@ -125,10 +125,10 @@ namespace Chummer
 
                 if (intMax == int.MaxValue)
                 {
-                    lblBP.Text = $"{intMin:###,###,##0.00¥+}";
+                    lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
                 }
                 else
-                    lblBP.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0.00¥}";
+                    lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo) + " - " + intMax.ToString(GlobalOptions.CultureInfo);
 
                 intBP = intMin;
             }

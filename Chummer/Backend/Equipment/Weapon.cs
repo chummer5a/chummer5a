@@ -2737,15 +2737,17 @@ namespace Chummer.Backend.Equipment
                 if (intAlternateExtreme > 0)
                     intAlternateExtreme = (intAlternateExtreme * (intRangeModifier) + 99) / 100;
 
-                Dictionary<string, string> retDictionary = new Dictionary<string, string>(8);
-                retDictionary.Add("short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin + 1).ToString() + "-" + intShort.ToString());
-                retDictionary.Add("medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString() + "-" + intMedium.ToString());
-                retDictionary.Add("long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString() + "-" + intLong.ToString());
-                retDictionary.Add("extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString() + "-" + intExtreme.ToString());
-                retDictionary.Add("alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin + 1).ToString() + "-" + intAlternateShort.ToString());
-                retDictionary.Add("alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString() + "-" + intAlternateMedium.ToString());
-                retDictionary.Add("alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString() + "-" + intAlternateLong.ToString());
-                retDictionary.Add("alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString() + "-" + intAlternateExtreme.ToString());
+                Dictionary<string, string> retDictionary = new Dictionary<string, string>(8)
+                {
+                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin + 1).ToString() + "-" + intShort.ToString() },
+                    { "medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString() + "-" + intMedium.ToString() },
+                    { "long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString() + "-" + intLong.ToString() },
+                    { "extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString() + "-" + intExtreme.ToString() },
+                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin + 1).ToString() + "-" + intAlternateShort.ToString() },
+                    { "alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString() + "-" + intAlternateMedium.ToString() },
+                    { "alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString() + "-" + intAlternateLong.ToString() },
+                    { "alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString() + "-" + intAlternateExtreme.ToString() }
+                };
 
                 return retDictionary;
             }
