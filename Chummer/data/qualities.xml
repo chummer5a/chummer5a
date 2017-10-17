@@ -436,6 +436,11 @@
       <bonus>
         <selecttext />
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Weak Immune System</quality>
+		</oneof>
+	  </forbidden>
       <source>SR5</source>
       <page>76</page>
     </quality>
@@ -448,6 +453,11 @@
       <bonus>
         <selecttext />
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Weak Immune System</quality>
+		</oneof>
+	  </forbidden>
       <source>SR5</source>
       <page>76</page>
     </quality>
@@ -467,7 +477,15 @@
       <name>Quick Healer</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<stuncmrecovery>2</stuncmrecovery>
+		<physicalcmrecovery>2</physicalcmrecovery>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Uncanny Healer</quality>
+		</oneof>
+	  </forbidden>
       <source>SR5</source>
       <page>77</page>
     </quality>
@@ -476,10 +494,16 @@
       <name>Resistance to Pathogens</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<pathogencontactresist>1</pathogencontactresist>
+		<pathogeningestionresist>1</pathogeningestionresist>
+		<pathogeninhalationresist>1</pathogeninhalationresist>
+		<pathogeninjectionresist>1</pathogeninjectionresist>
+	  </bonus>
       <forbidden>
         <oneof>
           <quality>Resistance to Pathogens and Toxins</quality>
+		  <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -490,10 +514,16 @@
       <name>Resistance to Toxins</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<toxincontactresist>1</toxincontactresist>
+		<toxiningestionresist>1</toxiningestionresist>
+		<toxininhalationresist>1</toxininhalationresist>
+		<toxininjectionresist>1</toxininjectionresist>
+	  </bonus>
       <forbidden>
         <oneof>
           <quality>Resistance to Pathogens and Toxins</quality>
+		  <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -505,7 +535,16 @@
       <karma>8</karma>
       <category>Positive</category>
       <hide />
-      <bonus />
+      <bonus>
+		<toxincontactresist>1</toxincontactresist>
+		<toxiningestionresist>1</toxiningestionresist>
+		<toxininhalationresist>1</toxininhalationresist>
+		<toxininjectionresist>1</toxininjectionresist>
+		<pathogencontactresist>1</pathogencontactresist>
+		<pathogeningestionresist>1</pathogeningestionresist>
+		<pathogeninhalationresist>1</pathogeninhalationresist>
+		<pathogeninjectionresist>1</pathogeninjectionresist>
+	  </bonus>
       <source>SR5</source>
       <page>77</page>
     </quality>
@@ -514,11 +553,21 @@
       <name>Resistance to Pathogens and Toxins</name>
       <karma>8</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<toxincontactresist>2</toxincontactresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininhalationresist>2</toxininhalationresist>
+		<toxininjectionresist>2</toxininjectionresist>
+		<pathogencontactresist>2</pathogencontactresist>
+		<pathogeningestionresist>2</pathogeningestionresist>
+		<pathogeninhalationresist>2</pathogeninhalationresist>
+		<pathogeninjectionresist>2</pathogeninjectionresist>
+	  </bonus>
       <forbidden>
         <oneof>
           <quality>Resistance to Pathogens</quality>
           <quality>Resistance to Toxins</quality>
+		  <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1297,9 +1346,9 @@
       <category>Negative</category>
       <bonus />
 	  <forbidden>
-		<anyof>
+		<oneof>
 			<quality>Insomnia (Full)</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>SR5</source>
       <page>81</page>
@@ -1311,9 +1360,9 @@
       <category>Negative</category>
       <bonus />
 	  <forbidden>
-		<anyof>
+		<oneof>
 			<quality>Insomnia (Basic)</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>SR5</source>
       <page>81</page>
@@ -1681,6 +1730,15 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
+	  <forbidden>
+		<oneof>
+          <quality>Resistance to Pathogens</quality>
+          <quality>Resistance to Toxins</quality>
+		  <quality>Resistance to Pathogens and Toxins</quality>
+		  <quality>Natural Immunity (Natural)</quality>
+		  <quality>Natural Immunity (Synthetic)</quality>
+        </oneof>
+	  </forbidden>
       <source>SR5</source>
       <page>87</page>
     </quality>
@@ -3365,9 +3423,9 @@
         </specificskill>
       </bonus>
 	  <forbidden>
-		<anyof>
+		<oneof>
 			<quality>Oblivious II</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>RF</source>
       <page>157</page>
@@ -3384,9 +3442,9 @@
         </specificskill>
       </bonus>
 	  <forbidden>
-		<anyof>
+		<oneof>
 			<quality>Oblivious I</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>RF</source>
       <page>157</page>
@@ -3398,9 +3456,9 @@
       <category>Negative</category>
       <bonus />
 	  <forbidden>
-		<anyof>
+		<oneof>
 			<quality>Pacifist II</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>RF</source>
       <page>157</page>
@@ -3412,9 +3470,9 @@
       <category>Negative</category>
       <bonus />
 	  <forbidden>
-		<anyof>
+		<oneof>
 			<quality>Pacifist I</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>RF</source>
       <page>157</page>
@@ -4051,6 +4109,7 @@
       <karma>3</karma>
       <category>Positive</category>
       <bonus>
+	    <toxiningestionresist>1</toxiningestionresist>
         <lifestylecost>-10</lifestylecost>
       </bonus>
       <required>
@@ -4070,6 +4129,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
+	    <toxiningestionresist>1</toxiningestionresist>
         <lifestylecost>-10</lifestylecost>
       </bonus>
       <addweapon>Raptor Beak</addweapon>
@@ -5649,6 +5709,7 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus>
+	    <toxiningestionresist>2</toxiningestionresist>
         <lifestylecost>-20</lifestylecost>
       </bonus>
       <required>
@@ -6270,7 +6331,10 @@
       <name>Slow Healer</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+		<stuncmrecovery>-2</stuncmrecovery>
+		<physicalcmrecovery>-2</physicalcmrecovery>
+	  </bonus>
       <source>RF</source>
       <page>122</page>
       <metagenetic>yes</metagenetic>
@@ -10417,7 +10481,10 @@
       <name>Drug Tolerant</name>
       <karma>6</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <physiologicaladdictionfirsttime>2</physiologicaladdictionfirsttime>
+		<psychologicaladdictionfirsttime>2</psychologicaladdictionfirsttime>
+      </bonus>
       <source>CF</source>
       <page>54</page>
     </quality>
@@ -10466,7 +10533,15 @@
       <name>Uncanny Healer</name>
       <karma>12</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<addesstostuncmrecovery />
+		<addesstophysicalcmrecovery />
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Quick Healer</quality>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>56</page>
     </quality>
@@ -10687,7 +10762,12 @@
       <name>Family Curse</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
+		<psychologicaladdictionfirsttime>-2</psychologicaladdictionfirsttime>
+		<physiologicaladdictionalreadyaddicted>-2</physiologicaladdictionalreadyaddicted>
+		<psychologicaladdictionalreadyaddicted>-2</psychologicaladdictionalreadyaddicted>
+      </bonus>
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -10696,7 +10776,32 @@
       <name>Implant-induced Immune Deficiency</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
+		<physiologicaladdictionalreadyaddicted>-2</physiologicaladdictionalreadyaddicted>
+		<toxincontactresist>-2</toxincontactresist>
+		<toxiningestionresist>-2</toxiningestionresist>
+		<toxininhalationresist>-2</toxininhalationresist>
+		<toxininjectionresist>-2</toxininjectionresist>
+		<pathogencontactresist>-2</pathogencontactresist>
+		<pathogeningestionresist>-2</pathogeningestionresist>
+		<pathogeninhalationresist>-2</pathogeninhalationresist>
+		<pathogeninjectionresist>-2</pathogeninjectionresist>
+      </bonus>
+	  <required>
+		<allof>
+		  <ess>-5.0001</ess>
+		</allof>
+		<oneof>
+		  <ess grade="Used">0.0001</ess>
+		  <ess grade="Standard">0.0001</ess>
+		  <ess grade="Alphaware">0.0001</ess>
+		  <ess grade="Betaware">0.0001</ess>
+		  <ess grade="Deltaware">0.0001</ess>
+		  <ess grade="Gammaware">0.0001</ess>
+		  <ess grade="Omegaware">0.0001</ess>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -12298,9 +12403,9 @@
         </oneof>
       </required>
 	  <forbidden>
-		<anyof>
+		<oneof>
 		  <quality>Adept</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>FA</source>
       <page>35</page>
@@ -13698,6 +13803,8 @@
 		</allof>
       </required>
       <bonus>
+	    <fatigueresist>1</fatigueresist>
+		<toxininhalationresist>2</toxininhalationresist>
 		<conditionmonitor>
 			<physical>-1</physical>
 			<stun>-1</stun>
@@ -13800,6 +13907,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13837,6 +13946,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13874,6 +13985,7 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
 		<lifestylecost>-10</lifestylecost>
 	  </bonus>
       <source>FA</source>
@@ -13912,6 +14024,7 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13953,6 +14066,9 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
+		<fatigueresist>2</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13995,6 +14111,8 @@
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>2</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14036,6 +14154,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
+		<fatigueresist>2</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14078,6 +14198,8 @@
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>2</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14119,6 +14241,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
+		<fatigueresist>2</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14161,6 +14285,7 @@
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>2</fatigueresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14205,6 +14330,9 @@
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>3</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14248,6 +14376,9 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
+		<fatigueresist>3</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14292,6 +14423,8 @@
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>3</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14336,6 +14469,8 @@
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>3</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14381,6 +14516,9 @@
 		<essencepenaltyt100>-200</essencepenaltyt100>
 		<essencepenaltymagonlyt100>200</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>4</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>

@@ -819,6 +819,10 @@
       <key>Checkbox_ShowOnlyAffordItems</key>
       <text>Show Only Items I Can Afford</text>
     </string>
+	<string>
+      <key>String_Immune</key>
+      <text>Immune</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>

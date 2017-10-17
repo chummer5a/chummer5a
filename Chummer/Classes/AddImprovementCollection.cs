@@ -110,6 +110,34 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        public void mentalmanipulationresist(XmlNode bonusNode)
+        {
+            Log.Info("mentalmanipulationresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentalManipulationResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void physicalmanipulationresist(XmlNode bonusNode)
+        {
+            Log.Info("physicalmanipulationresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalManipulationResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void manaillusionresist(XmlNode bonusNode)
+        {
+            Log.Info("manaillusionresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ManaIllusionResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        public void physicalillusionresist(XmlNode bonusNode)
+        {
+            Log.Info("physicalillusionresist");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalIllusionResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         public void enableattribute(XmlNode bonusNode)
         {
             Log.Info("enableattribute");
@@ -3366,6 +3394,246 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Memory, string.Empty,
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Fatigue Resist.
+        public void fatigueresist(XmlNode bonusNode)
+        {
+            Log.Info("fatigueresist");
+            Log.Info("fatigueresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FatigueResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Contact-vector Toxins Resist.
+        public void toxincontactresist(XmlNode bonusNode)
+        {
+            Log.Info("toxincontactresist");
+            Log.Info("toxincontactresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinContactResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Ingestion-vector Toxins Resist.
+        public void toxiningestionresist(XmlNode bonusNode)
+        {
+            Log.Info("toxiningestionresist");
+            Log.Info("toxiningestionresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinIngestionResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Inhalation-vector Toxins Resist.
+        public void toxininhalationresist(XmlNode bonusNode)
+        {
+            Log.Info("toxininhalationresist");
+            Log.Info("toxininhalationresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInhalationResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Injection-vector Toxins Resist.
+        public void toxininjectionresist(XmlNode bonusNode)
+        {
+            Log.Info("toxininjectionresist");
+            Log.Info("toxininjectionresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInjectionResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Contact-vector Pathogens Resist.
+        public void pathogencontactresist(XmlNode bonusNode)
+        {
+            Log.Info("pathogencontactresist");
+            Log.Info("pathogencontactresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenContactResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Ingestion-vector Pathogens Resist.
+        public void pathogeningestionresist(XmlNode bonusNode)
+        {
+            Log.Info("pathogeningestionresist");
+            Log.Info("pathogeningestionresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenIngestionResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Inhalation-vector Pathogens Resist.
+        public void pathogeninhalationresist(XmlNode bonusNode)
+        {
+            Log.Info("pathogeninhalationresist");
+            Log.Info("pathogeninhalationresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInhalationResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Injection-vector Pathogens Resist.
+        public void pathogeninjectionresist(XmlNode bonusNode)
+        {
+            Log.Info("pathogeninjectionresist");
+            Log.Info("pathogeninjectionresist = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInjectionResist, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Contact-vector Toxins Immunity.
+        public void toxincontactimmune(XmlNode bonusNode)
+        {
+            Log.Info("toxincontactimmune");
+            Log.Info("toxincontactimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinContactImmune, _strUnique);
+        }
+
+        // Check for Ingestion-vector Toxins Immunity.
+        public void toxiningestionimmune(XmlNode bonusNode)
+        {
+            Log.Info("toxiningestionimmune");
+            Log.Info("toxiningestionimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinIngestionImmune, _strUnique);
+        }
+
+        // Check for Inhalation-vector Toxins Immunity.
+        public void toxininhalationimmune(XmlNode bonusNode)
+        {
+            Log.Info("toxininhalationimmune");
+            Log.Info("toxininhalationimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInhalationImmune, _strUnique);
+        }
+
+        // Check for Injection-vector Toxins Immunity.
+        public void toxininjectionimmune(XmlNode bonusNode)
+        {
+            Log.Info("toxininjectionimmune");
+            Log.Info("toxininjectionimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInjectionImmune, _strUnique);
+        }
+
+        // Check for Contact-vector Pathogens Immunity.
+        public void pathogencontactimmune(XmlNode bonusNode)
+        {
+            Log.Info("pathogencontactimmune");
+            Log.Info("pathogencontactimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenContactImmune, _strUnique);
+        }
+
+        // Check for Ingestion-vector Pathogens Immunity.
+        public void pathogeningestionimmune(XmlNode bonusNode)
+        {
+            Log.Info("pathogeningestionimmune");
+            Log.Info("pathogeningestionimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenIngestionImmune, _strUnique);
+        }
+
+        // Check for Inhalation-vector Pathogens Immunity.
+        public void pathogeninhalationimmune(XmlNode bonusNode)
+        {
+            Log.Info("pathogeninhalationimmune");
+            Log.Info("pathogeninhalationimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInhalationImmune, _strUnique);
+        }
+
+        // Check for Injection-vector Pathogens Immunity.
+        public void pathogeninjectionimmune(XmlNode bonusNode)
+        {
+            Log.Info("pathogeninjectionimmune");
+            Log.Info("pathogeninjectionimmune = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInjectionImmune, _strUnique);
+        }
+
+        // Check for Physiological Addiction Resist if you are not addicted.
+        public void physiologicaladdictionfirsttime(XmlNode bonusNode)
+        {
+            Log.Info("physiologicaladdictionfirsttime");
+            Log.Info("physiologicaladdictionfirsttime = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysiologicalAddictionFirstTime, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Psychological Addiction if you are not addicted.
+        public void psychologicaladdictionfirsttime(XmlNode bonusNode)
+        {
+            Log.Info("psychologicaladdictionfirsttime");
+            Log.Info("psychologicaladdictionfirsttime = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PsychologicalAddictionFirstTime, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Physiological Addiction Resist if you are addicted.
+        public void physiologicaladdictionalreadyaddicted(XmlNode bonusNode)
+        {
+            Log.Info("physiologicaladdictionalreadyaddicted");
+            Log.Info("physiologicaladdictionalreadyaddicted = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Psychological Addiction if you are addicted.
+        public void psychologicaladdictionalreadyaddicted(XmlNode bonusNode)
+        {
+            Log.Info("psychologicaladdictionalreadyaddicted");
+            Log.Info("psychologicaladdictionalreadyaddicted = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Recovery Dice from Stun CM Damage.
+        public void stuncmrecovery(XmlNode bonusNode)
+        {
+            Log.Info("stuncmrecovery");
+            Log.Info("stuncmrecovery = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StunCMRecovery, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Recovery Dice from Physical CM Damage.
+        public void physicalcmrecovery(XmlNode bonusNode)
+        {
+            Log.Info("physicalcmrecovery");
+            Log.Info("physicalcmrecovery = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCMRecovery, string.Empty,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Whether Essence is added to Recovery Dice from Stun CM Damage.
+        public void addesstostuncmrecovery(XmlNode bonusNode)
+        {
+            Log.Info("addesstostuncmrecovery");
+            Log.Info("addesstostuncmrecovery = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AddESStoStunCMRecovery, _strUnique);
+        }
+
+        // Check for Whether Essence is added to Recovery Dice from Physical CM Damage.
+        public void addesstophysicalcmrecovery(XmlNode bonusNode)
+        {
+            Log.Info("addesstophysicalcmrecovery");
+            Log.Info("addesstophysicalcmrecovery = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AddESStoPhysicalCMRecovery, _strUnique);
         }
 
         // Check for Concealability.

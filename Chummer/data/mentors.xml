@@ -880,7 +880,17 @@
       <name>Disease</name>
       <advantage>All: +2 to resist all pathogens and toxins</advantage>
       <disadvantage>Followers of Disease must make a Charisma + Willpower (3) Test to not flee or seek cover whenever in a combat situation, unless they outnumber their opponents. If they begin a fight with greater numbers but then their side is reduced so that they no longer outnumber their opponents, they must make a test to avoid fleeing.</disadvantage>
-      <choices>
+      <bonus>
+		<toxincontactresist>2</toxincontactresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininhalationresist>2</toxininhalationresist>
+		<toxininjectionresist>2</toxininjectionresist>
+		<pathogencontactresist>2</pathogencontactresist>
+		<pathogeningestionresist>2</pathogeningestionresist>
+		<pathogeninhalationresist>2</pathogeninhalationresist>
+		<pathogeninjectionresist>2</pathogeninjectionresist>
+	  </bonus>
+	  <choices>
         <choice>
           <name>Magician: +2 dice for summoning or binding plague spirits</name>
           <bonus />

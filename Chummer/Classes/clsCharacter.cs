@@ -2395,6 +2395,36 @@ namespace Chummer
             objWriter.WriteElementString("liftweight", (STR.TotalValue * 15).ToString());
             // <carryweight />
             objWriter.WriteElementString("carryweight", (STR.TotalValue * 10).ToString());
+            // <fatigueresist />
+            objWriter.WriteElementString("fatigueresist", FatigueResist.ToString());
+            // <toxincontacttesist />
+            objWriter.WriteElementString("toxincontacttesist", ToxinContactResist.ToString());
+            // <toxiningestionresist />
+            objWriter.WriteElementString("toxiningestionresist", ToxinIngestionResist.ToString());
+            // <toxininhalationresist />
+            objWriter.WriteElementString("toxininhalationresist", ToxinInhalationResist.ToString());
+            // <toxininjectionresist />
+            objWriter.WriteElementString("toxininjectionresist", ToxinInjectionResist.ToString());
+            // <pathogencontactresist />
+            objWriter.WriteElementString("pathogencontactresist", PathogenContactResist.ToString());
+            // <pathogeningestionresist />
+            objWriter.WriteElementString("pathogeningestionresist", PathogenIngestionResist.ToString());
+            // <pathogeninhalationresist />
+            objWriter.WriteElementString("pathogeninhalationresist", PathogenInhalationResist.ToString());
+            // <pathogeninjectionresist />
+            objWriter.WriteElementString("pathogeninjectionresist", PathogenInjectionResist.ToString());
+            // <physiologicaladdictionresistfirsttime />
+            objWriter.WriteElementString("physiologicaladdictionresistfirsttime", PhysiologicalAddictionResistFirstTime.ToString());
+            // <physiologicaladdictionresistalreadyaddicted />
+            objWriter.WriteElementString("physiologicaladdictionresistalreadyaddicted", PhysiologicalAddictionResistAlreadyAddicted.ToString());
+            // <psychologicaladdictionresistfirsttime />
+            objWriter.WriteElementString("psychologicaladdictionresistfirsttime", PsychologicalAddictionResistFirstTime.ToString());
+            // <psychologicaladdictionresistalreadyaddicted />
+            objWriter.WriteElementString("psychologicaladdictionresistalreadyaddicted", PsychologicalAddictionResistAlreadyAddicted.ToString());
+            // <physicalcmnaturalrecovery />
+            objWriter.WriteElementString("physicalcmnaturalrecovery", PhysicalCMNaturalRecovery.ToString());
+            // <stuncmnaturalrecovery />
+            objWriter.WriteElementString("stuncmnaturalrecovery", StunCMNaturalRecovery.ToString());
 
             // <skills>
             objWriter.WriteStartElement("skills");
@@ -5026,9 +5056,198 @@ namespace Chummer
                 return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
             }
         }
-#endregion
 
-#region Reputation
+        /// <summary>
+        /// Resist test to Fatigue damage (BOD + WIL).
+        /// </summary>
+        public int FatigueResist
+        {
+            get
+            {
+                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Contact-vector Toxins (BOD + WIL).
+        /// </summary>
+        public string ToxinContactResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinContactImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        /// <summary>
+        /// Resist test to Ingestion-vector Toxins (BOD + WIL).
+        /// </summary>
+        public string ToxinIngestionResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinIngestionImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        /// <summary>
+        /// Resist test to Inhalation-vector Toxins (BOD + WIL).
+        /// </summary>
+        public string ToxinInhalationResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInhalationImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        /// <summary>
+        /// Resist test to Injection-vector Toxins (BOD + WIL).
+        /// </summary>
+        public string ToxinInjectionResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInjectionImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Contact-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public string PathogenContactResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenContactImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        /// <summary>
+        /// Resist test to Ingestion-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public string PathogenIngestionResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenIngestionImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        /// <summary>
+        /// Resist test to Inhalation-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public string PathogenInhalationResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInhalationImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        /// <summary>
+        /// Resist test to Injection-vector Pathogens (BOD + WIL).
+        /// </summary>
+        public string PathogenInjectionResist
+        {
+            get
+            {
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInjectionImmune))
+                    return LanguageManager.Instance.GetString("String_Immune");
+                else
+                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
+        /// </summary>
+        public string PhysiologicalAddictionResistFirstTime
+        {
+            get
+            {
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Psychological Addiction (LOG + WIL) if you are not addicted yet.
+        /// </summary>
+        public string PsychologicalAddictionResistFirstTime
+        {
+            get
+            {
+                return (LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Physiological Addiction (BOD + WIL) if you are already addicted.
+        /// </summary>
+        public string PhysiologicalAddictionResistAlreadyAddicted
+        {
+            get
+            {
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Psychological Addiction (LOG + WIL) if you are already addicted.
+        /// </summary>
+        public string PsychologicalAddictionResistAlreadyAddicted
+        {
+            get
+            {
+                return (LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted)).ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Dicepool for natural recovery from Stun CM box damage (BOD + WIL).
+        /// </summary>
+        public string StunCMNaturalRecovery
+        {
+            get
+            {
+                int intReturn = BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery);
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
+                    intReturn += Convert.ToInt32(Math.Floor(Essence));
+                return intReturn.ToString(GlobalOptions.CultureInfo);
+            }
+        }
+
+        /// <summary>
+        /// Dicepool for natural recovery from Physical CM box damage (2 x BOD).
+        /// </summary>
+        public string PhysicalCMNaturalRecovery
+        {
+            get
+            {
+                int intReturn = 2 * BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery));
+                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
+                    intReturn += Convert.ToInt32(Math.Floor(Essence));
+                return intReturn.ToString(GlobalOptions.CultureInfo);
+            }
+        }
+        #endregion
+
+        #region Reputation
         /// <summary>
         /// Amount of Street Cred the character has earned through standard means.
         /// </summary>

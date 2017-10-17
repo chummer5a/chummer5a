@@ -1578,6 +1578,9 @@
       <armorcapacity>6</armorcapacity>
       <avail>6</avail>
       <cost>1200</cost>
+	  <bonus>
+		<fatigueresist>-2</fatigueresist>
+	  </bonus>
       <mods>
         <name>Custom Fit</name>
         <name rating="4">Insulation</name>
@@ -3001,6 +3004,10 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus>
+		<toxincontactresist>Rating</toxincontactresist>
+		<pathogencontactresist>Rating</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3013,6 +3020,12 @@
       <armorcapacity>[6]</armorcapacity>
       <avail>12R</avail>
       <cost>3000</cost>
+	  <bonus>
+		<toxincontactimmune />
+		<toxininhalationimmune />
+		<pathogencontactimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3097,6 +3110,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus>
+		<toxincontactresist>4</toxincontactresist>
+		<pathogencontactresist>4</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3133,6 +3150,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus>
+		<toxincontactresist>3</toxincontactresist>
+		<pathogencontactresist>3</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3169,6 +3190,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus>
+		<toxincontactresist>2</toxincontactresist>
+		<pathogencontactresist>2</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3205,6 +3230,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus>
+		<toxincontactresist>6</toxincontactresist>
+		<pathogencontactresist>6</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3375,6 +3404,12 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>+6</avail>
       <cost>6000</cost>
+	  <bonus>
+		<toxincontactimmune />
+		<toxininhalationimmune />
+		<pathogencontactimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>

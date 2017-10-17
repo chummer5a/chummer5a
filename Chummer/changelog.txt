@@ -138,6 +138,10 @@ Application Changes:
 - Added support for costs, gear quantities, and gear capacities that are not integers. All nuyen costs should now be tracked to decimal precision (precision depends on how large the number is), though Chummer5 will only display up to 2 decimal places.
 - Updated the tool that saves character sheets to PDF so that it shouldn't mess up sheet formatting as much as the previous one.
 - Slightly altered the UI for the quality selection window so that it is clearer what the numerical up-downs in it represent. Fixes #1971.
+- Fixed a bug that caused the dicepool for resisting physical illusion spells to be calculated as WIL + WIL and displayed as INT + WIL instead of the LOG + INT that it should be.
+- Added support for tracking of fatigue resistance, dicepools for addiction tests (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), resistance and/or immunity to toxins (in all four vectors), resistance and/or immunity to pathogens (in all four vectors), natural physical CM recovery, and natural stun CM recovery. All of these stats are now printed with the Print() method, so character sheets can integrate them into their displays.
+- Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, and bonus dice to resist mana and/or physical illusion spells. All existing items that should contain one or more of these bonuses have also been updated.
+- Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
 
 Data Changes:
 
@@ -259,6 +263,7 @@ New Strings:
 - Message_File_Cannot_Be_Accessed
 - Label_FilterByKarma
 - Label_CreateImprovementExactly
+- String_Immune
 
 Changes Strings:
 - Message_PositiveQualityLimit

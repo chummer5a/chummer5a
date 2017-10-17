@@ -820,6 +820,10 @@
       <source>SR5</source>
       <page>455</page>
       <rating>3</rating>
+	  <bonus>
+		<toxininhalationimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
     </cyberware>
     <cyberware>
       <id>46f80a44-80ae-41d7-a7c8-a119c4cff70f</id>
@@ -3586,6 +3590,10 @@
       <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 6000</cost>
+	  <bonus>
+		<stuncmrecovery>Rating</stuncmrecovery>
+		<physicalcmrecovery>Rating</physicalcmrecovery>
+	  </bonus>
       <source>CF</source>
       <page>149</page>
       <forcegrade>None</forcegrade>
@@ -3718,6 +3726,9 @@
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 1500</cost>
+	  <bonus>
+        <fatigueresist>Rating</fatigueresist>
+      </bonus>
       <source>CF</source>
       <page>150</page>
       <forcegrade>None</forcegrade>

@@ -6526,6 +6526,10 @@
       <page>448</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 150</cost>
+	  <bonus>
+		<toxincontactresist>Rating</toxincontactresist>
+		<pathogencontactresist>Rating</pathogencontactresist>
+	  </bonus>
     </gear>
     <gear>
       <id>a17cae86-4d6f-4e00-acb6-03f0ccfb2807</id>
@@ -6547,6 +6551,12 @@
       <page>448</page>
       <avail>6</avail>
       <cost>2000</cost>
+	  <gears>
+		<usegear>
+		  <name>Gas Mask</name>
+		  <category>Survival Gear</category>
+		</usegear>
+	  </gears>
     </gear>
     <gear>
       <id>c49a893a-d445-4aac-bec0-c8501cba4c2c</id>
@@ -6591,6 +6601,10 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>200</cost>
+	  <bonus>
+		<toxininhalationimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
     </gear>
     <gear>
       <id>8bed8fa9-b75e-44ad-8181-a9dcd1f110cd</id>
@@ -6611,6 +6625,12 @@
       <page>449</page>
       <avail>8</avail>
       <cost>3000</cost>
+	  <bonus>
+		<toxincontactimmune />
+		<toxininhalationimmune />
+		<pathogencontactimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
     </gear>
     <gear>
       <id>c658ec7e-48c1-4ead-8083-f3ee0eab92e4</id>
@@ -6673,6 +6693,10 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 50</cost>
+	  <bonus>
+		<toxininhalationresist>Rating</toxininhalationresist>
+		<pathogeninhalationresist>Rating</pathogeninhalationresist>
+	  </bonus>
     </gear>
     <gear>
       <id>27f9775d-cd14-4900-827f-ba00d26e0c67</id>
@@ -6734,6 +6758,10 @@
       <avail>3</avail>
       <capacity>0</capacity>
       <cost>300</cost>
+	  <bonus>
+		<toxininhalationimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
     </gear>
     <gear>
       <id>314566c7-4ea1-4f8d-94cd-f213af1e0535</id>
@@ -6745,6 +6773,10 @@
       <avail>3</avail>
       <capacity>0</capacity>
       <cost>Rating * 75</cost>
+	  <bonus>
+		<toxininhalationresist>Rating</toxininhalationresist>
+		<pathogeninhalationresist>Rating</pathogeninhalationresist>
+	  </bonus>
     </gear>
     <!-- End Region -->
     <!-- Region Grapple Gun -->
@@ -12912,6 +12944,10 @@
       <cost>1250</cost>
       <addoncategory>Nanogear</addoncategory>
       <addoncategory>Custom</addoncategory>
+	  <bonus>
+		<toxincontactimmune />
+		<pathogencontactimmune />
+      </bonus>
     </gear>
     <gear>
       <id>747c90eb-c09a-458f-ad8f-23b494d79b48</id>
@@ -15081,6 +15117,10 @@
       <page>197</page>
       <avail>Rating</avail>
       <cost>Rating * 200</cost>
+	  <bonus>
+		<toxincontactresist>Rating</toxincontactresist>
+		<pathogencontactresist>Rating</pathogencontactresist>
+	  </bonus>
     </gear>
     <gear>
       <id>e1ca60aa-ddd5-4a91-b137-30d06d97f931</id>

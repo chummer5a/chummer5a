@@ -392,8 +392,8 @@ namespace Chummer.Backend.Shared_Methods
                         decimal decGrade =
                             character.Cyberware.Where(
                                     objCyberware =>
-                                        objCyberware.Grade.Name ==
-                                        node.Attributes?["grade"].InnerText)
+                                        objCyberware.Grade.Name.Contains(
+                                        node.Attributes?["grade"].InnerText ?? string.Empty))
                                 .Sum(objCyberware => objCyberware.CalculatedESS());
                         if (node.InnerText.StartsWith("-"))
                         {

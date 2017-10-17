@@ -14,6 +14,8 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
+	<xs:element name="addesstophysicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="addesstostuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="addqualities" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:sequence>
@@ -151,6 +153,7 @@
     <xs:element name="excon" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="fadingresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="fame" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="fatigueresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="flypercent" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="flyspeed" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="freenegativequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -247,6 +250,8 @@
       </xs:complexType>
     </xs:element>
     <xs:element name="mademan" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="manaillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="manamanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="matrixinitiative" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="matrixinitiativedice" minOccurs="0" maxOccurs="1">
@@ -293,8 +298,23 @@
       </xs:complexType>
     </xs:element>
     <xs:element name="overclocker" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogencontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogencontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeningestionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeningestionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninhalationimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninhalationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninjectionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninjectionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physicalillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="physicallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physicalmanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physiologicaladdictionalreadyaddicted" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physiologicaladdictionfirsttime" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="prototypetranshuman" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="psychologicaladdictionalreadyaddicted" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="psychologicaladdictionfirsttime" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="publicawareness" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="quickeningmetamagic" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="reach" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -579,6 +599,7 @@
     <xs:element name="spellkarmadiscount" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="spelllimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="spellresistance" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="stuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="submersion" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="swapskillattribute" minOccurs="0" maxOccurs="1">
       <xs:complexType>
@@ -601,6 +622,14 @@
     <xs:element name="techschool" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="throwrange" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="throwstr" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxincontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxincontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxiningestionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxiningestionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininhalationimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininhalationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininjectionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininjectionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="transgenicsgenetechcost" minOccurs="0" maxOccurs="1" />
     <xs:element name="trustfund" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="unarmedap" type="xs:string" minOccurs="0" maxOccurs="1" />

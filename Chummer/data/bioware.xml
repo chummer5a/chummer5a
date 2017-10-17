@@ -434,6 +434,10 @@
       <capacity>0</capacity>
       <avail>Rating * 5</avail>
       <cost>Rating * 3500</cost>
+	  <bonus>
+		<stuncmrecovery>Rating</stuncmrecovery>
+		<physicalcmrecovery>Rating</physicalcmrecovery>
+	  </bonus>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -499,6 +503,12 @@
       <capacity>0</capacity>
       <avail>Rating * 3</avail>
       <cost>Rating * 4800</cost>
+	  <bonus>
+		<toxincontactresist>Rating</toxincontactresist>
+		<toxiningestionresist>Rating</toxiningestionresist>
+		<toxininhalationresist>Rating</toxininhalationresist>
+		<toxininjectionresist>Rating</toxininjectionresist>
+	  </bonus>
       <rating>6</rating>
       <source>SR5</source>
       <page>460</page>
@@ -511,6 +521,9 @@
       <capacity>0</capacity>
       <avail>Rating * 3</avail>
       <cost>Rating * 4500</cost>
+	  <bonus>
+		<toxininhalationresist>Rating</toxininhalationresist>
+	  </bonus>
       <rating>6</rating>
       <source>SR5</source>
       <page>460</page>
@@ -565,6 +578,10 @@
       <capacity>0</capacity>
       <avail>12R</avail>
       <cost>20000</cost>
+	  <bonus>
+	    <toxincontactresist>2</toxincontactresist>
+        <fatigueresist>-2</fatigueresist>
+      </bonus>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -682,6 +699,9 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
+	  <bonus>
+        <fatigueresist>-2</fatigueresist>
+      </bonus>
       <source>CF</source>
       <page>113</page>
     </bioware>
@@ -856,6 +876,20 @@
       <capacity>0</capacity>
       <avail>Rating * 2</avail>
       <cost>Rating * 4000</cost>
+	  <bonus>
+        <physiologicaladdictionfirsttime>Rating</physiologicaladdictionfirsttime>
+		<psychologicaladdictionfirsttime>Rating</psychologicaladdictionfirsttime>
+		<physiologicaladdictionalreadyaddicted>Rating</physiologicaladdictionalreadyaddicted>
+		<psychologicaladdictionalreadyaddicted>Rating</psychologicaladdictionalreadyaddicted>
+		<toxincontactresist>Rating</toxincontactresist>
+		<toxiningestionresist>Rating</toxiningestionresist>
+		<toxininhalationresist>Rating</toxininhalationresist>
+		<toxininjectionresist>Rating</toxininjectionresist>
+		<pathogencontactresist>Rating</pathogencontactresist>
+		<pathogeningestionresist>Rating</pathogeningestionresist>
+		<pathogeninhalationresist>Rating</pathogeninhalationresist>
+		<pathogeninjectionresist>Rating</pathogeninjectionresist>
+      </bonus>
       <rating>6</rating>
       <source>CF</source>
       <page>113</page>
@@ -894,6 +928,9 @@
       <capacity>0</capacity>
       <avail>Rating * 4</avail>
       <cost>Rating * 2000</cost>
+	  <bonus>
+        <fatigueresist>Rating</fatigueresist>
+      </bonus>
       <rating>4</rating>
       <source>CF</source>
       <page>112</page>
@@ -906,6 +943,12 @@
       <capacity>0</capacity>
       <avail>Rating * 7</avail>
       <cost>Rating * 4000</cost>
+	  <bonus>
+		<pathogencontactresist>Rating</pathogencontactresist>
+		<pathogeningestionresist>Rating</pathogeningestionresist>
+		<pathogeninhalationresist>Rating</pathogeninhalationresist>
+		<pathogeninjectionresist>Rating</pathogeninjectionresist>
+      </bonus>
       <rating>4</rating>
       <source>CF</source>
       <page>111</page>
@@ -1671,6 +1714,9 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>16500</cost>
+	  <bonus>
+        <fatigueresist>1</fatigueresist>
+      </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
@@ -1713,6 +1759,12 @@
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>16420</cost>
+	  <bonus>
+        <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
+		<psychologicaladdictionfirsttime>-2</psychologicaladdictionfirsttime>
+		<physiologicaladdictionalreadyaddicted>2</physiologicaladdictionalreadyaddicted>
+		<psychologicaladdictionalreadyaddicted>2</psychologicaladdictionalreadyaddicted>
+      </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
@@ -1739,6 +1791,10 @@
       <cost>8000</cost>
 	  <forcegrade>None</forcegrade>
       <bonus>
+	    <toxincontactresist>1</toxincontactresist>
+		<toxiningestionresist>1</toxiningestionresist>
+		<toxininhalationresist>1</toxininhalationresist>
+		<toxininjectionresist>1</toxininjectionresist>
         <lifestylecost>-10</lifestylecost>
       </bonus>
       <source>CF</source>
@@ -1788,6 +1844,9 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>18000</cost>
+	  <bonus>
+        <fatigueresist>-1</fatigueresist>
+      </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>160</page>
@@ -1837,10 +1896,13 @@
 	  <forcegrade>None</forcegrade>
       <bonus>
         <physicallimit>1</physicallimit>
+		<stuncmrecovery>1</stuncmrecovery>
+		<physicalcmrecovery>1</physicalcmrecovery>
         <skillgroup>
           <name>Athletics</name>
           <bonus>1</bonus>
         </skillgroup>
+		<fatigueresist>1</fatigueresist>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2364,6 +2426,10 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>100</cost>
+	  <bonus>
+		<stuncmrecovery>1</stuncmrecovery>
+		<physicalcmrecovery>1</physicalcmrecovery>
+	  </bonus>
       <source>CF</source>
       <page>123</page>
     </bioware>
@@ -2463,6 +2529,9 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>1000</cost>
+	  <bonus>
+		<toxiningestionresist>1</toxiningestionresist>
+      </bonus>
       <source>CF</source>
       <page>124</page>
     </bioware>
