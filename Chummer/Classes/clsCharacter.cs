@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -130,6 +130,9 @@ namespace Chummer
         private string _strWalk = string.Empty;
         private string _strRun = string.Empty;
         private string _strSprint = string.Empty;
+        private string _strWalkAlt = string.Empty;
+        private string _strRunAlt = string.Empty;
+        private string _strSprintAlt = string.Empty;
         private int _intMetatypeBP = 0;
 
         // Special Flags.
@@ -334,6 +337,12 @@ namespace Chummer
             objWriter.WriteElementString("run", _strRun);
             // <sprint />
             objWriter.WriteElementString("sprint", _strSprint);
+            // <walk />
+            objWriter.WriteElementString("walkalt", _strWalk);
+            // <run />
+            objWriter.WriteElementString("runalt", _strRun);
+            // <sprint />
+            objWriter.WriteElementString("sprintalt", _strSprint);
 
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
@@ -1012,6 +1021,10 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("walk", ref _strWalk);
             objXmlCharacter.TryGetStringFieldQuickly("run", ref _strRun);
             objXmlCharacter.TryGetStringFieldQuickly("sprint", ref _strSprint);
+
+            _strRunAlt = objXmlCharacter["run"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+            _strWalkAlt = objXmlCharacter["walk"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+            _strSprintAlt = objXmlCharacter["sprint"]?.Attributes["alt"]?.InnerText ?? string.Empty;
 
             objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
             objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
@@ -5743,20 +5756,25 @@ namespace Chummer
                 {
                     return "Special";
                 }
-
-                string strReturn = string.Empty;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
-                XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-                if (objXmlNode != null)
+                if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
                 {
-                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
-                    objXmlNode.TryGetStringFieldQuickly("run", ref _strRun);
-                    objXmlNode.TryGetStringFieldQuickly("walk", ref _strWalk);
-                    objXmlNode.TryGetStringFieldQuickly("sprint", ref _strSprint);
+                    string strReturn = string.Empty;
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+                    XmlNode variant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]/metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
+                    XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+
+                    strReturn = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
+                    _strRun = variant?["run"]?.InnerText ?? meta?["run"]?.InnerText ?? string.Empty;
+                    _strWalk = variant?["walk"]?.InnerText ?? meta?["walk"]?.InnerText ?? string.Empty;
+                    _strSprint = variant?["sprint"]?.InnerText ?? meta?["sprint"]?.InnerText ?? string.Empty;
+
+                    _strRunAlt = variant?["run"]?.Attributes["alt"]?.InnerText ?? meta?["run"].Attributes["alt"]?.InnerText ?? string.Empty;
+                    _strWalkAlt = variant?["walk"]?.Attributes["alt"]?.InnerText ?? meta?["walk"].Attributes["alt"]?.InnerText ?? string.Empty;
+                    _strSprintAlt = variant?["sprint"]?.Attributes["alt"]?.InnerText ?? meta?["sprint"].Attributes["alt"]?.InnerText ?? string.Empty;
                     if (strReturn == "Special")
-                        {
-                            return "Special";
-                        }
+                    {
+                        return "Special";
+                    }
                 }
 
                 return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground",true);
@@ -5798,7 +5816,16 @@ namespace Chummer
         /// </summary>
         private int WalkingRate(string strType = "Ground")
         {
-            string[] strReturn = _strWalk.Split('/');
+            string[] strReturn;
+            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            {
+                strReturn = _strWalk.Split('/');
+            }
+            else
+            {
+                strReturn = _strWalkAlt.Split('/');
+            }
+            
 
             int intTmp = 0;
             if (Improvements.Any(
@@ -5838,7 +5865,15 @@ namespace Chummer
                 Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType);
                 return imp.Value;
             }
-            string[] strReturn = _strRun.Split('/');
+            string[] strReturn;
+            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            {
+                strReturn = _strRun.Split('/');
+            }
+            else
+            {
+                strReturn = _strRunAlt.Split('/');
+            }
             int intTmp = 0;
 
             switch (strType)
@@ -5871,8 +5906,15 @@ namespace Chummer
                 Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType);
                 return imp.Value;
             }
-            string[] strReturn = _strSprint.Split('/');
-
+            string[] strReturn;
+            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            {
+                strReturn = _strSprint.Split('/');
+            }
+            else
+            {
+                strReturn = _strSprintAlt.Split('/');
+            }
             int intTmp = 0;
                 switch (strType)
                 {

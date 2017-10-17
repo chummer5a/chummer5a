@@ -2510,9 +2510,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2575,8 +2575,10 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -2641,9 +2643,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2709,6 +2711,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2774,6 +2779,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2843,6 +2851,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2908,6 +2919,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2976,9 +2990,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -3046,9 +3060,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
@@ -3116,9 +3130,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
@@ -3188,6 +3202,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
@@ -3251,6 +3268,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality>Resistance to Pathogens</quality>
@@ -3313,9 +3333,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
@@ -3370,6 +3390,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
@@ -3426,6 +3449,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
@@ -3481,6 +3507,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
@@ -3538,9 +3567,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">2/1/0</sprint>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
@@ -3597,9 +3626,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality>Thermographic Vision</quality>
@@ -3660,6 +3689,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality>Thermographic Vision</quality>
@@ -3721,6 +3753,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality>Thermographic Vision</quality>
@@ -3779,6 +3814,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality>Thermographic Vision</quality>
@@ -3837,6 +3875,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality>Goring Horns</quality>
