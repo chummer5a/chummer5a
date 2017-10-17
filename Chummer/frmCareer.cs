@@ -7318,15 +7318,16 @@ namespace Chummer
                 Quality objSelectedQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), _objCharacter.Qualities);
                 int intCurrentLevels = objSelectedQuality.Levels;
 
+                bool blnRequireUpdate = false;
                 // Adding a new level
-                if (nudQualityLevel.Value > intCurrentLevels)
+                for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality + "\"]");
                     if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, null, null, objXmlDocument))
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
-                        return;
+                        break;
                     }
 
                     TreeNode objNode = new TreeNode();
@@ -7340,7 +7341,7 @@ namespace Chummer
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                         ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                         nudQualityLevel_UpdateValue(objSelectedQuality);
-                        return;
+                        break;
                     }
                     objNode.ContextMenuStrip = cmsQuality;
 
@@ -7391,12 +7392,15 @@ namespace Chummer
 
                     if (blnAddItem)
                     {
+                        blnRequireUpdate = true;
                         // Add the Quality to the appropriate parent node.
                         _objCharacter.Qualities.Add(objQuality);
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in objWeapons)
+                        {
                             _objCharacter.Weapons.Add(objWeapon);
+                        }
 
                         // Create the Weapon Node if one exists.
                         foreach (TreeNode objWeaponNode in objWeaponNodes)
@@ -7405,47 +7409,44 @@ namespace Chummer
                             treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
                             treWeapons.Nodes[0].Expand();
                         }
-
-                        RefreshQualityNames(treQualities);
-                        UpdateMentorSpirits();
-                        ScheduleCharacterUpdate();
-                        RefreshMartialArts();
-                        RefreshAIPrograms();
-                        RefreshLimitModifiers();
-                        RefreshContacts();
-                        RefreshSpells(treSpells, cmsSpell, _objCharacter);
-                        RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
                     }
                     else
                     {
                         // Remove the Improvements created by the Create method.
                         ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                         nudQualityLevel_UpdateValue(objSelectedQuality);
+                        break;
                     }
                 }
                 // Removing a level
-                else if (nudQualityLevel.Value < intCurrentLevels)
+                for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
                 {
                     Quality objInvisibleQuality = _objCharacter.Qualities.FirstOrDefault(x => x.QualityId == objSelectedQuality.QualityId && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
-                    if (objInvisibleQuality != null)
-                        objSelectedQuality = objInvisibleQuality;
-                    if (RemoveQuality(objSelectedQuality, false, false))
+                    if (objInvisibleQuality != null && RemoveQuality(objInvisibleQuality, false, false))
                     {
-                        RefreshQualityNames(treQualities);
-                        UpdateMentorSpirits();
-                        ScheduleCharacterUpdate();
-                        RefreshMartialArts();
-                        RefreshAIPrograms();
-                        RefreshLimitModifiers();
-                        RefreshSpells(treSpells, cmsSpell, _objCharacter);
-                        RefreshContacts();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
+                        blnRequireUpdate = true;
                     }
                     else
+                    {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
+                        break;
+                    }
+                }
+
+                if (blnRequireUpdate)
+                {
+                    RefreshQualityNames(treQualities);
+                    UpdateMentorSpirits();
+                    ScheduleCharacterUpdate();
+                    RefreshMartialArts();
+                    RefreshAIPrograms();
+                    RefreshLimitModifiers();
+                    RefreshSpells(treSpells, cmsSpell, _objCharacter);
+                    RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                    RefreshContacts();
+                    RefreshSelectedCyberware();
+                    _blnIsDirty = true;
+                    UpdateWindowTitle();
                 }
             }
         }
