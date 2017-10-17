@@ -149,7 +149,7 @@ namespace Chummer.Backend.Equipment
                     if (objXmlAccessoryGear.Attributes["select"] != null)
                         strForceValue = objXmlAccessoryGear.Attributes["select"].InnerText;
 
-                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear.InnerText + "\"]");
+                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear["name"].InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
 
                     TreeNode objGearNode = new TreeNode();
