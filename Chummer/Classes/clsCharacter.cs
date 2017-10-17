@@ -218,6 +218,7 @@ namespace Chummer
         private string _strPriorityTalent = string.Empty;
         private string _strSkill1 = string.Empty;
         private string _strSkill2 = string.Empty;
+        private string _strSkill3 = string.Empty;
         private string _strSkillGroup = string.Empty;
         private int _intMaxNuyen = 0;
         private int _intMaxKarma = 0;
@@ -3390,6 +3391,20 @@ namespace Chummer
             set
             {
                 _strSkill2 = value;
+            }
+        }
+        /// <summary>
+        /// Character's 3rd bonus skill.
+        /// </summary>
+        public string PriorityBonusSkill3
+        {
+            get
+            {
+                return _strSkill3;
+            }
+            set
+            {
+                _strSkill3 = value;
             }
         }
 

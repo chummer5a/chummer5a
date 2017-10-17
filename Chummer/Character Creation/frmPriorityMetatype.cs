@@ -29,6 +29,7 @@ namespace Chummer
         private bool _blnInitializing = false;
         private string _strSkill1;
         private string _strSkill2;
+        private string _strSkill3;
 
         #region Character Events
         private void objCharacter_MAGEnabledChanged(object sender)
@@ -203,6 +204,17 @@ namespace Chummer
                 _strSkill2 = value;
             }
         }
+        public string PriorityBonusSkill3
+        {
+            get
+            {
+                return _strSkill3;
+            }
+            set
+            {
+                _strSkill3 = value;
+            }
+        }
 
         public string SelectedMetavariant
         {
@@ -370,6 +382,11 @@ namespace Chummer
                 //Selected Magical Bonus Skill
                 index = cboSkill2.FindString(_strSkill2);
                 cboSkill2.SelectedIndex = index;
+                //Selected Magical Bonus Skill
+                index = cboSkill3.FindString(_strSkill3);
+                cboSkill3.SelectedIndex = index;
+
+
                 //Selected Category of Metatype
                 index = cboCategory.FindString(_strSelectedMetatypeCategory);
                 cboCategory.SelectedIndex = index;
@@ -580,6 +597,11 @@ namespace Chummer
         {
             cboSkill1.BeginUpdate();
             cboSkill2.BeginUpdate();
+            cboSkill3.BeginUpdate();
+
+            cboSkill1.Visible = false;
+            cboSkill2.Visible = false;
+            cboSkill3.Visible = false;
             if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
             {
                 XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
@@ -636,7 +658,7 @@ namespace Chummer
                             }
                     }
 
-                    if (strSkillCount == "1" || strSkillCount == "2")
+                    if (strSkillCount == "1" || strSkillCount == "2" || strSkillCount == "3")
                     {
                         List<ListItem> lstSkills = new List<ListItem>();
                         if (objNodeList.Count > 0)
@@ -672,7 +694,7 @@ namespace Chummer
                         }
                         cboSkill1.EndUpdate();
 
-                        if (strSkillCount == "2")
+                        if (strSkillCount == "2" || strSkillCount == "3")
                         {
                             intOldSelectedIndex = cboSkill2.SelectedIndex;
                             intOldDataSourceSize = cboSkill2.Items.Count;
@@ -695,12 +717,39 @@ namespace Chummer
                                     cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
                             }
                         }
+                        if ( strSkillCount == "3")
+                        {
+                            intOldSelectedIndex = cboSkill3.SelectedIndex;
+                            intOldDataSourceSize = cboSkill3.Items.Count;
+                            cboSkill3.BindingContext = new BindingContext();
+                            cboSkill3.ValueMember = "Value";
+                            cboSkill3.DisplayMember = "Name";
+                            cboSkill3.DataSource = lstSkills;
+                            cboSkill3.Visible = true;
+                            if (intOldDataSourceSize == cboSkill3.Items.Count)
+                            {
+                                _blnInitializing = true;
+                                cboSkill3.SelectedIndex = intOldSelectedIndex;
+                                _blnInitializing = blnOldInitializing;
+                            }
+                            while (cboSkill3.SelectedIndex == cboSkill1.SelectedIndex || cboSkill3.SelectedIndex == cboSkill2.SelectedIndex)
+                            {
+                                if (cboSkill3.SelectedIndex + 1 >= cboSkill3.Items.Count)
+                                {
+                                    cboSkill3.SelectedIndex = 0;
+                                    break;
+                                }
+                                else
+                                    cboSkill3.SelectedIndex = cboSkill3.SelectedIndex + 1;
+                            }
+                        }
                         lblMetatypeSkillSelection.Visible = true;
                     }
                     else
                     {
                         cboSkill1.Visible = false;
                         cboSkill2.Visible = false;
+                        cboSkill3.Visible = false;
                         lblMetatypeSkillSelection.Visible = false;
                     }
                 }
@@ -711,9 +760,11 @@ namespace Chummer
                 lblMetatypeSkillSelection.Visible = false;
                 cboSkill1.Visible = false;
                 cboSkill2.Visible = false;
+                cboSkill3.Visible = false;
             }
             cboSkill1.EndUpdate();
             cboSkill2.EndUpdate();
+            cboSkill3.EndUpdate();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 SumtoTen();
@@ -1004,13 +1055,20 @@ namespace Chummer
                 return;
             }
 
-            if ((cboSkill1.SelectedIndex == -1 && cboSkill1.Visible) || (cboSkill2.SelectedIndex == -1 && cboSkill2.Visible))
+            if ((cboSkill1.SelectedIndex == -1 && cboSkill1.Visible) || (cboSkill2.SelectedIndex == -1 && cboSkill2.Visible) || (cboSkill3.SelectedIndex == -1 && cboSkill3.Visible))
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_SelectSkill"), LanguageManager.Instance.GetString("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (cboSkill1.Visible && cboSkill2.Visible && cboSkill1.SelectedValue.ToString() == cboSkill2.SelectedValue.ToString())
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_Duplicate"), LanguageManager.Instance.GetString("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+
+            if (cboSkill1.Visible && cboSkill2.Visible && cboSkill3.Visible && (cboSkill1.SelectedValue.ToString() == cboSkill3.SelectedValue.ToString() || cboSkill2.SelectedValue.ToString() == cboSkill3.SelectedValue.ToString()))
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_Duplicate"), LanguageManager.Instance.GetString("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -1506,8 +1564,15 @@ namespace Chummer
                 _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
                 if (cboSkill1.SelectedValue != null)
                 {
-                    _objCharacter.PriorityBonusSkill1 = cboSkill1.SelectedValue.ToString();
+                    _objCharacter.PriorityBonusSkill1 = cboSkill1.SelectedValue.ToString(); 
+                }
+                if (cboSkill2.SelectedValue != null)
+                {
                     _objCharacter.PriorityBonusSkill2 = cboSkill2.SelectedValue.ToString();
+                }
+                if (cboSkill3.SelectedValue != null)
+                {
+                    _objCharacter.PriorityBonusSkill3 = cboSkill3.SelectedValue.ToString();
                 }
 
                 // Set starting nuyen
@@ -1687,6 +1752,11 @@ namespace Chummer
                     type, string.Empty, intFreeLevels);
             }
 
+            if (cboSkill3.Visible)
+            {
+                manager.CreateImprovement(cboSkill3.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage",
+                    type, string.Empty, intFreeLevels);
+            }
             manager.Commit();
 
         }

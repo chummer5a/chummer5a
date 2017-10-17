@@ -82,6 +82,7 @@
             this.lblSpecial = new System.Windows.Forms.Label();
             this.lblSpecialAttributes = new System.Windows.Forms.Label();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.cboSkill3 = new System.Windows.Forms.ComboBox();
             this.pnlPriorities.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.pnlMetatypes.SuspendLayout();
@@ -219,7 +220,7 @@
             // chkBloodSpirit
             // 
             this.chkBloodSpirit.AutoSize = true;
-            this.chkBloodSpirit.Location = new System.Drawing.Point(173, 250);
+            this.chkBloodSpirit.Location = new System.Drawing.Point(173, 278);
             this.chkBloodSpirit.Name = "chkBloodSpirit";
             this.chkBloodSpirit.Size = new System.Drawing.Size(79, 17);
             this.chkBloodSpirit.TabIndex = 69;
@@ -233,7 +234,7 @@
             this.cboPossessionMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPossessionMethod.Enabled = false;
             this.cboPossessionMethod.FormattingEnabled = true;
-            this.cboPossessionMethod.Location = new System.Drawing.Point(173, 296);
+            this.cboPossessionMethod.Location = new System.Drawing.Point(173, 324);
             this.cboPossessionMethod.Name = "cboPossessionMethod";
             this.cboPossessionMethod.Size = new System.Drawing.Size(174, 21);
             this.cboPossessionMethod.TabIndex = 65;
@@ -242,7 +243,7 @@
             // chkPossessionBased
             // 
             this.chkPossessionBased.AutoSize = true;
-            this.chkPossessionBased.Location = new System.Drawing.Point(173, 273);
+            this.chkPossessionBased.Location = new System.Drawing.Point(173, 301);
             this.chkPossessionBased.Name = "chkPossessionBased";
             this.chkPossessionBased.Size = new System.Drawing.Size(211, 17);
             this.chkPossessionBased.TabIndex = 64;
@@ -300,7 +301,7 @@
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(313, 323);
+            this.cmdCancel.Location = new System.Drawing.Point(313, 353);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 12;
@@ -312,7 +313,7 @@
             // lblMetavariantQualities
             // 
             this.lblMetavariantQualities.AutoSize = true;
-            this.lblMetavariantQualities.Location = new System.Drawing.Point(286, 230);
+            this.lblMetavariantQualities.Location = new System.Drawing.Point(286, 258);
             this.lblMetavariantQualities.Name = "lblMetavariantQualities";
             this.lblMetavariantQualities.Size = new System.Drawing.Size(33, 13);
             this.lblMetavariantQualities.TabIndex = 63;
@@ -323,7 +324,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(170, 230);
+            this.label4.Location = new System.Drawing.Point(170, 258);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 13);
             this.label4.TabIndex = 62;
@@ -355,7 +356,7 @@
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(394, 323);
+            this.cmdOK.Location = new System.Drawing.Point(394, 353);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 11;
@@ -551,7 +552,7 @@
             this.lstMetatypes.FormattingEnabled = true;
             this.lstMetatypes.Location = new System.Drawing.Point(3, 30);
             this.lstMetatypes.Name = "lstMetatypes";
-            this.lstMetatypes.Size = new System.Drawing.Size(158, 316);
+            this.lstMetatypes.Size = new System.Drawing.Size(158, 342);
             this.lstMetatypes.Sorted = true;
             this.lstMetatypes.TabIndex = 7;
             this.lstMetatypes.SelectedIndexChanged += new System.EventHandler(this.lstMetatypes_SelectedIndexChanged);
@@ -559,6 +560,7 @@
             // 
             // pnlMetatypes
             // 
+            this.pnlMetatypes.Controls.Add(this.cboSkill3);
             this.pnlMetatypes.Controls.Add(this.lblMetavariantBP);
             this.pnlMetatypes.Controls.Add(this.label6);
             this.pnlMetatypes.Controls.Add(this.lblMetatypeSkillSelection);
@@ -600,7 +602,7 @@
             this.pnlMetatypes.Controls.Add(this.lstMetatypes);
             this.pnlMetatypes.Location = new System.Drawing.Point(8, 153);
             this.pnlMetatypes.Name = "pnlMetatypes";
-            this.pnlMetatypes.Size = new System.Drawing.Size(472, 354);
+            this.pnlMetatypes.Size = new System.Drawing.Size(472, 384);
             this.pnlMetatypes.TabIndex = 36;
             // 
             // lblMetavariantBP
@@ -693,12 +695,22 @@
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
+            // cboSkill3
+            // 
+            this.cboSkill3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSkill3.FormattingEnabled = true;
+            this.cboSkill3.Location = new System.Drawing.Point(182, 232);
+            this.cboSkill3.Name = "cboSkill3";
+            this.cboSkill3.Size = new System.Drawing.Size(286, 21);
+            this.cboSkill3.TabIndex = 78;
+            this.cboSkill3.Visible = false;
+            // 
             // frmPriorityMetatype
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(488, 514);
+            this.ClientSize = new System.Drawing.Size(488, 544);
             this.ControlBox = false;
             this.Controls.Add(this.pnlPriorities);
             this.Controls.Add(this.pnlMetatypes);
@@ -772,5 +784,6 @@
         private System.Windows.Forms.ComboBox cboSkill2;
         internal System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lblSumtoTen;
+        private System.Windows.Forms.ComboBox cboSkill3;
     }
 }
