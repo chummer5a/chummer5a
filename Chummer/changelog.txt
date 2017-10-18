@@ -218,6 +218,7 @@ Data Changes:
 - Power Foci now properly also boost the dicepool of the Counterspelling skill. Fixes #1944. If you have any existing, bonded Power Foci in your savefiles, please remove and then re-add them for the change to take effect.
 - Altered Credsticks so that they now have capacity for Currency-category gear instead of a rating. There is a legacy shim that should convert credsticks on older characters to the new format. Fixes #130.
 - Added entries for Currency items from the core rulebook and Run Faster.
+- Fixed an incorrect page reference for the Proteus Lamprey.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

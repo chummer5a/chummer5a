@@ -4761,8 +4761,8 @@
     <vehicle>
       <id>fb002667-22de-4156-ad17-def60a1795c0</id>
       <name>Proteus Lamprey (Sea Sled)</name>
-      <page>112</page>
-      <source>AR</source>
+      <page>464</page>
+      <source>SR5</source>
       <accel>1</accel>
       <armor>6</armor>
       <avail>0</avail>
