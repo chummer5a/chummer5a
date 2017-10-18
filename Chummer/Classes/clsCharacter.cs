@@ -5239,7 +5239,7 @@ namespace Chummer
         {
             get
             {
-                int intReturn = 2 * BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery));
+                int intReturn = 2 * BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
                     intReturn += Convert.ToInt32(Math.Floor(Essence));
                 return intReturn.ToString(GlobalOptions.CultureInfo);
