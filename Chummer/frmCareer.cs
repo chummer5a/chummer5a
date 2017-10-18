@@ -19729,6 +19729,7 @@ namespace Chummer
                         // Find the selected Gear.
                         _blnSkipRefresh = true;
                         Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+                        objSelectedWeapon = CommonFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Parent.Tag.ToString(), _objCharacter.Weapons).Parent;
                         if (objGear != null)
                         {
                             if (objGear.IncludedInParent)

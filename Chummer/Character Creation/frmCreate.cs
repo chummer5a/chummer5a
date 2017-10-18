@@ -14437,6 +14437,9 @@ namespace Chummer
                         Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
                         if (objGear.IncludedInParent)
                             cmdDeleteWeapon.Enabled = false;
+                        //TODO: Fix this properly, likely some edge cases it misses.
+                        objSelectedWeapon = CommonFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Parent.Tag.ToString(), _objCharacter.Weapons).Parent;
+
                         lblWeaponName.Text = objGear.DisplayNameShort;
                         lblWeaponCategory.Text = objGear.DisplayCategory;
                         lblWeaponAvail.Text = objGear.TotalAvail(true);
