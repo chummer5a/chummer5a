@@ -19340,6 +19340,17 @@ namespace Chummer
             cboCyberwareGearFirewall.Visible = false;
             cboCyberwareGearSleaze.Visible = false;
             cmdDeleteWeapon.Enabled = treWeapons.SelectedNode != null;
+            // Hide Weapon Ranges.
+            lblWeaponRangeMain.Text = string.Empty;
+            lblWeaponRangeAlternate.Text = string.Empty;
+            lblWeaponRangeShort.Text = string.Empty;
+            lblWeaponRangeMedium.Text = string.Empty;
+            lblWeaponRangeLong.Text = string.Empty;
+            lblWeaponRangeExtreme.Text = string.Empty;
+            lblWeaponAlternateRangeShort.Text = string.Empty;
+            lblWeaponAlternateRangeMedium.Text = string.Empty;
+            lblWeaponAlternateRangeLong.Text = string.Empty;
+            lblWeaponAlternateRangeExtreme.Text = string.Empty;
 
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
             {
@@ -19368,18 +19379,6 @@ namespace Chummer
                 cmdReloadWeapon.Enabled = false;
                 cmdWeaponBuyAmmo.Enabled = false;
                 cboWeaponAmmo.Enabled = false;
-
-                // Hide Weapon Ranges.
-                lblWeaponRangeMain.Text = string.Empty;
-                lblWeaponRangeAlternate.Text = string.Empty;
-                lblWeaponRangeShort.Text = string.Empty;
-                lblWeaponRangeMedium.Text = string.Empty;
-                lblWeaponRangeLong.Text = string.Empty;
-                lblWeaponRangeExtreme.Text = string.Empty;
-                lblWeaponAlternateRangeShort.Text = string.Empty;
-                lblWeaponAlternateRangeMedium.Text = string.Empty;
-                lblWeaponAlternateRangeLong.Text = string.Empty;
-                lblWeaponAlternateRangeExtreme.Text = string.Empty;
                 return;
             }
 
@@ -19728,10 +19727,10 @@ namespace Chummer
                     {
                         // Find the selected Gear.
                         _blnSkipRefresh = true;
-                        Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                        objSelectedWeapon = CommonFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Parent.Tag.ToString(), _objCharacter.Weapons).Parent;
+                        Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objSelectedAccessory);
                         if (objGear != null)
                         {
+                            objSelectedWeapon = objSelectedAccessory.Parent;
                             if (objGear.IncludedInParent)
                                 cmdDeleteWeapon.Enabled = false;
                             lblWeaponName.Text = objGear.DisplayNameShort;
@@ -19782,21 +19781,24 @@ namespace Chummer
                                 lblWeaponSleazeLabel.Visible = false;
                                 cboWeaponGearSleaze.Visible = false;
                             }
-                    }
+                        }
                     }
 
                     // Show the Weapon Ranges.
-                    lblWeaponRangeMain.Text = objSelectedWeapon.Range;
-                    lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
-                    Dictionary<string, string> dictionaryRanges = objSelectedWeapon.RangeStrings;
-                    lblWeaponRangeShort.Text = dictionaryRanges["short"];
-                    lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                    lblWeaponRangeLong.Text = dictionaryRanges["long"];
-                    lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                    lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                    lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                    lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                    lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                    if (objSelectedWeapon != null)
+                    {
+                        lblWeaponRangeMain.Text = objSelectedWeapon.Range;
+                        lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
+                        Dictionary<string, string> dictionaryRanges = objSelectedWeapon.RangeStrings;
+                        lblWeaponRangeShort.Text = dictionaryRanges["short"];
+                        lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                        lblWeaponRangeLong.Text = dictionaryRanges["long"];
+                        lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                        lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                        lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                        lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                        lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                    }
                 }
             }
         }
