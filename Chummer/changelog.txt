@@ -142,6 +142,8 @@ Application Changes:
 - Added support for tracking of fatigue resistance, dicepools for addiction tests (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), resistance and/or immunity to toxins (in all four vectors), resistance and/or immunity to pathogens (in all four vectors), natural physical CM recovery, and natural stun CM recovery. All of these stats are now printed with the Print() method, so character sheets can integrate them into their displays.
 - Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, and bonus dice to resist mana and/or physical illusion spells. All existing items that should contain one or more of these bonuses have also been updated.
 - Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
+- Fixed a bug where the initiative roller would calculate initiative with a flat probability distribution instead of with one mirroring the rolling of multiple dice (i.e. binomial-esque).
+- Dice Roller will now display the sum of the dice results (disregarding bubble dice) under the information about whether the roll was a success, a failure, a glitch, and/or a critical glitch.
 
 Data Changes:
 
@@ -265,6 +267,7 @@ New Strings:
 - Label_FilterByKarma
 - Label_CreateImprovementExactly
 - String_Immune
+- Label_DiceRoller_Sum
 
 Changes Strings:
 - Message_PositiveQualityLimit

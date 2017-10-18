@@ -253,7 +253,7 @@ namespace Chummer
             _objLifestyle.LifestyleName = cboLifestyle.SelectedValue.ToString();
             _objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
             _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
-            _objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : Convert.ToInt32(nudRoommates.Value);
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
             _objLifestyle.LifestyleQualities.Clear();
             _objLifestyle.StyleType = _objType;
@@ -289,7 +289,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private int CalculateValues(bool blnIncludePercentage = true)
+        private decimal CalculateValues(bool blnIncludePercentage = true)
         {
             if (_blnSkipRefresh)
                 return 0;
@@ -299,7 +299,7 @@ namespace Chummer
             decimal baseMultiplier = 0;
             // Get the base cost of the lifestyle
             XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
-            decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText);
+            decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
             lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
 
             // Add the flat costs from qualities
@@ -309,7 +309,7 @@ namespace Chummer
                 {
                     XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     if (!string.IsNullOrEmpty(objXmlQuality["cost"]?.InnerText))
-                        decCost += Convert.ToDecimal(objXmlQuality["cost"].InnerText);
+                        decCost += Convert.ToDecimal(objXmlQuality["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
                 }
             }
 
@@ -322,14 +322,14 @@ namespace Chummer
                     if (!objNode.Checked) continue;
                     objXmlAspect = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     if (!string.IsNullOrEmpty(objXmlAspect?["multiplier"]?.InnerText))
-                        decMod += Convert.ToDecimal(objXmlAspect?["multiplier"]?.InnerText) / 100;
+                        decMod += Convert.ToDecimal(objXmlAspect["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo) / 100.0m;
                     if (!string.IsNullOrEmpty(objXmlAspect?["multiplierbaseonly"]?.InnerText))
-                        baseMultiplier += Convert.ToDecimal(objXmlAspect?["multiplierbaseonly"]?.InnerText) / 100;
+                        baseMultiplier += Convert.ToDecimal(objXmlAspect["multiplierbaseonly"].InnerText, GlobalOptions.InvariantCultureInfo) / 100.0m;
                 }
 
                 // Check for modifiers in the improvements
                 decimal decModifier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
-                decMod += decModifier / 100;
+                decMod += decModifier / 100.0m;
             }
             decBaseCost += decBaseCost * baseMultiplier;
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
@@ -338,11 +338,10 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value /100);
-                lblCost.Text += " (" + $"{Convert.ToInt32(decDiscount):###,###,##0.##¥}" + ")";
+                lblCost.Text += " (" + $"{decDiscount:###,###,##0.##¥}" + ")";
             }
-            int intNuyen = Convert.ToInt32(decNuyen);
-            lblCost.Text = $"{intNuyen:###,###,##0.##¥}";
-            return intNuyen;
+            lblCost.Text = $"{decNuyen:###,###,##0.##¥}";
+            return decNuyen;
         }
 
         /// <summary>
