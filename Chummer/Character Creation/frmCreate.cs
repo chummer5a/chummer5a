@@ -15660,7 +15660,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlNode objXmlGear = objSelectedGear.MyXmlNode;
+            XmlNode objXmlGear = objSelectedGear?.MyXmlNode;
 
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
