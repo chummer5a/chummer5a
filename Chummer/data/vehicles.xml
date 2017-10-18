@@ -4777,9 +4777,7 @@
         <gear rating="3" maxrating="7">Sensor Array</gear>
       </gears>
       <mods>
-        <name>Standard drone rack (medium)</name>
-        <name>Ballast Tanks Level 1</name>
-        <name>Drone Rack, Small Landing</name>
+        <name>Landing Drone Rack (Medium)</name>
       </mods>
       <seats>4</seats>
     </vehicle>

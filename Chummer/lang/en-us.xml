@@ -5773,6 +5773,10 @@ Do you want to continue?</text>
       <key>String_DiceRoller_Failure</key>
       <text>Failure</text>
     </string>
+	<string>
+	  <key>Label_DiceRoller_Sum</key>
+	  <text>Sum:</text>
+	</string>
     <!-- End Region-->
     <!-- Region Expense Window -->
     <string>

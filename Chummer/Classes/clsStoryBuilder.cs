@@ -28,7 +28,8 @@ namespace Chummer
     {
         private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
         private Character _objCharacter;
-        Random random = MersenneTwister.SfmtRandom.Create();
+        Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp = 0;
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -212,7 +213,7 @@ namespace Chummer
                     if (userMacro.FirstChild != null)
                     {
                         string selected;
-                        //Allready defined, no need to do anything fancy
+                        //Already defined, no need to do anything fancy
                         if (!persistenceDictionary.TryGetValue(macroPool, out selected))
                         {
                             if (userMacro.FirstChild.Name == "random")
@@ -220,7 +221,19 @@ namespace Chummer
                                 //Any node not named 
                                 XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
                                 if (possible != null && possible.Count > 0)
-                                    selected = possible[random.Next(possible.Count)].Name;
+                                {
+                                    if (possible.Count > 1)
+                                    {
+                                        do
+                                        {
+                                            _intModuloTemp = _objRandom.Next();
+                                        }
+                                        while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
+                                    }
+                                    else
+                                        _intModuloTemp = 1;
+                                    selected = possible[_intModuloTemp % possible.Count].Name;
+                                }
                             }
                             else if (userMacro.FirstChild.Name == "persistent")
                             {
@@ -228,7 +241,17 @@ namespace Chummer
                                 XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
                                 if (possible != null && possible.Count > 0)
                                 {
-                                    selected = possible[random.Next(possible.Count)].Name;
+                                    if (possible.Count > 1)
+                                    {
+                                        do
+                                        {
+                                            _intModuloTemp = _objRandom.Next();
+                                        }
+                                        while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
+                                    }
+                                    else
+                                        _intModuloTemp = 1;
+                                    selected = possible[_intModuloTemp % possible.Count].Name;
                                     persistenceDictionary.Add(macroPool, selected);
                                 }
                             }

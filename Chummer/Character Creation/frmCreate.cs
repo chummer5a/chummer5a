@@ -14211,6 +14211,17 @@ namespace Chummer
             lblWeaponDataProcessing.Text = string.Empty;
             lblWeaponFirewall.Text = string.Empty;
             cmdDeleteWeapon.Enabled = treWeapons.SelectedNode != null;
+            // Hide Weapon Ranges.
+            lblWeaponRangeMain.Text = string.Empty;
+            lblWeaponRangeAlternate.Text = string.Empty;
+            lblWeaponRangeShort.Text = string.Empty;
+            lblWeaponRangeMedium.Text = string.Empty;
+            lblWeaponRangeLong.Text = string.Empty;
+            lblWeaponRangeExtreme.Text = string.Empty;
+            lblWeaponAlternateRangeShort.Text = string.Empty;
+            lblWeaponAlternateRangeMedium.Text = string.Empty;
+            lblWeaponAlternateRangeLong.Text = string.Empty;
+            lblWeaponAlternateRangeExtreme.Text = string.Empty;
 
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
             {
@@ -14232,18 +14243,6 @@ namespace Chummer
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
-
-                // Hide Weapon Ranges.
-                lblWeaponRangeMain.Text = string.Empty;
-                lblWeaponRangeAlternate.Text = string.Empty;
-                lblWeaponRangeShort.Text = string.Empty;
-                lblWeaponRangeMedium.Text = string.Empty;
-                lblWeaponRangeLong.Text = string.Empty;
-                lblWeaponRangeExtreme.Text = string.Empty;
-                lblWeaponAlternateRangeShort.Text = string.Empty;
-                lblWeaponAlternateRangeMedium.Text = string.Empty;
-                lblWeaponAlternateRangeLong.Text = string.Empty;
-                lblWeaponAlternateRangeExtreme.Text = string.Empty;
                 return;
             }
 
@@ -14434,59 +14433,64 @@ namespace Chummer
                     {
                         // Find the selected Gear.
                         _blnSkipRefresh = true;
-                        Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                        if (objGear.IncludedInParent)
-                            cmdDeleteWeapon.Enabled = false;
-                        //TODO: Fix this properly, likely some edge cases it misses.
-                        objSelectedWeapon = CommonFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Parent.Tag.ToString(), _objCharacter.Weapons).Parent;
-
-                        lblWeaponName.Text = objGear.DisplayNameShort;
-                        lblWeaponCategory.Text = objGear.DisplayCategory;
-                        lblWeaponAvail.Text = objGear.TotalAvail(true);
-                        lblWeaponCost.Text = $"{objGear.TotalCost:###,###,##0.##¥}";
-                        lblWeaponConceal.Text = string.Empty;
-                        lblWeaponDamage.Text = string.Empty;
-                        lblWeaponRC.Text = string.Empty;
-                        lblWeaponAP.Text = string.Empty;
-                        lblWeaponAccuracy.Text = string.Empty;
-                        lblWeaponReach.Text = string.Empty;
-                        lblWeaponMode.Text = string.Empty;
-                        lblWeaponAmmo.Text = string.Empty;
-                        lblWeaponSlots.Text = string.Empty;
-                        lblWeaponRating.Text = string.Empty;
-                        string strBook = _objOptions.LanguageBookShort(objGear.Source);
-                        string strPage = objGear.Page;
-                        lblWeaponSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
-                        chkWeaponAccessoryInstalled.Enabled = true;
-                        chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
-                        chkIncludedInWeapon.Enabled = false;
-                        chkIncludedInWeapon.Checked = false;
-                        _blnSkipRefresh = false;
-
-                        if (objGear.GetType() == typeof(Commlink))
+                        Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objSelectedAccessory);
+                        if (objGear != null)
                         {
-                            Commlink objCommlink = (Commlink)objGear;
-                            lblWeaponDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
-                            lblWeaponAttack.Text = objCommlink.TotalAttack.ToString();
-                            lblWeaponSleaze.Text = objCommlink.TotalSleaze.ToString();
-                            lblWeaponDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
-                            lblWeaponFirewall.Text = objCommlink.TotalFirewall.ToString();
+                            if (objGear.IncludedInParent)
+                                cmdDeleteWeapon.Enabled = false;
+                            objSelectedWeapon = objSelectedAccessory.Parent;
+
+                            lblWeaponName.Text = objGear.DisplayNameShort;
+                            lblWeaponCategory.Text = objGear.DisplayCategory;
+                            lblWeaponAvail.Text = objGear.TotalAvail(true);
+                            lblWeaponCost.Text = $"{objGear.TotalCost:###,###,##0.##¥}";
+                            lblWeaponConceal.Text = string.Empty;
+                            lblWeaponDamage.Text = string.Empty;
+                            lblWeaponRC.Text = string.Empty;
+                            lblWeaponAP.Text = string.Empty;
+                            lblWeaponAccuracy.Text = string.Empty;
+                            lblWeaponReach.Text = string.Empty;
+                            lblWeaponMode.Text = string.Empty;
+                            lblWeaponAmmo.Text = string.Empty;
+                            lblWeaponSlots.Text = string.Empty;
+                            lblWeaponRating.Text = string.Empty;
+                            string strBook = _objOptions.LanguageBookShort(objGear.Source);
+                            string strPage = objGear.Page;
+                            lblWeaponSource.Text = strBook + " " + strPage;
+                            tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                            chkWeaponAccessoryInstalled.Enabled = true;
+                            chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
+                            chkIncludedInWeapon.Enabled = false;
+                            chkIncludedInWeapon.Checked = false;
+                            _blnSkipRefresh = false;
+
+                            if (objGear.GetType() == typeof(Commlink))
+                            {
+                                Commlink objCommlink = (Commlink)objGear;
+                                lblWeaponDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
+                                lblWeaponAttack.Text = objCommlink.TotalAttack.ToString();
+                                lblWeaponSleaze.Text = objCommlink.TotalSleaze.ToString();
+                                lblWeaponDataProcessing.Text = objCommlink.TotalDataProcessing.ToString();
+                                lblWeaponFirewall.Text = objCommlink.TotalFirewall.ToString();
+                            }
                         }
                     }
 
-                    // Show the Weapon Ranges.
-                    lblWeaponRangeMain.Text = objSelectedWeapon.Range;
-                    lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
-                    Dictionary<string, string> dictionaryRanges = objSelectedWeapon.RangeStrings;
-                    lblWeaponRangeShort.Text = dictionaryRanges["short"];
-                    lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                    lblWeaponRangeLong.Text = dictionaryRanges["long"];
-                    lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                    lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                    lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                    lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                    lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                    if (objSelectedWeapon != null)
+                    {
+                        // Show the Weapon Ranges.
+                        lblWeaponRangeMain.Text = objSelectedWeapon.Range;
+                        lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
+                        Dictionary<string, string> dictionaryRanges = objSelectedWeapon.RangeStrings;
+                        lblWeaponRangeShort.Text = dictionaryRanges["short"];
+                        lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                        lblWeaponRangeLong.Text = dictionaryRanges["long"];
+                        lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                        lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                        lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                        lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                        lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                    }
                 }
             }
         }
