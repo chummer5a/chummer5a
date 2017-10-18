@@ -3,6 +3,7 @@
   <xs:element name="bonus">
   <xs:complexType>
     <xs:sequence>
+	<xs:element name="acidarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="adapsin" minOccurs="0" maxOccurs="1" />
     <xs:element name="addcontact" minOccurs="0" maxOccurs="1">
       <xs:complexType>
@@ -55,6 +56,7 @@
 	<xs:element name="biowaretotalessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="blackmarketdiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="bornrich" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="coldarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="collegeeducation" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="complexformlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="composure" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -145,6 +147,7 @@
 	<xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="electricityarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="erased" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="essencemax" type="xs:integer" minOccurs="0" maxOccurs="1" />
 	<xs:element name="essencepenalty" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -152,8 +155,10 @@
 	<xs:element name="essencepenaltymagonlyt100" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="excon" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="fadingresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="fallingarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="fame" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="fatigueresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="firearmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="flypercent" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="flyspeed" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="freenegativequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -204,6 +209,8 @@
     <xs:element name="initiativepassadd" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="jackofalltrades" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="judgeintentions" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="judgeintentionsdefense" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="judgeintentionsoffense" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="knowledgeskillpoints" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:sequence>
@@ -317,6 +324,7 @@
 	<xs:element name="psychologicaladdictionfirsttime" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="publicawareness" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="quickeningmetamagic" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="radiationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="reach" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="reflexrecorderoptimization" minOccurs="0" maxOccurs="1" />
     <xs:element name="replaceattributes" minOccurs="0" maxOccurs="1">
@@ -502,6 +510,7 @@
     <xs:element name="smartlink" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="softweave" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="sonicresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="specificattribute" minOccurs="0" maxOccurs="unbounded">
       <xs:complexType>
       <xs:sequence>

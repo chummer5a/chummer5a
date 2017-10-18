@@ -221,7 +221,6 @@
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <source>SR5</source>
@@ -340,6 +339,12 @@
       <capacity>0</capacity>
       <avail>(Rating * 2)</avail>
       <cost>Rating * 4500</cost>
+	  <bonus>
+		<pathogencontactresist>Rating</pathogencontactresist>
+		<pathogeningestionresist>Rating</pathogeningestionresist>
+		<pathogeninhalationresist>Rating</pathogeninhalationresist>
+		<pathogeninjectionresist>Rating</pathogeninjectionresist>
+	  </bonus>
       <rating>6</rating>
       <source>SR5</source>
       <page>459</page>
@@ -367,7 +372,7 @@
       <bonus>
         <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
-          <applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
         </selectskill>
       </bonus>
       <source>SR5</source>
@@ -582,6 +587,11 @@
 	    <toxincontactresist>2</toxincontactresist>
         <fatigueresist>-2</fatigueresist>
       </bonus>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -593,6 +603,14 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
+	  <bonus>
+	    <firearmor>2</firearmor>
+      </bonus>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -604,6 +622,19 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
+	  <bonus>
+	    <electricityarmor>2</electricityarmor>
+      </bonus>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
+	  <forbidden>
+		<oneof>
+		  <bioware>Electroshock</bioware>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -615,6 +646,19 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
+	  <bonus>
+	    <electricityarmor>-2</electricityarmor>
+      </bonus>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
+	  <forbidden>
+		<oneof>
+		  <bioware>Insulation</bioware>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -626,6 +670,14 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
+	  <bonus>
+	    <coldarmor>2</coldarmor>
+      </bonus>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -637,6 +689,11 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -648,6 +705,11 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
+	  <required>
+		<oneof>
+		  <bioware>Orthoskin</bioware>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>116</page>
     </bioware>
@@ -1729,6 +1791,9 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>12000</cost>
+	  <bonus>
+	    <electricityarmor>1</electricityarmor>
+      </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>159</page>
@@ -1879,7 +1944,6 @@
         <specificskill>
           <name>Navigation</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <source>CF</source>
@@ -1971,7 +2035,6 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <source>CF</source>
@@ -2021,7 +2084,6 @@
         <specificskill>
           <name>Perception</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <source>CF</source>
@@ -2059,6 +2121,7 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>20000</cost>
+	  <bonus unique="microadaptation" />
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2071,6 +2134,14 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>8000</cost>
+	  <bonus unique="microadaptation">
+		<coldarmor>2</coldarmor>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Heat Adaptation</bioware>
+		</oneof>
+	  </forbidden>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2083,6 +2154,7 @@
       <capacity>0</capacity>
       <avail>18</avail>
       <cost>50000</cost>
+	  <bonus unique="microadaptation" />
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2095,6 +2167,14 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>8000</cost>
+	  <bonus unique="microadaptation">
+		<firearmor>2</firearmor>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Cold Adaptation</bioware>
+		</oneof>
+	  </forbidden>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2107,6 +2187,9 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>8000</cost>
+	  <bonus unique="microadaptation">
+		<lifestylecost>10</lifestylecost>
+	  </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2119,6 +2202,7 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>30000</cost>
+	  <bonus unique="microadaptation" />
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2131,6 +2215,11 @@
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>15000</cost>
+	  <bonus unique="microadaptation">
+		<toxincontactresist>2</toxincontactresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininhalationresist>2</toxininhalationresist>
+	  </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>163</page>
@@ -2143,6 +2232,9 @@
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>15000</cost>
+	  <bonus unique="microadaptation">
+		<radiationresist>2</radiationresist>
+	  </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>164</page>
@@ -2657,7 +2749,6 @@
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <source>2050</source>
@@ -2839,6 +2930,12 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>Rating * 10000</cost>
+	  <bonus>
+		<pathogencontactresist>Rating</pathogencontactresist>
+		<pathogeningestionresist>Rating</pathogeningestionresist>
+		<pathogeninhalationresist>Rating</pathogeninhalationresist>
+		<pathogeninjectionresist>Rating</pathogeninjectionresist>
+	  </bonus>
       <rating>6</rating>
       <source>2050</source>
       <page>205</page>
@@ -2855,7 +2952,7 @@
       <bonus>
         <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
-          <applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
         </selectskill>
       </bonus>
       <source>2050</source>

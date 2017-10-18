@@ -60,7 +60,6 @@
             <specificskill>
               <name>Gymnastics</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -70,7 +69,6 @@
             <specificskill>
               <name>Sneaking</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -105,7 +103,6 @@
         <specificskill>
           <name>Tracking</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -141,7 +138,6 @@
       <bonus>
         <selectskill skillcategory="Social Active">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -183,7 +179,6 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -215,7 +210,6 @@
             <specificskill>
               <name>Artisan</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -225,7 +219,6 @@
             <specificskill>
               <name>Alchemy</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -245,9 +238,9 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill requireexistingnonzerorating="true">
+				<selectskill minimumrating="1">
 					<val>Rating</val>
-					<applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
 					<skillcategories>
 						<category>Physical Active</category>
 						<category>Social Active</category>
@@ -272,7 +265,6 @@
         <specificskill>
           <name>Survival</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -282,7 +274,6 @@
             <specificskill>
               <name>Counterspelling</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -308,7 +299,6 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -337,7 +327,6 @@
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -375,7 +364,6 @@
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -418,7 +406,6 @@
         <specificskill>
           <name>Swimming</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -432,9 +419,9 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill skillcategory="Physical Active" requireexistingnonzerorating="true">
+				<selectskill skillcategory="Physical Active" minimumrating="1">
 					<val>Rating</val>
-					<applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
 				</selectskill>
 			  </bonusoverride>
             </specificpower>
@@ -453,7 +440,6 @@
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -473,9 +459,9 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill skillgroup="Acting,Influence" requireexistingnonzerorating="true">
+				<selectskill skillgroup="Acting,Influence" minimumrating="1">
 					<val>Rating</val>
-					<applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
 				</selectskill>
 			  </bonusoverride>
             </specificpower>
@@ -494,7 +480,6 @@
         <specificskill>
           <name>Unarmed Combat</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -528,7 +513,6 @@
         <specificskill>
           <name>Arcana</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -563,7 +547,6 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -595,7 +578,6 @@
             <specificskill>
               <name>Leadership</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -605,7 +587,6 @@
             <specificskill>
               <name>Instruction</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -625,9 +606,9 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
               <bonusoverride>
-				<selectskill skillcategory="Combat Active" requireexistingnonzerorating="true">
+				<selectskill skillcategory="Combat Active" minimumrating="1">
 					<val>Rating</val>
-					<applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
 				</selectskill>
 			  </bonusoverride>
             </specificpower>
@@ -646,7 +627,6 @@
         <specificskill>
           <name>Tracking</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -734,7 +714,6 @@
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -769,7 +748,6 @@
         <specificskill>
           <name>Negotiation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -804,7 +782,6 @@
         <specificskill>
           <name>Arcana</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -841,7 +818,6 @@
             <specificskill>
               <name>Demolitions</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -850,7 +826,6 @@
           <bonus>
             <selectskill skillcategory="Combat Active">
               <val>2</val>
-              <applytorating>no</applytorating>
             </selectskill>
           </bonus>
         </choice>
@@ -915,7 +890,6 @@
       <bonus>
         <selectskill skillcategory="Physical Active">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -977,7 +951,6 @@
             <specificskill>
               <name>First Aid</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -987,7 +960,6 @@
             <specificskill>
               <name>Medicine</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1022,7 +994,6 @@
         <specificskill>
           <name>Demolitions</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1032,7 +1003,6 @@
             <specificskill>
               <name>Counterspelling</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1058,7 +1028,6 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1068,7 +1037,6 @@
             <specificskill>
               <name>Conjuring</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1093,7 +1061,6 @@
         <specificskill>
           <name>Navigation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1103,7 +1070,6 @@
             <specificskill>
               <name>Conjuring</name>
               <bonus>1</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1128,7 +1094,6 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1193,7 +1158,6 @@
       <bonus>
         <selectskill limittoskill="Artisan,Forgery">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -1226,7 +1190,6 @@
       <bonus>
         <selectskill limittoskill="Artisan,Alchemy">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -1261,7 +1224,6 @@
         </addqualities>
         <selectskill limittoskill="Palming,Etiquette">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -1296,7 +1258,6 @@
         <specificskill>
           <name>Tracking</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1330,7 +1291,6 @@
       <bonus>
         <selectskill limittoskill="Hardware,Electronic Warfare">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -1365,7 +1325,6 @@
         <specificskill>
           <name>Nautical Mechanic</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1400,7 +1359,6 @@
         <specificskill>
           <name>Negotiation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1451,7 +1409,6 @@
         <specificskill>
           <name>Unarmed Combat</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1536,7 +1493,6 @@
             <specificskill>
               <name>Assensing</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1574,7 +1530,6 @@
             <specificskill>
               <name>Artisan</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1584,7 +1539,6 @@
             <specificskill>
               <name>Pilot (Watercraft)</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1622,7 +1576,6 @@
             <specificskill>
               <name>Swimming</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1632,7 +1585,6 @@
             <specificskill>
               <name>Pilot (Watercraft)</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1664,7 +1616,6 @@
             <specificskill>
               <name>Running</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1674,7 +1625,6 @@
             <specificskill>
               <name>Pilot (Groundcraft)</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1697,7 +1647,6 @@
         <specificskill>
           <name>Palming</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1734,7 +1683,6 @@
         <specificskill>
           <name>Computer</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1769,7 +1717,6 @@
         <specificskill>
           <name>Instruction</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1779,7 +1726,6 @@
             <specificskill>
               <name>Ritual Spellcasting</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1804,7 +1750,6 @@
       <bonus>
         <selectskill limittoskill="Survival,Running,Tracking">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -1878,7 +1823,6 @@
             <specificskill>
               <name>Summoning</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -1904,7 +1848,6 @@
         <specificskill>
           <name>Negotiation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -1992,7 +1935,6 @@
             <specificskill>
               <name>Banishing</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -2085,7 +2027,6 @@
         </addqualities>
         <selectskill limittoskill="Demolitions,Intimidation">
           <val>2</val>
-          <applytorating>no</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -2163,7 +2104,6 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2193,7 +2133,6 @@
         <specificskill>
           <name>Negotiation</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2258,7 +2197,6 @@
         <specificskill>
           <name>Blades</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2348,22 +2286,18 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
         <specificskill>
           <name>Perception</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
         <specificskill>
           <name>Tracking</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2398,12 +2332,10 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
         <specificskill>
           <name>Perception</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2438,12 +2370,10 @@
         <specificskill>
           <name>Palming</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
         <specificskill>
           <name>Perception</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2496,7 +2426,6 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2531,7 +2460,6 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2566,7 +2494,6 @@
         <specificskill>
           <name>Ritual Spellcasting</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2618,9 +2545,9 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic" requireexistingnonzerorating="true">
+				<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic" minimumrating="1">
 					<val>Rating</val>
-					<applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
 				</selectskill>
 			  </bonusoverride>
             </specificpower>
@@ -2639,12 +2566,10 @@
         <specificskill>
           <name>Perception</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
         <specificskill>
           <name>Etiquette</name>
           <bonus>1</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2725,7 +2650,6 @@
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2745,9 +2669,9 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
 			  <bonusoverride>
-				<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation" requireexistingnonzerorating="true">
+				<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation" minimumrating="1">
 					<val>Rating</val>
-					<applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
 				</selectskill>
 			  </bonusoverride>
             </specificpower>
@@ -2766,7 +2690,6 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>2</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <choices>
@@ -2798,7 +2721,6 @@
             <specificskill>
               <name>Pilot Ground Craft</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>
@@ -2808,7 +2730,6 @@
             <specificskill>
               <name>Intimidation</name>
               <bonus>2</bonus>
-              <applytorating>no</applytorating>
             </specificskill>
           </bonus>
         </choice>

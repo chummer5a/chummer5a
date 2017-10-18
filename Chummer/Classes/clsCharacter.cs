@@ -2311,6 +2311,40 @@ namespace Chummer
 
             // <armor />
             objWriter.WriteElementString("armor", TotalArmorRating.ToString());
+            // <firearmor />
+            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString());
+            // <coldarmor />
+            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString());
+            // <electricityarmor />
+            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString());
+            // <acidarmor />
+            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString());
+            // <fallingarmor />
+            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString());
+            // <armordicestun />
+            objWriter.WriteElementString("armordicestun", (BOD.TotalValue + TotalArmorRating).ToString());
+            // <firearmordicestun />
+            objWriter.WriteElementString("firearmordicestun", (BOD.TotalValue + TotalFireArmorRating).ToString());
+            // <coldarmordicestun />
+            objWriter.WriteElementString("coldarmordicestun", (BOD.TotalValue + TotalColdArmorRating).ToString());
+            // <electricityarmordicestun />
+            objWriter.WriteElementString("electricityarmordicestun", (BOD.TotalValue + TotalElectricityArmorRating).ToString());
+            // <acidarmordicestun />
+            objWriter.WriteElementString("acidarmordicestun", (BOD.TotalValue + TotalAcidArmorRating).ToString());
+            // <fallingarmordicestun />
+            objWriter.WriteElementString("fallingarmordicestun", (BOD.TotalValue + TotalFallingArmorRating).ToString());
+            // <armordicephysical />
+            objWriter.WriteElementString("armordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalArmorRating).ToString());
+            // <firearmordicephysical />
+            objWriter.WriteElementString("firearmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFireArmorRating).ToString());
+            // <coldarmordicephysical />
+            objWriter.WriteElementString("coldarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalColdArmorRating).ToString());
+            // <electricityarmordicephysical />
+            objWriter.WriteElementString("electricityarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalElectricityArmorRating).ToString());
+            // <acidarmordicephysical />
+            objWriter.WriteElementString("acidarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalAcidArmorRating).ToString());
+            // <fallingarmordicephysical />
+            objWriter.WriteElementString("fallingarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFallingArmorRating).ToString());
 
             // Condition Monitors.
             // <physicalcm />
@@ -2387,6 +2421,8 @@ namespace Chummer
             objWriter.WriteElementString("composure", Composure.ToString());
             // <judgeintentions />
             objWriter.WriteElementString("judgeintentions", JudgeIntentions.ToString());
+            // <judgeintentionsresist />
+            objWriter.WriteElementString("judgeintentionsresist", JudgeIntentionsResist.ToString());
             // <liftandcarry />
             objWriter.WriteElementString("liftandcarry", LiftAndCarry.ToString());
             // <memory />
@@ -2397,6 +2433,10 @@ namespace Chummer
             objWriter.WriteElementString("carryweight", (STR.TotalValue * 10).ToString());
             // <fatigueresist />
             objWriter.WriteElementString("fatigueresist", FatigueResist.ToString());
+            // <radiationresist />
+            objWriter.WriteElementString("radiationresist", RadiationResist.ToString());
+            // <sonicresist />
+            objWriter.WriteElementString("sonicresist", SonicResist.ToString());
             // <toxincontacttesist />
             objWriter.WriteElementString("toxincontacttesist", ToxinContactResist.ToString());
             // <toxiningestionresist />
@@ -5031,7 +5071,18 @@ namespace Chummer
         {
             get
             {
-                return INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions);
+                return INT.TotalValue + CHA.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
+            }
+        }
+
+        /// <summary>
+        /// Judge Intentions Resist (CHA + WIL).
+        /// </summary>
+        public int JudgeIntentionsResist
+        {
+            get
+            {
+                return CHA.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
             }
         }
 
@@ -5065,6 +5116,28 @@ namespace Chummer
             get
             {
                 return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Radiation damage (BOD + WIL).
+        /// </summary>
+        public int RadiationResist
+        {
+            get
+            {
+                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RadiationResist);
+            }
+        }
+
+        /// <summary>
+        /// Resist test to Sonic Attacks damage (WIL).
+        /// </summary>
+        public int SonicResist
+        {
+            get
+            {
+                return WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist);
             }
         }
 
@@ -5824,6 +5897,61 @@ namespace Chummer
             get
             {
                 return ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Fire attacks.
+        /// </summary>
+        public int TotalFireArmorRating
+        {
+            get
+            {
+                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Cold attacks.
+        /// </summary>
+        public int TotalColdArmorRating
+        {
+            get
+            {
+                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Electricity attacks.
+        /// </summary>
+        public int TotalElectricityArmorRating
+        {
+            get
+            {
+                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ElectricityArmor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Acid attacks.
+        /// </summary>
+        public int TotalAcidArmorRating
+        {
+            get
+            {
+                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
+        /// </summary>
+        public int TotalFallingArmorRating
+        {
+            get
+            {
+                return TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
             }
         }
 

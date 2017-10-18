@@ -450,7 +450,6 @@
         <specificskill>
           <name>Impersonation</name>
           <bonus>Rating</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <rating>6</rating>
@@ -653,6 +652,9 @@
       <capacity>[1]</capacity>
       <avail>6</avail>
       <cost>2250</cost>
+	  <bonus>
+		<sonicresist>2</sonicresist>
+	  </bonus>
       <source>SR5</source>
       <page>454</page>
     </cyberware>
@@ -1777,7 +1779,6 @@
         <specificskill>
           <name>Disguise</name>
           <bonus>4</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
     </cyberware>
@@ -1812,7 +1813,6 @@
         <specificskill>
           <name>Mathematics</name>
           <bonus>4</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
     </cyberware>
@@ -3351,7 +3351,6 @@
         <specificskill>
           <name>Impersonation</name>
           <bonus>Rating</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <rating>6</rating>
@@ -4011,7 +4010,6 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>Rating</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <rating>4</rating>

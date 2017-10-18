@@ -6526,7 +6526,7 @@
       <page>448</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 150</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>Rating</toxincontactresist>
 		<pathogencontactresist>Rating</pathogencontactresist>
 	  </bonus>
@@ -6693,7 +6693,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 50</cost>
-	  <bonus>
+	  <bonus unique="respirator">
 		<toxininhalationresist>Rating</toxininhalationresist>
 		<pathogeninhalationresist>Rating</pathogeninhalationresist>
 	  </bonus>
@@ -6773,7 +6773,7 @@
       <avail>3</avail>
       <capacity>0</capacity>
       <cost>Rating * 75</cost>
-	  <bonus>
+	  <bonus unique="respirator">
 		<toxininhalationresist>Rating</toxininhalationresist>
 		<pathogeninhalationresist>Rating</pathogeninhalationresist>
 	  </bonus>
@@ -15117,7 +15117,7 @@
       <page>197</page>
       <avail>Rating</avail>
       <cost>Rating * 200</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>Rating</toxincontactresist>
 		<pathogencontactresist>Rating</pathogencontactresist>
 	  </bonus>

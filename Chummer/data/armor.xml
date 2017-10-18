@@ -3004,7 +3004,7 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>Rating</toxincontactresist>
 		<pathogencontactresist>Rating</pathogencontactresist>
 	  </bonus>
@@ -3038,6 +3038,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>Rating</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3050,6 +3053,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="insulation">
+		<coldarmor>Rating</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3062,6 +3068,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="nonconductivity">
+		<electricityarmor>Rating</electricityarmor>
+	  </bonus>
       <source>SR5</source>
       <page>438</page>
     </mod>
@@ -3098,6 +3107,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>4</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3110,7 +3122,7 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>4</toxincontactresist>
 		<pathogencontactresist>4</pathogencontactresist>
 	  </bonus>
@@ -3126,6 +3138,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>4</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3150,7 +3165,7 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>3</toxincontactresist>
 		<pathogencontactresist>3</pathogencontactresist>
 	  </bonus>
@@ -3166,6 +3181,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>3</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3178,6 +3196,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>2</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3190,7 +3211,7 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>2</toxincontactresist>
 		<pathogencontactresist>2</pathogencontactresist>
 	  </bonus>
@@ -3206,6 +3227,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>2</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3218,6 +3242,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>6</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3230,7 +3257,7 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
-	  <bonus>
+	  <bonus unique="chemicalprotection">
 		<toxincontactresist>6</toxincontactresist>
 		<pathogencontactresist>6</pathogencontactresist>
 	  </bonus>
@@ -3246,6 +3273,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>6</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3564,6 +3594,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>Rating * 2</avail>
       <cost>Rating * 200</cost>
+	  <bonus>
+		<radiationresist>Rating</radiationresist>
+	  </bonus>
       <source>RG</source>
       <page>84</page>
     </mod>

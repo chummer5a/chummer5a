@@ -200,7 +200,7 @@
       <bonus>
         <selectskill minimumrating="1">
           <val>Rating</val>
-          <applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
           <skillcategories>
             <category>Combat Active</category>
             <category>Physical Active</category>
@@ -371,6 +371,9 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	    <bonus>
+		    <judgeintentionsdefense>Rating</judgeintentionsdefense>
+	    </bonus>
       <source>SR5</source>
       <page>310</page>
     </power>
@@ -1226,6 +1229,10 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	  <bonus>
+		<firearmor>Rating</firearmor>
+		<coldarmor>Rating</coldarmor>
+	  </bonus>
       <source>SG</source>
       <page>175</page>
     </power>

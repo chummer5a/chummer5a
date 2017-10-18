@@ -4020,7 +4020,9 @@
       <name>Animal Pelage (Insulating Pelt)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<coldarmor>4</coldarmor>
+	  </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4091,7 +4093,12 @@
       <name>Balance Receptor</name>
       <karma>6</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+        </specificskill>
+	  </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4459,7 +4466,9 @@
       <name>Dermal Alteration (Blubber)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<coldarmor>2</coldarmor>
+	  </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4484,7 +4493,9 @@
       <name>Dermal Alteration (Dragon Skin)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<firearmor>2</firearmor>
+	  </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4747,7 +4758,12 @@
       <name>Functional Tail (Prehensile)</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -11474,7 +11490,9 @@
       <name>Honest Face</name>
       <karma>5</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<judgeintentionsdefense>2</judgeintentionsdefense>
+	  </bonus>
       <source>CA</source>
       <page>151</page>
     </quality>
