@@ -15109,8 +15109,15 @@
           <karma>-8</karma>
           <category>Negative</category>
           <bonus>
-              <!-- TODO: Addiction, toxin resistance tests. -->
-          </bonus>
+			<physiologicaladdictionfirsttime>-1</physiologicaladdictionfirsttime>
+			<psychologicaladdictionfirsttime>-1</psychologicaladdictionfirsttime>
+			<physiologicaladdictionalreadyaddicted>-1</physiologicaladdictionalreadyaddicted>
+			<psychologicaladdictionalreadyaddicted>-1</psychologicaladdictionalreadyaddicted>
+			<toxincontactresist>-1</toxincontactresist>
+			<toxiningestionresist>-1</toxiningestionresist>
+			<toxininhalationresist>-1</toxininhalationresist>
+			<toxininjectionresist>-1</toxininjectionresist>
+		  </bonus>
           <source>TCT</source>
           <page>189</page>
       </quality>
