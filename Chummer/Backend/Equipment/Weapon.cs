@@ -235,7 +235,7 @@ namespace Chummer.Backend.Equipment
                     TreeNode objAccessoryNode = new TreeNode();
                     WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                     int intAccessoryRating = 0;
-                    if (objXmlWeaponAccessory.InnerXml.Contains("<rating>"))
+                    if (objXmlWeaponAccessory["rating"] != null)
                     {
                         intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
                     }
