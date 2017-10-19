@@ -117,6 +117,7 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
+	<xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
       <xs:complexType>

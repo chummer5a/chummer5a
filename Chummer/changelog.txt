@@ -140,12 +140,14 @@ Application Changes:
 - Slightly altered the UI for the quality selection window so that it is clearer what the numerical up-downs in it represent. Fixes #1971.
 - Fixed a bug that caused the dicepool for resisting physical illusion spells to be calculated as WIL + WIL and displayed as INT + WIL instead of the LOG + INT that it should be.
 - Added support for tracking of fatigue resistance, dicepools for addiction tests (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), resistance and/or immunity to toxins (in all four vectors), resistance and/or immunity to pathogens (in all four vectors), natural physical CM recovery, and natural stun CM recovery. All of these stats are now printed with the Print() method, so character sheets can integrate them into their displays.
-- Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, bonus dice to resist mana and/or physical illusion spells, bonus armor against fire damage, bonus armor against cold damage, bonus armor against electricity damage, bonus armor against acid damage, bonus armor against falling damage, extra radiation resistance dice, extra sonic attack resistance dice, extra dice specifically to resist Judge Intentions, and extra dice specifically for initiating Judge Intentions tests. All existing items that should contain one or more of these bonuses have also been updated.
+- Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, bonus dice to resist mana and/or physical illusion spells, bonus dice to resist detection spells, bonus armor against fire damage, bonus armor against cold damage, bonus armor against electricity damage, bonus armor against acid damage, bonus armor against falling damage, extra radiation resistance dice, extra sonic attack resistance dice, extra dice specifically to resist Judge Intentions, and extra dice specifically for initiating Judge Intentions tests. All existing items that should contain one or more of these bonuses have also been updated.
 - Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
 - Fixed a bug where the initiative roller would calculate initiative with a flat probability distribution instead of with one mirroring the rolling of multiple dice (i.e. binomial-esque).
 - Dice Roller will now display the sum of the dice results (disregarding bubble dice) under the information about whether the roll was a success, a failure, a glitch, and/or a critical glitch.
 - Fixed a bug where bioware subsystems would always add to their parent's essence. This is now instead controlled by a separate tag instead of reliant on 'ware type.
 - Fixed a bug where cyberware and bioware that cost 0 essence but take up capacity when added to a cyberlimb (e.g. cortex bombs) would not show up in the list of standalone 'ware to add.
+- Fixed Detection spell defense being shown as INT + REA instead of LOG + WIL.
+- Adept Way discounts for foci should now be automatically detected in Career mode.
 
 Data Changes:
 
@@ -230,6 +232,10 @@ Data Changes:
 - Fixed Knowledge Infusion bioware not giving a free rating of a chosen knowledge skill that is rating 0.
 - Fixed Chemical Gland bioware and its Expanded Resevoir plugin so that its cost and availability properly change with that of the chemical it generates. Exhalation Spray, Spit, Weapon Resevoir, and Internal/Gradual Release are now properly mutually exclusive types of chemical glands rather than an addon to an existing chemical gland with an undefined release method.
 - Metaposeur, Phenotypic Variation - Metaposeur, Cosmetic Alteration, and Phenotypic Variation - Cosmetic Alteration now allow you to type in as what metatype you're posing and/or what cosmetic alterations have been made.
+- Fixed Claws enhancement not giving +1 Unarmed DV.
+- Fixed being able to take a different way alongside Artist's Way.
+- Fixed Beast's Way not giving +1 Animal Handling and Spiritual Way not giving +1 to all Conjuring tests.
+- Fixed being able to take Burnout's Way without being at less than 5 Essence.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

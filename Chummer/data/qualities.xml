@@ -1825,7 +1825,7 @@
       </required>
       <forbidden>
         <oneof>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Artisan's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
@@ -1853,7 +1853,12 @@
         </required>
         <value>-3</value>
       </costdiscount>
-      <bonus />
+      <bonus>
+		<specificskill>
+          <name>Animal Handling</name>
+          <bonus>1</bonus>
+        </specificskill>
+	  </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1864,7 +1869,7 @@
         <oneof>
           <quality>The Artisan's Way</quality>
           <quality>The Athlete's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
@@ -1888,13 +1893,16 @@
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </oneof>
+		<allof>
+		  <ess>-5</ess>
+		</allof>
       </required>
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
@@ -1924,7 +1932,7 @@
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
@@ -1954,7 +1962,7 @@
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
           <quality>The Warrior's Way</quality>
@@ -1984,7 +1992,7 @@
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Spiritual Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
@@ -1998,7 +2006,12 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<skillgroup>
+          <name>Conjuring</name>
+          <bonus>1</bonus>
+        </skillgroup>
+	  </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -2014,7 +2027,7 @@
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -2044,7 +2057,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
         </oneof>
       </forbidden>
       <source>SG</source>

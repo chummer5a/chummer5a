@@ -3306,10 +3306,10 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
             //Detection Spells
             lblSpellDefenceDetection.Text =
-                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
-                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) " +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+                              $"{_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) + {_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) " +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)})";
             tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
             //Decrease Attribute - BOD
             lblSpellDefenceDecAttBOD.Text =
@@ -16471,10 +16471,71 @@ namespace Chummer
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition);
                 int intKarmaMultiplier = 0;
+                bool blnHasKarmaDiscount = false;
                 switch (strFocusName)
                 {
                     case "Qi Focus":
                         intKarmaMultiplier = _objOptions.KarmaQiFocus;
+                        if (objFocus.Extra.Contains("Improved Ability (skill)"))
+                        {
+                            if (objFocus.Extra == "Improved Ability (skill) (Artisan)" && _objCharacter.Qualities.Any(x => x.Name == "The Artist's Way"))
+                                blnHasKarmaDiscount = true;
+                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Artisan's Way") &&
+                                (objFocus.Extra == "Improved Ability (skill) (Animal Handling)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Armorer)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Artisan)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Biotechnology)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Chemistry)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Computer)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Cybercombat)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Cybertechnology)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Demolitions)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Electronic Warfare)" ||
+                                objFocus.Extra == "Improved Ability (skill) (First Aid)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Forgery)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Hacking)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Hardware)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Locksmith)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Medicine)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Navigation)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Software)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Gunnery)" ||
+                                objFocus.Extra.Contains("Mechanic") || 
+                                objFocus.Extra.Contains("Pilot")))
+                                blnHasKarmaDiscount = true;
+                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Athlete's Way") &&
+                                (objFocus.Extra == "Improved Ability (skill) (Gymnastics)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Running)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Flight)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Swimming)"))
+                                blnHasKarmaDiscount = true;
+                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Invisible Way") &&
+                                (objFocus.Extra == "Improved Ability (skill) (Disguise)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Diving)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Escape Artist)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Flight)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Free-Fall)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Gymnastics)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Palming)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Perception)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Palming)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Running)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Sneaking)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Survival)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Swimming)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Tracking)"))
+                                blnHasKarmaDiscount = true;
+                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Speaker's Way") &&
+                                (objFocus.Extra == "Improved Ability (skill) (Con)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Etiquette)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Impersonation)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Instruction)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Intimidation)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Leadership)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Negotiation)" ||
+                                objFocus.Extra == "Improved Ability (skill) (Performance)"))
+                                blnHasKarmaDiscount = true;
+                        }
                         break;
                     case "Sustaining Focus":
                         intKarmaMultiplier = _objOptions.KarmaSustainingFocus;
@@ -16490,6 +16551,7 @@ namespace Chummer
                         break;
                     case "Weapon Focus":
                         intKarmaMultiplier = _objOptions.KarmaWeaponFocus;
+                        blnHasKarmaDiscount = _objCharacter.Qualities.Any(x => x.Name == "The Warrior's Way");
                         break;
                     case "Spellcasting Focus":
                         intKarmaMultiplier = _objOptions.KarmaSpellcastingFocus;
@@ -16526,6 +16588,8 @@ namespace Chummer
                         break;
                 }
                 int intKarmaExpense = objFocus.Rating * intKarmaMultiplier;
+                if (blnHasKarmaDiscount)
+                    intKarmaExpense -= 2;
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);

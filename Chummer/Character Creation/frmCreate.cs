@@ -360,8 +360,8 @@ namespace Chummer
             // Check for Special Attributes.
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
+            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             // Define the XML objects that will be used.
@@ -1157,8 +1157,8 @@ namespace Chummer
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
+            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.MAGEnabled)
@@ -14788,10 +14788,10 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
             //Detection Spells
             lblSpellDefenceDetection.Text =
-                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
+                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
-                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) " +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+                              $"{_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) + {_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) " +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)})";
             tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
             //Decrease Attribute - BOD
             lblSpellDefenceDecAttBOD.Text =

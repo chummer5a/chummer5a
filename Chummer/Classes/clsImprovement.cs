@@ -253,6 +253,7 @@ namespace Chummer
             PhysicalManipulationResist,
             ManaIllusionResist,
             PhysicalIllusionResist,
+            DetectionSpellResist,
             // V This one should always be the last defined enum
             NumImprovementTypes
         }
