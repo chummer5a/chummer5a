@@ -362,6 +362,8 @@ namespace Chummer.Classes
             frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter, _strFriendlyName);
             if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["minimumrating"]?.InnerText))
                 frmPickSkill.MinimumRating = Convert.ToInt32(bonusNode.Attributes["minimumrating"].InnerText);
+            if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["maximumrating"]?.InnerText))
+                frmPickSkill.MaximumRating = Convert.ToInt32(bonusNode.Attributes["maximumrating"].InnerText);
             if (!string.IsNullOrEmpty(_strFriendlyName))
                 frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
                     .Replace("{0}", _strFriendlyName);

@@ -438,6 +438,8 @@
       <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
       <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
       <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+	  <xs:attribute name="minimumrating" type="xs:integer" use="optional" />
+	  <xs:attribute name="maximumrating" type="xs:integer" use="optional" />
       <xs:attribute name="skillcategory" type="xs:string" use="optional" />
       <xs:attribute name="skillgroup" type="xs:string" use="optional" />
       </xs:complexType>
@@ -556,6 +558,8 @@
 				<xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
 				<xs:attribute name="limittoattribute" type="xs:string" use="optional" />
 				<xs:attribute name="limittoskill" type="xs:string" use="optional" />
+				<xs:attribute name="minimumrating" type="xs:integer" use="optional" />
+				<xs:attribute name="maximumrating" type="xs:integer" use="optional" />
 				<xs:attribute name="skillcategory" type="xs:string" use="optional" />
 				<xs:attribute name="skillgroup" type="xs:string" use="optional" />
 			</xs:complexType>

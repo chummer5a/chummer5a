@@ -20,7 +20,7 @@ Application Changes:
 - Fixed a bug that allowed the deletion of some powers without levels that were granted by free levels of adept powers.
 - Maximum values for adept powers should now update properly with changes to MAG values, and in the case of Improved Ability, changes to skill ratings.
 - Cancelling out of a dialog triggered by selecting an adept power or a property of an adept power will now properly cancel the dialog and not actually add the last/default selected choice.
-- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
+- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating and/or less than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
 - Added support for bonuses to defense dice (e.g. Combat Sense, Reakt).
 - Added support for Barehanded Adept and qualities similar to it.
 - Drain for Physical Adepts is now properly displayed and calculated as BOD + WIL.
@@ -144,6 +144,8 @@ Application Changes:
 - Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
 - Fixed a bug where the initiative roller would calculate initiative with a flat probability distribution instead of with one mirroring the rolling of multiple dice (i.e. binomial-esque).
 - Dice Roller will now display the sum of the dice results (disregarding bubble dice) under the information about whether the roll was a success, a failure, a glitch, and/or a critical glitch.
+- Fixed a bug where bioware subsystems would always add to their parent's essence. This is now instead controlled by a separate tag instead of reliant on 'ware type.
+- Fixed a bug where cyberware and bioware that cost 0 essence but take up capacity when added to a cyberlimb (e.g. cortex bombs) would not show up in the list of standalone 'ware to add.
 
 Data Changes:
 
@@ -176,10 +178,10 @@ Data Changes:
 - Consolidated the following quality entries so that they are now just one quality that can be taken multiple times: Focused Concentration, High Pain Tolerance, Magic Resistance, Will to Live, Gremlins, Perceptive, Spike Resistance, Tough as Nails, Dimmer Bulb, In Debt, Arcane Arrester, Shiva Arms, Social Appearance Anxiety, Infirm, Pilot Origins, Aged, Illness. When loading a save file for a character containing at least one of these existing qualities, they should get converted automatically to the new format.
 - Fixed a bug where the Indomitable quality could be taken more than three times across Physical, Mental, and Social limits.
 - Fixed a bug where Basic and Full levels of the Insomnia quality were not mutually exclusive.
-- Fixed a bug where Bilingual and Black Market Connection could be taken in-game.
+- Fixed a bug where Bilingual Black Market Connection, and all Phenotypic Variations could be taken in-game.
 - Fixed a bug where Loss of Confidence could be taken for skills with Ratings lower than 4, and a bug where Loss of Confidence would not disallow use of specializations for the selected skill.
 - Fixed a bug where Restricted Gear could be taken more than once at chargen.
-- Fixed a bug where Metagenetic Improvement and Impaired Attribute could be taken more than once per attribute.
+- Fixed a bug where Metagenetic Improvement, Impaired Attribute, Genetic Optimization, and Phenotypic Variation - Genetic Optimization could be taken more than once per attribute.
 - Fixed a bug where the Close Combat Mage quality did not allow you to select which bonus was taken.
 - Fixed a bug where Death Dealer could be taken more than once by Physical Adepts.
 - Fixed a bug where the Illusionist quality did not allow you to select the spell type to which it applied (Physical or Mana).
@@ -224,6 +226,10 @@ Data Changes:
 - Fixed Balance Receptor and Functional Tail (Prehensile) qualities not giving proper bonuses to Gymnastics.
 - Fixed Sharkskin not giving +1 Reach to unarmed combat.
 - Fixed the Neijia technique being unavailable if a runner only takes martial arts from State of the Art ADL and/or Way of Unified Mana.
+- Fixed Daredrenaline not properly giving Poor Self Control Thrill Seeker when taken.
+- Fixed Knowledge Infusion bioware not giving a free rating of a chosen knowledge skill that is rating 0.
+- Fixed Chemical Gland bioware and its Expanded Resevoir plugin so that its cost and availability properly change with that of the chemical it generates. Exhalation Spray, Spit, Weapon Resevoir, and Internal/Gradual Release are now properly mutually exclusive types of chemical glands rather than an addon to an existing chemical gland with an undefined release method.
+- Metaposeur, Phenotypic Variation - Metaposeur, Cosmetic Alteration, and Phenotypic Variation - Cosmetic Alteration now allow you to type in as what metatype you're posing and/or what cosmetic alterations have been made.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

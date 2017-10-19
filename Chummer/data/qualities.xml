@@ -10566,6 +10566,7 @@
     <quality>
       <id>0d5e6819-ac41-4700-ac7d-58fa957b328c</id>
       <name>Phenotypic Variation - Genewipe</name>
+	  <chargenonly />
       <karma>32</karma>
       <category>Positive</category>
       <bonus />
@@ -10575,6 +10576,7 @@
     <quality>
       <id>13edde6a-f920-4665-9e65-53a20b30c2a3</id>
       <name>Phenotypic Variation - Masque</name>
+	  <chargenonly />
       <karma>23</karma>
       <category>Positive</category>
       <bonus />
@@ -10584,6 +10586,7 @@
     <quality>
       <id>eac42e74-2f7b-418d-bd38-c1cdd56ceec4</id>
       <name>Phenotypic Variation - Reprint</name>
+	  <chargenonly />
       <karma>18</karma>
       <category>Positive</category>
       <bonus />
@@ -10593,6 +10596,7 @@
     <quality>
       <id>f0bd7ebc-8b59-4586-b83a-d884540a7651</id>
       <name>Phenotypic Variation - Shuffle</name>
+	  <chargenonly />
       <karma>13</karma>
       <category>Positive</category>
       <bonus />
@@ -10601,35 +10605,180 @@
     </quality>
     <quality>
       <id>9d4dd549-3bce-450d-be6e-8bfaf35d49b1</id>
-      <name>Phenotypic Variation - Genetic Optimization</name>
+      <name>Phenotypic Variation - Genetic Optimization (Body)</name>
+	  <chargenonly />
       <karma>27</karma>
       <category>Positive</category>
       <bonus>
-        <selectattributes>
-          <selectattribute>
-            <excludeattribute>EDG</excludeattribute>
-            <excludeattribute>MAG</excludeattribute>
-            <excludeattribute>RES</excludeattribute>
-            <excludeattribute>DEP</excludeattribute>
-            <max>1</max>
-          </selectattribute>
-        </selectattributes>
+		<specificattribute>
+          <name>BOD</name>
+          <max>1</max>
+        </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Body)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>c42cc305-3d7a-4c68-9ce7-32e1fc628505</id>
+      <name>Phenotypic Variation - Genetic Optimization (Agility)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>AGI</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Agility)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>8c667328-eba0-4dc7-be5a-19c285997f10</id>
+      <name>Phenotypic Variation - Genetic Optimization (Reaction)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>REA</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Reaction)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>a6b946e2-7e58-4607-b9ce-7b27055c9562</id>
+      <name>Phenotypic Variation - Genetic Optimization (Strength)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>STR</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Strength)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>7022143c-3d58-4ad7-9cdb-dab007f75f54</id>
+      <name>Phenotypic Variation - Genetic Optimization (Charisma)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>CHA</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Charisma)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>22a991a5-e8b1-4ca7-98b9-3181df5dbf7e</id>
+      <name>Phenotypic Variation - Genetic Optimization (Intuition)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>INT</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Intuition)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>62035d8e-c784-450e-9b03-501281a6771a</id>
+      <name>Phenotypic Variation - Genetic Optimization (Logic)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>LOG</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Logic)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>96ae02da-5824-4ebd-a0c5-65bb5b43fd48</id>
+      <name>Phenotypic Variation - Genetic Optimization (Willpower)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>WIL</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Willpower)</bioware>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>157</page>
     </quality>
     <quality>
       <id>e89ddeca-1de4-410e-916f-205aeaee6ea2</id>
       <name>Phenotypic Variation - Cosmetic Alteration</name>
+	  <chargenonly />
       <karma>21</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<selecttext />
+	  </bonus>
       <source>CF</source>
       <page>158</page>
     </quality>
     <quality>
       <id>b17b895e-6819-4609-91e6-9ce42d0446a9</id>
       <name>Phenotypic Variation - Print Removal</name>
+	  <chargenonly />
       <karma>12</karma>
       <category>Positive</category>
       <bonus />
@@ -10639,9 +10788,12 @@
     <quality>
       <id>89564979-72ca-4e73-9923-0ce088da0227</id>
       <name>Phenotypic Variation - Metaposeur</name>
+	  <chargenonly />
       <karma>22</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<selecttext />
+	  </bonus>
       <source>CF</source>
       <page>158</page>
     </quality>

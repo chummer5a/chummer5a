@@ -7319,6 +7319,7 @@ namespace Chummer
                 int intCurrentLevels = objSelectedQuality.Levels;
 
                 bool blnRequireUpdate = false;
+                bool blnRequireTreQualitiesRebuild = false;
                 // Adding a new level
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
@@ -7426,6 +7427,12 @@ namespace Chummer
                     {
                         blnRequireUpdate = true;
                     }
+                    else if (RemoveQuality(objSelectedQuality, false, false))
+                    {
+                        blnRequireUpdate = true;
+                        blnRequireTreQualitiesRebuild = true;
+                        break;
+                    }
                     else
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
@@ -7435,7 +7442,10 @@ namespace Chummer
 
                 if (blnRequireUpdate)
                 {
-                    RefreshQualityNames(treQualities);
+                    if (blnRequireTreQualitiesRebuild)
+                        RefreshQualities(treQualities, cmsQuality, true);
+                    else
+                        RefreshQualityNames(treQualities);
                     UpdateMentorSpirits();
                     ScheduleCharacterUpdate();
                     RefreshMartialArts();

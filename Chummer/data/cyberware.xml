@@ -522,6 +522,7 @@
       <source>SR5</source>
       <page>453</page>
       <addvehicle>Ocular Drone</addvehicle>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>fb0419a3-6f0d-4fbb-8b37-39e853efa195</id>
@@ -1425,6 +1426,7 @@
         <armor>Rating</armor>
       </bonus>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>7d61f860-0637-4214-914d-c68022361d24</id>
@@ -1443,6 +1445,7 @@
       </forbidden>
       <minrating>MinimumSTR</minrating>
       <rating>MaximumSTR</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
@@ -1456,6 +1459,7 @@
       <page>456</page>
       <minrating>MinimumAGI</minrating>
       <rating>MaximumAGI</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>a9f4efd4-b86c-4e90-b0f7-aefa32c3b9de</id>
@@ -1468,6 +1472,7 @@
       <source>SR5</source>
       <page>456</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>2c50d5c1-f2ff-4c7b-bf5e-46925e808648</id>
@@ -1480,6 +1485,7 @@
       <source>SR5</source>
       <page>456</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>eea42123-0449-4c20-8c0b-ae766025b72b</id>
@@ -1491,6 +1497,7 @@
       <cost>2000</cost>
       <source>SR5</source>
       <page>457</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>816fbe31-0bfb-455f-a939-fca85b968bd2</id>
@@ -1502,6 +1509,7 @@
       <cost>6000</cost>
       <source>SR5</source>
       <page>456</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>17e0bf0e-db82-4db7-ad85-d88e9945f5a7</id>
@@ -1513,6 +1521,7 @@
       <cost>3000</cost>
       <source>SR5</source>
       <page>456</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c7a55431-c54c-41ba-8468-0d9c3028010a</id>
@@ -1532,6 +1541,7 @@
         </limitmodifier>
       </bonus>
       <rating>6</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>32096cc1-25c0-4b29-a53d-92528f352d2f</id>
@@ -1544,6 +1554,7 @@
       <source>SR5</source>
       <page>457</page>
       <allowgear />
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>ec5ed166-d1dc-4afe-80a1-71bc315f7d75</id>
@@ -1626,6 +1637,7 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>45a32fd5-6db3-4e1d-aa34-76d1e299ae8b</id>
@@ -1685,6 +1697,7 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
@@ -1696,6 +1709,7 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c9e4a11f-ef4f-4cb6-9392-ce7378456d82</id>
@@ -2350,6 +2364,7 @@
       <source>CF</source>
       <page>72</page>
       <rating>4</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>b7ec08aa-a328-46a0-9b41-4c9a4bfc13b2</id>
@@ -2832,6 +2847,7 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>fe394e6c-c9b4-492e-91a3-65b5e63692ed</id>
@@ -2850,6 +2866,7 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>edb2fd85-6bd8-4c34-be9a-eb9f21a0b8df</id>
@@ -2869,6 +2886,7 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>ff29d933-7ef5-4b15-96d2-8e56aa70796d</id>
@@ -2883,6 +2901,7 @@
       <bonus>
         <selectside />
       </bonus>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>02604fc4-e03a-4c4c-8998-f283f2528a64</id>
@@ -2894,6 +2913,7 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>fcae214b-4fbe-40f7-b5e0-61473d6b9a2e</id>
@@ -2905,6 +2925,7 @@
       <cost>3000</cost>
       <source>CF</source>
       <page>88</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>a40cbc72-7dc6-4f8f-a9ff-e5e3f471b895</id>
@@ -2920,6 +2941,7 @@
         <selectside />
       </bonus>
       <rating>2</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
@@ -2934,6 +2956,7 @@
       <bonus>
         <selectside />
       </bonus>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>4f7794ce-fd49-48f2-bde7-3501b1799814</id>
@@ -3001,6 +3024,7 @@
       <source>CF</source>
       <page>87</page>
       <rating>6</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>b4394ee8-0490-4a56-8b30-8503351a3c58</id>
@@ -3141,6 +3165,7 @@
       <bonus>
         <selecttext />
       </bonus>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
@@ -3153,6 +3178,7 @@
       <source>CF</source>
       <page>86</page>
       <rating>6</rating>
+	  <requireparent />
     </cyberware>
     <!-- End Region -->
     <!-- Region Cyber Implant Weaponry -->
@@ -4024,6 +4050,7 @@
       <cost>2750</cost>
       <source>HT</source>
       <page>187</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>4dcc6d9d-824e-4e4a-a0cb-86810838f587</id>
@@ -4035,6 +4062,7 @@
       <cost>3500</cost>
       <source>HT</source>
       <page>187</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>370546a7-25e8-4a98-9467-d2dec2b3e968</id>
@@ -5505,6 +5533,7 @@
       </forbidden>
       <minrating>MinimumSTR</minrating>
       <rating>MaximumSTR</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c6abcc8b-78fb-44a4-a105-450c1b60a57b</id>
@@ -5518,6 +5547,7 @@
       <page>203</page>
       <minrating>MinimumAGI</minrating>
       <rating>MaximumAGI</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
@@ -5533,6 +5563,7 @@
         <armor>Rating</armor>
       </bonus>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>55738f72-0344-435d-8f92-b1e16a66c445</id>
@@ -5545,6 +5576,7 @@
       <source>2050</source>
       <page>203</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
@@ -5557,6 +5589,7 @@
       <source>2050</source>
       <page>203</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c7d7d1cb-2506-4b0d-9ae4-7fb1c1135a82</id>

@@ -538,40 +538,115 @@
     <!-- Region Basic Bioware -->
     <bioware>
       <id>abdbc210-c1fa-45f1-9840-4f78d9eb8867</id>
-      <name>Chemical Gland</name>
+      <name>Chemical Gland (Internal Release or Gradual Release)</name>
       <category>Basic</category>
       <ess>0.1</ess>
-      <capacity>[0]</capacity>
-      <avail>12R</avail>
-      <cost>20000</cost>
-      <allowsubsystems>
+      <capacity>0</capacity>
+      <avail>12R or Gear</avail>
+      <cost>20000 + (99 * Gear Cost)</cost>
+	  <allowgear>
+        <gearcategory>Drugs</gearcategory>
+		<gearcategory>Toxins</gearcategory>
+		<gearcategory>Custom</gearcategory>
+      </allowgear>
+	  <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-      <bonus>
-        <selecttext />
-      </bonus>
+	  <addchildreness />
+	  <notes>Bonus is for whether this is Internal Release or Gradual Release, not the cost of the chemical.</notes>
+	  <bonus>
+		<selecttext />
+	  </bonus>
       <source>CF</source>
       <page>112</page>
     </bioware>
     <bioware>
       <id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
-      <name>Chemical Gland Exhalation Sprayer</name>
-      <category>Chemical Gland Modifications</category>
-      <ess>0.1</ess>
+      <name>Chemical Gland (Exhalation Sprayer)</name>
+      <category>Basic</category>
+      <ess>0.2</ess>
       <capacity>0</capacity>
-      <avail>12R</avail>
-      <cost>6000</cost>
+      <avail>12R or Gear</avail>
+      <cost>26000 + (99 * Gear Cost)</cost>
+	  <allowgear>
+        <gearcategory>Drugs</gearcategory>
+		<gearcategory>Toxins</gearcategory>
+		<gearcategory>Custom</gearcategory>
+      </allowgear>
+	  <allowsubsystems>
+        <category>Chemical Gland Modifications</category>
+      </allowsubsystems>
+	  <addchildreness />
       <source>CF</source>
       <page>112</page>
     </bioware>
     <bioware>
       <id>47608117-a4af-4dfe-81bb-0dc8c6c5122d</id>
-      <name>Chemical Gland Spitter</name>
+      <name>Chemical Gland (Spitter)</name>
+      <category>Basic</category>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>12R or Gear</avail>
+      <cost>26000 + (99 * Gear Cost)</cost>
+	  <allowgear>
+        <gearcategory>Drugs</gearcategory>
+		<gearcategory>Toxins</gearcategory>
+		<gearcategory>Custom</gearcategory>
+      </allowgear>
+	  <allowsubsystems>
+        <category>Chemical Gland Modifications</category>
+      </allowsubsystems>
+	  <addchildreness />
+	  <forbidden>
+		<oneof>
+		  <bioware>Chemical Gland (Spitter)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>112</page>
+    </bioware>
+	<bioware>
+      <id>915b1458-e33c-4010-a093-47d40cfa11de</id>
+      <name>Chemical Gland (Weapon Reservoir)</name>
+      <category>Basic</category>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>12F or Gear</avail>
+      <cost>24000 + (99 * Gear Cost)</cost>
+	  <allowgear>
+        <gearcategory>Drugs</gearcategory>
+		<gearcategory>Toxins</gearcategory>
+		<gearcategory>Custom</gearcategory>
+      </allowgear>
+	  <allowsubsystems>
+        <category>Chemical Gland Modifications</category>
+      </allowsubsystems>
+	  <addchildreness />
+      <source>CF</source>
+      <page>112</page>
+    </bioware>
+    <bioware>
+      <id>d2064cf2-e9f7-479f-92cc-7da7c6024121</id>
+      <name>Chemical Gland Expanded Reservoir</name>
       <category>Chemical Gland Modifications</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
-      <avail>12R</avail>
-      <cost>6000</cost>
+      <avail>12</avail>
+      <cost>2000 + (4 * Parent Gear Cost)</cost>
+	  <allowgear>
+        <gearcategory>Drugs</gearcategory>
+		<gearcategory>Toxins</gearcategory>
+		<gearcategory>Custom</gearcategory>
+      </allowgear>
+	  <requireparent />
+	  <required>
+		<oneof>
+		  <bioware>Chemical Gland (Internal Release or Gradual Release)</bioware>
+		  <bioware>Chemical Gland (Exhalation Sprayer)</bioware>
+		  <bioware>Chemical Gland (Spitter)</bioware>
+		  <bioware>Chemical Gland (Weapon Reservoir)</bioware>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -715,28 +790,6 @@
 	  </required>
       <source>CF</source>
       <page>116</page>
-    </bioware>
-    <bioware>
-      <id>915b1458-e33c-4010-a093-47d40cfa11de</id>
-      <name>Chemical Gland Weapon Reservoir</name>
-      <category>Chemical Gland Modifications</category>
-      <ess>0.1</ess>
-      <capacity>0</capacity>
-      <avail>12F</avail>
-      <cost>4000</cost>
-      <source>CF</source>
-      <page>112</page>
-    </bioware>
-    <bioware>
-      <id>d2064cf2-e9f7-479f-92cc-7da7c6024121</id>
-      <name>Chemical Gland Expanded Reservoir</name>
-      <category>Chemical Gland Modifications</category>
-      <ess>0.1</ess>
-      <capacity>0</capacity>
-      <avail>12</avail>
-      <cost>2000</cost>
-      <source>CF</source>
-      <page>112</page>
     </bioware>
     <bioware>
       <id>6423d6b2-fcea-4eb0-b1cf-ea343cfc2f93</id>
@@ -1552,6 +1605,12 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>2000</cost>
+	  <bonus>
+		<selectskill maximumrating="0" knowledgeskills="true">
+		  <val>1</val>
+		  <applytorating>yes</applytorating>
+		</selectskill>
+	  </bonus>
       <source>CF</source>
       <page>118</page>
     </bioware>
@@ -1892,14 +1951,14 @@
       <avail>6</avail>
       <cost>61000</cost>
 	  <forcegrade>None</forcegrade>
-      <addqualities>
-        <addquality>Poor Self Control (Thrill Seeker)</addquality>
-      </addqualities>
       <bonus>
         <specificattribute>
           <name>WIL</name>
           <val>1</val>
         </specificattribute>
+		<addqualities>
+          <addquality>Poor Self Control (Thrill Seeker)</addquality>
+		</addqualities>
       </bonus>
       <source>CF</source>
       <page>160</page>
@@ -2352,7 +2411,7 @@
     </bioware>
     <bioware>
       <id>1aa7863d-a8f3-461e-8ce8-88c3b8e98ced</id>
-      <name>Genetic Optimization</name>
+      <name>Genetic Optimization (Body)</name>
       <category>Genemods</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
@@ -2360,14 +2419,185 @@
       <cost>47000</cost>
 	  <forcegrade>None</forcegrade>
       <bonus>
-        <selectattribute>
-          <excludeattribute>EDG</excludeattribute>
-          <excludeattribute>MAG</excludeattribute>
-          <excludeattribute>RES</excludeattribute>
-          <excludeattribute>DEP</excludeattribute>
+        <specificattribute>
+          <name>BOD</name>
           <max>1</max>
-        </selectattribute>
+        </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Body)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Body)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>70552613-23ca-4e53-bf8f-83f87f134b05</id>
+      <name>Genetic Optimization (Agility)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>AGI</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Agility)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Agility)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>da01f3fc-e77a-419f-8cad-907fe7e995d5</id>
+      <name>Genetic Optimization (Reaction)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>REA</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Reaction)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Reaction)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>4b10adbe-567f-4e7d-affd-70c312efdb22</id>
+      <name>Genetic Optimization (Strength)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>STR</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Strength)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Strength)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>aeab29b0-4ac1-47cc-980e-36cfb562ac17</id>
+      <name>Genetic Optimization (Charisma)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>CHA</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Charisma)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Charisma)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>5ec34679-27d6-4bb7-b408-1ca1b2f81bd0</id>
+      <name>Genetic Optimization (Intuition)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>INT</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Intuition)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Intuition)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>c388537e-e533-48c3-a101-c57be8426295</id>
+      <name>Genetic Optimization (Logic)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>LOG</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Logic)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Logic)</quality>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </bioware>
+	<bioware>
+      <id>19142a2e-1078-4b23-9996-313cb57daa07</id>
+      <name>Genetic Optimization (Willpower)</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>47000</cost>
+	  <forcegrade>None</forcegrade>
+      <bonus>
+        <specificattribute>
+          <name>WIL</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Willpower)</bioware>
+		  <quality>Phenotypic Variation - Genetic Optimization (Willpower)</quality>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -2379,6 +2609,9 @@
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>35000</cost>
+	  <bonus>
+		<selecttext />
+	  </bonus>
 	  <forcegrade>None</forcegrade>
       <source>CF</source>
       <page>158</page>
@@ -2404,6 +2637,9 @@
       <avail>8</avail>
       <cost>38000</cost>
 	  <forcegrade>None</forcegrade>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <source>CF</source>
       <page>158</page>
     </bioware>
@@ -2547,6 +2783,9 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>10000</cost>
+	  <bonus>
+		<lifestylecost>-10</lifestylecost>
+	  </bonus>
       <source>CF</source>
       <page>123</page>
     </bioware>
@@ -2613,6 +2852,10 @@
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>30000</cost>
+	  <bonus>
+		<physicalcmrecovery>2</physicalcmrecovery>
+		<stuncmrecovery>1</stuncmrecovery>
+      </bonus>
       <source>CF</source>
       <page>124</page>
     </bioware>
