@@ -1745,6 +1745,9 @@
         <technique>
           <name>Multiple Opponent Defense (Defender has Defended)</name>
         </technique>
+		<technique>
+          <name>Neijia</name>
+        </technique>
         <technique>
           <name>Oaken Stance (Defense Against Being Knocked Down)</name>
         </technique>
@@ -1857,6 +1860,9 @@
         <technique>
           <name>Mana Strike</name>
         </technique>
+		<technique>
+          <name>Neijia</name>
+        </technique>
       </techniques>
       <source>FA</source>
       <page>101</page>
@@ -1885,6 +1891,9 @@
         <technique>
           <name>Imposing Stone</name>
         </technique>
+		<technique>
+          <name>Neijia</name>
+        </technique>
       </techniques>
       <source>SAG</source>
       <page>17</page>
@@ -1910,6 +1919,9 @@
         </technique>
         <technique>
           <name>Defiant Dance</name>
+        </technique>
+		<technique>
+          <name>Neijia</name>
         </technique>
       </techniques>
       <source>SAG</source>
@@ -1937,6 +1949,9 @@
         <technique>
           <name>Yielding Force (Counterstrike)</name>
         </technique>
+		<technique>
+          <name>Neijia</name>
+        </technique>
       </techniques>
       <source>SAG</source>
       <page>17</page>
@@ -1963,6 +1978,9 @@
         <technique>
           <name>Leaping Mantis</name>
         </technique>
+		<technique>
+          <name>Neijia</name>
+        </technique>
       </techniques>
       <source>SAG</source>
       <page>17</page>
@@ -1988,6 +2006,9 @@
         </technique>
         <technique>
           <name>Close Quarter Defense Against Firearms</name>
+        </technique>
+		<technique>
+          <name>Neijia</name>
         </technique>
       </techniques>
       <source>SAG</source>

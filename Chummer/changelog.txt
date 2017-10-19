@@ -222,6 +222,8 @@ Data Changes:
 - Added entries for Currency items from the core rulebook and Run Faster.
 - Fixed an incorrect page reference for the Proteus Lamprey.
 - Fixed Balance Receptor and Functional Tail (Prehensile) qualities not giving proper bonuses to Gymnastics.
+- Fixed Sharkskin not giving +1 Reach to unarmed combat.
+- Fixed the Neijia technique being unavailable if a runner only takes martial arts from State of the Art ADL and/or Way of Unified Mana.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
