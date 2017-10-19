@@ -15753,6 +15753,7 @@ namespace Chummer
             }
             else
             {
+                objNewGear = new Gear(_objCharacter);
                 objNewGear.Create(objXmlGear, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, false, false, true, true, frmPickGear.Aerodynamic);
                 objNewGear.Quantity = frmPickGear.SelectedQty;
                 nudGearQty.Increment = objNewGear.CostFor;
