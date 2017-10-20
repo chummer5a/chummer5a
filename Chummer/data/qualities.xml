@@ -5154,7 +5154,7 @@
       <category>Positive</category>
       <bonus>
 		<specificattribute>
-          <name>BOD</name>
+          <name>STR</name>
           <max>1</max>
 		  <min>1</min>
         </specificattribute>
