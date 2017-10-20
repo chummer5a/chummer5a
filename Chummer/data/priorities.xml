@@ -1038,7 +1038,7 @@
           <cfp>3</cfp>
 		  <skillqty>3</skillqty>
           <skillval>2</skillval>
-          <skilltype>active</skilltype>
+          <skilltype>resonance</skilltype>
           <forbidden>
             <oneof><metatype>A.I.</metatype></oneof>
           </forbidden>
