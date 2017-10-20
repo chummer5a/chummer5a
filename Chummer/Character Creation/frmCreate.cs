@@ -15827,22 +15827,20 @@ namespace Chummer
             // Add the Gear.
             if (!blnMatchFound)
             {
-                if (string.IsNullOrEmpty(objSelectedGear.Name))
+                objNode.ContextMenuStrip = cmsArmorGear;
+                treArmor.SelectedNode.Nodes.Add(objNode);
+                treArmor.SelectedNode.Expand();
+                if (string.IsNullOrEmpty(objSelectedGear?.Name))
                 {
-                    objNode.ContextMenuStrip = cmsArmorGear;
-                    treArmor.SelectedNode.Nodes.Add(objNode);
-                    treArmor.SelectedNode.Expand();
                     objSelectedArmor.Gear.Add(objNewGear);
                 }
                 else
                 {
-                    objNode.ContextMenuStrip = cmsArmorGear;
-                    treArmor.SelectedNode.Nodes.Add(objNode);
-                    treArmor.SelectedNode.Expand();
                     objSelectedGear.Children.Add(objNewGear);
-                    if ((objSelectedGear as Commlink)?.CanSwapAttributes == true)
+                    Commlink objCommlink = objSelectedGear as Commlink;
+                    if (objCommlink?.CanSwapAttributes == true)
                     {
-                        (objSelectedGear as Commlink).RefreshCyberdeckArray();
+                        objCommlink.RefreshCyberdeckArray();
                     }
                 }
 

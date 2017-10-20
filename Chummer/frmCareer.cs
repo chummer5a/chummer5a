@@ -21112,7 +21112,7 @@ namespace Chummer
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Do not allow the user to add new Gear if the Armor's Capacity has been reached.
-            if (_objOptions.EnforceCapacity)
+            if (_objOptions.EnforceCapacity && objSelectedGear != null)
             {
                 objSelectedArmor.Gear.Add(objSelectedGear);
                 if (treArmor.SelectedNode.Level > 1)
@@ -21209,10 +21209,10 @@ namespace Chummer
             // Add the Gear.
             if (!blnMatchFound)
             {
-                    objNode.ContextMenuStrip = cmsArmorGear;
-                    treArmor.SelectedNode.Nodes.Add(objNode);
-                    treArmor.SelectedNode.Expand();
-                if (string.IsNullOrEmpty(objSelectedGear.Name))
+                objNode.ContextMenuStrip = cmsArmorGear;
+                treArmor.SelectedNode.Nodes.Add(objNode);
+                treArmor.SelectedNode.Expand();
+                if (string.IsNullOrEmpty(objSelectedGear?.Name))
                 {
                     objSelectedArmor.Gear.Add(objNewGear);
                 }
