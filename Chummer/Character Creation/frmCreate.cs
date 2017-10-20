@@ -360,8 +360,8 @@ namespace Chummer
             // Check for Special Attributes.
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
+            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             // Define the XML objects that will be used.
@@ -1157,8 +1157,8 @@ namespace Chummer
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
+            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.MAGEnabled)
@@ -10134,6 +10134,7 @@ namespace Chummer
                 int intCurrentLevels = objSelectedQuality.Levels;
 
                 bool blnRequireUpdate = false;
+                bool blnRequireTreQualitiesRebuild = false;
                 // Adding new levels
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
@@ -10277,6 +10278,12 @@ namespace Chummer
                     {
                         blnRequireUpdate = true;
                     }
+                    else if (RemoveQuality(objSelectedQuality, false, false))
+                    {
+                        blnRequireUpdate = true;
+                        blnRequireTreQualitiesRebuild = true;
+                        break;
+                    }
                     else
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
@@ -10286,7 +10293,10 @@ namespace Chummer
 
                 if (blnRequireUpdate)
                 {
-                    RefreshQualityNames(treQualities);
+                    if (blnRequireTreQualitiesRebuild)
+                        RefreshQualities(treQualities, cmsQuality, true);
+                    else
+                        RefreshQualityNames(treQualities);
                     UpdateMentorSpirits();
                     ScheduleCharacterUpdate();
                     RefreshMartialArts();
@@ -14778,10 +14788,10 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
             //Detection Spells
             lblSpellDefenceDetection.Text =
-                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
+                (_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value + _objCharacter.SpellResistance + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
-                              $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.TotalValue}) " +
-                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
+                              $"{_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue}) + {_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) " +
+                              $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)})";
             tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
             //Decrease Attribute - BOD
             lblSpellDefenceDecAttBOD.Text =
@@ -15743,6 +15753,7 @@ namespace Chummer
             }
             else
             {
+                objNewGear = new Gear(_objCharacter);
                 objNewGear.Create(objXmlGear, objNode, frmPickGear.SelectedRating, objWeapons, objWeaponNodes, string.Empty, false, false, true, true, frmPickGear.Aerodynamic);
                 objNewGear.Quantity = frmPickGear.SelectedQty;
                 nudGearQty.Increment = objNewGear.CostFor;
@@ -15816,22 +15827,20 @@ namespace Chummer
             // Add the Gear.
             if (!blnMatchFound)
             {
-                if (string.IsNullOrEmpty(objSelectedGear.Name))
+                objNode.ContextMenuStrip = cmsArmorGear;
+                treArmor.SelectedNode.Nodes.Add(objNode);
+                treArmor.SelectedNode.Expand();
+                if (string.IsNullOrEmpty(objSelectedGear?.Name))
                 {
-                    objNode.ContextMenuStrip = cmsArmorGear;
-                    treArmor.SelectedNode.Nodes.Add(objNode);
-                    treArmor.SelectedNode.Expand();
                     objSelectedArmor.Gear.Add(objNewGear);
                 }
                 else
                 {
-                    objNode.ContextMenuStrip = cmsArmorGear;
-                    treArmor.SelectedNode.Nodes.Add(objNode);
-                    treArmor.SelectedNode.Expand();
                     objSelectedGear.Children.Add(objNewGear);
-                    if ((objSelectedGear as Commlink)?.CanSwapAttributes == true)
+                    Commlink objCommlink = objSelectedGear as Commlink;
+                    if (objCommlink?.CanSwapAttributes == true)
                     {
-                        (objSelectedGear as Commlink).RefreshCyberdeckArray();
+                        objCommlink.RefreshCyberdeckArray();
                     }
                 }
 
