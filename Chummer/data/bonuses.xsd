@@ -238,7 +238,7 @@
       <xs:sequence>
         <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       </xs:complexType>
     </xs:element>
@@ -589,7 +589,8 @@
         <xs:element name="name" minOccurs="0" maxOccurs="1" />
         <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
-		<xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		<xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="misceffect" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       <xs:attribute name="precedence" type="xs:integer" use="optional" />

@@ -1100,14 +1100,7 @@ namespace Chummer.Classes
             }
 
             // TODO: Allow selection of specializations through frmSelectSkillSpec
-            string strSpec = string.Empty;
-            try
-            {
-                strSpec = bonusNode["spec"].InnerText;
-            }
-            catch
-            {
-            }
+            string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1911,7 +1904,7 @@ namespace Chummer.Classes
                 Log.Info("Calling CreateImprovement for disabling specializtion effects");
                 CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.DisableSpecializationEffects,
-                    _strUnique, 0, 1, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
+                    strUseUnique, 0, 1, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
             }
             if (bonusNode["max"] != null)
             {
@@ -1920,6 +1913,13 @@ namespace Chummer.Classes
                     Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0,
                     0,
                     string.Empty, blnAddToRating, string.Empty, strCondition);
+            }
+            if (bonusNode["misceffect"] != null)
+            {
+                Log.Info("Calling CreateImprovement for misc effect");
+                CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, 0, 0,
+                    0, string.Empty, false, bonusNode["misceffect"].InnerText, strCondition);
             }
         }
 
@@ -1963,14 +1963,7 @@ namespace Chummer.Classes
             {
                 strBonus = _intRating.ToString();
             }
-            string strCondition = string.Empty;
-            try
-            {
-                strCondition = bonusNode["condition"].InnerText;
-            }
-            catch
-            {
-            }
+            string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
             int intBonus = 0;
             if (strBonus == "Rating")
                 intBonus = _intRating;
