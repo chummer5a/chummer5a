@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Format Spells list of Character Sheet -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -7,26 +7,26 @@
   <xsl:template name="Spells">
     <style type="text/css">
       h5 {
-        position: relative;
-        text-align: center;
+      position: relative;
+      text-align: center;
       }
       h5 span {
-        background: #fff;
-        padding: 0 5px;
-        position: relative;
-        z-index: 1;
+      background: #fff;
+      padding: 0 0.65em;
+      position: relative;
+      z-index: 1;
       }
       h5:before {
-        background: linear-gradient(to right, lightgrey, black, lightgrey);
-        content: "";
-        display: block;
-        height: 1px;
-        position: absolute;
-        top: 50%;
-        width: 100%;
+      background: linear-gradient(to right, lightgrey, black, lightgrey);
+      content: "";
+      display: block;
+      height: 0.1em;
+      position: absolute;
+      top: 50%;
+      width: 100%;
       }
       th {
-        text-align: center;
+      text-align: center;
       }
     </style>
     <style media="print">

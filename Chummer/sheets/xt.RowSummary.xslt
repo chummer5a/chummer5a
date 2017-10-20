@@ -36,7 +36,7 @@
       .rowsummarybutton {
         color: #ffffff;
         font-weight: bold;
-        margin-left: 20px;
+        margin-left: 2.5em;
       }
       .rowblock {
         page-break-inside: avoid;

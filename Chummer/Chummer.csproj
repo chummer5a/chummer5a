@@ -1858,6 +1858,7 @@
     </Content>
     <Content Include="sheets\Shadowrun 5 set.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1894,6 +1895,7 @@
     </Content>
     <Content Include="sheets\xt.ConditionMonitor.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\xt.Contacts.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1927,6 +1929,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.RuleLine.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.SkillGroups.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.Skills.xslt">

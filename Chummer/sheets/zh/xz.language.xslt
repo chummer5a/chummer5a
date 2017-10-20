@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Isolate Chinese (zh) locale literals -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -254,8 +254,8 @@
   <xsl:variable name="lang.OtherMugshots"    select="'其他肖像'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.PersonalData"    select="'个人信息'"/>
-  <xsl:variable name="lang.PhysicalTrack1"  select="'物理伤害'"/>
-  <xsl:variable name="lang.PhysicalTrack2"  select="'&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Track'"/>
+  <xsl:variable name="lang.PhysicalTrack"  select="'物理伤害'"/>
+  <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'利手'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'名气'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'远程武器'"/>
@@ -266,8 +266,8 @@
   <xsl:variable name="lang.SkillGroup"    select="'技能组'"/>
   <xsl:variable name="lang.StreetCred"    select="'信誉'"/>
   <xsl:variable name="lang.StreetName"    select="'Street Name'"/>
-  <xsl:variable name="lang.StunTrack1"    select="'&#160;&#160;晕眩伤害'"/>
-  <xsl:variable name="lang.StunTrack2"    select="'&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Track'"/>
+  <xsl:variable name="lang.StunTrack"    select="'&#160;&#160;晕眩伤害'"/>
+  <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'深潜阶层'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'未命名角色'"/>
   <xsl:variable name="lang.VehicleBody"    select="'机体'"/>

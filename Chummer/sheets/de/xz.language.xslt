@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Isolate German (de) locale literals -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -254,8 +254,8 @@
   <xsl:variable name="lang.OtherMugshots"    select="'Andere Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Seitenumbruch: '"/>
   <xsl:variable name="lang.PersonalData"    select="'Charakterdaten'"/>
-  <xsl:variable name="lang.PhysicalTrack1"  select="'Körperliche'"/>
-  <xsl:variable name="lang.PhysicalTrack2"  select="'Schadensleiste'"/>
+  <xsl:variable name="lang.PhysicalTrack"  select="'Körperliche Schadensleiste'"/>
+  <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'Primärer Arm'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Prominenz'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'Fernkampfwaffen'"/>
@@ -266,8 +266,8 @@
   <xsl:variable name="lang.SkillGroup"    select="'Fertigkeitsgruppe'"/>
   <xsl:variable name="lang.StreetCred"    select="'Straßenruf'"/>
   <xsl:variable name="lang.StreetName"    select="'Straßenname'"/>
-  <xsl:variable name="lang.StunTrack1"    select="'Geistige'"/>
-  <xsl:variable name="lang.StunTrack2"    select="'Schadensleiste'"/>
+  <xsl:variable name="lang.StunTrack"    select="'Geistige Schadensleiste'"/>
+  <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Wandlungsgrad'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unbenannter Charakter'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Rumpf'"/>

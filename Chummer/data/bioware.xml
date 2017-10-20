@@ -952,12 +952,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for test involving speaking</condition>
+          <condition>Only for tests involving speaking</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Perform (Singing)</condition>
+          <condition>Only for Performance (Singing)</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -980,7 +980,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for Perform (Singing)</condition>
+          <condition>Only for Performance (Singing)</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1413,7 +1413,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>only for Stealth skills, Must be completely naked</condition>
+          <condition>Only for Stealth group, Must be completely naked</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>
@@ -1431,7 +1431,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Stealth skills, Must be completely naked</condition>
+          <condition>Only for Stealth group, Must be completely naked</condition>
         </limitmodifier>
       </bonus>
       <source>CF</source>

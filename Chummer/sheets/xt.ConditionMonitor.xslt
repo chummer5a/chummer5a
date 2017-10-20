@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Condition Monitor Box Template -->
 <!-- Created by KeyMasterOfGozer -->
 <!-- Version -500 -->
@@ -26,41 +26,89 @@
       <xsl:param name="DamageTaken">0</xsl:param>
     <style type="text/css">
       .conditionmonitorbox {
-        border: solid 2px #1c4a2d;
-        width: 29px;
-        height: 24px;
-        text-align: right;
-        vertical-align: text-bottom;
-        font-weight: bold;
+      border: solid 0.1em #1c4a2d;
+      padding: 0.2em 0.2em 0.2em 0.2em;
+      border-radius: 1mm 1mm 1mm 1mm;
+      width: 8.5mm;
+      height: 8.5mm;
+      max-width: 8.5mm;
+      max-height: 8.5mm;
+      min-width: 8.5mm;
+      min-height: 8.5mm;
+      text-align: right;
+      vertical-align: text-bottom;
+      font-weight: bold;
+      background-color: #edf8f1;
+      }
+      .conditionmonitorboxoverflow {
+      border: solid 0.1em #1c4a2d;
+      padding: 0.2em 0.2em 0.2em 0.2em;
+      border-radius: 1mm 1mm 1mm 1mm;
+      width: 8.5mm;
+      height: 8.5mm;
+      max-width: 8.5mm;
+      max-height: 8.5mm;
+      min-width: 8.5mm;
+      min-height: 8.5mm;
+      text-align: right;
+      vertical-align: text-bottom;
+      font-weight: bold;
+      background-color: #90d5a9;
       }
       .conditionmonitorboxfilled {
-        border: solid 2px #1c4a2d;
-        width: 29px;
-        height: 24px;
-        text-align: right;
-        vertical-align: text-bottom;
-        font-weight: bold;
-        background-color: #bbbbbb;
+      border: solid 0.1em #1c4a2d;
+      padding: 0.2em 0.2em 0.2em 0.2em;
+      border-radius: 1mm 1mm 1mm 1mm;
+      width: 8.5mm;
+      height: 8.5mm;
+      max-width: 8.5mm;
+      max-height: 8.5mm;
+      min-width: 8.5mm;
+      min-height: 8.5mm;
+      text-align: right;
+      vertical-align: text-bottom;
+      font-weight: bold;
+      background-color: #1c4a2d;
+      color: #ffffff;
+      }
+      .conditionmonitorboxdead {
+      border: solid 0.1em #1c4a2d;
+      padding: 0.2em 0.2em 0.2em 0.2em;
+      border-radius: 1mm 1mm 1mm 1mm;
+      width: 8.5mm;
+      height: 8.5mm;
+      max-width: 8.5mm;
+      max-height: 8.5mm;
+      min-width: 8.5mm;
+      min-height: 8.5mm;
+      text-align: right;
+      vertical-align: text-bottom;
+      font-weight: bold;
+      background-color: #3fa665;
       }
       .conditionmonitorboxnotused {
-        border: solid 0px red;
-        width: 29px;
-        height: 24px;
-        text-align: right;
-        vertical-align: text-bottom;
-        font-weight: bold;
-        background-color: #FFFFFF;
+      border: solid 0.0em red;
+      padding: 0.2em 0.2em 0.2em 0.2em;
+      border-radius: 1mm 1mm 1mm 1mm;
+      width: 8.5mm;
+      height: 8.5mm;
+      max-width: 8.5mm;
+      max-height: 8.5mm;
+      min-width: 8.5mm;
+      min-height: 8.5mm;
+      text-align: right;
+      vertical-align: text-bottom;
+      font-weight: bold;
       }
       .indent {
-        padding-left: 20px;
+      padding-left: 1.25em;
       }
       .block {
-        page-break-inside: avoid;
+      page-break-inside: avoid;
       }
     </style>
 
-    <table cellspacing="0" cellpadding="0" border="0">
-      <tr><td>
+    <table cellspacing="2" cellpadding="0" border="0" align="center" style="margin: auto;">
         <xsl:call-template name="ConditionRow">
           <xsl:with-param name="PenaltyBox"><xsl:value-of select="$PenaltyBox" /></xsl:with-param>
           <xsl:with-param name="Offset"><xsl:value-of select="$Offset" /></xsl:with-param>
@@ -71,7 +119,6 @@
           <xsl:with-param name="LowBox">1</xsl:with-param>
           <xsl:with-param name="HighBox"><xsl:value-of select="$CMWidth" /></xsl:with-param>
         </xsl:call-template>
-        </td></tr>
     </table>
   </xsl:template>
 
@@ -159,6 +206,8 @@
         <xsl:choose> <!-- Choose Background Color for this Box. -->
           <xsl:when test="$LowBox &lt;= $DamageTaken">conditionmonitorboxfilled</xsl:when>
           <xsl:when test="$LowBox &gt; ($TotalBoxes + $OverFlow)">conditionmonitorboxnotused</xsl:when>
+          <xsl:when test="$LowBox = ($TotalBoxes + $OverFlow) and $OverFlow &gt; 0">conditionmonitorboxdead</xsl:when>
+          <xsl:when test="$LowBox &gt; $TotalBoxes">conditionmonitorboxoverflow</xsl:when>
           <xsl:otherwise>conditionmonitorbox</xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>

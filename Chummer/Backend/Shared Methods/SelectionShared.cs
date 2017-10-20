@@ -587,7 +587,7 @@ namespace Chummer.Backend.Shared_Methods
                         if (s != null)
                         {
                             name = s.DisplayName;
-                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name))
+                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name && string.IsNullOrEmpty(objImprovement.Condition)))
                             {
                                 name += $" ({node["spec"].InnerText})";
                             }
@@ -609,7 +609,7 @@ namespace Chummer.Backend.Shared_Methods
                         if (s != null)
                         {
                             name = s.DisplayName;
-                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name))
+                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name && string.IsNullOrEmpty(objImprovement.Condition)))
                             {
                                 name += $" ({node["spec"].InnerText})";
                             }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Skills grouped by Skill Category with Ratings more than zero listed by Rating (descending) -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:import href="xz.language.xslt"/>
@@ -8,4 +8,5 @@
 
   <!-- Set global control variables -->
   <xsl:variable name="MinimumRating" select="1"/>
+  <xsl:variable name="PrintSkillCategoryNames" select="False"/>
 </xsl:stylesheet>

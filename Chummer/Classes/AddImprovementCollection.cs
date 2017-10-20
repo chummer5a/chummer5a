@@ -56,12 +56,12 @@ namespace Chummer.Classes
         private void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
             int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
-            int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "")
+            int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
         {
             ImprovementManager.CreateImprovement(_objCharacter, strImprovedName, objImprovementSource,
                 strSourceName, objImprovementType, strUnique,
                 intValue, intRating, intMinimum, intMaximum, intAugmented,
-                intAugmentedMaximum, strExclude, blnAddToRating, strTarget);
+                intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
         private void CreateImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName,
             XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "")
@@ -1892,6 +1892,7 @@ namespace Chummer.Classes
             Log.Info("specificskill");
             Log.Info("specificskill = " + bonusNode.OuterXml.ToString());
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
 
             string strUseUnique = _strUnique;
             if (bonusNode.Attributes["precedence"] != null)
@@ -1903,14 +1904,14 @@ namespace Chummer.Classes
                 Log.Info("Calling CreateImprovement for bonus");
                 CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"].InnerXml, _intRating), 1, 0, 0, 0,
-                    0, string.Empty, blnAddToRating);
+                    0, string.Empty, blnAddToRating, string.Empty, strCondition);
             }
             if (bonusNode["disablespecializationeffects"] != null)
             {
                 Log.Info("Calling CreateImprovement for disabling specializtion effects");
                 CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.DisableSpecializationEffects,
-                    _strUnique);
+                    _strUnique, 0, 1, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
             }
             if (bonusNode["max"] != null)
             {
@@ -1918,7 +1919,7 @@ namespace Chummer.Classes
                 CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0,
                     0,
-                    string.Empty, blnAddToRating);
+                    string.Empty, blnAddToRating, string.Empty, strCondition);
             }
         }
 
@@ -1943,6 +1944,11 @@ namespace Chummer.Classes
             objMartialArt.Create(objXmlArt, objNode);
             objMartialArt.IsQuality = true;
             _objCharacter.MartialArts.Add(objMartialArt);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objMartialArt.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.MartialArt,
+                _strUnique);
         }
 
         // The Improvement adds a limit modifier
@@ -1974,7 +1980,7 @@ namespace Chummer.Classes
             TreeNode nodTemp = new TreeNode();
             Log.Info("Calling CreateImprovement");
             CreateImprovement(strLimit, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
-                _strFriendlyName, intBonus, 0, 0, 0, 0, 0, strCondition);
+                _strFriendlyName, intBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
         }
 
         // The Improvement adjusts a Skill Category.

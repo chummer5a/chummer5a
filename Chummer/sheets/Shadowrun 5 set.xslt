@@ -64,7 +64,7 @@
           }
           html {
           height: 100%;
-          margin: 0px;  /* this affects the margin on the html before sending to printer */
+          margin: 0em;  /* this affects the margin on the html before sending to printer */
           }
           .tablestyle {
           border-collapse: collapse;
@@ -76,9 +76,9 @@
           width: 100%;
           }
           .attributecell p {
-          padding: 2px;
-          margin: 4px;
-          border: solid 1px #1c4a2d;
+          padding: 0.25em;
+          margin: 0.25em;
+          border: solid 0.0625em #1c4a2d;
           text-transform: uppercase;
           }
           .indent {
@@ -130,16 +130,16 @@
         </style>
         -->
         <style media="print">
-           @page {
-            size: auto;
-            margin-top: 0.5in;
-            margin-left: 0.5in;
-            margin-right: 0.5in;
-            margin-bottom: 0.75in;
+          @page {
+          size: auto;
+          margin-top: 0.5in;
+          margin-left: 0.5in;
+          margin-right: 0.5in;
+          margin-bottom: 0.75in;
           }
           .block {
-            bottom-padding: 0;
-            margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+          bottom-padding: 0;
+          margin: 0.25em 0 0.25em 0;  /* to keep the page break from cutting too close to the text in the div */
           }
         </style>
       </head>
@@ -474,11 +474,11 @@
                   <xsl:value-of select="$lang.PhysicalLimit"/>:
                   <xsl:value-of select="limitphysical"/>
                 </th>
-                <th width="25%" style="border-left: solid 1px #1c4a2d; border-right: solid 1px #1c4a2d;"  valign="top">
+                <th width="25%" style="border-left: solid 0.0625em #1c4a2d; border-right: solid 0.0625em #1c4a2d;"  valign="top">
                   <xsl:value-of select="$lang.MentalLimit"/>:
                   <xsl:value-of select="limitmental"/>
                 </th>
-                <th width="25%" style="border-right: solid 1px #1c4a2d;">
+                <th width="25%" style="border-right: solid 0.125em #1c4a2d;">
                   <xsl:value-of select="$lang.SocialLimit"/>:
                   <xsl:value-of select="limitsocial"/>
                 </th>
@@ -494,13 +494,13 @@
                     <tr><td/></tr>
                   </table>
                 </td>
-                <td style="border-left: solid 1px #1c4a2d; border-right: solid 1px #1c4a2d;">
+                <td style="border-left: solid 0.0625em #1c4a2d; border-right: solid 0.0625em #1c4a2d;">
                   <table>
                     <xsl:call-template name="limitmodifiersment"/>
                     <tr><td/></tr>
                   </table>
                 </td>
-                <td style="border-right: solid 1px #1c4a2d;">
+                <td style="border-right: solid 0.0625em #1c4a2d;">
                   <table>
                     <xsl:call-template name="limitmodifierssoc"/>
                     <tr><td/></tr>
@@ -545,7 +545,7 @@
                     <xsl:call-template name="skills1"/>
                   </table>
                 </td>
-                <td width="33%" style="border-left: solid 1px #1c4a2d; border-right: solid 1px #1c4a2d;">
+                <td width="33%" style="border-left: solid 0.0625em #1c4a2d; border-right: solid 0.0625em #1c4a2d;">
                   <table width="100%" >
                     <tr>
                       <th colspan="100%">
@@ -618,26 +618,15 @@
                 <td width="33%">
                   <table class="tablestyle">
                     <tr>
-                      <td width="3%"/>
-                      <td width="46%" style="font-weight: bold; text-transform: uppercase">
-                        <xsl:value-of select="$lang.PhysicalTrack1"/>
+                      <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="$lang.PhysicalTrack"/>
                       </td>
-                      <th width="3%"/>
-                      <td width="46%" style="font-weight: bold; text-transform: uppercase">
-                        <xsl:value-of select="$lang.StunTrack1"/>
+                      <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="$lang.StunTrack"/>
                       </td>
-                      <td width="2%"/>
-                    </tr>
-                    <tr class="title">
-                      <td/>
-                      <td><xsl:value-of select="$lang.PhysicalTrack2"/></td>
-                      <td/>
-                      <td><xsl:value-of select="$lang.StunTrack2"/></td>
-                      <td/>
                     </tr>
                     <tr>
-                      <td/>
-                      <td>
+                      <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
                         <xsl:call-template name="ConditionMonitor">
                           <xsl:with-param name="PenaltyBox">
                             <xsl:value-of select="cmthreshold"/>
@@ -654,10 +643,10 @@
                           <xsl:with-param name="OverFlow">
                             <xsl:value-of select="cmoverflow"/>
                           </xsl:with-param>
-                        </xsl:call-template>
+                        </xsl:call-template><br />
+                      <xsl:value-of select="$lang.PhysicalNaturalRecovery"/>: <xsl:value-of select="physicalcmnaturalrecovery"/>
                       </td>
-                      <td/>
-                      <td>
+                      <td style="padding: 0.5em 0.5em 0.5em 0.5em;">
                         <xsl:call-template name="ConditionMonitor">
                           <xsl:with-param name="PenaltyBox">
                             <xsl:value-of select="cmthreshold"/>
@@ -671,11 +660,10 @@
                           <xsl:with-param name="DamageTaken">
                             <xsl:value-of select="stuncmfilled"/>
                           </xsl:with-param>
-                        </xsl:call-template>
+                        </xsl:call-template><br /><xsl:value-of select="$lang.StunNaturalRecovery"/>: <xsl:value-of select="stuncmnaturalrecovery"/>
                       </td>
-                      <td/>
                     </tr>
-                    <tr><td colspan="100%" style="line-height: 5px"><xsl:text>&#x20;</xsl:text></td></tr>
+                    <tr><td colspan="100%" style="line-height: 0.3em"><xsl:text>&#x20;</xsl:text></td></tr>
                   </table>
                   <xsl:call-template name="RowSummary">
                     <xsl:with-param name="text" select="$lang.ConditionMonitor"/>
@@ -933,7 +921,7 @@
                     <xsl:call-template name="gear1"/>
                   </table>
                 </td>
-                <td width="33%" style="border-left: solid 1px #1c4a2d; border-right: solid 1px #1c4a2d;">
+                <td width="33%" style="border-left: solid 0.0625em #1c4a2d; border-right: solid 0.0625em #1c4a2d;">
                   <table width="100%" >
                     <tr>
                       <th width="58%" style="text-align: left">
@@ -2653,14 +2641,14 @@
       <xsl:choose>
         <xsl:when test="location != preceding-sibling::gear[1]/location">
           <tr>
-            <td colspan="100%" style="border-bottom:solid black 1px;">
+            <td colspan="100%" style="border-bottom:solid black 0.1em;">
               <strong><xsl:value-of select="location"/></strong>
             </td>
           </tr>
         </xsl:when>
         <xsl:when test="position() = 1">
           <tr>
-            <td colspan="100%" style="border-bottom:solid black 1px;">
+            <td colspan="100%" style="border-bottom:solid black 0.1em;">
               <strong><xsl:value-of select="location"/></strong>
             </td>
           </tr>

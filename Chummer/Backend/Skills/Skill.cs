@@ -76,7 +76,7 @@ namespace Chummer.Skills
             objWriter.WriteStartElement("skill");
 
             int rating = PoolOtherAttribute(AttributeObject.TotalValue);
-            int specRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name)
+            int specRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name && string.IsNullOrEmpty(objImprovement.Condition))
                 ? rating
                 : (!IsKnowledgeSkill && Name == "Artisan" &&
                    CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired")
@@ -93,11 +93,12 @@ namespace Chummer.Skills
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.Instance.GetString("String_None"));
             objWriter.WriteElementString("skillcategory", DisplayCategory);
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
-            objWriter.WriteElementString("grouped", (SkillGroupObject?.CareerIncrease).ToString());
+            objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString());
             objWriter.WriteElementString("default", Default.ToString());
             objWriter.WriteElementString("rating", Rating.ToString());
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
             objWriter.WriteElementString("specializedrating",specRating.ToString());
+            objWriter.WriteElementString("specbonus", (specRating - rating).ToString());
             objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue).ToString());
             objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
@@ -693,7 +694,7 @@ namespace Chummer.Skills
                     bool blnHaveSpec = false;
 
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute &&
-                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == y.Name)))
+                        Specializations.Any(y => y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == y.Name && string.IsNullOrEmpty(objImprovement.Condition))))
                     {
                         intBasePool += 2;
                         blnHaveSpec = true;
@@ -872,7 +873,7 @@ namespace Chummer.Skills
         {
             int pool = PoolOtherAttribute(attributeValue);
 
-            if (string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name))
+            if (string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name && string.IsNullOrEmpty(objImprovement.Condition)))
             {
                 return pool.ToString();
             }
@@ -1041,7 +1042,7 @@ namespace Chummer.Skills
             _cachedFreeKarma = int.MinValue;
             _cachedWareRating = int.MinValue;
             if (improvements.Any(imp =>
-                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects) &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && string.IsNullOrEmpty(objImprovement.Condition)) &&
                 imp.ImprovedName == _name))
             {
                 OnPropertyChanged(nameof(PoolModifiers));

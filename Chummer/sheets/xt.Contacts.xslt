@@ -11,7 +11,7 @@
       }
       h5 span {
         background: #fff;
-        padding: 0 5px;
+        padding: 0 0.65em;
         position: relative;
         z-index: 1;
       }
@@ -19,7 +19,7 @@
         background: linear-gradient(to right, lightgrey, black, lightgrey);
         content: "";
         display: block;
-        height: 1px;
+        height: 0.1em;
         position: absolute;
         top: 50%;
         width: 100%;

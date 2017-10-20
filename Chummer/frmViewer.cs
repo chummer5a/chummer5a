@@ -41,7 +41,7 @@ namespace Chummer
         {
             _strSelectedSheet = GlobalOptions.Instance.DefaultCharacterSheet;
             if (_strSelectedSheet.StartsWith("Shadowrun 4"))
-                _strSelectedSheet = "Shadowrun 5";
+                _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
@@ -62,7 +62,7 @@ namespace Chummer
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (string.IsNullOrEmpty(cboXSLT.Text))
-                cboXSLT.SelectedValue = "Shadowrun 5";
+                cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
             cboXSLT.EndUpdate();
             GenerateOutput();
             _blnLoading = false;

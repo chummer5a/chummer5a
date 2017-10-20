@@ -242,6 +242,20 @@ namespace Chummer.Skills
             writer.WriteEndElement();
         }
 
+        internal void Print(XmlWriter objWriter)
+        {
+            objWriter.WriteStartElement("skillgroup");
+
+            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name_english", Name);
+            objWriter.WriteElementString("rating", Rating.ToString());
+            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
+            objWriter.WriteElementString("base", Base.ToString());
+            objWriter.WriteElementString("karma", Karma.ToString());
+
+            objWriter.WriteEndElement();
+        }
+
         internal static SkillGroup Load(Character character, XmlNode saved)
         {
             if (saved == null)
@@ -316,8 +330,6 @@ namespace Chummer.Skills
             character.SkillImprovementEvent += OnImprovementEvent;
             character.PropertyChanged += Character_PropertyChanged;
         }
-
-
 
         public Character Character
         {

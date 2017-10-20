@@ -307,6 +307,7 @@ namespace Chummer
         private int _intVal = 0;
         private int _intRating = 1;
         private string _strExclude = string.Empty;
+        private string _strCondition = string.Empty;
         private string _strUniqueName = string.Empty;
         private string _strTarget = string.Empty;
         private ImprovementType _objImprovementType;
@@ -369,6 +370,7 @@ namespace Chummer
             objWriter.WriteElementString("val", _intVal.ToString());
             objWriter.WriteElementString("rating", _intRating.ToString());
             objWriter.WriteElementString("exclude", _strExclude);
+            objWriter.WriteElementString("condition", _strCondition);
             objWriter.WriteElementString("improvementttype", _objImprovementType.ToString());
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("custom", _blnCustom.ToString());
@@ -405,10 +407,17 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("val", ref _intVal);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
+            objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
             if (objNode["improvementttype"] != null)
             _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
             if (objNode["improvementsource"] != null)
             _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            // Legacy shim
+            if (_objImprovementType == ImprovementType.LimitModifier && string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude))
+            {
+                _strCondition = _strExclude;
+                _strExclude = string.Empty;
+            }
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
             objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
             objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);
@@ -582,6 +591,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// String containing the condition for when the bonus applies (e.g. a dicepool bonus to a skill that only applies to certain types of tests).
+        /// </summary>
+        public string Condition
+        {
+            get { return _strCondition; }
+            set { _strCondition = value; }
+        }
+
+        /// <summary>
         /// A Unique name for the Improvement. Only the highest value of any one Improvement that is part of this Unique Name group will be applied.
         /// </summary>
         public string UniqueName
@@ -698,7 +716,7 @@ namespace Chummer
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
-        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = null)
+        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = null, bool blnUnconditionalOnly = true)
         {
             //Log.Enter("ValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -713,7 +731,7 @@ namespace Chummer
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
             int intCachedValue;
-            if (_objLastCachedCharacter == objCharacter && !blnAddToRating && strImprovedName == null && _dictionaryCachedValues.TryGetValue(objImprovementType, out intCachedValue) && intCachedValue != int.MinValue)
+            if (_objLastCachedCharacter == objCharacter && !blnAddToRating && strImprovedName == null && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objImprovementType, out intCachedValue) && intCachedValue != int.MinValue)
             {
                 return intCachedValue;
             }
@@ -723,7 +741,7 @@ namespace Chummer
             int intValue = 0;
             foreach (Improvement objImprovement in objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == objImprovementType))
             {
-                if (objImprovement.Enabled && !objImprovement.Custom)
+                if (objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
                 {
                     bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
                         !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -781,7 +799,7 @@ namespace Chummer
             int intCustomValue = 0;
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
-                if (objImprovement.Custom && objImprovement.Enabled)
+                if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
                 {
                     bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
                         !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -1430,7 +1448,31 @@ namespace Chummer
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName);
                         if (objCritterPower != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                             objCharacter.CritterPowers.Remove(objCritterPower);
+                        }
+                        break;
+                    case Improvement.ImprovementType.Spell:
+                        Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objSpell != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
+                            objCharacter.Spells.Remove(objSpell);
+                        }
+                        break;
+                    case Improvement.ImprovementType.MartialArt:
+                        MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMartialArt != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                            {
+                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                            }
+                            objCharacter.MartialArts.Remove(objMartialArt);
+                        }
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
@@ -1439,7 +1481,10 @@ namespace Chummer
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
                         if (objQuality != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                             objCharacter.Qualities.Remove(objQuality);
+                        }
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
                         Skill objSkill = objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
@@ -1497,10 +1542,11 @@ namespace Chummer
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
         /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="strCondition">Condition for when the bonus is applied.</param>
         public static void CreateImprovement(Character objCharacter, string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
             int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
-            int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "")
+            int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
         {
             Log.Enter("CreateImprovement");
             Log.Info(
@@ -1527,6 +1573,7 @@ namespace Chummer
             Log.Info( "strExclude = " + strExclude);
             Log.Info(
                 "blnAddToRating = " + blnAddToRating.ToString());
+            Log.Info("strCondition = " + strCondition);
 
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
@@ -1547,6 +1594,7 @@ namespace Chummer
                 objImprovement.Exclude = strExclude;
                 objImprovement.AddToRating = blnAddToRating;
                 objImprovement.Target = strTarget;
+                objImprovement.Condition = strCondition;
 
                 // Add the Improvement to the list.
                 objCharacter.Improvements.Add(objImprovement);

@@ -484,6 +484,8 @@
             <tr><td colspan="2">Physical CM</td><td colspan="2"><strong><xsl:value-of select="physicalcm" /></strong></td></tr>
             <tr><td colspan="2">Overflow</td><td colspan="2"><strong><xsl:value-of select="cmoverflow - 1"/></strong></td></tr>
             <tr><td colspan="2">Stun CM</td><td colspan="2"><strong><xsl:value-of select="stuncm" /></strong></td></tr>
+            <tr><td colspan="2">Natural Physical Recovery Pool</td><td colspan="2"><strong><xsl:value-of select="physicalcmnaturalrecovery" /></strong></td></tr>
+            <tr><td colspan="2">Natural Stun Recovery Pool</td><td colspan="2"><strong><xsl:value-of select="stuncmnaturalrecovery"/></strong></td></tr>
     </table>
   </xsl:template>
 
@@ -522,6 +524,28 @@
             <xsl:call-template name="print_half_active_skills">
               <xsl:with-param name="condition" select="false()" />
             </xsl:call-template>
+            <xsl:if test="(count(skills/skillgroup) &gt; 0)">
+              <tr>
+                <td colspan="3">
+                  <strong>
+                    <u>Skill Groups</u>
+                  </strong>
+                </td>
+              </tr>
+              <xsl:for-each select="skills/skillgroup">
+                <xsl:sort select="name"/>
+
+                <tr>
+                  <xsl:call-template name="make_grey_lines" />
+                  <td valign="top" style="valign: top; text-align: right;">
+                    * <xsl:value-of select="name"/>
+                  </td>
+                  <td colspan="2" style="valign: top; text-align: center;">
+                    <xsl:value-of select="rating"/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </xsl:if>
           </table>
         </td>
       </tr>
@@ -540,7 +564,7 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <xsl:variable name="skills_half_count" select="ceiling(count(msxsl:node-set($sorted_skills)/skill) div 2) + 1" />
+    <xsl:variable name="skills_half_count" select="ceiling((count(msxsl:node-set($sorted_skills)/skill) + count(skills/skillgroup)) div 2) + 1" />
 
     <tr class="smallheader"><td>Skill Name</td><td>Rtg</td><td>Pool</td></tr>
     <xsl:for-each select="msxsl:node-set($sorted_skills)/skill">
@@ -556,17 +580,26 @@
           <xsl:call-template name="make_grey_lines" />
           <td>
             <xsl:value-of select="name" />
-            <xsl:if test="spec!=''">
+            <xsl:if test="grouped = 'True'">*</xsl:if>
+            <xsl:if test="spec!='' and exotic = 'True'">
               (<xsl:value-of select="spec" />)
             </xsl:if>
             <span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="displayattribute" /></span>
+            <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
+              <xsl:variable name="SpecializationBonus" select="specbonus"/>
+              <p style="text-indent: 10%">
+                <xsl:for-each select="skillspecializations/skillspecialization">
+                  <xsl:if test="position() != 1">
+                    <br />
+                  </xsl:if>
+                  (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+                </xsl:for-each>
+              </p>
+            </xsl:if>
           </td>
           <td><xsl:value-of select="rating" /></td>
           <td>
             <xsl:value-of select="total" />
-            <xsl:if test="spec != '' and exotic = 'False'">
-              (<xsl:value-of select="specializedrating" />)
-            </xsl:if>
           </td>
         </tr>
       </xsl:if>
@@ -595,8 +628,19 @@
           <xsl:call-template name="make_grey_lines" />
           <td>
             <xsl:value-of select="name" />
-            <xsl:if test="spec!=''">
+            <xsl:if test="spec!='' and exotic = 'True'">
               (<xsl:value-of select="spec" />)
+            </xsl:if>
+            <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
+              <xsl:variable name="SpecializationBonus" select="specbonus"/>
+              <p style="text-indent: 10%">
+                <xsl:for-each select="skillspecializations/skillspecialization">
+                  <xsl:if test="position() != 1">
+                    <br />
+                  </xsl:if>
+                  (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+                </xsl:for-each>
+              </p>
             </xsl:if>
           </td>
           <xsl:choose>
@@ -607,9 +651,6 @@
               <td><xsl:value-of select="rating" /></td>
               <td>
                 <xsl:value-of select="total" />
-                <xsl:if test="spec != ''">
-                  (<xsl:value-of select="specializedrating" />)
-                </xsl:if>
               </td>
             </xsl:otherwise>
           </xsl:choose>

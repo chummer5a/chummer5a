@@ -760,9 +760,17 @@ namespace Chummer.Skills
         {
             foreach (Skill skill in Skills)
             {
-                if (_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0)
+                if ((_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0) && skill.Enabled)
                 {
                     skill.Print(objWriter);
+                }
+            }
+
+            foreach (SkillGroup skillgroup in SkillGroups)
+            {
+                if (skillgroup.Rating > 0)
+                {
+                    skillgroup.Print(objWriter);
                 }
             }
 

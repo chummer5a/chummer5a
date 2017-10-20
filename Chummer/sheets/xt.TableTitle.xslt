@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Format table name for use in printed character sheet -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -13,18 +13,18 @@
 
     <style type="text/css">
       .tabletitle {
-        border-collapse: collapse;
-        border-color: #1c4a2d;
-        border-style: solid;
-        border-width: 0.5mm 0.5mm 0 0.5mm;
-        font-size: 125%;
-        font-weight: bold;
-        page-break-after: avoid;
-        page-break-before: auto;
-        page-break-inside: avoid;
-        text-align: center;
-        vertical-align: bottom;
-        width: 100%;
+      border-collapse: collapse;
+      border-color: #1c4a2d;
+      border-style: solid;
+      border-width: 0.25em 0.25em 0 0.25em;
+      font-size: 125%;
+      font-weight: bold;
+      page-break-after: avoid;
+      page-break-before: auto;
+      page-break-inside: avoid;
+      text-align: center;
+      vertical-align: bottom;
+      width: 100%;
       }
     </style>
     <style media="print">

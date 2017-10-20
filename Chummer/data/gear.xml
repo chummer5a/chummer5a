@@ -4460,7 +4460,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for intimidation</condition>
+          <condition>Only for Intimidation</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -5375,7 +5375,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for visual Perception</condition>
+          <condition>Only for Perception (Visual)</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -5500,7 +5500,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for audio Perception</condition>
+          <condition>Only for Perception (Hearing)</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -5533,7 +5533,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Perception to find source of a sound</condition>
+          <condition>Only for Perception to find the source of a sound</condition>
         </limitmodifier>
       </bonus>
       <capacity>[2]</capacity>
@@ -6310,7 +6310,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for picking a mechanical lock</condition>
+          <condition>Only for picking mechanical locks</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -13021,7 +13021,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Disguise and Impersination</condition>
+          <condition>Only for Disguise and Impersonation</condition>
         </limitmodifier>
       </bonus>
       <cost>+250</cost>

@@ -2888,7 +2888,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Situations involving trust.</condition>
+          <condition>Only for situations involving trust.</condition>
         </limitmodifier>
         <skillgroup>
           <name>Influence</name>
@@ -3409,7 +3409,6 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Neg Quality: Liar</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -10119,7 +10118,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only when communicating via AR or VR</condition>
+          <condition>Only when communicating via AR or VR.</condition>
         </limitmodifier>
       </bonus>
       <required>

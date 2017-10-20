@@ -575,7 +575,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for visual Perception</condition>
+          <condition>Only for Perception (Visual).</condition>
         </limitmodifier>
       </bonus>
       <rating>3</rating>
@@ -629,7 +629,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with audio Perception</condition>
+          <condition>Only for Perception (Hearing)</condition>
         </limitmodifier>
       </bonus>
       <rating>3</rating>
@@ -696,7 +696,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only with Perception to find the source of a sound</condition>
+          <condition>Only for Perception to find the source of a sound</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -1537,7 +1537,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only with Jumping and Sprinting</condition>
+          <condition>Only with Gymnastics (Jumping) and Running (Sprinting)</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
@@ -2068,7 +2068,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>For musical performances</condition>
+          <condition>Only for Performance</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2121,7 +2121,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>For climbing, jumping, running, or knockdown resist.</condition>
+          <condition>Only for Gymnastics (Climbing), Gymnastics (Jumping), Running, and knockdown resist.</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2162,7 +2162,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only for making repairs, typing, dancing etc, Must be engaged</condition>
+          <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2202,7 +2202,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Knockdown Test, Must be engaged</condition>
+          <condition>Only for knockdown resist, Must be engaged.</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2264,7 +2264,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for climbing</condition>
+          <condition>Only for Gymanstics (Climbing)</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2282,12 +2282,12 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Escape Artist and Grapple, Must be loosened</condition>
+          <condition>Only for Escape Artist and Grappling, Must be loosened</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for test involving endurance, Must be tightened</condition>
+          <condition>Only for tests involving endurance, Must be tightened</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2497,13 +2497,6 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>74</page>
-      <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>2</value>
-          <condition>Only for Sneaking, Must be loosened</condition>
-        </limitmodifier>
-      </bonus>
     </cyberware>
     <cyberware>
       <id>cb0b533f-6157-4d64-86be-ad9a389a336b</id>
@@ -2515,6 +2508,13 @@
       <cost>8000</cost>
       <source>CF</source>
       <page>74</page>
+	  <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>4</value>
+          <condition>Only for Sneaking, Must be completely naked</condition>
+        </limitmodifier>
+      </bonus>
     </cyberware>
     <cyberware>
       <id>e01ae784-7f20-499c-919b-181a483d4dc4</id>
@@ -3680,7 +3680,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Intuition-based skills</condition>
+          <condition>Only with Intuition-linked skills</condition>
         </limitmodifier>
         <skillattribute>
           <name>INT</name>
@@ -3704,7 +3704,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Logic-based skills</condition>
+          <condition>Only with Logic-linked skills</condition>
         </limitmodifier>
         <skillattribute>
           <name>LOG</name>
