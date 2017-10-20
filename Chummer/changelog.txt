@@ -144,6 +144,7 @@ Application Changes:
 - Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
 - Fixed a bug where the initiative roller would calculate initiative with a flat probability distribution instead of with one mirroring the rolling of multiple dice (i.e. binomial-esque).
 - Dice Roller will now display the sum of the dice results (disregarding bubble dice) under the information about whether the roll was a success, a failure, a glitch, and/or a critical glitch.
+- Made the reference in for Life Module Selection clickable
 
 Data Changes:
 
@@ -224,6 +225,8 @@ Data Changes:
 - Fixed Balance Receptor and Functional Tail (Prehensile) qualities not giving proper bonuses to Gymnastics.
 - Fixed Sharkskin not giving +1 Reach to unarmed combat.
 - Fixed the Neijia technique being unavailable if a runner only takes martial arts from State of the Art ADL and/or Way of Unified Mana.
+- Added Life Modules from the german Run Faster.
+- Added Life Modules from State of the Art ADL (at least half as the others aren't possible atm).
 
 New Strings:
 - Message_Improvement_EmptySelectionList
