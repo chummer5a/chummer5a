@@ -393,7 +393,7 @@ namespace Chummer.Skills
                         : 0;
             }
 
-            if (Unaware()) cost *= 2;
+            if (Unaware() || Uneducated()) cost *= 2;
 
             return cost;
 
@@ -444,13 +444,13 @@ namespace Chummer.Skills
                 upgrade = (intTotalBaseRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
             }
 
-            if (Unaware()) upgrade *= 2;
+            if (Unaware() || Uneducated()) upgrade *= 2;
 
             return upgrade;
 
         }
 
-        //Character is really bad at this. Uncouth and a social skill or Uneducated and technical skill
+        //Character is really bad at this (double all costs). Uncouth and a social skill.
         private bool Unaware()
         {
             if (CharacterObject.SkillsSection.Uncouth && Category == "Social Active")
@@ -458,6 +458,17 @@ namespace Chummer.Skills
                 return true;
             }
 
+            if (CharacterObject.SkillsSection.Uneducated && Category == "Technical Active")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //Character is uneducated at this (double only karma costs). Uneducated and technical skill.
+        private bool Uneducated()
+        {
             if (CharacterObject.SkillsSection.Uneducated && Category == "Technical Active")
             {
                 return true;

@@ -245,6 +245,7 @@ Data Changes:
 - Made QoL tweaks to Fancy Blocks and the Shadowrun 5 character sheet set, such as allowing for the printing of multiple specializations per skill and adding information on natural recovery dicepools.
 - Fixed Auctioneer Business Clothes not coming with a Holster.
 - Fixed Thermal Damping's, Skin Toner's, Chameleon Toner's, and Liar's bonus tags.
+- Implemented latest official errata posting of the core rulebook from the Shadowrun official forums.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

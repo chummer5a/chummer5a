@@ -1042,7 +1042,7 @@ namespace Chummer.Skills
             _cachedFreeKarma = int.MinValue;
             _cachedWareRating = int.MinValue;
             if (improvements.Any(imp =>
-                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && string.IsNullOrEmpty(objImprovement.Condition)) &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects) &&
                 imp.ImprovedName == _name))
             {
                 OnPropertyChanged(nameof(PoolModifiers));

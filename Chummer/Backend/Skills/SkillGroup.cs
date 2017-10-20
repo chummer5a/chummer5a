@@ -479,13 +479,14 @@ namespace Chummer.Skills
         {
             int rating = GetEnumerable().Min(x => x.TotalBaseRating);
 
+            int intMultiplier = (Character.SkillsSection.Uneducated && HasTechnicalSkills) ? 2 : 1;
             if (rating == 0)
             {
-                return Character.Options.KarmaNewSkillGroup;
+                return Character.Options.KarmaNewSkillGroup * intMultiplier;
             }
             else if (RatingMaximum > rating)
             {
-                return (rating + 1)*Character.Options.KarmaImproveSkillGroup;
+                return (rating + 1)*Character.Options.KarmaImproveSkillGroup * intMultiplier;
             }
             else
             {
