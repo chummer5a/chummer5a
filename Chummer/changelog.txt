@@ -224,6 +224,7 @@ Data Changes:
 - Fixed Balance Receptor and Functional Tail (Prehensile) qualities not giving proper bonuses to Gymnastics.
 - Fixed Sharkskin not giving +1 Reach to unarmed combat.
 - Fixed the Neijia technique being unavailable if a runner only takes martial arts from State of the Art ADL and/or Way of Unified Mana.
+- Fixed incorrect attribute value for the Metagenetic Improvement (Strength) quality.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
