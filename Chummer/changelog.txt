@@ -148,6 +148,7 @@ Application Changes:
 - Fixed a bug where cyberware and bioware that cost 0 essence but take up capacity when added to a cyberlimb (e.g. cortex bombs) would not show up in the list of standalone 'ware to add.
 - Fixed Detection spell defense being shown as INT + REA instead of LOG + WIL.
 - Adept Way discounts for foci should now be automatically detected in Career mode.
+- Made the reference in for Life Module Selection clickable.
 - Added support for printing of skill groups. Added skill group printing to Fancy Blocks and the Shadowrun 5 character sheet sets.
 - Added a separate section for storing conditions of certain Improvements. Added support for conditions to the specificskill bonus tag.
 - Fixed a bug where removing improvements that gave martial arts, spells, qualities, or critter powers would not remove improvements associated with the given item.
@@ -239,6 +240,8 @@ Data Changes:
 - Fixed being able to take a different way alongside Artist's Way.
 - Fixed Beast's Way not giving +1 Animal Handling and Spiritual Way not giving +1 to all Conjuring tests.
 - Fixed being able to take Burnout's Way without being at less than 5 Essence.
+- Added Life Modules from the German Run Faster.
+- Added Life Modules from State of the Art ADL (at least half as the others aren't possible atm).
 - Made QoL tweaks to Fancy Blocks and the Shadowrun 5 character sheet set, such as allowing for the printing of multiple specializations per skill and adding information on natural recovery dicepools.
 - Fixed Auctioneer Business Clothes not coming with a Holster.
 - Fixed Thermal Damping's, Skin Toner's, Chameleon Toner's, and Liar's bonus tags.
