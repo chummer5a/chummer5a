@@ -1569,13 +1569,13 @@ namespace Chummer.Backend.Equipment
                 }
 
                 string strBaseAvail = _strAvail;
-                bool blnCheckGearAvail = _strAvail.Contains(" or Gear");
-                strBaseAvail = _strAvail.Replace(" or Gear", string.Empty);
                 if (strBaseAvail.StartsWith("FixedValues"))
                 {
                     string[] strValues = strBaseAvail.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
                     strBaseAvail = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
+                bool blnCheckGearAvail = strBaseAvail.Contains(" or Gear");
+                strBaseAvail = strBaseAvail.Replace(" or Gear", string.Empty);
                 string strCalculated = string.Empty;
                 string strReturn = string.Empty;
 
