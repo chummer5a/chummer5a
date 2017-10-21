@@ -39,6 +39,7 @@ namespace Chummer
         private string _strSourceName = string.Empty;
         private bool _blnKnowledgeSkill = false;
         private int _intMinimumRating = 0;
+        private int _intMaximumRating = int.MaxValue;
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
@@ -145,6 +146,10 @@ namespace Chummer
                     {
                         continue;
                     }
+                    if (_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > _intMaximumRating))
+                    {
+                        continue;
+                    }
                     ListItem objItem = new ListItem();
                     objItem.Value = strXmlSkillName;
                     objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
@@ -158,7 +163,7 @@ namespace Chummer
                     {
                         ExoticSkill objExoticSkill = objSkill as ExoticSkill;
                         bool blnAddSkill = true;
-                        if (objSkill.Rating < _intMinimumRating)
+                        if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
                             blnAddSkill = false;
                         else if (!string.IsNullOrEmpty(_strForceSkill))
                             blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
@@ -212,6 +217,10 @@ namespace Chummer
                         {
                             continue;
                         }
+                        if (_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > _intMaximumRating))
+                        {
+                            continue;
+                        }
                         ListItem objItem = new ListItem();
                         objItem.Value = strXmlSkillName;
                         if (objXmlSkill.Attributes != null)
@@ -228,7 +237,7 @@ namespace Chummer
                     // Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
                     foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
-                        if (objKnow.Rating < _intMinimumRating)
+                        if (objKnow.Rating < _intMinimumRating || objKnow.Rating > _intMaximumRating)
                         {
                             continue;
                         }
@@ -389,13 +398,24 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Only show skills with a rating higher than this
+        /// Only show skills with a rating greater than or equal to this
         /// </summary>
         public int MinimumRating
         {
             set
             {
                 _intMinimumRating = value;
+            }
+        }
+
+        /// <summary>
+        /// Only show skills with a rating less than or equal to this
+        /// </summary>
+        public int MaximumRating
+        {
+            set
+            {
+                _intMaximumRating = value;
             }
         }
         #endregion

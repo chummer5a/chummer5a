@@ -2218,7 +2218,7 @@ namespace Chummer
         private XmlNodeList GetResonanceSkillList()
         {
             XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Resonance Active\"]");
+            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
             return objXmlSkillList;
         }
 

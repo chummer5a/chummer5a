@@ -56,13 +56,8 @@
                                         <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                        <xs:element name="addqualities" minOccurs="0" maxOccurs="1">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element name="addquality" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>    
+										<xs:element name="addchildreness" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="requireparent" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                                         <xs:element name="allowsubsystems" minOccurs="0" maxOccurs="1">
                                             <xs:complexType>

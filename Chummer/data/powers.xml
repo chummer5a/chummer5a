@@ -660,6 +660,9 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	  <bonus>
+		<detectionspellresist>Rating</detectionspellresist>
+	  </bonus>
       <source>SG</source>
       <page>169</page>
     </power>
@@ -1696,6 +1699,9 @@
       <power>Keratin Control</power>
       <source>SG</source>
       <page>157</page>
+	  <bonus>
+		<unarmeddv>1</unarmeddv>
+	  </bonus>
       <required>
         <allof>
           <power>Keratin Control</power>

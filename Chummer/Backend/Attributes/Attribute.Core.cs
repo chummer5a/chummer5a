@@ -314,7 +314,7 @@ namespace Chummer.Backend.Attributes
                 int intModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
                         string strUniqueName = objImprovement.UniqueName;
                         if (!string.IsNullOrEmpty(strUniqueName))
@@ -396,7 +396,7 @@ namespace Chummer.Backend.Attributes
                 int intCustomModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
                         string strUniqueName = objImprovement.UniqueName;
                         if (!string.IsNullOrEmpty(strUniqueName))
@@ -447,7 +447,7 @@ namespace Chummer.Backend.Attributes
                 int intModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base")
+                    if (objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base" && string.IsNullOrEmpty(objImprovement.Condition))
                     {
                         string strUniqueName = objImprovement.UniqueName;
                         if (!string.IsNullOrEmpty(strUniqueName))
@@ -891,7 +891,7 @@ namespace Chummer.Backend.Attributes
                 int intBaseValue = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
                         string strUniqueName = objImprovement.UniqueName;
                         if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
@@ -987,7 +987,7 @@ namespace Chummer.Backend.Attributes
                 lstUniquePair.Clear();
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
                         string strUniqueName = objImprovement.UniqueName;
                         if (!string.IsNullOrEmpty(strUniqueName))

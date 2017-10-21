@@ -20,7 +20,7 @@ Application Changes:
 - Fixed a bug that allowed the deletion of some powers without levels that were granted by free levels of adept powers.
 - Maximum values for adept powers should now update properly with changes to MAG values, and in the case of Improved Ability, changes to skill ratings.
 - Cancelling out of a dialog triggered by selecting an adept power or a property of an adept power will now properly cancel the dialog and not actually add the last/default selected choice.
-- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
+- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating and/or less than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
 - Added support for bonuses to defense dice (e.g. Combat Sense, Reakt).
 - Added support for Barehanded Adept and qualities similar to it.
 - Drain for Physical Adepts is now properly displayed and calculated as BOD + WIL.
@@ -140,10 +140,18 @@ Application Changes:
 - Slightly altered the UI for the quality selection window so that it is clearer what the numerical up-downs in it represent. Fixes #1971.
 - Fixed a bug that caused the dicepool for resisting physical illusion spells to be calculated as WIL + WIL and displayed as INT + WIL instead of the LOG + INT that it should be.
 - Added support for tracking of fatigue resistance, dicepools for addiction tests (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), resistance and/or immunity to toxins (in all four vectors), resistance and/or immunity to pathogens (in all four vectors), natural physical CM recovery, and natural stun CM recovery. All of these stats are now printed with the Print() method, so character sheets can integrate them into their displays.
-- Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, bonus dice to resist mana and/or physical illusion spells, bonus armor against fire damage, bonus armor against cold damage, bonus armor against electricity damage, bonus armor against acid damage, bonus armor against falling damage, extra radiation resistance dice, extra sonic attack resistance dice, extra dice specifically to resist Judge Intentions, and extra dice specifically for initiating Judge Intentions tests. All existing items that should contain one or more of these bonuses have also been updated.
+- Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, bonus dice to resist mana and/or physical illusion spells, bonus dice to resist detection spells, bonus armor against fire damage, bonus armor against cold damage, bonus armor against electricity damage, bonus armor against acid damage, bonus armor against falling damage, extra radiation resistance dice, extra sonic attack resistance dice, extra dice specifically to resist Judge Intentions, and extra dice specifically for initiating Judge Intentions tests. All existing items that should contain one or more of these bonuses have also been updated.
 - Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
 - Fixed a bug where the initiative roller would calculate initiative with a flat probability distribution instead of with one mirroring the rolling of multiple dice (i.e. binomial-esque).
 - Dice Roller will now display the sum of the dice results (disregarding bubble dice) under the information about whether the roll was a success, a failure, a glitch, and/or a critical glitch.
+- Fixed a bug where bioware subsystems would always add to their parent's essence. This is now instead controlled by a separate tag instead of reliant on 'ware type.
+- Fixed a bug where cyberware and bioware that cost 0 essence but take up capacity when added to a cyberlimb (e.g. cortex bombs) would not show up in the list of standalone 'ware to add.
+- Fixed Detection spell defense being shown as INT + REA instead of LOG + WIL.
+- Adept Way discounts for foci should now be automatically detected in Career mode.
+- Made the reference in for Life Module Selection clickable.
+- Added support for printing of skill groups. Added skill group printing to Fancy Blocks and the Shadowrun 5 character sheet sets.
+- Added a separate section for storing conditions of certain Improvements. Added support for conditions to the specificskill bonus tag.
+- Fixed a bug where removing improvements that gave martial arts, spells, qualities, or critter powers would not remove improvements associated with the given item.
 
 Data Changes:
 
@@ -176,10 +184,10 @@ Data Changes:
 - Consolidated the following quality entries so that they are now just one quality that can be taken multiple times: Focused Concentration, High Pain Tolerance, Magic Resistance, Will to Live, Gremlins, Perceptive, Spike Resistance, Tough as Nails, Dimmer Bulb, In Debt, Arcane Arrester, Shiva Arms, Social Appearance Anxiety, Infirm, Pilot Origins, Aged, Illness. When loading a save file for a character containing at least one of these existing qualities, they should get converted automatically to the new format.
 - Fixed a bug where the Indomitable quality could be taken more than three times across Physical, Mental, and Social limits.
 - Fixed a bug where Basic and Full levels of the Insomnia quality were not mutually exclusive.
-- Fixed a bug where Bilingual and Black Market Connection could be taken in-game.
+- Fixed a bug where Bilingual Black Market Connection, and all Phenotypic Variations could be taken in-game.
 - Fixed a bug where Loss of Confidence could be taken for skills with Ratings lower than 4, and a bug where Loss of Confidence would not disallow use of specializations for the selected skill.
 - Fixed a bug where Restricted Gear could be taken more than once at chargen.
-- Fixed a bug where Metagenetic Improvement and Impaired Attribute could be taken more than once per attribute.
+- Fixed a bug where Metagenetic Improvement, Impaired Attribute, Genetic Optimization, and Phenotypic Variation - Genetic Optimization could be taken more than once per attribute.
 - Fixed a bug where the Close Combat Mage quality did not allow you to select which bonus was taken.
 - Fixed a bug where Death Dealer could be taken more than once by Physical Adepts.
 - Fixed a bug where the Illusionist quality did not allow you to select the spell type to which it applied (Physical or Mana).
@@ -224,6 +232,20 @@ Data Changes:
 - Fixed Balance Receptor and Functional Tail (Prehensile) qualities not giving proper bonuses to Gymnastics.
 - Fixed Sharkskin not giving +1 Reach to unarmed combat.
 - Fixed the Neijia technique being unavailable if a runner only takes martial arts from State of the Art ADL and/or Way of Unified Mana.
+- Fixed Daredrenaline not properly giving Poor Self Control Thrill Seeker when taken.
+- Fixed Knowledge Infusion bioware not giving a free rating of a chosen knowledge skill that is rating 0.
+- Fixed Chemical Gland bioware and its Expanded Resevoir plugin so that its cost and availability properly change with that of the chemical it generates. Exhalation Spray, Spit, Weapon Resevoir, and Internal/Gradual Release are now properly mutually exclusive types of chemical glands rather than an addon to an existing chemical gland with an undefined release method.
+- Metaposeur, Phenotypic Variation - Metaposeur, Cosmetic Alteration, and Phenotypic Variation - Cosmetic Alteration now allow you to type in as what metatype you're posing and/or what cosmetic alterations have been made.
+- Fixed Claws enhancement not giving +1 Unarmed DV.
+- Fixed being able to take a different way alongside Artist's Way.
+- Fixed Beast's Way not giving +1 Animal Handling and Spiritual Way not giving +1 to all Conjuring tests.
+- Fixed being able to take Burnout's Way without being at less than 5 Essence.
+- Added Life Modules from the German Run Faster.
+- Added Life Modules from State of the Art ADL (at least half as the others aren't possible atm).
+- Made QoL tweaks to Fancy Blocks and the Shadowrun 5 character sheet set, such as allowing for the printing of multiple specializations per skill and adding information on natural recovery dicepools.
+- Fixed Auctioneer Business Clothes not coming with a Holster.
+- Fixed Thermal Damping's, Skin Toner's, Chameleon Toner's, and Liar's bonus tags.
+- Implemented latest official errata posting of the core rulebook from the Shadowrun official forums.
 - Fixed incorrect attribute value for the Metagenetic Improvement (Strength) quality.
 
 New Strings:

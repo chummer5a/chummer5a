@@ -117,6 +117,7 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
+	<xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
       <xs:complexType>
@@ -237,7 +238,7 @@
       <xs:sequence>
         <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       </xs:complexType>
     </xs:element>
@@ -438,6 +439,8 @@
       <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
       <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
       <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+	  <xs:attribute name="minimumrating" type="xs:integer" use="optional" />
+	  <xs:attribute name="maximumrating" type="xs:integer" use="optional" />
       <xs:attribute name="skillcategory" type="xs:string" use="optional" />
       <xs:attribute name="skillgroup" type="xs:string" use="optional" />
       </xs:complexType>
@@ -556,6 +559,8 @@
 				<xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
 				<xs:attribute name="limittoattribute" type="xs:string" use="optional" />
 				<xs:attribute name="limittoskill" type="xs:string" use="optional" />
+				<xs:attribute name="minimumrating" type="xs:integer" use="optional" />
+				<xs:attribute name="maximumrating" type="xs:integer" use="optional" />
 				<xs:attribute name="skillcategory" type="xs:string" use="optional" />
 				<xs:attribute name="skillgroup" type="xs:string" use="optional" />
 			</xs:complexType>
@@ -584,6 +589,8 @@
         <xs:element name="name" minOccurs="0" maxOccurs="1" />
         <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="misceffect" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       <xs:attribute name="precedence" type="xs:integer" use="optional" />

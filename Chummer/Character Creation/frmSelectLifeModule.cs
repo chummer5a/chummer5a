@@ -354,5 +354,10 @@ namespace Chummer
 
             return working;
         }
+
+        private void lblSource_Click(object sender, EventArgs e)
+        {
+            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+        }
     }
 }

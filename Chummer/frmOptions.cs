@@ -1264,7 +1264,7 @@ namespace Chummer
         private void SetDefaultValueForXsltList()
         {
             if (string.IsNullOrEmpty(GlobalOptions.Instance.DefaultCharacterSheet))
-                GlobalOptions.Instance.DefaultCharacterSheet = "Shadowrun 5";
+                GlobalOptions.Instance.DefaultCharacterSheet = "Shadowrun 5 (Rating greater 0)";
 
             cboXSLT.SelectedValue = GlobalOptions.Instance.DefaultCharacterSheet;
         }

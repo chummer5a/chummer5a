@@ -120,7 +120,7 @@
             this.lblBPLabel.AutoSize = true;
             this.lblBPLabel.Location = new System.Drawing.Point(293, 38);
             this.lblBPLabel.Name = "lblBPLabel";
-            this.lblBPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblBPLabel.Size = new System.Drawing.Size(40, 13);
             this.lblBPLabel.TabIndex = 20;
             this.lblBPLabel.Tag = "Label_Karma";
             this.lblBPLabel.Text = "Karma:";
@@ -133,6 +133,7 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 23;
             this.lblSource.Text = "[Source]";
+            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
             // 
             // lblSourceLabel
             // 

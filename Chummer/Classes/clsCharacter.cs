@@ -2489,21 +2489,20 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
             {
-                        string strName = objImprovement.UniqueName;
-                        if (objImprovement.Value > 0)
-                            strName += " [+" + objImprovement.Value.ToString() + "]";
-                        else
-                            strName += " [" + objImprovement.Value.ToString() + "]";
+                string strName = objImprovement.UniqueName + ": ";
+                if (objImprovement.Value > 0)
+                    strName += "+";
+                strName += objImprovement.Value.ToString();
 
-                if (!string.IsNullOrEmpty(objImprovement.Exclude))
-                            strName += " (" + objImprovement.Exclude + ")";
+                if (!string.IsNullOrEmpty(objImprovement.Condition))
+                    strName += ", " + objImprovement.Condition;
 
-                        objWriter.WriteStartElement("limitmodifier");
-                        objWriter.WriteElementString("name", strName);
+                objWriter.WriteStartElement("limitmodifier");
+                objWriter.WriteElementString("name", strName);
                 if (Options.PrintNotes)
-                            objWriter.WriteElementString("notes", objImprovement.Notes);
-                        objWriter.WriteEndElement();
-                    }
+                    objWriter.WriteElementString("notes", objImprovement.Notes);
+                objWriter.WriteEndElement();
+            }
             // </limitmodifiersphys>
             objWriter.WriteEndElement();
 
@@ -2516,21 +2515,20 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
             {
-                        string strName = objImprovement.UniqueName;
-                        if (objImprovement.Value > 0)
-                            strName += " [+" + objImprovement.Value.ToString() + "]";
-                        else
-                            strName += " [" + objImprovement.Value.ToString() + "]";
+                string strName = objImprovement.UniqueName + ": ";
+                if (objImprovement.Value > 0)
+                    strName += "+";
+                strName += objImprovement.Value.ToString();
 
-                if (!string.IsNullOrEmpty(objImprovement.Exclude))
-                            strName += " (" + objImprovement.Exclude + ")";
+                if (!string.IsNullOrEmpty(objImprovement.Condition))
+                    strName += ", " + objImprovement.Condition;
 
-                        objWriter.WriteStartElement("limitmodifier");
-                        objWriter.WriteElementString("name", strName);
+                objWriter.WriteStartElement("limitmodifier");
+                objWriter.WriteElementString("name", strName);
                 if (Options.PrintNotes)
-                            objWriter.WriteElementString("notes", objImprovement.Notes);
-                        objWriter.WriteEndElement();
-                    }
+                    objWriter.WriteElementString("notes", objImprovement.Notes);
+                objWriter.WriteEndElement();
+            }
             // </limitmodifiersment>
             objWriter.WriteEndElement();
 
@@ -2543,21 +2541,20 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
             {
-                        string strName = objImprovement.UniqueName;
-                        if (objImprovement.Value > 0)
-                            strName += " [+" + objImprovement.Value.ToString() + "]";
-                        else
-                            strName += " [" + objImprovement.Value.ToString() + "]";
+                string strName = objImprovement.UniqueName + ": ";
+                if (objImprovement.Value > 0)
+                    strName += "+";
+                strName += objImprovement.Value.ToString();
 
-                if (!string.IsNullOrEmpty(objImprovement.Exclude))
-                            strName += " (" + objImprovement.Exclude + ")";
+                if (!string.IsNullOrEmpty(objImprovement.Condition))
+                    strName += ", " + objImprovement.Condition;
 
-                        objWriter.WriteStartElement("limitmodifier");
-                        objWriter.WriteElementString("name", strName);
+                objWriter.WriteStartElement("limitmodifier");
+                objWriter.WriteElementString("name", strName);
                 if (Options.PrintNotes)
-                            objWriter.WriteElementString("notes", objImprovement.Notes);
-                        objWriter.WriteEndElement();
-                    }
+                    objWriter.WriteElementString("notes", objImprovement.Notes);
+                objWriter.WriteEndElement();
+            }
             // </limitmodifierssoc>
             objWriter.WriteEndElement();
 
