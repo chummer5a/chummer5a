@@ -249,6 +249,7 @@ Data Changes:
 - Fixed Auctioneer Business Clothes not coming with a Holster.
 - Fixed Thermal Damping's, Skin Toner's, Chameleon Toner's, and Liar's bonus tags.
 - Implemented latest official errata posting of the core rulebook from the Shadowrun official forums.
+- Fixed incorrect attribute value for the Metagenetic Improvement (Strength) quality.
 - Fixed bugs where various pieces of cyberware subsystems could be added to the incorrect type of cyberware parent (e.g. Improved Synthskin to obvious cyberlimbs).
 - Fixed a bug where Digigrade Legs would not increase the essence cost of cyberlegs for which it is taken.
 - Fixed a bug where Bulk Modification could be taken at a higher rating than is allowed for certain types of cyberlimbs.
