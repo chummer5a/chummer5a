@@ -14055,6 +14055,8 @@ namespace Chummer
                 lblCyberwareCapacity.Text =
                     $"{objCyberware.CalculatedCapacity} ({objCyberware.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo)} {LanguageManager.Instance.GetString("String_Remaining")})";
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
+                if (objCyberware.AddToParentESS)
+                    lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
                 ScheduleCharacterUpdate();
             }
             else

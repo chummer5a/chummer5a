@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Skills;
 using Chummer.Backend.Extensions;
+using System.Drawing;
 
 namespace Chummer.Backend.Equipment
 {
@@ -214,6 +215,7 @@ namespace Chummer.Backend.Equipment
                     objUnderbarrelWeapon.Parent = this;
                     _lstUnderbarrel.Add(objUnderbarrelWeapon);
                     objUnderbarrelNode.ContextMenuStrip = cmsWeapon;
+                    objUnderbarrelNode.ForeColor = SystemColors.GrayText;
                     objNode.Nodes.Add(objUnderbarrelNode);
                 }
             }
@@ -255,7 +257,7 @@ namespace Chummer.Backend.Equipment
                         objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>("Internal", "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren);
                     }
                     // Add any extra Gear that comes with the Weapon Accessory.
-                    if (objXmlWeaponAccessory["gears"] != null && blnCreateChildren)
+                    if (objXmlWeaponAccessory["gears"] != null)
                     {
                         XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
                         foreach (XmlNode objXmlAccessoryGear in objXmlWeaponAccessory.SelectNodes("gears/usegear"))
@@ -272,9 +274,9 @@ namespace Chummer.Backend.Equipment
                                 blnAddChildImprovements = false;
                             if (objXmlAccessoryGear["rating"] != null)
                                 intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
-                            if (objXmlAccessoryGear["name"].Attributes["qty"] != null)
+                            if (objXmlAccessoryGear["name"].Attributes?["qty"] != null)
                                 decGearQty = Convert.ToDecimal(objXmlAccessoryGear["name"].Attributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                            if (objXmlAccessoryGear["name"].Attributes["select"] != null)
+                            if (objXmlAccessoryGear["name"].Attributes?["select"] != null)
                                 strChildForceValue = objXmlAccessoryGear["name"].Attributes["select"].InnerText;
                             if (objXmlAccessoryGear["source"] != null)
                                 strChildForceSource = objXmlAccessoryGear["source"].InnerText;
@@ -312,6 +314,7 @@ namespace Chummer.Backend.Equipment
                                 objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
 
                             objGearNode.ContextMenuStrip = cmsWeaponAccessoryGear;
+                            objGearNode.ForeColor = SystemColors.GrayText;
                             objAccessoryNode.Nodes.Add(objGearNode);
                             if (!blnStartCollapsed)
                                 objAccessoryNode.Expand();
@@ -323,6 +326,7 @@ namespace Chummer.Backend.Equipment
                     objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
                     _lstAccessories.Add(objAccessory);
                     objAccessoryNode.Text = objAccessory.DisplayName;
+                    objAccessoryNode.ForeColor = SystemColors.GrayText;
                     objNode.Nodes.Add(objAccessoryNode);
                     objNode.Expand();
                 }

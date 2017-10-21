@@ -894,6 +894,8 @@ namespace Chummer
                         dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             }
             lblEssence.Text = dblESS.ToString(GlobalOptions.CultureInfo);
+            if (objXmlCyberware["addtoparentess"] != null)
+                lblEssence.Text = "+" + lblEssence.Text;
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -1005,7 +1007,7 @@ namespace Chummer
                     if (objXmlCyberware["forbidden"]?["parentdetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (_objParentNode.ProcessFilterOperationNode(objXmlCyberware["forbidden"]["cyberwaredetails"], false))
+                        if (_objParentNode.ProcessFilterOperationNode(objXmlCyberware["forbidden"]["parentdetails"], false))
                         {
                             continue;
                         }
@@ -1013,7 +1015,7 @@ namespace Chummer
                     if (objXmlCyberware["required"]?["parentdetails"] != null)
                     {
                         // Assumes topmost parent is an AND node
-                        if (!_objParentNode.ProcessFilterOperationNode(objXmlCyberware["required"]["cyberwaredetails"], false))
+                        if (!_objParentNode.ProcessFilterOperationNode(objXmlCyberware["required"]["parentdetails"], false))
                         {
                             continue;
                         }
