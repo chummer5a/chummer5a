@@ -609,6 +609,10 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
         {
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+                return 1;
+
             int intMeat = Value + AttributeModifiers;
             int intReturn = intMeat;
 
@@ -634,16 +638,10 @@ namespace Chummer.Backend.Attributes
 
                 if (intLimbCount > 0)
                 {
-                    intReturn = 0;
-                    if (intLimbCount < _objCharacter.Options.LimbCount)
-                    {
-                        // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
-                        for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
-                            intLimbTotal += intMeat;
-                        intLimbCount = _objCharacter.Options.LimbCount;
-                    }
-                    int intTotal = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
-                    intReturn += intTotal;
+                    int intMissingLimbCount = Math.Max(_objCharacter.Options.LimbCount - intLimbCount, 0);
+                    // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
+                    intLimbTotal += intMeat * intMissingLimbCount;
+                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(_objCharacter.Options.LimbCount, GlobalOptions.CultureInfo)));
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
@@ -651,21 +649,13 @@ namespace Chummer.Backend.Attributes
                 intReturn = TotalAugmentedMaximum;
 
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-            if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
+            if (intReturn < 1)
             {
-                if (intReturn < 0)
+                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
                     return 0;
-            }
-            else
-            {
-                if (intReturn < 1)
+                else
                     return 1;
             }
-
-            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-            if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
-                return 1;
-
             return intReturn;
         }
 

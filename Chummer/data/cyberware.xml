@@ -1509,7 +1509,19 @@
       <cost>6000</cost>
       <source>SR5</source>
       <page>456</page>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>17e0bf0e-db82-4db7-ad85-d88e9945f5a7</id>
@@ -1541,7 +1553,23 @@
         </limitmodifier>
       </bonus>
       <rating>6</rating>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>32096cc1-25c0-4b29-a53d-92528f352d2f</id>
@@ -1674,6 +1702,22 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Shock Hand</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>841cac06-6839-4041-a8dc-2050048df076</id>
@@ -2165,6 +2209,33 @@
           <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
         </limitmodifier>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>80c4f377-0dfd-4abc-8481-79667a8255ac</id>
@@ -2205,6 +2276,24 @@
           <condition>Only for knockdown resist, Must be engaged.</condition>
         </limitmodifier>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>3170d4e0-0369-49f3-9b73-95e07ec3d8d1</id>
@@ -2267,6 +2356,33 @@
           <condition>Only for Gymanstics (Climbing)</condition>
         </limitmodifier>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>a35e5b3f-c6a9-4c2e-a8e6-b7ed58d656c9</id>
@@ -2380,7 +2496,7 @@
     </cyberware>
     <cyberware>
       <id>cb86075d-7d60-4618-9698-9e9268a28989</id>
-      <name>Breast implant</name>
+      <name>Breast Implant (One Breast)</name>
       <category>Cosmetic Enhancement</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -2391,7 +2507,7 @@
     </cyberware>
     <cyberware>
       <id>21953b9b-43e8-41a9-af03-5af71797585b</id>
-      <name>Breast implant 2.0</name>
+      <name>Breast Implant 2.0 (One Breast)</name>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2685,7 +2801,7 @@
     </cyberware>
     <cyberware>
       <id>e9a0b651-fb8a-4fc3-81a5-b3eab900c1f8</id>
-      <name>Cyberfinger</name>
+      <name>Cyberfinger (Custom)</name>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -2693,6 +2809,26 @@
       <cost>500</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+		<selecttext />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>1b2c94f9-86a6-4d84-8f58-1c16569213fa</id>
@@ -2704,6 +2840,25 @@
       <cost>550</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>caa21274-3a2f-416e-9589-dfeffc11b1a7</id>
@@ -2715,6 +2870,25 @@
       <cost>550</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>2badbf90-bf03-432c-95a6-495359039ba8</id>
@@ -2726,9 +2900,28 @@
       <cost>500</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
       <allowgear>
         <gearcategory>Ammunition</gearcategory>
       </allowgear>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>e6f65d1d-0a49-4256-aca9-2007404013a2</id>
@@ -2740,12 +2933,32 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>87475df7-b371-4a89-8623-2582137b5906</id>
       <name>Digigrade Legs</name>
       <category>Cyberlimb Enhancement</category>
       <ess>0.25</ess>
+	  <addtoparentess />
       <capacity>[4]</capacity>
       <avail>+4</avail>
       <cost>5000</cost>
@@ -2757,8 +2970,22 @@
           <value>1</value>
           <condition>Only for Stealth group, Must be in Pairs</condition>
         </limitmodifier>
-        <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
@@ -2771,9 +2998,23 @@
       <source>CF</source>
       <page>87</page>
       <addweapon>Grapple Fist</addweapon>
-      <bonus>
+	  <bonus>
         <selectside />
       </bonus>
+      <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>215e0563-b23c-42c0-9d11-aa4ccc8acf6d</id>
@@ -2789,6 +3030,20 @@
       <bonus>
         <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f8baf2a8-2941-4eec-9bac-430e30b8f40c</id>
@@ -2808,6 +3063,24 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>71323559-408e-441f-b53b-d9ffaa49e4c6</id>
@@ -2828,6 +3101,24 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f7ff7a58-ac0e-49a9-8cbe-741df59a33e5</id>
@@ -2845,9 +3136,24 @@
           <value>-1</value>
           <condition>Only when in use</condition>
         </limitmodifier>
-        <selectside />
       </bonus>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>fe394e6c-c9b4-492e-91a3-65b5e63692ed</id>
@@ -2863,10 +3169,26 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-2</value>
+		  <condition>Only when in use</condition>
         </limitmodifier>
-        <selectside />
       </bonus>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>edb2fd85-6bd8-4c34-be9a-eb9f21a0b8df</id>
@@ -2884,9 +3206,22 @@
           <value>1</value>
           <condition>Only with manual dexterity</condition>
         </limitmodifier>
-        <selectside />
       </bonus>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>ff29d933-7ef5-4b15-96d2-8e56aa70796d</id>
@@ -2898,10 +3233,16 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>88</page>
-      <bonus>
-        <selectside />
-      </bonus>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>02604fc4-e03a-4c4c-8998-f283f2528a64</id>
@@ -2913,7 +3254,16 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>fcae214b-4fbe-40f7-b5e0-61473d6b9a2e</id>
@@ -2925,7 +3275,24 @@
       <cost>3000</cost>
       <source>CF</source>
       <page>88</page>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>a40cbc72-7dc6-4f8f-a9ff-e5e3f471b895</id>
@@ -2937,11 +3304,29 @@
       <cost>Rating * 1000</cost>
       <source>CF</source>
       <page>90</page>
-      <bonus>
-        <selectside />
-      </bonus>
       <rating>2</rating>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
@@ -2953,10 +3338,21 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>90</page>
-      <bonus>
-        <selectside />
-      </bonus>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>4f7794ce-fd49-48f2-bde7-3501b1799814</id>
@@ -2968,6 +3364,29 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Arm</name>
+			<name>Obvious Full Leg</name>
+			<name>Synthetic Full Arm</name>
+			<name>Synthetic Full Leg</name>
+			<name>Obvious Lower Arm</name>
+			<name>Obvious Lower Leg</name>
+			<name>Synthetic Lower Arm</name>
+			<name>Synthetic Lower Leg</name>
+			<name>Drone Arm</name>
+			<name>Drone Leg</name>
+			<name>Synthetic Drone Arm</name>
+			<name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>251f792a-8887-4276-a5a9-0e01fec594ac</id>
@@ -2979,6 +3398,25 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>88</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Arm</name>
+			<name>Obvious Full Leg</name>
+			<name>Synthetic Full Arm</name>
+			<name>Synthetic Full Leg</name>
+			<name>Drone Arm</name>
+			<name>Drone Leg</name>
+			<name>Synthetic Drone Arm</name>
+			<name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>d4d12624-1754-4a67-8e5e-f41817cfc875</id>
@@ -3024,7 +3462,26 @@
       <source>CF</source>
       <page>87</page>
       <rating>6</rating>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Liminal Body, Centaur</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+            <name>Synthetic Full Leg</name>
+            <name>Synthetic Drone Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Synthetic Foot</name>
+			<name>Synthetic Full Arm</name>
+            <name>Synthetic Drone Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Synthetic Hand</name>
+			<name>Synthetic Torso</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>b4394ee8-0490-4a56-8b30-8503351a3c58</id>
@@ -3049,22 +3506,26 @@
       <limbslotcount>2</limbslotcount>
       <subsystems>
         <cyberware>
-          <name>Centaur Full Leg</name>
+          <name>Centaur Front Leg</name>
+		  <forced>Left</forced>
         </cyberware>
         <cyberware>
-          <name>Centaur Full Leg</name>
+          <name>Centaur Front Leg</name>
+		  <forced>Right</forced>
         </cyberware>
         <cyberware>
-          <name>Centaur Full Leg</name>
+          <name>Centaur Rear Leg</name>
+		  <forced>Left</forced>
         </cyberware>
         <cyberware>
-          <name>Centaur Full Leg</name>
+          <name>Centaur Rear Leg</name>
+		  <forced>Right</forced>
         </cyberware>
       </subsystems>
     </cyberware>
     <cyberware>
       <id>8af5027d-a504-484e-8089-c542a95d4831</id>
-      <name>Centaur Full Leg</name>
+      <name>Centaur Front Leg</name>
       <category>Cyberlimb</category>
       <ess>3</ess>
       <capacity>20</capacity>
@@ -3087,6 +3548,42 @@
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
+		<selectside />
+      </bonus>
+      <hide />
+      <limbslot>leg</limbslot>
+    </cyberware>
+	<cyberware>
+      <id>fb43afdc-7176-4640-baba-6087b15acca3</id>
+      <name>Centaur Rear Leg</name>
+      <category>Cyberlimb</category>
+      <ess>3</ess>
+      <capacity>20</capacity>
+      <avail>12</avail>
+      <cost>0</cost>
+      <source>CF</source>
+      <page>87</page>
+      <allowgear>
+        <gearcategory>Sensors</gearcategory>
+      </allowgear>
+      <allowsubsystems>
+        <category>Bodyware</category>
+        <category>Cosmetic Enhancement</category>
+        <category>Cyberlimb Enhancement</category>
+        <category>Cyberlimb Accessory</category>
+        <category>Cyber Implant Weapon</category>
+        <category>Headware</category>
+      </allowsubsystems>
+	  <subsystems>
+        <cyberware>
+          <name>Digigrade Legs</name>
+        </cyberware>
+      </subsystems>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+		<selectside />
       </bonus>
       <hide />
       <limbslot>leg</limbslot>
@@ -3165,11 +3662,102 @@
       <bonus>
         <selecttext />
       </bonus>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+            <name>Synthetic Full Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Synthetic Full Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Synthetic Torso</name>
+			<name>Synthetic Skull</name>
+			<name>Obvious Full Leg</name>
+            <name>Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Drone Arm</name>
+			<name>Obvious Torso</name>
+			<name>Obvious Skull</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+			<name>Liminal Body, Tank (Full)</name>
+			<name>Liminal Body, Wheeled (Full)</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
-      <name>Bulk Modification</name>
+      <name>Bulk Modification (Hand/Foot/Half-Skull)</name>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[-Rating]</capacity>
+      <avail>+Rating</avail>
+      <cost>Rating * 500</cost>
+      <source>CF</source>
+      <page>86</page>
+      <rating>1</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Foot</name>
+			<name>Obvious Hand</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+	<cyberware>
+      <id>89733e57-d1e3-4b26-ae40-02ee2c2be733</id>
+      <name>Bulk Modification (Lower Arm/Lower Leg/Skull)</name>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[-Rating]</capacity>
+      <avail>+Rating</avail>
+      <cost>Rating * 500</cost>
+      <source>CF</source>
+      <page>86</page>
+      <rating>2</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Lower Leg</name>
+			<name>Obvious Lower Arm</name>
+			<name>Obvious Skull</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+	<cyberware>
+      <id>b1421a8e-6579-44d9-854c-dd15c477032a</id>
+      <name>Bulk Modification (Full Arm/Full Leg)</name>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[-Rating]</capacity>
+      <avail>+Rating</avail>
+      <cost>Rating * 500</cost>
+      <source>CF</source>
+      <page>86</page>
+      <rating>4</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+	<cyberware>
+      <id>08b7a781-4631-4a94-bbf2-505bd173d2c5</id>
+      <name>Bulk Modification (Torso/Liminal Chassis)</name>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[-Rating]</capacity>
@@ -3178,7 +3766,15 @@
       <source>CF</source>
       <page>86</page>
       <rating>6</rating>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Torso</name>
+			<name>Liminal Body, Tank (Full)</name>
+			<name>Liminal Body, Wheeled (Full)</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <!-- End Region -->
     <!-- Region Cyber Implant Weaponry -->
@@ -3274,6 +3870,16 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Cyberfangs</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>4887ede8-dbfa-4e09-9ce5-ecaeee31ada3</id>
@@ -3286,6 +3892,16 @@
       <source>CF</source>
       <page>92</page>
       <addweapon>Oral Slasher</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>a086de85-fd2c-4d87-8658-92ce2967cb96</id>
@@ -3314,6 +3930,16 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>6683716f-d70a-484c-b6f3-842e6de12ea2</id>
@@ -3326,6 +3952,16 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Cyberfangs</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>6b167278-501e-4876-8e16-28f9e86064ba</id>
@@ -4050,7 +4686,19 @@
       <cost>2750</cost>
       <source>HT</source>
       <page>187</page>
-	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>4dcc6d9d-824e-4e4a-a0cb-86810838f587</id>
@@ -4063,6 +4711,14 @@
       <source>HT</source>
       <page>187</page>
 	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Torso</name>
+            <name>Synthetic Torso</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>370546a7-25e8-4a98-9467-d2dec2b3e968</id>
@@ -4074,6 +4730,22 @@
       <cost>500</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f8c23c23-ce74-4942-968d-85896f8f17f2</id>
@@ -4085,6 +4757,22 @@
       <cost>550</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>7ff8850b-d343-42fc-8bef-10acbe46daaa</id>
@@ -4096,6 +4784,22 @@
       <cost>650</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>75d4bef0-b29c-4c77-a2f1-e5955b67fd31</id>
@@ -4107,6 +4811,22 @@
       <cost>750</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <!-- End Region -->
     <!-- Region Boston Lockdown -->

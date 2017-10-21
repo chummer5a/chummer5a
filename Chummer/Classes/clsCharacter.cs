@@ -6445,7 +6445,7 @@ namespace Chummer
                         }
                 }
 
-                return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground",true);
+                return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground", true);
             }
             set
             {
@@ -6484,14 +6484,17 @@ namespace Chummer
         /// </summary>
         private int WalkingRate(string strType = "Ground")
         {
-            string[] strReturn = _strWalk.Split('/');
-
             int intTmp = 0;
-            if (Improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.WalkSpeed && imp.ImprovedName == strType))
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType))
             {
-                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType);
-                return imp.Value;
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType))
+                {
+                    intTmp = Math.Max(intTmp, objImprovement.Value);
+                }
+                return intTmp;
             }
+
+            string[] strReturn = _strWalk.Split('/');
             switch (strType)
             {
                 case "Fly":
@@ -6502,7 +6505,7 @@ namespace Chummer
                     if (strReturn.Length > 1)
                         int.TryParse(strReturn[1], out intTmp);
                     break;
-                    case "Ground":
+                case "Ground":
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -6516,15 +6519,17 @@ namespace Chummer
         /// </summary>
         private int RunningRate(string strType = "Ground")
         {
-            if (Improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.RunSpeed && imp.ImprovedName == strType))
-            {
-                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType);
-                return imp.Value;
-            }
-            string[] strReturn = _strRun.Split('/');
             int intTmp = 0;
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType))
+            {
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType))
+                {
+                    intTmp = Math.Max(intTmp, objImprovement.Value);
+                }
+                return intTmp;
+            }
 
+            string[] strReturn = _strRun.Split('/');
             switch (strType)
             {
                 case "Fly":
@@ -6549,17 +6554,19 @@ namespace Chummer
         /// </summary>
         private int SprintingRate(string strType = "Ground")
         {
-            if (Improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.SprintSpeed && imp.ImprovedName == strType))
-            {
-                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType);
-                return imp.Value;
-            }
-            string[] strReturn = _strSprint.Split('/');
-
             int intTmp = 0;
-                switch (strType)
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
+            {
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
                 {
+                    intTmp = Math.Max(intTmp, objImprovement.Value);
+                }
+                return intTmp;
+            }
+
+            string[] strReturn = _strSprint.Split('/');
+            switch (strType)
+            {
                 case "Fly":
                     if (strReturn.Length > 2)
                         int.TryParse(strReturn[2], out intTmp);
@@ -6568,7 +6575,7 @@ namespace Chummer
                     if (strReturn.Length > 1)
                         int.TryParse(strReturn[1], out intTmp);
                     break;
-                    case "Ground":
+                case "Ground":
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
                     break;
@@ -6580,8 +6587,8 @@ namespace Chummer
         {
             string strReturn;
             int intMultiply = 1;
-            // If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
-            if (strMovementType == "Fly" && ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) < 0)
+            // If the FlySpeed is a negative number, Fly speed is instead calculated as Movement Rate * the number given.
+            if (objImprovementType == Improvement.ImprovementType.FlyPercent && ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) < 0)
             {
                 intMultiply = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) * -1;
             }
@@ -6590,59 +6597,47 @@ namespace Chummer
             int intRun = 0;
             int intWalk = 0;
             int intSprint = SprintingRate(strMovementType) * intMultiply;
-            int intRunMultiplier = RunningRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
-            int intWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
+            double dblRunMultiplier = RunningRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
+            double dblWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
 
-            intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
-            intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
-            intSprint += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
+            intSprint += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
+            dblRunMultiplier += Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent;
+            dblWalkMultiplier += Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent;
 
-            if (_objOptions.CyberlegMovement && blnUseCyberlegs && _lstCyberware.Count(objCyber => objCyber.LimbSlot == "leg") > 0)
+            int intAGI = AGI.CalculatedTotalValue(false);
+            int intSTR = STR.CalculatedTotalValue(false);
+            if (_objOptions.CyberlegMovement && blnUseCyberlegs && _lstCyberware.Any(objCyber => objCyber.LimbSlot == "leg"))
             {
+                int intTempAGI = int.MaxValue;
+                int intTempSTR = int.MaxValue;
                 int intLegs = 0;
-                int intAGI = 0;
                 foreach (Cyberware objCyber in _lstCyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
                 {
                     intLegs += objCyber.LimbSlotCount;
-                        intAGI = intAGI > 0 ? Math.Min(intAGI, objCyber.TotalAgility) : objCyber.TotalAgility;
-                    }
-                    if (intLegs == 2)
-                    {
-                        if (strMovementType == "Swim")
-                        {
-                        intWalk = (intAGI + STR.CalculatedTotalValue(false) / 2)* intWalkMultiplier;
-                        }
-                        else
-                        {
-                            intWalk = (intAGI*intWalkMultiplier);
-                            intRun = (intAGI*intRunMultiplier);
-                        }
-                    }
+                    intTempAGI = Math.Min(intTempAGI, objCyber.TotalAgility);
+                    intTempSTR = Math.Min(intTempSTR, objCyber.TotalStrength);
                 }
-                else
+                if (intLegs >= 2)
                 {
-                    if (strMovementType == "Swim")
-                    {
-                    intWalk = (AGI.TotalValue + STR.TotalValue / 2)*intWalkMultiplier;
-                    }
-                    else
-                    {
-                    intWalk = (AGI.CalculatedTotalValue(false) * intWalkMultiplier);
-                    intRun = (AGI.CalculatedTotalValue(false) * intRunMultiplier);
-                    }
+                    intAGI = intTempAGI;
+                    intSTR = intTempSTR;
                 }
-                if (strMovementType == "Swim")
-                {
+            }
+            if (strMovementType == "Swim")
+            {
+                intWalk = Convert.ToInt32(Math.Ceiling((intAGI + intSTR) * dblWalkMultiplier * 0.5));
                 strReturn = $"{intWalk}, {intSprint}m/ hit";
-                }
-                else
-                {
+            }
+            else
+            {
+                intWalk = Convert.ToInt32(Math.Ceiling(intAGI * dblWalkMultiplier));
+                intRun = Convert.ToInt32(Math.Ceiling(intAGI * dblRunMultiplier));
                 strReturn = $"{intWalk}/{intRun}, {intSprint}m/ hit";
-                }
-            if (string.IsNullOrEmpty(strReturn) || strReturn == "0/0, 0m/ hit")
-                {
-                    return "0";
-                }
+            }
+            if (intWalk == 0 && intRun == 0 && intSprint == 0)
+            {
+                return "0";
+            }
 
             return strReturn;
         }

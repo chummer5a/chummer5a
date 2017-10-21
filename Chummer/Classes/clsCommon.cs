@@ -990,8 +990,25 @@ namespace Chummer
                 }
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Cyberware, objCyberware.InternalId);
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Bioware, objCyberware.InternalId);
+            ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId);
+            if (objCyberware.PairBonus != null)
+            {
+                List<Cyberware> lstPairableCyberwares = new List<Cyberware>(_objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == objCyberware.Name && (x.Location == objCyberware.Location || (!string.IsNullOrEmpty(objCyberware.LimbSlot) && x.LimbSlot == objCyberware.LimbSlot)) && x.Parent?.LimbSlot == objCyberware.Parent?.LimbSlot));
+                int intCyberwaresCount = lstPairableCyberwares.Count - 1;
+                foreach (Cyberware objLoopCyberware in lstPairableCyberwares.Where(x => x.InternalId != objCyberware.InternalId))
+                {
+                    ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
+                    if (objLoopCyberware.Bonus != null)
+                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                    if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
+                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                    if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
+                    {
+                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                    }
+                    intCyberwaresCount -= 1;
+                }
+            }
 
             foreach (Gear objLoopGear in objCyberware.Gear)
             {

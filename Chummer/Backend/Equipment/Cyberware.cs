@@ -1,3 +1,4 @@
+using Chummer.Backend.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -42,6 +43,7 @@ namespace Chummer.Backend.Equipment
         private List<Cyberware> _objChildren = new List<Cyberware>();
         private List<Gear> _lstGear = new List<Gear>();
         private XmlNode _nodBonus;
+        private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
@@ -56,7 +58,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnVehicleMounted = false;
         private bool _blnPrototypeTranshuman;
         private Cyberware _objParent;
-        private bool _blnAddChildrenESS = false;
+        private bool _blnAddToParentESS = false;
         private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
@@ -113,8 +115,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
-        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "")
+        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null)
         {
+            Parent = objParent;
             objXmlCyberware.TryGetStringFieldQuickly("name", ref _strName);
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
@@ -126,8 +129,9 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlCyberware.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlCyberware.TryGetStringFieldQuickly("page", ref _strPage);
-            _blnAddChildrenESS = objXmlCyberware["addchildreness"] != null;
+            _blnAddToParentESS = objXmlCyberware["addtoparentess"] != null;
             _nodBonus = objXmlCyberware["bonus"];
+            _nodPairBonus = objXmlCyberware["pairbonus"];
             _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
@@ -302,22 +306,33 @@ namespace Chummer.Backend.Equipment
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (blnCreateImprovements)
             {
-                if (objXmlCyberware["bonus"] != null || objXmlCyberware["wirelessbonus"] != null)
+                if (_nodBonus != null || _nodWirelessBonus != null || _nodPairBonus != null)
                 {
                     if (!string.IsNullOrEmpty(strForced))
                         ImprovementManager.ForcedValue = strForced;
 
-                    if (objXmlCyberware["bonus"] != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
-                    {
-                        _guiID = Guid.Empty;
-                        return;
-                    }
-                    if (objXmlCyberware["wirelessbonus"] != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodWirelessBonus, false, _intRating, DisplayNameShort))
+                    if (_nodBonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        _strLocation = ImprovementManager.SelectedValue;
+
+                    if (_nodWirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodWirelessBonus, false, _intRating, DisplayNameShort))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strLocation))
+                        _strLocation = ImprovementManager.SelectedValue;
+
+                    if (_nodPairBonus != null && objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && (x.Location == Location || (!string.IsNullOrEmpty(LimbSlot) && x.LimbSlot == LimbSlot)) && x.Parent?.LimbSlot == Parent?.LimbSlot).Count() % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodPairBonus, false, _intRating, DisplayNameShort))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strLocation))
                         _strLocation = ImprovementManager.SelectedValue;
                 }
             }
@@ -394,9 +409,7 @@ namespace Chummer.Backend.Equipment
                     objSubsystemNode.ForeColor = SystemColors.GrayText;
                     objSubsystemNode.ContextMenuStrip = objParentTreeNode.ContextMenuStrip;
                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty);
-
-                    objSubsystem.Parent = this;
+                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                     objSubsystem.ParentID = InternalId;
                     objSubsystem.Cost = "0";
                     // If the <subsystem> tag itself contains extra children, add those, too
@@ -423,9 +436,7 @@ namespace Chummer.Backend.Equipment
                     objSubsystemNode.ForeColor = SystemColors.GrayText;
                     objSubsystemNode.ContextMenuStrip = objParentTreeNode.ContextMenuStrip;
                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty);
-
-                    objSubsystem.Parent = this;
+                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                     objSubsystem.ParentID = InternalId;
                     objSubsystem.Cost = "0";
                     // If the <subsystem> tag itself contains extra children, add those, too
@@ -552,6 +563,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
                 objWriter.WriteElementString("bonus", string.Empty);
+            if (_nodPairBonus != null)
+                objWriter.WriteRaw(_nodPairBonus.OuterXml);
+            else
+                objWriter.WriteElementString("pairbonus", string.Empty);
             if (_nodWirelessBonus != null)
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             else
@@ -590,7 +605,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
-            objWriter.WriteElementString("addchildreness", AddChildrenESS.ToString());
+            objWriter.WriteElementString("addtoparentess", AddToParentESS.ToString());
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -640,6 +655,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("vehiclemounted", ref _blnVehicleMounted);
             objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
+            _nodPairBonus = objNode["pairbonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
             {
@@ -718,7 +734,16 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
-            objNode.TryGetBoolFieldQuickly("addchildreness", ref _blnAddChildrenESS);
+            if (objNode["addtoparentess"] != null)
+            {
+                bool blnTmp;
+                if (bool.TryParse(objNode["addtoparentess"].InnerText, out blnTmp))
+                {
+                    _blnAddToParentESS = blnTmp;
+                }
+            }
+            else
+                _blnAddToParentESS = MyXmlNode["addtoparentess"] != null;
         }
 
         /// <summary>
@@ -842,7 +867,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Bonus node from the XML file.
+        /// Bonus node from the XML file that only activates for each pair of 'ware.
+        /// </summary>
+        public XmlNode PairBonus
+        {
+            get
+            {
+                return _nodPairBonus;
+            }
+            set
+            {
+                _nodPairBonus = value;
+            }
+        }
+
+        /// <summary>
+        /// Wireless bonus node from the XML file.
         /// </summary>
         public XmlNode WirelessBonus
         {
@@ -1416,17 +1456,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Cyberware's ESS cost is increased by those of its children (which usually take capacity instead).
+        /// Whether or not the Cyberware's ESS cost increases that of its parent when added as a subsystem (usually no).
         /// </summary>
-        public bool AddChildrenESS
+        public bool AddToParentESS
         {
             get
             {
-                return _blnAddChildrenESS;
+                return _blnAddToParentESS;
             }
             set
             {
-                _blnAddChildrenESS = value;
+                _blnAddToParentESS = value;
             }
         }
 
@@ -1847,10 +1887,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
                 decReturn = Math.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-            if (AddChildrenESS)
-            {
-                decReturn += _objChildren.Sum(objChild => objChild.CalculatedESS());
-            }
+            decReturn += _objChildren.Where(objChild => objChild.AddToParentESS).Sum(objChild => objChild.CalculatedESS());
             return decReturn;
         }
 
