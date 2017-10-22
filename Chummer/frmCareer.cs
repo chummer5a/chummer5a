@@ -19764,7 +19764,7 @@ namespace Chummer
                         lblWeaponName.Text = objSelectedAccessory.DisplayNameShort;
                         lblWeaponCategory.Text = LanguageManager.Instance.GetString("String_WeaponAccessory");
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail;
-                        lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
+                        lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy;
                         lblWeaponCost.Text = $"{objSelectedAccessory.TotalCost:###,###,##0.##¥}";
                         lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
                         lblWeaponDamage.Text = string.Empty;
@@ -19830,7 +19830,7 @@ namespace Chummer
                             lblWeaponCategory.Text = objGear.DisplayCategory;
                             lblWeaponAvail.Text = objGear.TotalAvail(true);
                             lblWeaponCost.Text = $"{objGear.TotalCost:###,###,##0.##¥}";
-                            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
+                            lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy;
                             lblWeaponConceal.Text = string.Empty;
                             lblWeaponDamage.Text = string.Empty;
                             lblWeaponRC.Text = string.Empty;
