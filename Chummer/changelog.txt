@@ -156,6 +156,7 @@ Application Changes:
 - Added backend support for cyberware bonuses that only activate per pair instead of per discrete piece.
 - Fixed a bug where cyberware added to vehicles did not allow for subsystems to be added to it.
 - Fixed issues with skill dicepool tooltips not properly recognizing improvement sources from cyberware, nested 'ware, armor, armor mods, martial arts advantages, critter powers, and nested gear (including ones inside weapons, armor, armor mods, weapon accessories, cyberware, and vehicles).
+- Fixed a crash when adding an item with over 1,000 capacity in a culture using a decimal comma. Fixes #1983.
 
 Data Changes:
 

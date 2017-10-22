@@ -2017,13 +2017,13 @@ namespace Chummer.Backend.Equipment
                     if (_strCapacity.Contains("/["))
                     {
                         // If this is a multiple-capacity item, use only the first half.
-                        string strMyCapacity = CalculatedCapacity;
+                        string strMyCapacity = _strCapacity;
                         int intPos = strMyCapacity.IndexOf("/[");
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
                         decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.InvariantCultureInfo);
+                        decCapacity = Convert.ToDecimal(_strCapacity, GlobalOptions.InvariantCultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Gear objChildGear in Children)
