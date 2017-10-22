@@ -511,6 +511,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Name of the item that was selected.
+        /// </summary>
+        public string SelectedName
+        {
+            get
+            {
+                if (cboAmmo.SelectedText != null)
+                {
+                    return cboAmmo.SelectedText.ToString();
+                }
+                else
+                {
+                    return cboAmmo.Text;
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether or not the Form should be accepted if there is only one item left in the list.
         /// </summary>
         public bool AllowAutoSelect

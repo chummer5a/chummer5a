@@ -213,7 +213,7 @@
       <page>42</page>
       <avail>4</avail>
       <bonus>
-        <selectweapon />
+        <selectweapon excludecategory="Melee" />
       </bonus>
       <cost>100</cost>
     </gear>
@@ -226,7 +226,7 @@
       <page>433</page>
       <avail>2</avail>
       <bonus>
-        <selectweapon />
+        <selectweapon excludecategory="Melee" />
       </bonus>
       <cost>25</cost>
     </gear>
@@ -14018,6 +14018,9 @@
       <rating>18</rating>
       <source>2050</source>
       <page>207</page>
+	  <bonus>
+        <selectweapon />
+      </bonus>
       <avail>(Rating * 3)R</avail>
       <cost>Rating * 90000</cost>
     </gear>

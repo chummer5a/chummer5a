@@ -10,6 +10,7 @@ using Chummer.Backend;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
+using Chummer.Backend.Extensions;
 // ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
@@ -4174,17 +4175,15 @@ namespace Chummer.Classes
             }
             else
             {
-                string strExclude = string.Empty;
                 List <ListItem> lstWeapons = new List<ListItem>();
-                bool blnIncludeUnarmed = bonusNode.Attributes["excludecategory"]?.InnerText == "true";
-                strExclude = bonusNode.Attributes["excludecategory"]?.InnerText;
-                foreach (Weapon objWeapon in _objCharacter.Weapons)
+                bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"] != null && bonusNode.Attributes["includeunarmed"].InnerText != "no";
+                string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+                foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                 {
-                    bool blnAdd = !(!string.IsNullOrEmpty(strExclude) && objWeapon.WeaponType == strExclude || !blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack");
-                    if (blnAdd)
+                    if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
                         ListItem objItem = new ListItem();
-                        objItem.Value = objWeapon.Name;
+                        objItem.Value = objWeapon.InternalId;
                         objItem.Name = objWeapon.DisplayName;
                         lstWeapons.Add(objItem);
                     }
@@ -4214,7 +4213,7 @@ namespace Chummer.Classes
 
                 SelectedValue = frmPickItem.SelectedItem;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + frmPickItem.SelectedName + ")";
 
                 strSelectedValue = frmPickItem.SelectedItem;
                 Log.Info("_strSelectedValue = " + SelectedValue);

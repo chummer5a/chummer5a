@@ -464,6 +464,7 @@
     <xs:element name="selectweapon" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+	  <xs:attribute name="includeunarmed" type="xs:string" use="optional" />
       </xs:complexType>
     </xs:element>
     <xs:element name="sensitivesystem" minOccurs="0" maxOccurs="1" />

@@ -159,6 +159,7 @@ Application Changes:
 - Movement speeds should now properly display decimal values (e.g. "4/8, 1.5m/hit") when applicable.
 - Fixed a crash when adding an item with over 1,000 capacity in a culture using a decimal comma. Fixes #1983.
 - Allowed for full localization of the updater, added a label to indicate whether the user is running the latest version of Chummer5 that is available on their chosen update channel (stable or nightly), and force-disabled the Download button if they are running what is the latest version of their chosen update channel (the button isn't disabled if they're running the latest nightly, but switched update channels to stable). Fixes #1977.
+- Fixed being unable to select underbarrel weapons for SelectWeapon bonuses (e.g. picking a weapon for Spare Clips).
 
 Data Changes:
 
@@ -270,6 +271,7 @@ Data Changes:
 - Fixed Celerity increasing all movement speeds by +50% instead of overwriting ground walking and running speeds and adding +1m/hit to ground sprinting speeds.
 - Fixed Satyr Legs replacing ground sprinting speeds with 2m/hit instead of adding +1m/hit.
 - Fixed Adiposis decreasing all movement speeds by 50% instead of overwriting ground walking, running, and sprinting speeds.
+- Fixed being able to select melee weapons for Speed Loader and Vindicator 200-round Belt, and fixed being unable to select a weapon for Weapon Focus (2050).
 
 New Strings:
 - Message_Improvement_EmptySelectionList
