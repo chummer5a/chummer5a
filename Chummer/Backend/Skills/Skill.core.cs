@@ -505,10 +505,12 @@ namespace Chummer.Skills
 
         public void AddSpecialization(string name)
         {
-            if (!CharacterObject.CanAffordSpecialization) return;
-            
-
             int price = CharacterObject.Options.KarmaSpecialization;
+            if (IsKnowledgeSkill)
+                price = CharacterObject.Options.KarmaKnowledgeSpecialization;
+
+            if (price < CharacterObject.Karma)
+                return;
 
             //If data file contains {4} this crashes but...
             string upgradetext = //TODO WRONG

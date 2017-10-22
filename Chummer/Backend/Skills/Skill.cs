@@ -837,7 +837,7 @@ namespace Chummer.Skills
             get
             {
                 return string.Format(LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization"),
-                    CharacterObject.Options.KarmaSpecialization);
+                    IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization);
             }
         }
 

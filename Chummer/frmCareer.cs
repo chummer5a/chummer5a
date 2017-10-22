@@ -20110,7 +20110,14 @@ namespace Chummer
                     lblGearName.Text = objGear.DisplayNameShort;
                     lblGearCategory.Text = objGear.DisplayCategory;
                     lblGearAvail.Text = objGear.TotalAvail(true);
-                    lblGearCost.Text = $"{objGear.TotalCost:###,###,##0.##¥}";
+                    try
+                    {
+                        lblGearCost.Text = $"{objGear.TotalCost:###,###,##0.##¥}";
+                    }
+                    catch (FormatException)
+                    {
+                        lblGearCost.Text = objGear.Cost + "¥";
+                    }
                     lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
@@ -20952,7 +20959,7 @@ namespace Chummer
                     treWeapons.Nodes[0].Expand();
                 }
 
-                if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0)
+                if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0 && !blnNullParent)
                 {
                     objNode.ContextMenuStrip = cmsGear;
                     treGear.SelectedNode.Nodes.Add(objNode);

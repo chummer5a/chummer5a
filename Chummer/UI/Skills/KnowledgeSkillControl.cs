@@ -151,7 +151,7 @@ namespace Chummer.UI.Skills
             if (parrent != null)
             {
                 string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-                        _skill.CharacterObject.Options.KarmaSpecialization);
+                        _skill.CharacterObject.Options.KarmaKnowledgeSpecialization);
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;

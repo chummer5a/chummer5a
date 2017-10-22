@@ -150,6 +150,7 @@ namespace Chummer
         private int _intKarmaNuyenPer = 2000;
         private int _intKarmaQuality = 1;
         private int _intKarmaSpecialization = 7;
+        private int _intKarmaKnoSpecialization = 7;
         private int _intKarmaSpell = 5;
         private int _intKarmaSpirit = 1;
         private int _intKarmaNewAIProgram = 5;
@@ -471,6 +472,8 @@ namespace Chummer
             objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString());
             // <karmaspecialization />
             objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString());
+            // <karmaknospecialization />
+            objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString());
             // <karmanewknowledgeskill />
             objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString());
             // <karmanewactiveskill />
@@ -835,6 +838,7 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
             objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
             objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+            objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
             objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
             objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
             objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
@@ -1010,6 +1014,7 @@ namespace Chummer
             LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute");
             LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality");
             LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization");
+            LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization");
             LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill");
             LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill");
             LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup");
@@ -2679,7 +2684,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost to purchase a Specialization = this value.
+        /// Karma cost to purchase a Specialization for an active skill = this value.
         /// </summary>
         public int KarmaSpecialization
         {
@@ -2690,6 +2695,23 @@ namespace Chummer
             set
             {
                 _intKarmaSpecialization = value;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
+        /// </summary>
+        public int KarmaKnowledgeSpecialization
+        {
+            get
+            {
+                // TODO: Once new options have been merged, get this implemented
+                return _intKarmaSpecialization;
+                //return _intKarmaKnoSpecialization;
+            }
+            set
+            {
+                _intKarmaKnoSpecialization = value;
             }
         }
 

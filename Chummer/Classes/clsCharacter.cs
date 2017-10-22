@@ -3996,11 +3996,11 @@ namespace Chummer
                 if(oldCanAffordSpec != CanAffordSpecialization)
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordSpecialization)));
             }
-            }
+        }
 
         public bool CanAffordSpecialization
         {
-            get { return Karma >= Options.KarmaSpecialization; }
+            get { return Karma >= Math.Min(Options.KarmaSpecialization, Options.KarmaKnowledgeSpecialization); }
         }
 
         /// <summary>

@@ -4998,7 +4998,6 @@
       <page>442</page>
       <avail>0</avail>
       <cost>5</cost>
-      <minrating>0</minrating>
 	  <addoncategory>Currency</addoncategory>
 	  <addoncategory>Custom</addoncategory>
     </gear>
@@ -5012,7 +5011,6 @@
       <page>442</page>
       <avail>0</avail>
       <cost>20</cost>
-      <minrating>0</minrating>
 	  <addoncategory>Currency</addoncategory>
 	  <addoncategory>Custom</addoncategory>
     </gear>
@@ -5026,7 +5024,6 @@
       <page>442</page>
       <avail>5</avail>
       <cost>100</cost>
-      <minrating>0</minrating>
 	  <addoncategory>Currency</addoncategory>
 	  <addoncategory>Custom</addoncategory>
     </gear>
@@ -14675,7 +14672,10 @@
       <page>193</page>
       <avail>0</avail>
       <cost>25</cost>
-      <minrating>0</minrating>
+	  <capacity>1000000</capacity>
+	  <addoncategory>ID/Credsticks</addoncategory>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>d363dda7-4b9f-4323-b652-77a9ee037356</id>
@@ -14686,7 +14686,10 @@
       <page>193</page>
       <avail>0</avail>
       <cost>5</cost>
-      <minrating>0</minrating>
+	  <capacity>1000000</capacity>
+	  <addoncategory>ID/Credsticks</addoncategory>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
@@ -14697,7 +14700,10 @@
       <page>193</page>
       <avail>(Rating * 2)F</avail>
       <cost>Rating * 1000</cost>
-      <minrating>0</minrating>
+      <capacity>1000000</capacity>
+	  <addoncategory>ID/Credsticks</addoncategory>
+	  <addoncategory>Currency</addoncategory>
+	  <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>58b5730c-b8e4-4152-a1b3-31329d8a52fb</id>

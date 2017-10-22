@@ -252,7 +252,7 @@ namespace Chummer.Skills
 
             cost +=  //Spec
                     (!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
-                    CharacterObject.Options.KarmaSpecialization : 0;
+                    CharacterObject.Options.KarmaKnowledgeSpecialization : 0;
 
             if (UneducatedEffect()) cost *= 2;
 
