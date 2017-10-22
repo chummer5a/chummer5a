@@ -2011,19 +2011,19 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decCapacity = 0;
-                if (!_strCapacity.Contains("[") || _strCapacity.Contains("/["))
+                string strMyCapacity = CalculatedCapacity;
+                if (!strMyCapacity.Contains("[") || strMyCapacity.Contains("/["))
                 {
                     // Get the Gear base Capacity.
-                    if (_strCapacity.Contains("/["))
+                    if (strMyCapacity.Contains("/["))
                     {
                         // If this is a multiple-capacity item, use only the first half.
-                        string strMyCapacity = CalculatedCapacity;
                         int intPos = strMyCapacity.IndexOf("/[");
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
                         decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
                     }
                     else
-                        decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.CultureInfo);
+                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Gear objChildGear in Children)
