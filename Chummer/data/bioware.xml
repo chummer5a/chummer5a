@@ -277,6 +277,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -295,6 +300,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -834,7 +844,14 @@
           <value>1</value>
           <condition>Only for Swimming</condition>
         </limitmodifier>
+		<selectside />
       </bonus>
+	  <pairbonus>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+	  </pairbonus>
       <source>CF</source>
       <page>113</page>
     </bioware>
@@ -3105,6 +3122,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
@@ -3123,6 +3145,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>

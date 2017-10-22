@@ -34,6 +34,7 @@ using Chummer.Skills;
 using System.Reflection;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Extensions;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -6430,22 +6431,21 @@ namespace Chummer
                     return "Special";
                 }
 
-                string strReturn = string.Empty;
                 XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
                 XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 if (objXmlNode != null)
                 {
-                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
+                    string strReturn = string.Empty;
+                    if (objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn) && strReturn == "Special")
+                    {
+                        return "Special";
+                    }
                     objXmlNode.TryGetStringFieldQuickly("run", ref _strRun);
                     objXmlNode.TryGetStringFieldQuickly("walk", ref _strWalk);
                     objXmlNode.TryGetStringFieldQuickly("sprint", ref _strSprint);
-                    if (strReturn == "Special")
-                        {
-                            return "Special";
-                        }
                 }
 
-                return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground", true);
+                return CalculatedMovement("Ground", true);
             }
             set
             {
@@ -6460,18 +6460,23 @@ namespace Chummer
            get
             {
                 string strReturn = Movement;
+                if (strReturn.Contains(","))
+                {
+                    string[] strMovementWithSprint = strReturn.Split(',');
+                    strReturn = strMovementWithSprint[0].Trim();
+                }
                 if (strReturn.Contains("/"))
                 {
                     string[] strMovement = strReturn.Split('/');
-                    int intWalking = Convert.ToInt32(strMovement[0]);
-                    int intRunning = Convert.ToInt32(strMovement[1]);
+                    decimal decWalking = Convert.ToDecimal(strMovement[0], GlobalOptions.CultureInfo);
+                    decimal decRunning = Convert.ToDecimal(strMovement[1], GlobalOptions.CultureInfo);
 
-                    int walkratekph = Convert.ToInt32(.001 * (60 * 20 * intWalking));
-                    int runratekph = Convert.ToInt32(.001 * (60 * 20 * intRunning));
-                    int walkratemph = Convert.ToInt32(0.62 * .001 * (60 * 20 * intWalking));
-                    int runratemph = Convert.ToInt32(0.62 * .001 * (60 * 20 * intRunning));
+                    decimal walkratekph = .001m * (60 * 20 * decWalking);
+                    decimal runratekph = .001m * (60 * 20 * decRunning);
+                    //decimal walkratemph = 0.6213712m * walkratekph;
+                    //decimal runratemph = 0.6213712m * runratekph;
 
-                    strReturn = string.Format(LanguageManager.Instance.GetString("Tip_CalculatedMovement"), intWalking.ToString(), walkratekph.ToString(), intRunning.ToString(), runratekph.ToString());
+                    strReturn = string.Format(LanguageManager.Instance.GetString("Tip_CalculatedMovement"), decWalking.ToString("N2", GlobalOptions.CultureInfo), walkratekph.ToString("N2", GlobalOptions.CultureInfo), decRunning.ToString("N2", GlobalOptions.CultureInfo), runratekph.ToString("N2", GlobalOptions.CultureInfo));
                 }
 
                 return strReturn;
@@ -6540,41 +6545,6 @@ namespace Chummer
                     if (strReturn.Length > 1)
                         int.TryParse(strReturn[1], out intTmp);
                     break;
-                    case "Ground":
-                    if (strReturn.Length > 0)
-                        int.TryParse(strReturn[0], out intTmp);
-                    break;
-            }
-            return intTmp;
-        }
-
-        /// <summary>
-        /// Character's running Movement rate.
-        /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
-        /// </summary>
-        private int SprintingRate(string strType = "Ground")
-        {
-            int intTmp = 0;
-            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
-            {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
-                {
-                    intTmp = Math.Max(intTmp, objImprovement.Value);
-                }
-                return intTmp;
-            }
-
-            string[] strReturn = _strSprint.Split('/');
-            switch (strType)
-            {
-                case "Fly":
-                    if (strReturn.Length > 2)
-                        int.TryParse(strReturn[2], out intTmp);
-                    break;
-                case "Swim":
-                    if (strReturn.Length > 1)
-                        int.TryParse(strReturn[1], out intTmp);
-                    break;
                 case "Ground":
                     if (strReturn.Length > 0)
                         int.TryParse(strReturn[0], out intTmp);
@@ -6583,26 +6553,54 @@ namespace Chummer
             return intTmp;
         }
 
-        private string CalculatedMovement(Improvement.ImprovementType objImprovementType, string strMovementType, bool blnUseCyberlegs = false)
+        /// <summary>
+        /// Character's sprinting Movement rate (meters per hit).
+        /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+        /// </summary>
+        private decimal SprintingRate(string strType = "Ground")
         {
-            string strReturn;
-            int intMultiply = 1;
-            // If the FlySpeed is a negative number, Fly speed is instead calculated as Movement Rate * the number given.
-            if (objImprovementType == Improvement.ImprovementType.FlyPercent && ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) < 0)
+            decimal decTmp = 0;
+            if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
             {
-                intMultiply = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FlySpeed) * -1;
+                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
+                {
+                    decTmp = Math.Max(decTmp, objImprovement.Value) / 100.0m;
+                }
+                return decTmp;
             }
-            double dblPercent = ImprovementManager.ValueOf(this, objImprovementType) / 100.0;
 
-            int intRun = 0;
-            int intWalk = 0;
-            int intSprint = SprintingRate(strMovementType) * intMultiply;
-            double dblRunMultiplier = RunningRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
-            double dblWalkMultiplier = WalkingRate(strMovementType) * intMultiply + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MovementMultiplier);
+            string[] strReturn = _strSprint.Split('/');
+            switch (strType)
+            {
+                case "Fly":
+                    if (strReturn.Length > 2)
+                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
+                    break;
+                case "Swim":
+                    if (strReturn.Length > 1)
+                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
+                    break;
+                case "Ground":
+                    if (strReturn.Length > 0)
+                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
+                    break;
+            }
+            return decTmp;
+        }
 
-            intSprint += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent));
-            dblRunMultiplier += Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent;
-            dblWalkMultiplier += Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.InvariantCultureInfo) * dblPercent;
+        private string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false)
+        {
+            decimal decSprint = SprintingRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonus, false, strMovementType) / 100.0m;
+            decimal decRun = RunningRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunMultiplier, false, strMovementType);
+            decimal decWalk = WalkingRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.WalkMultiplier, false, strMovementType);
+            // Everything else after this just multiplies values, so we can check for zeroes here
+            if (decWalk == 0 && decRun == 0 && decSprint == 0)
+            {
+                return "0";
+            }
+            decSprint *= 1.0m + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonusPercent, false, strMovementType) / 100.0m;
+            decRun *= 1.0m + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunMultiplierPercent, false, strMovementType) / 100.0m;
+            decWalk *= 1.0m + ImprovementManager.ValueOf(this, Improvement.ImprovementType.WalkMultiplierPercent, false, strMovementType) / 100.0m;
 
             int intAGI = AGI.CalculatedTotalValue(false);
             int intSTR = STR.CalculatedTotalValue(false);
@@ -6623,22 +6621,19 @@ namespace Chummer
                     intSTR = intTempSTR;
                 }
             }
+
+            string strReturn = string.Empty;
             if (strMovementType == "Swim")
             {
-                intWalk = Convert.ToInt32(Math.Ceiling((intAGI + intSTR) * dblWalkMultiplier * 0.5));
-                strReturn = $"{intWalk}, {intSprint}m/ hit";
+                decWalk *= (intAGI + intSTR) * 0.5m;
+                strReturn = $"{decWalk:###,###,##0.##}, {decSprint:###,###,##0.##}m/ hit";
             }
             else
             {
-                intWalk = Convert.ToInt32(Math.Ceiling(intAGI * dblWalkMultiplier));
-                intRun = Convert.ToInt32(Math.Ceiling(intAGI * dblRunMultiplier));
-                strReturn = $"{intWalk}/{intRun}, {intSprint}m/ hit";
+                decWalk *= intAGI;
+                decRun *= intAGI;
+                strReturn = $"{decWalk:###,###,##0.##}/{decRun:###,###,##0.##}, {decSprint:###,###,##0.##}m/ hit";
             }
-            if (intWalk == 0 && intRun == 0 && intSprint == 0)
-            {
-                return "0";
-            }
-
             return strReturn;
         }
 
@@ -6655,18 +6650,18 @@ namespace Chummer
                     return "Special";
                 }
 
-                string strReturn = string.Empty;
                 XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
                 XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 if (objXmlNode != null)
                 {
+                    string strReturn = string.Empty;
                     objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
                     if (strReturn == "Special")
-                {
-                    return "Special";
+                    {
+                        return "Special";
+                    }
                 }
-                }
-                return CalculatedMovement(Improvement.ImprovementType.SwimPercent, "Swim");
+                return CalculatedMovement("Swim");
             }
         }
 
@@ -6683,19 +6678,19 @@ namespace Chummer
                     return "Special";
                 }
 
-                string strReturn = string.Empty;
                 XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
                 XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 if (objXmlNode != null)
                 {
+                    string strReturn = string.Empty;
                     objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
                     if (strReturn == "Special")
-                {
+                    {
                     return "Special";
-                }
+                    }
                 }
 
-                return CalculatedMovement(Improvement.ImprovementType.FlyPercent, "Fly");
+                return CalculatedMovement("Fly");
             }
         }
 
@@ -6705,12 +6700,15 @@ namespace Chummer
         private string FullMovement()
         {
             string strReturn = string.Empty;
-            if (Movement != "0")
-                strReturn += Movement + ", ";
-            if (Swim != "0")
-                strReturn += LanguageManager.Instance.GetString("Label_OtherSwim") + " " + Swim + ", ";
-            if (Fly != "0")
-                strReturn += LanguageManager.Instance.GetString("Label_OtherFly") + " " + Fly + ", ";
+            string strGroundMovement = Movement;
+            string strSwimMovement = Swim;
+            string strFlyMovement = Fly;
+            if (!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
+                strReturn += strGroundMovement + ", ";
+            if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")
+                strReturn += LanguageManager.Instance.GetString("Label_OtherSwim") + " " + strSwimMovement + ", ";
+            if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
+                strReturn += LanguageManager.Instance.GetString("Label_OtherFly") + " " + strFlyMovement + ", ";
 
             // Remove the trailing ", ".
             if (!string.IsNullOrEmpty(strReturn))

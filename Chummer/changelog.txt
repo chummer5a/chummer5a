@@ -156,6 +156,7 @@ Application Changes:
 - Added backend support for cyberware bonuses that only activate per pair instead of per discrete piece.
 - Fixed a bug where cyberware added to vehicles did not allow for subsystems to be added to it.
 - Fixed issues with skill dicepool tooltips not properly recognizing improvement sources from cyberware, nested 'ware, armor, armor mods, martial arts advantages, critter powers, and nested gear (including ones inside weapons, armor, armor mods, weapon accessories, cyberware, and vehicles).
+- Movement speeds should now properly display decimal values (e.g. "4/8, 1.5m/hit") when applicable.
 
 Data Changes:
 
@@ -254,10 +255,19 @@ Data Changes:
 - Fixed bugs where various pieces of cyberware subsystems could be added to the incorrect type of cyberware parent (e.g. Improved Synthskin to obvious cyberlimbs).
 - Fixed a bug where Digigrade Legs would not increase the essence cost of cyberlegs for which it is taken.
 - Fixed a bug where Bulk Modification could be taken at a higher rating than is allowed for certain types of cyberlimbs.
-- Differentiated the cyberlegs on a Liminal Body, Centaur from each other and added Digigrade Legs to the back pair because a horse's back legs are digigrade.
+- Differentiated the cyberlegs on a Liminal Body, Centaur from each other. Digigrade Legs cannot be taken on the back pair because a horse's back legs are already digigrade (and the effect is already factored into the running speed boost of Liminal Body, Centaur).
 - Added the ability to pick which side a cyberfinger goes on (e.g. right hand or left hand) and added the ability to have custom cyberfinger types.
 - Water Jets now properly increases Swimming speed.
 - Added pair bonuses to Cyberfins and Snake Fingers. Digigrade Legs, Skimmers, and Skates now use pair bonuses instead of regular ones.
+- Fixed incorrect ammo capacity and type on the Nitama Sporter. Fixes #1982.
+- Fixed being able to take muscle- and/or leg-altering (read: cyberlegs) augmentations with Celerity. Celerity is now a metatype removable quality on metavariants in case they are forced to take leg-altering augmentations.
+- Primitive Leg augmentations now properly reduce walking and running speeds.
+- Digigrade Legs properly increases run multipliers by 1, while Skimmers and Skates now properly grant increases to walking and running speeds.
+- Fixed Liminal Body Centaur and Liminal Body Wheeled increasing all movement rates by 100% instead of just running speed.
+- Power Swimming now properly grants bonuses to swimming speeds, and a separate version of the power has been added for Elves and Trolls that grants the swim sprinting speed appropriate for them.
+- Fixed Celerity increasing all movement speeds by +50% instead of overwriting ground walking and running speeds and adding +1m/hit to ground sprinting speeds.
+- Fixed Satyr Legs replacing ground sprinting speeds with 2m/hit instead of adding +1m/hit.
+- Fixed Adiposis decreasing all movement speeds by 50% instead of overwriting ground walking, running, and sprinting speeds.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
