@@ -1771,7 +1771,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Just a straight cost, so return the value.
-                decimal.TryParse(_strESS, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decReturn);
+                decimal.TryParse(strESS, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decReturn);
             }
 
             // Factor in the Essence multiplier of the selected CyberwareGrade.
@@ -1924,7 +1924,7 @@ namespace Chummer.Backend.Equipment
                     // Just a straight cost, so return the value.
                     try
                     {
-                        decCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
+                        decCost = Convert.ToDecimal(strCostExpression, GlobalOptions.InvariantCultureInfo);
                     }
                     catch (FormatException)
                     {
