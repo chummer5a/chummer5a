@@ -158,6 +158,7 @@ Application Changes:
 - Fixed issues with skill dicepool tooltips not properly recognizing improvement sources from cyberware, nested 'ware, armor, armor mods, martial arts advantages, critter powers, and nested gear (including ones inside weapons, armor, armor mods, weapon accessories, cyberware, and vehicles).
 - Movement speeds should now properly display decimal values (e.g. "4/8, 1.5m/hit") when applicable.
 - Fixed a crash when adding an item with over 1,000 capacity in a culture using a decimal comma. Fixes #1983.
+- Allowed for full localization of the updater, added a label to indicate whether the user is running the latest version of Chummer5 that is available on their chosen update channel (stable or nightly), and force-disabled the Download button if they are running what is the latest version of their chosen update channel (the button isn't disabled if they're running the latest nightly, but switched update channels to stable). Fixes #1977.
 
 Data Changes:
 
@@ -316,6 +317,15 @@ New Strings:
 - Label_CreateImprovementExactly
 - String_Immune
 - Label_DiceRoller_Sum
+- Button_Download
+- Button_Redownload
+- Button_Install_Restart
+- Label_Updater_Status
+- String_Up_To_Date
+- String_Nightly_Changelog_Warning
+- String_Stable
+- String_Nightly
+- String_Update_Available
 
 Changes Strings:
 - Message_PositiveQualityLimit
