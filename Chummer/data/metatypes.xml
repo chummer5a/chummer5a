@@ -2412,6 +2412,7 @@
     </metatype>
     <!-- End Region -->
     <!-- Region Shapeshifter -->
+    <!-- TODO: Review after this point -->
     <metatype>
       <id>5f618c01-e149-4dc6-8fcd-22f548a9f155</id>
       <name>Shapeshifter: Bovine</name>
@@ -2524,7 +2525,7 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -2592,7 +2593,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2659,7 +2660,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -2726,7 +2727,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2797,7 +2798,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2865,7 +2866,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -2933,7 +2934,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>115</karma>
@@ -3002,7 +3003,7 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3058,7 +3059,7 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="4/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3127,7 +3128,7 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -3986,9 +3987,31 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
-          <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">2/1/0</sprint>
-          <bonus />
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+            </positive>
+          </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
@@ -4037,15 +4060,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Shiva Arms (1 Pair)</quality>
+              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
             <negative>
-              <quality>Striking Skin Pigmentation</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
-          <bonus />
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4094,14 +4138,32 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <bonus />
           <source>SR5</source>
           <page>50</page>
@@ -4151,15 +4213,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
             <negative>
               <quality>Symbiosis</quality>
             </negative>
           </qualities>
-          <bonus />
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4208,16 +4290,39 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality>Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
             <negative>
-              <quality select="Sunlight">Allergy (Common, Mild)</quality>
-              <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select="Sunlight (Metahuman Form Only)">Allergy (Common, Mild)</quality>
+              <quality select="Metahuman Form Only">Nocturnal</quality>
+              <quality select ="Coloured Fur (Metahuman Form Only)">Unusual Hair</quality>
             </negative>
+          </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
+          <qualities>
           </qualities>
           <bonus />
           <source>RF</source>
@@ -4268,15 +4373,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
             <negative>
-              <quality select="Pollution">Allergy (Common, Mild)</quality>
+              <quality select="Pollution (Metahuman Form Only)">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
-          <bonus />
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4324,14 +4449,34 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
           </qualities>
-          <bonus />
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <karma>125</karma>
           <source>RF</source>
           <page>104</page>
@@ -4381,16 +4526,33 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
           </qualities>
           <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -4441,17 +4603,37 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <bonus>
-            <lifestylecost>20</lifestylecost>
-          </bonus>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
             <negative>
-              <quality>Neoteny</quality>
+              <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>RF</source>
           <page>89</page>
         </metavariant>
@@ -4500,19 +4682,39 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <bonus>
-            <lifestylecost>20</lifestylecost>
-          </bonus>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
-              <quality>Monkey Paws</quality>
-              <quality>Functional Tail (Prehensile)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Monkey Paws</quality>
+              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Unusual Hair</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>RF</source>
           <page>89</page>
         </metavariant>
@@ -4561,14 +4763,38 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+            </positive>
+          </qualities>
           <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
-              <quality>Thermographic Vision</quality>
             </positive>
             <negative>
               <quality>Unusual Hair</quality>
@@ -4622,14 +4848,37 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Resistance to Pathogens</quality>
-              <quality>Thermographic Vision</quality>
-              <quality>Underwater Vision</quality>
-              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -4678,15 +4927,33 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
             </positive>
           </qualities>
-          <bonus />
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
@@ -4735,14 +5002,34 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality>Fangs</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <karma>115</karma>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4791,13 +5078,34 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <karma>8</karma>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4846,16 +5154,37 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
-              <quality>Striking Skin Pigmentation</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <karma>4</karma>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4903,17 +5232,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">2/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality>Satyr Legs</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
           </qualities>
+          <bonus>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
+          </bonus>
           <karma>130</karma>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -4962,23 +5309,39 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
-          <forms>
-          </forms>
         </metavariant>
         <metavariant>
           <name>Cyclops</name>
@@ -5025,18 +5388,39 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
-              <quality>Cyclopean Eye</quality>
+              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
             </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
+            <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5086,15 +5470,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Ultrasonic; Shapeshifter Form Only">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
-          <karma>12</karma>
           <bonus>
+            <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5144,15 +5549,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Ultrasonic (Shapeshifter Form Only)">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
+            <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5202,21 +5628,42 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="6/1/0">4/1/0</run>
+          <sprint alt="3/1/0">1/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Ultrasonic (Shapeshifter Form Only)">Broadened Auditory Spectrum</quality>
+              <quality select ="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
+            <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Canine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>104</page>
+            </naturalweapon>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
         </metavariant>
       </metavariants>
-    </metatype>    
+    </metatype>
     <metatype>
       <id>4286946f-7078-41a6-9b70-0f73f4f1db9d</id>
       <name>Shapeshifter: Equine</name>
@@ -5315,16 +5762,20 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
+          <qualities>
+            <positive>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
@@ -5373,19 +5824,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Shiva Arms (1 Pair)</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Methuaman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality>Striking Skin Pigmentation</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
+
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5436,19 +5889,19 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -5499,16 +5952,19 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5559,22 +6015,23 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
-              <quality select="Sunlight">Allergy (Common, Mild)</quality>
-              <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality>Uneducated</quality>
+              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Metahuman Form Only">Nocturnal</quality>
+              <quality select ="Coloured Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5625,19 +6082,22 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Pollution">Allergy (Common, Mild)</quality>
+              <quality>Uneducated</quality>
+              <negative>
+                <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              </negative>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -5687,18 +6147,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
-              <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <karma>135</karma>
@@ -5750,20 +6213,20 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
@@ -5815,20 +6278,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Neoteny</quality>
+              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -5879,22 +6343,23 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
-              <quality>Monkey Paws</quality>
-              <quality>Functional Tail (Prehensile)</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Monkey Paws</quality>
+              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Unusual Hair</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -5945,22 +6410,23 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Unusual Hair</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -6011,19 +6477,22 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Resistance to Pathogens</quality>
-              <quality>Thermographic Vision</quality>
-              <quality>Underwater Vision</quality>
-              <quality>Webbed Digits</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -6074,19 +6543,19 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
@@ -6137,18 +6606,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
-              <quality>Fangs</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <karma>5</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -6199,17 +6671,20 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <karma>8</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -6260,20 +6735,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Striking Skin Pigmentation</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
           <karma>4</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -6323,21 +6799,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
-              <quality>Satyr Legs</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <karma>140</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
@@ -6388,20 +6864,16 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">1/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -6456,20 +6928,21 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Cyclopean Eye</quality>
+              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
           <karma>2</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -6522,17 +6995,20 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>              
             </positive>
+            <negative>              
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <karma>12</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -6585,17 +7061,16 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -6648,17 +7123,19 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
-          </powers>
+          <walk alt="1/1/0">2/1/0</walk>
+          <run alt="4/1/0">4/1/0</run>
+          <sprint alt="4/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
-            <enabletab>critter</enabletab>
             <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -6668,6 +7145,7 @@
         </metavariant>
       </metavariants>
     </metatype>
+    <!-- TODO: Initial entry after this point -->
     <metatype>
       <id>4f5d2d05-bccd-45d4-9d2e-e8904b1f255a</id>
       <name>Shapeshifter: Falconine</name>
@@ -16016,1867 +16494,1866 @@
       </metavariants>
     </metatype>
     <metatype>
-		<id>32c183be-74c8-403e-bcae-a5c4baadc3ec</id>
-		<name>Shapeshifter: Phocine</name>
-		<karma>140</karma>
-		<category>Shapeshifter</category>
-		<bodmin>3</bodmin>
-		<bodmax>8</bodmax>
-		<bodaug>12</bodaug>
-		<agimin>3</agimin>
-		<agimax>8</agimax>
-		<agiaug>12</agiaug>
-		<reamin>1</reamin>
-		<reamax>6</reamax>
-		<reaaug>10</reaaug>
-		<strmin>2</strmin>
-		<strmax>7</strmax>
-		<straug>11</straug>
-		<chamin>1</chamin>
-		<chamax>6</chamax>
-		<chaaug>10</chaaug>
-		<intmin>1</intmin>
-		<intmax>6</intmax>
-		<intaug>10</intaug>
-		<logmin>1</logmin>
-		<logmax>6</logmax>
-		<logaug>10</logaug>
-		<wilmin>1</wilmin>
-		<wilmax>5</wilmax>
-		<wilaug>9</wilaug>
-		<inimin>2</inimin>
-		<inimax>12</inimax>
-		<iniaug>20</iniaug>
-		<edgmin>1</edgmin>
-		<edgmax>5</edgmax>
-		<edgaug>5</edgaug>
-		<magmin>1</magmin>
-		<magmax>5</magmax>
-		<magaug>5</magaug>
-		<resmin>1</resmin>
-		<resmax>6</resmax>
-		<resaug>6</resaug>
-		<essmin>0</essmin>
-		<essmax>6</essmax>
-		<essaug>6</essaug>
-		<depmin>0</depmin>
-		<depmax>0</depmax>
-		<depaug>0</depaug>
-		<walk>1/3/0</walk>
-		<run>2/8/0</run>
-		<sprint>1/4/0</sprint>
-		<source>SAG</source>
-		<page>147</page>
-		<metavariants>
-			<metavariant>
-				<name>Human</name>
-				<karma>140</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>6</strmax>
-				<straug>10</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>2</edgmin>
-				<edgmax>7</edgmax>
-				<edgaug>7</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>2/1/0</sprint>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>SR5</source>
-				<page>50</page>
-			</metavariant>
-			<metavariant>
-				<name>Nartaki</name>
-				<karma>140</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>6</strmax>
-				<straug>10</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>2</edgmin>
-				<edgmax>7</edgmax>
-				<edgaug>7</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Shiva Arms (1 Pair)</quality>
-					</positive>
-					<negative>
-						<quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Elf</name>
-				<karma>145</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>6</strmax>
-				<straug>10</straug>
-				<chamin>3</chamin>
-				<chamax>8</chamax>
-				<chaaug>12</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>2/1/0</sprint>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>SR5</source>
-				<page>50</page>
-			</metavariant>
-			<metavariant>
-				<name>Dryad</name>
-				<karma>142</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>5</strmax>
-				<straug>9</straug>
-				<chamin>3</chamin>
-				<chamax>8</chamax>
-				<chaaug>12</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Nocturna</name>
-				<karma>145</karma>
-				<bodmin>1</bodmin>
-				<bodmax>5</bodmax>
-				<bodaug>9</bodaug>
-				<agimin>3</agimin>
-				<agimax>8</agimax>
-				<agiaug>12</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>6</strmax>
-				<straug>10</straug>
-				<chamin>2</chamin>
-				<chamax>7</chamax>
-				<chaaug>11</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality select="Sunlight">Allergy (Common, Mild)</quality>
-						<quality select="Metahuman Form Only">Nocturnal</quality>
-						<quality select ="Coloured Fur (Metahuman Form Only)">Unusual Hair</quality>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Xapiri Thëpë</name>
-				<karma>143</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<karma>103</karma>
-				<bodaug>10</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>6</strmax>
-				<straug>10</straug>
-				<chamin>3</chamin>
-				<chamax>8</chamax>
-				<chaaug>12</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality select="Pollution">Allergy (Common, Mild)</quality>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Wakyambi</name>
-				<karma>155</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>6</strmax>
-				<straug>10</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>2</intmin>
-				<intmax>7</intmax>
-				<intaug>11</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>13</inimax>
-				<iniaug>21</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality>Elongated Limbs</quality>
-						<quality>Celerity</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Dwarf</name>
-				<karma>148</karma>
-				<bodmin>3</bodmin>
-				<bodmax>8</bodmax>
-				<bodaug>12</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>5</reamax>
-				<reaaug>9</reaaug>
-				<strmin>3</strmin>
-				<strmax>8</strmax>
-				<straug>12</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>2</wilmin>
-				<wilmax>7</wilmax>
-				<wilaug>11</wilaug>
-				<inimin>2</inimin>
-				<inimax>11</inimax>
-				<iniaug>19</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>5</edgmax>
-				<edgaug>5</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>1/1/0</sprint>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>SR5</source>
-				<page>50</page>
-			</metavariant>
-			<metavariant>
-				<name>Gnome</name>
-				<karma>140</karma>
-				<bodmin>1</bodmin>
-				<bodmax>4</bodmax>
-				<bodaug>8</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>1</strmin>
-				<strmax>4</strmax>
-				<straug>8</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>2</logmin>
-				<logmax>7</logmax>
-				<logaug>11</logaug>
-				<wilmin>2</wilmin>
-				<wilmax>7</wilmax>
-				<wilaug>11</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>1/1/0</sprint>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-				</bonus>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-						<quality select="Metahuman Form Only">Neoteny</quality>
-					</negative>
-				</qualities>
-				<source>RF</source>
-				<page>89</page>
-			</metavariant>
-			<metavariant>
-				<name>Hanuman</name>
-				<karma>153</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>2</strmin>
-				<strmax>7</strmax>
-				<straug>11</straug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<intmin>2</intmin>
-				<intmax>7</intmax>
-				<intaug>11</intaug>
-				<chamin>1</chamin>
-				<chamax>5</chamax>
-				<chaaug>9</chaaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>1/1/0</sprint>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Monkey Paws</quality>
-						<quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-						<quality select="Metahuman Form Only">Unusual Hair</quality>
-					</negative>
-				</qualities>
-				<source>RF</source>
-				<page>89</page>
-			</metavariant>
-			<metavariant>
-				<name>Koborokuru</name>
-				<karma>148</karma>
-				<bodmin>2</bodmin>
-				<bodmax>7</bodmax>
-				<bodaug>11</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>2</strmin>
-				<strmax>7</strmax>
-				<straug>11</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>2</wilmin>
-				<wilmax>7</wilmax>
-				<wilaug>11</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Celerity</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-						<quality>Unusual Hair</quality>
-					</negative>
-				</qualities>
-				<source>RF</source>
-				<page>90</page>
-			</metavariant>
-			<metavariant>
-				<name>Menehune</name>
-				<karma>150</karma>
-				<bodmin>2</bodmin>
-				<bodmax>7</bodmax>
-				<bodaug>11</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>5</reamax>
-				<reaaug>9</reaaug>
-				<strmin>2</strmin>
-				<strmax>7</strmax>
-				<straug>11</straug>
-				<chamin>1</chamin>
-				<chamax>6</chamax>
-				<chaaug>10</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>11</inimax>
-				<iniaug>19</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality>Underwater Vision</quality>
-						<quality>Webbed Digits</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>90</page>
-			</metavariant>
-			<metavariant>
-				<name>Ork</name>
-				<karma>150</karma>
-				<bodmin>4</bodmin>
-				<bodmax>9</bodmax>
-				<bodaug>13</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>3</strmin>
-				<strmax>8</strmax>
-				<straug>12</straug>
-				<chamin>1</chamin>
-				<chamax>5</chamax>
-				<chaaug>9</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>2/1/0</sprint>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>SR5</source>
-				<page>50</page>
-			</metavariant>
-			<metavariant>
-				<name>Hobgoblin</name>
-				<karma>150</karma>
-				<bodmin>1</bodmin>
-				<bodmax>6</bodmax>
-				<bodaug>10</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>2</strmin>
-				<strmax>7</strmax>
-				<straug>11</straug>
-				<chamin>2</chamin>
-				<chamax>7</chamax>
-				<chaaug>11</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Fangs</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<bonus />
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Ogre</name>
-				<karma>153</karma>
-				<bodmin>4</bodmin>
-				<bodmax>9</bodmax>
-				<bodaug>13</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>1</reamin>
-				<reamax>5</reamax>
-				<reaaug>9</reaaug>
-				<strmin>3</strmin>
-				<strmax>8</strmax>
-				<straug>12</straug>
-				<chamin>1</chamin>
-				<chamax>4</chamax>
-				<chaaug>8</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>2</wilmin>
-				<wilmax>7</wilmax>
-				<wilaug>11</wilaug>
-				<inimin>2</inimin>
-				<inimax>11</inimax>
-				<iniaug>19</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Oni</name>
-				<karma>150</karma>
-				<bodmin>3</bodmin>
-				<bodmax>8</bodmax>
-				<bodaug>12</bodaug>
-				<agimin>2</agimin>
-				<agimax>7</agimax>
-				<agiaug>11</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>2</strmin>
-				<strmax>7</strmax>
-				<straug>11</straug>
-				<chamin>2</chamin>
-				<chamax>7</chamax>
-				<chaaug>11</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-						<quality>Striking Skin Pigmentation</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Satyr</name>
-				<karma>160</karma>
-				<bodmin>2</bodmin>
-				<bodmax>7</bodmax>
-				<bodaug>11</bodaug>
-				<agimin>1</agimin>
-				<agimax>6</agimax>
-				<agiaug>10</agiaug>
-				<reamin>2</reamin>
-				<reamax>7</reamax>
-				<reaaug>11</reaaug>
-				<strmin>2</strmin>
-				<strmax>7</strmax>
-				<straug>11</straug>
-				<chamin>1</chamin>
-				<chamax>5</chamax>
-				<chaaug>9</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>6</logmax>
-				<logaug>10</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>3</inimin>
-				<inimax>13</inimax>
-				<iniaug>21</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>2/1/0</sprint>
-				<powers>
-					<power select="Standard: x1/x2/+2m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Low-Light Vision</quality>
-						<quality>Satyr Legs</quality>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-					</positive>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Troll</name>
-				<karma>160</karma>
-				<bodmin>5</bodmin>
-				<bodmax>10</bodmax>
-				<bodaug>14</bodaug>
-				<agimin>1</agimin>
-				<agimax>5</agimax>
-				<agiaug>9</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>5</strmin>
-				<strmax>10</strmax>
-				<straug>14</straug>
-				<chamin>1</chamin>
-				<chamax>4</chamax>
-				<chaaug>8</chaaug>
-				<intmin>1</intmin>
-				<intmax>5</intmax>
-				<intaug>9</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>11</inimax>
-				<iniaug>19</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<walk>2/1/0</walk>
-				<run>4/0/0</run>
-				<sprint>1/1/0</sprint>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<armor group="0">1</armor>
-					<reach>1</reach>
-					<lifestylecost>100</lifestylecost>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>SR5</source>
-				<page>50</page>
-				<forms>
-				</forms>
-			</metavariant>
-			<metavariant>
-				<name>Cyclops</name>
-				<karma>155</karma>
-				<bodmin>5</bodmin>
-				<bodmax>10</bodmax>
-				<bodaug>14</bodaug>
-				<agimin>1</agimin>
-				<agimax>5</agimax>
-				<agiaug>9</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>6</strmin>
-				<strmax>11</strmax>
-				<straug>15</straug>
-				<chamin>1</chamin>
-				<chamax>4</chamax>
-				<chaaug>8</chaaug>
-				<intmin>1</intmin>
-				<intmax>5</intmax>
-				<intaug>9</intaug>
-				<logmin>1</logmin>
-				<logmax>4</logmax>
-				<logaug>8</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>11</inimax>
-				<iniaug>19</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-						<quality>Cyclopean Eye</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<reach>1</reach>
-					<lifestylecost>100</lifestylecost>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Fomorian</name>
-				<karma>158</karma>
-				<bodmin>4</bodmin>
-				<bodmax>9</bodmax>
-				<bodaug>13</bodaug>
-				<agimin>1</agimin>
-				<agimax>5</agimax>
-				<agiaug>9</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>5</strmin>
-				<strmax>10</strmax>
-				<straug>14</straug>
-				<chamin>1</chamin>
-				<chamax>5</chamax>
-				<chaaug>9</chaaug>
-				<intmin>1</intmin>
-				<intmax>4</intmax>
-				<intaug>8</intaug>
-				<logmin>1</logmin>
-				<logmax>4</logmax>
-				<logaug>8</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>5</wilmax>
-				<wilaug>9</wilaug>
-				<inimin>2</inimin>
-				<inimax>10</inimax>
-				<iniaug>18</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-					<reach>1</reach>
-					<lifestylecost>100</lifestylecost>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Giant</name>
-				<karma>160</karma>
-				<bodmin>5</bodmin>
-				<bodmax>10</bodmax>
-				<bodaug>14</bodaug>
-				<agimin>1</agimin>
-				<agimax>5</agimax>
-				<agiaug>9</agiaug>
-				<reamin>1</reamin>
-				<reamax>5</reamax>
-				<reaaug>9</reaaug>
-				<strmin>5</strmin>
-				<strmax>10</strmax>
-				<straug>14</straug>
-				<chamin>1</chamin>
-				<chamax>5</chamax>
-				<chaaug>9</chaaug>
-				<intmin>1</intmin>
-				<intmax>5</intmax>
-				<intaug>9</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>10</inimax>
-				<iniaug>18</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-					<reach>1</reach>
-					<lifestylecost>100</lifestylecost>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-			<metavariant>
-				<name>Minotaur</name>
-				<karma>160</karma>
-				<bodmin>6</bodmin>
-				<bodmax>11</bodmax>
-				<bodaug>15</bodaug>
-				<agimin>1</agimin>
-				<agimax>5</agimax>
-				<agiaug>9</agiaug>
-				<reamin>1</reamin>
-				<reamax>6</reamax>
-				<reaaug>10</reaaug>
-				<strmin>5</strmin>
-				<strmax>10</strmax>
-				<straug>14</straug>
-				<chamin>1</chamin>
-				<chamax>4</chamax>
-				<chaaug>8</chaaug>
-				<intmin>1</intmin>
-				<intmax>6</intmax>
-				<intaug>10</intaug>
-				<logmin>1</logmin>
-				<logmax>5</logmax>
-				<logaug>9</logaug>
-				<wilmin>1</wilmin>
-				<wilmax>6</wilmax>
-				<wilaug>10</wilaug>
-				<inimin>2</inimin>
-				<inimax>12</inimax>
-				<iniaug>20</iniaug>
-				<edgmin>1</edgmin>
-				<edgmax>6</edgmax>
-				<edgaug>6</edgaug>
-				<magmin>1</magmin>
-				<magmax>6</magmax>
-				<magaug>6</magaug>
-				<resmin>1</resmin>
-				<resmax>6</resmax>
-				<resaug>6</resaug>
-				<essmin>0</essmin>
-				<essmax>6</essmax>
-				<essaug>6</essaug>
-				<depmin>0</depmin>
-				<depmax>0</depmax>
-				<depaug>0</depaug>
-				<powers>
-					<power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
-					<power>Shift (Metahuman Form)</power>
-				</powers>
-				<qualities>
-					<positive>
-						<quality>Keen-Eared</quality>
-						<quality>Vomeronasal Organ</quality>
-						<quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-						<quality>Webbed Digits</quality>
-						<quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-						<quality select="Shapeshifter Form Only">Underwater Vision</quality>
-						<quality select="Metahuman Form Only">Thermographic Vision</quality>
-						<quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-					</positive>
-					<negative>
-						<quality>Uneducated</quality>
-					</negative>
-				</qualities>
-				<bonus>
-					<enabletab>critter</enabletab>
-					<initiativedice>1</initiativedice>
-					<lifestylecost>20</lifestylecost>
-					<naturalweapon>
-						<name>Bite (Seal Form)</name>
-						<reach>-1</reach>
-						<damage>(STR+1)P</damage>
-						<ap>-1</ap>
-						<useskill>Unarmed Combat</useskill>
-						<accuracy>Physical</accuracy>
-						<source>SAG</source>
-						<page>147</page>
-					</naturalweapon>
-					<reach>1</reach>
-					<lifestylecost>100</lifestylecost>
-				</bonus>
-				<source>RF</source>
-				<page>104</page>
-			</metavariant>
-		</metavariants>
-	</metatype>
-    
-	<!-- End Region -->
+      <id>32c183be-74c8-403e-bcae-a5c4baadc3ec</id>
+      <name>Shapeshifter: Phocine</name>
+      <karma>140</karma>
+      <category>Shapeshifter</category>
+      <bodmin>3</bodmin>
+      <bodmax>8</bodmax>
+      <bodaug>12</bodaug>
+      <agimin>3</agimin>
+      <agimax>8</agimax>
+      <agiaug>12</agiaug>
+      <reamin>1</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>2</strmin>
+      <strmax>7</strmax>
+      <straug>11</straug>
+      <chamin>1</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>1</intmin>
+      <intmax>6</intmax>
+      <intaug>10</intaug>
+      <logmin>1</logmin>
+      <logmax>6</logmax>
+      <logaug>10</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>5</wilmax>
+      <wilaug>9</wilaug>
+      <inimin>2</inimin>
+      <inimax>12</inimax>
+      <iniaug>20</iniaug>
+      <edgmin>1</edgmin>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
+      <magmin>1</magmin>
+      <magmax>5</magmax>
+      <magaug>5</magaug>
+      <resmin>1</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <walk>1/3/0</walk>
+      <run>2/8/0</run>
+      <sprint>1/4/0</sprint>
+      <source>SAG</source>
+      <page>147</page>
+      <metavariants>
+        <metavariant>
+          <name>Human</name>
+          <karma>140</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>6</strmax>
+          <straug>10</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>2</edgmin>
+          <edgmax>7</edgmax>
+          <edgaug>7</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>2/1/0</sprint>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>SR5</source>
+          <page>50</page>
+        </metavariant>
+        <metavariant>
+          <name>Nartaki</name>
+          <karma>140</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>6</strmax>
+          <straug>10</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>2</edgmin>
+          <edgmax>7</edgmax>
+          <edgaug>7</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Shiva Arms (1 Pair)</quality>
+            </positive>
+            <negative>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Elf</name>
+          <karma>145</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>6</strmax>
+          <straug>10</straug>
+          <chamin>3</chamin>
+          <chamax>8</chamax>
+          <chaaug>12</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>2/1/0</sprint>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>SR5</source>
+          <page>50</page>
+        </metavariant>
+        <metavariant>
+          <name>Dryad</name>
+          <karma>142</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>5</strmax>
+          <straug>9</straug>
+          <chamin>3</chamin>
+          <chamax>8</chamax>
+          <chaaug>12</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Nocturna</name>
+          <karma>145</karma>
+          <bodmin>1</bodmin>
+          <bodmax>5</bodmax>
+          <bodaug>9</bodaug>
+          <agimin>3</agimin>
+          <agimax>8</agimax>
+          <agiaug>12</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>6</strmax>
+          <straug>10</straug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality select="Sunlight">Allergy (Common, Mild)</quality>
+              <quality select="Metahuman Form Only">Nocturnal</quality>
+              <quality select ="Coloured Fur (Metahuman Form Only)">Unusual Hair</quality>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Xapiri Thëpë</name>
+          <karma>143</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <karma>103</karma>
+          <bodaug>10</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>6</strmax>
+          <straug>10</straug>
+          <chamin>3</chamin>
+          <chamax>8</chamax>
+          <chaaug>12</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality select="Pollution">Allergy (Common, Mild)</quality>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Wakyambi</name>
+          <karma>155</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>6</strmax>
+          <straug>10</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>2</intmin>
+          <intmax>7</intmax>
+          <intaug>11</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>13</inimax>
+          <iniaug>21</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality>Elongated Limbs</quality>
+              <quality>Celerity</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Dwarf</name>
+          <karma>148</karma>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>5</reamax>
+          <reaaug>9</reaaug>
+          <strmin>3</strmin>
+          <strmax>8</strmax>
+          <straug>12</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>2</wilmin>
+          <wilmax>7</wilmax>
+          <wilaug>11</wilaug>
+          <inimin>2</inimin>
+          <inimax>11</inimax>
+          <iniaug>19</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>5</edgmax>
+          <edgaug>5</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>SR5</source>
+          <page>50</page>
+        </metavariant>
+        <metavariant>
+          <name>Gnome</name>
+          <karma>140</karma>
+          <bodmin>1</bodmin>
+          <bodmax>4</bodmax>
+          <bodaug>8</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>1</strmin>
+          <strmax>4</strmax>
+          <straug>8</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>2</logmin>
+          <logmax>7</logmax>
+          <logaug>11</logaug>
+          <wilmin>2</wilmin>
+          <wilmax>7</wilmax>
+          <wilaug>11</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Neoteny</quality>
+            </negative>
+          </qualities>
+          <source>RF</source>
+          <page>89</page>
+        </metavariant>
+        <metavariant>
+          <name>Hanuman</name>
+          <karma>153</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>2</strmin>
+          <strmax>7</strmax>
+          <straug>11</straug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <intmin>2</intmin>
+          <intmax>7</intmax>
+          <intaug>11</intaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Monkey Paws</quality>
+              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
+            </negative>
+          </qualities>
+          <source>RF</source>
+          <page>89</page>
+        </metavariant>
+        <metavariant>
+          <name>Koborokuru</name>
+          <karma>148</karma>
+          <bodmin>2</bodmin>
+          <bodmax>7</bodmax>
+          <bodaug>11</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>2</strmin>
+          <strmax>7</strmax>
+          <straug>11</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>2</wilmin>
+          <wilmax>7</wilmax>
+          <wilaug>11</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+              <quality>Unusual Hair</quality>
+            </negative>
+          </qualities>
+          <source>RF</source>
+          <page>90</page>
+        </metavariant>
+        <metavariant>
+          <name>Menehune</name>
+          <karma>150</karma>
+          <bodmin>2</bodmin>
+          <bodmax>7</bodmax>
+          <bodaug>11</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>5</reamax>
+          <reaaug>9</reaaug>
+          <strmin>2</strmin>
+          <strmax>7</strmax>
+          <straug>11</straug>
+          <chamin>1</chamin>
+          <chamax>6</chamax>
+          <chaaug>10</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>11</inimax>
+          <iniaug>19</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality>Underwater Vision</quality>
+              <quality>Webbed Digits</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>90</page>
+        </metavariant>
+        <metavariant>
+          <name>Ork</name>
+          <karma>150</karma>
+          <bodmin>4</bodmin>
+          <bodmax>9</bodmax>
+          <bodaug>13</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>3</strmin>
+          <strmax>8</strmax>
+          <straug>12</straug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>2/1/0</sprint>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>SR5</source>
+          <page>50</page>
+        </metavariant>
+        <metavariant>
+          <name>Hobgoblin</name>
+          <karma>150</karma>
+          <bodmin>1</bodmin>
+          <bodmax>6</bodmax>
+          <bodaug>10</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>2</strmin>
+          <strmax>7</strmax>
+          <straug>11</straug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <bonus />
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Ogre</name>
+          <karma>153</karma>
+          <bodmin>4</bodmin>
+          <bodmax>9</bodmax>
+          <bodaug>13</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>1</reamin>
+          <reamax>5</reamax>
+          <reaaug>9</reaaug>
+          <strmin>3</strmin>
+          <strmax>8</strmax>
+          <straug>12</straug>
+          <chamin>1</chamin>
+          <chamax>4</chamax>
+          <chaaug>8</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>2</wilmin>
+          <wilmax>7</wilmax>
+          <wilaug>11</wilaug>
+          <inimin>2</inimin>
+          <inimax>11</inimax>
+          <iniaug>19</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Oni</name>
+          <karma>150</karma>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
+          <agiaug>11</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>2</strmin>
+          <strmax>7</strmax>
+          <straug>11</straug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+              <quality>Striking Skin Pigmentation</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Satyr</name>
+          <karma>160</karma>
+          <bodmin>2</bodmin>
+          <bodmax>7</bodmax>
+          <bodaug>11</bodaug>
+          <agimin>1</agimin>
+          <agimax>6</agimax>
+          <agiaug>10</agiaug>
+          <reamin>2</reamin>
+          <reamax>7</reamax>
+          <reaaug>11</reaaug>
+          <strmin>2</strmin>
+          <strmax>7</strmax>
+          <straug>11</straug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>6</logmax>
+          <logaug>10</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>3</inimin>
+          <inimax>13</inimax>
+          <iniaug>21</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>2/1/0</sprint>
+          <powers>
+            <power select="Standard: x1/x2/+2m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Low-Light Vision</quality>
+              <quality>Satyr Legs</quality>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+            </positive>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Troll</name>
+          <karma>160</karma>
+          <bodmin>5</bodmin>
+          <bodmax>10</bodmax>
+          <bodaug>14</bodaug>
+          <agimin>1</agimin>
+          <agimax>5</agimax>
+          <agiaug>9</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>5</strmin>
+          <strmax>10</strmax>
+          <straug>14</straug>
+          <chamin>1</chamin>
+          <chamax>4</chamax>
+          <chaaug>8</chaaug>
+          <intmin>1</intmin>
+          <intmax>5</intmax>
+          <intaug>9</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>11</inimax>
+          <iniaug>19</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <walk>2/1/0</walk>
+          <run>4/0/0</run>
+          <sprint>1/1/0</sprint>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+            <armor group="0">1</armor>
+            <reach>1</reach>
+            <lifestylecost>100</lifestylecost>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>SR5</source>
+          <page>50</page>
+          <forms>
+          </forms>
+        </metavariant>
+        <metavariant>
+          <name>Cyclops</name>
+          <karma>155</karma>
+          <bodmin>5</bodmin>
+          <bodmax>10</bodmax>
+          <bodaug>14</bodaug>
+          <agimin>1</agimin>
+          <agimax>5</agimax>
+          <agiaug>9</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>6</strmin>
+          <strmax>11</strmax>
+          <straug>15</straug>
+          <chamin>1</chamin>
+          <chamax>4</chamax>
+          <chaaug>8</chaaug>
+          <intmin>1</intmin>
+          <intmax>5</intmax>
+          <intaug>9</intaug>
+          <logmin>1</logmin>
+          <logmax>4</logmax>
+          <logaug>8</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>11</inimax>
+          <iniaug>19</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+              <quality>Cyclopean Eye</quality>
+            </negative>
+          </qualities>
+          <bonus>
+            <reach>1</reach>
+            <lifestylecost>100</lifestylecost>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Fomorian</name>
+          <karma>158</karma>
+          <bodmin>4</bodmin>
+          <bodmax>9</bodmax>
+          <bodaug>13</bodaug>
+          <agimin>1</agimin>
+          <agimax>5</agimax>
+          <agiaug>9</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>5</strmin>
+          <strmax>10</strmax>
+          <straug>14</straug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
+          <intmin>1</intmin>
+          <intmax>4</intmax>
+          <intaug>8</intaug>
+          <logmin>1</logmin>
+          <logmax>4</logmax>
+          <logaug>8</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>5</wilmax>
+          <wilaug>9</wilaug>
+          <inimin>2</inimin>
+          <inimax>10</inimax>
+          <iniaug>18</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+            <reach>1</reach>
+            <lifestylecost>100</lifestylecost>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Giant</name>
+          <karma>160</karma>
+          <bodmin>5</bodmin>
+          <bodmax>10</bodmax>
+          <bodaug>14</bodaug>
+          <agimin>1</agimin>
+          <agimax>5</agimax>
+          <agiaug>9</agiaug>
+          <reamin>1</reamin>
+          <reamax>5</reamax>
+          <reaaug>9</reaaug>
+          <strmin>5</strmin>
+          <strmax>10</strmax>
+          <straug>14</straug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
+          <intmin>1</intmin>
+          <intmax>5</intmax>
+          <intaug>9</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>10</inimax>
+          <iniaug>18</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+            <reach>1</reach>
+            <lifestylecost>100</lifestylecost>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+        <metavariant>
+          <name>Minotaur</name>
+          <karma>160</karma>
+          <bodmin>6</bodmin>
+          <bodmax>11</bodmax>
+          <bodaug>15</bodaug>
+          <agimin>1</agimin>
+          <agimax>5</agimax>
+          <agiaug>9</agiaug>
+          <reamin>1</reamin>
+          <reamax>6</reamax>
+          <reaaug>10</reaaug>
+          <strmin>5</strmin>
+          <strmax>10</strmax>
+          <straug>14</straug>
+          <chamin>1</chamin>
+          <chamax>4</chamax>
+          <chaaug>8</chaaug>
+          <intmin>1</intmin>
+          <intmax>6</intmax>
+          <intaug>10</intaug>
+          <logmin>1</logmin>
+          <logmax>5</logmax>
+          <logaug>9</logaug>
+          <wilmin>1</wilmin>
+          <wilmax>6</wilmax>
+          <wilaug>10</wilaug>
+          <inimin>2</inimin>
+          <inimax>12</inimax>
+          <iniaug>20</iniaug>
+          <edgmin>1</edgmin>
+          <edgmax>6</edgmax>
+          <edgaug>6</edgaug>
+          <magmin>1</magmin>
+          <magmax>6</magmax>
+          <magaug>6</magaug>
+          <resmin>1</resmin>
+          <resmax>6</resmax>
+          <resaug>6</resaug>
+          <essmin>0</essmin>
+          <essmax>6</essmax>
+          <essaug>6</essaug>
+          <depmin>0</depmin>
+          <depmax>0</depmax>
+          <depaug>0</depaug>
+          <powers>
+            <power select="Standard: x1/x2/+1m, Swimming: x3/x8/+4m">Movement</power>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality>Keen-Eared</quality>
+              <quality>Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
+              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
+          <bonus>
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
+            <naturalweapon>
+              <name>Bite (Seal Form)</name>
+              <reach>-1</reach>
+              <damage>(STR+1)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>SAG</source>
+              <page>147</page>
+            </naturalweapon>
+            <reach>1</reach>
+            <lifestylecost>100</lifestylecost>
+          </bonus>
+          <source>RF</source>
+          <page>104</page>
+        </metavariant>
+      </metavariants>
+    </metatype>
+
+    <!-- End Region -->
   </metatypes>
 </chummer>
