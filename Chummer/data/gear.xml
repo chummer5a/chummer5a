@@ -5216,6 +5216,7 @@
       <cost>Rating * 200</cost>
       <addoncategory>Vision Enhancements</addoncategory>
       <addoncategory>Sensors</addoncategory>
+	  <addoncategory>Tools of the Trade</addoncategory>
       <addoncategory>Custom</addoncategory>
     </gear>
     <gear>

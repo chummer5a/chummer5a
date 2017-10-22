@@ -189,9 +189,7 @@
                   <xsl:value-of select="$lang.Nuyen"/>:
                 </td>
                 <td width="10%">
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
+                  <xsl:value-of select="nuyen" /><xsl:value-of select="$lang.NuyenSymbol"/>
                 </td>
               </tr>
               <tr>

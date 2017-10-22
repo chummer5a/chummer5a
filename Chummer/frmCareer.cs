@@ -20700,7 +20700,7 @@ namespace Chummer
             ExpenseUndo objUndo = new ExpenseUndo();
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlNode objXmlGear = objSelectedGear.MyXmlNode;
+            XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.MyXmlNode;
 
             frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, true, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear);
             if (treGear.SelectedNode != null)
@@ -21020,7 +21020,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XmlNode objXmlGear = objSelectedGear?.MyXmlNode;
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, true, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, true, 0, 1, objXmlGear ?? objSelectedArmor.MyXmlNode);
             frmPickGear.EnableStack = false;
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
             frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;

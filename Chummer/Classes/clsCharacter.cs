@@ -2692,8 +2692,8 @@ namespace Chummer
             foreach (Gear objGear in _lstGear)
             {
                 // Use the Gear's SubClass if applicable.
-                // if (objGear.GetType() == typeof(Commlink))
-                if (objGear.Category == "Commlinks" || objGear.Category == "Rigger Command Consoles" || objGear.Category == "Cyberdecks" || objGear.GetType() == typeof(Commlink))
+                if (objGear.GetType() == typeof(Commlink))
+                //if (objGear.Category == "Commlinks" || objGear.Category == "Rigger Command Consoles" || objGear.Category == "Cyberdecks" || objGear.GetType() == typeof(Commlink))
                 {
                     Commlink objCommlink = (Commlink)objGear;
                     objCommlink.Print(objWriter);

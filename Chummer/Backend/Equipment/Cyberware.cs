@@ -327,7 +327,8 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strLocation))
                         _strLocation = ImprovementManager.SelectedValue;
 
-                    if (_nodPairBonus != null && objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && (x.Location == Location || (!string.IsNullOrEmpty(LimbSlot) && x.LimbSlot == LimbSlot)) && x.Parent?.LimbSlot == Parent?.LimbSlot).Count() % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodPairBonus, false, _intRating, DisplayNameShort))
+                    if (_nodPairBonus != null && objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && (x.Location == Location || (!string.IsNullOrEmpty(LimbSlot) && x.LimbSlot == LimbSlot)) && x.Parent?.LimbSlot == Parent?.LimbSlot).Count() % 2 == 1 &&
+                        !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodPairBonus, false, _intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -1523,11 +1524,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
                 {
-                    return XmlManager.Instance.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\"]");
+                    return XmlManager.Instance.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
                 }
                 else
                 {
-                    return XmlManager.Instance.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\"]");
+                    return XmlManager.Instance.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
                 }
             }
         }

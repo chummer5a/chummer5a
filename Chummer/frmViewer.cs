@@ -314,6 +314,10 @@ namespace Chummer
             Dictionary<string, string> dicParams = new Dictionary<string, string>();
             dicParams.Add("encoding", "UTF-8");
             dicParams.Add("dpi", "300");
+            dicParams.Add("margin-top", "13");
+            dicParams.Add("margin-bottom", "19");
+            dicParams.Add("margin-left", "13");
+            dicParams.Add("margin-right", "13");
             dicParams.Add("image-quality", "100");
             dicParams.Add("print-media-type", "");
             PdfConvert.ConvertHtmlToPdf(new PdfDocument

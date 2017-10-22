@@ -15514,7 +15514,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlNode objXmlGear = objSelectedGear.MyXmlNode;
+            XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.MyXmlNode;
 
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
@@ -15708,7 +15708,7 @@ namespace Chummer
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlGear ?? objSelectedArmor.MyXmlNode);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
             frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
             if (treArmor.SelectedNode != null)
@@ -21605,7 +21605,8 @@ namespace Chummer
 
             if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
             {
-                int intMetatypeQualitiesValue = 0;
+                // Zeroed to -10 because that's Human's value at default settings
+                int intMetatypeQualitiesValue = -2 * _objCharacter.Options.KarmaAttribute;
                 // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
                 foreach (Quality objQuality in _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
                 {
@@ -21721,7 +21722,8 @@ namespace Chummer
                 }
 
                 // Starting Nuyen karma value
-                decimal decTemp = (_objCharacter.StartingNuyen + _objOptions.NuyenPerBP - 1) / _objOptions.NuyenPerBP;
+                decimal decTemp = _objCharacter.StartingNuyen / _objOptions.NuyenPerBP;
+                intTemp = Convert.ToInt32(Math.Ceiling(decTemp));
                 if (intTemp != 0)
                 {
                     strMessage += "\n" + LanguageManager.Instance.GetString("Checkbox_CreatePACKSKit_StartingNuyen") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
