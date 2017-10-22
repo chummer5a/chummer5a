@@ -152,6 +152,10 @@ Application Changes:
 - Added support for printing of skill groups. Added skill group printing to Fancy Blocks and the Shadowrun 5 character sheet sets.
 - Added a separate section for storing conditions of certain Improvements. Added support for conditions to the specificskill bonus tag.
 - Fixed a bug where removing improvements that gave martial arts, spells, qualities, or critter powers would not remove improvements associated with the given item.
+- Fixed a bug where Chummer5 would calculate incorrect movement speed values from cyberlegs if the option was enabled but only one cyberleg was present.
+- Added backend support for cyberware bonuses that only activate per pair instead of per discrete piece.
+- Fixed a bug where cyberware added to vehicles did not allow for subsystems to be added to it.
+- Fixed issues with skill dicepool tooltips not properly recognizing improvement sources from cyberware, nested 'ware, armor, armor mods, martial arts advantages, critter powers, and nested gear (including ones inside weapons, armor, armor mods, weapon accessories, cyberware, and vehicles).
 
 Data Changes:
 
@@ -247,6 +251,13 @@ Data Changes:
 - Fixed Thermal Damping's, Skin Toner's, Chameleon Toner's, and Liar's bonus tags.
 - Implemented latest official errata posting of the core rulebook from the Shadowrun official forums.
 - Fixed incorrect attribute value for the Metagenetic Improvement (Strength) quality.
+- Fixed bugs where various pieces of cyberware subsystems could be added to the incorrect type of cyberware parent (e.g. Improved Synthskin to obvious cyberlimbs).
+- Fixed a bug where Digigrade Legs would not increase the essence cost of cyberlegs for which it is taken.
+- Fixed a bug where Bulk Modification could be taken at a higher rating than is allowed for certain types of cyberlimbs.
+- Differentiated the cyberlegs on a Liminal Body, Centaur from each other and added Digigrade Legs to the back pair because a horse's back legs are digigrade.
+- Added the ability to pick which side a cyberfinger goes on (e.g. right hand or left hand) and added the ability to have custom cyberfinger types.
+- Water Jets now properly increases Swimming speed.
+- Added pair bonuses to Cyberfins and Snake Fingers. Digigrade Legs, Skimmers, and Skates now use pair bonuses instead of regular ones.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

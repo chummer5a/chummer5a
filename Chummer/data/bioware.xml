@@ -552,7 +552,6 @@
 	  <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-	  <addchildreness />
 	  <notes>Bonus is for whether this is Internal Release or Gradual Release, not the cost of the chemical.</notes>
 	  <bonus>
 		<selecttext />
@@ -576,7 +575,6 @@
 	  <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-	  <addchildreness />
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -596,7 +594,6 @@
 	  <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-	  <addchildreness />
 	  <forbidden>
 		<oneof>
 		  <bioware>Chemical Gland (Spitter)</bioware>
@@ -610,6 +607,7 @@
       <name>Chemical Gland (Weapon Reservoir)</name>
       <category>Basic</category>
       <ess>0.2</ess>
+	  <addtoparentess />
       <capacity>0</capacity>
       <avail>12F or Gear</avail>
       <cost>24000 + (99 * Gear Cost)</cost>
@@ -621,7 +619,6 @@
 	  <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-	  <addchildreness />
       <source>CF</source>
       <page>112</page>
     </bioware>

@@ -8795,28 +8795,46 @@ namespace Chummer
                 return;
             }
             Vehicle objVehicle = null;
+            Cyberware objCyberwareParent = null;
             VehicleMod objMod = CommonFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-
             if (objMod == null)
+                objCyberwareParent = CommonFunctions.FindVehicleCyberware(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objMod);
+
+            if (objCyberwareParent == null && (objMod == null || !objMod.AllowCyberware))
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.Instance.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!objMod.AllowCyberware)
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, true, objCyberwareParent?.MyXmlNode ?? objMod.MyXmlNode);
+            if (objCyberwareParent == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.Instance.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                frmPickCyberware.SetGrade = "Standard";
+                frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
+                frmPickCyberware.Subsystems = objMod.Subsystems;
             }
+            else
+            {
+                frmPickCyberware.SetGrade = objCyberwareParent.Grade.Name;
+                // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
+                if (!objCyberwareParent.Capacity.Contains('['))
+                {
+                    frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
+                    frmPickCyberware.MaximumCapacity = objCyberwareParent.CapacityRemaining;
 
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter);
-            frmPickCyberware.SetGrade = "Standard";
+                    // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                    if (_objOptions.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
+                    {
+                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
+                frmPickCyberware.CyberwareParent = objCyberwareParent;
+                frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
+            }
             frmPickCyberware.LockGrade();
-            frmPickCyberware.ShowOnlySubsystems = true;
-            frmPickCyberware.Subsystems = objMod.Subsystems;
-            frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
-            frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
-            frmPickCyberware.ParentVehicle = objVehicle;
+            frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
             frmPickCyberware.ShowDialog(this);
 
             if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -10395,14 +10413,35 @@ namespace Chummer
                     objCyberware.Rating = Convert.ToInt32(nudCyberwareRating.Value);
 
                     // See if a Bonus node exists.
-                    if ((objCyberware.Bonus != null && objCyberware.Bonus.InnerXml.Contains("Rating")) || (objCyberware.WirelessOn && objCyberware.WirelessBonus != null && objCyberware.WirelessBonus.InnerXml.Contains("Rating")))
+                    if ((objCyberware.Bonus != null && objCyberware.Bonus.InnerXml.Contains("Rating")) || (objCyberware.PairBonus != null && objCyberware.PairBonus.InnerXml.Contains("Rating")) || (objCyberware.WirelessOn && objCyberware.WirelessBonus != null && objCyberware.WirelessBonus.InnerXml.Contains("Rating")))
                     {
-                        // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                        ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId);
-                        if (objCyberware.Bonus != null)
-                            ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                        if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                        if (objCyberware.PairBonus != null)
+                        {
+                            List<Cyberware> lstPairableCyberwares = new List<Cyberware>(_objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == objCyberware.Name && (x.Location == objCyberware.Location || (!string.IsNullOrEmpty(objCyberware.LimbSlot) && x.LimbSlot == objCyberware.LimbSlot)) && x.Parent?.LimbSlot == objCyberware.Parent?.LimbSlot));
+                            int intCyberwaresCount = lstPairableCyberwares.Count;
+                            foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                            {
+                                ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
+                                if (objLoopCyberware.Bonus != null)
+                                    ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                                if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
+                                    ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                                if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
+                                {
+                                    ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                                }
+                                intCyberwaresCount -= 1;
+                            }
+                        }
+                        else
+                        {
+                            // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+                            ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId);
+                            if (objCyberware.Bonus != null)
+                                ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                        }
                     }
 
                     treCyberware.SelectedNode.Text = objCyberware.DisplayName;
@@ -14016,6 +14055,8 @@ namespace Chummer
                 lblCyberwareCapacity.Text =
                     $"{objCyberware.CalculatedCapacity} ({objCyberware.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo)} {LanguageManager.Instance.GetString("String_Remaining")})";
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
+                if (objCyberware.AddToParentESS)
+                    lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
                 ScheduleCharacterUpdate();
             }
             else
@@ -15218,7 +15259,7 @@ namespace Chummer
             if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
                 objSelectedCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
 
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter);
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, false, objSelectedCyberware?.MyXmlNode);
             double dblMultiplier = 1;
             // Apply the character's Cyberware Essence cost multiplier if applicable.
             if (objSource == Improvement.ImprovementSource.Cyberware)
@@ -15350,17 +15391,10 @@ namespace Chummer
                 // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                 if (!objSelectedCyberware.Capacity.Contains('['))
                 {
-                    frmPickCyberware.ShowOnlySubsystems = true;
                     frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
                 }
-                if (objSelectedCyberware.Name.StartsWith("Modular Connector"))
-                {
-                    frmPickCyberware.ShowOnlySubsystems = false;
-                    frmPickCyberware.ShowOnlyLimbs = true;
-                }
 
-                frmPickCyberware.AllowModularPlugins = objSelectedCyberware.AllowModularPlugins;
                 frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
             }
 
@@ -15394,7 +15428,7 @@ namespace Chummer
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
-            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes);
+            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, true, string.Empty, objSelectedCyberware);
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return false;
             objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
@@ -15415,7 +15449,6 @@ namespace Chummer
                 treCyberware.SelectedNode.Nodes.Add(objNode);
                 treCyberware.SelectedNode.Expand();
                 objSelectedCyberware.Children.Add(objCyberware);
-                objCyberware.Parent = objSelectedCyberware;
             }
             else
             {
@@ -15481,7 +15514,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlNode objXmlGear = objSelectedGear.MyXmlNode;
+            XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.MyXmlNode;
 
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
@@ -15675,7 +15708,7 @@ namespace Chummer
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlGear ?? objSelectedArmor.MyXmlNode);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
             frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
             if (treArmor.SelectedNode != null)
@@ -21572,7 +21605,8 @@ namespace Chummer
 
             if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
             {
-                int intMetatypeQualitiesValue = 0;
+                // Zeroed to -10 because that's Human's value at default settings
+                int intMetatypeQualitiesValue = -2 * _objCharacter.Options.KarmaAttribute;
                 // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
                 foreach (Quality objQuality in _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
                 {
@@ -21688,7 +21722,8 @@ namespace Chummer
                 }
 
                 // Starting Nuyen karma value
-                decimal decTemp = (_objCharacter.StartingNuyen + _objOptions.NuyenPerBP - 1) / _objOptions.NuyenPerBP;
+                decimal decTemp = _objCharacter.StartingNuyen / _objOptions.NuyenPerBP;
+                intTemp = Convert.ToInt32(Math.Ceiling(decTemp));
                 if (intTemp != 0)
                 {
                     strMessage += "\n" + LanguageManager.Instance.GetString("Checkbox_CreatePACKSKit_StartingNuyen") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");

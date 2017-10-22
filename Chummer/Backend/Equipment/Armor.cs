@@ -193,6 +193,7 @@ namespace Chummer.Backend.Equipment
                         _lstArmorMods.Add(objMod);
 
                         objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
                     }
@@ -218,6 +219,7 @@ namespace Chummer.Backend.Equipment
                         _lstArmorMods.Add(objMod);
 
                         objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
                     }
@@ -254,6 +256,7 @@ namespace Chummer.Backend.Equipment
                         _lstArmorMods.Add(objMod);
 
                         objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
                     }
@@ -279,6 +282,7 @@ namespace Chummer.Backend.Equipment
                         _lstArmorMods.Add(objMod);
 
                         objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
                     }
@@ -319,6 +323,7 @@ namespace Chummer.Backend.Equipment
                     objGear.IncludedInParent = true;
                     _lstGear.Add(objGear);
 
+                    objGearNode.ForeColor = SystemColors.GrayText;
                     objNode.Nodes.Add(objGearNode);
                     objNode.Expand();
                 }

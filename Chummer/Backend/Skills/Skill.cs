@@ -14,6 +14,7 @@ using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Extensions;
 
 namespace Chummer.Skills
 {
@@ -739,48 +740,88 @@ namespace Chummer.Skills
 
         private string GetName(Improvement source)
         {
-            string value;
+            string value = string.Empty;
             switch (source.ImproveSource)
             {
                 case Improvement.ImprovementSource.Bioware:
-                {
-                    Cyberware q = _character.Cyberware.FirstOrDefault(x => x.InternalId == source.SourceName);
-                    value = q?.DisplayNameShort;
-                }
+                case Improvement.ImprovementSource.Cyberware:
+                    {
+                        Cyberware q = _character.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == source.SourceName);
+                        value = q?.DisplayNameShort;
+                    }
+                    break;
+                case Improvement.ImprovementSource.MartialArtAdvantage:
+                    {
+                        MartialArtAdvantage objAdvantage = CommonFunctions.FindMartialArtAdvantage(source.SourceName, _character.MartialArts);
+                        value = objAdvantage?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Armor:
+                    {
+                        Armor objArmor = _character.Armor.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = objArmor?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.ArmorMod:
+                    {
+                        ArmorMod objArmorMod = CommonFunctions.FindArmorMod(source.SourceName, _character.Armor);
+                        value = objArmorMod?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.CritterPower:
+                    {
+                        CritterPower objCritterPower = _character.CritterPowers.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = objCritterPower?.DisplayName;
+                    }
                     break;
                 case Improvement.ImprovementSource.Quality:
-                {
-                    Quality q = _character.Qualities.FirstOrDefault(x => x.InternalId == source.SourceName);
-                    value = q?.DisplayName;
-                }
+                    {
+                        Quality q = _character.Qualities.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = q?.DisplayName;
+                    }
                     break;
                 case Improvement.ImprovementSource.Power:
-                {
-                    Power power = _character.Powers.FirstOrDefault(x => x.InternalId == source.SourceName);
-                    value = power?.DisplayNameShort;
-                }
+                    {
+                        Power power = _character.Powers.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = power?.DisplayNameShort;
+                    }
                     break;
                 case Improvement.ImprovementSource.Custom:
-                {
-                    return source.CustomName;
-                }
-
+                    {
+                        return source.CustomName;
+                    }
                 case Improvement.ImprovementSource.Gear:
-                {
-                    value = _character.Gear.FirstOrDefault(x => x.InternalId == source.SourceName)?.DisplayName;
-                }
+                    {
+                        Gear objGear = _character.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == source.SourceName);
+                        if (objGear == null)
+                        {
+                            objGear = CommonFunctions.FindArmorGear(source.SourceName, _character.Armor);
+                            if (objGear == null)
+                            {
+                                objGear = CommonFunctions.FindWeaponGear(source.SourceName, _character.Weapons);
+                                if (objGear == null)
+                                {
+                                    objGear = CommonFunctions.FindCyberwareGear(source.SourceName, _character.Cyberware);
+                                    if (objGear == null)
+                                    {
+                                        objGear = CommonFunctions.FindVehicleGear(source.SourceName, _character.Vehicles);
+                                    }
+                                }
+                            }
+                        }
+                        value = objGear?.DisplayName;
+                    }
                     break;
                 default:
                     return source.SourceName;
             }
 
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
             {
                 Log.Warning(new object[]{"Skill Tooltip GetName value = null", source.SourceName, source.ImproveSource, source.ImproveType, source.ImprovedName});
+                return source.ImproveSource + " source not found";
             }
-
-            return value ?? source.ImproveSource + " source not found";
-
+            return value;
         }
 
         public string UpgradeToolTip

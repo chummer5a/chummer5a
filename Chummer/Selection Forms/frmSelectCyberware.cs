@@ -38,7 +38,6 @@ namespace Chummer
         private readonly bool _blnCareer;
 
         private string _strSetGrade = string.Empty;
-        private bool _blnShowOnlySubsystems;
         private string _strSubsystems = string.Empty;
         private decimal _decMaximumCapacity = -1;
         private bool _blnLockGrade;
@@ -46,12 +45,11 @@ namespace Chummer
 
         private Mode _objMode = Mode.Cyberware;
         private string _strNode = "cyberware";
-        private bool _blnAllowModularPlugins;
-        private bool _blnShowOnlyLimbs;
         private static string _strSelectCategory = string.Empty;
         private static string _strSelectedGrade = string.Empty;
         private bool _blnIgnoreSecondHand = false;
         private string _strForceGrade = string.Empty;
+        private XmlNode _objParentNode = null;
 
         private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly XPathNavigator _nav;
@@ -66,7 +64,7 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmSelectCyberware(Character objCharacter, bool blnCareer = false)
+        public frmSelectCyberware(Character objCharacter, bool blnCareer = false, XmlNode objParentNode = null)
         {
             _nav = _objXmlDocument.CreateNavigator();
             InitializeComponent();
@@ -77,8 +75,8 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = blnCareer;
             _blnCareer = blnCareer;
             _objCharacter = objCharacter;
+            _objParentNode = objParentNode;
             MoveControls();
-
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -432,10 +430,14 @@ namespace Chummer
             string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and " + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
             if (_objCharacter.DEPEnabled && ParentVehicle == null)
                 strSearch += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" )";
-            else if (_blnShowOnlySubsystems)
+            else if (_objParentNode != null)
                 strSearch += " and (requireparent or contains(capacity, \"[\"))";
             else
                 strCategoryFilter += " and not(requireparent)";
+            if (!string.IsNullOrEmpty(_strSelectedGrade))
+            {
+                strCategoryFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
+            }
             strSearch += "]";
 
             BuildCyberwareList(_objXmlDocument.SelectNodes(strSearch));
@@ -588,17 +590,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Set whether or not only subsystems (those that consume Capacity) should be shown.
-        /// </summary>
-        public bool ShowOnlySubsystems
-        {
-            set
-            {
-                _blnShowOnlySubsystems = value;
-            }
-        }
-
-        /// <summary>
         /// Comma-separate list of Categories to show for Subsystems.
         /// </summary>
         public string Subsystems
@@ -641,17 +632,6 @@ namespace Chummer
         public int SelectedESSDiscount { get; private set; }
 
         /// <summary>
-        /// Whether or not Modular Plugins are allowed.
-        /// </summary>
-        public bool AllowModularPlugins
-        {
-            set
-            {
-                _blnAllowModularPlugins = value;
-            }
-        }
-
-        /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount { get; private set; }
@@ -665,17 +645,6 @@ namespace Chummer
             {
                 // If the Transgenics checkbox is checked, force it to the Genetech: Transgenics category.
                 return chkTransgenic.Checked;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not only Cyberlimb should be shown
-        /// </summary>
-        public bool ShowOnlyLimbs
-        {
-            set
-            {
-                _blnShowOnlyLimbs = value;
             }
         }
 
@@ -925,6 +894,8 @@ namespace Chummer
                         dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             }
             lblEssence.Text = dblESS.ToString(GlobalOptions.CultureInfo);
+            if (objXmlCyberware["addtoparentess"] != null)
+                lblEssence.Text = "+" + lblEssence.Text;
 
             // Capacity.
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -1000,9 +971,13 @@ namespace Chummer
                 else
                     strCategoryFilter += "category = \"" + cboCategory.SelectedValue + "\" or ";
                 strCategoryFilter += "category = \"None\")";
+                if (!string.IsNullOrEmpty(_strSelectedGrade))
+                {
+                    strCategoryFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
+                }
                 if (_objCharacter.DEPEnabled && ParentVehicle == null)
                     strCategoryFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" )";
-                else if (_blnShowOnlySubsystems)
+                else if (_objParentNode != null)
                     strCategoryFilter += " and (requireparent or contains(capacity, \"[\"))";
                 else
                     strCategoryFilter += " and not(requireparent)";
@@ -1016,17 +991,9 @@ namespace Chummer
                 bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
                 foreach (XmlNode objXmlCyberware in objXmlCyberwareList)
                 {
-                    if (!string.IsNullOrEmpty(_strSelectedGrade))
+                    if (!string.IsNullOrEmpty(_strSelectedGrade) && objXmlCyberware["forcegrade"] == null)
                     {
-                        bool blnIgnoreDisable = false;
-                        if (objXmlCyberware["forcegrade"] != null)
-                        {
-                            if (_strSelectedGrade != objXmlCyberware["forcegrade"].InnerText && objXmlCyberware["forcegrade"].InnerText != "None")
-                                continue;
-                            else
-                                blnIgnoreDisable = true;
-                        }
-                        if (!blnIgnoreDisable && _objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && _strSelectedGrade.Contains(x.ImprovedName) && x.Enabled))
+                        if (_objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) && _strSelectedGrade.Contains(x.ImprovedName) && x.Enabled))
                             continue;
                     }
                     if (blnCyberwareDisabled && objXmlCyberware.SelectSingleNode("subsystems/cyberware") != null)
@@ -1036,6 +1003,22 @@ namespace Chummer
                     if (blnBiowareDisabled && objXmlCyberware.SelectSingleNode("subsystems/bioware") != null)
                     {
                         continue;
+                    }
+                    if (objXmlCyberware["forbidden"]?["parentdetails"] != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (_objParentNode.ProcessFilterOperationNode(objXmlCyberware["forbidden"]["parentdetails"], false))
+                        {
+                            continue;
+                        }
+                    }
+                    if (objXmlCyberware["required"]?["parentdetails"] != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (!_objParentNode.ProcessFilterOperationNode(objXmlCyberware["required"]["parentdetails"], false))
+                        {
+                            continue;
+                        }
                     }
                     if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
                         chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier)) continue;
@@ -1096,7 +1079,7 @@ namespace Chummer
             if (nudESSDiscount.Visible)
                 SelectedESSDiscount = Convert.ToInt32(nudESSDiscount.Value);
 
-            if (objCyberwareNode["capacity"].InnerText.Contains('[') && _blnShowOnlySubsystems && _objCharacter.Options.EnforceCapacity)
+            if (objCyberwareNode["capacity"].InnerText.Contains('[') && _objParentNode != null && _objCharacter.Options.EnforceCapacity)
             {
                 // Capacity.
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -1211,20 +1194,18 @@ namespace Chummer
             if (objXmlCategoryList != null)
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
-                    if (objXmlCategory.Attributes["show"] != null && !_blnAllowModularPlugins)
-                        continue;
-
-                    if (_blnShowOnlyLimbs && objXmlCategory.InnerText != "Cyberlimb")
-                        continue;
-
                     // Make sure the category contains items that we can actually display
                     string strItemFilter = "[category = \"" + objXmlCategory.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")";
                     if (!string.IsNullOrEmpty(_strSelectedGrade) && _strSelectedGrade.Contains("Used"))
                         strItemFilter += " and not(nosecondhand)";
-                    if (_blnShowOnlySubsystems)
+                    if (_objParentNode != null)
                         strItemFilter += " and (requireparent or contains(capacity, \"[\"))";
                     else
                         strItemFilter += " and not(requireparent)";
+                    if (!string.IsNullOrEmpty(_strSelectedGrade))
+                    {
+                        strItemFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
+                    }
                     strItemFilter += "]";
                     if (_objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + strItemFilter) == null)
                         continue;
