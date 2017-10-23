@@ -2449,8 +2449,8 @@
       <edgmax>5</edgmax>
       <edgaug>5</edgaug>
       <magmin>1</magmin>
-      <magmax>5</magmax>
-      <magaug>5</magaug>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
       <resmin>1</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
@@ -2462,7 +2462,7 @@
       <depaug>0</depaug>
       <walk>1/1/0</walk>
       <run>4/1/0</run>
-      <sprint>4/1/0</sprint>
+      <sprint>1/1/0</sprint>
       <source>RF</source>
       <page>105</page>
       <metavariants>
@@ -2513,7 +2513,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
@@ -2525,7 +2525,8 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -2577,7 +2578,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -2592,8 +2593,8 @@
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2645,7 +2646,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -2659,8 +2660,8 @@
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -2712,7 +2713,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -2723,11 +2724,12 @@
             </positive>
             <negative>
               <quality>Uneducated</quality>
+			  <quality>Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2779,7 +2781,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -2797,8 +2799,8 @@
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2818,9 +2820,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -2850,7 +2852,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -2865,8 +2867,8 @@
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2917,24 +2919,24 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
-              <quality>Goring Horns</quality>
-              <quality>Low-Light Vision</quality>
-              <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <karma>115</karma>
           <source>RF</source>
@@ -2987,14 +2989,14 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
@@ -3002,8 +3004,8 @@
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -3056,10 +3058,10 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <powers>
@@ -3084,8 +3086,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -3108,9 +3110,9 @@
           <edgmin>1</edgmin>
           <edgmax>6</edgmax>
           <edgaug>6</edgaug>
-          <inimin>2</inimin>
-          <inimax>12</inimax>
-          <iniaug>20</iniaug>
+          <inimin>3</inimin>
+          <inimax>13</inimax>
+          <iniaug>21</iniaug>
           <magmin>1</magmin>
           <magmax>6</magmax>
           <magaug>6</magaug>
@@ -3127,24 +3129,23 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body (Metahuman Form Only)">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -3199,18 +3200,23 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
-              <quality>Thermographic Vision</quality>
+			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
-              <quality>Unusual Hair</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -3266,18 +3272,24 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Resistance to Pathogens</quality>
-              <quality>Thermographic Vision</quality>
-              <quality>Underwater Vision</quality>
-              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+			  <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
+			<lifestylecost>20</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -3328,22 +3340,29 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
           </qualities>
-          <bonus />
+          <bonus>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
+          </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
         <metavariant>
           <name>Hobgoblin</name>
           <karma>110</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -3353,9 +3372,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -3385,15 +3404,21 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
-              <quality>Fangs</quality>
+			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
-          <karma>5</karma>
-          <bonus />
+          <bonus>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
+          </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3444,14 +3469,20 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
           </qualities>
-          <karma>8</karma>
-          <bonus />
+          <bonus>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
+          </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3502,17 +3533,23 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">2/1/0</sprint>
-          <qualities>
+          <sprint alt="2/1/0">1/1/0</sprint>
+		  <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
+			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
-            <negative>
-              <quality>Striking Skin Pigmentation</quality>
+			<negative>
+              <quality select="Shapeshifter Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
-          <karma>4</karma>
-          <bonus />
+          <bonus>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
+          </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3562,15 +3599,22 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Low-Light Vision</quality>
-              <quality>Satyr Legs</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
           </qualities>
           <karma>120</karma>
-          <bonus />
+          <bonus>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
+          </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3621,17 +3665,23 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+			<enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
           <forms>
@@ -3684,20 +3734,26 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Cyclopean Eye</quality>
+              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+			<enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3748,17 +3804,22 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
-          <karma>12</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3809,17 +3870,22 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
-          <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+			<enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -3870,18 +3936,23 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality>Goring Horns</quality>
-              <quality>Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
           <karma>2</karma>
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5763,7 +5834,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -5825,7 +5896,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -5890,7 +5961,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -5953,7 +6024,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6016,7 +6087,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6083,7 +6154,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6148,7 +6219,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6214,7 +6285,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6279,7 +6350,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab><initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
@@ -6344,7 +6415,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab><initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
@@ -6411,7 +6482,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab><initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
@@ -6478,7 +6549,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
@@ -6544,7 +6615,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6607,7 +6678,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6672,7 +6743,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6736,7 +6807,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6800,7 +6871,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6865,7 +6936,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -6929,7 +7000,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6996,7 +7067,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -7062,7 +7133,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -7124,7 +7195,7 @@
           <depaug>0</depaug>
           <walk alt="1/1/0">2/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="4/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
