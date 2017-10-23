@@ -4210,8 +4210,7 @@ namespace Chummer.Classes
                 {
                     throw new AbortedException();
                 }
-
-                SelectedValue = frmPickItem.SelectedItem;
+                SelectedValue = frmPickItem.SelectedName;
                 if (_blnConcatSelectedValue)
                     SourceName += " (" + frmPickItem.SelectedName + ")";
 

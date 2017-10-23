@@ -160,6 +160,7 @@ Application Changes:
 - Fixed a crash when adding an item with over 1,000 capacity in a culture using a decimal comma. Fixes #1983.
 - Allowed for full localization of the updater, added a label to indicate whether the user is running the latest version of Chummer5 that is available on their chosen update channel (stable or nightly), and force-disabled the Download button if they are running what is the latest version of their chosen update channel (the button isn't disabled if they're running the latest nightly, but switched update channels to stable). Fixes #1977.
 - Fixed being unable to select underbarrel weapons for SelectWeapon bonuses (e.g. picking a weapon for Spare Clips).
+- Fixed an issue with items that use the SelectWeapon improvement type passing an internal ID rather than the Name of the weapon.
 - Crash Dumper will no longer crash when it cannot connect to an upload service, and it will prompt the user to manually submit an issue to GitHub with the attached minidump.
 - Transformed the GlobalOptions, LanguageManager, and XmlManager classes into fully static classes. For users, this also produces a measurable performance increase and a decrease in the size of Chummer5's executable.
 - Fixed a bug related to selecting the default, blank entry in the Traditions dropdown combobox and then trying to add a spell.

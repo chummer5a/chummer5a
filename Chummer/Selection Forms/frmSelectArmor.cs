@@ -445,7 +445,7 @@ namespace Chummer
                             string strArmorGuid = objArmor.SourceID.ToString();
                             string strArmorName = objArmor.DisplayName;
                             int intArmor = objArmor.TotalArmor;
-                            int intCapacity = Convert.ToInt32(objArmor.CalculatedCapacity);
+                            decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo);
                             string strAvail = objArmor.Avail;
                             string strAccessories = string.Empty;
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
@@ -463,7 +463,7 @@ namespace Chummer
                             string strSource = objArmor.Source + " " + objArmor.Page;
                             decimal decCost = objArmor.Cost;
 
-                            tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, intCapacity, strAvail, strAccessories,
+                            tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, strAvail, strAccessories,
                                 strSource, decCost);
                         }
                     }
