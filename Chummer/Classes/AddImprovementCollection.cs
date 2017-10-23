@@ -4210,8 +4210,8 @@ namespace Chummer.Classes
                 {
                     throw new AbortedException();
                 }
-
-                SelectedValue = frmPickItem.SelectedItem;
+                ;
+                SelectedValue = CommonFunctions.FindByIdWithNameCheck(frmPickItem.SelectedItem, _objCharacter.Weapons).Name;
                 if (_blnConcatSelectedValue)
                     SourceName += " (" + frmPickItem.SelectedName + ")";
 
