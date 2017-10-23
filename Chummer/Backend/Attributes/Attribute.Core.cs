@@ -740,7 +740,7 @@ namespace Chummer.Backend.Attributes
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
                 else
                     intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
-                // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.Instance.CultureInfo) / 2))) + AugmentedMaximumModifiers;
+                // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.CultureInfo) / 2))) + AugmentedMaximumModifiers;
 
                 if (intReturn < 0)
                     intReturn = 0;
@@ -770,7 +770,7 @@ namespace Chummer.Backend.Attributes
                 if (string.IsNullOrWhiteSpace(_strDisplayNameShort))
                 {
                     string strName = "String_Attribute{0}Short".Replace("{0}", _strAbbrev);
-                    _strDisplayNameShort = LanguageManager.Instance.GetString(strName);
+                    _strDisplayNameShort = LanguageManager.GetString(strName);
                     return _strDisplayNameShort;
                 }
                 return _strDisplayNameShort;
@@ -786,7 +786,7 @@ namespace Chummer.Backend.Attributes
                 if (string.IsNullOrWhiteSpace(_strDisplayNameLong))
                 {
                     string strName = "String_Attribute{0}Long".Replace("{0}", _strAbbrev);
-                    _strDisplayNameLong = LanguageManager.Instance.GetString(strName);
+                    _strDisplayNameLong = LanguageManager.GetString(strName);
                     return _strDisplayNameLong;
                 }
                 return _strDisplayNameLong;
@@ -861,7 +861,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Value + 1), UpgradeKarmaCost());
+                return string.Format(LanguageManager.GetString("Tip_ImproveItem"), (Value + 1), UpgradeKarmaCost());
             }
         }
 
@@ -1018,7 +1018,7 @@ namespace Chummer.Backend.Attributes
                 StringBuilder strCyberlimb = new StringBuilder();
                 if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
                 {
-                    LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+                    LanguageManager.Load(GlobalOptions.Language, null);
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
                         if (objCyberware.Category == "Cyberlimb")
@@ -1041,7 +1041,7 @@ namespace Chummer.Backend.Attributes
                 /*
                 if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
                 {
-                    strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.Instance.GetString("String_AttributeESSLong")})";
+                    strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.GetString("String_AttributeESSLong")})";
                 }
                 */
 
@@ -1264,7 +1264,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-               return LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", _strAbbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost().ToString()));
+               return LanguageManager.GetString("Message_ConfirmKarmaExpense").Replace("{0}", _strAbbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost().ToString()));
             }
         }
 
@@ -1277,7 +1277,7 @@ namespace Chummer.Backend.Attributes
             {
                 if (string.IsNullOrWhiteSpace(_strDisplayAbbrev))
                 {
-                    _strDisplayAbbrev = LanguageManager.Instance.GetString($"String_Attribute{Abbrev}Short");
+                    _strDisplayAbbrev = LanguageManager.GetString($"String_Attribute{Abbrev}Short");
                 }
                 return _strDisplayAbbrev;
             }
@@ -1288,7 +1288,7 @@ namespace Chummer.Backend.Attributes
             if (!CanUpgradeCareer) return;
 
             int price = UpgradeKarmaCost();
-            string upgradetext = $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
+            string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);

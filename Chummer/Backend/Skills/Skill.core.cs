@@ -490,7 +490,7 @@ namespace Chummer.Skills
             }
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.Instance.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
+                $"{LanguageManager.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
             ExpenseLogEntry entry = new    ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -514,7 +514,7 @@ namespace Chummer.Skills
 
             //If data file contains {4} this crashes but...
             string upgradetext = //TODO WRONG
-                $"{LanguageManager.Instance.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
+                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
 
             SkillSpecialization nspec = new SkillSpecialization(name, false);
 

@@ -25,7 +25,7 @@ namespace Chummer.UI.Skills
         {
             InitializeComponent();
 
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
         }
 
         public void MissingDatabindingsWorkaround()
@@ -189,23 +189,23 @@ namespace Chummer.UI.Skills
         {
             List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
             {
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new SkillSorter(SkillsSection.CompareSkills)),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortRating"),
                     new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortDicepool"),
                     new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
                     new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
                     new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeName"),
                     new SkillSorter((x, y) => string.Compare(x.Attribute, y.Attribute, StringComparison.Ordinal))),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupName"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupName"),
                     new SkillSorter((x, y) => string.Compare(y.SkillGroup, x.SkillGroup, StringComparison.Ordinal))),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupRating"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupRating"),
                     new SkillSortBySkillGroup()),
-                new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+                new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortCategory"),
                     new SkillSorter((x, y) => string.Compare(x.SkillCategory, y.SkillCategory, StringComparison.Ordinal))),
             };
 
@@ -216,17 +216,17 @@ namespace Chummer.UI.Skills
         {
             List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
             {
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_Search"), null),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterAll"), skill => true),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterRatingAboveZero"),
                     skill => skill.Rating > 0),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterTotalRatingAboveZero"),
                     skill => skill.Pool > 0),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterRatingZero"),
                     skill => skill.Rating == 0),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterNoSkillGroup"),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterNoSkillGroup"),
                     skill => skill.SkillGroup.Length == 0),
-                new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterBrokenSkillGroup"),
+                new Tuple<string, Predicate<Skill>>(LanguageManager.GetString("String_SkillFilterBrokenSkillGroup"),
                     skill => skill.Pool > 0 && (skill.SkillGroup.Length == 0 || skill.SkillGroupObject != null && skill.Rating > skill.SkillGroupObject.Rating))
             };
             //TODO: TRANSLATIONS
@@ -235,24 +235,24 @@ namespace Chummer.UI.Skills
 
             ret.AddRange(
                 from XmlNode objNode 
-                in XmlManager.Instance.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
+                in XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
                 let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
                 select new Tuple<string, Predicate<Skill>>(
-                    $"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
+                    $"{LanguageManager.GetString("Label_Category")} {displayName}", 
                     skill => skill.SkillCategory == objNode.InnerText));
 
             ret.AddRange(
                 from string attribute
                 in new[]{"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"} //TODO: This should be somewhere in Character or CharacterAttrib i think
                 select new Tuple<string, Predicate<Skill>>(
-                    $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{attribute}Short")}",
+                    $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
                     skill => skill.Attribute == attribute));
 
             ret.AddRange(
                 from SkillGroup @group
                 in _character.SkillsSection.SkillGroups
                 select new Tuple<string, Predicate<Skill>>(
-                    $"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
+                    $"{LanguageManager.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
                     skill => skill.SkillGroupObject == @group));
 
             return ret;
@@ -262,19 +262,19 @@ namespace Chummer.UI.Skills
         {
             List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>()
             {
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new KnowledgeSkillSorter(KnowledgeSkill.CompareKnowledgeSkills)),
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortRating"),
                     new KnowledgeSkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortDicepool"),
                     new KnowledgeSkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
                     new KnowledgeSkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
                     new KnowledgeSkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAttributeName"),
                     new KnowledgeSkillSorter((x, y) => string.Compare(x.Attribute, y.Attribute, StringComparison.Ordinal))),
-                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+                new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortCategory"),
                     new KnowledgeSkillSorter((x, y) => string.Compare(x.SkillCategory, y.SkillCategory, StringComparison.Ordinal))),
             };
 
@@ -286,14 +286,14 @@ namespace Chummer.UI.Skills
             List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>
             {
                 //TODO: Search doesn't play nice with writeable name
-                //new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_Search"), null),
+                //new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_Search"), null),
 
-                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterAll"), skill => true),
-                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterRatingAboveZero"),
+                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterAll"), skill => true),
+                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterRatingAboveZero"),
                     skill => skill.Rating > 0),
-                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterTotalRatingAboveZero"),
+                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterTotalRatingAboveZero"),
                     skill => skill.Pool > 0),
-                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.Instance.GetString("String_KnowledgeSkillFilterRatingZero"),
+                new Tuple<string, Predicate<KnowledgeSkill>>(LanguageManager.GetString("String_KnowledgeSkillFilterRatingZero"),
                     skill => skill.Rating == 0)
             };
             //TODO: TRANSLATIONS
@@ -302,24 +302,24 @@ namespace Chummer.UI.Skills
 
             ret.AddRange(
                 from XmlNode objNode
-                in XmlManager.Instance.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]")
+                in XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]")
                 let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
                 select new Tuple<string, Predicate<KnowledgeSkill>>(
-                    $"{LanguageManager.Instance.GetString("Label_Category")} {displayName}",
+                    $"{LanguageManager.GetString("Label_Category")} {displayName}",
                     skill => skill.SkillCategory == objNode.InnerText));
 
             ret.AddRange(
                 from string attribute
                 in new[] { "INT", "LOG" } //TODO: This should be somewhere in Character or CharacterAttrib i think
                 select new Tuple<string, Predicate<KnowledgeSkill>>(
-                    $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{attribute}Short")}",
+                    $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
                     skill => skill.Attribute == attribute));
             /*
             ret.AddRange(
                 from SkillGroup @group
                 in _character.SkillsSection.SkillGroups
                 select new Tuple<string, Predicate<KnowledgeSkill>>(
-                    $"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}",
+                    $"{LanguageManager.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}",
                     skill => skill.SkillGroupObject == @group));
             */
             return ret;
@@ -438,12 +438,12 @@ namespace Chummer.UI.Skills
         {
             if (_character.Options.KarmaNewActiveSkill > _character.Karma && _character.Created)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"));
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"));
                 return;
             }
 
 
-            XmlDocument document = XmlManager.Instance.Load("skills.xml");
+            XmlDocument document = XmlManager.Load("skills.xml");
             frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_character);
             frmPickExoticSkill.ShowDialog(this);
 
@@ -461,7 +461,7 @@ namespace Chummer.UI.Skills
 
         private void UpdateKnoSkillRemaining()
         {
-            lblKnowledgeSkillPoints.Text = $"{ObjCharacter.SkillsSection.KnowledgeSkillPointsRemain} {LanguageManager.Instance.GetString("String_Of")} {ObjCharacter.SkillsSection.KnowledgeSkillPoints}";
+            lblKnowledgeSkillPoints.Text = $"{ObjCharacter.SkillsSection.KnowledgeSkillPointsRemain} {LanguageManager.GetString("String_Of")} {ObjCharacter.SkillsSection.KnowledgeSkillPoints}";
         }
 
         private void btnKnowledge_Click(object sender, EventArgs e)
@@ -469,7 +469,7 @@ namespace Chummer.UI.Skills
             if (_character.Created)
             {
                 frmSelectItem form = new frmSelectItem();
-                form.Description = LanguageManager.Instance.GetString("Label_Options_NewKnowledgeSkill");
+                form.Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill");
                 form.DropdownItems = KnowledgeSkill.DefaultKnowledgeSkillCatagories;
 
                 if (form.ShowDialog() == DialogResult.OK)

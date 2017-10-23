@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectContactConnection()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -85,30 +85,30 @@ namespace Chummer
         {
             // Populate the fields with their data.
             // Membership.
-            cboMembership.Items.Add("+0: " + LanguageManager.Instance.GetString("String_None"));
-            cboMembership.Items.Add("+1: " + LanguageManager.Instance.GetString("String_SelectContactConnection_Members").Replace("{0}", "2-19"));
-            cboMembership.Items.Add("+2: " + LanguageManager.Instance.GetString("String_SelectContactConnection_Members").Replace("{0}", "20-99"));
-            cboMembership.Items.Add("+4: " + LanguageManager.Instance.GetString("String_SelectContactConnection_Members").Replace("{0}", "100-1000"));
-            cboMembership.Items.Add("+6: " + LanguageManager.Instance.GetString("String_SelectContactConnection_Members").Replace("{0}", "1000+"));
+            cboMembership.Items.Add("+0: " + LanguageManager.GetString("String_None"));
+            cboMembership.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "2-19"));
+            cboMembership.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "20-99"));
+            cboMembership.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "100-1000"));
+            cboMembership.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_Members").Replace("{0}", "1000+"));
 
             // Area of Influence.
-            cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.Instance.GetString("String_None"));
-            cboAreaOfInfluence.Items.Add("+1: " + LanguageManager.Instance.GetString("String_SelectContactConnection_AreaDistrict"));
-            cboAreaOfInfluence.Items.Add("+2: " + LanguageManager.Instance.GetString("String_SelectContactConnection_AreaSprawlwide"));
-            cboAreaOfInfluence.Items.Add("+4: " + LanguageManager.Instance.GetString("String_SelectContactConnection_AreaNational"));
-            cboAreaOfInfluence.Items.Add("+6: " + LanguageManager.Instance.GetString("String_SelectContactConnection_AreaGlobal"));
+            cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.GetString("String_None"));
+            cboAreaOfInfluence.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_AreaDistrict"));
+            cboAreaOfInfluence.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_AreaSprawlwide"));
+            cboAreaOfInfluence.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_AreaNational"));
+            cboAreaOfInfluence.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_AreaGlobal"));
 
             // Magical Resources.
-            cboMagicalResources.Items.Add("+0: " + LanguageManager.Instance.GetString("String_None"));
-            cboMagicalResources.Items.Add("+1: " + LanguageManager.Instance.GetString("String_SelectContactConnection_MagicalMinority"));
-            cboMagicalResources.Items.Add("+4: " + LanguageManager.Instance.GetString("String_SelectContactConnection_MagicalMost"));
-            cboMagicalResources.Items.Add("+6: " + LanguageManager.Instance.GetString("String_SelectContactConnection_MagicalVast"));
+            cboMagicalResources.Items.Add("+0: " + LanguageManager.GetString("String_None"));
+            cboMagicalResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMinority"));
+            cboMagicalResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMost"));
+            cboMagicalResources.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_MagicalVast"));
 
             // Matrix Resources.
-            cboMatrixResources.Items.Add("+0: " + LanguageManager.Instance.GetString("String_None"));
-            cboMatrixResources.Items.Add("+1: " + LanguageManager.Instance.GetString("String_SelectContactConnection_MatrixActive"));
-            cboMatrixResources.Items.Add("+2: " + LanguageManager.Instance.GetString("String_SelectContactConnection_MatrixBroad"));
-            cboMatrixResources.Items.Add("+4: " + LanguageManager.Instance.GetString("String_SelectContactConnection_MatrixPervasive"));
+            cboMatrixResources.Items.Add("+0: " + LanguageManager.GetString("String_None"));
+            cboMatrixResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MatrixActive"));
+            cboMatrixResources.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_MatrixBroad"));
+            cboMatrixResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MatrixPervasive"));
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;

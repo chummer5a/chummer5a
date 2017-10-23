@@ -79,7 +79,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objXmlGear == null)
                 return;
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid);
             objXmlGear.TryGetStringFieldQuickly("name", ref _strName);
             objXmlGear.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -102,7 +102,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objGearNode = MyXmlNode;
                 if (objGearNode != null)
@@ -112,7 +112,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (_strAltName.StartsWith("Stacked Focus"))
-                    _strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
+                    _strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.GetString("String_StackedFocus"));
 
                 objGearNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objGearNode?.Attributes?["translate"]?.InnerText;
@@ -125,7 +125,7 @@ namespace Chummer.Backend.Equipment
                 {
                     frmSelectText frmPickText = new frmSelectText();
                     frmPickText.PreventXPathErrors = true;
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_CustomItem_SelectText");
+                    frmPickText.Description = LanguageManager.GetString("String_CustomItem_SelectText");
                     frmPickText.ShowDialog();
 
                     // Make sure the dialogue window was not canceled.
@@ -136,9 +136,9 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    string strCustomName = LanguageManager.Instance.GetString(strForceValue, false);
+                    string strCustomName = LanguageManager.GetString(strForceValue, false);
                     if (string.IsNullOrEmpty(strCustomName))
-                        strCustomName = LanguageManager.Instance.TranslateExtra(strForceValue);
+                        strCustomName = LanguageManager.TranslateExtra(strForceValue);
                     _strName = strCustomName;
                 }
             }
@@ -166,7 +166,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
@@ -183,7 +183,7 @@ namespace Chummer.Backend.Equipment
             if (_strCategory == "Ammunition" && (_strName.StartsWith("Ammo:") || _strName.StartsWith("Arrow:") || _strName.StartsWith("Bolt:")))
             {
                 frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
-                frmPickWeaponCategory.Description = LanguageManager.Instance.GetString("String_SelectWeaponCategoryAmmo");
+                frmPickWeaponCategory.Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo");
                 if (!string.IsNullOrEmpty(strForceValue) && !strForceValue.Equals(_strName))
                     frmPickWeaponCategory.OnlyCategory = strForceValue;
 
@@ -232,7 +232,7 @@ namespace Chummer.Backend.Equipment
             // Add Gear Weapons if applicable.
             if (objXmlGear.InnerXml.Contains("<addweapon>"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddWeapon in objXmlGear.SelectNodes("addweapon"))
@@ -248,10 +248,10 @@ namespace Chummer.Backend.Equipment
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     if (blnAerodynamic)
                     {
-                        objGearWeapon.Name += " (" + LanguageManager.Instance.GetString("Checkbox_Aerodynamic") + ")";
+                        objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
                         objGearWeapon.Range = "Aerodynamic Grenades";
                         objGearWeaponNode.Text = objGearWeapon.DisplayName;
-                        _strName += " (" + LanguageManager.Instance.GetString("Checkbox_Aerodynamic") + ")";
+                        _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
                         objNode.Text = DisplayName;
                     }
 
@@ -404,9 +404,9 @@ namespace Chummer.Backend.Equipment
 
                         ListItem objItem = new ListItem();
                         objItem.Value = objChoiceNode["name"]?.InnerText ?? string.Empty;
-                        string strName = LanguageManager.Instance.GetString(objItem.Value, false);
+                        string strName = LanguageManager.GetString(objItem.Value, false);
                         if (string.IsNullOrEmpty(strName))
-                            strName = LanguageManager.Instance.TranslateExtra(objItem.Value);
+                            strName = LanguageManager.TranslateExtra(objItem.Value);
                         objItem.Name = strName;
                         lstGears.Add(objItem);
                     }
@@ -423,11 +423,11 @@ namespace Chummer.Backend.Equipment
                     }
 
                     string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
-                    string strFriendlyName = LanguageManager.Instance.GetString(strChooseGearNodeName, false);
+                    string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                     if (string.IsNullOrEmpty(strFriendlyName))
-                        strFriendlyName = LanguageManager.Instance.TranslateExtra(strChooseGearNodeName);
+                        strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName);
                     frmSelectItem frmPickItem = new frmSelectItem();
-                    frmPickItem.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
+                    frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
                     frmPickItem.GeneralItems = lstGears;
 
                     frmPickItem.ShowDialog();
@@ -768,7 +768,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Shim
             if (_intMaxRating != 0 && _strName.Contains("Certified Credstick"))
             {
-                XmlNode objNuyenNode = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
+                XmlNode objNuyenNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
                     if (_intRating > 0)
@@ -791,7 +791,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objGearNode = MyXmlNode;
                 if (objGearNode != null)
@@ -801,14 +801,14 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (_strAltName.StartsWith("Stacked Focus"))
-                    _strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
+                    _strAltName = _strAltName.Replace("Stacked Focus", LanguageManager.GetString("String_StackedFocus"));
 
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
                 objGearNode = objXmlDocument?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 objGearNode?.TryGetStringFieldQuickly("translate", ref _strAltCategory);
 
                 if (_strAltCategory.StartsWith("Stacked Focus"))
-                    _strAltCategory = _strAltCategory.Replace("Stacked Focus", LanguageManager.Instance.GetString("String_StackedFocus"));
+                    _strAltCategory = _strAltCategory.Replace("Stacked Focus", LanguageManager.GetString("String_StackedFocus"));
             }
 
             // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements.
@@ -821,7 +821,7 @@ namespace Chummer.Backend.Equipment
                     //Check for typo in Corrupter quality and correct it
                     if (intResult == -1)
                     {
-                        XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+                        XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
                         XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strName + "\"]");
                         if (gear != null)
                         {
@@ -858,7 +858,7 @@ namespace Chummer.Backend.Equipment
         {
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
             {
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("Label_BondedFoci") + ")");
+                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.GetString("Label_BondedFoci") + ")");
             }
             else
                 objWriter.WriteElementString("name", DisplayNameShort);
@@ -886,7 +886,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail_english", TotalAvail(true, true));
             objWriter.WriteElementString("cost", TotalCost.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
@@ -1580,13 +1580,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                XmlNode objReturn = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
+                XmlNode objReturn = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
                 if (objReturn == null)
                 {
-                    objReturn = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
+                    objReturn = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
                     if (objReturn == null)
                     {
-                        objReturn = XmlManager.Instance.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
+                        objReturn = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
                     }
                 }
                 return objReturn;
@@ -1617,12 +1617,11 @@ namespace Chummer.Backend.Equipment
 
             string strAvailExpression = _strAvail;
 
+            XmlDocument objXmlDocument = new XmlDocument();
+            XPathNavigator nav = objXmlDocument.CreateNavigator();
             if (strAvailExpression.Contains("Rating"))
             {
                 // If the availability is determined by the Rating, evaluate the expression.
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                 string strAvail = string.Empty;
                 if (blnIncludePlus)
                     strAvailExpression = strAvailExpression.Substring(1, strAvailExpression.Length - 1);
@@ -1665,15 +1664,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strAvailText != "F")
                             strAvailText = strAvail.Substring(strAvail.Length - 1);
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
                         XPathExpression xprAvail = nav.Compile(strAvail.Replace("F", string.Empty).Replace("R", string.Empty));
                         intAvail += Convert.ToInt32(nav.Evaluate(xprAvail));
                     }
                     else
                     {
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
                         XPathExpression xprAvail = nav.Compile(strAvail.Replace("F", string.Empty).Replace("R", string.Empty));
                         intAvail += Convert.ToInt32(nav.Evaluate(xprAvail));
                     }
@@ -1689,8 +1684,8 @@ namespace Chummer.Backend.Equipment
             // Translate the Avail string.
             if (!blnForceEnglish)
             {
-                strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             }
 
             if (blnIncludePlus)
@@ -1706,21 +1701,21 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strCapacity.Contains("/["))
+                string strReturn = _strCapacity;
+                string strSecondHalf = string.Empty;
+                XmlDocument objXmlDocument = new XmlDocument();
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                if (strReturn.Contains("/["))
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    int intPos = _strCapacity.IndexOf("/[");
-                    string strFirstHalf = _strCapacity.Substring(0, intPos);
-                    string strSecondHalf = _strCapacity.Substring(intPos + 1, _strCapacity.Length - intPos - 1);
+                    int intPos = strReturn.IndexOf("/[");
+                    string strFirstHalf = strReturn.Substring(0, intPos);
+                    strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
                     bool blnSquareBrackets = strFirstHalf.Contains('[');
                     string strCapacity = strFirstHalf;
                     if (blnSquareBrackets && strCapacity.Length > 2)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn;
                     if (_strArmorCapacity == "[*]")
                         strReturn = "*";
                     else if (_strArmorCapacity.StartsWith("FixedValues"))
@@ -1731,18 +1726,13 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                         strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
-                    strReturn += "/" + strSecondHalf;
-                    return strReturn;
                 }
-                if (_strCapacity.Contains("Rating"))
+                if (strReturn.Contains("Rating"))
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = _strCapacity.Contains('[');
-                    string strCapacity = _strCapacity;
+                    bool blnSquareBrackets = strReturn.Contains('[');
+                    string strCapacity = strReturn;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
@@ -1751,20 +1741,20 @@ namespace Chummer.Backend.Equipment
                     decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
                     if (decNumber < 1)
                         decNumber = 1;
-                    string strReturn = decNumber.ToString("N2", GlobalOptions.CultureInfo);
+                    strReturn = decNumber.ToString("N2", GlobalOptions.CultureInfo);
 
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
-
-                    return strReturn;
                 }
                 else if (string.IsNullOrEmpty(_strCapacity))
                     return "0";
+                if (!string.IsNullOrEmpty(strSecondHalf))
+                    strReturn += "/" + strSecondHalf;
                 decimal decReturn;
                 if (decimal.TryParse(_strCapacity, out decReturn))
                     return decReturn.ToString("N2", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
-                return _strCapacity;
+                return strReturn;
             }
         }
 
@@ -2072,9 +2062,9 @@ namespace Chummer.Backend.Equipment
                 if (_decQty != 1.0m || Category == "Currency")
                     strReturn = _decQty.ToString(Category == "Currency" ? "N2" : "N0", GlobalOptions.CultureInfo) + " " + strReturn;
                 if (_intRating > 0)
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
 
                 if (!string.IsNullOrEmpty(_strGearName))
                 {
@@ -2116,8 +2106,8 @@ namespace Chummer.Backend.Equipment
                 // Translate the Avail string.
                 if (!blnForceEnglish)
                 {
-                    strReturn = strReturn.Replace("P", LanguageManager.Instance.GetString("String_DamagePhysical"));
-                    strReturn = strReturn.Replace("S", LanguageManager.Instance.GetString("String_DamageStun"));
+                    strReturn = strReturn.Replace("P", LanguageManager.GetString("String_DamagePhysical"));
+                    strReturn = strReturn.Replace("S", LanguageManager.GetString("String_DamageStun"));
                 }
 
                 return strReturn;

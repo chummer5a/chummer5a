@@ -75,7 +75,7 @@ namespace Chummer
         private void TestVehicles()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/vehicles/vehicle").Count;
@@ -199,7 +199,7 @@ namespace Chummer
         private void TestWeapons()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/weapons/weapon").Count;
@@ -324,7 +324,7 @@ namespace Chummer
         private void TestArmor()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/armors/armor").Count;
@@ -419,7 +419,7 @@ namespace Chummer
         private void TestGear()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/gears/gear").Count;
@@ -502,7 +502,7 @@ namespace Chummer
             }
 
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix).Count;
@@ -588,7 +588,7 @@ namespace Chummer
         private void TestQuality()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/qualities/quality").Count;
@@ -615,7 +615,7 @@ namespace Chummer
 
         void TestMetatype(string strFile)
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile);
 
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
@@ -626,7 +626,7 @@ namespace Chummer
                 pgbProgress.Value++;
                 Application.DoEvents();
 
-                objXmlDocument = XmlManager.Instance.Load(strFile);
+                objXmlDocument = XmlManager.Load(strFile);
                 Character _objCharacter = new Character();
 
                 try
@@ -705,7 +705,7 @@ namespace Chummer
                     if (objXmlMetatype["movement"] != null)
                         _objCharacter.Movement = objXmlMetatype["movement"].InnerText;
                     // Load the Qualities file.
-                    XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
+                    XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
 
                     // Determine if the Metatype has any bonuses.
                     if (objXmlMetatype.InnerXml.Contains("bonus"))
@@ -763,7 +763,7 @@ namespace Chummer
                     // Add any Critter Powers the Metatype/Critter should have.
                     XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-                    objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+                    objXmlDocument = XmlManager.Load("critterpowers.xml");
                     foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                     {
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -875,7 +875,7 @@ namespace Chummer
                     }
 
                     // Add any Complex Forms the Critter comes with (typically Sprites)
-                    XmlDocument objXmlProgramDocument = XmlManager.Instance.Load("complexforms.xml");
+                    XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
                     foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                     {
                         int intRating = 0;
@@ -892,7 +892,7 @@ namespace Chummer
                     }
 
                     // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                    XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                    XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                     foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
                     {
                         int intRating = 0;

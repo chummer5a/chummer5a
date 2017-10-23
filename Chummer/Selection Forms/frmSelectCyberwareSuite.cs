@@ -37,25 +37,26 @@ namespace Chummer
 
         List<Cyberware> _lstCyberware = new List<Cyberware>();
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control events
         public frmSelectCyberwareSuite(Improvement.ImprovementSource objSource, Character objCharacter)
         {
             InitializeComponent();
             _objSource = objSource;
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             if (_objSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.Instance.GetString("Title_SelectBiowareSuite");
-                lblCyberwareLabel.Text = LanguageManager.Instance.GetString("Label_SelectBiowareSuite_PartsInSuite");
+                Text = LanguageManager.GetString("Title_SelectBiowareSuite");
+                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite");
             }
 
             _objCharacter = objCharacter;
+            _objXmlDocument = XmlManager.Load(_strType + ".xml", true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -82,8 +83,6 @@ namespace Chummer
                 if (objLabel.Text.StartsWith("["))
                     objLabel.Text = string.Empty;
             }
-
-            _objXmlDocument = XmlManager.Instance.Load(_strType + ".xml", true);
 
             if (_objCharacter.DEPEnabled)
                 return;

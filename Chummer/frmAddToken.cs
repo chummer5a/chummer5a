@@ -39,7 +39,7 @@ namespace Chummer
         public frmAddToken(InitiativeUserControl init)
         {
             InitializeComponent();
-            //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
             

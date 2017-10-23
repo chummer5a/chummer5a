@@ -31,7 +31,7 @@ namespace Chummer
         public frmSelectExoticSkill(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
         }
 
@@ -47,8 +47,7 @@ namespace Chummer
 
         private void frmSelectExoticSkill_Load(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = new XmlDocument();
-            objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
 
             List<ListItem> lstSkills = new List<ListItem>();
             
@@ -118,11 +117,11 @@ namespace Chummer
         private void BuildList()
         {
             List<ListItem> lstSkillSpecialisations = new List<ListItem>();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
 
             XmlNodeList objXmlSelectedSkill =
                 objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + cboCategory.SelectedValue.ToString() + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec");
-            XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
             XmlNodeList objXmlWeaponList =
                 objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(category = \"" + cboCategory.SelectedValue.ToString() +
                                                  "s\" or useskill = \"" + cboCategory.SelectedValue.ToString() + "\") and (" + _objCharacter.Options.BookXPath() + ")]");

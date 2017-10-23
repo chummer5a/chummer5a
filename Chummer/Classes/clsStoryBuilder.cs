@@ -40,7 +40,7 @@ namespace Chummer
         public String GetStory()
         {
             //Little bit of data required for following steps
-            XmlDocument xdoc = XmlManager.Instance.Load("lifemodules.xml");
+            XmlDocument xdoc = XmlManager.Load("lifemodules.xml");
 
             if (xdoc != null)
             {
@@ -202,7 +202,7 @@ namespace Chummer
             //Did not meet predefined macros, check user defined
             
             String searchString = "/chummer/storybuilder/macros/" + macroName;
-            XmlDocument objXmlLifeModulesDocument = XmlManager.Instance.Load("lifemodules.xml");
+            XmlDocument objXmlLifeModulesDocument = XmlManager.Load("lifemodules.xml");
 
             if (objXmlLifeModulesDocument != null)
             {

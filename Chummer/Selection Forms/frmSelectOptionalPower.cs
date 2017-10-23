@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectOptionalPower()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -51,8 +51,8 @@ namespace Chummer
         private string _strForceGrade = string.Empty;
         private XmlNode _objParentNode = null;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
-        private readonly XPathNavigator _nav;
+        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XPathNavigator _nav = null;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private readonly List<ListItem> _lstGrade = new List<ListItem>();
@@ -64,11 +64,10 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmSelectCyberware(Character objCharacter, bool blnCareer = false, XmlNode objParentNode = null)
+        public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, bool blnCareer = false, XmlNode objParentNode = null)
         {
-            _nav = _objXmlDocument.CreateNavigator();
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             chkFree.Visible = blnCareer;
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
@@ -77,13 +76,29 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objParentNode = objParentNode;
             MoveControls();
+
+            // Load the Cyberware information.
+            if (objWareSource == Improvement.ImprovementSource.Bioware)
+                WindowMode = Mode.Bioware;
+            else
+                WindowMode = Mode.Cyberware;
+            switch (WindowMode)
+            {
+                case Mode.Cyberware:
+                    _objXmlDocument = XmlManager.Load("cyberware.xml");
+                    break;
+                case Mode.Bioware:
+                    _objXmlDocument = XmlManager.Load("bioware.xml");
+                    break;
+            }
+            _nav = _objXmlDocument.CreateNavigator();
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
         {
             // Update the window title if needed.
             if (_strNode == "bioware")
-                Text = LanguageManager.Instance.GetString("Title_SelectCyberware_Bioware");
+                Text = LanguageManager.GetString("Title_SelectCyberware_Bioware");
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -97,16 +112,6 @@ namespace Chummer
 
             chkPrototypeTranshuman.Visible =
                 _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
-            // Load the Cyberware information.
-            switch (_objMode)
-            {
-                case Mode.Cyberware:
-                    _objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
-                    break;
-                case Mode.Bioware:
-                    _objXmlDocument = XmlManager.Instance.Load("bioware.xml");
-                    break;
-            }
 
             PopulateCategories();
             // Select the first Category in the list.
@@ -347,7 +352,7 @@ namespace Chummer
 
             tipTooltip.SetToolTip(lblSource,
                 _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText) + " " +
-                LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                LanguageManager.GetString("String_Page") + " " + strPage);
 
             UpdateCyberwareInfo();
         }
@@ -585,7 +590,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = $"{LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed")} {_decMaximumCapacity:###,###,##0.##}";
+                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed")} {_decMaximumCapacity:###,###,##0.##}";
             }
         }
 
@@ -719,8 +724,8 @@ namespace Chummer
                 if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
                     strSuffix = strAvailExpr.Substring(strAvailExpr.Length - 1, 1)
-                        .Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"))
-                        .Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                        .Replace("R", LanguageManager.GetString("String_AvailRestricted"))
+                        .Replace("F", LanguageManager.GetString("String_AvailForbidden"));
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -1101,10 +1106,10 @@ namespace Chummer
                 if (MaximumCapacity - decCapacity < 0)
                 {
                     MessageBox.Show(
-                        LanguageManager.Instance.GetString("Message_OverCapacityLimit")
+                        LanguageManager.GetString("Message_OverCapacityLimit")
                             .Replace("{0}", MaximumCapacity.ToString("N2", GlobalOptions.CultureInfo))
                             .Replace("{1}", decCapacity.ToString("N2", GlobalOptions.CultureInfo)),
-                        LanguageManager.Instance.GetString("MessageTitle_OverCapacityLimit"),
+                        LanguageManager.GetString("MessageTitle_OverCapacityLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -1223,7 +1228,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = "Show All";
-                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
                 _lstCategory.Insert(0, objItem);
             }
 

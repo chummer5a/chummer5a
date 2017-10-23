@@ -140,14 +140,14 @@
         <xsl:when test="$dec &gt; 0">
           <xsl:variable name="decs">
             <xsl:call-template name="fnx-repeat">
-              <xsl:with-param name="string" select="'0'"/>        
+              <xsl:with-param name="string" select="'#'"/>        
               <xsl:with-param name="count" select="$dec"/>
             </xsl:call-template>
           </xsl:variable>
-          <xsl:value-of select="concat('###,##0.',decs)"/>
+          <xsl:value-of select="concat('###,###,##0.',decs)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="'###,##0'"/>
+          <xsl:value-of select="'###,###,##0'"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -156,6 +156,9 @@
 
     <xsl:variable name="nbr">
       <xsl:choose>
+        <xsl:when test="$n = 'NaN'">
+          <xsl:value-of select="$nmbr" />
+        </xsl:when>
         <xsl:when test="$mark = '$en-marks'">
           <xsl:value-of select="$n"/>
         </xsl:when>

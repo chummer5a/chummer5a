@@ -94,16 +94,16 @@ namespace Chummer
             tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 
             Application.Idle += UpdateCharacterInfo;
-            GlobalOptions.Instance.MRUChanged += PopulateMRU;
-            GlobalOptions.Instance.MainForm.OpenCharacters.Add(_objCharacter);
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            GlobalOptions.MRUChanged += PopulateMRU;
+            GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Update the text in the Menus so they can be merged with frmMain properly.
             foreach (ToolStripMenuItem objItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
             {
                 if (objItem.Tag != null)
                 {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
                 }
             }
 
@@ -196,22 +196,22 @@ namespace Chummer
             {
                 if (_objCharacter.MAGEnabled)
                 {
-                    tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Initiation");
-                    tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddMetamagic");
-                    cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddInitiateGrade");
-                    chkJoinGroup.Text = LanguageManager.Instance.GetString("Checkbox_JoinedGroup");
+                    tabInitiation.Text = LanguageManager.GetString("Tab_Initiation");
+                    tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic");
+                    cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade");
+                    chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup");
                     chkJoinGroup.Checked = _objCharacter.GroupMember;
                     txtGroupName.Text = _objCharacter.GroupName;
                     txtGroupNotes.Text = _objCharacter.GroupNotes;
-                    string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", (10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)).ToString());
+                    string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", (10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)).ToString());
                     tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
                 }
                 else
                 {
-                    tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
-                    tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
-                    cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
-                    chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
+                    tabInitiation.Text = LanguageManager.GetString("Tab_Submersion");
+                    tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho");
+                    cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade");
+                    chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask");
                     chkInitiationGroup.Visible = false;
                     chkInitiationSchooling.Visible = false;
                     tsMetamagicAddArt.Visible = false;
@@ -222,7 +222,7 @@ namespace Chummer
                     cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
                     txtGroupName.Text = _objCharacter.GroupName;
                     txtGroupNotes.Text = _objCharacter.GroupNotes;
-                    string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", (10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)).ToString());
+                    string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", (10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)).ToString());
                     tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
                 }
             }
@@ -248,40 +248,32 @@ namespace Chummer
             lblNumMugshots.Text = "/ " + _objCharacter.Mugshots.Count.ToString();
 
             // Populate character information fields.
-            XmlDocument objMetatypeDoc = new XmlDocument();
-            XmlNode objMetatypeNode;
-            string strMetatype = string.Empty;
-            string strBook = string.Empty;
-            string strPage = string.Empty;
-
-            objMetatypeDoc = XmlManager.Instance.Load("metatypes.xml");
+            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+            XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            if (objMetatypeNode == null)
             {
+                objMetatypeDoc = XmlManager.Load("critters.xml");
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (objMetatypeNode == null)
-                    objMetatypeDoc = XmlManager.Instance.Load("critters.xml");
-                objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            }
+            string strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
+            string strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
+            string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
-                strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
+            if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
+            {
+                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
+                strMetatype += $" ({objMetatypeNode?["translate"]?.InnerText ?? _objCharacter.Metavariant})";
 
                 strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
-
-                if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
-                {
-                    objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
-                    strMetatype += $" ({objMetatypeNode?["translate"]?.InnerText ?? _objCharacter.Metavariant})";
-
-                    strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
-                }
             }
             lblMetatype.Text = strMetatype;
             lblMetatypeSource.Text = strBook + " " + strPage;
             if (_objCharacter.Possessed)
-                lblPossessed.Text = LanguageManager.Instance.GetString("String_Possessed");
+                lblPossessed.Text = LanguageManager.GetString("String_Possessed");
             else
                 lblPossessed.Visible = false;
-            tipTooltip.SetToolTip(lblMetatypeSource, _objOptions.LanguageBookLong(objMetatypeNode["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblMetatypeSource, _objOptions.LanguageBookLong(objMetatypeNode["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
 
             txtCharacterName.Text = _objCharacter.Name;
             txtSex.Text = _objCharacter.Sex;
@@ -307,9 +299,6 @@ namespace Chummer
             treFoci.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
-            // Define the XML objects that will be used.
-            XmlDocument objXmlDocument = new XmlDocument();
-
             if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 treQualities.Nodes.Add(new TreeNode("Life Modules"));
@@ -320,12 +309,8 @@ namespace Chummer
             objCharacter_AmbidextrousChanged();
 
             // Populate the Magician Traditions list.
-            objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstTraditions = new List<ListItem>();
-            ListItem objBlank = new ListItem();
-            objBlank.Value = string.Empty;
-            objBlank.Name = string.Empty;
-            lstTraditions.Add(objBlank);
             foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + _objOptions.BookXPath() + "]"))
             {
                 ListItem objItem = new ListItem();
@@ -335,6 +320,10 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             lstTraditions.Sort(objSort.Compare);
+            ListItem objBlank = new ListItem();
+            objBlank.Value = "None";
+            objBlank.Name = LanguageManager.GetString("String_None");
+            lstTraditions.Insert(0, objBlank);
             cboTradition.BeginUpdate();
             cboTradition.ValueMember = "Value";
             cboTradition.DisplayMember = "Name";
@@ -342,7 +331,7 @@ namespace Chummer
             cboTradition.EndUpdate();
 
             // Populate the Magician Custom Drain Options list.
-            objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+            objXmlDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstDrainAttributes = new List<ListItem>();
             ListItem objDrainBlank = new ListItem();
             objDrainBlank.Value = string.Empty;
@@ -370,7 +359,7 @@ namespace Chummer
             }
 
             // Populate the Magician Custom Spirits lists - Combat.
-            objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+            objXmlDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstSpirit = new List<ListItem>();
             ListItem objSpiritBlank = new ListItem();
             objSpiritBlank.Value = string.Empty;
@@ -428,7 +417,7 @@ namespace Chummer
             cboSpiritManipulation.EndUpdate();
 
             // Populate the Technomancer Streams list.
-            objXmlDocument = XmlManager.Instance.Load("streams.xml");
+            objXmlDocument = XmlManager.Load("streams.xml");
             List<ListItem> lstStreams = new List<ListItem>
             {
                 objBlank
@@ -826,7 +815,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objCharacter.MagicTradition))
             {
-                objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+                objXmlDocument = XmlManager.Load("traditions.xml");
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.MagicTradition + "\"]");
                 lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
                 string strDrainAtt = string.Empty;
@@ -846,7 +835,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
             {
-                objXmlDocument = XmlManager.Instance.Load("streams.xml");
+                objXmlDocument = XmlManager.Load("streams.xml");
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.TechnomancerStream + "\"]");
                 lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
 
@@ -1044,8 +1033,8 @@ namespace Chummer
             {
                 string strCharacterName = _objCharacter.Alias;
                 if (string.IsNullOrEmpty(_objCharacter.Alias.Trim()))
-                    strCharacterName = LanguageManager.Instance.GetString("String_UnnamedCharacter");
-                DialogResult objResult = MessageBox.Show(LanguageManager.Instance.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.Instance.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
+                DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (objResult == DialogResult.Yes)
                 {
                     // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
@@ -1061,7 +1050,7 @@ namespace Chummer
             // Reset the ToolStrip so the Save button is removed for the currently closing window.
             if (!e.Cancel)
             {
-                GlobalOptions.Instance.MainForm.OpenCharacters.Remove(_objCharacter);
+                GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
@@ -1078,7 +1067,7 @@ namespace Chummer
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 _objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
                 _objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
-                GlobalOptions.Instance.MRUChanged -= PopulateMRU;
+                GlobalOptions.MRUChanged -= PopulateMRU;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -1288,9 +1277,9 @@ namespace Chummer
                 if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                 {
                     tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                    tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Initiation");
-                    tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddMetamagic");
-                    chkJoinGroup.Text = LanguageManager.Instance.GetString("Checkbox_JoinedGroup");
+                    tabInitiation.Text = LanguageManager.GetString("Tab_Initiation");
+                    tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic");
+                    chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup");
                 }
 
                 if (!lstSpecialAttributes.Contains(_objCharacter.MAG))
@@ -1321,9 +1310,9 @@ namespace Chummer
                 if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                 {
                     tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                    tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
-                    tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
-                    chkJoinGroup.Text = LanguageManager.Instance.GetString("Checkbox_JoinedNetwork");
+                    tabInitiation.Text = LanguageManager.GetString("Tab_Submersion");
+                    tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho");
+                    chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork");
                 }
                 if (!lstSpecialAttributes.Contains(_objCharacter.RES))
                 {
@@ -1349,17 +1338,17 @@ namespace Chummer
             List<ListItem> lstPrimaryArm = new List<ListItem>();
             ListItem objLeftHand = new ListItem();
             objLeftHand.Value = "Left";
-            objLeftHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+            objLeftHand.Name = LanguageManager.GetString("String_Improvement_SideLeft");
             lstPrimaryArm.Add(objLeftHand);
             ListItem objRightHand = new ListItem();
             objRightHand.Value = "Right";
-            objRightHand.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+            objRightHand.Name = LanguageManager.GetString("String_Improvement_SideRight");
             lstPrimaryArm.Add(objRightHand);
             if (_objCharacter.Ambidextrous)
             {
                 ListItem objAmbidextrous = new ListItem();
                 objAmbidextrous.Value = "Ambidextrous";
-                objAmbidextrous.Name = LanguageManager.Instance.GetString("String_Ambidextrous");
+                objAmbidextrous.Name = LanguageManager.GetString("String_Ambidextrous");
                 lstPrimaryArm.Add(objAmbidextrous);
             }
 
@@ -1650,12 +1639,12 @@ namespace Chummer
         {
             bool blnEssence = true;
             bool blnCyberware = false;
-            string strMessage = LanguageManager.Instance.GetString("Message_CyberzombieRequirements");
+            string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements");
 
             // Make sure the character has an Essence lower than 0.
             if (_objCharacter.Essence >= 0)
             {
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_CyberzombieRequirementsEssence");
+                strMessage += "\n\t" + LanguageManager.GetString("Message_CyberzombieRequirementsEssence");
                 blnEssence = false;
             }
 
@@ -1667,15 +1656,15 @@ namespace Chummer
             }
 
             if (!blnCyberware)
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_CyberzombieRequirementsStimulator");
+                strMessage += "\n\t" + LanguageManager.GetString("Message_CyberzombieRequirementsStimulator");
 
             if (!blnEssence || !blnCyberware)
             {
-                MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_CyberzombieRequirements"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_CyberzombieRequirements"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberzombieConfirm"), LanguageManager.Instance.GetString("MessageTitle_CyberzombieConfirm"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_CyberzombieConfirm"), LanguageManager.GetString("MessageTitle_CyberzombieConfirm"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             // Convert the character.
@@ -1696,7 +1685,7 @@ namespace Chummer
             }
             if (!blnHasLifestyle)
             {
-                XmlDocument objXmlLifestyleDocument = XmlManager.Instance.Load("lifestyles.xml");
+                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
 
                 TreeNode objLifestyleNode = new TreeNode();
@@ -1723,7 +1712,7 @@ namespace Chummer
             }
             if (!blnHasPower)
             {
-                XmlDocument objXmlPowerDocument = XmlManager.Instance.Load("critterpowers.xml");
+                XmlDocument objXmlPowerDocument = XmlManager.Load("critterpowers.xml");
                 XmlNode objXmlPowerNode = objXmlPowerDocument.SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
 
                 TreeNode objNode = new TreeNode();
@@ -1744,7 +1733,7 @@ namespace Chummer
             }
             if (!blnHasPower)
             {
-                XmlDocument objXmlPowerDocument = XmlManager.Instance.Load("critterpowers.xml");
+                XmlDocument objXmlPowerDocument = XmlManager.Load("critterpowers.xml");
                 XmlNode objXmlPowerNode = objXmlPowerDocument.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                 TreeNode objNode = new TreeNode();
@@ -1768,7 +1757,7 @@ namespace Chummer
         {
             // Display the Select CharacterAttribute window and record which Skill was selected.
             frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-            frmPickAttribute.Description = LanguageManager.Instance.GetString("String_CyberzombieReduceAttribute");
+            frmPickAttribute.Description = LanguageManager.GetString("String_CyberzombieReduceAttribute");
             if (_objCharacter.MAGEnabled)
                 frmPickAttribute.AddMAG();
             if (_objCharacter.RESEnabled)
@@ -1799,7 +1788,7 @@ namespace Chummer
             {
                 if (objItem.Tag != null)
                 {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
                 }
             }
         }
@@ -1807,7 +1796,7 @@ namespace Chummer
         private void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
         {
             frmSelectNumber frmPickNumber = new frmSelectNumber(false);
-            frmPickNumber.Description = LanguageManager.Instance.GetString("String_CloningMachineNumber");
+            frmPickNumber.Description = LanguageManager.GetString("String_CloningMachineNumber");
             frmPickNumber.Minimum = 1;
             frmPickNumber.ShowDialog(this);
 
@@ -1817,19 +1806,19 @@ namespace Chummer
             int intClones = Convert.ToInt32(frmPickNumber.SelectedValue);
             if (intClones <= 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CloningMachineNumberRequired"), LanguageManager.Instance.GetString("MessageTitle_CloningMachineNumberRequired"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_CloningMachineNumberRequired"), LanguageManager.GetString("MessageTitle_CloningMachineNumberRequired"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             for (int i = 1; i <= intClones; i++)
-                GlobalOptions.Instance.MainForm.LoadCharacter(_objCharacter.FileName, false, _objCharacter.Alias + " " + i.ToString(), true);
+                GlobalOptions.MainForm.LoadCharacter(_objCharacter.FileName, false, _objCharacter.Alias + " " + i.ToString(), true);
         }
 
         private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
         {
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.Instance.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             // Record the status of any flags that normally trigger character events.
@@ -1845,7 +1834,7 @@ namespace Chummer
             ImprovementManager.RemoveImprovements(_objCharacter, 0, string.Empty, true);
 
             // Refresh Qualities.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 string strSelected = objQuality.Extra;
@@ -1878,7 +1867,7 @@ namespace Chummer
             }
 
             // Refresh Martial Art Advantages.
-            objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+            objXmlDocument = XmlManager.Load("martialarts.xml");
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
                 foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
@@ -1897,7 +1886,7 @@ namespace Chummer
             }
 
             // Refresh Spells.
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
+            objXmlDocument = XmlManager.Load("spells.xml");
             foreach (Spell objSpell in _objCharacter.Spells)
             {
                 string strSelected = objSpell.Extra;
@@ -1930,7 +1919,7 @@ namespace Chummer
             }
 
             // Refresh Adept Powers.
-            objXmlDocument = XmlManager.Instance.Load("powers.xml");
+            objXmlDocument = XmlManager.Load("powers.xml");
             foreach (Power objPower in _objCharacter.Powers)
             {
                 string strSelected = objPower.Extra;
@@ -1949,7 +1938,7 @@ namespace Chummer
             }
 
             // Refresh Complex Forms.
-            objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
+            objXmlDocument = XmlManager.Load("complexforms.xml");
             foreach (ComplexForm objProgram in _objCharacter.ComplexForms)
             {
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objProgram.Name + "\"]");
@@ -1975,7 +1964,7 @@ namespace Chummer
             }
 
             // Refresh AI Programs and Advanced Programs
-            objXmlDocument = XmlManager.Instance.Load("programs.xml");
+            objXmlDocument = XmlManager.Load("programs.xml");
             foreach (AIProgram objProgram in _objCharacter.AIPrograms)
             {
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + objProgram.Name + "\"]");
@@ -2001,7 +1990,7 @@ namespace Chummer
             }
 
             // Refresh Critter Powers.
-            objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+            objXmlDocument = XmlManager.Load("critterpowers.xml");
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
                 string strSelected = objPower.Extra;
@@ -2043,7 +2032,7 @@ namespace Chummer
             {
                 if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic)
                 {
-                    objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
+                    objXmlDocument = XmlManager.Load("metamagic.xml");
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + objMetamagic.Name + "\"]");
 
                     if (objNode != null)
@@ -2056,7 +2045,7 @@ namespace Chummer
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Instance.Load("echoes.xml");
+                    objXmlDocument = XmlManager.Load("echoes.xml");
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + objMetamagic.Name + "\"]");
 
                     if (objNode != null)
@@ -2074,7 +2063,7 @@ namespace Chummer
             {
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                 {
-                    objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+                    objXmlDocument = XmlManager.Load("cyberware.xml");
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
 
                     if (objNode != null)
@@ -2114,7 +2103,7 @@ namespace Chummer
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+                    objXmlDocument = XmlManager.Load("bioware.xml");
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
 
                     if (objNode != null)
@@ -2157,7 +2146,7 @@ namespace Chummer
             // Refresh Armors.
             foreach (Armor objArmor in _objCharacter.Armor)
             {
-                objXmlDocument = XmlManager.Instance.Load("armor.xml");
+                objXmlDocument = XmlManager.Load("armor.xml");
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + objArmor.Name + "\"]");
 
                 if (objNode != null)
@@ -2214,7 +2203,7 @@ namespace Chummer
 
                 foreach (Gear objGear in objArmor.Gear)
                 {
-                    objXmlDocument = XmlManager.Instance.Load("gear.xml");
+                    objXmlDocument = XmlManager.Load("gear.xml");
                     XmlNode objChild = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objGear.Name + "\" and category = \"" + objGear.Category + "\"]");
 
                     if (objChild != null)
@@ -2245,7 +2234,7 @@ namespace Chummer
             }
 
             // Refresh Gear.
-            objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            objXmlDocument = XmlManager.Load("gear.xml");
             foreach (Gear objGear in _objCharacter.Gear)
             {
                 string strSelected = objGear.Extra;
@@ -2372,7 +2361,7 @@ namespace Chummer
             // Make sure the Spirit has been saved first.
             if (_blnIsDirty)
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_PossessionSave"), LanguageManager.Instance.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
 
@@ -2388,7 +2377,7 @@ namespace Chummer
                 // Make sure the Vessel is in Career Mode.
                 if (!objVessel.Created)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_VesselInCareerMode"), LanguageManager.Instance.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     objVessel = null;
                     return;
                 }
@@ -2398,7 +2387,7 @@ namespace Chummer
                 objMerge.FileName = _objCharacter.FileName;
                 objMerge.Load();
                 objMerge.Possessed = true;
-                objMerge.Alias = objVessel.Alias + " (" + LanguageManager.Instance.GetString("String_Possessed") + ")";
+                objMerge.Alias = objVessel.Alias + " (" + LanguageManager.GetString("String_Possessed") + ")";
 
                 // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
                 bool blnHasImmunity = false;
@@ -2412,8 +2401,7 @@ namespace Chummer
                 }
                 if (!blnHasImmunity)
                 {
-                    XmlDocument objPowerDoc = new XmlDocument();
-                    objPowerDoc = XmlManager.Instance.Load("critterpowers.xml");
+                    XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
                     XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                     CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2491,7 +2479,7 @@ namespace Chummer
                     strShowFileName = _objCharacter.Alias;
                 strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
 
-                strShowFileName += " (" + LanguageManager.Instance.GetString("String_Possessed") + ")";
+                strShowFileName += " (" + LanguageManager.GetString("String_Possessed") + ")";
 
                 saveFileDialog.FileName = strShowFileName;
 
@@ -2505,7 +2493,7 @@ namespace Chummer
                     objMerge = null;
                     objVessel = null;
 
-                    GlobalOptions.Instance.MainForm.LoadCharacter(strOpenFile);
+                    GlobalOptions.MainForm.LoadCharacter(strOpenFile);
                 }
                 else
                 {
@@ -2521,12 +2509,12 @@ namespace Chummer
             // Make sure the Spirit has been saved first.
             if (_blnIsDirty)
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_PossessionSave"), LanguageManager.Instance.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
 
             // Prompt the user to select an inanimate Vessel.
-            XmlDocument objVesselDoc = XmlManager.Instance.Load("vessels.xml");
+            XmlDocument objVesselDoc = XmlManager.Load("vessels.xml");
             XmlNodeList objXmlMetatypeList = objVesselDoc.SelectNodes("/chummer/metatypes/metatype");
             List<ListItem> lstMetatype = new List<ListItem>();
             foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
@@ -2549,7 +2537,7 @@ namespace Chummer
             objMerge.FileName = _objCharacter.FileName;
             objMerge.Load();
             objMerge.Possessed = true;
-            objMerge.Alias = frmSelectVessel.SelectedItem + " (" + LanguageManager.Instance.GetString("String_Possessed") + ")";
+            objMerge.Alias = frmSelectVessel.SelectedItem + " (" + LanguageManager.GetString("String_Possessed") + ")";
 
             // Get the Node for the selected Vessel.
             XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
@@ -2615,7 +2603,7 @@ namespace Chummer
             // Add any additional Critter Powers the Vessel grants.
             if (objSelected["powers"] != null)
             {
-                XmlDocument objXmlPowerDoc = XmlManager.Instance.Load("critterpowers.xml");
+                XmlDocument objXmlPowerDoc = XmlManager.Load("critterpowers.xml");
                 foreach (XmlNode objXmlPower in objSelected.SelectNodes("powers/power"))
                 {
                     XmlNode objXmlCritterPower = objXmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -2646,8 +2634,7 @@ namespace Chummer
             }
             if (!blnHasImmunity)
             {
-                XmlDocument objPowerDoc = new XmlDocument();
-                objPowerDoc = XmlManager.Instance.Load("critterpowers.xml");
+                XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2674,7 +2661,7 @@ namespace Chummer
                 strShowFileName = _objCharacter.Alias;
             strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
 
-            strShowFileName += " (" + LanguageManager.Instance.GetString("String_Possessed") + ")";
+            strShowFileName += " (" + LanguageManager.GetString("String_Possessed") + ")";
 
             saveFileDialog.FileName = strShowFileName;
 
@@ -2687,7 +2674,7 @@ namespace Chummer
                 string strOpenFile = objMerge.FileName;
                 objMerge = null;
 
-                GlobalOptions.Instance.MainForm.LoadCharacter(strOpenFile);
+                GlobalOptions.MainForm.LoadCharacter(strOpenFile);
             }
             else
             {
@@ -2742,8 +2729,8 @@ namespace Chummer
                         objWriter.Close();
                         objStream.Close();
 
-                        GlobalOptions.Instance.Clipboard = objCharacterXML;
-                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Lifestyle;
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
                         //Clipboard.SetText(objCharacterXML.OuterXml);
                     }
 
@@ -2788,8 +2775,8 @@ namespace Chummer
                             objWriter.Close();
                             objStream.Close();
 
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Armor;
+                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
 
                             RefreshPasteStatus();
                             return;
@@ -2815,12 +2802,12 @@ namespace Chummer
                             {
                                 Commlink objCommlink = (Commlink)objCopyGear;
                                 objCommlink.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Commlink;
                             }
                             else
                             {
                                 objCopyGear.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
                             }
 
                             if (objCopyGear.WeaponID != Guid.Empty.ToString())
@@ -2855,7 +2842,7 @@ namespace Chummer
                             objWriter.Close();
                             objStream.Close();
 
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXML;
 
                             RefreshPasteStatus();
                             return;
@@ -2907,8 +2894,8 @@ namespace Chummer
                             objWriter.Close();
                             objStream.Close();
 
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
-                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Weapon;
+                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
 
                             RefreshPasteStatus();
                             return;
@@ -2933,12 +2920,12 @@ namespace Chummer
                             {
                                 Commlink objCommlink = (Commlink)objCopyGear;
                                 objCommlink.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Commlink;
                             }
                             else
                             {
                                 objCopyGear.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
                             }
 
                             if (objCopyGear.WeaponID != Guid.Empty.ToString())
@@ -2973,7 +2960,7 @@ namespace Chummer
                             objWriter.Close();
                             objStream.Close();
 
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXML;
 
                             RefreshPasteStatus();
                             return;
@@ -3004,12 +2991,12 @@ namespace Chummer
                         {
                             Commlink objCommlink = (Commlink)objCopyGear;
                             objCommlink.Save(objWriter);
-                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Commlink;
                         }
                         else
                         {
                             objCopyGear.Save(objWriter);
-                            GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
+                            GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
                         }
 
                         if (objCopyGear.WeaponID != Guid.Empty.ToString())
@@ -3044,7 +3031,7 @@ namespace Chummer
                         objWriter.Close();
                         objStream.Close();
 
-                        GlobalOptions.Instance.Clipboard = objCharacterXML;
+                        GlobalOptions.Clipboard = objCharacterXML;
                         //Clipboard.SetText(objCharacterXML.OuterXml);
                     }
                     }
@@ -3092,8 +3079,8 @@ namespace Chummer
                         objWriter.Close();
                         objStream.Close();
 
-                        GlobalOptions.Instance.Clipboard = objCharacterXML;
-                        GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Vehicle;
+                        GlobalOptions.Clipboard = objCharacterXML;
+                        GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
                         //Clipboard.SetText(objCharacterXML.OuterXml);
                     }
                     else
@@ -3117,12 +3104,12 @@ namespace Chummer
                             {
                                 Commlink objCommlink = (Commlink)objCopyGear;
                                 objCommlink.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Commlink;
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Commlink;
                             }
                             else
                             {
                                 objCopyGear.Save(objWriter);
-                                GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Gear;
+                                GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
                             }
 
                             if (objCopyGear.WeaponID != Guid.Empty.ToString())
@@ -3157,7 +3144,7 @@ namespace Chummer
                             objWriter.Close();
                             objStream.Close();
 
-                            GlobalOptions.Instance.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXML;
 
                             RefreshPasteStatus();
                             return;
@@ -3207,8 +3194,8 @@ namespace Chummer
                                     objWriter.Close();
                                     objStream.Close();
 
-                                    GlobalOptions.Instance.Clipboard = objCharacterXML;
-                                    GlobalOptions.Instance.ClipboardContentType = ClipboardContentType.Weapon;
+                                    GlobalOptions.Clipboard = objCharacterXML;
+                                    GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
 
                                     RefreshPasteStatus();
                                     return;
@@ -3228,7 +3215,7 @@ namespace Chummer
 
         private void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
             TreeNode objNode = new TreeNode();
             CritterPower objPower = new CritterPower(_objCharacter);
@@ -3280,9 +3267,9 @@ namespace Chummer
         {
             // Update the Spell Defence labels.
             string strSpellTooltip = string.Empty;
-            string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
-            string strCounterSpelling = LanguageManager.Instance.GetString("Label_CounterspellingDice");
-            string strSpellResistance = LanguageManager.Instance.GetString("String_SpellResistanceDice");
+            string strModifiers = LanguageManager.GetString("Tip_Modifiers");
+            string strCounterSpelling = LanguageManager.GetString("Label_CounterspellingDice");
+            string strSpellResistance = LanguageManager.GetString("String_SpellResistanceDice");
             //Indirect Dodge
             lblSpellDefenceIndirectDodge.Text = (_objCharacter.INT.TotalValue + _objCharacter.REA.TotalValue + _objCharacter.TotalBonusDodgeRating).ToString();
             strSpellTooltip = $"{strModifiers}: " +
@@ -3291,7 +3278,7 @@ namespace Chummer
             //Indirect Soak
             lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
             strSpellTooltip = $"{strModifiers}: " +
-                              $"{LanguageManager.Instance.GetString("Tip_Armor")} ({_objCharacter.TotalArmorRating}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
+                              $"{LanguageManager.GetString("Tip_Armor")} ({_objCharacter.TotalArmorRating}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
             tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
             //Direct Soak - Mana
             lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
@@ -3436,7 +3423,7 @@ namespace Chummer
 
         private void objContact_DeleteContact(Object sender, bool force)
         {
-            if (!force && !_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteContact")))
+            if (!force && !_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                 return;
 
             // Handle the DeleteContact Event for the ContactControl object.
@@ -3510,27 +3497,27 @@ namespace Chummer
 
         private void objEnemy_DeleteContact(Object sender)
         {
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteEnemy")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
                 return;
 
             // Determine the Karam cost to remove the Enemy.
             ContactControl objSender = (ContactControl)sender;
             int intKarmaCost = (objSender.ConnectionRating + objSender.LoyaltyRating) * _objOptions.KarmaQuality;
 
-            bool blnKarmaExpense = ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseEnemy").Replace("{0}", intKarmaCost.ToString()));
+            bool blnKarmaExpense = ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseEnemy").Replace("{0}", intKarmaCost.ToString()));
 
             if (blnKarmaExpense)
             {
                 // Make sure the character has enough Karma.
                 if (intKarmaCost > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseRemoveEnemy") + " " + objSender.ContactName, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveEnemy") + " " + objSender.ContactName, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaCost;
             }
@@ -3571,7 +3558,7 @@ namespace Chummer
 #region PetControl Events
         private void objPet_DeleteContact(Object sender)
         {
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteContact")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                 return;
 
             // Handle the DeleteContact Event for the ContactControl object.
@@ -3627,7 +3614,7 @@ namespace Chummer
                 int FetteringCost = thisSpirit.Force * 3;
                 if (
                     !ConfirmKarmaExpense(
-                        LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend")
+                        LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             .Replace("{0}", thisSpirit.Name)
                             .Replace("{1}", FetteringCost.ToString())))
                 {
@@ -3637,7 +3624,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
                 objExpense.Create(FetteringCost * -1,
-                    LanguageManager.Instance.GetString("String_ExpenseFetteredSpirit") + " " + thisSpirit.Name,
+                    LanguageManager.GetString("String_ExpenseFetteredSpirit") + " " + thisSpirit.Name,
                     ExpenseType.Karma, DateTime.Now);
                 thisSpirit.CharacterObject.ExpenseEntries.Add(objExpense);
                 thisSpirit.CharacterObject.Karma -= FetteringCost;
@@ -3661,7 +3648,7 @@ namespace Chummer
 
         private void objSpirit_DeleteSpirit(Object sender)
         {
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteSpirit")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpirit")))
                 return;
 
             // Handle the DeleteSpirit Event for the SpiritControl object.
@@ -3721,7 +3708,7 @@ namespace Chummer
 
         private void objSprite_DeleteSpirit(Object sender)
         {
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteSprite")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSprite")))
                 return;
 
             // Handle the DeleteSpirit Event for the SpiritControl object.
@@ -3772,7 +3759,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objMartialArt.Source);
                     string strPage = objMartialArt.Page;
                     lblMartialArtSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objMartialArt.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objMartialArt.Page);
+                    tipTooltip.SetToolTip(lblMartialArtSource, _objOptions.LanguageBookLong(objMartialArt.Source) + " " + LanguageManager.GetString("String_Page") + " " + objMartialArt.Page);
                     _blnSkipRefresh = false;
                 }
 
@@ -3917,7 +3904,7 @@ namespace Chummer
             // Make sure the character has enough Karma before letting them select a Spell.
             if (_objCharacter.Karma < _objOptions.KarmaSpell)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -3931,7 +3918,7 @@ namespace Chummer
             lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
 
             // Open the Spells XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
 
             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
 
@@ -3944,7 +3931,7 @@ namespace Chummer
             objSpell.FreeBonus = frmPickSpell.FreeBonus;
             if (!objSpell.FreeBonus)
             {
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend")
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     .Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                     return;
             }
@@ -4003,7 +3990,7 @@ namespace Chummer
                 objEntry.Create(
                     (_objOptions.KarmaSpell +
                      ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1,
-                    LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name,
+                    LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name,
                     ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
                 _objCharacter.Karma -= _objOptions.KarmaSpell +
@@ -4036,11 +4023,11 @@ namespace Chummer
                     // Cannot delete spells acquired through initiation
                     if (objSpell.Grade != 0 )
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveSpell"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveSpell"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveSpell"), LanguageManager.GetString("MessageTitle_CannotRemoveSpell"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteSpell")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
                         return;
 
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
@@ -4150,27 +4137,27 @@ namespace Chummer
 
                         if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                         {
-                            objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+                            objXmlDocument = XmlManager.Load("bioware.xml");
                         }
                         else
                         {
-                            objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+                            objXmlDocument = XmlManager.Load("cyberware.xml");
                         }
 
                         if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberware"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware"), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
                         if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                         {
-                            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCyberware")))
+                            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware")))
                                 return;
                         }
                         if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                         {
-                            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteBioware")))
+                            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware")))
                                 return;
                         }
 
@@ -4248,7 +4235,7 @@ namespace Chummer
 
             if (objHole == null)
             {
-                XmlDocument xmlCyberware = XmlManager.Instance.Load("cyberware.xml");
+                XmlDocument xmlCyberware = XmlManager.Load("cyberware.xml");
                 XmlNode xmlEssHole = xmlCyberware.SelectSingleNode("//id[.='b57eadaa-7c3b-4b80-8d79-cbbd922c1196']/..");
                 objHole = new Cyberware(_objCharacter);
                 TreeNode treNode = new TreeNode();
@@ -4297,7 +4284,7 @@ namespace Chummer
             // The number of Complex Forms cannot exceed the character's LOG.
             if (_objCharacter.ComplexForms.Count >= ((_objCharacter.RES.Value * 2) + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ComplexFormLimit)))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ComplexFormLimitCareer"), LanguageManager.Instance.GetString("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimitCareer"), LanguageManager.GetString("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // Let the user select a Program.
@@ -4310,7 +4297,7 @@ namespace Chummer
 
             int intKarmaCost = _objOptions.KarmaNewComplexForm;
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml");
 
             XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
 
@@ -4321,7 +4308,7 @@ namespace Chummer
                 if (objXmlProgram["bonus"]["selecttext"] != null)
                 {
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText);
+                    frmPickText.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText);
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
                 }
@@ -4342,13 +4329,13 @@ namespace Chummer
             // Make sure the character has enough Karma before letting them select a Complex Form.
             if (_objCharacter.Karma < intKarmaCost)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 // Remove the Improvements created by the Complex Form.
                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
                 return;
             }
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayNameShort).Replace("{1}", intKarmaCost.ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayNameShort).Replace("{1}", intKarmaCost.ToString())))
             {
                 // Remove the Improvements created by the Complex Form.
                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
@@ -4360,7 +4347,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseLearnComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
 
@@ -4388,7 +4375,7 @@ namespace Chummer
                 return;
 
             // Open the Armor XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
 
             XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + frmPickArmor.SelectedArmor + "\"]");
 
@@ -4409,9 +4396,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -4419,7 +4406,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Remove the Improvements created by the Armor.
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
                     if (frmPickArmor.AddAgain)
@@ -4431,7 +4418,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -4467,10 +4454,10 @@ namespace Chummer
         {
             if (treArmor.SelectedNode.Level == 0)
             {
-                if (treArmor.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
+                if (treArmor.SelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
                     return;
 
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmorLocation")))
+                if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmorLocation")))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Armor parent node.
@@ -4544,7 +4531,7 @@ namespace Chummer
                 return;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -4561,9 +4548,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -4571,7 +4558,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickWeapon.AddAgain)
                         cmdAddWeapon_Click(sender, e);
 
@@ -4581,7 +4568,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -4614,10 +4601,10 @@ namespace Chummer
             {
                 if (treWeapons.SelectedNode.Level == 0)
                 {
-                    if (treWeapons.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedWeapons"))
+                    if (treWeapons.SelectedNode.Text == LanguageManager.GetString("Node_SelectedWeapons"))
                         return;
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteWeaponLocation")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponLocation")))
                         return;
 
                     // Move all of the child nodes in the current parent to the Selected Weapons parent node.
@@ -4646,7 +4633,7 @@ namespace Chummer
 
                 if (treWeapons.SelectedNode.Level > 0)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteWeapon")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                         return;
 
                     if (treWeapons.SelectedNode.Level == 1)
@@ -4657,17 +4644,17 @@ namespace Chummer
                         // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
                         if (objWeapon.Cyberware)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberweapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberweapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberweapon"), LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                         if (objWeapon.Category == "Gear")
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveGearWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeapon"), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                         if (objWeapon.Category.StartsWith("Quality"))
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveQualityWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveQualityWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveQualityWeapon"), LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
@@ -4786,7 +4773,7 @@ namespace Chummer
             {
                 if (treLifestyles.SelectedNode.Level > 0)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteLifestyle")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
                         return;
 
                     Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
@@ -4820,10 +4807,10 @@ namespace Chummer
             {
                 if (treGear.SelectedNode.Level == 0)
                 {
-                    if (treGear.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedGear"))
+                    if (treGear.SelectedNode.Text == LanguageManager.GetString("Node_SelectedGear"))
                         return;
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteGearLocation")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
                         return;
 
                     // Move all of the child nodes in the current parent to the Selected Gear parent node.
@@ -4851,7 +4838,7 @@ namespace Chummer
                 }
                 if (treGear.SelectedNode.Level > 0)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteGear")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
                         return;
 
                     Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
@@ -4894,7 +4881,7 @@ namespace Chummer
                 return;
 
             // Open the Vehicles XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
             XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + frmPickVehicle.SelectedVehicle + "\"]");
 
@@ -4917,9 +4904,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -4927,7 +4914,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickVehicle.AddAgain)
                         cmdAddVehicle_Click(sender, e);
 
@@ -4937,7 +4924,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -4976,7 +4963,7 @@ namespace Chummer
 
             if (treVehicles.SelectedNode.Level != 2)
             {
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteVehicle")))
+                if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
                     return;
             }
 
@@ -4985,7 +4972,7 @@ namespace Chummer
             {
                 if (objCharacterVehicle.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == treVehicles.SelectedNode.Tag.ToString()) != null)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveGearWeaponVehicle"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle"), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -5037,7 +5024,7 @@ namespace Chummer
                 // Removing a Vehicle Mod
                 if (objMod != null)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteVehicle")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
                         return;
 
                     // Check for Improved Sensor bonus.
@@ -5052,7 +5039,7 @@ namespace Chummer
                         frmSelectNumber frmModPercent = new frmSelectNumber();
                         frmModPercent.Minimum = 0;
                         frmModPercent.Maximum = 1000000;
-                        frmModPercent.Description = LanguageManager.Instance.GetString("String_Retrofit");
+                        frmModPercent.Description = LanguageManager.GetString("String_Retrofit");
                         frmModPercent.ShowDialog(this);
 
                         if (frmModPercent.DialogResult == DialogResult.Cancel)
@@ -5065,14 +5052,14 @@ namespace Chummer
                         decimal decCost = decVehicleCost * decPercentage / 100;
                         if (decCost > _objCharacter.Nuyen)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
                         // Create a Vehicle Mod for the Retrofit.
                         VehicleMod objRetrofit = new VehicleMod(_objCharacter);
 
-                        XmlDocument objVehiclesDoc = XmlManager.Instance.Load("vehicles.xml");
+                        XmlDocument objVehiclesDoc = XmlManager.Load("vehicles.xml");
                         XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                         TreeNode objTreeNode = new TreeNode();
                         objRetrofit.Create(objXmlNode, objTreeNode, 0, objVehicle);
@@ -5082,7 +5069,7 @@ namespace Chummer
 
                         // Create an Expense Log Entry for removing the Obsolete Mod.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                        objEntry.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpenseVehicleRetrofit").Replace("{0}", objVehicle.DisplayName), ExpenseType.Nuyen, DateTime.Now);
+                        objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit").Replace("{0}", objVehicle.DisplayName), ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objEntry);
 
                         // Adjust the character's Nuyen total.
@@ -5210,7 +5197,7 @@ namespace Chummer
             int intKarmaCost = 7 * _objOptions.KarmaQuality;
             if (intKarmaCost > _objCharacter.Karma)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5221,7 +5208,7 @@ namespace Chummer
                 return;
 
             // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
 
             XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
 
@@ -5234,7 +5221,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseLearnMartialArt") + " " + frmPickMartialArt.SelectedMartialArt, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt") + " " + frmPickMartialArt.SelectedMartialArt, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
 
@@ -5258,7 +5245,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode != null && treMartialArts.SelectedNode.Level > 0)
             {
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMartialArt")))
+                if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
                     return;
 
                 if (treMartialArts.SelectedNode.Level == 1)
@@ -5331,7 +5318,7 @@ namespace Chummer
 
             if (treMartialArts.Nodes[1].Nodes.Count >= intTotalRating)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_MartialArtManeuverLimit"), LanguageManager.Instance.GetString("MessageTitle_MartialArtManeuverLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_MartialArtManeuverLimit"), LanguageManager.GetString("MessageTitle_MartialArtManeuverLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5341,7 +5328,7 @@ namespace Chummer
 
             if (intKarmaCost > _objCharacter.Karma)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5352,7 +5339,7 @@ namespace Chummer
                 return;
 
             // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
 
             XmlNode objXmlManeuver = objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + frmPickMartialArtManeuver.SelectedManeuver + "\"]");
 
@@ -5369,7 +5356,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseLearnManeuver") + " " + objManeuver.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnManeuver") + " " + objManeuver.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
 
@@ -5488,7 +5475,7 @@ namespace Chummer
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
                 if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -5506,30 +5493,30 @@ namespace Chummer
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 if (chkInitiationSchooling.Checked && (10000 > _objCharacter.Nuyen))
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 if (chkInitiationSchooling.Checked)
                 {
-                    if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaandNuyenExpense").Replace("{0}", LanguageManager.Instance.GetString("String_InitiateGrade")).Replace("{1}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString()).Replace("{3}", (10000).ToString())))
+                    if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaandNuyenExpense").Replace("{0}", LanguageManager.GetString("String_InitiateGrade")).Replace("{1}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString()).Replace("{3}", (10000).ToString())))
                         return;
                 }
                 else
                 {
-                    if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_InitiateGrade")).Replace("{1}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
+                    if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.GetString("String_InitiateGrade")).Replace("{1}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
                         return;
                 }
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
@@ -5545,7 +5532,7 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry();
-                    objNuyenExpense.Create(-10000, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
+                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objNuyenExpense);
                     _objCharacter.Nuyen -= 10000;
 
@@ -5580,7 +5567,7 @@ namespace Chummer
 
                 int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
 
-                string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
             }
             else if (_objCharacter.RESEnabled)
@@ -5589,7 +5576,7 @@ namespace Chummer
                 // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -5603,16 +5590,16 @@ namespace Chummer
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_SubmersionGrade")).Replace("{1}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.GetString("String_SubmersionGrade")).Replace("{1}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
                     return;
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.Instance.GetString("String_ExpenseSubmersionGrade") + " " + _objCharacter.SubmersionGrade.ToString() + " -> " + (_objCharacter.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade") + " " + _objCharacter.SubmersionGrade.ToString() + " -> " + (_objCharacter.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
@@ -5651,7 +5638,7 @@ namespace Chummer
 
                 int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
 
-                string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
             }
 
@@ -5670,9 +5657,9 @@ namespace Chummer
                 {
                     string strMessage = string.Empty;
                     if (_objCharacter.MAGEnabled)
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteMetamagic");
+                        strMessage = LanguageManager.GetString("Message_DeleteMetamagic");
                     else if (_objCharacter.RESEnabled)
-                        strMessage = LanguageManager.Instance.GetString("Message_DeleteEcho");
+                        strMessage = LanguageManager.GetString("Message_DeleteEcho");
                     if (!_objFunctions.ConfirmDelete(strMessage))
                         return;
 
@@ -5698,7 +5685,7 @@ namespace Chummer
         private void cmdKarmaGained_Click(object sender, EventArgs e)
         {
             frmExpense frmNewExpense = new frmExpense();
-            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForThePeople");
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople");
             frmNewExpense.ShowDialog(this);
 
             if (frmNewExpense.DialogResult == DialogResult.Cancel)
@@ -5740,7 +5727,7 @@ namespace Chummer
         private void cmdKarmaSpent_Click(object sender, EventArgs e)
         {
             frmExpense frmNewExpense = new frmExpense();
-            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForTheMan");
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan");
 
             frmNewExpense.ShowDialog(this);
 
@@ -5750,7 +5737,7 @@ namespace Chummer
             // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
             if (_objCharacter.Karma - frmNewExpense.Amount < 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5796,7 +5783,7 @@ namespace Chummer
         {
             frmExpense frmNewExpense = new frmExpense();
             frmNewExpense.Mode = ExpenseType.Nuyen;
-            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForTheMan");
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan");
             frmNewExpense.ShowDialog(this);
 
             if (frmNewExpense.DialogResult == DialogResult.Cancel)
@@ -5840,7 +5827,7 @@ namespace Chummer
         {
             frmExpense frmNewExpense = new frmExpense();
             frmNewExpense.Mode = ExpenseType.Nuyen;
-            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.Instance.GetString("String_WorkingForThePeople");
+            frmNewExpense.KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople");
             frmNewExpense.ShowDialog(this);
 
             if (frmNewExpense.DialogResult == DialogResult.Cancel)
@@ -5849,7 +5836,7 @@ namespace Chummer
             // Make sure the Nuyen expense would not put the character's remaining Nuyen amount below 0.
             if (_objCharacter.Nuyen - frmNewExpense.Amount < 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5924,12 +5911,12 @@ namespace Chummer
             decimal decAmount = objLifestyle.TotalMonthlyCost;
             if (decAmount > _objCharacter.Nuyen)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(decAmount * -1, LanguageManager.Instance.GetString("String_ExpenseLifestyle") + " " + objLifestyle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle") + " " + objLifestyle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Nuyen -= decAmount;
 
@@ -5949,12 +5936,12 @@ namespace Chummer
         private void cmdAddCritterPower_Click(object sender, EventArgs e)
         {
             // Make sure the Critter is allowed to have Optional Powers.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("critters.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
             XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
             if (objXmlCritter == null)
             {
-                objXmlDocument = XmlManager.Instance.Load("metatypes.xml");
+                objXmlDocument = XmlManager.Load("metatypes.xml");
                 objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
             }
 
@@ -5964,7 +5951,7 @@ namespace Chummer
             if (frmPickCritterPower.DialogResult == DialogResult.Cancel)
                 return;
 
-            objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+            objXmlDocument = XmlManager.Load("critterpowers.xml");
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickCritterPower.SelectedPower + "\"]");
             TreeNode objNode = new TreeNode();
             CritterPower objPower = new CritterPower(_objCharacter);
@@ -5989,7 +5976,7 @@ namespace Chummer
             if (objPower.Karma > 0)
             {
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(objPower.Karma * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseCritterPower") + " " + objPower.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower") + " " + objPower.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -6023,7 +6010,7 @@ namespace Chummer
             if (treCritterPowers.SelectedNode == null || treCritterPowers.SelectedNode.Level == 0)
                     return;
 
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCritterPower")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower")))
                 return;
 
             // Locate the selected Critter Power.
@@ -6058,7 +6045,7 @@ namespace Chummer
             {
                 if (treComplexForms.SelectedNode.Level == 1)
                 {
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteComplexForm")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
                         return;
 
                     // Locate the Program that is selected in the tree.
@@ -6090,16 +6077,16 @@ namespace Chummer
 
                 if (intKarmaCost > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", intKarmaCost.ToString()).Replace("{1}", objProgram.DisplayNameShort)))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", intKarmaCost.ToString()).Replace("{1}", objProgram.DisplayNameShort)))
                     return;
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaCost;
 
@@ -6122,7 +6109,7 @@ namespace Chummer
             Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
             Gear objParent = CommonFunctions.DeepFindById(treGear.SelectedNode.Parent.Tag.ToString(), _objCharacter.Gear);
 
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_ReduceQty")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty")))
                 return;
                 
             objGear.Quantity -= 1;
@@ -6185,7 +6172,7 @@ namespace Chummer
             // Cannot split a stack of 1 item.
             if (objSelectedGear.Quantity <= (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotSplitGear"), LanguageManager.Instance.GetString("MessageTitle_CannotSplitGear"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotSplitGear"), LanguageManager.GetString("MessageTitle_CannotSplitGear"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -6193,14 +6180,14 @@ namespace Chummer
             decimal decMinValue = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
             frmPickNumber.Minimum = decMinValue;
             frmPickNumber.Maximum = objSelectedGear.Quantity - decMinValue;
-            frmPickNumber.Description = LanguageManager.Instance.GetString("String_SplitGear");
+            frmPickNumber.Description = LanguageManager.GetString("String_SplitGear");
             frmPickNumber.ShowDialog(this);
 
             if (frmPickNumber.DialogResult == DialogResult.Cancel)
                 return;
 
             // Create a new piece of Gear.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objSelectedGear.Name + "\" and category = \"" + objSelectedGear.Category + "\"]");
             
             TreeNode objGearNode = new TreeNode();
@@ -6279,7 +6266,7 @@ namespace Chummer
             // If there were no matches, don't try to merge anything.
             if (lstGear.Count == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotMergeGear"), LanguageManager.Instance.GetString("MessageTitle_CannotMergeGear"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotMergeGear"), LanguageManager.GetString("MessageTitle_CannotMergeGear"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -6296,7 +6283,7 @@ namespace Chummer
             frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
             frmPickNumber.Minimum = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
             frmPickNumber.Maximum = objGear.Quantity;
-            frmPickNumber.Description = LanguageManager.Instance.GetString("String_MergeGear");
+            frmPickNumber.Description = LanguageManager.GetString("String_MergeGear");
             frmPickNumber.ShowDialog(this);
 
             if (frmPickNumber.DialogResult == DialogResult.Cancel)
@@ -6388,7 +6375,7 @@ namespace Chummer
                 frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
                 frmPickNumber.Minimum = decMinAmount;
                 frmPickNumber.Maximum = objSelectedGear.Quantity;
-                frmPickNumber.Description = LanguageManager.Instance.GetString("String_MoveGear");
+                frmPickNumber.Description = LanguageManager.GetString("String_MoveGear");
                 frmPickNumber.ShowDialog(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
@@ -6571,7 +6558,7 @@ namespace Chummer
                     frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
                     frmPickNumber.Minimum = decMinAmount;
                     frmPickNumber.Maximum = objSelectedGear.Quantity;
-                    frmPickNumber.Description = LanguageManager.Instance.GetString("String_MoveGear");
+                    frmPickNumber.Description = LanguageManager.GetString("String_MoveGear");
                     frmPickNumber.ShowDialog(this);
 
                     if (frmPickNumber.DialogResult == DialogResult.Cancel)
@@ -6677,7 +6664,7 @@ namespace Chummer
             Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
             Gear objParent = objGear?.Parent;
 
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_ReduceQty")))
+            if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty")))
                 return;
 
             objGear.Quantity -= 1;
@@ -6727,7 +6714,7 @@ namespace Chummer
             if (frmPickQuality.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickQuality.SelectedQuality + "\"]");
 
             TreeNode objNode = new TreeNode();
@@ -6758,13 +6745,13 @@ namespace Chummer
             {
                 if (intKarmaCost > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     blnAddItem = false;
                 }
 
                 if (blnAddItem && !frmPickQuality.FreeCost && objQuality.ContributeToBP)
                 {
-                    if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", intKarmaCost.ToString())))
+                    if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", intKarmaCost.ToString())))
                         blnAddItem = false;
                 }
 
@@ -6772,7 +6759,7 @@ namespace Chummer
                 {
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAddPositiveQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Karma -= intKarmaCost;
 
@@ -6783,14 +6770,14 @@ namespace Chummer
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_AddNegativeQuality"), LanguageManager.Instance.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality"), LanguageManager.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     blnAddItem = false;
 
                 if (blnAddItem)
                 {
                     // Create a Karma Expense for the Negative Quality.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(0, LanguageManager.Instance.GetString("String_ExpenseAddNegativeQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -6915,13 +6902,13 @@ namespace Chummer
             // Qualities that come from a Metatype cannot be removed.
             if (objQuality.OriginSource == QualitySource.Metatype)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_MetavariantQualitySwap"), LanguageManager.Instance.GetString("MessageTitle_MetavariantQualitySwap"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_MetavariantQualitySwap"), LanguageManager.GetString("MessageTitle_MetavariantQualitySwap"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // Neither can qualities from Improvements
             if (objQuality.OriginSource == QualitySource.Improvement)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementQuality").Replace("{0}", objQuality.SourceName), LanguageManager.Instance.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ImprovementQuality").Replace("{0}", objQuality.SourceName), LanguageManager.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6934,7 +6921,7 @@ namespace Chummer
             if (frmPickQuality.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickQuality.SelectedQuality + "\"]");
 
             TreeNode objNode = new TreeNode();
@@ -6956,13 +6943,13 @@ namespace Chummer
                 }
                 if (intKarmaCost > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     blnAddItem = false;
                 }
 
                 if (blnAddItem)
                 {
-                    if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_QualitySwap").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort)))
+                    if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort)))
                         blnAddItem = false;
                 }
 
@@ -6970,7 +6957,7 @@ namespace Chummer
                 {
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort), ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort), ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Karma -= intKarmaCost;
                 }
@@ -6986,13 +6973,13 @@ namespace Chummer
                 {
                     if (intKarmaCost > _objCharacter.Karma)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         blnAddItem = false;
                     }
 
                     if (blnAddItem)
                     {
-                        if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_QualitySwap").Replace("{0}", objQuality.Name).Replace("{1}", objNewQuality.Name)))
+                        if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap").Replace("{0}", objQuality.Name).Replace("{1}", objNewQuality.Name)))
                             blnAddItem = false;
                     }
 
@@ -7000,7 +6987,7 @@ namespace Chummer
                     {
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseSwapNegativeQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort), ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseSwapNegativeQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort), ExpenseType.Karma, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Karma -= intKarmaCost;
                     }
@@ -7083,19 +7070,19 @@ namespace Chummer
 
         private bool RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objXmlDeleteQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
             bool blnMetatypeQuality = false;
 
             // Qualities that come from a Metatype cannot be removed.
             if (objSelectedQuality.OriginSource == QualitySource.Metatype)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_MetavariantQuality"), LanguageManager.Instance.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_MetavariantQuality"), LanguageManager.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
             else if (objSelectedQuality.OriginSource == QualitySource.Improvement)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementQuality").Replace("{0}", objSelectedQuality.SourceName), LanguageManager.Instance.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ImprovementQuality").Replace("{0}", objSelectedQuality.SourceName), LanguageManager.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
             else if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
@@ -7108,11 +7095,11 @@ namespace Chummer
                 {
                     intBP *= -2;
                 }
-                string strBP = intBP.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                string strBP = intBP.ToString() + " " + LanguageManager.GetString("String_Karma");
 
                 if (blnConfirmDelete && !_objFunctions.ConfirmDelete(blnCompleteDelete ?
-                                                                        LanguageManager.Instance.GetString("Message_DeleteMetatypeQuality").Replace("{0}", strBP) :
-                                                                        LanguageManager.Instance.GetString("Message_LowerMetatypeQualityLevel").Replace("{0}", strBP)))
+                                                                        LanguageManager.GetString("Message_DeleteMetatypeQuality").Replace("{0}", strBP) :
+                                                                        LanguageManager.GetString("Message_LowerMetatypeQualityLevel").Replace("{0}", strBP)))
                     return false;
 
                 blnMetatypeQuality = true;
@@ -7127,7 +7114,7 @@ namespace Chummer
                         intKarmaCost *= 2;
 
                     ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                    objEntry.Create(intKarmaCost, LanguageManager.Instance.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objSelectedQuality.DisplayNameShort).Replace("{1}", LanguageManager.Instance.GetString("String_Karma")), ExpenseType.Karma, DateTime.Now, true);
+                    objEntry.Create(intKarmaCost, LanguageManager.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objSelectedQuality.DisplayNameShort).Replace("{1}", LanguageManager.GetString("String_Karma")), ExpenseType.Karma, DateTime.Now, true);
                     _objCharacter.ExpenseEntries.Add(objEntry);
                     _objCharacter.Karma += intKarmaCost;
 
@@ -7139,8 +7126,8 @@ namespace Chummer
                 else if (!blnMetatypeQuality)
                 {
                     if (blnConfirmDelete && !_objFunctions.ConfirmDelete(blnCompleteDelete ?
-                                                                        LanguageManager.Instance.GetString("Message_DeletePositiveQualityCareer") :
-                                                                        LanguageManager.Instance.GetString("Message_LowerPositiveQualityLevelCareer")))
+                                                                        LanguageManager.GetString("Message_DeletePositiveQualityCareer") :
+                                                                        LanguageManager.GetString("Message_LowerPositiveQualityLevelCareer")))
                         return false;
                 }
 
@@ -7173,20 +7160,20 @@ namespace Chummer
                     intTotalKarmaCost *= objSelectedQuality.Levels;
                 if (intTotalKarmaCost > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
 
                 if (!blnMetatypeQuality)
                 {
-                    if (blnConfirmDelete && !ConfirmKarmaExpense((blnCompleteDelete ? LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseRemove") :
-                        LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseLowerLevel")).Replace("{0}", objSelectedQuality.DisplayNameShort).Replace("{1}", intTotalKarmaCost.ToString())))
+                    if (blnConfirmDelete && !ConfirmKarmaExpense((blnCompleteDelete ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") :
+                        LanguageManager.GetString("Message_ConfirmKarmaExpenseLowerLevel")).Replace("{0}", objSelectedQuality.DisplayNameShort).Replace("{1}", intTotalKarmaCost.ToString())))
                         return false;
                 }
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseRemoveNegativeQuality") + " " + objSelectedQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + " " + objSelectedQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaCost;
 
@@ -7213,7 +7200,7 @@ namespace Chummer
             // Remove any Critter Powers that are gained through the Quality (Infected).
             if (objXmlDeleteQuality.SelectNodes("powers/power").Count > 0)
             {
-                objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+                objXmlDocument = XmlManager.Load("critterpowers.xml");
                 foreach (XmlNode objXmlPower in objXmlDeleteQuality.SelectNodes("optionalpowers/optionalpower"))
                 {
                     string strExtra = string.Empty;
@@ -7294,7 +7281,7 @@ namespace Chummer
                 nudQualityLevel.Value = 1;
                 return;
             }
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
             string strLimitString = objQualityNode?["limit"]?.InnerText;
             int intMaxRating = 0;
@@ -7323,7 +7310,7 @@ namespace Chummer
                 // Adding a new level
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality + "\"]");
                     if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, null, null, objXmlDocument))
                     {
@@ -7359,13 +7346,13 @@ namespace Chummer
                     {
                         if (intKarmaCost > _objCharacter.Karma)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
-                        else if (objQuality.ContributeToBP && (objQuality.BP == 0 || ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", intKarmaCost.ToString()))))
+                        else if (objQuality.ContributeToBP && (objQuality.BP == 0 || ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", intKarmaCost.ToString()))))
                         {
                             // Create the Karma expense.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                            objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAddPositiveQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                             _objCharacter.ExpenseEntries.Add(objExpense);
                             _objCharacter.Karma -= intKarmaCost;
 
@@ -7377,11 +7364,11 @@ namespace Chummer
                     }
                     else
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_AddNegativeQuality"), LanguageManager.Instance.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality"), LanguageManager.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             // Create a Karma Expense for the Negative Quality.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                            objExpense.Create(0, LanguageManager.Instance.GetString("String_ExpenseAddNegativeQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                            objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                             _objCharacter.ExpenseEntries.Add(objExpense);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
@@ -7465,7 +7452,7 @@ namespace Chummer
         {
             // Add a new location to the Gear Tree.
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
@@ -7489,7 +7476,7 @@ namespace Chummer
         {
             // Add a new location to the Gear Tree.
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
@@ -7565,7 +7552,7 @@ namespace Chummer
                 if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
                 {
                     objWeek = objCharacterWeek;
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCalendarWeek")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCalendarWeek")))
                         return;
                     _objCharacter.Calendar.Remove(objWeek);
                     _blnIsDirty = true;
@@ -7702,7 +7689,7 @@ namespace Chummer
             // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
             if (intFree < 2)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotStackFoci"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotStackFoci"), LanguageManager.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -7713,7 +7700,7 @@ namespace Chummer
             {
                 frmPickItem.Gear = lstGear;
                 frmPickItem.AllowAutoSelect = false;
-                frmPickItem.Description = LanguageManager.Instance.GetString("String_SelectItemFocus");
+                frmPickItem.Description = LanguageManager.GetString("String_SelectItemFocus");
                 frmPickItem.ShowDialog(this);
 
                 if (frmPickItem.DialogResult == DialogResult.OK)
@@ -7735,7 +7722,7 @@ namespace Chummer
             // Make sure at least 2 Foci were selected.
             if (lstStack.Count < 2)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_StackedFocusMinimum"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_StackedFocusMinimum"), LanguageManager.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -7749,7 +7736,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in lstStack)
                         objGear.Bonded = false;
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_StackedFocusForce"), LanguageManager.Instance.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_StackedFocusForce"), LanguageManager.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -7808,7 +7795,7 @@ namespace Chummer
 
         private void cmdBurnStreetCred_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BurnStreetCred"), LanguageManager.Instance.GetString("MessageTitle_BurnStreetCred"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_BurnStreetCred"), LanguageManager.GetString("MessageTitle_BurnStreetCred"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             _objCharacter.BurntStreetCred += 2;
@@ -7829,10 +7816,10 @@ namespace Chummer
             {
                 if (treImprovements.SelectedNode.Level == 0)
                 {
-                    if (treImprovements.SelectedNode.Text == LanguageManager.Instance.GetString("Node_SelectedImprovements"))
+                    if (treImprovements.SelectedNode.Text == LanguageManager.GetString("Node_SelectedImprovements"))
                         return;
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteImprovementGroup")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")))
                         return;
 
                     // Move all of the child nodes in the current parent to the Selected Improvements parent node.
@@ -7876,7 +7863,7 @@ namespace Chummer
                         }
                     }
 
-                    if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteImprovement")))
+                    if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")))
                         return;
 
                     // Remove the Improvement from the character.
@@ -7893,7 +7880,7 @@ namespace Chummer
         {
             // Add a new location to the Armor Tree.
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
@@ -8082,19 +8069,19 @@ namespace Chummer
                 }
                 if (objVehicle == null)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleLocation"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
             else
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleLocation"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Add a new location to the selected Vehicle.
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
@@ -8140,7 +8127,7 @@ namespace Chummer
                 return;
 
             frmSelectNumber frmPickNumber = new frmSelectNumber(false);
-            frmPickNumber.Description = LanguageManager.Instance.GetString("String_QuickeningKarma").Replace("{0}", treSpells.SelectedNode.Text);
+            frmPickNumber.Description = LanguageManager.GetString("String_QuickeningKarma").Replace("{0}", treSpells.SelectedNode.Text);
             frmPickNumber.Minimum = 1;
             frmPickNumber.ShowDialog(this);
 
@@ -8151,16 +8138,16 @@ namespace Chummer
             int intKarmaCost = Convert.ToInt32(frmPickNumber.SelectedValue);
             if (intKarmaCost > _objCharacter.Karma)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseQuickeningMetamagic").Replace("{0}", intKarmaCost.ToString()).Replace("{1}", treSpells.SelectedNode.Text)))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseQuickeningMetamagic").Replace("{0}", intKarmaCost.ToString()).Replace("{1}", treSpells.SelectedNode.Text)))
                 return;
 
             // Create the Karma expense.
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseQuickenMetamagic") + " " + treSpells.SelectedNode.Text, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseQuickenMetamagic") + " " + treSpells.SelectedNode.Text, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
 
@@ -8181,7 +8168,7 @@ namespace Chummer
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
             {
                 if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
         }
 
@@ -8190,7 +8177,7 @@ namespace Chummer
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
             {
                 if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
 
             // Enable and disable menu items
@@ -8248,7 +8235,7 @@ namespace Chummer
             foreach (ToolStripItem objItem in ((ToolStripDropDownItem)sender).DropDownItems)
             {
                 if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
         }
 
@@ -8257,7 +8244,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0 || (treCyberware.Nodes.Count > 1 && treCyberware.SelectedNode.Parent == treCyberware.Nodes[1]))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectCyberware"), LanguageManager.Instance.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
@@ -8273,7 +8260,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
               if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponAccessory"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8283,12 +8270,12 @@ namespace Chummer
             // Accessories cannot be added to Cyberweapons.
             if (objWeapon.Cyberware)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberweaponNoAccessory"), LanguageManager.Instance.GetString("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CyberweaponNoAccessory"), LanguageManager.GetString("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Weapons XML file and locate the selected Weapon.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objWeapon.Name + "\"]");
 
@@ -8296,14 +8283,14 @@ namespace Chummer
 
             if (objXmlWeapon == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotFindWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotFindWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Weapon allows Accessories to be added to it.
             if (!Convert.ToBoolean(objXmlWeapon["allowaccessory"].InnerText))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
@@ -8372,7 +8359,7 @@ namespace Chummer
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;
                     frmPickNumber.Maximum = decMax;
-                    frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", objAccessory.DisplayNameShort);
+                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", objAccessory.DisplayNameShort);
                     frmPickNumber.AllowCancel = false;
                     frmPickNumber.ShowDialog();
                     objAccessory.Cost = frmPickNumber.SelectedValue.ToString();
@@ -8391,9 +8378,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             if (!frmPickWeaponAccessory.FreeCost)
@@ -8401,7 +8388,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     objWeapon.WeaponAccessories.Remove(objAccessory);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickWeaponAccessory.AddAgain)
                         tsWeaponAddAccessory_Click(sender, e);
 
@@ -8411,7 +8398,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -8440,7 +8427,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8451,7 +8438,7 @@ namespace Chummer
             Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
 
             // Open the Armor XML file and locate the selected Armor.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
 
             XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + objArmor.Name + "\"]");
 
@@ -8491,7 +8478,7 @@ namespace Chummer
             // Do not allow the user to add a new piece of Armor if its Capacity has been reached.
             if (_objOptions.EnforceCapacity && objArmor.CapacityRemaining < 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 objArmor.ArmorMods.Remove(objMod);
                 if (frmPickArmorMod.AddAgain)
                     tsAddArmorMod_Click(sender, e);
@@ -8506,9 +8493,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             if (!frmPickArmorMod.FreeCost)
@@ -8516,7 +8503,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     objArmor.ArmorMods.Remove(objMod);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Remove the Improvements created by the Armor Mod.
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                     if (frmPickArmorMod.AddAgain)
@@ -8528,7 +8515,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -8568,7 +8555,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
@@ -8585,7 +8572,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicle"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8602,7 +8589,7 @@ namespace Chummer
                 return;
 
             // Open the Vehicles XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
             
             XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
@@ -8672,7 +8659,7 @@ namespace Chummer
                 bool blnOverCapacity = false;
                 if (_objOptions.BookEnabled("R5"))
                 {
-                    if (objSelectedVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                    if (objSelectedVehicle.IsDrone && GlobalOptions.Dronemods)
                     {
                         if (objSelectedVehicle.DroneModSlotsUsed > objSelectedVehicle.DroneModSlots)
                             blnOverCapacity = true;
@@ -8692,7 +8679,7 @@ namespace Chummer
 
                 if(blnOverCapacity)
                 { 
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     objSelectedVehicle.Mods.Remove(objMod);
                     if (frmPickVehicleMod.AddAgain)
                         tsVehicleAddMod_Click(sender, e);
@@ -8703,15 +8690,15 @@ namespace Chummer
             decimal decCost = objSelectedVehicle.TotalCost - decOriginalCost;
 
             // Multiply the cost if applicable.
-            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
                 if (decCost > _objCharacter.Nuyen)
                 {
                     objSelectedVehicle.Mods.Remove(objMod);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickVehicleMod.AddAgain)
                         tsVehicleAddMod_Click(sender, e);
 
@@ -8721,7 +8708,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -8741,7 +8728,7 @@ namespace Chummer
                 if (objMod.Bonus["selecttext"] != null)
                 {
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", objMod.DisplayNameShort);
+                    frmPickText.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", objMod.DisplayNameShort);
                     frmPickText.ShowDialog(this);
                     objMod.Extra = frmPickText.SelectedValue;
                     objNode.Text = objMod.DisplayName;
@@ -8766,7 +8753,7 @@ namespace Chummer
             VehicleMod objMod = CommonFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             if (objMod == null || (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || string.IsNullOrEmpty(objMod.WeaponMountCategories)))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotAddWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotAddWeapon"), LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8778,7 +8765,7 @@ namespace Chummer
                 return;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -8795,9 +8782,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             if (!frmPickWeapon.FreeCost)
@@ -8805,7 +8792,7 @@ namespace Chummer
                 // Check the item's Cost and make sure the character can afford it.
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickWeapon.AddAgain)
                         tsVehicleAddWeaponWeapon_Click(sender, e);
 
@@ -8815,7 +8802,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -8846,12 +8833,12 @@ namespace Chummer
             Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             if (objWeapon == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleWeaponAccessories"), LanguageManager.Instance.GetString("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponAccessories"), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Weapons XML file and locate the selected Weapon.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + treVehicles.SelectedNode.Text + "\"]");
 
@@ -8859,14 +8846,14 @@ namespace Chummer
 
             if (objXmlWeapon == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Weapon allows Accessories to be added to it.
             if (!Convert.ToBoolean(objXmlWeapon["allowaccessory"].InnerText))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
@@ -8920,9 +8907,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             if (!frmPickWeaponAccessory.FreeCost)
@@ -8930,7 +8917,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     objWeapon.WeaponAccessories.Remove(objAccessory);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickWeaponAccessory.AddAgain)
                         tsVehicleAddWeaponAccessory_Click(sender, e);
 
@@ -8940,7 +8927,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -8969,7 +8956,7 @@ namespace Chummer
             Weapon objSelectedWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             if (objSelectedWeapon == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleWeaponUnderbarrel"), LanguageManager.Instance.GetString("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel"), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8991,7 +8978,7 @@ namespace Chummer
                 return;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -9010,9 +8997,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -9020,7 +9007,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickWeapon.AddAgain)
                         cmdAddWeapon_Click(sender, e);
 
@@ -9030,7 +9017,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -9080,7 +9067,7 @@ namespace Chummer
                     return;
 
                 // Open the Martial Arts XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
 
                 XmlNode objXmlAdvantage = objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + frmPickMartialArtAdvantage.SelectedAdvantage + "\"]");
 
@@ -9101,7 +9088,7 @@ namespace Chummer
                 if (treMartialArts.SelectedNode.Nodes.Count > 1)
                 {
                     ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                    objEntry.Create(_objOptions.KarmaManeuver * -1, LanguageManager.Instance.GetString("String_ExpenseLearnTechnique") + " " + frmPickMartialArtAdvantage.SelectedAdvantage, ExpenseType.Karma, DateTime.Now);
+                    objEntry.Create(_objOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique") + " " + frmPickMartialArtAdvantage.SelectedAdvantage, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objEntry);
                     _objCharacter.Karma -= _objOptions.KarmaManeuver;
 
@@ -9117,7 +9104,7 @@ namespace Chummer
             }
             else
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectMartialArtAdvantage"), LanguageManager.Instance.GetString("MessageTitle_SelectMartialArtAdvantage"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtAdvantage"), LanguageManager.GetString("MessageTitle_SelectMartialArtAdvantage"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -9126,7 +9113,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9144,7 +9131,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -9182,9 +9169,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
-                    objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -9205,9 +9192,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -9215,7 +9202,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsVehicleAddGear_Click(sender, e);
 
@@ -9225,7 +9212,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -9287,7 +9274,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level < 2)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9299,7 +9286,7 @@ namespace Chummer
             if (objSensor == null)
             // Make sure the Sensor was found.
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9327,7 +9314,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -9367,9 +9354,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
-                    objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -9382,9 +9369,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -9392,7 +9379,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsVehicleSensorAddAsPlugin_Click(sender, e);
 
@@ -9402,7 +9389,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -9477,7 +9464,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9497,7 +9484,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9510,12 +9497,12 @@ namespace Chummer
                 {
                     if (objWeapon.AmmoRemaining == 1)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                 }
@@ -9533,12 +9520,12 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             if (objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9551,22 +9538,22 @@ namespace Chummer
                 {
                     if (objWeapon.AmmoRemaining == 1)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else if (objWeapon.AmmoRemaining > 3)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoLongBurstShort"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoLongBurstShort"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else if (objWeapon.AmmoRemaining == 3)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoShortBurst"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurst"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                 }
@@ -9584,7 +9571,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9595,7 +9582,7 @@ namespace Chummer
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoFullBurst"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoFullBurst"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
             }
@@ -9611,7 +9598,7 @@ namespace Chummer
 
             if (objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9622,7 +9609,7 @@ namespace Chummer
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoSuppressiveFire"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSuppressiveFire"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
             }
@@ -9638,7 +9625,7 @@ namespace Chummer
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9658,7 +9645,7 @@ namespace Chummer
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9671,12 +9658,12 @@ namespace Chummer
                 {
                     if (objWeapon.AmmoRemaining == 1)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                 }
@@ -9694,7 +9681,7 @@ namespace Chummer
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9707,22 +9694,22 @@ namespace Chummer
                 {
                     if (objWeapon.AmmoRemaining == 1)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSingleShot"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else if (objWeapon.AmmoRemaining > 3)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoLongBurstShort"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoLongBurstShort"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else if (objWeapon.AmmoRemaining == 3)
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoShortBurst"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurst"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                     else
                     {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        if (MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoShortBurstShort"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             objWeapon.AmmoRemaining = 0;
                     }
                 }
@@ -9740,7 +9727,7 @@ namespace Chummer
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9751,7 +9738,7 @@ namespace Chummer
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoFullBurst"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoFullBurst"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
             }
@@ -9767,7 +9754,7 @@ namespace Chummer
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmo"), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmo"), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             else
@@ -9778,7 +9765,7 @@ namespace Chummer
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughAmmoSuppressiveFire"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughAmmoSuppressiveFire"), LanguageManager.GetString("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
             }
@@ -9801,7 +9788,7 @@ namespace Chummer
                     {
                         if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberware"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware"), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
@@ -9816,9 +9803,9 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
                         string strEntry = string.Empty;
                         if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            strEntry = LanguageManager.Instance.GetString("String_ExpenseSoldCyberware");
+                            strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
                         else
-                            strEntry = LanguageManager.Instance.GetString("String_ExpenseSoldBioware");
+                            strEntry = LanguageManager.GetString("String_ExpenseSoldBioware");
                         decAmount += _objFunctions.DeleteCyberware(objCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
                         objExpense.Create(decAmount, strEntry + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
@@ -9854,7 +9841,7 @@ namespace Chummer
                         decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                         decAmount += _objFunctions.DeleteGear(objGear, treWeapons) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        string strEntry = LanguageManager.Instance.GetString("String_ExpenseSoldCyberwareGear");
+                        string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
                         objExpense.Create(decAmount, strEntry + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
@@ -9903,7 +9890,7 @@ namespace Chummer
                     decimal decAmount = objArmor.TotalCost * frmSell.SellPercent;
                     decAmount += _objFunctions.DeleteArmor(treArmor, treWeapons) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
                 }
@@ -9926,7 +9913,7 @@ namespace Chummer
                         decimal decAmount = (decOriginal - objMod.Parent.TotalCost) * frmSell.SellPercent;
                         decAmount += _objFunctions.DeleteArmor(treArmor, treWeapons) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
                     }
@@ -9948,7 +9935,7 @@ namespace Chummer
                         decimal decAmount = (decOriginal - objArmor.TotalCost) * frmSell.SellPercent;
                         decAmount += _objFunctions.DeleteArmor(treArmor, treWeapons) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
                     }
@@ -9972,7 +9959,7 @@ namespace Chummer
                     decimal decAmount = (decOriginal - objArmor.TotalCost) * frmSell.SellPercent;
                     decAmount += _objFunctions.DeleteArmor(treArmor, treWeapons) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
                 }
@@ -10005,17 +9992,17 @@ namespace Chummer
                     // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
                     if (objWeapon.Cyberware)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberweapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberweapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberweapon"), LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                     if (objWeapon.Category == "Gear")
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveGearWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeapon"), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                     if (objWeapon.Category.StartsWith("Quality"))
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveQualityWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveQualityWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveQualityWeapon"), LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
@@ -10035,7 +10022,7 @@ namespace Chummer
                         }
                     }
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
 
@@ -10086,7 +10073,7 @@ namespace Chummer
                             decAmount += _objFunctions.DeleteGear(objGear, treWeapons) * frmSell.SellPercent;
                         }
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
                     }
@@ -10116,7 +10103,7 @@ namespace Chummer
                         decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                         decAmount += _objFunctions.DeleteGear(objGear, treWeapons) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
                     }
@@ -10151,7 +10138,7 @@ namespace Chummer
                     decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                     decAmount += _objFunctions.DeleteGear(objGear, treWeapons) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
 
@@ -10190,7 +10177,7 @@ namespace Chummer
                     {
                         if (objWeapon.InternalId == treVehicles.SelectedNode.Tag.ToString())
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveGearWeaponVehicle"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle"), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             break;
                         }
                     }
@@ -10244,7 +10231,7 @@ namespace Chummer
                         }
                     }
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
                     _objCharacter.Vehicles.Remove(objVehicle);
@@ -10259,7 +10246,7 @@ namespace Chummer
                     {
                         if (objMod.IncludedInVehicle)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveVehicleMod"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveVehicleMod"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveVehicleMod"), LanguageManager.GetString("MessageTitle_CannotRemoveVehicleMod"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
@@ -10295,7 +10282,7 @@ namespace Chummer
                             decAmount += _objFunctions.DeleteCyberware(objLoopCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                        objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
 
@@ -10339,7 +10326,7 @@ namespace Chummer
                                 }
                             }
                             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                            objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                             _objCharacter.ExpenseEntries.Add(objExpense);
                             _objCharacter.Nuyen += decAmount;
                             treVehicles.SelectedNode.Remove();
@@ -10369,7 +10356,7 @@ namespace Chummer
                                     decAmount += _objFunctions.DeleteGear(objLoopGear, treWeapons) * frmSell.SellPercent;
                                 }
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                                objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeaponAccessory") + " " + objWeaponAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                                objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory") + " " + objWeaponAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                                 _objCharacter.ExpenseEntries.Add(objExpense);
                                 _objCharacter.Nuyen += decAmount;
                             }
@@ -10401,7 +10388,7 @@ namespace Chummer
                                     decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                     decAmount += _objFunctions.DeleteCyberware(objCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                                    objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleCyberware") + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware") + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                                     _objCharacter.ExpenseEntries.Add(objExpense);
                                     _objCharacter.Nuyen += decAmount;
                                 }
@@ -10445,7 +10432,7 @@ namespace Chummer
                                         decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                         decAmount += _objFunctions.DeleteGear(objGear, treWeapons) * frmSell.SellPercent;
                                         ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                                        objExpense.Create(decAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                                         _objCharacter.ExpenseEntries.Add(objExpense);
                                         _objCharacter.Nuyen += decAmount;
                                     }
@@ -10556,7 +10543,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponName"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -10569,7 +10556,7 @@ namespace Chummer
                 return;
 
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_WeaponName");
+            frmPickText.Description = LanguageManager.GetString("String_WeaponName");
             frmPickText.DefaultString = objWeapon.WeaponName;
             frmPickText.ShowDialog(this);
 
@@ -10587,7 +10574,7 @@ namespace Chummer
         {
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearName"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearName"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -10597,7 +10584,7 @@ namespace Chummer
                 return;
 
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_GearName");
+            frmPickText.Description = LanguageManager.GetString("String_GearName");
             frmPickText.DefaultString = objGear.GearName;
             frmPickText.ShowDialog(this);
 
@@ -10616,7 +10603,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponAccessory"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -10632,7 +10619,7 @@ namespace Chummer
                     {
                         if (objCharacterWeapon.Cyberware)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberwareUnderbarrel"), LanguageManager.Instance.GetString("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CyberwareUnderbarrel"), LanguageManager.GetString("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
@@ -10661,7 +10648,7 @@ namespace Chummer
                 return;
 
             // Open the Weapons XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
@@ -10679,9 +10666,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -10689,7 +10676,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickWeapon.AddAgain)
                         cmdAddWeapon_Click(sender, e);
 
@@ -10699,7 +10686,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -10738,9 +10725,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -10748,14 +10735,14 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 else
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -10801,7 +10788,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectGearVehicle"), LanguageManager.Instance.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -10822,9 +10809,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -10832,14 +10819,14 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 else
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -10904,7 +10891,7 @@ namespace Chummer
 
             if (objEntry.Undo == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoNoHistory"), LanguageManager.Instance.GetString("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_UndoNoHistory"), LanguageManager.GetString("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else if (objEntry.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
@@ -10921,18 +10908,18 @@ namespace Chummer
                     {
                         if (objGrade.Grade < intMaxGrade)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoNotHighestGrade"), LanguageManager.Instance.GetString("MessageTitle_NotHighestGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_UndoNotHighestGrade"), LanguageManager.GetString("MessageTitle_NotHighestGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                         break;
                     }
                 }
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoExpense"), LanguageManager.Instance.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_UndoExpense"), LanguageManager.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoExpense"), LanguageManager.Instance.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_UndoExpense"), LanguageManager.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
 
@@ -11324,7 +11311,7 @@ namespace Chummer
                     List<TreeNode> objWeaponNodes = new List<TreeNode>();
 
                     Quality objAddQuality = new Quality(_objCharacter);
-                    XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
+                    XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
                     XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objEntry.Undo.ObjectId + "\"]");
                     objAddQuality.Create(objXmlQualityNode, _objCharacter, QualitySource.Selected, objQualityNode, objWeapons, objWeaponNodes, objEntry.Undo.Extra);
 
@@ -11415,7 +11402,7 @@ namespace Chummer
 
             if (objEntry.Undo == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoNoHistory"), LanguageManager.Instance.GetString("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_UndoNoHistory"), LanguageManager.GetString("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else if (objEntry.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
@@ -11432,18 +11419,18 @@ namespace Chummer
                     {
                         if (objGrade.Grade < intMaxGrade)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoNotHighestGrade"), LanguageManager.Instance.GetString("MessageTitle_NotHighestGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_UndoNotHighestGrade"), LanguageManager.GetString("MessageTitle_NotHighestGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                         break;
                     }
                 }
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoExpense"), LanguageManager.Instance.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_UndoExpense"), LanguageManager.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_UndoExpense"), LanguageManager.Instance.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_UndoExpense"), LanguageManager.GetString("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
 
@@ -11969,7 +11956,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level != 1)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -11984,7 +11971,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -11992,7 +11979,7 @@ namespace Chummer
             Gear objGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
             if (objGear == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmor"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -12620,7 +12607,7 @@ namespace Chummer
             // Make sure a parent item is selected.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectVehicleName"), LanguageManager.Instance.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -12633,7 +12620,7 @@ namespace Chummer
             Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_VehicleName");
+            frmPickText.Description = LanguageManager.GetString("String_VehicleName");
             frmPickText.DefaultString = objVehicle.VehicleName;
             frmPickText.ShowDialog(this);
 
@@ -12657,11 +12644,11 @@ namespace Chummer
 
             if (objCyberwareParent == null && (objMod == null || !objMod.AllowCyberware))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.Instance.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, true, objCyberwareParent?.MyXmlNode ?? objMod.MyXmlNode);
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, Improvement.ImprovementSource.Cyberware, true, objCyberwareParent?.MyXmlNode ?? objMod.MyXmlNode);
             if (objCyberwareParent == null)
             {
                 frmPickCyberware.SetGrade = "Standard";
@@ -12679,7 +12666,7 @@ namespace Chummer
                     // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                     if (_objOptions.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
@@ -12695,7 +12682,7 @@ namespace Chummer
                 return;
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("cyberware.xml");
 
             XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + frmPickCyberware.SelectedCyberware + "\"]");
 
@@ -12716,9 +12703,9 @@ namespace Chummer
             decimal decCost = objCyberware.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Apply a markup if applicable.
@@ -12732,7 +12719,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 else
@@ -12740,7 +12727,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
                     string strEntry = string.Empty;
-                    strEntry = LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleCyberware");
+                    strEntry = LanguageManager.GetString("String_ExpensePurchaseVehicleCyberware");
                     objExpense.Create(decCost * -1, strEntry + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -12800,7 +12787,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectArmorName"), LanguageManager.Instance.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -12811,7 +12798,7 @@ namespace Chummer
             Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
 
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_ArmorName");
+            frmPickText.Description = LanguageManager.GetString("String_ArmorName");
             frmPickText.DefaultString = objArmor.ArmorName;
             frmPickText.ShowDialog(this);
 
@@ -12844,7 +12831,7 @@ namespace Chummer
         {
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectLifestyleName"), LanguageManager.Instance.GetString("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectLifestyleName"), LanguageManager.GetString("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -12860,7 +12847,7 @@ namespace Chummer
             }
 
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_LifestyleName");
+            frmPickText.Description = LanguageManager.GetString("String_LifestyleName");
             frmPickText.DefaultString = objLifestyle.LifestyleName;
             frmPickText.ShowDialog(this);
 
@@ -12878,7 +12865,7 @@ namespace Chummer
         {
             string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -12912,7 +12899,7 @@ namespace Chummer
         {
             string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -12947,7 +12934,7 @@ namespace Chummer
             // Make sure the character has enough Karma before letting them select a Spell.
             if (_objCharacter.Karma < _objOptions.KarmaSpell)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -12964,7 +12951,7 @@ namespace Chummer
             objNode.Tag = objSpell.InternalId;
             objNode.ContextMenuStrip = cmsSpell;
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                 return;
 
             _objCharacter.Spells.Add(objSpell);
@@ -13008,7 +12995,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
-            objEntry.Create((_objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+            objEntry.Create((_objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objEntry);
             _objCharacter.Karma -= _objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount);
 
@@ -13075,7 +13062,7 @@ namespace Chummer
         {
             string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -13109,7 +13096,7 @@ namespace Chummer
         {
             string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -13144,7 +13131,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectCyberware"), LanguageManager.Instance.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13153,7 +13140,7 @@ namespace Chummer
             // Make sure the Cyberware is allowed to accept Gear.
             if (objCyberware.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CyberwareGear"), LanguageManager.Instance.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13170,7 +13157,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -13208,9 +13195,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
-                    objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objNewGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -13221,9 +13208,9 @@ namespace Chummer
             decimal decCost = objNewGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -13232,7 +13219,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     _objFunctions.DeleteGear(objNewGear, treWeapons);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsCyberwareAddGear_Click(sender, e);
 
@@ -13242,7 +13229,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseCyberwearGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -13283,7 +13270,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level < 2)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13300,7 +13287,7 @@ namespace Chummer
             // Make sure the Gear was found.
             if (!blnFound)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13325,7 +13312,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -13365,9 +13352,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
-                    objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -13380,9 +13367,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -13391,7 +13378,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     _objFunctions.DeleteGear(objGear, treWeapons);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsVehicleSensorAddAsPlugin_Click(sender, e);
 
@@ -13401,7 +13388,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseCyberwearGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -13439,7 +13426,7 @@ namespace Chummer
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (objAccessory.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_WeaponGear"), LanguageManager.Instance.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_WeaponGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13456,7 +13443,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -13495,9 +13482,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
-                    objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objNewGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -13508,9 +13495,9 @@ namespace Chummer
             decimal decCost = objNewGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -13519,7 +13506,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     _objFunctions.DeleteGear(objNewGear, treWeapons);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsWeaponAccessoryAddGear_Click(sender, e);
 
@@ -13529,7 +13516,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeaponGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -13572,7 +13559,7 @@ namespace Chummer
             if (objSensor == null)
             // Make sure the Gear was found.
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13597,7 +13584,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -13637,9 +13624,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
-                    objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -13652,9 +13639,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -13663,7 +13650,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     _objFunctions.DeleteGear(objGear, treWeapons);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsVehicleSensorAddAsPlugin_Click(sender, e);
 
@@ -13673,7 +13660,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -13707,7 +13694,7 @@ namespace Chummer
         {
             string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -13804,7 +13791,7 @@ namespace Chummer
             if (objSensor == null)
             // Make sure the Gear was found.
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ModifyVehicleGear"), LanguageManager.Instance.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13829,7 +13816,7 @@ namespace Chummer
                 return;
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -13869,9 +13856,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objGear.Cost))
                     objGear.Cost = "(" + objGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objGear.Extra))
-                    objGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -13884,9 +13871,9 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -13895,7 +13882,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     _objFunctions.DeleteGear(objGear, treWeapons);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsVehicleSensorAddAsPlugin_Click(sender, e);
 
@@ -13905,7 +13892,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -13942,7 +13929,7 @@ namespace Chummer
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (objAccessory.AllowGear == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_WeaponGear"), LanguageManager.Instance.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_WeaponGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -13959,7 +13946,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -13997,9 +13984,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
-                    objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objNewGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
             // If the item was marked as free, change its cost.
             if (frmPickGear.FreeCost)
@@ -14010,9 +13997,9 @@ namespace Chummer
             decimal decCost = objNewGear.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -14021,7 +14008,7 @@ namespace Chummer
                 if (decCost > _objCharacter.Nuyen)
                 {
                     _objFunctions.DeleteGear(objNewGear, treWeapons);
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (frmPickGear.AddAgain)
                         tsVehicleWeaponAccessoryAddGear_Click(sender, e);
 
@@ -14031,7 +14018,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeaponGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -14073,8 +14060,8 @@ namespace Chummer
             string strBook = _objOptions.LanguageBookShort(objQuality.Source);
             string strPage = objQuality.Page;
             lblQualitySource.Text = strBook + " " + strPage;
-            tipTooltip.SetToolTip(lblQualitySource, _objOptions.LanguageBookLong(objQuality.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objQuality.Page);
-            lblQualityBP.Text = (objQuality.BP * _objOptions.KarmaQuality).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+            tipTooltip.SetToolTip(lblQualitySource, _objOptions.LanguageBookLong(objQuality.Source) + " " + LanguageManager.GetString("String_Page") + " " + objQuality.Page);
+            lblQualityBP.Text = (objQuality.BP * _objOptions.KarmaQuality).ToString() + " " + LanguageManager.GetString("String_Karma");
         }
 #endregion
 
@@ -14672,7 +14659,7 @@ namespace Chummer
             // Make sure the character has some form of Ammunition for this Weapon.
             if (lstAmmo.Count == 0 && objWeapon.RequireAmmo)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmoType").Replace("{0}", objWeapon.DisplayAmmoCategory), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmoType").Replace("{0}", objWeapon.DisplayAmmoCategory), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -15050,7 +15037,7 @@ namespace Chummer
             // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.
             if (lstVehicles.Count == 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotMoveWeapons"), LanguageManager.Instance.GetString("MessageTitle_CannotMoveWeapons"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotMoveWeapons"), LanguageManager.GetString("MessageTitle_CannotMoveWeapons"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -16007,7 +15994,7 @@ namespace Chummer
             // Make sure the character has some form of Ammunition for this Weapon.
             if (lstAmmo.Count == 0 && objWeapon.RequireAmmo)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OutOfAmmoType").Replace("{0}", objWeapon.DisplayAmmoCategory), LanguageManager.Instance.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmoType").Replace("{0}", objWeapon.DisplayAmmoCategory), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -16194,7 +16181,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objSpell.Source);
                 string strPage = objSpell.Page;
                 lblSpellSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblSpellSource, _objOptions.LanguageBookLong(objSpell.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSpell.Page);
+                tipTooltip.SetToolTip(lblSpellSource, _objOptions.LanguageBookLong(objSpell.Source) + " " + LanguageManager.GetString("String_Page") + " " + objSpell.Page);
 
                 // Determine the size of the Spellcasting Dice Pool.
                 lblSpellDicePool.Text = objSpell.DicePool.ToString();
@@ -16207,11 +16194,9 @@ namespace Chummer
                 if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
                     string strTip = string.Empty;
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
+                    XmlDocument objXmlDocument = new XmlDocument();
+                    XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-                    objXmlDocument = new XmlDocument();
-                    nav = objXmlDocument.CreateNavigator();
                     string strDrain = lblDrainAttributes.Text;
 
                     foreach (string strAttribute in Character.AttributeStrings)
@@ -16239,11 +16224,11 @@ namespace Chummer
                     }
 
                         if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance) != 0)
-                            strTip += " + " + LanguageManager.Instance.GetString("Tip_Skill_DicePoolModifiers") + " (" + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance).ToString() + ")";
+                            strTip += " + " + LanguageManager.GetString("Tip_Skill_DicePoolModifiers") + " (" + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance).ToString() + ")";
                         //if (objSpell.Limited)
                         //{
                         //    intDrain += 2;
-                        //    strTip += " + " + LanguageManager.Instance.GetString("String_SpellLimited") + " (2)";
+                        //    strTip += " + " + LanguageManager.GetString("String_SpellLimited") + " (2)";
                         //}
                         lblDrainAttributesValue.Text = intDrain.ToString();
                         tipTooltip.SetToolTip(lblDrainAttributesValue, strTip);
@@ -16394,7 +16379,7 @@ namespace Chummer
             // If the item is being unchecked, confirm that the user wants to un-bind the Focus.
             if (e.Node.Checked)
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_UnbindFocus"), LanguageManager.Instance.GetString("MessageTitle_UnbindFocus"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_UnbindFocus"), LanguageManager.GetString("MessageTitle_UnbindFocus"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     e.Cancel = true;
                 return;
             }
@@ -16451,14 +16436,14 @@ namespace Chummer
 
             if (intFociTotal > _objCharacter.MAG.TotalValue * 5)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_FocusMaximumForce"), LanguageManager.Instance.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 e.Cancel = true;
                 return;
             }
 
             if (intFociCount > _objCharacter.MAG.TotalValue)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_FocusMaximumNumber"), LanguageManager.Instance.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 e.Cancel = true;
                 return;
             }
@@ -16609,12 +16594,12 @@ namespace Chummer
                     intKarmaExpense -= 2;
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", objFocus.DisplayNameShort)))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", objFocus.DisplayNameShort)))
                 {
                     e.Cancel = true;
                     return;
@@ -16622,7 +16607,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.Instance.GetString("String_ExpenseBound") + " " + objFocus.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + " " + objFocus.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
@@ -16646,12 +16631,12 @@ namespace Chummer
                 int intKarmaExpense = objStack.BindingCost;
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.Instance.GetString("String_StackedFocus") + " " + objStack.Name)))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus") + " " + objStack.Name)))
                 {
                     e.Cancel = true;
                     return;
@@ -16659,7 +16644,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.Instance.GetString("String_ExpenseBound") + " " + LanguageManager.Instance.GetString("String_StackedFocus") + " " + objStack.Name, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + " " + LanguageManager.GetString("String_StackedFocus") + " " + objStack.Name, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
@@ -16678,7 +16663,7 @@ namespace Chummer
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
                 if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -16690,16 +16675,16 @@ namespace Chummer
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_InitiateGrade")).Replace("{1}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.GetString("String_InitiateGrade")).Replace("{1}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
                     return;
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
@@ -16738,7 +16723,7 @@ namespace Chummer
 
                 int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
 
-                string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
             }
             else if (_objCharacter.RESEnabled)
@@ -16746,7 +16731,7 @@ namespace Chummer
                 // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -16758,16 +16743,16 @@ namespace Chummer
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_SubmersionGrade")).Replace("{1}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.GetString("String_SubmersionGrade")).Replace("{1}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{2}", intKarmaExpense.ToString())))
                     return;
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.Instance.GetString("String_ExpenseSubmersionGrade") + " " + _objCharacter.SubmersionGrade.ToString() + " -> " + (_objCharacter.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade") + " " + _objCharacter.SubmersionGrade.ToString() + " -> " + (_objCharacter.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
@@ -16806,7 +16791,7 @@ namespace Chummer
 
                 int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
 
-                string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
             }
 
@@ -16821,14 +16806,33 @@ namespace Chummer
         {
             //TODO: Why can't IsInitialised be used here? Throws an error when trying to use chummer.helpers.
             
-            if (_blnLoading || cboTradition.SelectedValue == null || String.IsNullOrEmpty(cboTradition.SelectedValue.ToString()))
+            if (_blnLoading || string.IsNullOrEmpty(cboTradition.SelectedValue?.ToString()))
                 return;
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("traditions.xml");
-
+            XmlDocument objXmlDocument = XmlManager.Load("traditions.xml");
             XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboTradition.SelectedValue + "\"]");
 
-            if (objXmlTradition["name"].InnerText == "Custom")
+            if (objXmlTradition == null)
+            {
+                _objCharacter.MagicTradition = cboTradition.SelectedValue.ToString();
+                _objCharacter.TraditionDrain = string.Empty;
+                cboDrain.Visible = false;
+                lblTraditionName.Visible = false;
+                txtTraditionName.Visible = false;
+                lblSpiritCombat.Visible = false;
+                lblSpiritDetection.Visible = false;
+                lblSpiritHealth.Visible = false;
+                lblSpiritIllusion.Visible = false;
+                lblSpiritManipulation.Visible = false;
+                lblTraditionSource.Visible = false;
+                lblTraditionSourceLabel.Visible = false;
+                cboSpiritCombat.Visible = false;
+                cboSpiritDetection.Visible = false;
+                cboSpiritHealth.Visible = false;
+                cboSpiritIllusion.Visible = false;
+                cboSpiritManipulation.Visible = false;
+            }
+            else if (objXmlTradition["name"].InnerText == "Custom")
             {
                 cboDrain.Visible = true;
                 lblTraditionName.Visible = true;
@@ -16874,7 +16878,6 @@ namespace Chummer
                 _objCharacter.TraditionDrain = objXmlTradition["drain"].InnerText;
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls)
                     objSpiritControl.RebuildSpiritList(cboTradition.SelectedValue.ToString());
-
             }
 
             CalculateTraditionDrain(_objCharacter.TraditionDrain, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
@@ -16897,7 +16900,7 @@ namespace Chummer
             if (_blnLoading || string.IsNullOrEmpty(cboStream.SelectedValue.ToString()))
                 return;
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("streams.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("streams.xml");
 
             XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboStream.SelectedValue + "\"]");
             string strDrain = objXmlTradition["drain"].InnerText;
@@ -16953,7 +16956,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objMetamagic.Source);
                 string strPage = objMetamagic.Page;
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objMetamagic.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objMetamagic.Page);
+                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objMetamagic.Source) + " " + LanguageManager.GetString("String_Page") + " " + objMetamagic.Page);
                 return;
             }
 
@@ -16965,7 +16968,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objArt.Source);
                 string strPage = objArt.Page;
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objArt.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objArt.Page);
+                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objArt.Source) + " " + LanguageManager.GetString("String_Page") + " " + objArt.Page);
                 return;
             }
 
@@ -16977,7 +16980,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objSpell.Source);
                 string strPage = objSpell.Page;
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objSpell.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSpell.Page);
+                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objSpell.Source) + " " + LanguageManager.GetString("String_Page") + " " + objSpell.Page);
                 return;
             }
 
@@ -16989,7 +16992,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objEnhancement.Source);
                 string strPage = objEnhancement.Page;
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objEnhancement.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objEnhancement.Page);
+                tipTooltip.SetToolTip(lblMetamagicSource, _objOptions.BookFromCode(objEnhancement.Source) + " " + LanguageManager.GetString("String_Page") + " " + objEnhancement.Page);
                 return;
             }
 
@@ -17011,7 +17014,7 @@ namespace Chummer
 
                     if (intKarmaExpense > _objCharacter.Karma)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         _blnSkipRefresh = true;
                         chkJoinGroup.Checked = false;
                         _blnSkipRefresh = false;
@@ -17022,13 +17025,13 @@ namespace Chummer
                     string strExpense = string.Empty;
                     if (_objCharacter.MAGEnabled)
                     {
-                        strMessage = LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseJoinGroup");
-                        strExpense = LanguageManager.Instance.GetString("String_ExpenseJoinGroup");
+                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseJoinGroup");
+                        strExpense = LanguageManager.GetString("String_ExpenseJoinGroup");
                     }
                     else
                     {
-                        strMessage = LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseJoinNetwork");
-                        strExpense = LanguageManager.Instance.GetString("String_ExpenseJoinNetwork");
+                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseJoinNetwork");
+                        strExpense = LanguageManager.GetString("String_ExpenseJoinNetwork");
                     }
 
                     if (!ConfirmKarmaExpense(strMessage.Replace("{0}", intKarmaExpense.ToString())))
@@ -17058,7 +17061,7 @@ namespace Chummer
 
                     if (intKarmaExpense > _objCharacter.Karma)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         _blnSkipRefresh = true;
                         chkJoinGroup.Checked = true;
                         _blnSkipRefresh = false;
@@ -17069,13 +17072,13 @@ namespace Chummer
                     string strExpense = string.Empty;
                     if (_objCharacter.MAGEnabled)
                     {
-                        strMessage = LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseLeaveGroup");
-                        strExpense = LanguageManager.Instance.GetString("String_ExpenseLeaveGroup");
+                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseLeaveGroup");
+                        strExpense = LanguageManager.GetString("String_ExpenseLeaveGroup");
                     }
                     else
                     {
-                        strMessage = LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseLeaveNetwork");
-                        strExpense = LanguageManager.Instance.GetString("String_ExpenseLeaveNetwork");
+                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseLeaveNetwork");
+                        strExpense = LanguageManager.GetString("String_ExpenseLeaveNetwork");
                     }
 
                     if (!ConfirmKarmaExpense(strMessage.Replace("{0}", intKarmaExpense.ToString())))
@@ -17167,7 +17170,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objPower.Source);
                     string strPage = objPower.Page;
                     lblCritterPowerSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblCritterPowerSource, _objOptions.LanguageBookLong(objPower.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objPower.Page);
+                    tipTooltip.SetToolTip(lblCritterPowerSource, _objOptions.LanguageBookLong(objPower.Source) + " " + LanguageManager.GetString("String_Page") + " " + objPower.Page);
                     if (objPower.PowerPoints > 0)
                     {
                             lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalOptions.CultureInfo);
@@ -17409,7 +17412,7 @@ namespace Chummer
                     }
 
                     // Get the human-readable name of the Improvement from the Improvements file.
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("improvements.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("improvements.xml");
 
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + objImprovement.CustomId + "\"]");
                     if (objNode != null && objNode["name"] != null)
@@ -17421,13 +17424,13 @@ namespace Chummer
                     // Build a string that contains the value(s) of the Improvement.
                     string strValue = string.Empty;
                     if (objImprovement.Value != 0)
-                        strValue += LanguageManager.Instance.GetString("Label_CreateImprovementValue") + " " + objImprovement.Value.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementValue") + " " + objImprovement.Value.ToString() + ", ";
                     if (objImprovement.Minimum != 0)
-                        strValue += LanguageManager.Instance.GetString("Label_CreateImprovementMinimum") + " " + objImprovement.Minimum.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementMinimum") + " " + objImprovement.Minimum.ToString() + ", ";
                     if (objImprovement.Maximum != 0)
-                        strValue += LanguageManager.Instance.GetString("Label_CreateImprovementMaximum") + " " + objImprovement.Maximum.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementMaximum") + " " + objImprovement.Maximum.ToString() + ", ";
                     if (objImprovement.Augmented != 0)
-                        strValue += LanguageManager.Instance.GetString("Label_CreateImprovementAugmented") + " " + objImprovement.Augmented.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementAugmented") + " " + objImprovement.Augmented.ToString() + ", ";
 
                     // Remove the trailing comma.
                     if (!string.IsNullOrEmpty(strValue))
@@ -17568,7 +17571,7 @@ namespace Chummer
         {
             // Add a new location to the Improvements Tree.
             frmSelectText frmPickText = new frmSelectText();
-            frmPickText.Description = LanguageManager.Instance.GetString("String_AddLocation");
+            frmPickText.Description = LanguageManager.GetString("String_AddLocation");
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
@@ -17868,7 +17871,7 @@ namespace Chummer
 
             if (intEdgeUsed - 1 < _objCharacter.EDG.Value * -1)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotSpendEdge"), LanguageManager.Instance.GetString("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotSpendEdge"), LanguageManager.GetString("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -17894,7 +17897,7 @@ namespace Chummer
 
             if (intEdgeUsed + 1 > 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRegainEdge"), LanguageManager.Instance.GetString("MessageTitle_CannotRegainEdge"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CannotRegainEdge"), LanguageManager.GetString("MessageTitle_CannotRegainEdge"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -18346,7 +18349,7 @@ namespace Chummer
                     return _objCharacter.Alias;
                 if (!string.IsNullOrEmpty(_objCharacter.Name.Trim()))
                     return _objCharacter.Name;
-                return LanguageManager.Instance.GetString("String_UnnamedCharacter");
+                return LanguageManager.GetString("String_UnnamedCharacter");
             }
         }
 #endregion
@@ -18910,7 +18913,7 @@ namespace Chummer
                 string strDrain = lblDrainAttributes.Text;
                 foreach (string strAttribute in Character.AttributeStrings)
                 {
-                    strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short"),
+                    strDrain = strDrain.Replace(LanguageManager.GetString("String_Attribute" + strAttribute + "Short"),
                         _objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
                 int intDrain = 0;
@@ -18943,7 +18946,7 @@ namespace Chummer
                 strTip = lblFadingAttributes.Text;
                 foreach (string strAttribute in Character.AttributeStrings)
                 {
-                    string strShortAttribute = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
+                    string strShortAttribute = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
                     string strAttributeValue = _objCharacter.GetAttribute(strAttribute).TotalValue.ToString();
                     strFading = strFading.Replace(strShortAttribute, strAttributeValue);
                     strTip = strTip.Replace(strShortAttribute, strShortAttribute + " (" + strAttributeValue + ")");
@@ -19000,14 +19003,14 @@ namespace Chummer
 
             // Initiative.
             lblINI.Text = _objCharacter.Initiative;
-            string strInitText = LanguageManager.Instance.GetString("String_Initiative");
-            string strMatrixInitText = LanguageManager.Instance.GetString("String_MatrixInitiativeLong");
-            string strModifiers = LanguageManager.Instance.GetString("Tip_Modifiers");
+            string strInitText = LanguageManager.GetString("String_Initiative");
+            string strMatrixInitText = LanguageManager.GetString("String_MatrixInitiativeLong");
+            string strModifiers = LanguageManager.GetString("Tip_Modifiers");
             string strInit =
                 $"{_objCharacter.REA.DisplayAbbrev} ({_objCharacter.REA.Value}) + {_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.Value})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Initiative) > 0 ||
                 _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
-                strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strInit += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                            (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Initiative) +
                             _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
             tipTooltip.SetToolTip(lblINI,
@@ -19095,17 +19098,17 @@ namespace Chummer
             strTip =
                 $"{_objCharacter.INT.DisplayAbbrev} ({_objCharacter.INT.TotalValue}) + {_objCharacter.CHA.DisplayAbbrev} ({_objCharacter.CHA.TotalValue})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.JudgeIntentions) != 0)
-                strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                           ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.JudgeIntentions).ToString() + ")";
             tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
             lblLiftCarry.Text = _objCharacter.LiftAndCarry.ToString();
             strTip =
                 $"{_objCharacter.STR.DisplayAbbrev} ({_objCharacter.STR.TotalValue}) + {_objCharacter.BOD.DisplayAbbrev} ({_objCharacter.BOD.TotalValue})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LiftAndCarry) != 0)
-                strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                           ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LiftAndCarry).ToString() + ")";
             strTip += "\n" +
-                      LanguageManager.Instance.GetString("Tip_LiftAndCarry")
+                      LanguageManager.GetString("Tip_LiftAndCarry")
                           .Replace("{0}", (_objCharacter.STR.TotalValue * 15).ToString())
                           .Replace("{1}", (_objCharacter.STR.TotalValue * 10).ToString());
             tipTooltip.SetToolTip(lblLiftCarry, strTip);
@@ -19113,7 +19116,7 @@ namespace Chummer
             strTip =
                 $"{_objCharacter.WIL.DisplayAbbrev} ({_objCharacter.WIL.TotalValue}) + {_objCharacter.LOG.DisplayAbbrev} ({_objCharacter.LOG.TotalValue})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Memory) != 0)
-                strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                           ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Memory).ToString() + ")";
             tipTooltip.SetToolTip(lblMemory, strTip);
 
@@ -19127,16 +19130,16 @@ namespace Chummer
             lblCMDamageResistancePool.Text =
             (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) +
              _objCharacter.TotalArmorRating).ToString();
-            strTip = $"{_objCharacter.BOD.DisplayAbbrev} + {LanguageManager.Instance.GetString("Tip_Armor")}";
+            strTip = $"{_objCharacter.BOD.DisplayAbbrev} + {LanguageManager.GetString("Tip_Armor")}";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) != 0)
-                strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                           ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance).ToString() + ")";
             tipTooltip.SetToolTip(lblCMDamageResistancePool, strTip);
 
             // Update EDG Remaining Info on the Condition Monitor tab.
-            string strEDG = _objCharacter.EDG.TotalValue.ToString() + " " + LanguageManager.Instance.GetString("String_Of") +
+            string strEDG = _objCharacter.EDG.TotalValue.ToString() + " " + LanguageManager.GetString("String_Of") +
                             " " + _objCharacter.EDG.Value.ToString() + " " +
-                            LanguageManager.Instance.GetString("String_Remaining");
+                            LanguageManager.GetString("String_Remaining");
             lblEDGInfo.Text = strEDG;
 
             _blnSkipUpdate = false;
@@ -19211,7 +19214,7 @@ namespace Chummer
                 lblCyberwareSource.Text = strBook + " " + strPage;
                 tipTooltip.SetToolTip(lblCyberwareSource,
                     _objOptions.LanguageBookLong(objCyberware.Source) + " " +
-                    LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
+                    LanguageManager.GetString("String_Page") + " " + objCyberware.Page);
                 lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
                 lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
@@ -19284,7 +19287,7 @@ namespace Chummer
                 lblCyberwareCost.Text = $"{objCyberware.TotalCost:###,###,##0.##¥}";
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
                                             objCyberware.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " +
-                                            LanguageManager.Instance.GetString("String_Remaining") + ")";
+                                            LanguageManager.GetString("String_Remaining") + ")";
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
                 if (objCyberware.AddToParentESS)
                     lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
@@ -19347,7 +19350,7 @@ namespace Chummer
                     lblCyberwareAvail.Text = objGear.TotalAvail(true);
                     lblCyberwareCost.Text = $"{objGear.TotalCost:###,###,##0.##¥}";
                     lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) +
-                                                " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                                                " " + LanguageManager.GetString("String_Remaining") + ")";
                     lblCyberwareEssence.Text = "0";
                     lblCyberwareGrade.Text = string.Empty;
                     lblCyberwareRating.Text = objGear.Rating.ToString();
@@ -19356,7 +19359,7 @@ namespace Chummer
                     lblCyberwareSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblCyberwareSource,
                         _objOptions.LanguageBookLong(objGear.Source) + " " +
-                        LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                        LanguageManager.GetString("String_Page") + " " + objGear.Page);
                 }
             }
         }
@@ -19494,7 +19497,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                 string strPage = objWeapon.Page;
                 lblWeaponSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblWeaponSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+                tipTooltip.SetToolTip(lblWeaponSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.GetString("String_Page") + " " + objWeapon.Page);
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
@@ -19517,20 +19520,20 @@ namespace Chummer
                     lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
                     //lblWeaponAmmoType.Text = "External Source";
 
-                    cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSemiAutomatic"));
-                    cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                    cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                    cmsAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"));
+                    cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
                         cmsAmmoSingleShot.Enabled = true;
 
                     if (cmsAmmoFullBurst.Enabled)
-                        cmsAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
+                        cmsAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
                     if (cmsAmmoSuppressiveFire.Enabled)
-                        cmsAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
+                        cmsAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
 
                     List<ListItem> lstAmmo = new List<ListItem>();
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;
@@ -19556,12 +19559,12 @@ namespace Chummer
                         if (objGear == null)
                         {
                             if (objWeapon.AmmoRemaining == 0)
-                                objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
+                                objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                             else
-                                objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_ExternalSource");
+                                objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource");
                         }
                         else
-                            objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objGear.DisplayNameShort;
+                            objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objGear.DisplayNameShort;
                         if (!string.IsNullOrEmpty(strPlugins))
                             objAmmo.Name += " [" + strPlugins + "]";
                         lstAmmo.Add(objAmmo);
@@ -19671,20 +19674,20 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
                     ScheduleCharacterUpdate();
 
-                    cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSemiAutomatic"));
-                    cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                    cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                    cmsAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"));
+                    cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
                         cmsAmmoSingleShot.Enabled = true;
 
                     if (cmsAmmoFullBurst.Enabled)
-                        cmsAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
+                        cmsAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
                     if (cmsAmmoSuppressiveFire.Enabled)
-                        cmsAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
+                        cmsAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
 
                     List<ListItem> lstAmmo = new List<ListItem>();
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;
@@ -19708,9 +19711,9 @@ namespace Chummer
                             strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
 
                         if (objGear == null)
-                            objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
+                            objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                         else
-                            objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objGear.DisplayNameShort;
+                            objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objGear.DisplayNameShort;
                         if (!string.IsNullOrEmpty(strPlugins))
                             objAmmo.Name += " [" + strPlugins + "]";
                         lstAmmo.Add(objAmmo);
@@ -19762,7 +19765,7 @@ namespace Chummer
                             cmdDeleteWeapon.Enabled = false;
                         objSelectedWeapon = objSelectedAccessory.Parent;
                         lblWeaponName.Text = objSelectedAccessory.DisplayNameShort;
-                        lblWeaponCategory.Text = LanguageManager.Instance.GetString("String_WeaponAccessory");
+                        lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory");
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail;
                         lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy;
                         lblWeaponCost.Text = $"{objSelectedAccessory.TotalCost:###,###,##0.##¥}";
@@ -19780,7 +19783,7 @@ namespace Chummer
                         foreach (string strCurrentMount in strMounts)
                         {
                             if (!string.IsNullOrEmpty(strCurrentMount))
-                                strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentMount) + "/";
+                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount) + "/";
                         }
                         // Remove the trailing /
                         if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
@@ -19798,7 +19801,7 @@ namespace Chummer
                                         strMount += " + ";
                                         boolHaveAddedItem = true;
                                     }
-                                    strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentExtraMount) + "/";
+                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + "/";
                                 }
                             }
                             // Remove the trailing /
@@ -19810,7 +19813,7 @@ namespace Chummer
                         string strBook = _objOptions.LanguageBookShort(objSelectedAccessory.Source);
                         string strPage = objSelectedAccessory.Page;
                         lblWeaponSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblWeaponSource, _objOptions.LanguageBookLong(objSelectedAccessory.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedAccessory.Page);
+                        tipTooltip.SetToolTip(lblWeaponSource, _objOptions.LanguageBookLong(objSelectedAccessory.Source) + " " + LanguageManager.GetString("String_Page") + " " + objSelectedAccessory.Page);
                         chkWeaponAccessoryInstalled.Enabled = true;
                         chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
                         chkIncludedInWeapon.Enabled = _objOptions.AllowEditPartOfBaseWeapon;
@@ -19843,7 +19846,7 @@ namespace Chummer
                             string strBook = _objOptions.LanguageBookShort(objGear.Source);
                             string strPage = objGear.Page;
                             lblWeaponSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                            tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
                             chkWeaponAccessoryInstalled.Enabled = true;
                             chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                             chkIncludedInWeapon.Enabled = false;
@@ -19917,7 +19920,7 @@ namespace Chummer
                         lblArmorEquipped.Text += objArmor.DisplayName + " (" + objArmor.TotalArmor.ToString() +  ")\n";
                 }
                 if (string.IsNullOrEmpty(lblArmorEquipped.Text))
-                    lblArmorEquipped.Text = LanguageManager.Instance.GetString("String_None");
+                    lblArmorEquipped.Text = LanguageManager.GetString("String_None");
                 
                 lblArmorEquipped.Visible = true;
 
@@ -19940,13 +19943,13 @@ namespace Chummer
 
                 lblArmorValue.Text = objArmor.TotalArmor.ToString();
                 lblArmorAvail.Text = objArmor.TotalAvail;
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                 lblArmorRating.Text = string.Empty;
                 lblArmorCost.Text = $"{objArmor.TotalCost:###,###,##0.##¥}";
                 string strBook = _objOptions.LanguageBookShort(objArmor.Source);
                 string strPage = objArmor.Page;
                 lblArmorSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objArmor.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objArmor.Page);
+                tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objArmor.Source) + " " + LanguageManager.GetString("String_Page") + " " + objArmor.Page);
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkIncludedInArmor.Enabled = false;
@@ -19986,7 +19989,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
                     string strPage = objSelectedMod.Page;
                     lblArmorSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedMod.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedMod.Page);
+                    tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedMod.Source) + " " + LanguageManager.GetString("String_Page") + " " + objSelectedMod.Page);
                     chkArmorEquipped.Enabled = true;
                     chkArmorEquipped.Checked = objSelectedMod.Equipped;
                     lblArmorRating.Text = objSelectedMod.Rating.ToString();
@@ -20019,7 +20022,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
                     string strPage = objSelectedGear.Page;
                     lblArmorSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedGear.Page);
+                    tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objSelectedGear.Page);
                     chkArmorEquipped.Enabled = true;
                     chkArmorEquipped.Checked = objSelectedGear.Equipped;
                     lblArmorRating.Text = objSelectedGear.Rating.ToString();
@@ -20048,7 +20051,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
                 string strPage = objSelectedGear.Page;
                 lblArmorSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedGear.Page);
+                tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objSelectedGear.Page);
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 lblArmorRating.Text = objSelectedGear.Rating.ToString();
@@ -20087,7 +20090,7 @@ namespace Chummer
                 lblGearQty.Text = string.Empty;
                 cmdGearIncreaseQty.Enabled = false;
                 cmdGearReduceQty.Enabled = false;
-                chkGearEquipped.Text = LanguageManager.Instance.GetString("Checkbox_Equipped");
+                chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped");
                 chkGearEquipped.Visible = false;
                 chkActiveCommlink.Visible = false;
                 cmdGearSplitQty.Enabled = false;
@@ -20118,11 +20121,11 @@ namespace Chummer
                     {
                         lblGearCost.Text = objGear.Cost + "¥";
                     }
-                    lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                    lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblGearSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblGearSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                    tipTooltip.SetToolTip(lblGearSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
 
                     _blnSkipRefresh = true;
                     if (objGear.TotalDeviceRating > 0)
@@ -20168,25 +20171,25 @@ namespace Chummer
                         ArrayList lstOverclocker = new ArrayList();
                         ListItem objAttribute = new ListItem();
                         objAttribute.Value = "None";
-                        objAttribute.Name = LanguageManager.Instance.GetString("String_None");
+                        objAttribute.Name = LanguageManager.GetString("String_None");
                         lstOverclocker.Add(objAttribute);
                         if (_objCharacter.Overclocker)
                         {
                             objAttribute = new ListItem();
                             objAttribute.Value = "Attack";
-                            objAttribute.Name = LanguageManager.Instance.GetString("String_Attack");
+                            objAttribute.Name = LanguageManager.GetString("String_Attack");
                             lstOverclocker.Add(objAttribute);
                             objAttribute = new ListItem();
                             objAttribute.Value = "Sleaze";
-                            objAttribute.Name = LanguageManager.Instance.GetString("String_Sleaze");
+                            objAttribute.Name = LanguageManager.GetString("String_Sleaze");
                             lstOverclocker.Add(objAttribute);
                             objAttribute = new ListItem();
                             objAttribute.Value = "DataProc";
-                            objAttribute.Name = LanguageManager.Instance.GetString("String_DataProcessing");
+                            objAttribute.Name = LanguageManager.GetString("String_DataProcessing");
                             lstOverclocker.Add(objAttribute);
                             objAttribute = new ListItem();
                             objAttribute.Value = "Firewall";
-                            objAttribute.Name = LanguageManager.Instance.GetString("String_Firewall");
+                            objAttribute.Name = LanguageManager.GetString("String_Firewall");
                         }
                         lstOverclocker.Add(objAttribute);
                         cboGearOverclocker.BindingContext = new BindingContext();
@@ -20265,7 +20268,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(objParent.Category))
                             {
                                 if (objParent.Category == "Commlink" || objParent.Category == "Nexus")
-                                    chkGearEquipped.Text = LanguageManager.Instance.GetString("Checkbox_SoftwareRunning");
+                                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning");
                             }
                         }
                     }
@@ -20323,7 +20326,7 @@ namespace Chummer
             Text = string.Empty;
             if (!string.IsNullOrEmpty(txtAlias.Text))
                 Text += txtAlias.Text + " - ";
-            Text += LanguageManager.Instance.GetString("Title_CareerMode");
+            Text += LanguageManager.GetString("Title_CareerMode");
             Text += " (" + _objCharacter.Options.Name + ")";
             if (_blnIsDirty)
                 Text += "*";
@@ -20343,7 +20346,7 @@ namespace Chummer
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
-                GlobalOptions.Instance.AddToMRUList(_objCharacter.FileName);
+                GlobalOptions.AddToMRUList(_objCharacter.FileName);
             }
             UpdateWindowTitle(false);
 
@@ -20374,7 +20377,7 @@ namespace Chummer
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
-                GlobalOptions.Instance.AddToMRUList(_objCharacter.FileName);
+                GlobalOptions.AddToMRUList(_objCharacter.FileName);
             }
             UpdateWindowTitle(false);
 
@@ -20398,7 +20401,7 @@ namespace Chummer
             if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
                 objSelectedCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
 
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, true, objSelectedCyberware?.MyXmlNode);
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, objSource, true, objSelectedCyberware?.MyXmlNode);
             double dblMultiplier = 1;
             // Apply the character's Cyberware Essence cost multiplier if applicable.
             if (objSource == Improvement.ImprovementSource.Cyberware)
@@ -20538,7 +20541,7 @@ namespace Chummer
                         // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                         if (_objOptions.EnforceCapacity && objSelectedCyberware.CapacityRemaining < 0)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return false;
                         }
                     }
@@ -20548,9 +20551,6 @@ namespace Chummer
                 frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
             }
 
-            if (objSource == Improvement.ImprovementSource.Bioware)
-                frmPickCyberware.WindowMode = frmSelectCyberware.Mode.Bioware;
-
             frmPickCyberware.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
@@ -20558,13 +20558,13 @@ namespace Chummer
                 return false;
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = new XmlDocument();
+            XmlDocument objXmlDocument = null;
             if (objSource == Improvement.ImprovementSource.Bioware)
-                objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+                objXmlDocument = XmlManager.Load("bioware.xml");
             else
-                objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+                objXmlDocument = XmlManager.Load("cyberware.xml");
 
-            XmlNode objXmlCyberware;
+            XmlNode objXmlCyberware = null;
             if (objSource == Improvement.ImprovementSource.Bioware)
                 objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + frmPickCyberware.SelectedCyberware + "\"]");
             else
@@ -20597,9 +20597,9 @@ namespace Chummer
             decimal decCost = objCyberware.TotalCost;
 
             // Multiply the cost if applicable.
-            if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -20607,7 +20607,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Remove any Improvements created by the Cyberware.
                     ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId);
                     return frmPickCyberware.AddAgain;
@@ -20618,9 +20618,9 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
                     string strEntry = string.Empty;
                     if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                        strEntry = LanguageManager.Instance.GetString("String_ExpensePurchaseCyberware");
+                        strEntry = LanguageManager.GetString("String_ExpensePurchaseCyberware");
                     else
-                        strEntry = LanguageManager.Instance.GetString("String_ExpensePurchaseBioware");
+                        strEntry = LanguageManager.GetString("String_ExpensePurchaseBioware");
                     objExpense.Create(decCost * -1, strEntry + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -20732,7 +20732,7 @@ namespace Chummer
                         // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                         if (_objOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return false;
                         }
                     }
@@ -20766,7 +20766,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -20824,9 +20824,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objNewGear.Cost))
                     objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.1";
                 if (string.IsNullOrEmpty(objNewGear.Extra))
-                    objNewGear.Extra = LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra = LanguageManager.GetString("Label_SelectGear_Hacked");
                 else
-                    objNewGear.Extra += ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked");
+                    objNewGear.Extra += ", " + LanguageManager.GetString("Label_SelectGear_Hacked");
             }
 
             decimal decCost = 0;
@@ -20882,9 +20882,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
@@ -20895,7 +20895,7 @@ namespace Chummer
                 {
                     if (_objOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objNewGear.PluginCapacity < 0)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -20906,7 +20906,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Remove any Improvements created by the Gear.
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objNewGear.InternalId);
                     return frmPickGear.AddAgain;
@@ -20915,7 +20915,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -21053,7 +21053,7 @@ namespace Chummer
                         // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                         if (_objOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return false;
                         }
                     }
@@ -21084,7 +21084,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
@@ -21129,9 +21129,9 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
                 decCost *= _objOptions.RestrictedCostMultiplier;
-            if (objNewGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+            if (objNewGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
                 decCost *= _objOptions.ForbiddenCostMultiplier;
 
             // Do not allow the user to add new Gear if the Armor's Capacity has been reached.
@@ -21143,7 +21143,7 @@ namespace Chummer
                     if (objSelectedGear.CapacityRemaining < 0)
                     {
                         objSelectedArmor.Gear.Remove(objSelectedGear);
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return frmPickGear.AddAgain;
                     }
                     else
@@ -21154,7 +21154,7 @@ namespace Chummer
                     if (objSelectedArmor.CapacityRemaining < 0)
                     {
                         objSelectedArmor.Gear.Remove(objSelectedGear);
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return frmPickGear.AddAgain;
                     }
                     else
@@ -21167,7 +21167,7 @@ namespace Chummer
             {
                 if (decCost > _objCharacter.Nuyen)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Remove any Improvements created by the Gear.
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objNewGear.InternalId);
                     return frmPickGear.AddAgain;
@@ -21176,7 +21176,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                    objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseArmorGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -21293,14 +21293,14 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
                 string strPage = objLifestyle.Page;
                 lblLifestyleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
+                tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.GetString("String_Page") + " " + objLifestyle.Page);
                 //lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0.##¥}", objLifestyle.TotalCost);
 
                 // Change the Cost/Month label.
                 if (objLifestyle.StyleType == LifestyleType.Safehouse)
-                    lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek");
                 else
-                    lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth");
 
                 if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                 {
@@ -21487,7 +21487,7 @@ namespace Chummer
                 _blnSkipRefresh = true;
                 if (!string.IsNullOrEmpty(objVehicle.ParentID))
                     cmdDeleteVehicle.Enabled = false;
-                lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                 lblVehicleRating.Text = string.Empty;
                 _blnSkipRefresh = false;
 
@@ -21513,7 +21513,7 @@ namespace Chummer
                     lblVehicleSlots.Text = string.Empty;
                     lblVehicleSlotsLabel.Visible = false;
 
-                    if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                     {
                         lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
                         lblVehicleDroneModSlots.Visible = true;
@@ -21540,12 +21540,12 @@ namespace Chummer
                         lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
                         lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
 
-                        tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
-                        tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
-                        tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
-                        tipTooltip.SetToolTip(lblVehicleBodymodLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
-                        tipTooltip.SetToolTip(lblVehicleWeaponsmodLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
-                        tipTooltip.SetToolTip(lblVehicleProtectionLabel, LanguageManager.Instance.GetString("Tip_TotalVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleBodymodLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleWeaponsmodLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleProtectionLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity"));
 
                         lblVehicleDroneModSlots.Visible = false;
                         lblVehicleDroneModSlotsLabel.Visible = false;
@@ -21581,7 +21581,7 @@ namespace Chummer
                     lblVehicleWeaponsmodLabel.Visible = false;
                     lblVehicleProtectionLabel.Visible = false;
                     lblVehicleSlotsLabel.Visible = true;
-                    lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                    lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.GetString("String_Remaining") + ")";
                 }
 
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
@@ -21589,7 +21589,7 @@ namespace Chummer
                 string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
                 string strPage = objVehicle.Page;
                 lblVehicleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objVehicle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objVehicle.Page);
+                tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objVehicle.Source) + " " + LanguageManager.GetString("String_Page") + " " + objVehicle.Page);
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 chkVehicleIncludedInWeapon.Checked = false;
 
@@ -21656,14 +21656,14 @@ namespace Chummer
                         if (Convert.ToInt32(objMod.MaxRating) > 0)
                         {
                             _blnSkipRefresh = true;
-                            lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                             lblVehicleRating.Text = objMod.Rating.ToString();
                             _blnSkipRefresh = false;
                         }
                         else
                         {
                             _blnSkipRefresh = true;
-                            lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                             lblVehicleRating.Text = string.Empty;
                             _blnSkipRefresh = false;
                         }
@@ -21671,13 +21671,13 @@ namespace Chummer
                     else
                     {
                         _blnSkipRefresh = true;
-                        lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
+                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty");
                         lblVehicleRating.Text = objMod.Rating.ToString();
                         _blnSkipRefresh = false;
                     }
 
                     lblVehicleName.Text = objMod.DisplayNameShort;
-                    lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleModification");
+                    lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
                     lblVehicleAvail.Text = objMod.TotalAvail;
                     lblVehicleCost.Text = $"{objMod.TotalCost:###,###,##0.##¥}";
                     lblVehicleHandling.Text = string.Empty;
@@ -21692,7 +21692,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objMod.Source);
                     string strPage = objMod.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objMod.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objMod.Page);
+                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objMod.Source) + " " + LanguageManager.GetString("String_Page") + " " + objMod.Page);
                 }
                 else
                 {
@@ -21724,11 +21724,11 @@ namespace Chummer
                         lblVehicleBody.Text = string.Empty;
                         lblVehicleArmor.Text = string.Empty;
                         lblVehicleSensor.Text = string.Empty;
-                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                         string strBook = _objOptions.LanguageBookShort(objGear.Source);
                         string strPage = objGear.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
@@ -21774,20 +21774,20 @@ namespace Chummer
                             cmdReloadVehicleWeapon.Enabled = true;
                             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
-                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSemiAutomatic"));
-                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"));
+                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
                             // Melee Weapons with Ammo are considered to be Single Shot.
                             if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
                                 cmsVehicleAmmoSingleShot.Enabled = true;
 
                             if (cmsVehicleAmmoFullBurst.Enabled)
-                                cmsVehicleAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
+                                cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
                             if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
+                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
 
                             List<ListItem> lstAmmo = new List<ListItem>();
                             int intCurrentSlot = objWeapon.ActiveAmmoSlot;
@@ -21819,12 +21819,12 @@ namespace Chummer
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
-                                        objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
+                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                                     else
-                                        objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_ExternalSource");
+                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource");
                                 }
                                 else
-                                    objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
+                                    objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
 
                                 if (!string.IsNullOrEmpty(strPlugins))
                                     objAmmo.Name += " [" + strPlugins + "]";
@@ -21856,7 +21856,7 @@ namespace Chummer
                         lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
-                        lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
+                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
                         lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0.##¥}";
                         lblVehicleHandling.Text = string.Empty;
@@ -21871,7 +21871,7 @@ namespace Chummer
                         string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                         string strPage = objWeapon.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.GetString("String_Page") + " " + objWeapon.Page);
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
@@ -21932,11 +21932,11 @@ namespace Chummer
                     lblVehicleBody.Text = string.Empty;
                     lblVehicleArmor.Text = string.Empty;
                     lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
 
                     if (objGear.GetType() == typeof(Commlink))
                     {
@@ -21978,9 +21978,9 @@ namespace Chummer
                             cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode("FA");
                             cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode("FA");
                             if (cmsVehicleAmmoFullBurst.Enabled)
-                                cmsVehicleAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
+                                cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
                             if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
+                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
 
                             List<ListItem> lstAmmo = new List<ListItem>();
                             int intCurrentSlot = objWeapon.ActiveAmmoSlot;
@@ -22012,12 +22012,12 @@ namespace Chummer
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
-                                        objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
+                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                                     else
-                                        objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_ExternalSource");
+                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource");
                                 }
                                 else
-                                    objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
+                                    objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
                                 if (!string.IsNullOrEmpty(strPlugins))
                                     objAmmo.Name += " [" + strPlugins + "]";
                                 lstAmmo.Add(objAmmo);
@@ -22048,7 +22048,7 @@ namespace Chummer
                         lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
-                        lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
+                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
                         lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0.##¥}";
                         lblVehicleHandling.Text = string.Empty;
@@ -22063,7 +22063,7 @@ namespace Chummer
                         string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                         string strPage = objWeapon.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.GetString("String_Page") + " " + objWeapon.Page);
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
@@ -22094,12 +22094,12 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(objCyberware.ParentID))
                                 cmdDeleteCyberware.Enabled = false;
                             lblVehicleName.Text = objCyberware.DisplayNameShort;
-                            lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                             lblVehicleRating.Text = objCyberware.Rating.ToString();
                             _blnSkipRefresh = false;
 
                             lblVehicleName.Text = objCyberware.DisplayNameShort;
-                            lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleModification");
+                            lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
                             lblVehicleAvail.Text = objCyberware.TotalAvail;
                             lblVehicleCost.Text = $"{objCyberware.TotalCost:###,###,##0.##¥}";
                             lblVehicleHandling.Text = string.Empty;
@@ -22114,7 +22114,7 @@ namespace Chummer
                             string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
                             string strPage = objCyberware.Page;
                             lblVehicleSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
+                            tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.GetString("String_Page") + " " + objCyberware.Page);
                         }
                     }
                 }
@@ -22151,11 +22151,11 @@ namespace Chummer
                     lblVehicleBody.Text = string.Empty;
                     lblVehicleArmor.Text = string.Empty;
                     lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
 
                     if (objGear.GetType() == typeof(Commlink))
                     {
@@ -22180,7 +22180,7 @@ namespace Chummer
                         if (objAccessory.IncludedInWeapon)
                             cmdDeleteVehicle.Enabled = false;
                         lblVehicleName.Text = objAccessory.DisplayNameShort;
-                        lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponAccessory");
+                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory");
                         lblVehicleAvail.Text = objAccessory.TotalAvail;
                         lblVehicleCost.Text = $"{objAccessory.TotalCost:###,###,##0.##¥}";
                         lblVehicleHandling.Text = string.Empty;
@@ -22197,7 +22197,7 @@ namespace Chummer
                         foreach (string strCurrentMount in strMounts)
                         {
                             if (!string.IsNullOrEmpty(strCurrentMount))
-                                strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentMount) + "/";
+                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount) + "/";
                         }
                         // Remove the trailing /
                         if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
@@ -22215,7 +22215,7 @@ namespace Chummer
                                         strMount += " + ";
                                         boolHaveAddedItem = true;
                                     }
-                                    strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentExtraMount) + "/";
+                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + "/";
                                 }
                             }
                             // Remove the trailing /
@@ -22227,7 +22227,7 @@ namespace Chummer
                         string strBook = _objOptions.LanguageBookShort(objAccessory.Source);
                         string strPage = objAccessory.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objAccessory.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objAccessory.Page);
+                        tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objAccessory.Source) + " " + LanguageManager.GetString("String_Page") + " " + objAccessory.Page);
                         chkVehicleWeaponAccessoryInstalled.Enabled = true;
                         chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
                         chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
@@ -22268,16 +22268,16 @@ namespace Chummer
                                 cmdReloadVehicleWeapon.Enabled = true;
                                 lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
-                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSemiAutomatic"));
-                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"));
+                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
                             if (cmsVehicleAmmoFullBurst.Enabled)
-                                    cmsVehicleAmmoFullBurst.Text = LanguageManager.Instance.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
+                                    cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst").Replace("{0}", objWeapon.FullBurst.ToString());
                                 if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                    cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.Instance.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
+                                    cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire").Replace("{0}", objWeapon.Suppressive.ToString());
                             }
 
                             List<ListItem> lstAmmo = new List<ListItem>();
@@ -22310,12 +22310,12 @@ namespace Chummer
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
-                                        objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_Empty");
+                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                                     else
-                                        objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.Instance.GetString("String_ExternalSource");
+                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource");
                                 }
                                 else
-                                    objAmmo.Name = LanguageManager.Instance.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
+                                    objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
 
                             if (!string.IsNullOrEmpty(strPlugins))
                                     objAmmo.Name += " [" + strPlugins + "]";
@@ -22347,7 +22347,7 @@ namespace Chummer
                         lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
-                            lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
+                            lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                             lblVehicleAvail.Text = objWeapon.TotalAvail;
                         lblVehicleCost.Text = $"{objWeapon.TotalCost:###,###,##0.##¥}";
                         lblVehicleHandling.Text = string.Empty;
@@ -22366,7 +22366,7 @@ namespace Chummer
                             chkVehicleWeaponAccessoryInstalled.Enabled = true;
                             chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
                             _blnSkipRefresh = false;
-                            tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
+                            tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.GetString("String_Page") + " " + objWeapon.Page);
 
                             // Determine the Dice Pool size.
                             int intPilot = objCurrentVehicle.Pilot;
@@ -22400,7 +22400,7 @@ namespace Chummer
                     if (objAccessory.IncludedInWeapon)
                         cmdDeleteVehicle.Enabled = false;
                     lblVehicleName.Text = objAccessory.DisplayNameShort;
-                    lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponAccessory");
+                    lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory");
                     lblVehicleAvail.Text = objAccessory.TotalAvail;
                     lblVehicleCost.Text = $"{objAccessory.TotalCost:###,###,##0.##¥}";
                     lblVehicleHandling.Text = string.Empty;
@@ -22417,7 +22417,7 @@ namespace Chummer
                     foreach (string strCurrentMount in strMounts)
                     {
                         if (!string.IsNullOrEmpty(strCurrentMount))
-                            strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentMount) + "/";
+                            strMount += LanguageManager.GetString("String_Mount" + strCurrentMount) + "/";
                     }
                     // Remove the trailing /
                     if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
@@ -22435,7 +22435,7 @@ namespace Chummer
                                     strMount += " + ";
                                     boolHaveAddedItem = true;
                                 }
-                                strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentExtraMount) + "/";
+                                strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + "/";
                             }
                         }
                         // Remove the trailing /
@@ -22447,7 +22447,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objAccessory.Source);
                     string strPage = objAccessory.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objAccessory.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objAccessory.Page);
+                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objAccessory.Source) + " " + LanguageManager.GetString("String_Page") + " " + objAccessory.Page);
                     chkVehicleWeaponAccessoryInstalled.Enabled = true;
                     chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
                     chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
@@ -22497,11 +22497,11 @@ namespace Chummer
                     lblVehicleBody.Text = string.Empty;
                     lblVehicleArmor.Text = string.Empty;
                     lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                    tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
 
                     if (objGear.GetType() == typeof(Commlink))
                     {
@@ -22545,11 +22545,11 @@ namespace Chummer
                 lblVehicleBody.Text = string.Empty;
                 lblVehicleArmor.Text = string.Empty;
                 lblVehicleSensor.Text = string.Empty;
-                lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objGear.Source);
                 string strPage = objGear.Page;
                 lblVehicleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
+                tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
 
                 if (objGear.GetType() == typeof(Commlink))
                 {
@@ -22756,7 +22756,7 @@ namespace Chummer
                 return true;
             else
             {
-                if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_ConfirmKarmaExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return false;
                 else
                     return true;
@@ -22789,7 +22789,7 @@ namespace Chummer
                 {
                     if (objArt.Grade == objGrade.Grade)
                     {
-                        TreeNode nodArt = nodGrade.Nodes.Add(objArt.InternalId, LanguageManager.Instance.GetString("Label_Art") + " " + objArt.DisplayName);
+                        TreeNode nodArt = nodGrade.Nodes.Add(objArt.InternalId, LanguageManager.GetString("Label_Art") + " " + objArt.DisplayName);
                         nodArt.Tag = objArt.InternalId;
                         nodArt.ContextMenuStrip = cmsInitiationNotes;
                         if (!string.IsNullOrEmpty(objArt.Notes))
@@ -22803,9 +22803,9 @@ namespace Chummer
                     {
                         string strName = string.Empty;
                         if (_objCharacter.MAGEnabled)
-                            strName = LanguageManager.Instance.GetString("Label_Metamagic") + " " + objMetamagic.DisplayName;
+                            strName = LanguageManager.GetString("Label_Metamagic") + " " + objMetamagic.DisplayName;
                         else
-                            strName = LanguageManager.Instance.GetString("Label_Echo") + " " + objMetamagic.DisplayName;
+                            strName = LanguageManager.GetString("Label_Echo") + " " + objMetamagic.DisplayName;
                         TreeNode nodMetamagic = nodGrade.Nodes.Add(objMetamagic.InternalId, strName);
                         nodMetamagic.Tag = objMetamagic.InternalId;
                         nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
@@ -22820,9 +22820,9 @@ namespace Chummer
                     {
                         string strCategory = string.Empty;
                         if (objSpell.Category == "Rituals")
-                            strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+                            strCategory = LanguageManager.GetString("Label_Ritual") + " ";
                         if (objSpell.Category == "Enchantments")
-                            strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+                            strCategory = LanguageManager.GetString("Label_Enchantment") + " ";
                         TreeNode nodSpell = nodGrade.Nodes.Add(objSpell.InternalId, strCategory + " " + objSpell.DisplayName);
                         nodSpell.Tag = objSpell.InternalId;
                         nodSpell.ContextMenuStrip = cmsInitiationNotes;
@@ -22835,7 +22835,7 @@ namespace Chummer
                 {
                     if (objEnhancement.Grade == objGrade.Grade)
                     {
-                        TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.Instance.GetString("Label_Enhancement") + " " + objEnhancement.DisplayName);
+                        TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.GetString("Label_Enhancement") + " " + objEnhancement.DisplayName);
                         nodEnhancement.Tag = objEnhancement.InternalId;
                         nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
                         if (!string.IsNullOrEmpty(objEnhancement.Notes))
@@ -22849,7 +22849,7 @@ namespace Chummer
                     {
                         if (objEnhancement.Grade == objGrade.Grade)
                         {
-                            TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.Instance.GetString("Label_Enhancement") + " " + objEnhancement.DisplayName);
+                            TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.GetString("Label_Enhancement") + " " + objEnhancement.DisplayName);
                             nodEnhancement.Tag = objEnhancement.InternalId;
                             nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
                             if (!string.IsNullOrEmpty(objEnhancement.Notes))
@@ -22883,7 +22883,7 @@ namespace Chummer
                 dblMultiplier = Math.Round(dblMultiplier, 2);
                 intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
 
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
             else
             {
@@ -22896,7 +22896,7 @@ namespace Chummer
                 dblMultiplier = Math.Round(dblMultiplier, 2);
                 intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
 
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+                strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
 
             tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -22933,66 +22933,66 @@ namespace Chummer
         private void SetTooltips()
         {
             // Spells Tab.
-            tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.Instance.GetString("Tip_DiceRoller"));
-            tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.Instance.GetString("Tip_DiceRoller"));
+            tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.GetString("Tip_DiceRoller"));
+            tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.GetString("Tip_DiceRoller"));
             // Complex Forms Tab.
-            tipTooltip.SetToolTip(lblLivingPersonaFirewallLabel, LanguageManager.Instance.GetString("Tip_TechnomancerFirewall"));
-            tipTooltip.SetToolTip(cmdRollFading, LanguageManager.Instance.GetString("Tip_DiceRoller"));
+            tipTooltip.SetToolTip(lblLivingPersonaFirewallLabel, LanguageManager.GetString("Tip_TechnomancerFirewall"));
+            tipTooltip.SetToolTip(cmdRollFading, LanguageManager.GetString("Tip_DiceRoller"));
             // Lifestyle Tab.
-            tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.Instance.GetString("Tab_IncreaseLifestyleMonths"));
-            tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.Instance.GetString("Tab_DecreaseLifestyleMonths"));
+            tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths"));
+            tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths"));
             // Armor Tab.
-            tipTooltip.SetToolTip(chkArmorEquipped, LanguageManager.Instance.GetString("Tip_ArmorEquipped"));
-            // tipTooltip.SetToolTip(cmdArmorIncrease, LanguageManager.Instance.GetString("Tip_ArmorDegradationAPlus"));
-            // tipTooltip.SetToolTip(cmdArmorDecrease, LanguageManager.Instance.GetString("Tip_ArmorDegradationAMinus"));
+            tipTooltip.SetToolTip(chkArmorEquipped, LanguageManager.GetString("Tip_ArmorEquipped"));
+            // tipTooltip.SetToolTip(cmdArmorIncrease, LanguageManager.GetString("Tip_ArmorDegradationAPlus"));
+            // tipTooltip.SetToolTip(cmdArmorDecrease, LanguageManager.GetString("Tip_ArmorDegradationAMinus"));
             // Weapon Tab.
-            tipTooltip.SetToolTip(chkWeaponAccessoryInstalled, LanguageManager.Instance.GetString("Tip_WeaponInstalled"));
-            tipTooltip.SetToolTip(cmdWeaponBuyAmmo, LanguageManager.Instance.GetString("Tip_BuyAmmo"));
-            tipTooltip.SetToolTip(cmdWeaponMoveToVehicle, LanguageManager.Instance.GetString("Tip_TransferToVehicle"));
-            tipTooltip.SetToolTip(cmdRollWeapon, LanguageManager.Instance.GetString("Tip_DiceRoller"));
+            tipTooltip.SetToolTip(chkWeaponAccessoryInstalled, LanguageManager.GetString("Tip_WeaponInstalled"));
+            tipTooltip.SetToolTip(cmdWeaponBuyAmmo, LanguageManager.GetString("Tip_BuyAmmo"));
+            tipTooltip.SetToolTip(cmdWeaponMoveToVehicle, LanguageManager.GetString("Tip_TransferToVehicle"));
+            tipTooltip.SetToolTip(cmdRollWeapon, LanguageManager.GetString("Tip_DiceRoller"));
             // Gear Tab.
-            tipTooltip.SetToolTip(cmdGearIncreaseQty, LanguageManager.Instance.GetString("Tip_IncreaseGearQty"));
-            tipTooltip.SetToolTip(cmdGearReduceQty, LanguageManager.Instance.GetString("Tip_DecreaseGearQty"));
-            tipTooltip.SetToolTip(cmdGearSplitQty, LanguageManager.Instance.GetString("Tip_SplitGearQty"));
-            tipTooltip.SetToolTip(cmdGearMergeQty, LanguageManager.Instance.GetString("Tip_MergeGearQty"));
-            tipTooltip.SetToolTip(cmdGearMoveToVehicle, LanguageManager.Instance.GetString("Tip_TransferToVehicle"));
-            tipTooltip.SetToolTip(chkActiveCommlink, LanguageManager.Instance.GetString("Tip_ActiveCommlink"));
+            tipTooltip.SetToolTip(cmdGearIncreaseQty, LanguageManager.GetString("Tip_IncreaseGearQty"));
+            tipTooltip.SetToolTip(cmdGearReduceQty, LanguageManager.GetString("Tip_DecreaseGearQty"));
+            tipTooltip.SetToolTip(cmdGearSplitQty, LanguageManager.GetString("Tip_SplitGearQty"));
+            tipTooltip.SetToolTip(cmdGearMergeQty, LanguageManager.GetString("Tip_MergeGearQty"));
+            tipTooltip.SetToolTip(cmdGearMoveToVehicle, LanguageManager.GetString("Tip_TransferToVehicle"));
+            tipTooltip.SetToolTip(chkActiveCommlink, LanguageManager.GetString("Tip_ActiveCommlink"));
             // Vehicles Tab.
-            tipTooltip.SetToolTip(chkVehicleWeaponAccessoryInstalled, LanguageManager.Instance.GetString("Tip_WeaponInstalled"));
-            tipTooltip.SetToolTip(cmdVehicleGearReduceQty, LanguageManager.Instance.GetString("Tip_DecreaseGearQty"));
-            tipTooltip.SetToolTip(cmdVehicleMoveToInventory, LanguageManager.Instance.GetString("Tip_TransferToInventory"));
-            tipTooltip.SetToolTip(cmdRollVehicleWeapon, LanguageManager.Instance.GetString("Tip_DiceRoller"));
+            tipTooltip.SetToolTip(chkVehicleWeaponAccessoryInstalled, LanguageManager.GetString("Tip_WeaponInstalled"));
+            tipTooltip.SetToolTip(cmdVehicleGearReduceQty, LanguageManager.GetString("Tip_DecreaseGearQty"));
+            tipTooltip.SetToolTip(cmdVehicleMoveToInventory, LanguageManager.GetString("Tip_TransferToInventory"));
+            tipTooltip.SetToolTip(cmdRollVehicleWeapon, LanguageManager.GetString("Tip_DiceRoller"));
             // Other Info Tab.
-            tipTooltip.SetToolTip(lblCMPhysicalLabel, LanguageManager.Instance.GetString("Tip_OtherCMPhysical"));
-            tipTooltip.SetToolTip(lblCMStunLabel, LanguageManager.Instance.GetString("Tip_OtherCMStun"));
-            tipTooltip.SetToolTip(lblINILabel, LanguageManager.Instance.GetString("Tip_OtherInitiative"));
-            tipTooltip.SetToolTip(lblMatrixINILabel, LanguageManager.Instance.GetString("Tip_OtherMatrixInitiative"));
-            tipTooltip.SetToolTip(lblAstralINILabel, LanguageManager.Instance.GetString("Tip_OtherAstralInitiative"));
-            tipTooltip.SetToolTip(lblArmorLabel, LanguageManager.Instance.GetString("Tip_OtherArmor"));
-            tipTooltip.SetToolTip(lblESS, LanguageManager.Instance.GetString("Tip_OtherEssence"));
-            tipTooltip.SetToolTip(lblRemainingNuyenLabel, LanguageManager.Instance.GetString("Tip_OtherNuyen"));
-            tipTooltip.SetToolTip(lblCareerKarmaLabel, LanguageManager.Instance.GetString("Tip_OtherCareerKarma"));
-            tipTooltip.SetToolTip(lblMovementLabel, LanguageManager.Instance.GetString("Tip_OtherMovement"));
-            tipTooltip.SetToolTip(lblSwimLabel, LanguageManager.Instance.GetString("Tip_OtherSwim"));
-            tipTooltip.SetToolTip(lblFlyLabel, LanguageManager.Instance.GetString("Tip_OtherFly"));
-            tipTooltip.SetToolTip(lblComposureLabel, LanguageManager.Instance.GetString("Tip_OtherComposure"));
-            tipTooltip.SetToolTip(lblJudgeIntentionsLabel, LanguageManager.Instance.GetString("Tip_OtherJudgeIntentions"));
-            tipTooltip.SetToolTip(lblLiftCarryLabel, LanguageManager.Instance.GetString("Tip_OtherLiftAndCarry"));
-            tipTooltip.SetToolTip(lblMemoryLabel, LanguageManager.Instance.GetString("Tip_OtherMemory"));
+            tipTooltip.SetToolTip(lblCMPhysicalLabel, LanguageManager.GetString("Tip_OtherCMPhysical"));
+            tipTooltip.SetToolTip(lblCMStunLabel, LanguageManager.GetString("Tip_OtherCMStun"));
+            tipTooltip.SetToolTip(lblINILabel, LanguageManager.GetString("Tip_OtherInitiative"));
+            tipTooltip.SetToolTip(lblMatrixINILabel, LanguageManager.GetString("Tip_OtherMatrixInitiative"));
+            tipTooltip.SetToolTip(lblAstralINILabel, LanguageManager.GetString("Tip_OtherAstralInitiative"));
+            tipTooltip.SetToolTip(lblArmorLabel, LanguageManager.GetString("Tip_OtherArmor"));
+            tipTooltip.SetToolTip(lblESS, LanguageManager.GetString("Tip_OtherEssence"));
+            tipTooltip.SetToolTip(lblRemainingNuyenLabel, LanguageManager.GetString("Tip_OtherNuyen"));
+            tipTooltip.SetToolTip(lblCareerKarmaLabel, LanguageManager.GetString("Tip_OtherCareerKarma"));
+            tipTooltip.SetToolTip(lblMovementLabel, LanguageManager.GetString("Tip_OtherMovement"));
+            tipTooltip.SetToolTip(lblSwimLabel, LanguageManager.GetString("Tip_OtherSwim"));
+            tipTooltip.SetToolTip(lblFlyLabel, LanguageManager.GetString("Tip_OtherFly"));
+            tipTooltip.SetToolTip(lblComposureLabel, LanguageManager.GetString("Tip_OtherComposure"));
+            tipTooltip.SetToolTip(lblJudgeIntentionsLabel, LanguageManager.GetString("Tip_OtherJudgeIntentions"));
+            tipTooltip.SetToolTip(lblLiftCarryLabel, LanguageManager.GetString("Tip_OtherLiftAndCarry"));
+            tipTooltip.SetToolTip(lblMemoryLabel, LanguageManager.GetString("Tip_OtherMemory"));
             // Condition Monitor Tab.
-            tipTooltip.SetToolTip(lblCMPenaltyLabel, LanguageManager.Instance.GetString("Tip_CMCMPenalty"));
-            tipTooltip.SetToolTip(lblCMArmorLabel, LanguageManager.Instance.GetString("Tip_OtherArmor"));
-            tipTooltip.SetToolTip(lblCMDamageResistancePoolLabel, LanguageManager.Instance.GetString("Tip_CMDamageResistance"));
-            tipTooltip.SetToolTip(cmdEdgeGained, LanguageManager.Instance.GetString("Tip_CMRegainEdge"));
-            tipTooltip.SetToolTip(cmdEdgeSpent, LanguageManager.Instance.GetString("Tip_CMSpendEdge"));
+            tipTooltip.SetToolTip(lblCMPenaltyLabel, LanguageManager.GetString("Tip_CMCMPenalty"));
+            tipTooltip.SetToolTip(lblCMArmorLabel, LanguageManager.GetString("Tip_OtherArmor"));
+            tipTooltip.SetToolTip(lblCMDamageResistancePoolLabel, LanguageManager.GetString("Tip_CMDamageResistance"));
+            tipTooltip.SetToolTip(cmdEdgeGained, LanguageManager.GetString("Tip_CMRegainEdge"));
+            tipTooltip.SetToolTip(cmdEdgeSpent, LanguageManager.GetString("Tip_CMSpendEdge"));
             // Common Info Tab.
-            tipTooltip.SetToolTip(lblStreetCred, LanguageManager.Instance.GetString("Tip_StreetCred"));
-            tipTooltip.SetToolTip(lblNotoriety, LanguageManager.Instance.GetString("Tip_Notoriety"));
+            tipTooltip.SetToolTip(lblStreetCred, LanguageManager.GetString("Tip_StreetCred"));
+            tipTooltip.SetToolTip(lblNotoriety, LanguageManager.GetString("Tip_Notoriety"));
             if (_objOptions.UseCalculatedPublicAwareness)
             {
-                tipTooltip.SetToolTip(lblPublicAware, LanguageManager.Instance.GetString("Tip_PublicAwareness"));
+                tipTooltip.SetToolTip(lblPublicAware, LanguageManager.GetString("Tip_PublicAwareness"));
             }
-            tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.Instance.GetString("Tip_BurnStreetCred"));
+            tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.GetString("Tip_BurnStreetCred"));
 
             // Reposition controls based on their new sizes.
             // Common Tab.
@@ -23045,7 +23045,7 @@ namespace Chummer
 
             TreeNode objRoot = new TreeNode();
             objRoot.Tag = null;
-            objRoot.Text = LanguageManager.Instance.GetString("Node_SelectedImprovements");
+            objRoot.Text = LanguageManager.GetString("Node_SelectedImprovements");
             treImprovements.Nodes.Add(objRoot);
 
             // Populate the Locations.
@@ -23631,7 +23631,7 @@ namespace Chummer
         /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>
         private void ChangeVehicleSensor(Vehicle objVehicle, bool blnIncrease)
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             XmlNode objNewNode;
 
             Gear objSensor = null;
@@ -23876,7 +23876,7 @@ namespace Chummer
                     string strBook = _objOptions.LanguageBookShort(objProgram.Source);
                     string strPage = objProgram.Page;
                     lblComplexFormSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblComplexFormSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objProgram.Page);
+                    tipTooltip.SetToolTip(lblComplexFormSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.GetString("String_Page") + " " + objProgram.Page);
                 }
             }
         }
@@ -23891,7 +23891,7 @@ namespace Chummer
             treGear.Nodes.Clear();
             TreeNode objRoot = new TreeNode();
             objRoot.Tag = "Node_SelectedGear";
-            objRoot.Text = LanguageManager.Instance.GetString("Node_SelectedGear");
+            objRoot.Text = LanguageManager.GetString("Node_SelectedGear");
             treGear.Nodes.Add(objRoot);
 
             // Start by populating Locations.
@@ -24140,7 +24140,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlChild in objXmlItem.SelectNodes(strType + "s/" + strType))
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(strType + ".xml");
+                XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
                 XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlChild["name"].InnerText + "\"]");
                 TreeNode objChildNode = new TreeNode();
                 int intChildRating = 0;
@@ -24167,14 +24167,14 @@ namespace Chummer
             decimal decCost = frmPickCyberwareSuite.TotalCost;
             if (decCost > _objCharacter.Nuyen)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(decCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseCyberwareSuite") + " " + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
+                objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite") + " " + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Nuyen -= decCost;
             }
@@ -24191,7 +24191,7 @@ namespace Chummer
                 strType = "bioware";
                 intParentNode = 1;
             }
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(strType + ".xml");
+            XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
 
             XmlNode objXmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, _objCharacter.Options);
@@ -24253,7 +24253,7 @@ namespace Chummer
             }
             else
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectLimitModifier"), LanguageManager.Instance.GetString("MessageTitle_SelectLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectLimitModifier"), LanguageManager.GetString("MessageTitle_SelectLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -24267,11 +24267,11 @@ namespace Chummer
                 LimitModifier objLimit = CommonFunctions.FindByIdWithNameCheck(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers);
                 if (objLimit == null)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.Instance.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteLimitModifier")))
+                if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier")))
                     return;
 
                 string strLimit = treLimit.SelectedNode.Parent.Text;
@@ -24354,22 +24354,22 @@ namespace Chummer
             int intKarmaCost = 5;
             if (intKarmaCost > _objCharacter.Karma)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (_objCharacter.MysticAdeptPowerPoints + 1 > _objCharacter.MAG.TotalValue)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughMagic"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughMagic"), LanguageManager.GetString("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_PowerPoint")).Replace("{1}", (intKarmaCost).ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_PowerPoint")).Replace("{1}", (intKarmaCost).ToString())))
                 return;
 
             // Create the Karma expense.
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_PowerPoint"), ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_PowerPoint"), ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
 
@@ -24421,24 +24421,22 @@ namespace Chummer
             if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaMetamagic)
             {
                 // Make sure the Karma expense would not put them over the limit.
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (_objCharacter.MAGEnabled && blnPayWithKarma)
             {
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Metamagic")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Metamagic")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                     return;
             }
             else if (blnPayWithKarma)
             {
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Echo")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Echo")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                     return;
             }
 
-            frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter);
-            if (_objCharacter.RESEnabled)
-                frmPickMetamagic.WindowMode = frmSelectMetamagic.Mode.Echo;
+            frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, _objCharacter.RESEnabled ? frmSelectMetamagic.Mode.Echo : frmSelectMetamagic.Mode.Metamagic);
             frmPickMetamagic.ShowDialog(this);
 
             // Make sure a value was selected.
@@ -24447,7 +24445,7 @@ namespace Chummer
 
             string strMetamagic = frmPickMetamagic.SelectedMetamagic;
 
-            XmlDocument objXmlDocument = new XmlDocument();
+            XmlDocument objXmlDocument = null;
             XmlNode objXmlMetamagic;
 
             TreeNode objNode = new TreeNode();
@@ -24456,13 +24454,13 @@ namespace Chummer
 
             if (_objCharacter.MAGEnabled)
             {
-                objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
+                objXmlDocument = XmlManager.Load("metamagic.xml");
                 objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strMetamagic + "\"]");
                 objSource = Improvement.ImprovementSource.Metamagic;
             }
             else
             {
-                objXmlDocument = XmlManager.Instance.Load("echoes.xml");
+                objXmlDocument = XmlManager.Load("echoes.xml");
                 objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strMetamagic + "\"]");
                 objSource = Improvement.ImprovementSource.Echo;
             }
@@ -24524,12 +24522,11 @@ namespace Chummer
             if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaMetamagic)
             {
                 // Make sure the Karma expense would not put them over the limit.
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Art;
+            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art);
             frmPickArt.ShowDialog(this);
 
             // Make sure a value was selected.
@@ -24538,16 +24535,12 @@ namespace Chummer
 
             string strArt = frmPickArt.SelectedItem;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+            XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml");
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strArt + "\"]");
 
             TreeNode objNode = new TreeNode();
             Art objArt = new Art(_objCharacter);
-            Improvement.ImprovementSource objSource;
-
-            objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strArt + "\"]");
-            objSource = Improvement.ImprovementSource.Metamagic;
+            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Metamagic;
 
             objArt.Create(objXmlArt, objNode, objSource);
             objArt.Grade = intGrade;
@@ -24616,16 +24609,15 @@ namespace Chummer
             if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaSpell)
             {
                 // Make sure the Karma expense would not put them over the limit.
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (blnPayWithKarma)
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Enchantment")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Enchantment")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                     return;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Enchantment;
+            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Enchantment);
             frmPickArt.ShowDialog(this);
 
             // Make sure a value was selected.
@@ -24634,16 +24626,12 @@ namespace Chummer
 
             string strEnchantment = frmPickArt.SelectedItem;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+            XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
 
             TreeNode objNode = new TreeNode();
             Spell objNewSpell = new Spell(_objCharacter);
-            Improvement.ImprovementSource objSource;
-
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
             objNewSpell.Create(objXmlArt, objNode, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
@@ -24674,9 +24662,9 @@ namespace Chummer
 
             string strCategory = string.Empty;
             if (objNewSpell.Category == "Rituals")
-                strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+                strCategory = LanguageManager.GetString("Label_Ritual") + " ";
             if (objNewSpell.Category == "Enchantments")
-                strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+                strCategory = LanguageManager.GetString("Label_Enchantment") + " ";
             objNode.Text = strCategory + objNode.Text;
             treMetamagic.SelectedNode.Nodes.Add(objNode);
             treMetamagic.SelectedNode.Expand();
@@ -24725,16 +24713,15 @@ namespace Chummer
             if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaSpell)
             {
                 // Make sure the Karma expense would not put them over the limit.
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (blnPayWithKarma)
-                if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Ritual")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Ritual")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
                     return;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Ritual;
+            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Ritual);
             frmPickArt.ShowDialog(this);
 
             // Make sure a value was selected.
@@ -24743,16 +24730,12 @@ namespace Chummer
 
             string strEnchantment = frmPickArt.SelectedItem;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+            XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
 
             TreeNode objNode = new TreeNode();
             Spell objNewSpell = new Spell(_objCharacter);
-            Improvement.ImprovementSource objSource;
-
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
             objNewSpell.Create(objXmlArt, objNode, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
@@ -24783,9 +24766,9 @@ namespace Chummer
 
             string strCategory = string.Empty;
             if (objNewSpell.Category == "Rituals")
-                strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+                strCategory = LanguageManager.GetString("Label_Ritual") + " ";
             if (objNewSpell.Category == "Enchantments")
-                strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+                strCategory = LanguageManager.GetString("Label_Enchantment") + " ";
             objNode.Text = strCategory + objNode.Text;
             treMetamagic.SelectedNode.Nodes.Add(objNode);
             treMetamagic.SelectedNode.Expand();
@@ -24925,15 +24908,14 @@ namespace Chummer
             if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaSpell)
             {
                 // Make sure the Karma expense would not put them over the limit.
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Enhancement")).Replace("{1}", _objOptions.KarmaEnhancement.ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Enhancement")).Replace("{1}", _objOptions.KarmaEnhancement.ToString())))
                 return;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Enhancement;
+            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Enhancement);
             frmPickArt.ShowDialog(this);
 
             // Make sure a value was selected.
@@ -24942,16 +24924,12 @@ namespace Chummer
 
             string strEnhancement = frmPickArt.SelectedItem;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+            XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + strEnhancement + "\"]");
 
             TreeNode objNode = new TreeNode();
             Enhancement objEnhancement = new Enhancement(_objCharacter);
-            Improvement.ImprovementSource objSource;
-
-            objXmlDocument = XmlManager.Instance.Load("powers.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + strEnhancement + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
             // Find the associated Power
             string strPower = objXmlArt["power"].InnerText.ToString();
@@ -25196,7 +25174,7 @@ namespace Chummer
             // Make sure the character has enough Karma before letting them select a Spell.
             if (_objCharacter.Karma < _objOptions.KarmaNewAIProgram && _objCharacter.Karma < _objOptions.KarmaNewAIAdvancedProgram)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // Let the user select a Program.
@@ -25207,7 +25185,7 @@ namespace Chummer
             if (frmPickProgram.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("programs.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("programs.xml");
 
             XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
             bool boolIsAdvancedProgram = objXmlProgram["category"].InnerText == "Advanced Programs";
@@ -25219,7 +25197,7 @@ namespace Chummer
                 if (objXmlProgram["bonus"]["selecttext"] != null)
                 {
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
+                    frmPickText.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", frmPickProgram.SelectedProgram);
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
                 }
@@ -25232,7 +25210,7 @@ namespace Chummer
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayName).Replace("{1}", (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram).ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayName).Replace("{1}", (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram).ToString())))
                 return;
 
             _objCharacter.AIPrograms.Add(objProgram);
@@ -25251,7 +25229,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
-            objEntry.Create((boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram) * -1, LanguageManager.Instance.GetString("String_ExpenseLearnProgram") + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
+            objEntry.Create((boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram) * -1, LanguageManager.GetString("String_ExpenseLearnProgram") + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objEntry);
             _objCharacter.Karma -= (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram);
 
@@ -25273,9 +25251,9 @@ namespace Chummer
             }
 
             //if (_objCharacter.CFPLimit - intComplexForms < 0)
-            //    lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.CFPLimit.ToString());
+            //    lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.CFPLimit.ToString());
             //else
-            lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+            lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
             */
 
             if (frmPickProgram.AddAgain)
@@ -25294,7 +25272,7 @@ namespace Chummer
 
                     if (objProgram != null && objProgram.CanDelete)
                     {
-                        if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteAIProgram")))
+                        if (!_objFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram")))
                             return;
 
                         ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
@@ -25307,7 +25285,7 @@ namespace Chummer
                         {
                             intComplexForms++;
                         }
-                        lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+                        lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
                         */
 
                         ScheduleCharacterUpdate();
@@ -25337,7 +25315,7 @@ namespace Chummer
                         string strBook = _objOptions.LanguageBookShort(objProgram.Source);
                         string strPage = objProgram.Page;
                         lblAIProgramsSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblAIProgramsSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objProgram.Page);
+                        tipTooltip.SetToolTip(lblAIProgramsSource, _objOptions.LanguageBookLong(objProgram.Source) + " " + LanguageManager.GetString("String_Page") + " " + objProgram.Page);
                     }
                 }
             }

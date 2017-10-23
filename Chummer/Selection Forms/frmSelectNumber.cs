@@ -29,7 +29,7 @@ namespace Chummer
         public frmSelectNumber(bool blnCurrency = true)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             if (blnCurrency)
             {
                 nudNumber.DecimalPlaces = 2;

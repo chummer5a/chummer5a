@@ -327,7 +327,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us")
+                if (GlobalOptions.Language == "en-us")
                     return _strBaseLifestyle;
                 return MyXmlNode?["translate"]?.InnerText ?? _strBaseLifestyle;
             }
@@ -373,7 +373,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -678,7 +678,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Instance.Load("lifestyles.xml").SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                return XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
             }
         }
         #endregion

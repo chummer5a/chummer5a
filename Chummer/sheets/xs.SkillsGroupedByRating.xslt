@@ -21,10 +21,10 @@
       <xsl:if test="$PrintSkillCategoryNames = 'True'">
       <xsl:choose>
         <xsl:when test="position() = 1">
-          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /> Skills</strong></td></tr>
+          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/></strong></td></tr>
         </xsl:when>
         <xsl:when test="skillcategory != preceding-sibling::skill[1]/skillcategory">
-          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /> Skills</strong></td></tr>
+          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/></strong></td></tr>
         </xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
@@ -48,10 +48,10 @@
       <xsl:if test="$PrintSkillCategoryNames = 'True'">
       <xsl:choose>
         <xsl:when test="position() = 1">
-          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /> Skills</strong></td></tr>
+          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/></strong></td></tr>
         </xsl:when>
         <xsl:when test="skillcategory != preceding-sibling::skill[1]/skillcategory">
-          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /> Skills</strong></td></tr>
+          <tr><td colspan="6" style="border-bottom:solid black 1px;"><strong><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/></strong></td></tr>
         </xsl:when>
         <xsl:otherwise/>
       </xsl:choose>
@@ -62,7 +62,7 @@
       <xsl:if test="$PrintSkillCategoryNames = 'True'">
       <tr>
         <td colspan="6" style="border-bottom:solid black 1px;">
-          <strong>Skill Groups</strong>
+          <strong><xsl:text> </xsl:text><xsl:value-of select="$lang.SkillGroups"/></strong>
         </td>
       </tr>
       </xsl:if>

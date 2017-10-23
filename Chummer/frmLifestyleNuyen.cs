@@ -27,7 +27,7 @@ namespace Chummer
         public frmLifestyleNuyen()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -38,7 +38,7 @@ namespace Chummer
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.Instance.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
+            lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
             lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";

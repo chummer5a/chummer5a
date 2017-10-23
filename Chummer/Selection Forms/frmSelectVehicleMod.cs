@@ -34,7 +34,6 @@ namespace Chummer
         private int _intWeaponCost = 0;
         private int _intTotalWeaponCost = 0;
         private int _intModMultiplier = 1;
-        private string _strInputFile = "vehicles";
         private int _intMarkup = 0;
         private bool _blnSkipUpdate = false;
         private static string _strSelectCategory = string.Empty;
@@ -43,7 +42,7 @@ namespace Chummer
         private string _strAllowedCategories = string.Empty;
         private bool _blnAddAgain = false;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private string _strLimitToCategories = string.Empty;
@@ -54,12 +53,14 @@ namespace Chummer
         public frmSelectVehicleMod(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Vehicle information.
+            _objXmlDocument = XmlManager.Load("vehicles.xml");
         }
 
         private void frmSelectVehicleMod_Load(object sender, EventArgs e)
@@ -67,8 +68,6 @@ namespace Chummer
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
                     _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
-            // Load the Mod information.
-            _objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
 
             string[] strValues = _strLimitToCategories.Split(',');
 
@@ -89,7 +88,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = "Show All";
-                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
                 _lstCategory.Insert(0, objItem);
             }
             cboCategory.BeginUpdate();
@@ -107,8 +106,6 @@ namespace Chummer
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
-            if (_strInputFile == "weapons")
-                Text = LanguageManager.Instance.GetString("Title_SelectVehicleMod_Weapon");
             _blnSkipUpdate = false;
             UpdateGearInfo();
         }
@@ -309,17 +306,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Which XML file should the window read from (default vehicles).
-        /// </summary>
-        public string InputFile
-        {
-            set
-            {
-                _strInputFile = value;
-            }
-        }
-
-        /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
         public bool FreeCost
@@ -412,12 +398,6 @@ namespace Chummer
 
             // Update the list of Mods based on the selected Category.
             XmlNodeList objXmlModList;
-
-            // Load the Mod information.
-            _objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
-
-            // Load the Vehicle information.
-            _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 
             XmlNode objXmlVehicleNode = _objVehicle.MyXmlNode;
 
@@ -577,7 +557,7 @@ namespace Chummer
                     nudRating.Enabled = true;
                     nudRating.Maximum = 20;
                     nudRating.Minimum = intMinRating;
-                    lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
                 }
                 //Used for the Armor modifications.
                 else if (objXmlMod["rating"].InnerText.ToLower() == "body")
@@ -585,7 +565,7 @@ namespace Chummer
                     nudRating.Maximum = _objVehicle.Body;
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
-                    lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Body");
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body");
                 }
                 //Used for Metahuman Adjustments.
                 else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
@@ -593,7 +573,7 @@ namespace Chummer
                     nudRating.Maximum = _objVehicle.TotalSeats;
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
-                    lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
                 }
                 else
                 {
@@ -602,14 +582,14 @@ namespace Chummer
                         nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
                         nudRating.Minimum = intMinRating;
                         nudRating.Enabled = true;
-                        lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                        lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                     }
                     else
                     {
                         nudRating.Minimum = 0;
                         nudRating.Maximum = 0;
                         nudRating.Enabled = false;
-                        lblRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+                        lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
                     }
                 }
 
@@ -648,7 +628,7 @@ namespace Chummer
                 {
                     lblAvail.Text = objXmlMod["avail"].InnerText;
                 }
-                lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 // Cost.
                 decimal decItemCost = 0;
@@ -741,7 +721,7 @@ namespace Chummer
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
                         lblVehicleCapacity.Text = GetRemainingModCapacity(objXmlMod["category"].InnerText, Convert.ToInt32(lblSlots.Text));
-                        tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.Instance.GetString("Tip_RemainingVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.GetString("Tip_RemainingVehicleModCapacity"));
                     }
                     else
                     {
@@ -751,9 +731,9 @@ namespace Chummer
 
                     lblCategory.Text = objXmlMod["category"].InnerText;
                     if (objXmlMod["category"].InnerText == "Weapon Mod")
-                        lblCategory.Text = LanguageManager.Instance.GetString("String_WeaponModification");
+                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification");
                     // Translate the Category if possible.
-                    else if (GlobalOptions.Instance.Language != "en-us")
+                    else if (GlobalOptions.Language != "en-us")
                     {
                         XmlNode objXmlCategory = _objXmlDocument.SelectSingleNode("/chummer/modcategories/category[. = \"" + objXmlMod["category"].InnerText + "\"]");
                         if (objXmlCategory?.Attributes["translate"] != null)
@@ -766,7 +746,7 @@ namespace Chummer
                 if (objXmlMod["limit"] != null)
                 {
                     // Translate the Limit if possible.
-                    if (GlobalOptions.Instance.Language != "en-us")
+                    if (GlobalOptions.Language != "en-us")
                     {
                         XmlNode objXmlLimit = _objXmlDocument.SelectSingleNode("/chummer/limits/limit[. = \"" + objXmlMod["limit"].InnerText + "\"]");
                         lblLimit.Text = objXmlLimit.Attributes["translate"] != null
@@ -785,7 +765,7 @@ namespace Chummer
                     strPage = objXmlMod["altpage"].InnerText;
                 lblSource.Text = strBook + " " + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
             }
             _blnSkipUpdate = false;
         }

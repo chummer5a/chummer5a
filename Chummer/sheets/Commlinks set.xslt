@@ -157,10 +157,10 @@
                 <table width="100%">
                   <tr>
                     <td width="50%" style="text-align:center;">
-                      <strong><xsl:value-of select="concat($lang.PhysicalTrack1,' ',$lang.PhysicalTrack2)"/></strong>
+                      <strong><xsl:value-of select="$lang.PhysicalTrack /></strong>
                     </td>
                     <td width="50%" style="text-align:center;">
-                      <strong><xsl:value-of select="concat($lang.StunTrack1,' ',$lang.StunTrack2)"/></strong>
+                      <strong><xsl:value-of select="$lang.StunTrack"/></strong>
                     </td>
                   </tr>
                   <tr>

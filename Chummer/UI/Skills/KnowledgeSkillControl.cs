@@ -128,12 +128,12 @@ namespace Chummer.UI.Skills
                 string confirmstring;
                 if (_skill.Karma == 0)
                 {
-                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
+                    confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
                         _skill.DisplayName, _skill.Rating + 1, _skill.CharacterObject.Options.KarmaNewKnowledgeSkill, cboType.GetItemText(cboType.SelectedItem));
                 }
                 else
                 {
-                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                    confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                        _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
                 }
 
@@ -150,7 +150,7 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
                         _skill.CharacterObject.Options.KarmaKnowledgeSpecialization);
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))

@@ -106,7 +106,7 @@ namespace Chummer
         private bool _blnPrioritySpellsAsAdeptPowers;
         private bool _blnEducationQualitiesApplyOnChargenKarma;
 
-        private readonly XmlDocument _objBookDoc = new XmlDocument();
+        private readonly XmlDocument _objBookDoc = null;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
 
@@ -204,7 +204,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                 }
             }
 
@@ -219,10 +219,10 @@ namespace Chummer
             else
                 Load("default.xml");
             // Load the language file.
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Load the book information.
-            _objBookDoc = XmlManager.Instance.Load("books.xml");
+            _objBookDoc = XmlManager.Load("books.xml");
         }
 
         /// <summary>
@@ -610,15 +610,15 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
@@ -1052,7 +1052,7 @@ namespace Chummer
             }
             string[] strBooks = strBookList.Split(',');
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
             foreach (string strBookCode in strBooks)
             {
@@ -1166,12 +1166,12 @@ namespace Chummer
             {
                 strPath += " and " + _strBookXPath;
             }
-            if (GlobalOptions.Instance.MissionsOnly)
+            if (GlobalOptions.MissionsOnly)
             {
                 strPath += " and not(nomission)";
             }
 
-            if (!GlobalOptions.Instance.Dronemods)
+            if (!GlobalOptions.Dronemods)
             {
                 strPath += " and not(optionaldrone)";
             }

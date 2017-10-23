@@ -48,7 +48,7 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
         private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         private List<ListItem> _lstCategory = new List<ListItem>();
@@ -57,7 +57,7 @@ namespace Chummer
         public frmSelectGear(Character objCharacter, bool blnCareer = false, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
@@ -73,6 +73,8 @@ namespace Chummer
             }
 
             MoveControls();
+            // Load the Gear information.
+            _objXmlDocument = XmlManager.Load("gear.xml");
         }
 
         private void frmSelectGear_Load(object sender, EventArgs e)
@@ -86,9 +88,6 @@ namespace Chummer
                     _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             XmlNodeList objXmlCategoryList;
-
-            // Load the Gear information.
-            _objXmlDocument = XmlManager.Instance.Load("gear.xml");
 
             // Populate the Gear Category list.
             if (!string.IsNullOrEmpty(_strAllowedCategories))
@@ -192,7 +191,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = "Show All";
-                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -754,7 +753,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.Instance.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString("N2", GlobalOptions.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString("N2", GlobalOptions.CultureInfo);
             }
         }
 
@@ -1033,7 +1032,7 @@ namespace Chummer
                 {
                     lblAvail.Text = objXmlGear["avail"].InnerText;
                 }
-                lblAvail.Text = strPrefix + lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                lblAvail.Text = strPrefix + lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 decimal decMultiplier = nudGearQty.Value / nudGearQty.Increment;
                 if (chkDoItYourself.Checked)
@@ -1289,7 +1288,7 @@ namespace Chummer
                     nudRating.Enabled = false;
                 }
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlGear["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlGear["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
             }
         }
 

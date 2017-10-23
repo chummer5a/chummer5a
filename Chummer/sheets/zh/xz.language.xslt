@@ -59,6 +59,8 @@
   <xsl:variable name="lang.Data"      select="'数据'"/>
   <xsl:variable name="lang.Date"      select="'日期'"/>
   <xsl:variable name="lang.Dead"      select="'死亡'"/>
+  <xsl:variable name="lang.Depth"  select="'深度'"/>
+  <xsl:variable name="lang.DEP"  select="'DEP'"/>
   <xsl:variable name="lang.Description"  select="'形象描述'"/>
   <xsl:variable name="lang.Detection"    select="'侦测法术'"/>
   <xsl:variable name="lang.Device"    select="'设备'"/>
@@ -250,6 +252,7 @@
   <xsl:variable name="lang.MatrixAR"      select="'矩阵 AR'"/>
   <xsl:variable name="lang.MatrixCold"    select="'矩阵（冷模）'"/>
   <xsl:variable name="lang.MatrixHot"      select="'矩阵（热模）'"/>
+  <xsl:variable name="lang.MatrixTrack"    select="'矩阵伤害'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'近战武器'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'其他肖像'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>

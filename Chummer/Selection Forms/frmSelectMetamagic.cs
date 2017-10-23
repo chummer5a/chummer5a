@@ -38,7 +38,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = new XmlDocument();
 
         private readonly XmlDocument _objMetatypeDocument;
         private readonly XmlDocument _objCritterDocument;
@@ -51,23 +51,34 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmSelectMetamagic(Character objCharacter)
+        public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
-            _objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
-            _objCritterDocument = XmlManager.Instance.Load("critters.xml");
-            _objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            _objMetatypeDocument = XmlManager.Load("metatypes.xml");
+            _objCritterDocument = XmlManager.Load("critters.xml");
+            _objQualityDocument = XmlManager.Load("qualities.xml");
+            WindowMode = objMode;
+            // Load the Metamagic information.
+            switch (_objMode)
+            {
+                case Mode.Metamagic:
+                    _objXmlDocument = XmlManager.Load("metamagic.xml");
+                    break;
+                case Mode.Echo:
+                    _objXmlDocument = XmlManager.Load("echoes.xml");
+                    break;
+            }
         }
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
             // Update the window title if needed.
-            string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-            Text = LanguageManager.Instance.GetString("Title_SelectGeneric").Replace("{0}", s);
-            chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", s);
+            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
+            Text = LanguageManager.GetString("Title_SelectGeneric").Replace("{0}", s);
+            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", s);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -92,7 +103,7 @@ namespace Chummer
                 string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
                 lblSource.Text = $"{strBook} {strPage}";
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"]?.InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
             }
         }
 
@@ -177,17 +188,6 @@ namespace Chummer
             XmlNodeList objXmlMetamagicList;
             List<ListItem> lstMetamagics = new List<ListItem>();
 
-            // Load the Metamagic information.
-            switch (_objMode)
-            {
-                case Mode.Metamagic:
-                    _objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
-                    break;
-                case Mode.Echo:
-                    _objXmlDocument = XmlManager.Instance.Load("echoes.xml");
-                    break;
-            }
-
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (_objCharacter.MAGEnabled)
             {
@@ -200,7 +200,7 @@ namespace Chummer
             }
             else
                 objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
-            string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
+            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
 
             if (objXmlMetamagicList != null)
                 foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
@@ -245,7 +245,7 @@ namespace Chummer
                 ? _objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + lstMetamagic.SelectedValue + "\"]")
                 : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
 
-            string s = LanguageManager.Instance.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
+            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
             if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
                 return;
             DialogResult = DialogResult.OK;

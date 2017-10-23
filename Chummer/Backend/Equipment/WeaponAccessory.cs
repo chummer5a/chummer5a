@@ -103,7 +103,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
@@ -140,7 +140,7 @@ namespace Chummer.Backend.Equipment
             // Add any Gear that comes with the Weapon Accessory.
             if (objXmlAccessory["gears"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode objXmlAccessoryGear in objXmlAccessory.SelectNodes("gears/usegear"))
                 {
                     int intGearRating = 0;
@@ -201,7 +201,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objAccessoryNode = MyXmlNode;
                 if (objAccessoryNode != null)
@@ -341,7 +341,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objAccessoryNode = MyXmlNode;
                 if (objAccessoryNode != null)
@@ -876,8 +876,8 @@ namespace Chummer.Backend.Equipment
                 strReturn = intAvail.ToString() + strAvailText;
 
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 return strReturn;
             }
@@ -1132,7 +1132,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Instance.Load("weapons.xml")?.SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]");
+                return XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]");
             }
         }
         #endregion

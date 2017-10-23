@@ -656,7 +656,7 @@ namespace Chummer.Skills
             //TODO less retarded way please
             List<Skill> b = new List<Skill>();
             // Load the Skills information.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
 
             // Populate the Skills list.
             XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter,strName) + "]");

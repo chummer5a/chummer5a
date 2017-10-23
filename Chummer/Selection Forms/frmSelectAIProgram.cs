@@ -35,17 +35,19 @@ namespace Chummer
         private readonly Character _objCharacter;
         private List<ListItem> _lstCategory = new List<ListItem>();
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             MoveControls();
+            // Load the Programs information.
+            _objXmlDocument = XmlManager.Load("programs.xml");
         }
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
@@ -55,9 +57,6 @@ namespace Chummer
                 if (objLabel.Text.StartsWith("["))
                     objLabel.Text = string.Empty;
             }
-
-            // Load the Programs information.
-            _objXmlDocument = XmlManager.Instance.Load("programs.xml");
 
             // Populate the Category list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -236,7 +235,7 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstAIPrograms.Text))
             {
-                string strRequiresProgram = LanguageManager.Instance.GetString("String_None");
+                string strRequiresProgram = LanguageManager.GetString("String_None");
                 if (objXmlProgram["require"] != null)
                     strRequiresProgram = objXmlProgram["require"].InnerText;
 
@@ -248,7 +247,7 @@ namespace Chummer
                     strPage = objXmlProgram["altpage"].InnerText;
                 lblSource.Text = strBook + " " + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
             }
         }
 
@@ -260,10 +259,10 @@ namespace Chummer
             List<ListItem> lstPrograms = new List<ListItem>();
             bool blnCheckForOptional = false;
             XmlNode objXmlCritter = null;
-            XmlDocument objXmlCritterDocument = new XmlDocument();
+            XmlDocument objXmlCritterDocument = null;
             if (_objCharacter.IsCritter)
             {
-                objXmlCritterDocument = XmlManager.Instance.Load("critters.xml");
+                objXmlCritterDocument = XmlManager.Load("critters.xml");
                 objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (objXmlCritter.InnerXml.Contains("<optionalaiprograms>"))
                     blnCheckForOptional = true;
@@ -368,8 +367,8 @@ namespace Chummer
                     DialogResult = DialogResult.OK;
                 else
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectAIProgram_AdvancedProgramRequirement") + strRequiresProgram,
-                        LanguageManager.Instance.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement"),
+                    MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement") + strRequiresProgram,
+                        LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }

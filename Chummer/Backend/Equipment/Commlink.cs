@@ -261,20 +261,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Data Processing"))
-                        intGearValue = (_objParent as Commlink).BaseDataProcessing;
+                        intGearValue = objParent.BaseDataProcessing;
                     if (strExpression.Contains("Parent Data Processing"))
-                        strParentValue = (_objParent as Commlink).DataProcessing;
+                        strParentValue = objParent.DataProcessing;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Data Processing"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseDataProcessing;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseDataProcessing;
                     }
                 }
 
@@ -323,20 +325,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Attack"))
-                        intGearValue = (_objParent as Commlink).BaseAttack;
+                        intGearValue = objParent.BaseAttack;
                     if (strExpression.Contains("Parent Attack"))
-                        strParentValue = (_objParent as Commlink).Attack;
+                        strParentValue = objParent.Attack;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Attack"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseAttack;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseAttack;
                     }
                 }
 
@@ -385,20 +389,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Sleaze"))
-                        intGearValue = (_objParent as Commlink).BaseSleaze;
+                        intGearValue = objParent.BaseSleaze;
                     if (strExpression.Contains("Parent Sleaze"))
-                        strParentValue = (_objParent as Commlink).Sleaze;
+                        strParentValue = objParent.Sleaze;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Sleaze"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseSleaze;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseSleaze;
                     }
                 }
 
@@ -447,20 +453,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Firewall"))
-                        intGearValue = (_objParent as Commlink).BaseFirewall;
+                        intGearValue = objParent.BaseFirewall;
                     if (strExpression.Contains("Parent Firewall"))
-                        strParentValue = (_objParent as Commlink).Firewall;
+                        strParentValue = objParent.Firewall;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Firewall"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseFirewall;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseFirewall;
                     }
                 }
 

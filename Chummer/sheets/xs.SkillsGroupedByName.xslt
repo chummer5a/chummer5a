@@ -24,7 +24,7 @@
             <tr>
               <td colspan="6" style="border-bottom:solid black 1px;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /> Skills
+                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
                 </strong>
               </td>
             </tr>
@@ -33,7 +33,7 @@
             <tr>
               <td colspan="6" style="border-bottom:solid black 1px;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /> Skills
+                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
                 </strong>
               </td>
             </tr>
@@ -63,7 +63,7 @@
             <tr>
               <td colspan="6" style="border-bottom:solid black 1px;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /> Skills
+                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
                 </strong>
               </td>
             </tr>
@@ -72,7 +72,7 @@
             <tr>
               <td colspan="6" style="border-bottom:solid black 1px;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /> Skills
+                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
                 </strong>
               </td>
             </tr>
@@ -86,7 +86,7 @@
       <xsl:if test="$PrintSkillCategoryNames = 'True'">
         <tr>
           <td colspan="6" style="border-bottom:solid black 1px;">
-            <strong>Skill Groups</strong>
+            <strong><xsl:text> </xsl:text><xsl:value-of select="$lang.SkillGroups"/></strong>
           </td>
         </tr>
       </xsl:if>

@@ -36,7 +36,7 @@ namespace Chummer
         private decimal _decMarkup = 0;
         private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private bool _blnExcludeGeneralCategory = false;
@@ -45,12 +45,14 @@ namespace Chummer
         public frmSelectArmorMod(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Armor information.
+            _objXmlDocument = XmlManager.Load("armor.xml");
         }
 
         private void frmSelectArmorMod_Load(object sender, EventArgs e)
@@ -282,7 +284,7 @@ namespace Chummer
             {
                 lblAvail.Text = objXmlMod["avail"].InnerText;
             }
-            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
             // Cost.
             if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
@@ -358,7 +360,7 @@ namespace Chummer
                 strPage = objXmlMod["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         /// <summary>
@@ -367,9 +369,6 @@ namespace Chummer
         private void BuildModList()
         {
             List<ListItem> lstMods = new List<ListItem>();
-
-            // Load the Armor information.
-            _objXmlDocument = XmlManager.Instance.Load("armor.xml");
 
             // Populate the Mods list.
             string[] strAllowed = _strAllowedCategories.Split(',');

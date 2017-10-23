@@ -36,7 +36,7 @@ namespace Chummer
         private static string _strSelectCategory = string.Empty;
         private decimal _decMarkup;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         private List<ListItem> _lstCategory = new List<ListItem>();
@@ -47,12 +47,14 @@ namespace Chummer
         public frmSelectArmor(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Armor information.
+            _objXmlDocument = XmlManager.Load("armor.xml");
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)
@@ -65,8 +67,6 @@ namespace Chummer
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
                     _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
-            // Load the Armor information.
-            _objXmlDocument = XmlManager.Instance.Load("armor.xml");
 
             // Populate the Armor Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -85,7 +85,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = "Show All";
-                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -642,7 +642,7 @@ namespace Chummer
 
                 tipTooltip.SetToolTip(lblSource,
                     _objCharacter.Options.LanguageBookLong(objXmlArmor["source"]?.InnerText) + " " +
-                    LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                    LanguageManager.GetString("String_Page") + " " + strPage);
             }
         }
         #endregion

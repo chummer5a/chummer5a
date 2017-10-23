@@ -182,7 +182,7 @@ namespace Chummer.Backend.Equipment
 
             objXmlCyberware.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 
                 XmlNode objCyberwareNode = MyXmlNode;
@@ -197,7 +197,7 @@ namespace Chummer.Backend.Equipment
                 {
                     strXmlFile = "bioware.xml";
                 }
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
+                XmlDocument objXmlDocument = XmlManager.Load(strXmlFile);
                 objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objCyberwareNode?.Attributes?["translate"]?.InnerText;
             }
@@ -243,7 +243,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
@@ -258,7 +258,7 @@ namespace Chummer.Backend.Equipment
             // Add Cyberweapons if applicable.
             if (objXmlCyberware.InnerXml.Contains("<addweapon>"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
@@ -282,7 +282,7 @@ namespace Chummer.Backend.Equipment
             // Add Drone Bodyparts if applicable.
             if (objXmlCyberware.InnerXml.Contains("<addvehicle>"))
             {
-                XmlDocument objXmlVehicleDocument = XmlManager.Instance.Load("vehicles.xml");
+                XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
@@ -396,7 +396,7 @@ namespace Chummer.Backend.Equipment
             if (objParentNode.InnerXml.Contains("<subsystems>"))
             {
                 // Load Cyberware subsystems first
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("cyberware.xml");
                 XmlNodeList objXmlSubSystemNameList = objParentNode.SelectNodes("subsystems/cyberware");
 
                 foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
@@ -423,7 +423,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Load bioware subsystems next
-                objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+                objXmlDocument = XmlManager.Load("bioware.xml");
                 objXmlSubSystemNameList = objParentNode.SelectNodes("subsystems/bioware");
 
                 foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
@@ -454,7 +454,7 @@ namespace Chummer.Backend.Equipment
             if (objParentNode.InnerXml.Contains("<gears>"))
             {
                 // Open the Gear XML file and locate the selected piece.
-                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
 
                 // Create Gear using whatever information we're given.
                 foreach (XmlNode objXmlChild in objParentNode.SelectNodes("gears/usegear"))
@@ -681,7 +681,7 @@ namespace Chummer.Backend.Equipment
                 _guiVehicleID = Guid.Parse(objNode["vehicleguid"].InnerText);
             }
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objCyberwareNode = MyXmlNode;
                 if (objCyberwareNode != null)
@@ -695,7 +695,7 @@ namespace Chummer.Backend.Equipment
                 {
                     strXmlFile = "bioware.xml";
                 }
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(strXmlFile);
+                XmlDocument objXmlDocument = XmlManager.Load(strXmlFile);
                 objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objCyberwareNode?.Attributes?["translate"]?.InnerText;
             }
@@ -759,7 +759,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) / 3;
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility.ToString() + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength.ToString() + ", " + LanguageManager.Instance.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
+                objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility.ToString() + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength.ToString() + ", " + LanguageManager.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
             }
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("ess", CalculatedESS().ToString(GlobalOptions.CultureInfo));
@@ -990,14 +990,14 @@ namespace Chummer.Backend.Equipment
 
                 if (_intRating > 0 && _sourceID != Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196"))
                 {
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 }
 
                 if (!string.IsNullOrEmpty(_strLocation))
                 {
-                    LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                    LanguageManager.Load(GlobalOptions.Language, this);
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strLocation) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strLocation) + ")";
                 }
                 return strReturn;
             }
@@ -1524,11 +1524,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
                 {
-                    return XmlManager.Instance.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                    return XmlManager.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
                 }
                 else
                 {
-                    return XmlManager.Instance.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                    return XmlManager.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
                 }
             }
         }
@@ -1542,15 +1542,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                XmlDocument objXmlDocument = new XmlDocument();
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 // If the Avail starts with "+", return the base string and don't try to calculate anything since we're looking at a child component.
                 if (_strAvail.StartsWith("+"))
                 {
                     if (_strAvail.Contains("Rating") || _strAvail.Contains("MinRating"))
                     {
                         // If the availability is determined by the Rating, evaluate the expression.
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                         string strAvail = string.Empty;
                         string strAvailExpr = _strAvail.Substring(1, _strAvail.Length - 1);
 
@@ -1587,9 +1586,6 @@ namespace Chummer.Backend.Equipment
                 if (strBaseAvail.Contains("Rating"))
                 {
                     // If the availability is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     string strAvail = string.Empty;
                     string strAvailExpr = strBaseAvail;
 
@@ -1641,9 +1637,6 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // If the availability is determined by the Rating, evaluate the expression.
-                            XmlDocument objXmlDocument = new XmlDocument();
-                            XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                             string strChildAvailExpr = strChildAvail;
 
                             // Remove the "+" since the expression can't be evaluated if it starts with this.
@@ -1693,8 +1686,8 @@ namespace Chummer.Backend.Equipment
                 strReturn = intAvail.ToString() + strAvailText;
 
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 return strReturn;
             }

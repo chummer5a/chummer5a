@@ -22,7 +22,7 @@ namespace Chummer.Backend.Equipment
             string strXmlFile = "cyberware.xml";
             if (objSource == Improvement.ImprovementSource.Bioware)
                 strXmlFile = "bioware.xml";
-            XmlDocument objXMlDocument = XmlManager.Instance.Load(strXmlFile);
+            XmlDocument objXMlDocument = XmlManager.Load(strXmlFile);
 
             string strBookFilter = string.Empty;
             if (objCharacterOptions != null)

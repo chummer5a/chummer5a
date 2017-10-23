@@ -79,7 +79,7 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
@@ -88,7 +88,7 @@ namespace Chummer.Backend.Equipment
                     objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
                 objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
@@ -120,7 +120,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
@@ -160,7 +160,7 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode.InnerXml.Contains("<selectmodsfromcategory>") && !blnSkipSelectForms)
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlCategoryNode in objXmlArmorNode["selectmodsfromcategory"])
@@ -229,7 +229,7 @@ namespace Chummer.Backend.Equipment
             // Add any Armor Mods that come with the Armor.
             if (objXmlArmorNode["mods"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
+                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml");
 
                 foreach (XmlNode objXmlArmorMod in objXmlArmorNode.SelectNodes("mods/name"))
                 {
@@ -292,7 +292,7 @@ namespace Chummer.Backend.Equipment
             // Add any Gear that comes with the Armor.
             if (objXmlArmorNode["gears"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode objXmlArmorGear in objXmlArmorNode.SelectNodes("gears/usegear"))
                 {
                     intRating = 0;
@@ -331,7 +331,7 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
@@ -503,7 +503,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
@@ -512,7 +512,7 @@ namespace Chummer.Backend.Equipment
                     objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                XmlDocument objXmlArmorDocument = XmlManager.Instance.Load("armor.xml");
+                XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml");
                 objArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
             }
@@ -559,7 +559,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("location", _strLocation);
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -1215,8 +1215,8 @@ namespace Chummer.Backend.Equipment
                 string strReturn = intAvail.ToString() + strAvailText;
 
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 return strReturn;
             }
@@ -1417,9 +1417,9 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(_strArmorName))
                     strReturn += " (\"" + _strArmorName + "\")";
                 if (_intRating > 0)
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
                 return strReturn;
             }
         }
@@ -1443,7 +1443,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Instance.Load("armor.xml")?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
+                return XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
             }
         }
         #endregion

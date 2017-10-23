@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,18 +37,18 @@ namespace Chummer
         public frmSelectLimit()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Build the list of Limits.
             ListItem objPhysical = new ListItem();
             ListItem objMental = new ListItem();
             ListItem objSocial = new ListItem();
             objPhysical.Value = "Physical";
-            objPhysical.Name = LanguageManager.Instance.GetString("Node_Physical");
+            objPhysical.Name = LanguageManager.GetString("Node_Physical");
             objMental.Value = "Mental";
-            objMental.Name = LanguageManager.Instance.GetString("Node_Mental");
+            objMental.Name = LanguageManager.GetString("Node_Mental");
             objSocial.Value = "Social";
-            objSocial.Name = LanguageManager.Instance.GetString("Node_Social");
+            objSocial.Name = LanguageManager.GetString("Node_Social");
             _lstLimits.Add(objPhysical);
             _lstLimits.Add(objMental);
             _lstLimits.Add(objSocial);
@@ -141,7 +141,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = strLimit;
-                objItem.Name = LanguageManager.Instance.GetString("String_Limit" + strLimit + "Short");
+                objItem.Name = LanguageManager.GetString("String_Limit" + strLimit + "Short");
                 _lstLimits.Add(objItem);
             }
             cboLimit.BeginUpdate();

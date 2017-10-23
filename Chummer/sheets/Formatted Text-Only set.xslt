@@ -259,6 +259,12 @@
             (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total"/>)
                     </xsl:if>
                 </xsl:if>
+              <xsl:if test="depenabled = 'True'">
+                <xsl:value-of select="$lang.DEP"/>: <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base"/>
+                <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
+                  (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total"/>)
+                </xsl:if>
+              </xsl:if>
 
                 <br/>
                 <br/>== <xsl:value-of select="$lang.DerivedAttributes"/>
@@ -276,7 +282,7 @@
 
                 <br/>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="concat($lang.PhysicalTrack1,' ',$lang.PhysicalTrack2,': ',physicalcm)"/>
+          <xsl:with-param name="string" select="concat($lang.PhysicalTrack,': ',physicalcm)"/>
           <xsl:with-param name="length" select="32"/>
         </xsl:call-template>
         <xsl:call-template name="fnx-pad-r">
@@ -287,7 +293,7 @@
 
                 <br/>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="concat($lang.StunTrack1,' ',$lang.StunTrack2,': ',stuncm)"/>
+          <xsl:with-param name="string" select="concat($lang.StunTrack,': ',stuncm)"/>
           <xsl:with-param name="length" select="32"/>
         </xsl:call-template>
         <xsl:call-template name="fnx-pad-r">

@@ -59,6 +59,8 @@
   <xsl:variable name="lang.Data"      select="'Daten'"/>
   <xsl:variable name="lang.Date"      select="'Datum'"/>
   <xsl:variable name="lang.Dead"      select="'Tot&#160;&#160;'"/>
+  <xsl:variable name="lang.Depth"  select="'Depth'"/>
+  <xsl:variable name="lang.DEP"  select="'DEP'"/>
   <xsl:variable name="lang.Description"  select="'Beschreibung'"/>
   <xsl:variable name="lang.Detection"    select="'Wahrnehmung'"/>
   <xsl:variable name="lang.Device"    select="'Gerät'"/>
@@ -250,6 +252,7 @@
   <xsl:variable name="lang.MatrixAR"      select="'Matrix AR'"/>
   <xsl:variable name="lang.MatrixCold"    select="'Matrix Kalt'"/>
   <xsl:variable name="lang.MatrixHot"      select="'Matrix Heiß'"/>
+  <xsl:variable name="lang.MatrixTrack"    select="'Matrix Schadensleiste'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Nahkampfwaffen'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Andere Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Seitenumbruch: '"/>

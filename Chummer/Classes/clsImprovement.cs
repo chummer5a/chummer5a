@@ -999,7 +999,7 @@ namespace Chummer
                     {
                     // Display the Select Text window and record the value that was entered.
                     frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+                    frmPickText.Description = LanguageManager.GetString("String_Improvement_SelectText")
                         .Replace("{0}", strFriendlyName);
                     frmPickText.ShowDialog();
 

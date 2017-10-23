@@ -141,6 +141,12 @@
                     <xsl:if test="attributes/attribute[name_english = 'RES']/total != attributes/attribute[name_english = 'RES']/base">
                       (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total" />)
                     </xsl:if>
+                    <xsl:if test="depenabled = 'True'">
+                      <td width="9%" align="center">
+                        <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base" />
+                        <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
+                          (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total" />)
+                        </xsl:if>
                   </td>
                   </xsl:if>
                   <td width="9%" align="center">
@@ -518,6 +524,7 @@
                 <xsl:call-template name="fnx-fmt-nmbr">
                   <xsl:with-param name="nmbr" select="nuyen"/>
                 </xsl:call-template>
+                <xsl:value-of select="$lang.NuyenSymbol"/>
               </p>
 
               <xsl:if test="notes != ''">

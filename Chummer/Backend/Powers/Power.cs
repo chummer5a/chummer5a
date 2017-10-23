@@ -160,7 +160,7 @@ namespace Chummer
                 string strPowerName = Name;
                 if (strPowerName.Contains("("))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                 if (objXmlPower != null) _sourceID = Guid.Parse(objXmlPower["id"].InnerText);
             }
@@ -174,7 +174,7 @@ namespace Chummer
                 string strPowerName = Name;
                 if (strPowerName.Contains("("))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                 if (objXmlPower?["adeptway"] != null)
                     _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
@@ -226,7 +226,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort);
-            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(Extra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString());
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString());
             objWriter.WriteElementString("rating", LevelsEnabled ? Rating.ToString() : "0");
@@ -287,7 +287,7 @@ namespace Chummer
                     strReturn = _strDisplayName;
                 }
                 // Get the translated name if applicable.
-                else if (GlobalOptions.Instance.Language != "en-us")
+                else if (GlobalOptions.Language != "en-us")
                 {
                     _strDisplayName = MyXmlNode?["translate"]?.InnerText ?? strReturn;
                     strReturn = _strDisplayName;
@@ -307,13 +307,13 @@ namespace Chummer
                 string strReturn = DisplayNameShort;
 
                 if (string.IsNullOrEmpty(Extra)) return strReturn;
-                LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                LanguageManager.Load(GlobalOptions.Language, this);
                 // Attempt to retrieve the CharacterAttribute name.
-                string strTranslateName = LanguageManager.Instance.GetString("String_Attribute" + Extra + "Short", false);
+                string strTranslateName = LanguageManager.GetString("String_Attribute" + Extra + "Short", false);
                 if (!string.IsNullOrEmpty(strTranslateName))
                     strReturn += " (" + strTranslateName + ")";
                 else
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(Extra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(Extra) + ")";
 
                 return strReturn;
             }
@@ -517,7 +517,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us")
+                if (GlobalOptions.Language == "en-us")
                     return _strPage;
                 return MyXmlNode?["altpage"]?.InnerText ?? _strPage;
             }
@@ -624,22 +624,22 @@ namespace Chummer
                 switch (_strAction)
                 {
                     case "Auto":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionAutomatic");
+                        strReturn = LanguageManager.GetString("String_ActionAutomatic");
                         break;
                     case "Free":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionFree");
+                        strReturn = LanguageManager.GetString("String_ActionFree");
                         break;
                     case "Simple":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionSimple");
+                        strReturn = LanguageManager.GetString("String_ActionSimple");
                         break;
                     case "Complex":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionComplex");
+                        strReturn = LanguageManager.GetString("String_ActionComplex");
                         break;
                     case "Interrupt":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionInterrupt");
+                        strReturn = LanguageManager.GetString("String_ActionInterrupt");
                         break;
                     case "Special":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationSpecial");
+                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
                         break;
                 }
 
@@ -704,7 +704,7 @@ namespace Chummer
                         {
                             if (objNode.Attributes?["extra"] != null)
                             {
-                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
                                 if (blnReturn)
                                     break;
                             }
@@ -755,7 +755,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+                return XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
             }
         }
 

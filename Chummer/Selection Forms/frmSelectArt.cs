@@ -39,12 +39,12 @@ namespace Chummer
         private string _strLocalName = string.Empty;
         private readonly Character _objCharacter;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
-        private readonly XmlDocument _objMetamagicDocument = new XmlDocument();
-        private readonly XmlDocument _objSpellDocument = new XmlDocument();
-        private readonly XmlDocument _objPowerDocument = new XmlDocument();
-        private readonly XmlDocument _objQualityDocument = new XmlDocument();
+        private readonly XmlDocument _objMetamagicDocument = null;
+        private readonly XmlDocument _objSpellDocument = null;
+        private readonly XmlDocument _objPowerDocument = null;
+        private readonly XmlDocument _objQualityDocument = null;
 
         public enum Mode
         {
@@ -54,16 +54,29 @@ namespace Chummer
             Ritual = 3,
         }
 
-        public frmSelectArt(Character objCharacter)
+        public frmSelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
-            _objMetamagicDocument = XmlManager.Instance.Load("metamagic.xml");
-            _objSpellDocument = XmlManager.Instance.Load("spells.xml");
-            _objPowerDocument = XmlManager.Instance.Load("powers.xml");
-            _objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            _objMetamagicDocument = XmlManager.Load("metamagic.xml");
+            _objSpellDocument = XmlManager.Load("spells.xml");
+            _objPowerDocument = XmlManager.Load("powers.xml");
+            _objQualityDocument = XmlManager.Load("qualities.xml");
+
+            // Load the Metamagic information.
+            WindowMode = objWindowMode;
+            _objXmlDocument = _objSpellDocument;
+            switch (_objMode)
+            {
+                case Mode.Art:
+                    _objXmlDocument = _objMetamagicDocument;
+                    break;
+                case Mode.Enhancement:
+                    _objXmlDocument = _objPowerDocument;
+                    break;
+            }
         }
 
         private void frmSelectArt_Load(object sender, EventArgs e)
@@ -73,23 +86,23 @@ namespace Chummer
             switch (_objMode)
             {
                 case Mode.Enhancement:
-                    _strLocalName = LanguageManager.Instance.GetString("String_Enhancement");
+                    _strLocalName = LanguageManager.GetString("String_Enhancement");
                     break;
                 case Mode.Enchantment:
-                    _strLocalName = LanguageManager.Instance.GetString("String_Enchantment");
+                    _strLocalName = LanguageManager.GetString("String_Enchantment");
                     break;
                 case Mode.Ritual:
-                    _strLocalName = LanguageManager.Instance.GetString("String_Ritual");
+                    _strLocalName = LanguageManager.GetString("String_Ritual");
                     break;
                 case Mode.Art:
-                    _strLocalName = LanguageManager.Instance.GetString("String_Art");
+                    _strLocalName = LanguageManager.GetString("String_Art");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
             
-            Text = LanguageManager.Instance.GetString("Title_SelectGeneric").Replace("{0}", _strLocalName);
-            chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", _strLocalName);
+            Text = LanguageManager.GetString("Title_SelectGeneric").Replace("{0}", _strLocalName);
+            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", _strLocalName);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -112,7 +125,7 @@ namespace Chummer
             string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
             lblSource.Text = $"{strBook} {strBook}";
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -198,20 +211,12 @@ namespace Chummer
             switch (_objMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
                     break;
                 case Mode.Enhancement:
-                    _objXmlDocument = XmlManager.Instance.Load("powers.xml");
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
                     break;
-                case Mode.Enchantment:
-                case Mode.Ritual:
-                    _objXmlDocument = XmlManager.Instance.Load("spells.xml");
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[category = '" + _strCategory + "' and (" + _objCharacter.Options.BookXPath() + ")]");
-                    break;
                 default:
-                    _objXmlDocument = XmlManager.Instance.Load("spells.xml");
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[category = '" + _strCategory + "' and (" + _objCharacter.Options.BookXPath() + ")]");
                     break;
             }

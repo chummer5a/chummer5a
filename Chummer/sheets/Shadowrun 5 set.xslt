@@ -189,7 +189,9 @@
                   <xsl:value-of select="$lang.Nuyen"/>:
                 </td>
                 <td width="10%">
-                  <xsl:value-of select="nuyen" /><xsl:value-of select="$lang.NuyenSymbol"/>
+                  <xsl:call-template name="fnx-fmt-nmbr">
+                    <xsl:with-param name="nmbr" select="nuyen"/>
+                  </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
                 </td>
               </tr>
               <tr>
@@ -439,6 +441,13 @@
                         <xsl:value-of select="attributes/attribute[name_english = 'RES']/base"/>
                         <xsl:if test="attributes/attribute[name_english = 'RES']/total != attributes/attribute[name_english = 'RES']/base">
                           (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total"/>)
+                        </xsl:if>
+                      </xsl:when>
+                      <xsl:when test="depenabled = 'True'">
+                        <xsl:value-of select="$lang.Depth"/>:
+                        <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base"/>
+                        <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
+                          (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total"/>)
                         </xsl:if>
                       </xsl:when>
                       <xsl:otherwise>

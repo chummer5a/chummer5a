@@ -1026,7 +1026,7 @@ namespace Chummer
         /// <param name="_objImprovementManager"></param>
         public decimal DeleteArmor(TreeView treArmor, TreeView treWeapons)
         {
-            if (!ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteArmor")))
+            if (!ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
                 return 0.0m;
 
             TreeNode objSelectedNode = treArmor.SelectedNode;
@@ -1170,7 +1170,7 @@ namespace Chummer
         public bool ConfirmDelete(string strMessage)
         {
             return !_objCharacter.Options.ConfirmDelete ||
-                   MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Delete"),
+                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
         #endregion
@@ -1542,11 +1542,11 @@ namespace Chummer
         public static void StaticOpenPDF(string strSource, Character objCharacter = null)
         {
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters))
+            if (string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters))
                 return;
 
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFAppPath))
+            if (string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
                 return;
 
             string[] strTemp = strSource.Split(' ');
@@ -1567,7 +1567,7 @@ namespace Chummer
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             Uri uriPath;
-            SourcebookInfo objBookInfo = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(
                 objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
             if (objBookInfo != null)
             {
@@ -1578,13 +1578,13 @@ namespace Chummer
             else
                 return;
 
-            string strParams = GlobalOptions.Instance.PDFParameters;
+            string strParams = GlobalOptions.PDFParameters;
             strParams = strParams.Replace("{page}", intPage.ToString());
             strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
             strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
-                FileName = GlobalOptions.Instance.PDFAppPath,
+                FileName = GlobalOptions.PDFAppPath,
                 Arguments = strParams
             };
             Process.Start(objProgress);

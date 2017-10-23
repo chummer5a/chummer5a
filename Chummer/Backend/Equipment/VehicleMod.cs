@@ -125,7 +125,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
@@ -140,7 +140,7 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlMod["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 
                 XmlNode objModNode = MyXmlNode;
@@ -150,7 +150,7 @@ namespace Chummer.Backend.Equipment
                     objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
                 objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                     _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
             }
@@ -281,7 +281,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objModNode = MyXmlNode;
                 if (objModNode != null)
@@ -290,7 +290,7 @@ namespace Chummer.Backend.Equipment
                     objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
                 objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                     _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
             }
@@ -884,8 +884,8 @@ namespace Chummer.Backend.Equipment
                 string strReturn = intAvail.ToString() + strAvailText;
 
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 return strReturn;
             }
@@ -1146,9 +1146,9 @@ namespace Chummer.Backend.Equipment
                 string strReturn = DisplayNameShort;
 
                 if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
                 if (_intRating > 0)
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 return strReturn;
             }
         }
@@ -1168,7 +1168,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Instance.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                return XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
             }
         }
         #endregion

@@ -201,7 +201,7 @@ namespace Chummer
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _intBP = Convert.ToInt32(frmPickNumber.SelectedValue);
@@ -233,7 +233,7 @@ namespace Chummer
             if(objXmlQuality["id"] != null)
                 _qualiyGuid = Guid.Parse(objXmlQuality["id"].InnerText);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objQualityNode = MyXmlNode;
                 if (objQualityNode != null)
@@ -246,7 +246,7 @@ namespace Chummer
             // Add Weapons if applicable.
             if (objXmlQuality.InnerXml.Contains("<addweapon>"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                 // More than one Weapon can be added, so loop through all occurrences.
                 if (objXmlWeaponDocument != null)
@@ -280,7 +280,7 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(_objCharacter);
                     if (objXmlNaturalWeapon["name"] != null)
                         objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+                    objWeapon.Category = LanguageManager.GetString("Tab_Critter");
                     objWeapon.WeaponType = "Melee";
                     if (objXmlNaturalWeapon["reach"] != null)
                         objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
@@ -431,7 +431,7 @@ namespace Chummer
             }
             objNode.TryGetField("id", Guid.TryParse, out _qualiyGuid);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objQualityNode = MyXmlNode;
                 if (objQualityNode != null)
@@ -459,12 +459,12 @@ namespace Chummer
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort);
                 objWriter.WriteElementString("name_english", Name + strRatingString);
-                objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra) + strRatingString + strSourceName);
+                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", _intBP.ToString());
                 string strQualityType = _objQualityType.ToString();
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
 
                     XmlNode objNode = objXmlDocument?.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
                         strQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strQualityType;
@@ -554,7 +554,7 @@ namespace Chummer
         {
             get
             {
-                return LanguageManager.Instance.TranslateExtra(_strSourceName);
+                return LanguageManager.TranslateExtra(_strSourceName);
             }
             set => _strSourceName = value;
         }
@@ -621,9 +621,9 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
-                    LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                    LanguageManager.Load(GlobalOptions.Language, this);
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
                 }
 
                 int intLevels = Levels;
@@ -774,7 +774,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                return XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
             }
         }
 
@@ -942,7 +942,7 @@ namespace Chummer
         /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
         public static XmlNode GetNodeOverrideable(string id)
         {
-            XmlDocument xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
+            XmlDocument xmlDocument = XmlManager.Load("lifemodules.xml");
             XmlNode node = xmlDocument.SelectSingleNode("//*[id = \"" + id + "\"]");
             return GetNodeOverrideable(node);
         }
@@ -1083,7 +1083,7 @@ namespace Chummer
             // Translate the Critter name if applicable.
             string strName = _strName;
             XmlNode objXmlCritterNode = MyXmlNode;
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText;
             }
@@ -1128,7 +1128,7 @@ namespace Chummer
 
                 //Dump skills, (optional)powers if present to output
 
-                XmlDocument objXmlPowersDocument = XmlManager.Instance.Load("spiritpowers.xml");
+                XmlDocument objXmlPowersDocument = XmlManager.Load("spiritpowers.xml");
                 if (objXmlCritterNode["powers"] != null)
                 {
                     //objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
@@ -1318,7 +1318,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml")?.SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
+                return XmlManager.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml")?.SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -1372,9 +1372,9 @@ namespace Chummer
         {
             objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
             _blnExtended = blnExtended;
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
                 XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
                 if (objSpellNode != null)
                 {
@@ -1517,9 +1517,9 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
                 XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
                 if (objSpellNode != null)
                 {
@@ -1540,9 +1540,9 @@ namespace Chummer
         {
             objWriter.WriteStartElement("spell");
             if (_blnLimited)
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("String_SpellLimited") + ")");
+                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.GetString("String_SpellLimited") + ")");
             else if (_blnAlchemical)
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.Instance.GetString("String_SpellAlchemical") + ")");
+                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.GetString("String_SpellAlchemical") + ")");
             else
                 objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", Name);
@@ -1558,7 +1558,7 @@ namespace Chummer
             objWriter.WriteElementString("dicepool", DicePool.ToString());
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -1614,98 +1614,98 @@ namespace Chummer
                     switch (strDescriptor.Trim())
                     {
                         case "Active":
-                            strReturn += LanguageManager.Instance.GetString("String_DescActive") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescActive") + ", ";
                             break;
                         case "Adept":
-                            strReturn += LanguageManager.Instance.GetString("String_DescAdept") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescAdept") + ", ";
                             break;
                         case "Alchemical Preparation":
-                            strReturn += LanguageManager.Instance.GetString("String_DescAlchemicalPreparation") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescAlchemicalPreparation") + ", ";
                             break;
                         case "Anchored":
-                            strReturn += LanguageManager.Instance.GetString("String_DescAnchored") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescAnchored") + ", ";
                             break;
                         case "Area":
-                            strReturn += LanguageManager.Instance.GetString("String_DescArea") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescArea") + ", ";
                             break;
                         case "Blood":
-                            strReturn += LanguageManager.Instance.GetString("String_DescBlood") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescBlood") + ", ";
                             break;
                         case "Contractual":
-                            strReturn += LanguageManager.Instance.GetString("String_DescContractual") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescContractual") + ", ";
                             break;
                         case "Direct":
-                            strReturn += LanguageManager.Instance.GetString("String_DescDirect") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescDirect") + ", ";
                             break;
                         case "Directional":
-                            strReturn += LanguageManager.Instance.GetString("String_DescDirectional") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescDirectional") + ", ";
                             break;
                         case "Elemental":
-                            strReturn += LanguageManager.Instance.GetString("String_DescElemental") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescElemental") + ", ";
                             break;
                         case "Environmental":
-                            strReturn += LanguageManager.Instance.GetString("String_DescEnvironmental") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescEnvironmental") + ", ";
                             break;
                         case "Geomancy":
-                            strReturn += LanguageManager.Instance.GetString("String_DescGeomancy") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescGeomancy") + ", ";
                             break;
                         case "Indirect":
-                            strReturn += LanguageManager.Instance.GetString("String_DescIndirect") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescIndirect") + ", ";
                             break;
                         case "Mana":
-                            strReturn += LanguageManager.Instance.GetString("String_DescMana") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescMana") + ", ";
                             break;
                         case "Material Link":
-                            strReturn += LanguageManager.Instance.GetString("String_DescMaterialLink") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescMaterialLink") + ", ";
                             break;
                         case "Mental":
-                            strReturn += LanguageManager.Instance.GetString("String_DescMental") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescMental") + ", ";
                             break;
                         case "Minion":
-                            strReturn += LanguageManager.Instance.GetString("String_DescMinion") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescMinion") + ", ";
                             break;
                         case "Multi-Sense":
-                            strReturn += LanguageManager.Instance.GetString("String_DescMultiSense") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescMultiSense") + ", ";
                             break;
                         case "Negative":
-                            strReturn += LanguageManager.Instance.GetString("String_DescNegative") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescNegative") + ", ";
                             break;
                         case "Obvious":
-                            strReturn += LanguageManager.Instance.GetString("String_DescObvious") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescObvious") + ", ";
                             break;
                         case "Organic Link":
-                            strReturn += LanguageManager.Instance.GetString("String_DescOrganicLink") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescOrganicLink") + ", ";
                             break;
                         case "Passive":
-                            strReturn += LanguageManager.Instance.GetString("String_DescPassive") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescPassive") + ", ";
                             break;
                         case "Physical":
-                            strReturn += LanguageManager.Instance.GetString("String_DescPhysical") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescPhysical") + ", ";
                             break;
                         case "Psychic":
-                            strReturn += LanguageManager.Instance.GetString("String_DescPsychic") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescPsychic") + ", ";
                             break;
                         case "Realistic":
-                            strReturn += LanguageManager.Instance.GetString("String_DescRealistic") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescRealistic") + ", ";
                             break;
                         case "Single-Sense":
-                            strReturn += LanguageManager.Instance.GetString("String_DescSingleSense") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescSingleSense") + ", ";
                             break;
                         case "Touch":
-                            strReturn += LanguageManager.Instance.GetString("String_DescTouch") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescTouch") + ", ";
                             break;
                         case "Spell":
-                            strReturn += LanguageManager.Instance.GetString("String_DescSpell") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescSpell") + ", ";
                             break;
                         case "Spotter":
-                            strReturn += LanguageManager.Instance.GetString("String_DescSpotter") + ", ";
+                            strReturn += LanguageManager.GetString("String_DescSpotter") + ", ";
                             break;
                     }
                 }
 
                 // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
                 if (_blnExtended && !blnExtendedFound)
-                    strReturn += LanguageManager.Instance.GetString("String_DescExtendedArea") + ", ";
+                    strReturn += LanguageManager.GetString("String_DescExtendedArea") + ", ";
 
                 // Remove the trailing comma.
                 if (!string.IsNullOrEmpty(strReturn))
@@ -1759,10 +1759,10 @@ namespace Chummer
                 switch (_strType)
                 {
                     case "M":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellTypeMana");
+                        strReturn = LanguageManager.GetString("String_SpellTypeMana");
                         break;
                     default:
-                        strReturn = LanguageManager.Instance.GetString("String_SpellTypePhysical");
+                        strReturn = LanguageManager.GetString("String_SpellTypePhysical");
                         break;
                 }
 
@@ -1778,12 +1778,12 @@ namespace Chummer
             get
             {
                 string strReturn = DV.Replace('/', '÷');
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_SpellForce"));
-                strReturn = strReturn.Replace("Overflow damage", LanguageManager.Instance.GetString("String_SpellOverflowDamage"));
-                strReturn = strReturn.Replace("Damage Value", LanguageManager.Instance.GetString("String_SpellDamageValue"));
-                strReturn = strReturn.Replace("Toxin DV", LanguageManager.Instance.GetString("String_SpellToxinDV"));
-                strReturn = strReturn.Replace("Disease DV", LanguageManager.Instance.GetString("String_SpellDiseaseDV"));
-                strReturn = strReturn.Replace("Radiation Power", LanguageManager.Instance.GetString("String_SpellRadiationPower"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_SpellForce"));
+                strReturn = strReturn.Replace("Overflow damage", LanguageManager.GetString("String_SpellOverflowDamage"));
+                strReturn = strReturn.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
+                strReturn = strReturn.Replace("Toxin DV", LanguageManager.GetString("String_SpellToxinDV"));
+                strReturn = strReturn.Replace("Disease DV", LanguageManager.GetString("String_SpellDiseaseDV"));
+                strReturn = strReturn.Replace("Radiation Power", LanguageManager.GetString("String_SpellRadiationPower"));
 
                 //if (_blnExtended)
                 //{
@@ -1817,7 +1817,7 @@ namespace Chummer
         {
             get
             {
-                string strTip = LanguageManager.Instance.GetString("Tip_SpellDrainBase");
+                string strTip = LanguageManager.GetString("Tip_SpellDrainBase");
                 int intMAG = _objCharacter.MAG.TotalValue;
 
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
@@ -1850,17 +1850,17 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
+                        strTip += "\n   " + LanguageManager.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
                     }
                     else
                     {
-                        strTip = LanguageManager.Instance.GetString("Tip_SpellDrainSeeDescription");
+                        strTip = LanguageManager.GetString("Tip_SpellDrainSeeDescription");
                         break;
                     }
                 }
                 if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category)))
                 {
-                    strTip += $"\n {LanguageManager.Instance.GetString("Label_Bonus")}";
+                    strTip += $"\n {LanguageManager.GetString("Label_Bonus")}";
                     strTip = _objCharacter.Improvements
                         .Where(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category))
                         .Aggregate(strTip, (current, imp) => current + $"\n {imp.ImprovedName} ({imp.Value:+0;-0;0})");
@@ -1887,12 +1887,12 @@ namespace Chummer
             get
             {
                 string strReturn = _strRange;
-                strReturn = strReturn.Replace("Self", LanguageManager.Instance.GetString("String_SpellRangeSelf"));
-                strReturn = strReturn.Replace("LOS", LanguageManager.Instance.GetString("String_SpellRangeLineOfSight"));
-                strReturn = strReturn.Replace("LOI", LanguageManager.Instance.GetString("String_SpellRangeLineOfInfluence"));
-                strReturn = strReturn.Replace("T", LanguageManager.Instance.GetString("String_SpellRangeTouch"));
-                strReturn = strReturn.Replace("(A)", "(" + LanguageManager.Instance.GetString("String_SpellRangeArea") + ")");
-                strReturn = strReturn.Replace("MAG", LanguageManager.Instance.GetString("String_AttributeMAGShort"));
+                strReturn = strReturn.Replace("Self", LanguageManager.GetString("String_SpellRangeSelf"));
+                strReturn = strReturn.Replace("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"));
+                strReturn = strReturn.Replace("LOI", LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
+                strReturn = strReturn.Replace("T", LanguageManager.GetString("String_SpellRangeTouch"));
+                strReturn = strReturn.Replace("(A)", "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
+                strReturn = strReturn.Replace("MAG", LanguageManager.GetString("String_AttributeMAGShort"));
 
                 return strReturn;
             }
@@ -1919,10 +1919,10 @@ namespace Chummer
                 switch (_strDamage)
                 {
                     case "P":
-                        strReturn = LanguageManager.Instance.GetString("String_DamagePhysical");
+                        strReturn = LanguageManager.GetString("String_DamagePhysical");
                         break;
                     case "S":
-                        strReturn = LanguageManager.Instance.GetString("String_DamageStun");
+                        strReturn = LanguageManager.GetString("String_DamageStun");
                         break;
                     default:
                         strReturn = string.Empty;
@@ -1954,13 +1954,13 @@ namespace Chummer
                 switch (_strDuration)
                 {
                     case "P":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationPermanent");
+                        strReturn = LanguageManager.GetString("String_SpellDurationPermanent");
                         break;
                     case "S":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationSustained");
+                        strReturn = LanguageManager.GetString("String_SpellDurationSustained");
                         break;
                     default:
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationInstant");
+                        strReturn = LanguageManager.GetString("String_SpellDurationInstant");
                         break;
                 }
 
@@ -2105,7 +2105,7 @@ namespace Chummer
                     strReturn = _strAltName;
 
                 if (_blnExtended)
-                    strReturn += ", " + LanguageManager.Instance.GetString("String_SpellExtended");
+                    strReturn += ", " + LanguageManager.GetString("String_SpellExtended");
 
                 return strReturn;
             }
@@ -2118,18 +2118,18 @@ namespace Chummer
         {
             get
             {
-                LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                LanguageManager.Load(GlobalOptions.Language, this);
 
                 string strReturn = DisplayNameShort;
 
                 if (_blnLimited)
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_SpellLimited") + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_SpellLimited") + ")";
                 if (_blnAlchemical)
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_SpellAlchemical") + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_SpellAlchemical") + ")";
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
                 }
                 return strReturn;
             }
@@ -2234,28 +2234,28 @@ namespace Chummer
                         strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
+                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
                     {
                         strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
+                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
                     {
                         strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
+                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Alchemy" && _blnAlchemical)
                     {
                         strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
+                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                 }
 
@@ -2272,7 +2272,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("spells.xml")?.SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
+                return XmlManager.Load("spells.xml")?.SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -2613,12 +2613,12 @@ namespace Chummer
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+            LanguageManager.Load(GlobalOptions.Language, null);
 
             if (_objCharacter.SubmersionGrade > 0)
-                objNode.Text = LanguageManager.Instance.GetString("Label_Echo") + " " + DisplayName;
+                objNode.Text = LanguageManager.GetString("Label_Echo") + " " + DisplayName;
             else
-                objNode.Text = LanguageManager.Instance.GetString("Label_Metamagic") + " " + DisplayName;
+                objNode.Text = LanguageManager.GetString("Label_Metamagic") + " " + DisplayName;
             objNode.Tag = _guiID.ToString();
         }
 
@@ -2727,7 +2727,7 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
+                if (GlobalOptions.Language == "en-us") return strReturn;
 
                 return MyXmlNode?["translate"]?.InnerText ?? strReturn;
             }
@@ -2773,7 +2773,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -2812,10 +2812,10 @@ namespace Chummer
             {
                 if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
                 {
-                    return XmlManager.Instance.Load("metamagic.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                    return XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
                 }
                 else
-                    return XmlManager.Instance.Load("echoes.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
+                    return XmlManager.Load("echoes.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -2869,7 +2869,7 @@ namespace Chummer
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
-            objNode.Text = LanguageManager.Instance.GetString("Label_Art") + " " + DisplayName;
+            objNode.Text = LanguageManager.GetString("Label_Art") + " " + DisplayName;
             objNode.Tag = _guiID.ToString();
         }
 
@@ -2973,7 +2973,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return _strName;
+                if (GlobalOptions.Language == "en-us") return _strName;
                 return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3018,7 +3018,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -3046,7 +3046,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("metamagic.xml")?.SelectSingleNode("/chummer/arts/art[name = \"" + Name + "\"]");
+                return XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/arts/art[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -3101,7 +3101,7 @@ namespace Chummer
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
-            objNode.Text = LanguageManager.Instance.GetString("Label_Enhancement") + " " + DisplayName;
+            objNode.Text = LanguageManager.GetString("Label_Enhancement") + " " + DisplayName;
             objNode.Tag = _guiID.ToString();
         }
 
@@ -3205,7 +3205,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return _strName;;
+                if (GlobalOptions.Language == "en-us") return _strName;;
                 return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3250,7 +3250,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -3287,7 +3287,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("powers.xml")?.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + Name + "\"]");
+                return XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -3332,7 +3332,7 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
             _strExtra = strExtra;
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objComplexFormNode = MyXmlNode;
                 if (objComplexFormNode != null)
@@ -3438,14 +3438,14 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                     strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     string strExtra = _strExtra;
-                    if (GlobalOptions.Instance.Language != "en-us")
-                        strExtra = LanguageManager.Instance.TranslateExtra(_strExtra);
+                    if (GlobalOptions.Language != "en-us")
+                        strExtra = LanguageManager.TranslateExtra(_strExtra);
                     strReturn += " (" + strExtra + ")";
                 }
                 return strReturn;
@@ -3509,7 +3509,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -3536,7 +3536,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("complexforms.xml")?.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]");
+                return XmlManager.Load("complexforms.xml")?.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -3575,7 +3575,7 @@ namespace Chummer
         public void Create(XmlNode objXmlProgramNode, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
             objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
-            _strRequiresProgram = LanguageManager.Instance.GetString("String_None");
+            _strRequiresProgram = LanguageManager.GetString("String_None");
             _boolCanDelete = boolCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -3583,7 +3583,7 @@ namespace Chummer
             _strExtra = strExtra;
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objProgramNode = MyXmlNode;
                 if (objProgramNode != null)
@@ -3646,8 +3646,8 @@ namespace Chummer
             objWriter.WriteStartElement("aiprogram");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", Name);
-            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.Instance.GetString("String_None"))
-                objWriter.WriteElementString("requiresprogram", LanguageManager.Instance.GetString("String_None"));
+            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None"))
+                objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None"));
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
@@ -3691,14 +3691,14 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                     strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     string strExtra = _strExtra;
-                    if (GlobalOptions.Instance.Language != "en-us")
-                        strExtra = LanguageManager.Instance.TranslateExtra(_strExtra);
+                    if (GlobalOptions.Language != "en-us")
+                        strExtra = LanguageManager.TranslateExtra(_strExtra);
                     strReturn += " (" + strExtra + ")";
                 }
                 return strReturn;
@@ -3716,7 +3716,7 @@ namespace Chummer
 
                 if (!string.IsNullOrWhiteSpace(_strExtra))
                 {
-                    strReturn += $" ({LanguageManager.Instance.TranslateExtra(_strExtra)})";
+                    strReturn += $" ({LanguageManager.TranslateExtra(_strExtra)})";
                 }
                 return strReturn;
             }
@@ -3742,8 +3742,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strExtra))
                     strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                XmlNode objNode = XmlManager.Instance.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
+                if (GlobalOptions.Language == "en-us") return strReturn;
+                XmlNode objNode = XmlManager.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
                 return objNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3775,7 +3775,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -3807,7 +3807,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+                return XmlManager.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -3951,7 +3951,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us")
+                if (GlobalOptions.Language == "en-us")
                     return _strName;
                 return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
@@ -3988,7 +3988,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -4040,7 +4040,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("martialarts.xml")?.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + Name + "\"]");
+                return XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -4160,7 +4160,7 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
+                if (GlobalOptions.Language == "en-us") return strReturn;
                 return MyXmlNode?.Attributes?["translate"]?.InnerText ?? strReturn;
             }
         }
@@ -4196,7 +4196,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("martialarts.xml")?.SelectSingleNode("/chummer/techniques/technique[name = \"" + Name + "\"]");
+                return XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/techniques/technique[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -4306,7 +4306,7 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["translate"] != null)
@@ -4350,7 +4350,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -4377,7 +4377,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("martialarts.xml")?.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
+                return XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -4734,7 +4734,7 @@ namespace Chummer
             else
                 objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
             objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
-            objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType.ToString()));
+            objWriter.WriteElementString("type", LanguageManager.GetString("String_" + _objContactType.ToString()));
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
             objWriter.WriteElementString("family", _blnFamily.ToString());
@@ -5083,7 +5083,7 @@ namespace Chummer
             objWriter.WriteStartElement("critterpower");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", DisplayType);
@@ -5148,14 +5148,14 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                     strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     string strExtra = _strExtra;
-                    if (GlobalOptions.Instance.Language != "en-us")
-                        strExtra = LanguageManager.Instance.TranslateExtra(_strExtra);
+                    if (GlobalOptions.Language != "en-us")
+                        strExtra = LanguageManager.TranslateExtra(_strExtra);
                     strReturn += " (" + strExtra + ")";
                 }
 
@@ -5173,9 +5173,9 @@ namespace Chummer
                 string strReturn = DisplayNameShort;
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
-                    LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                    LanguageManager.Load(GlobalOptions.Language, this);
                     // Attempt to retrieve the CharacterAttribute name.
-                        strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
+                        strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
                     }
 
                 return strReturn;
@@ -5209,7 +5209,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -5240,8 +5240,8 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return _strCategory;
-                XmlNode objNode = XmlManager.Instance.Load("critterpowers.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+                if (GlobalOptions.Language == "en-us") return _strCategory;
+                XmlNode objNode = XmlManager.Load("critterpowers.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 return objNode.Attributes?["translate"]?.InnerText ?? _strCategory;
             }
         }
@@ -5276,10 +5276,10 @@ namespace Chummer
                 switch (_strType)
                 {
                     case "M":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellTypeMana");
+                        strReturn = LanguageManager.GetString("String_SpellTypeMana");
                         break;
                     case "P":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellTypePhysical");
+                        strReturn = LanguageManager.GetString("String_SpellTypePhysical");
                         break;
                     default:
                         strReturn = string.Empty;
@@ -5311,19 +5311,19 @@ namespace Chummer
                 switch (_strAction)
                 {
                     case "Auto":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionAutomatic");
+                        strReturn = LanguageManager.GetString("String_ActionAutomatic");
                         break;
                     case "Free":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionFree");
+                        strReturn = LanguageManager.GetString("String_ActionFree");
                         break;
                     case "Simple":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionSimple");
+                        strReturn = LanguageManager.GetString("String_ActionSimple");
                         break;
                     case "Complex":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionComplex");
+                        strReturn = LanguageManager.GetString("String_ActionComplex");
                         break;
                     case "Special":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationSpecial");
+                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
                         break;
                 }
 
@@ -5348,13 +5348,13 @@ namespace Chummer
             get
             {
                 string strReturn = _strRange;
-                strReturn = strReturn.Replace("Self", LanguageManager.Instance.GetString("String_SpellRangeSelf"));
-                strReturn = strReturn.Replace("Special", LanguageManager.Instance.GetString("String_SpellDurationSpecial"));
-                strReturn = strReturn.Replace("LOS", LanguageManager.Instance.GetString("String_SpellRangeLineOfSight"));
-                strReturn = strReturn.Replace("LOI", LanguageManager.Instance.GetString("String_SpellRangeLineOfInfluence"));
-                strReturn = strReturn.Replace("T", LanguageManager.Instance.GetString("String_SpellRangeTouch"));
-                strReturn = strReturn.Replace("(A)", "(" + LanguageManager.Instance.GetString("String_SpellRangeArea") + ")");
-                strReturn = strReturn.Replace("MAG", LanguageManager.Instance.GetString("String_AttributeMAGShort"));
+                strReturn = strReturn.Replace("Self", LanguageManager.GetString("String_SpellRangeSelf"));
+                strReturn = strReturn.Replace("Special", LanguageManager.GetString("String_SpellDurationSpecial"));
+                strReturn = strReturn.Replace("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"));
+                strReturn = strReturn.Replace("LOI", LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
+                strReturn = strReturn.Replace("T", LanguageManager.GetString("String_SpellRangeTouch"));
+                strReturn = strReturn.Replace("(A)", "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
+                strReturn = strReturn.Replace("MAG", LanguageManager.GetString("String_AttributeMAGShort"));
 
                 return strReturn;
             }
@@ -5381,16 +5381,16 @@ namespace Chummer
                 switch (_strDuration)
                 {
                     case "Instant":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationInstantLong");
+                        strReturn = LanguageManager.GetString("String_SpellDurationInstantLong");
                         break;
                     case "Sustained":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationSustained");
+                        strReturn = LanguageManager.GetString("String_SpellDurationSustained");
                         break;
                     case "Always":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationAlways");
+                        strReturn = LanguageManager.GetString("String_SpellDurationAlways");
                         break;
                     case "Special":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationSpecial");
+                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
                         break;
                     default:
                         strReturn = _strDuration;
@@ -5441,7 +5441,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Instance.Load("critterpowers.xml")?.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+                return XmlManager.Load("critterpowers.xml")?.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
             }
         }
         #endregion
@@ -5605,33 +5605,33 @@ namespace Chummer
         {
             get
             {
-                LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                LanguageManager.Load(GlobalOptions.Language, this);
 
-                string strReturn = LanguageManager.Instance.GetString("String_Grade") + " " + _intGrade.ToString();
+                string strReturn = LanguageManager.GetString("String_Grade") + " " + _intGrade.ToString();
                 if (_blnGroup || _blnOrdeal)
                 {
                     strReturn += " (";
                     if (_blnGroup)
                     {
                         if (_blnTechnomancer)
-                            strReturn += LanguageManager.Instance.GetString("String_Network");
+                            strReturn += LanguageManager.GetString("String_Network");
                         else
-                            strReturn += LanguageManager.Instance.GetString("String_Group");
+                            strReturn += LanguageManager.GetString("String_Group");
                         if (_blnOrdeal || _blnSchooling)
                             strReturn += ", ";
                     }
                     if (_blnOrdeal)
                     {
                         if (_blnTechnomancer)
-                            strReturn += LanguageManager.Instance.GetString("String_Task");
+                            strReturn += LanguageManager.GetString("String_Task");
                         else
-                            strReturn += LanguageManager.Instance.GetString("String_Ordeal");
+                            strReturn += LanguageManager.GetString("String_Ordeal");
                         if (_blnSchooling)
                             strReturn += ", ";
                     }
                     if (_blnSchooling)
                     {
-                        strReturn += LanguageManager.Instance.GetString("String_Schooling");
+                        strReturn += LanguageManager.GetString("String_Schooling");
                     }
                     strReturn += ")";
                 }
@@ -5877,7 +5877,7 @@ namespace Chummer
         {
             get
             {
-                string strReturn = LanguageManager.Instance.GetString("String_WeekDisplay").Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
+                string strReturn = LanguageManager.GetString("String_WeekDisplay").Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
                 return strReturn;
             }
         }

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace Chummer
         static Log()
         {
             Stopwatch sw = Stopwatch.StartNew();
-            if (GlobalOptions.Instance.UseLogging)
+            if (GlobalOptions.UseLogging)
             {
                 //TODO: Add listner to UseLogging to be able to start it mid run
                 string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");

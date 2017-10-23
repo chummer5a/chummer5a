@@ -38,7 +38,7 @@ namespace Chummer
         private string _strCurrentWeaponName = string.Empty;
         private bool _blnAddAgain = false;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
         private int _intAccessoryMultiplier = 1;
         private bool _blnBlackMarketDiscount;
@@ -48,12 +48,14 @@ namespace Chummer
         public frmSelectWeaponAccessory(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Weapon information.
+            _objXmlDocument = XmlManager.Load("weapons.xml");
         }
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
@@ -77,9 +79,6 @@ namespace Chummer
         private void BuildAccessoryList()
         {
             List<ListItem> lstAccessories = new List<ListItem>();
-
-            // Load the Weapon information.
-            _objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
             XmlNode objXmlWeaponNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strCurrentWeaponName + "\"]");
 
@@ -546,7 +545,7 @@ namespace Chummer
             }
             else
                 lblAvail.Text = string.Empty;
-            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             if (!chkFreeItem.Checked)
             {
                 string strCost = "0";
@@ -607,7 +606,7 @@ namespace Chummer
             objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.

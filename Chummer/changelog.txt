@@ -160,6 +160,9 @@ Application Changes:
 - Fixed a crash when adding an item with over 1,000 capacity in a culture using a decimal comma. Fixes #1983.
 - Allowed for full localization of the updater, added a label to indicate whether the user is running the latest version of Chummer5 that is available on their chosen update channel (stable or nightly), and force-disabled the Download button if they are running what is the latest version of their chosen update channel (the button isn't disabled if they're running the latest nightly, but switched update channels to stable). Fixes #1977.
 - Fixed being unable to select underbarrel weapons for SelectWeapon bonuses (e.g. picking a weapon for Spare Clips).
+- Crash Dumper will no longer crash when it cannot connect to an upload service, and it will prompt the user to manually submit an issue to GitHub with the attached minidump.
+- Transformed the GlobalOptions, LanguageManager, and XmlManager classes into fully static classes. For users, this also produces a measurable performance increase and a decrease in the size of Chummer5's executable.
+- Fixed a bug related to selecting the default, blank entry in the Traditions dropdown combobox and then trying to add a spell.
 
 Data Changes:
 
@@ -272,6 +275,9 @@ Data Changes:
 - Fixed Satyr Legs replacing ground sprinting speeds with 2m/hit instead of adding +1m/hit.
 - Fixed Adiposis decreasing all movement speeds by 50% instead of overwriting ground walking, running, and sprinting speeds.
 - Fixed being able to select melee weapons for Speed Loader and Vindicator 200-round Belt, and fixed being unable to select a weapon for Weapon Focus (2050).
+- Character sheets will now properly display a character's Depth attribute if they have one.
+- If skill categories are displayed in a sheet belonging to the Shadowrun 5 sheet family, their names should now be localized.
+- The Fancy Blocks character sheet now uses localized strings wherever possible instead of hardcoded English ones.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

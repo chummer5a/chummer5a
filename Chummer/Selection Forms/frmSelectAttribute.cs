@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectAttribute()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
             ListItem objBOD = new ListItem();
@@ -45,23 +45,23 @@ namespace Chummer
             ListItem objWIL = new ListItem();
             ListItem objEDG = new ListItem();
             objBOD.Value = "BOD";
-            objBOD.Name = LanguageManager.Instance.GetString("String_AttributeBODShort");
+            objBOD.Name = LanguageManager.GetString("String_AttributeBODShort");
             objAGI.Value = "AGI";
-            objAGI.Name = LanguageManager.Instance.GetString("String_AttributeAGIShort");
+            objAGI.Name = LanguageManager.GetString("String_AttributeAGIShort");
             objREA.Value = "REA";
-            objREA.Name = LanguageManager.Instance.GetString("String_AttributeREAShort");
+            objREA.Name = LanguageManager.GetString("String_AttributeREAShort");
             objSTR.Value = "STR";
-            objSTR.Name = LanguageManager.Instance.GetString("String_AttributeSTRShort");
+            objSTR.Name = LanguageManager.GetString("String_AttributeSTRShort");
             objCHA.Value = "CHA";
-            objCHA.Name = LanguageManager.Instance.GetString("String_AttributeCHAShort");
+            objCHA.Name = LanguageManager.GetString("String_AttributeCHAShort");
             objINT.Value = "INT";
-            objINT.Name = LanguageManager.Instance.GetString("String_AttributeINTShort");
+            objINT.Name = LanguageManager.GetString("String_AttributeINTShort");
             objLOG.Value = "LOG";
-            objLOG.Name = LanguageManager.Instance.GetString("String_AttributeLOGShort");
+            objLOG.Name = LanguageManager.GetString("String_AttributeLOGShort");
             objWIL.Value = "WIL";
-            objWIL.Name = LanguageManager.Instance.GetString("String_AttributeWILShort");
+            objWIL.Name = LanguageManager.GetString("String_AttributeWILShort");
             objEDG.Value = "EDG";
-            objEDG.Name = LanguageManager.Instance.GetString("String_AttributeEDGShort");
+            objEDG.Name = LanguageManager.GetString("String_AttributeEDGShort");
             _lstAttributes.Add(objBOD);
             _lstAttributes.Add(objAGI);
             _lstAttributes.Add(objREA);
@@ -159,7 +159,7 @@ namespace Chummer
         {
             ListItem objMAG = new ListItem();
             objMAG.Value = "MAG";
-            objMAG.Name = LanguageManager.Instance.GetString("String_AttributeMAGShort");
+            objMAG.Name = LanguageManager.GetString("String_AttributeMAGShort");
             _lstAttributes.Add(objMAG);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -176,7 +176,7 @@ namespace Chummer
         {
             ListItem objRES = new ListItem();
             objRES.Value = "RES";
-            objRES.Name = LanguageManager.Instance.GetString("String_AttributeRESShort");
+            objRES.Name = LanguageManager.GetString("String_AttributeRESShort");
             _lstAttributes.Add(objRES);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -193,7 +193,7 @@ namespace Chummer
         {
             ListItem objDEP = new ListItem();
             objDEP.Value = "DEP";
-            objDEP.Name = LanguageManager.Instance.GetString("String_AttributeDEPShort");
+            objDEP.Name = LanguageManager.GetString("String_AttributeDEPShort");
             _lstAttributes.Add(objDEP);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -233,7 +233,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = strAttribute;
-                objItem.Name = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
+                objItem.Name = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
                 _lstAttributes.Add(objItem);
             }
             cboAttribute.BeginUpdate();

@@ -62,22 +62,13 @@ namespace Chummer
         #region Constructor and Instance
         static XmlManager()
         {
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+            LanguageManager.Load(GlobalOptions.Language, null);
             _lstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.Instance.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 _lstDataDirectories.Add(objCustomDataDirectory.Path);
             }
         }
-
-        XmlManager()
-        {
-        }
-
-        /// <summary>
-        /// Glboal XmlManager instance.
-        /// </summary>
-        public static XmlManager Instance { get; } = new XmlManager();
 
         #endregion
 
@@ -87,7 +78,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        public XmlDocument Load(string strFileName, bool blnLoadFile = false)
+        public static XmlDocument Load(string strFileName, bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
@@ -231,13 +222,13 @@ namespace Chummer
                 }
 
                 // Load the translation file for the current base data file if the selected language is not en-us.
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
-                    if (LanguageManager.Instance.DataDoc != null)
+                    if (LanguageManager.DataDoc != null)
                     {
-                        foreach (XmlNode objNode in LanguageManager.Instance.DataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]"))
+                        foreach (XmlNode objNode in LanguageManager.DataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]"))
                         {
                             foreach (XmlNode objType in objNode.ChildNodes)
                             {
@@ -372,7 +363,7 @@ namespace Chummer
                 // Cache the merged document and its relevant information.
                 objReference.FileDate = datDate;
                 objReference.FileName = strFileName;
-                if (GlobalOptions.Instance.LiveCustomData)
+                if (GlobalOptions.LiveCustomData)
                     objReference.XmlContent = objDoc.Clone() as XmlDocument;
                 else
                     objReference.XmlContent = objDoc;
@@ -382,14 +373,14 @@ namespace Chummer
                 // A new XmlDocument is created by loading the a copy of the cached one so that we don't stuff custom content into the cached copy
                 // (which we don't want and also results in multiple copies of each custom item).
                 // Pull the document from cache.
-                if (GlobalOptions.Instance.LiveCustomData)
+                if (GlobalOptions.LiveCustomData)
                     objDoc = objReference.XmlContent.Clone() as XmlDocument;
                 else
                     objDoc = objReference.XmlContent;
             }
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-            if (GlobalOptions.Instance.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
+            if (GlobalOptions.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
             {
                 XmlElement objDocElement = objDoc.DocumentElement;
                 strPath = Path.Combine(Application.StartupPath, "livecustomdata");
@@ -464,7 +455,7 @@ namespace Chummer
                     }
                     string duplicates = string.Join("\n", duplicatesList);
                     MessageBox.Show(
-                        LanguageManager.Instance.GetString("Message_DuplicateGuidWarning")
+                        LanguageManager.GetString("Message_DuplicateGuidWarning")
                             .Replace("{0}", i.ToString())
                             .Replace("{1}", strFileName)
                             .Replace("{2}", duplicates));
@@ -603,7 +594,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="lstBooks">List of books.</param>
-        public void Verify(string strLanguage, List<string> lstBooks)
+        public static void Verify(string strLanguage, List<string> lstBooks)
         {
             XmlDocument objLanguageDoc = new XmlDocument();
             string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");

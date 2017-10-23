@@ -30,19 +30,18 @@ namespace Chummer
 
         public string WeaponType { get; set; }
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectWeaponCategory()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objXmlDocument = XmlManager.Load("weapons.xml");
         }
 
         private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
         {
-            _objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-
             // Build a list of Weapon Categories found in the Weapons file.
             XmlNodeList objXmlCategoryList;
             List<ListItem> lstCategory = new List<ListItem>();

@@ -83,7 +83,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     Autosave_StopWatch.Restart();
                     return;
                 }
@@ -204,12 +204,12 @@ namespace Chummer
             lblStun.Text = intCMStun.ToString();
             string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
-                strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                          ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
             tipTooltip.SetToolTip(lblPhysical, strCM);
             strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
-                strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                          ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
             tipTooltip.SetToolTip(lblStun, strCM);
         }
@@ -225,9 +225,9 @@ namespace Chummer
         {
             // Armor Ratings.
             lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-            string strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
+            string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
             if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
-                strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+                strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
                                    (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
             tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
             if (lblCMArmor != null)
@@ -336,7 +336,7 @@ namespace Chummer
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Warning_NoLimitFound"));
+                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound"));
                 return;
             }
             frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier);

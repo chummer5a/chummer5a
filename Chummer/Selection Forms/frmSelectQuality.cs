@@ -38,7 +38,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private readonly Character _objCharacter;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         private List<ListItem> _lstCategory = new List<ListItem>();
 
@@ -48,10 +48,12 @@ namespace Chummer
         public frmSelectQuality(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             MoveControls();
+            // Load the Quality information.
+            _objXmlDocument = XmlManager.Load("qualities.xml");
         }
 
         private void frmSelectQuality_Load(object sender, EventArgs e)
@@ -61,9 +63,6 @@ namespace Chummer
                 if (objLabel.Text.StartsWith("["))
                     objLabel.Text = string.Empty;
             }
-
-            // Load the Quality information.
-            _objXmlDocument = XmlManager.Instance.Load("qualities.xml");
 
             // Populate the Quality Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -92,7 +91,7 @@ namespace Chummer
             if (_objCharacter.MetageneticLimit == 0)
                 chkNotMetagenetic.Checked = true;
 
-            lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+            lblBPLabel.Text = LanguageManager.GetString("Label_Karma");
             _blnLoading = false;
             BuildQualityList();
         }
@@ -157,7 +156,7 @@ namespace Chummer
                 strPage = objXmlQuality["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"]?.InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -307,8 +306,8 @@ namespace Chummer
         {
             if (_blnLoading) return;
             List<ListItem> lstQuality = new List<ListItem>();
-            XmlDocument objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
-            XmlDocument objXmlCrittersDocument = XmlManager.Instance.Load("critters.xml");
+            XmlDocument objXmlMetatypeDocument = XmlManager.Load("metatypes.xml");
+            XmlDocument objXmlCrittersDocument = XmlManager.Load("critters.xml");
             if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
@@ -375,7 +374,7 @@ namespace Chummer
 
                     if (blnQualityAllowed)
                     {
-                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlQuality["name"]?.InnerText;
@@ -455,7 +454,7 @@ namespace Chummer
                     }
                     if (blnQualityAllowed)
                     {
-                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+                        if (!chkLimitList.Checked || chkLimitList.Checked && SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlQuality["name"].InnerText;
@@ -505,7 +504,7 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
             _strSelectCategory = objNode["category"]?.InnerText;
 
-            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.Instance.GetString("String_Quality")))
+            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality")))
                 return;
             DialogResult = DialogResult.OK;
         }

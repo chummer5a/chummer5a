@@ -35,7 +35,7 @@ namespace Chummer
         private bool _blnAddAgain = false;
         private static string _strSelectCategory = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         private List<ListItem> _lstCategory = new List<ListItem>();
@@ -45,12 +45,14 @@ namespace Chummer
         public frmSelectVehicle(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Vehicle information.
+            _objXmlDocument = XmlManager.Load("vehicles.xml");
         }
 
         private void frmSelectVehicle_Load(object sender, EventArgs e)
@@ -63,9 +65,6 @@ namespace Chummer
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
                     _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
-
-            // Load the Vehicle information.
-            _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 
             // Populate the Vehicle Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -83,7 +82,7 @@ namespace Chummer
             {
                 ListItem objItem = new ListItem();
                 objItem.Value = "Show All";
-                objItem.Name = LanguageManager.Instance.GetString("String_ShowAll");
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -435,8 +434,8 @@ namespace Chummer
                     if (int.TryParse(strAvail, out intTmp))
                         strAvail = (intTmp + 4).ToString() + strSuffix;
                 }
-                lblVehicleAvail.Text = strAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"))
-                        .Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                lblVehicleAvail.Text = strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted"))
+                        .Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             }
             else
             {
@@ -477,7 +476,7 @@ namespace Chummer
                 strPage = objXmlVehicle["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         /// <summary>
@@ -496,7 +495,7 @@ namespace Chummer
                 decCost *= decCostModifier;
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), "F");
+                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.GetString("String_AvailForbidden"), "F");
                 _decUsedCost = decCost;
             }
 

@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _intStage = stage;
             MoveControls();
@@ -50,7 +50,7 @@ namespace Chummer
         {
             MoveControls();
 
-            _xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
+            _xmlDocument = XmlManager.Load("lifemodules.xml");
             String selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode stageNode = _xmlDocument.SelectSingleNode(selectString);
@@ -215,7 +215,7 @@ namespace Chummer
                     {
                         new ListItem()
                         {
-                            Name = LanguageManager.Instance.GetString("String_All"),
+                            Name = LanguageManager.GetString("String_All"),
                             Value = "0"
                         }
                     };

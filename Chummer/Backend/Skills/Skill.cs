@@ -90,8 +90,8 @@ namespace Chummer.Skills
                 objWriter.WriteElementString("name", DisplayName);
             else
                 objWriter.WriteElementString("name", objSkillAsKnowledgeSkill.WriteableName);
-            objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.Instance.GetString("String_None"));
-            objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.Instance.GetString("String_None"));
+            objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.GetString("String_None"));
+            objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None"));
             objWriter.WriteElementString("skillcategory", DisplayCategory);
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
             objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString());
@@ -144,7 +144,7 @@ namespace Chummer.Skills
             {
                 return null;
             }
-            XmlDocument skills = XmlManager.Instance.Load("skills.xml");
+            XmlDocument skills = XmlManager.Load("skills.xml");
             Skill skill = null;
             bool blnIsKnowledgeSkill = false;
             if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
@@ -244,12 +244,12 @@ namespace Chummer.Skills
             else
             {
                 XmlNode data =
-                    XmlManager.Instance.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{suid}']");
+                    XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{suid}']");
 
                 //Some stuff apparently have a guid of 0000-000... (only exotic?)
                 if (data == null)
                 {
-                    data = XmlManager.Instance.Load("skills.xml")
+                    data = XmlManager.Load("skills.xml")
                         .SelectSingleNode($"/chummer/skills/skill[name = '{n["name"]?.InnerText}']");
                 }
 
@@ -304,7 +304,7 @@ namespace Chummer.Skills
             }
             else
             {
-                XmlDocument document = XmlManager.Instance.Load("skills.xml");
+                XmlDocument document = XmlManager.Load("skills.xml");
                 XmlNode knoNode = null;
                 string category = n["category"]?.InnerText;
                 if (string.IsNullOrEmpty(category))
@@ -422,9 +422,9 @@ namespace Chummer.Skills
         {
             get
             {
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
-                    return LanguageManager.Instance.GetString($"String_Attribute{AttributeObject.Abbrev}Short");
+                    return LanguageManager.GetString($"String_Attribute{AttributeObject.Abbrev}Short");
                 }
                 else
                 {
@@ -598,11 +598,11 @@ namespace Chummer.Skills
                 StringBuilder s;
                 if (CyberwareRating() > TotalBaseRating)
                 {
-                    s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({CyberwareRating()})");
+                    s = new StringBuilder($"{LanguageManager.GetString("Tip_Skill_SkillsoftRating")} ({CyberwareRating()})");
                 }
                 else
                 {
-                    s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillRating")} ({Rating}");
+                    s = new StringBuilder($"{LanguageManager.GetString("Tip_Skill_SkillRating")} ({Rating}");
 
 
                     bool first = true;
@@ -638,7 +638,7 @@ namespace Chummer.Skills
                     }
                     else
                     {
-                        s.Append($" - {LanguageManager.Instance.GetString("Tip_Skill_Defaulting")} (1)");
+                        s.Append($" - {LanguageManager.GetString("Tip_Skill_Defaulting")} (1)");
                     }
 
                 }
@@ -656,7 +656,7 @@ namespace Chummer.Skills
                 int wound = WoundModifier;
                 if (wound != 0)
                 {
-                    s.Append(" - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound.ToString() + ")");
+                    s.Append(" - " + LanguageManager.GetString("Tip_Skill_Wounds") + " (" + wound.ToString() + ")");
                 }
 
                 if (AttributeObject.Abbrev == "STR" || AttributeObject.Abbrev == "AGI")
@@ -828,7 +828,7 @@ namespace Chummer.Skills
         {
             get
             {
-                return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost());
+                return string.Format(LanguageManager.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost());
             }
         }
 
@@ -836,7 +836,7 @@ namespace Chummer.Skills
         {
             get
             {
-                return string.Format(LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization"),
+                return string.Format(LanguageManager.GetString("Tip_Skill_AddSpecialization"),
                     IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization);
             }
         }
@@ -850,15 +850,15 @@ namespace Chummer.Skills
                 string middle = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SkillGroup))
                 {
-                    middle = $"{SkillGroup} {LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}\n";
+                    middle = $"{SkillGroup} {LanguageManager.GetString("String_ExpenseSkillGroup")}\n";
                 }
                 if (!String.IsNullOrEmpty(_strNotes))
                 {
                     _strNotes = CommonFunctions.WordWrap(_strNotes, 100);
-                    strReturn = LanguageManager.Instance.GetString("Label_Notes") + " " +_strNotes + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes") + " " +_strNotes + "\n\n";
                 }
 
-                strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.Instance.GetString("String_Page")} {Page}";
+                strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.GetString("String_Page")} {Page}";
 
                 return strReturn;
             }
@@ -968,7 +968,7 @@ namespace Chummer.Skills
                     //TODO this works with translate?
                     if (gear.Equipped && gear.Category == "Skillsofts" &&
                         (gear.Extra == Name ||
-                         gear.Extra == Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+                         gear.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked")))
                     {
                         return gear.Name == "Activesoft"
                             ? Math.Min(gear.Rating, skillWireRating)

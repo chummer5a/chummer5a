@@ -43,16 +43,17 @@ namespace Chummer
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         #region Control Events
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
@@ -60,7 +61,6 @@ namespace Chummer
             List<ListItem> lstSkills = new List<ListItem>();
             if (!_blnKnowledgeSkill)
             {
-                _objXmlDocument = XmlManager.Instance.Load("skills.xml");
                 // Build the list of non-Exotic Skills from the Skills file.
                 XmlNodeList objXmlSkillList;
                 if (!string.IsNullOrEmpty(_strForceSkill))
@@ -201,7 +201,6 @@ namespace Chummer
                 //TODO: This is less robust than it should be. Should be refactored to support the rest of the entries.
                 if (!string.IsNullOrWhiteSpace(_strLimitToSkill))
                 {
-                    _objXmlDocument = XmlManager.Instance.Load("skills.xml");
                     string strFilter = string.Empty;
                     string[] strValue = _strLimitToSkill.Split(',');
                     strFilter = strValue.Aggregate(strFilter, (current, strSkill) => current + "name = \"" + strSkill.Trim() + "\" or ");
@@ -250,7 +249,7 @@ namespace Chummer
             }
             if (lstSkills.Count <= 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", _strSourceName));
+                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }
@@ -338,7 +337,7 @@ namespace Chummer
         {
             set
             {
-                _strForceSkill = value.Replace(", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked"), string.Empty);
+                _strForceSkill = value.Replace(", " + LanguageManager.GetString("Label_SelectGear_Hacked"), string.Empty);
             }
         }
 

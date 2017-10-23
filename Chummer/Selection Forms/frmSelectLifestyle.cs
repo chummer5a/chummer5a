@@ -33,7 +33,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Standard;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         private bool _blnSkipRefresh = false;
 
@@ -41,10 +41,12 @@ namespace Chummer
         public frmSelectLifestyle(Lifestyle objLifestyle, Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             MoveControls();
+            // Load the Lifestyles information.
+            _objXmlDocument = XmlManager.Load("lifestyles.xml");
         }
 
         private void frmSelectLifestyle_Load(object sender, EventArgs e)
@@ -56,9 +58,6 @@ namespace Chummer
                 if (objLabel.Text.StartsWith("["))
                     objLabel.Text = string.Empty;
             }
-
-            // Load the Lifestyles information.
-            _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
             // Populate the Lifestyle ComboBoxes.
             List<ListItem> lstLifestyle = (from XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle")
@@ -94,7 +93,7 @@ namespace Chummer
                 if (nodMultiplier == null)
                 {
                     nodMultiplier = objXmlOption["multiplierbaseonly"];
-                    strBaseString = " " + LanguageManager.Instance.GetString("Label_Base");
+                    strBaseString = " " + LanguageManager.GetString("Label_Base");
                 }
                 nodOption.Tag = nodOption.Tag = objXmlOption["id"]?.InnerText;
                 if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
@@ -143,7 +142,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.Instance.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             AcceptForm();
@@ -195,7 +194,7 @@ namespace Chummer
             lblSource.Text = $"{strBook} {strPage}";
 
             tipTooltip.SetToolTip(lblSource,
-                _objCharacter.Options.LanguageBookLong(strBook) + " " + LanguageManager.Instance.GetString("String_Page") + " " +
+                _objCharacter.Options.LanguageBookLong(strBook) + " " + LanguageManager.GetString("String_Page") + " " +
                 strPage);
         }
 

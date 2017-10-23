@@ -18,9 +18,9 @@ namespace Chummer
         public frmCharacterRoster()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
-            GlobalOptions.Instance.MRUChanged += MruChanged;
+            GlobalOptions.MRUChanged += MruChanged;
             treCharacterList.ItemDrag += treCharacterList_ItemDrag;
             treCharacterList.DragEnter += treCharacterList_DragEnter;
             treCharacterList.DragDrop += treCharacterList_DragDrop;
@@ -40,13 +40,13 @@ namespace Chummer
 
         private void LoadCharacters()
         {
-            TreeNode objFavouriteNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_FavouriteCharacters")) {Tag = "Favourite"};
-            TreeNode objRecentNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_RecentCharacters")) {Tag = "Recent"};
-            TreeNode objWatchNode = new TreeNode(LanguageManager.Instance.GetString("Treenode_Roster_WatchFolder")) {Tag = "Watch"};
+            TreeNode objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) {Tag = "Favourite"};
+            TreeNode objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) {Tag = "Recent"};
+            TreeNode objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) {Tag = "Watch"};
             bool blnAddRecent = true;
             bool blnAddFavourite = true;
             bool blnAddWatch = true;
-            foreach (string strFile in GlobalOptions.Instance.ReadMRUList("stickymru").Where(File.Exists) )
+            foreach (string strFile in GlobalOptions.ReadMRUList("stickymru").Where(File.Exists) )
             {
                 if (blnAddFavourite)
                 {
@@ -57,7 +57,7 @@ namespace Chummer
                 CacheCharacter(strFile, objFavouriteNode);
             }
 
-            foreach (string strFile in GlobalOptions.Instance.ReadMRUList().Where(File.Exists))
+            foreach (string strFile in GlobalOptions.ReadMRUList().Where(File.Exists))
             {
                 if (blnAddRecent)
                 {
@@ -67,9 +67,9 @@ namespace Chummer
                 CacheCharacter(strFile, objRecentNode);
             }
 
-            if (!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath) && Directory.Exists(GlobalOptions.Instance.CharacterRosterPath))
+            if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
-                string[] objFiles = Directory.GetFiles(GlobalOptions.Instance.CharacterRosterPath);
+                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath);
                 //Make sure we're not loading a character that was already loaded by the MRU list.
                 if (objFiles.Length > 0)
                 {
@@ -198,11 +198,11 @@ namespace Chummer
             string strName = objCache.CharacterAlias;
             if (string.IsNullOrEmpty(strName))
             {
-                strName = string.IsNullOrEmpty(objCache.CharacterName) ? LanguageManager.Instance.GetString("String_UnnamedCharacter") : objCache.CharacterName;
+                strName = string.IsNullOrEmpty(objCache.CharacterName) ? LanguageManager.GetString("String_UnnamedCharacter") : objCache.CharacterName;
             }
-            string strBuildMethod = LanguageManager.Instance.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
+            string strBuildMethod = LanguageManager.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
             bool blnCreated = objCache.Created;
-            string strCreated = LanguageManager.Instance.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");
+            string strCreated = LanguageManager.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             return strReturn;
         }
@@ -307,7 +307,7 @@ namespace Chummer
             if (treCharacterList.SelectedNode.Level > 0)
             {
                 CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-                GlobalOptions.Instance.MainForm.LoadCharacter(objCache.FilePath);
+                GlobalOptions.MainForm.LoadCharacter(objCache.FilePath);
             }
         }
         private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
@@ -368,12 +368,12 @@ namespace Chummer
                     switch (nodDestinationNode.Tag.ToString())
                     {
                         case "Recent":
-                            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
-                            GlobalOptions.Instance.AddToMRUList(objCache.FilePath);
+                            GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru");
+                            GlobalOptions.AddToMRUList(objCache.FilePath);
                             break;
                         case "Favourite":
-                            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
-                            GlobalOptions.Instance.AddToMRUList(objCache.FilePath, "stickymru");
+                            GlobalOptions.RemoveFromMRUList(objCache.FilePath);
+                            GlobalOptions.AddToMRUList(objCache.FilePath, "stickymru");
                             break;
                         default:
                             return;
@@ -397,8 +397,8 @@ namespace Chummer
         private void RemoveSelected(TreeNode sender)
         {
             CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath);
-            GlobalOptions.Instance.RemoveFromMRUList(objCache.FilePath, "stickymru");
+            GlobalOptions.RemoveFromMRUList(objCache.FilePath);
+            GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru");
             sender.Remove();
         }
 

@@ -22,7 +22,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
         }
 
         public void MissingDatabindingsWorkaround()
@@ -119,13 +119,13 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
             {
-                new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortRating"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating"),
                     new PowerSorter((x, y) => y.TotalRating.CompareTo(x.TotalRating))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Power_SortAction"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction"),
                     new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
-                //new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+                //new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortCategory"),
                 //    new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
             };
 
@@ -136,21 +136,21 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingAboveZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
                     power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
                     power => power.Rating == 0)
             };
             //TODO: TRANSLATIONS
 
             ret.AddRange(
                 from XmlNode objNode 
-                in XmlManager.Instance.Load("powers.xml").SelectNodes("/chummer/categories/category")
+                in XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category")
                 let displayName = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
                 select new Tuple<string, Predicate<Power>>(
-                    $"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
+                    $"{LanguageManager.GetString("Label_Category")} {displayName}", 
                     power => power.Category == objNode.InnerText));
 
             return ret;
@@ -227,7 +227,7 @@ namespace Chummer.UI.Powers
             Power objPower = new Power(ObjCharacter);
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
 
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
             if (objPower.Create(objXmlPower))
@@ -244,7 +244,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
+            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
             ValidateVisibility();
         }
 

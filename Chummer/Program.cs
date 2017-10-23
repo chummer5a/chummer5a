@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ namespace Chummer
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 sw.TaskEnd("languagefreestartup");
-                LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+                LanguageManager.Load(GlobalOptions.Language, null);
                 // Make sure the default language has been loaded before attempting to open the Main Form.
 
 #if !DEBUG
@@ -93,7 +93,7 @@ namespace Chummer
 #endif
 
                 sw.TaskEnd("Startup");
-                if (LanguageManager.Instance.Loaded)
+                if (LanguageManager.Loaded)
                 {
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 

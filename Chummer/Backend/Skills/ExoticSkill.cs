@@ -16,7 +16,7 @@ namespace Chummer.Skills
 
         static ExoticSkill()
         {
-            XmlNodeList exotic = XmlManager.Instance.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
+            XmlNodeList exotic = XmlManager.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
 
             if (exotic != null)
             {

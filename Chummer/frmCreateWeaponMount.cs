@@ -32,7 +32,7 @@ namespace Chummer
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
         {
-            _xmlDoc = XmlManager.Instance.Load("vehicles.xml");
+            _xmlDoc = XmlManager.Load("vehicles.xml");
 
             // Populate the Armor Category list.
             XmlNodeList nodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount");

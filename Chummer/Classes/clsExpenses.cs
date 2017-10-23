@@ -318,7 +318,7 @@ namespace Chummer
         public ExpenseLogEntry()
         {
             _guiID = Guid.NewGuid();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+            LanguageManager.Load(GlobalOptions.Language, null);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace Chummer
         public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
         {
             if (blnRefund)
-                strReason += " (" + LanguageManager.Instance.GetString("String_Expense_Refund") + ")";
+                strReason += " (" + LanguageManager.GetString("String_Expense_Refund") + ")";
             _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
@@ -389,7 +389,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("date", _datDate.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Karma ? "N0" : "N2", GlobalOptions.CultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());
