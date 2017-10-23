@@ -313,7 +313,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -2515,7 +2515,6 @@
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="2/1/0">1/1/0</sprint>
           <powers>
-            <power select="Standard: x1/x4/+1m">Movement</power>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -2794,7 +2793,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Coloured Fur (Metahuman Form Only)">Unusual Hair</quality>
+              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
@@ -3145,7 +3144,7 @@
             </positive>
             <negative>
               <quality>Uneducated</quality>
-              <quality select="Body (Metahuman Form Only)">Unusual Hair</quality>
+              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -3410,6 +3409,7 @@
 			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
+			  <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
           </qualities>
           <bonus>
@@ -3963,39 +3963,39 @@
       <name>Shapeshifter: Canine</name>
       <karma>110</karma>
       <category>Shapeshifter</category>
-      <bodmin>4</bodmin>
-      <bodmax>9</bodmax>
-      <bodaug>13</bodaug>
+      <bodmin>1</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
       <agimin>1</agimin>
-      <agimax>4</agimax>
-      <agiaug>8</agiaug>
-      <reamin>1</reamin>
-      <reamax>6</reamax>
-      <reaaug>10</reaaug>
-      <strmin>5</strmin>
-      <strmax>10</strmax>
-      <straug>14</straug>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>2</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>1</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
       <chamin>1</chamin>
-      <chamax>6</chamax>
-      <chaaug>10</chaaug>
-      <intmin>1</intmin>
-      <intmax>6</intmax>
-      <intaug>10</intaug>
+      <chamax>5</chamax>
+      <chaaug>9</chaaug>
+      <intmin>2</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
       <logmin>1</logmin>
-      <logmax>6</logmax>
-      <logaug>10</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>6</wilmax>
-      <wilaug>10</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>20</iniaug>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
+      <wilmin>2</wilmin>
+      <wilmax>7</wilmax>
+      <wilaug>11</wilaug>
+      <inimin>4</inimin>
+      <inimax>14</inimax>
+      <iniaug>22</iniaug>
       <edgmin>1</edgmin>
-      <edgmax>6</edgmax>
-      <edgaug>6</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>1</magmin>
-      <magmax>5</magmax>
-      <magaug>5</magaug>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
       <resmin>1</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
@@ -4005,9 +4005,9 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <walk>1/1/0</walk>
-      <run>4/1/0</run>
-      <sprint>4/1/0</sprint>
+      <walk>2/1/0</walk>
+      <run>6/1/0</run>
+      <sprint>3/1/0</sprint>
       <source>RF</source>
       <page>105</page>
       <metavariants>
@@ -4056,9 +4056,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4066,7 +4066,7 @@
             <positive>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4080,7 +4080,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -4130,9 +4131,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4158,14 +4159,15 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
         </metavariant>
         <metavariant>
           <name>Elf</name>
-          <karma>105</karma>
+          <karma>115</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -4208,9 +4210,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4218,7 +4220,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4232,15 +4234,15 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
-          <bonus />
           <source>SR5</source>
           <page>50</page>
         </metavariant>
         <metavariant>
           <name>Dryad</name>
-          <karma>102</karma>
+          <karma>112</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -4283,20 +4285,20 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality>Symbiosis</quality>
+              <quality select="Metahuman Form Only">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4310,15 +4312,16 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
         </metavariant>
         <metavariant>
           <name>Nocturna</name>
-          <bodmin>1</bodmin>
           <karma>115</karma>
+		  <bodmin>1</bodmin>
           <bodmax>5</bodmax>
           <bodaug>9</bodaug>
           <agimin>3</agimin>
@@ -4360,9 +4363,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4371,12 +4374,12 @@
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Sunlight (Metahuman Form Only)">Allergy (Common, Mild)</quality>
+              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Coloured Fur (Metahuman Form Only)">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4390,19 +4393,19 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <qualities>
           </qualities>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
         <metavariant>
           <name>Xapiri Thëpë</name>
+		  <karma>113</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
-          <karma>113</karma>
           <bodaug>10</bodaug>
           <agimin>2</agimin>
           <agimax>7</agimax>
@@ -4413,9 +4416,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -4443,9 +4446,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <walk alt="2/1/0">2/1/0</walk>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4453,10 +4456,10 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Pollution (Metahuman Form Only)">Allergy (Common, Mild)</quality>
+              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4470,7 +4473,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -4520,8 +4524,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4531,7 +4535,7 @@
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4545,7 +4549,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <karma>125</karma>
           <source>RF</source>
@@ -4597,8 +4602,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4622,7 +4627,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -4674,8 +4680,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4684,7 +4690,7 @@
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
@@ -4701,7 +4707,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -4713,8 +4720,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -4737,9 +4744,9 @@
           <edgmin>1</edgmin>
           <edgmax>6</edgmax>
           <edgaug>6</edgaug>
-          <inimin>2</inimin>
-          <inimax>12</inimax>
-          <iniaug>20</iniaug>
+          <inimin>3</inimin>
+          <inimax>13</inimax>
+          <iniaug>21</iniaug>
           <magmin>1</magmin>
           <magmax>6</magmax>
           <magaug>6</magaug>
@@ -4753,8 +4760,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4762,13 +4769,13 @@
             <positive>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4782,7 +4789,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -4834,8 +4842,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4843,11 +4851,14 @@
             <positive>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+			<negative>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
+            </negative>
           </qualities>
           <bonus>
             <naturalweapon>
@@ -4860,16 +4871,10 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-          <qualities>
-            <positive>
-            </positive>
-            <negative>
-              <quality>Unusual Hair</quality>
-            </negative>
-          </qualities>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -4919,8 +4924,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -4928,7 +4933,7 @@
             <positive>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
@@ -4946,7 +4951,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -4998,8 +5004,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -5007,7 +5013,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5021,7 +5027,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -5030,9 +5037,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>120</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -5042,9 +5049,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -5073,17 +5080,18 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
+			  <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5099,7 +5107,6 @@
             </naturalweapon>
             <enabletab>critter</enabletab><initiativedice>1</initiativedice>
           </bonus>
-          <karma>115</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5149,17 +5156,16 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5173,9 +5179,9 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
-          <karma>8</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5225,17 +5231,16 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -5252,7 +5257,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <karma>4</karma>
           <source>RF</source>
@@ -5303,17 +5309,16 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">2/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
           </qualities>
@@ -5328,7 +5333,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <karma>130</karma>
           <source>RF</source>
@@ -5380,8 +5386,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -5389,9 +5395,8 @@
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5408,7 +5413,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -5459,8 +5465,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -5468,9 +5474,8 @@
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
@@ -5490,7 +5495,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5541,8 +5547,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -5550,9 +5556,8 @@
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5569,7 +5574,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5620,8 +5626,8 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -5629,9 +5635,8 @@
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Ultrasonic (Shapeshifter Form Only)">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5648,7 +5653,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5699,18 +5705,17 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
-          <run alt="6/1/0">4/1/0</run>
-          <sprint alt="3/1/0">1/1/0</sprint>
+          <run alt="4/1/0">6/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Ultrasonic (Shapeshifter Form Only)">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5727,7 +5732,8 @@
               <source>RF</source>
               <page>104</page>
             </naturalweapon>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5767,11 +5773,11 @@
       <inimax>12</inimax>
       <iniaug>20</iniaug>
       <edgmin>1</edgmin>
-      <edgmax>6</edgmax>
-      <edgaug>6</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>1</magmin>
-      <magmax>5</magmax>
-      <magaug>5</magaug>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
       <resmin>1</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
@@ -5832,9 +5838,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -5844,8 +5850,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
@@ -5894,9 +5904,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -5908,9 +5918,12 @@
             </negative>
           </qualities>
           <bonus>
-
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -5959,9 +5972,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -5972,8 +5985,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
@@ -6022,12 +6039,13 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+			  <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -6035,15 +6053,19 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
         <metavariant>
           <name>Nocturna</name>
           <bodmin>121</bodmin>
-          <karma>5</karma>
+          <karma>125</karma>
           <bodmax>5</bodmax>
           <bodaug>9</bodaug>
           <agimin>3</agimin>
@@ -6085,9 +6107,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6098,20 +6120,24 @@
               <quality>Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Coloured Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
         <metavariant>
           <name>Xapiri Thëpë</name>
+		  <karma>123</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
-          <karma>123</karma>
           <bodaug>10</bodaug>
           <agimin>2</agimin>
           <agimax>7</agimax>
@@ -6122,9 +6148,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -6152,9 +6178,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="4/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6162,14 +6188,16 @@
             </positive>
             <negative>
               <quality>Uneducated</quality>
-              <negative>
-                <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              </negative>
+              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -6217,9 +6245,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6232,8 +6260,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <karma>135</karma>
           <source>RF</source>
           <page>104</page>
@@ -6283,9 +6315,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6297,9 +6329,13 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
@@ -6348,13 +6384,17 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6374,8 +6414,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -6398,8 +6438,8 @@
           <edgmin>1</edgmin>
           <edgmax>6</edgmax>
           <edgaug>6</edgaug>
-          <inimin>2</inimin>
-          <inimax>12</inimax>
+          <inimin>3</inimin>
+          <inimax>13</inimax>
           <iniaug>20</iniaug>
           <magmin>1</magmin>
           <magmax>6</magmax>
@@ -6413,13 +6453,17 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6428,7 +6472,7 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
@@ -6480,11 +6524,12 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <qualities>
@@ -6547,9 +6592,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
@@ -6563,8 +6608,12 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -6613,9 +6662,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6626,17 +6675,21 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
         </metavariant>
         <metavariant>
           <name>Hobgoblin</name>
           <karma>130</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -6646,9 +6699,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -6676,23 +6729,26 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
-              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
-          <karma>5</karma>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -6741,9 +6797,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6755,8 +6811,12 @@
           </qualities>
           <karma>8</karma>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -6805,9 +6865,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -6818,10 +6878,13 @@
               <quality>Uneducated</quality>
             </negative>
           </qualities>
-          <karma>4</karma>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -6869,9 +6932,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
@@ -6884,8 +6947,12 @@
           </qualities>
           <karma>140</karma>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -6934,20 +7001,28 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">1/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
+			  <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
+			<negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>SR5</source>
           <page>50</page>
           <forms>
@@ -6998,9 +7073,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -7011,12 +7086,15 @@
               <quality>Uneducated</quality>
             </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -7065,9 +7143,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -7079,10 +7157,14 @@
           </qualities>
           <karma>12</karma>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -7131,9 +7213,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -7141,10 +7223,14 @@
             </positive>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -7193,9 +7279,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk alt="1/1/0">2/1/0</walk>
+          <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="2/1/0">1/1/0</sprint>
+          <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
@@ -7206,10 +7292,14 @@
             </negative>
           </qualities>
           <bonus>
-            <enabletab>critter</enabletab><initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+			<initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
+		  <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -7220,39 +7310,39 @@
       <name>Shapeshifter: Falconine</name>
       <karma>110</karma>
       <category>Shapeshifter</category>
-      <bodmin>4</bodmin>
-      <bodmax>9</bodmax>
-      <bodaug>13</bodaug>
-      <agimin>1</agimin>
-      <agimax>4</agimax>
-      <agiaug>8</agiaug>
-      <reamin>1</reamin>
-      <reamax>6</reamax>
-      <reaaug>10</reaaug>
-      <strmin>5</strmin>
-      <strmax>10</strmax>
-      <straug>14</straug>
-      <chamin>1</chamin>
-      <chamax>6</chamax>
-      <chaaug>10</chaaug>
-      <intmin>1</intmin>
-      <intmax>6</intmax>
-      <intaug>10</intaug>
+      <bodmin>1</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>2</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>3</reamin>
+      <reamax>8</reamax>
+      <reaaug>12</reaaug>
+      <strmin>1</strmin>
+      <strmax>4</strmax>
+      <straug>8</straug>
+      <chamin>2</chamin>
+      <chamax>7</chamax>
+      <chaaug>11</chaaug>
+      <intmin>2</intmin>
+      <intmax>7</intmax>
+      <intaug>11</intaug>
       <logmin>1</logmin>
-      <logmax>6</logmax>
-      <logaug>10</logaug>
+      <logmax>5</logmax>
+      <logaug>9</logaug>
       <wilmin>1</wilmin>
       <wilmax>6</wilmax>
       <wilaug>10</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>20</iniaug>
+      <inimin>5</inimin>
+      <inimax>15</inimax>
+      <iniaug>23</iniaug>
       <edgmin>1</edgmin>
-      <edgmax>6</edgmax>
-      <edgaug>6</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>1</magmin>
-      <magmax>5</magmax>
-      <magaug>5</magaug>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
       <resmin>1</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
@@ -7262,9 +7352,9 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <walk>1/1/0</walk>
-      <run>4/1/0</run>
-      <sprint>4/1/0</sprint>
+      <walk>1/1/2</walk>
+      <run>2/1/6</run>
+      <sprint>0.5/1/2</sprint>
       <source>RF</source>
       <page>105</page>
       <metavariants>
@@ -7315,7 +7405,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -7401,7 +7491,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -7444,7 +7534,7 @@
         </metavariant>
         <metavariant>
           <name>Elf</name>
-          <karma>105</karma>
+          <karma>115</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -7489,7 +7579,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -7531,7 +7621,7 @@
         </metavariant>
         <metavariant>
           <name>Dryad</name>
-          <karma>102</karma>
+          <karma>112</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -7576,7 +7666,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -7664,7 +7754,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -7678,7 +7768,7 @@
               <quality>Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Coloured Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -7723,9 +7813,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -7755,7 +7845,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -7842,7 +7932,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -8069,8 +8159,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -8093,9 +8183,9 @@
           <edgmin>1</edgmin>
           <edgmax>6</edgmax>
           <edgaug>6</edgaug>
-          <inimin>2</inimin>
-          <inimax>12</inimax>
-          <iniaug>20</iniaug>
+          <inimin>3</inimin>
+          <inimax>13</inimax>
+          <iniaug>21</iniaug>
           <magmin>1</magmin>
           <magmax>6</magmax>
           <magaug>6</magaug>
@@ -8110,7 +8200,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="1/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -8123,7 +8213,7 @@
             </positive>
             <negative>
               <quality>Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8241,9 +8331,7 @@
               <source>RF</source>
               <page>105</page>
             </naturalweapon>
-          </bonus>
-          <bonus>
-            <lifestylecost>20</lifestylecost>
+			<lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>90</page>
@@ -8295,7 +8383,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="1/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -8386,7 +8474,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -8429,9 +8517,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>120</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -8441,9 +8529,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -8473,13 +8561,14 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Fangs</quality>
+			  <quality select="Metahuman Form Only">Keen-Eared</quality>
               <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
@@ -8561,7 +8650,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -8648,7 +8737,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -8735,7 +8824,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">1/1/2</walk>
           <run alt="4/1/0">2/1/6</run>
-          <sprint alt="4/1/0">0.5/1/2</sprint>
+          <sprint alt="2/1/0">0.5/1/2</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -9558,7 +9647,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -10896,7 +10985,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12254,7 +12343,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -13584,7 +13673,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -14914,7 +15003,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -16244,7 +16333,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Coloured Fur">Unusual Hair</quality>
+              <quality select ="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -17684,7 +17773,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Coloured Fur (Metahuman Form Only)">Unusual Hair</quality>
+              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
