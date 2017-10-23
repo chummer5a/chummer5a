@@ -1494,9 +1494,57 @@
       <points>1</points>
       <levels>false</levels>
       <limit>1</limit>
+	  <includeinlimit>
+        <name>Power Swimming (Elf or Troll)</name>
+      </includeinlimit>
       <source>SSP</source>
       <page>24</page>
       <adeptway>0.5</adeptway>
+	  <bonus>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <val>200</val>
+		</sprintbonus>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <metatype>Elf</metatype>
+		  <metatype>Troll</metatype>
+		</oneof>
+	  </forbidden>
+    </power>
+	<power>
+      <id>639a2d7f-9018-4016-a61c-b7f83ebcd9b9</id>
+      <name>Power Swimming (Elf or Troll)</name>
+      <points>1</points>
+      <levels>false</levels>
+      <limit>1</limit>
+	  <includeinlimit>
+        <name>Power Swimming</name>
+      </includeinlimit>
+      <source>SSP</source>
+      <page>24</page>
+      <adeptway>0.5</adeptway>
+	  <bonus>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <val>400</val>
+		</sprintbonus>
+	  </bonus>
+	  <required>
+		<oneof>
+		  <metatype>Elf</metatype>
+		  <metatype>Troll</metatype>
+		</oneof>
+	  </required>
     </power>
     <power>
       <id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>

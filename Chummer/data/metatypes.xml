@@ -428,7 +428,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality removable="true">Celerity</quality>
             </positive>
           </qualities>
           <bonus />
@@ -674,7 +674,7 @@
           </bonus>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
+              <quality removable="true">Celerity</quality>
               <quality>Resistance to Pathogens/Toxins</quality>
               <quality>Thermographic Vision</quality>
             </positive>

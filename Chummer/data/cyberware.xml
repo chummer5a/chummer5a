@@ -848,6 +848,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -976,6 +981,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -1011,6 +1017,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1103,6 +1110,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1225,6 +1233,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -1260,6 +1269,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1352,6 +1362,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1549,7 +1560,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only with Gymnastics (Jumping) and Running (Sprinting)</condition>
+          <condition>Only for Gymnastics (Jumping) and Running (Sprinting)</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
@@ -2214,7 +2225,14 @@
           <name>Swimming</name>
           <bonus>1</bonus>
         </specificskill>
-		<swimpercent>50</swimpercent>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>50</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <percent>50</percent>
+		</sprintbonus>
 	  </pairbonus>
 	  <required>
         <parentdetails>
@@ -2733,6 +2751,14 @@
       </allowgear>
       <bonus>
         <selectside />
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>-50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <val>-1</val>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
@@ -2756,6 +2782,14 @@
       </allowgear>
       <bonus>
         <selectside />
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>-50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <val>-1</val>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
@@ -2779,6 +2813,14 @@
       </allowgear>
       <bonus>
         <selectside />
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>-50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <val>-1</val>
+		</runmultiplier>
       </bonus>
       <limbslot>arm</limbslot>
     </cyberware>
@@ -2977,6 +3019,10 @@
           <value>1</value>
           <condition>Only for Stealth group.</condition>
         </limitmodifier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
       </pairbonus>
 	  <required>
         <parentdetails>
@@ -2993,6 +3039,11 @@
           </OR>
         </parentdetails>
       </required>
+	  <forbidden>
+		<parentdetails>
+		  <name>Centaur Rear Leg</name>
+		</parentdetails>
+	  </forbidden>
     </cyberware>
     <cyberware>
       <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
@@ -3143,6 +3194,14 @@
           <value>-1</value>
           <condition>Only when in use</condition>
         </limitmodifier>
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <percent>50</percent>
+		</runmultiplier>
       </pairbonus>
 	  <required>
         <parentdetails>
@@ -3178,6 +3237,14 @@
           <value>-2</value>
 		  <condition>Only when in use</condition>
         </limitmodifier>
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</runmultiplier>
       </pairbonus>
 	  <required>
         <parentdetails>
@@ -3352,7 +3419,14 @@
       <source>CF</source>
       <page>90</page>
 	  <bonus>
-		<swimpercent>100</swimpercent>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</sprintbonus>
 	  </bonus>
 	  <required>
         <parentdetails>
@@ -3510,11 +3584,15 @@
       <source>CF</source>
       <page>87</page>
       <bonus>
-        <movementpercent>100</movementpercent>
+        <runmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <inheritattributes />
@@ -3590,11 +3668,6 @@
         <category>Cyber Implant Weapon</category>
         <category>Headware</category>
       </allowsubsystems>
-	  <subsystems>
-        <cyberware>
-          <name>Digigrade Legs</name>
-        </cyberware>
-      </subsystems>
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -3626,11 +3699,15 @@
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
       <bonus>
-        <movementpercent>100</movementpercent>
+        <runmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -3660,6 +3737,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>

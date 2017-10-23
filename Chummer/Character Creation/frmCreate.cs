@@ -14946,7 +14946,7 @@ namespace Chummer
                 }
                 catch (FormatException)
                 {
-                    lblGearCost.Text = $"{objGear.Cost:###,###,##0.##¥}";
+                    lblGearCost.Text = objGear.Cost + "¥";
                 }
                 lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objGear.Source);
@@ -15646,7 +15646,7 @@ namespace Chummer
             if (blnNullParent)
                 objNewGear.Parent = null;
 
-            if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0 && objSelectedGear != null)
+            if (treGear.SelectedNode != null && treGear.SelectedNode.Level > 0 && !blnNullParent)
             {
                 objNode.ContextMenuStrip = cmsGear;
                 treGear.SelectedNode.Nodes.Add(objNode);
@@ -21729,6 +21729,33 @@ namespace Chummer
                     strMessage += "\n" + LanguageManager.Instance.GetString("Checkbox_CreatePACKSKit_StartingNuyen") + ": " + intTemp.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
                     intReturn += intTemp;
                 }
+            }
+
+            int intContactPointsValue = _objCharacter.ContactPoints * _objOptions.KarmaContact;
+            if (intContactPointsValue != 0)
+            {
+                strMessage += "\n" + LanguageManager.Instance.GetString("String_Contacts") + ": " + intContactPointsValue.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                intReturn += intContactPointsValue;
+            }
+
+            int intKnowledgePointsValue = 0;
+            foreach (KnowledgeSkill objLoopKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+            {
+                int intLoopRating = objLoopKnowledgeSkill.Base;
+                if (intLoopRating > 0)
+                {
+                    intKnowledgePointsValue += _objCharacter.Options.KarmaNewKnowledgeSkill;
+                    intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) * _objCharacter.Options.KarmaImproveKnowledgeSkill;
+                    if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Where(x => x.Free).Count() * _objCharacter.Options.KarmaKnowledgeSpecialization;
+                    else if (!objLoopKnowledgeSkill.BuyWithKarma)
+                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count * _objCharacter.Options.KarmaKnowledgeSpecialization;
+                }
+            }
+            if (intKnowledgePointsValue != 0)
+            {
+                strMessage += "\n" + LanguageManager.Instance.GetString("Label_KnowledgeSkills") + ": " + intKnowledgePointsValue.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+                intReturn += intKnowledgePointsValue;
             }
 
             strMessage += "\n\n" + LanguageManager.Instance.GetString("String_Total") + ": " + intReturn.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");

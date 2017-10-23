@@ -10,6 +10,7 @@ using Chummer.Backend;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
+using Chummer.Backend.Extensions;
 // ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
@@ -3070,54 +3071,47 @@ namespace Chummer.Classes
                 "disablecyberwaregrade");
         }
 
-        // Check for Movement Percent.
-        public void movementmultiplier(XmlNode bonusNode)
+        // Check for increases to walk multiplier.
+        public void walkmultiplier(XmlNode bonusNode)
         {
-            Log.Info("movementmultiplier");
-            Log.Info("movementmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("walkmultiplier");
+            Log.Info("walkmultiplier = " + bonusNode.OuterXml.ToString());
+
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MovementMultiplier, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+            if (bonusNode["val"] != null)
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+            if (bonusNode["percent"] != null)
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["percent"].InnerText, _intRating));
         }
 
-        // Check for Movement Percent.
-        public void movementpercent(XmlNode bonusNode)
+        // Check for increases to run multiplier.
+        public void runmultiplier(XmlNode bonusNode)
         {
-            Log.Info("movementpercent");
-            Log.Info("movementpercent = " + bonusNode.OuterXml.ToString());
+            Log.Info("runmultiplier");
+            Log.Info("runmultiplier = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MovementPercent, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+            if (bonusNode["val"] != null)
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+            if (bonusNode["percent"] != null)
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["percent"].InnerText, _intRating));
         }
 
-        // Check for Swim Percent.
-        public void swimpercent(XmlNode bonusNode)
+        // Check for increases to distance sprinted per hit.
+        public void sprintbonus(XmlNode bonusNode)
         {
-            Log.Info("swimpercent");
-            Log.Info("swimpercent = " + bonusNode.OuterXml.ToString());
+            Log.Info("sprintbonus");
+            Log.Info("sprintbonus = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SwimPercent, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
-        }
-
-        // Check for Fly Percent.
-        public void flypercent(XmlNode bonusNode)
-        {
-            Log.Info("flypercent");
-            Log.Info("flypercent = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FlyPercent, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
-        }
-
-        // Check for Fly Speed.
-        public void flyspeed(XmlNode bonusNode)
-        {
-            Log.Info("flyspeed");
-            Log.Info("flyspeed = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FlySpeed, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+            if (bonusNode["val"] != null)
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+            if (bonusNode["percent"] != null)
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["percent"].InnerText, _intRating));
         }
 
         // Check for free Positive Qualities.
@@ -4181,17 +4175,15 @@ namespace Chummer.Classes
             }
             else
             {
-                string strExclude = string.Empty;
                 List <ListItem> lstWeapons = new List<ListItem>();
-                bool blnIncludeUnarmed = bonusNode.Attributes["excludecategory"]?.InnerText == "true";
-                strExclude = bonusNode.Attributes["excludecategory"]?.InnerText;
-                foreach (Weapon objWeapon in _objCharacter.Weapons)
+                bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"] != null && bonusNode.Attributes["includeunarmed"].InnerText != "no";
+                string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+                foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                 {
-                    bool blnAdd = !(!string.IsNullOrEmpty(strExclude) && objWeapon.WeaponType == strExclude || !blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack");
-                    if (blnAdd)
+                    if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
                         ListItem objItem = new ListItem();
-                        objItem.Value = objWeapon.Name;
+                        objItem.Value = objWeapon.InternalId;
                         objItem.Name = objWeapon.DisplayName;
                         lstWeapons.Add(objItem);
                     }
@@ -4221,7 +4213,7 @@ namespace Chummer.Classes
 
                 SelectedValue = frmPickItem.SelectedItem;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + frmPickItem.SelectedName + ")";
 
                 strSelectedValue = frmPickItem.SelectedItem;
                 Log.Info("_strSelectedValue = " + SelectedValue);
@@ -4635,24 +4627,36 @@ namespace Chummer.Classes
         {
             Log.Info("movementreplace");
             Log.Info("movementreplace = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
 
             Improvement.ImprovementType imp = Improvement.ImprovementType.WalkSpeed;
-            switch (bonusNode["speed"].InnerText.ToLower())
+            if (bonusNode["speed"] != null)
             {
-                case "walk":
-                    imp = Improvement.ImprovementType.WalkSpeed;
-                    break;
-                case "run":
-                    imp = Improvement.ImprovementType.RunSpeed;
-                    break;
-                case "sprint":
-                    imp = Improvement.ImprovementType.SprintSpeed;
-                    break;
+                switch (bonusNode["speed"].InnerText.ToLower())
+                {
+                    case "run":
+                        imp = Improvement.ImprovementType.RunSpeed;
+                        break;
+                    case "sprint":
+                        imp = Improvement.ImprovementType.SprintSpeed;
+                        break;
+                }
             }
 
-            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, imp, _strUnique,
-                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+            Log.Info("Calling CreateImprovement");
+            if (bonusNode["category"] != null)
+            {
+                CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, imp, _strUnique,
+                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+            }
+            else
+            {
+                CreateImprovement("Ground", _objImprovementSource, SourceName, imp, _strUnique,
+                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                CreateImprovement("Swim", _objImprovementSource, SourceName, imp, _strUnique,
+                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                CreateImprovement("Fly", _objImprovementSource, SourceName, imp, _strUnique,
+                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+            }
         }
         #endregion
     }

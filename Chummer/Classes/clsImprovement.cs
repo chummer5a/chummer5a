@@ -94,7 +94,6 @@ namespace Chummer
             DisableCyberwareGrade,
             ConditionMonitor,
             UnarmedDVPhysical,
-            MovementPercent,
             Adapsin,
             FreePositiveQualities,
             FreeNegativeQualities,
@@ -112,9 +111,6 @@ namespace Chummer
             DamageResistance,
             RestrictedItemCount,
             AdeptLinguistics,
-            SwimPercent,
-            FlyPercent,
-            FlySpeed,
             JudgeIntentions,
             JudgeIntentionsOffense,
             JudgeIntentionsDefense,
@@ -191,7 +187,6 @@ namespace Chummer
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
-            MovementMultiplier,
             DataStore,
             BlockSkillDefault,
             Ambidextrous,
@@ -211,6 +206,12 @@ namespace Chummer
             WalkSpeed,
             RunSpeed,
             SprintSpeed,
+            WalkMultiplier,
+            RunMultiplier,
+            SprintBonus,
+            WalkMultiplierPercent,
+            RunMultiplierPercent,
+            SprintBonusPercent,
             EssencePenalty,
             EssencePenaltyT100,
             EssencePenaltyMAGOnlyT100,
@@ -716,7 +717,7 @@ namespace Chummer
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
-        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = null, bool blnUnconditionalOnly = true)
+        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
         {
             //Log.Enter("ValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -731,7 +732,7 @@ namespace Chummer
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
             int intCachedValue;
-            if (_objLastCachedCharacter == objCharacter && !blnAddToRating && strImprovedName == null && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objImprovementType, out intCachedValue) && intCachedValue != int.MinValue)
+            if (_objLastCachedCharacter == objCharacter && !blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objImprovementType, out intCachedValue) && intCachedValue != int.MinValue)
             {
                 return intCachedValue;
             }
@@ -749,7 +750,7 @@ namespace Chummer
                     // Ignore items that apply to a Skill's Rating.
                           objImprovement.AddToRating == blnAddToRating &&
                     // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (strImprovedName == null || strImprovedName == objImprovement.ImprovedName);
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == objImprovement.ImprovedName);
 
                     if (blnAllowed)
                     {
@@ -807,7 +808,7 @@ namespace Chummer
                     // Ignore items that apply to a Skill's Rating.
                           objImprovement.AddToRating == blnAddToRating &&
                     // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (strImprovedName == null || strImprovedName == objImprovement.ImprovedName);
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == objImprovement.ImprovedName);
 
                     if (blnAllowed)
                     {
@@ -834,11 +835,11 @@ namespace Chummer
 
             //Log.Exit("ValueOf");
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
-            if (!blnAddToRating && strImprovedName == null)
+            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName))
             {
                 if (_objLastCachedCharacter != objCharacter)
                 {
-                    for(Improvement.ImprovementType eLoopImprovement = (Improvement.ImprovementType)0; eLoopImprovement < Improvement.ImprovementType.NumImprovementTypes; ++eLoopImprovement)
+                    for(Improvement.ImprovementType eLoopImprovement = 0; eLoopImprovement < Improvement.ImprovementType.NumImprovementTypes; ++eLoopImprovement)
                     {
                         ClearCachedValue(eLoopImprovement);
                     }

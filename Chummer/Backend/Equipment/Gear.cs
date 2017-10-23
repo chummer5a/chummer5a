@@ -1975,7 +1975,7 @@ namespace Chummer.Backend.Equipment
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                 else
                     strCapacity = "0";
-                return Convert.ToDecimal(strCapacity, GlobalOptions.InvariantCultureInfo);
+                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
             }
         }
 
@@ -2011,19 +2011,19 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decCapacity = 0;
-                if (!_strCapacity.Contains("[") || _strCapacity.Contains("/["))
+                string strMyCapacity = CalculatedCapacity;
+                if (!strMyCapacity.Contains("[") || strMyCapacity.Contains("/["))
                 {
                     // Get the Gear base Capacity.
-                    if (_strCapacity.Contains("/["))
+                    if (strMyCapacity.Contains("/["))
                     {
                         // If this is a multiple-capacity item, use only the first half.
-                        string strMyCapacity = CalculatedCapacity;
                         int intPos = strMyCapacity.IndexOf("/[");
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
-                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.InvariantCultureInfo);
+                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
                     }
                     else
-                        decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalOptions.InvariantCultureInfo);
+                        decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Gear objChildGear in Children)
@@ -2041,7 +2041,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         else
                             strCapacity = "0";
-                        decCapacity -= (Convert.ToDecimal(strCapacity, GlobalOptions.InvariantCultureInfo) * objChildGear.Quantity);
+                        decCapacity -= (Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo) * objChildGear.Quantity);
                     }
                 }
 

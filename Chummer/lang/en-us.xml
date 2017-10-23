@@ -8080,6 +8080,46 @@ Do you want to continue?</text>
       <key>Warning_Update_CouldNotConnect</key>
       <text>Chummer was unable to connect to the update server. Please check your firewall and proxy settings.</text>
     </string>
+	<string>
+      <key>Button_Download</key>
+      <text>Download</text>
+    </string>
+	<string>
+      <key>Button_Redownload</key>
+      <text>Re-Download</text>
+    </string>
+	<string>
+      <key>Button_Up_To_Date</key>
+      <text>Already Up-to-Date</text>
+    </string>
+	<string>
+      <key>Button_Install_Restart</key>
+      <text>Install and Restart</text>
+    </string>
+	<string>
+	  <key>Label_Updater_Status</key>
+	  <text>Updater Status:</text>
+	</string>
+	<string>
+	  <key>String_Up_To_Date</key>
+	  <text>Chummer5 is up-to-date. Currently installed version is {0}. Latest {1} version of Chummer5 is {2}.</text>
+	</string>
+	<string>
+	  <key>String_Nightly_Changelog_Warning</key>
+	  <text>Versions in the nightly changelog are temporary.</text>
+	</string>
+	<string>
+      <key>String_Stable</key>
+      <text>stable</text>
+    </string>
+	<string>
+      <key>String_Nightly</key>
+      <text>nightly</text>
+    </string>
+	<string>
+	  <key>String_Update_Available</key>
+	  <text>Update available to version ({0})! Currently installed version is ({1}).</text>
+	</string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
     <string>
