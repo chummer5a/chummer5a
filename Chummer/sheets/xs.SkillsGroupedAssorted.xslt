@@ -2,7 +2,6 @@
 <!-- Skills listed in alphabetically order -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-  <xsl:include href="xt.MugShot.xslt"/>
   <xsl:include href="xt.Skills.xslt"/>
   <xsl:include href="xt.SkillGroups.xslt"/>
 
@@ -92,6 +91,5 @@
       <xsl:sort select="name" />
       <xsl:call-template name="skills"/>
     </xsl:for-each>
-    <xsl:call-template name="MugShot"/>
   </xsl:template>
 </xsl:stylesheet>

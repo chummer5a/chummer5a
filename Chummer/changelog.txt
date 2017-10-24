@@ -280,6 +280,8 @@ Data Changes:
 - If skill categories are displayed in a sheet belonging to the Shadowrun 5 sheet family, their names should now be localized.
 - The Fancy Blocks character sheet now uses localized strings wherever possible instead of hardcoded English ones.
 - Added Keen-eared to Hobgoblin according to the new print of Run Faster.
+- Altered the location of the main mugshot in the Shadowrun 5 character sheet collection and allowed it to be toggled to show on/off when printed.
+- Added the ability to automatically generate condition monitors of varying scales within character sheets.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

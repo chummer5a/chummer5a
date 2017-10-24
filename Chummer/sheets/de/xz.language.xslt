@@ -254,6 +254,7 @@
   <xsl:variable name="lang.MatrixHot"      select="'Matrix Heiß'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'Matrix Schadensleiste'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Nahkampfwaffen'"/>
+  <xsl:variable name="lang.Mugshot"    select="'Portrait'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Andere Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Seitenumbruch: '"/>
   <xsl:variable name="lang.PersonalData"    select="'Charakterdaten'"/>

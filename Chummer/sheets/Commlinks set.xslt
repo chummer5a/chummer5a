@@ -19,7 +19,7 @@
     </xsl:variable>
     <title><xsl:value-of select="$TitleName"/></title>
 
-    <xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
+    <xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
@@ -157,7 +157,7 @@
                 <table width="100%">
                   <tr>
                     <td width="50%" style="text-align:center;">
-                      <strong><xsl:value-of select="$lang.PhysicalTrack /></strong>
+                      <strong><xsl:value-of select="$lang.PhysicalTrack"/></strong>
                     </td>
                     <td width="50%" style="text-align:center;">
                       <strong><xsl:value-of select="$lang.StunTrack"/></strong>

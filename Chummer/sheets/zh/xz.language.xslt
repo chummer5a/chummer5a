@@ -254,6 +254,7 @@
   <xsl:variable name="lang.MatrixHot"      select="'矩阵（热模）'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'矩阵伤害'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'近战武器'"/>
+  <xsl:variable name="lang.Mugshot"    select="'肖像'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'其他肖像'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.PersonalData"    select="'个人信息'"/>

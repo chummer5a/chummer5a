@@ -167,7 +167,11 @@ namespace Chummer
                 MessageBox.Show(strReturn);
                 return;
             }
+#if DEBUG
+            XslCompiledTransform objXSLTransform = new XslCompiledTransform(true);
+#else
             XslCompiledTransform objXSLTransform = new XslCompiledTransform();
+#endif
             try
             {
                 objXSLTransform.Load(strXslPath);
@@ -444,9 +448,9 @@ namespace Chummer
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
         /// <summary>
         /// Character's XmlDocument.
         /// </summary>
@@ -479,7 +483,7 @@ namespace Chummer
                 _lstCharacters = value;
             }
         }
-        #endregion
+#endregion
 
         private void ContextMenu_Opening(object sender, CancelEventArgs e)
         {

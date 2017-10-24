@@ -17,7 +17,7 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
+    <xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
     <html>
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
@@ -567,7 +567,7 @@
 
   <xsl:template name="print_mugshot_and_priorities">
     <table class="stats general">
-      <tr><td colspan="2"><div class="bigheader">[Mugshot]</div></td></tr>
+      <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Mugshot" />]</div></td></tr>
       <tr><td colspan="2" style="text-align:center; width: 100%;">
         <xsl:if test="mainmugshotbase64 != ''">
           <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />

@@ -254,6 +254,7 @@
   <xsl:variable name="lang.MatrixHot"      select="'Hot SIM'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'Moniteur de Condition Matricielle'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Armes de corps á corps'"/>
+  <xsl:variable name="lang.Mugshot"    select="'Portrait'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Autres portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Saut de page: '"/>
   <xsl:variable name="lang.PersonalData"    select="'Données personnelles'"/>
