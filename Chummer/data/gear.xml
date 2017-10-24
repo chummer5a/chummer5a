@@ -10200,7 +10200,7 @@
         <geardetails>
           <attributearray operation="exists" NOT="" />
           <OR>
-            <sleaze operation="contains" NOT="" />
+            <sleaze operation="exists" NOT="" />
             <sleaze>0</sleaze>
           </OR>
         </geardetails>
