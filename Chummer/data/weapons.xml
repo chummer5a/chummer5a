@@ -8602,7 +8602,7 @@
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
 	  <alternaterange>Shotguns (flechette)</alternaterange>
-      <source>SHB</source>
+      <source>SHB2</source>
       <page>0</page>
     </weapon>
     <weapon>
@@ -8640,7 +8640,7 @@
       </accessories>
       <useskill>Longarms</useskill>
       <range>Sniper Rifles</range>
-      <source>SHB</source>
+      <source>SHB2</source>
       <page>0</page>
     </weapon>
     <weapon>
@@ -8680,7 +8680,7 @@
         <useskill>Pistols</useskill>
         <range>Light Pistols</range>
       </accessories>
-      <source>SHB</source>
+      <source>SHB2</source>
       <page>0</page>
     </weapon>
     <weapon>
@@ -8740,7 +8740,7 @@
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
 	  <alternaterange>Shotguns (flechette)</alternaterange>
-      <source>SHB</source>
+      <source>SHB2</source>
       <page>0</page>
     </weapon>
     <weapon>
@@ -8764,7 +8764,7 @@
       <accessorymounts />
       <useskill>Longarms</useskill>
       <range>Light Pistols</range>
-      <source>SHB</source>
+      <source>SHB2</source>
       <page>0</page>
     </weapon>
     <weapon>
@@ -8800,6 +8800,105 @@
       </accessories>
       <useskill>Pistols</useskill>
       <range>Light Pistols</range>
+      <source>SHB2</source>
+      <page>0</page>
+    </weapon>
+	<weapon>
+      <id>44d3a69e-643e-42e2-9c68-c7772d27ffa6</id>
+      <name>Onotari Arms Troublemaker</name>
+      <category>Heavy Pistols</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <spec>Semi-Automatics</spec>
+      <accuracy>5</accuracy>
+      <reach>0</reach>
+      <damage>8P</damage>
+      <ap>-1</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>18(c)</ammo>
+      <avail>8R</avail>
+      <cost>700</cost>
+      <allowaccessory>true</allowaccessory>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
+      </accessories>
+      <useskill>Pistols</useskill>
+      <range>Heavy Pistols</range>
+      <source>SHB</source>
+      <page>0</page>
+    </weapon>
+	<weapon>
+      <id>19187f49-5197-4560-95a4-53d51535b38f</id>
+      <name>Altmayr SPX</name>
+      <category>Shotguns</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <spec>Shotguns</spec>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>10P</damage>
+      <ap>-1</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>8(m)</ammo>
+      <avail>4R</avail>
+      <cost>475</cost>
+      <allowaccessory>true</allowaccessory>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <accessories />
+      <useskill>Longarms</useskill>
+      <range>Shotguns</range>
+      <source>SHB</source>
+      <page>0</page>
+    </weapon>
+	<weapon>
+      <id>91082bdb-f3d7-432f-ad7a-2aaa3d82fa5f</id>
+      <name>Onotari Arms SIG-6</name>
+      <category>Submachine Guns</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <spec>Submachine Guns</spec>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>8P</damage>
+      <ap>0</ap>
+      <mode>SA/BF</mode>
+      <rc>0</rc>
+      <ammo>16(c) or 32(c)</ammo>
+      <avail>7R</avail>
+      <cost>780</cost>
+      <allowaccessory>true</allowaccessory>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <accessories>
+		<accessory>Smartgun System, Internal</accessory>
+		<accessory>Folding Stock</accessory>
+		<accessory>Gas-Vent II</accessory>
+	  </accessories>
+      <useskill>Automatics</useskill>
+      <range>Submachine Guns</range>
       <source>SHB</source>
       <page>0</page>
     </weapon>

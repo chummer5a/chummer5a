@@ -289,6 +289,7 @@ Data Changes:
 - Added Keen-eared to Hobgoblin according to the new print of Run Faster.
 - Altered the location of the main mugshot in the Shadowrun 5 character sheet collection and allowed it to be toggled to show on/off when printed.
 - Added the ability to automatically generate condition monitors of varying scales within character sheets.
+- Added missing weapons from the german 'Schattenhandbuch' and moved the existing ones to 'Schattenhandbuch 2'.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
