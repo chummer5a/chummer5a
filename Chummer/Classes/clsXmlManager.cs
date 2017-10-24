@@ -59,7 +59,7 @@ namespace Chummer
         private static readonly HashSet<XmlReference> _lstXmlDocuments = new HashSet<XmlReference>();
         private static readonly List<string> _lstDataDirectories = new List<string>();
 
-        #region Constructor and Instance
+        #region Constructor
         static XmlManager()
         {
             LanguageManager.Load(GlobalOptions.Language, null);

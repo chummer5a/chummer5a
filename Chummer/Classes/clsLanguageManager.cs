@@ -71,13 +71,12 @@ namespace Chummer
         private static readonly bool _blnDebug = false;
 #endif
         private static string _strLanguage = string.Empty;
-        static readonly LanguageManager _objInstance = new LanguageManager();
         private static readonly Dictionary<string, string> _objDictionary = new Dictionary<string, string>();
         static bool _blnLoaded = false;
         static readonly XmlDocument _objXmlDocument = new XmlDocument();
         static XmlDocument _objXmlDataDocument;
 
-        #region Constructor and Instance
+        #region Constructor
         static LanguageManager()
         {
 #if DEBUG
@@ -93,17 +92,6 @@ namespace Chummer
 
         LanguageManager()
         {
-        }
-
-        /// <summary>
-        /// Global instance of the LanguageManager.
-        /// </summary>
-        public static LanguageManager Instance
-        {
-            get
-            {
-                return _objInstance;
-            }
         }
         #endregion
 

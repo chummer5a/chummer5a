@@ -139,7 +139,6 @@ namespace Chummer
     /// </summary>
     public sealed class GlobalOptions
     {
-        static readonly GlobalOptions _objInstance = new GlobalOptions();
         static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
         static readonly CultureInfo _objInvariantCultureInfo = CultureInfo.InvariantCulture;
 
@@ -154,7 +153,7 @@ namespace Chummer
         private static bool _blnStartupFullscreen = false;
         private static bool _blnSingleDiceRoller = true;
         private static string _strLanguage = "en-us";
-        private static string _strDefaultCharacterSheet = "Shadowrun 5";
+        private static string _strDefaultCharacterSheet = "Shadowrun 5 (Rating greater 0)";
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst = false;
         private static bool _lifeModuleEnabled;
@@ -185,7 +184,7 @@ namespace Chummer
         // Custom Data Directory information.
         private static List<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfo = new List<CustomDataDirectoryInfo>();
 
-        #region Constructor and Instance
+        #region Constructor
         /// <summary>
         /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>

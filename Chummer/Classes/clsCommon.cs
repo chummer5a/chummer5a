@@ -30,7 +30,7 @@ namespace Chummer
 {
     public class CommonFunctions
     {
-        #region Constructor and Instance
+        #region Constructor
         private readonly Character _objCharacter;
 
         public CommonFunctions(Character objCharacter)
