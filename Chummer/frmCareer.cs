@@ -7981,20 +7981,23 @@ namespace Chummer
             if (treImprovements.SelectedNode != null && treImprovements.Nodes.Count > 0)
             {
                 bool blnSelectedTop = treImprovements.SelectedNode == treImprovements.Nodes[0];
+                List<Improvement> lstImprovementsEnabled = new List<Improvement>();
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.CustomGroup == treImprovements.SelectedNode.Tag.ToString() || (blnSelectedTop && string.IsNullOrEmpty(objImprovement.CustomGroup)))
+                    {
                         objImprovement.Enabled = true;
+                        lstImprovementsEnabled.Add(objImprovement);
+                    }
                 }
+                if (lstImprovementsEnabled.Count > 0)
+                {
+                    _objCharacter.ImprovementHook(lstImprovementsEnabled);
 
-                _blnIsDirty = true;
-                ScheduleCharacterUpdate();
-                
-                //OBSOLETE: Review once ImprovementManager gets outbound events
-                //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
-                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-                _objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
-                UpdateWindowTitle();
+                    _blnIsDirty = true;
+                    ScheduleCharacterUpdate();
+                    UpdateWindowTitle();
+                }
             }
         }
 
@@ -8004,21 +8007,23 @@ namespace Chummer
             if (treImprovements.SelectedNode != null && treImprovements.Nodes.Count > 0)
             {
                 bool blnSelectedTop = treImprovements.SelectedNode == treImprovements.Nodes[0];
+                List<Improvement> lstImprovementsDisabled = new List<Improvement>();
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.CustomGroup == treImprovements.SelectedNode.Tag.ToString() || (blnSelectedTop && string.IsNullOrEmpty(objImprovement.CustomGroup)))
+                    {
                         objImprovement.Enabled = false;
+                        lstImprovementsDisabled.Add(objImprovement);
+                    }
                 }
+                if (lstImprovementsDisabled.Count > 0)
+                {
+                    _objCharacter.ImprovementHook(lstImprovementsDisabled);
 
-                _blnIsDirty = true;
-                ScheduleCharacterUpdate();
-                
-                //OBSOLETE: Review once ImprovementManager gets outbound events
-                //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
-                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-                _objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
-
-                UpdateWindowTitle();
+                    _blnIsDirty = true;
+                    ScheduleCharacterUpdate();
+                    UpdateWindowTitle();
+                }
             }
         }
 
@@ -17484,7 +17489,7 @@ namespace Chummer
             {
                 if (treImprovements.SelectedNode.Level > 0)
                 {
-                    Improvement objImprovement = new Improvement();
+                    Improvement objImprovement = null;
                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                     {
                         if (objCharacterImprovement.SourceName == treImprovements.SelectedNode.Tag.ToString())
@@ -17494,20 +17499,18 @@ namespace Chummer
                         }
                     }
 
-                    objImprovement.Enabled = chkImprovementActive.Checked;
+                    if (objImprovement != null)
+                    {
+                        objImprovement.Enabled = chkImprovementActive.Checked;
+                        _objCharacter.ImprovementHook(new List<Improvement>() { objImprovement });
 
-                    ScheduleCharacterUpdate();
-
-                    //OBSOLETE: Review once ImprovementManager gets outbound events
-                    //TODO: Pare this down to only fire against the skill that's changed? Review performance impact?
-                    _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Pool));
-                    _objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalMinimum));
-
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
+                        _blnIsDirty = true;
+                        ScheduleCharacterUpdate();
+                        UpdateWindowTitle();
+                    }
                 }
             }
-            }
+        }
 
         private void treImprovements_ItemDrag(object sender, ItemDragEventArgs e)
         {
@@ -18028,39 +18031,42 @@ namespace Chummer
         /// <param name="penalty">Returns the total penalty for the condition monitor type. Expected values are 0 or a negative number.</param>
         private void ProcessConditionMonitor(int boxTag, Panel panel, int conditionMax, int conditionValueIn, bool stun, out int penalty, bool current = false)
         {
-            int intCMOverflow = _objCharacter.CMOverflow;
-            int intCMThreshold = _objCharacter.CMThreshold;
             penalty = 0;
             if (_blnSkipRefresh)
                 return;
 
+            int intCMOverflow = _objCharacter.CMOverflow;
+            int intCMThreshold = _objCharacter.CMThreshold;
             int intFillCount = 0;
 
             // If this is being checked, make sure everything before it is checked off.
             _blnSkipRefresh = true;
 
+            int intCurrentBoxTag = 0;
             foreach (CheckBox cmBox in panel.Controls.OfType<CheckBox>())
             {
-                if (Convert.ToInt32(cmBox.Tag) < boxTag)
+                intCurrentBoxTag = Convert.ToInt32(cmBox.Tag.ToString());
+                if (intCurrentBoxTag < boxTag)
                 {
                     cmBox.Checked = true;
                 }
-                else if (Convert.ToInt32(cmBox.Tag) > boxTag)
+                else if (intCurrentBoxTag > boxTag)
                 {
                     cmBox.Checked = false;
                 }
-                else if ((Convert.ToInt32(cmBox.Tag) == boxTag) && current)
+                else if (current && intCurrentBoxTag == boxTag)
                 {
                     cmBox.Checked = true;
                 }
-                if (Convert.ToInt32(cmBox.Tag) <= conditionMax)
+                if (intCurrentBoxTag <= conditionMax)
                 {
                     cmBox.Visible = true;
-                    if ((Convert.ToInt32(cmBox.Tag) - ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CMThresholdOffset)) % intCMThreshold == 0 && Convert.ToInt32(cmBox.Tag) > ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CMThresholdOffset))
+                    int intCMThresholdOffset = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CMThresholdOffset);
+                    if (intCurrentBoxTag > intCMThresholdOffset && (intCurrentBoxTag - intCMThresholdOffset) % intCMThreshold == 0)
                     {
-                        int intModifiers = ((Convert.ToInt32(cmBox.Tag) - ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CMThresholdOffset)) / intCMThreshold) * -1;
+                        int intModifiers = (intCurrentBoxTag - intCMThresholdOffset) / -intCMThreshold;
                         cmBox.Text = intModifiers.ToString();
-                        if (Convert.ToInt32(cmBox.Tag) == boxTag)
+                        if (intCurrentBoxTag == boxTag)
                         {
                             penalty = intModifiers;
                         }
@@ -18068,11 +18074,11 @@ namespace Chummer
                     else
                         cmBox.Text = string.Empty;
                 }
-                else if (!stun && Convert.ToInt32(cmBox.Tag.ToString()) <= conditionMax + intCMOverflow)
+                else if (!stun && intCurrentBoxTag <= conditionMax + intCMOverflow)
                 {
                     cmBox.Visible = true;
                     cmBox.BackColor = SystemColors.ControlDark;
-                    if (Convert.ToInt32(cmBox.Tag.ToString()) == conditionMax + intCMOverflow)
+                    if (intCurrentBoxTag == conditionMax + intCMOverflow)
                         cmBox.Text = "D";
                     else
                         cmBox.Text = string.Empty;

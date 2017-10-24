@@ -142,11 +142,15 @@ namespace Chummer
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
                     string strXmlSkillName = objXmlSkill["name"].InnerText;
-                    if (!_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating >= _intMinimumRating))
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
+                    if (objExistingSkill == null)
                     {
-                        continue;
+                        if (_intMinimumRating > 0)
+                        {
+                            continue;
+                        }
                     }
-                    if (_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > _intMaximumRating))
+                    else if (objExistingSkill.Rating < _intMinimumRating || objExistingSkill.Rating > _intMaximumRating)
                     {
                         continue;
                     }
@@ -203,7 +207,22 @@ namespace Chummer
                 {
                     string strFilter = string.Empty;
                     string[] strValue = _strLimitToSkill.Split(',');
-                    strFilter = strValue.Aggregate(strFilter, (current, strSkill) => current + "name = \"" + strSkill.Trim() + "\" or ");
+                    for (int i = 0; i < strValue.Length; i++)
+                        strValue[i] = strValue[i].Trim();
+                    Dictionary<string, bool> dicSkillXmlFound = new Dictionary<string, bool>(strValue.Length);
+                    foreach (string strLoop in strValue)
+                    {
+                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strLoop && objSkill.Rating >= _intMinimumRating))
+                        {
+                            continue;
+                        }
+                        if (_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strLoop && objSkill.Rating > _intMaximumRating))
+                        {
+                            continue;
+                        }
+                        dicSkillXmlFound.Add(strLoop, false);
+                        strFilter += "name = \"" + strLoop + "\" or ";
+                    }
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill[" + strFilter + "]");
@@ -212,23 +231,21 @@ namespace Chummer
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
                         string strXmlSkillName = objXmlSkill["name"].InnerText;
-                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating >= _intMinimumRating))
-                        {
-                            continue;
-                        }
-                        if (_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating > _intMaximumRating))
-                        {
-                            continue;
-                        }
+                        dicSkillXmlFound[strXmlSkillName] = true;
                         ListItem objItem = new ListItem();
                         objItem.Value = strXmlSkillName;
-                        if (objXmlSkill.Attributes != null)
-                        {
-                            objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
-                        }
-                        else
-                            objItem.Name = strXmlSkillName;
+                        objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
                         lstSkills.Add(objItem);
+                    }
+                    foreach (KeyValuePair<string, bool> objLoopEntry in dicSkillXmlFound)
+                    {
+                        if (!objLoopEntry.Value)
+                        {
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objLoopEntry.Key;
+                            objItem.Name = objLoopEntry.Key;
+                            lstSkills.Add(objItem);
+                        }
                     }
                 }
                 else

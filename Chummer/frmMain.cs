@@ -569,15 +569,9 @@ namespace Chummer
 
         private void trySkillToolStripMenuItem_Click(object sender, EventArgs e, Character objCharacter)
         {
-            if (objCharacter?.SkillsSection?.Skills == null)
-                return;
-            foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
-            {
-                if (objSkill.Name == "Impersonation")
-                {
-                    MessageBox.Show(objSkill.Rating.ToString());
-                }
-            }
+            Skill objImpersonation = objCharacter?.SkillsSection?.GetActiveSkill("Impersonation");
+            if (objImpersonation != null)
+                MessageBox.Show(objImpersonation.Rating.ToString());
         }
 
         #endregion

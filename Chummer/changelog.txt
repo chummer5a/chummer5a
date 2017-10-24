@@ -165,6 +165,12 @@ Application Changes:
 - Transformed the GlobalOptions, LanguageManager, and XmlManager classes into fully static classes. For users, this also produces a measurable performance increase and a decrease in the size of Chummer5's executable.
 - Fixed a bug related to selecting the default, blank entry in the Traditions dropdown combobox and then trying to add a spell.
 - Allowed Edge to be burned to zero. Fixes #1989.
+- Allowed filtering for skills that use any attribute, in case custom data adds any that are linked to DEP or ESS.
+- Swimming should no longer show up as a skill to characters who cannot swim or have special Swimming rules, and Running should not show up as a skill to characters who cannot move on land or have special rules for land movement.
+- Fixed a bug where the option that enables education qualities' karma discount at chargen causes every second level to be free instead of decreasing the karma cost of raising skill ratings by 1.
+- Skill-based item requirement nodes can now process exotic skills.
+- Fixed a bug where specializations could be bought for skills that only had ratings from skillsofts.
+- Fixed a bug where the button to increase a knowledge skill in career mode would be clickable/enabled even when the knowledge skill could not actually be increased.
 
 Data Changes:
 

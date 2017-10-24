@@ -655,16 +655,10 @@ namespace Chummer
                                 break;
                             case "skill":
                                 // Check if the character has the required Skill.
-                                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objXmlRequired["name"].InnerText);
+                                if ((objSkill?.Rating ?? 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                 {
-                                    if (objSkill.Name == objXmlRequired["name"].InnerText)
-                                    {
-                                        if (objSkill.Rating >= Convert.ToInt32(objXmlRequired["val"].InnerText))
-                                        {
-                                            blnOneOfMet = true;
-                                            break;
-                                        }
-                                    }
+                                    blnOneOfMet = true;
                                 }
                                 break;
                             case "attribute":
@@ -924,13 +918,10 @@ namespace Chummer
                                 break;
                             case "skill":
                                 // Check if the character has the required Skill.
-                                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Where(objSkill => objSkill.Name == objXmlRequired["name"].InnerText))
+                                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objXmlRequired["name"].InnerText);
+                                if ((objSkill?.Rating ?? 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                 {
-                                    if (objSkill.Rating >= Convert.ToInt32(objXmlRequired["val"].InnerText))
-                                    {
-                                        blnFound = true;
-                                        break;
-                                    }
+                                    blnFound = true;
                                 }
                                 break;
                             case "attribute":

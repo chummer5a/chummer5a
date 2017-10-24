@@ -7136,11 +7136,9 @@ namespace Chummer
                     strInterval = "1 " + LanguageManager.GetString("String_Week");
 
                 // Find the character's Negotiation total.
-                foreach (Skill objSkill in SkillsSection.Skills)
-                {
-                    if (objSkill.Name == "Negotiation")
-                        intTest = objSkill.Pool;
-                }
+                Skill objSkill = SkillsSection.GetActiveSkill("Negotiation");
+                if (objSkill != null)
+                    intTest = objSkill.Pool;
 
                 strReturn = intTest.ToString() + " (" + intAvail.ToString() + ", " + strInterval + ")";
             }
@@ -8087,8 +8085,8 @@ namespace Chummer
         internal event Action<List<Improvement>> SkillImprovementEvent;
         internal event Action<List<Improvement>> AttributeImprovementEvent;
 
-        //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down
-        private static readonly Improvement.ImprovementType[] skillRelated = {
+        //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down.
+        public static readonly Improvement.ImprovementType[] SkillRelatedImprovements = {
             Improvement.ImprovementType.Skillwire,
             Improvement.ImprovementType.SkillsoftAccess,
             Improvement.ImprovementType.Linguist,
@@ -8109,8 +8107,8 @@ namespace Chummer
             Improvement.ImprovementType.DisableSpecializationEffects,
         };
 
-        //List of events that might be able to affect attributes. TODO: Should this just be merged into skillRelated?
-        private static readonly Improvement.ImprovementType[] attribRelated = {
+        //List of events that might be able to affect attributes. Changes to these types also invoke data bindings controlling skills, since their pools are controlled by attributes.
+        public static readonly Improvement.ImprovementType[] AttribRelatedImprovements = {
             Improvement.ImprovementType.Attributelevel,
             Improvement.ImprovementType.Attribute,
             Improvement.ImprovementType.Seeker
@@ -8121,13 +8119,14 @@ namespace Chummer
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
         internal void ImprovementHook(List<Improvement> _lstTransaction)
         {
-            if (_lstTransaction.Any(x => skillRelated.Any(y => y == x.ImproveType)))
-            {
-                SkillImprovementEvent?.Invoke(_lstTransaction);
-            }
-            if (_lstTransaction.Any(x => attribRelated.Any(y => y == x.ImproveType)))
+            if (_lstTransaction.Any(x => AttribRelatedImprovements.Any(y => y == x.ImproveType)))
             {
                 AttributeImprovementEvent?.Invoke(_lstTransaction);
+                SkillImprovementEvent?.Invoke(_lstTransaction);
+            }
+            else if (_lstTransaction.Any(x => SkillRelatedImprovements.Any(y => y == x.ImproveType)))
+            {
+                SkillImprovementEvent?.Invoke(_lstTransaction);
             }
         }
 

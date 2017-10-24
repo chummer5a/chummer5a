@@ -50,7 +50,8 @@ namespace Chummer.UI.Skills
 
                 btnAddSpec.Visible = true;
                 btnCareerIncrease.Visible = true;
-
+                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
                 lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
@@ -187,7 +188,7 @@ namespace Chummer.UI.Skills
 
         private void RatingChanged(object sender, EventArgs e)
         {
-            if (_skill.TotalBaseRating == 0 && _skill.Specializations.Count > 0)
+            if (!_skill.CanHaveSpecs && !_skill.ForcedName)
             {
                 _skill.Specializations.Clear();
             }

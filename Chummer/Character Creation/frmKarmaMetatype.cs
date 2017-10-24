@@ -955,10 +955,9 @@ namespace Chummer
                 {
                     XmlNode objXmlSkillNode = objSkillDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objXmlSkill.InnerText + "\"]");
                     Skill.FromData(objXmlSkillNode, _objCharacter);
-                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Where(objSkill => objSkill.Name == objXmlSkill.InnerText))
-                    {
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objXmlSkill.InnerText);
+                    if (objSkill != null)
                         objSkill.Karma = objXmlSkill.Attributes["rating"].InnerText == "F" ? intForce : Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-                    }
                 }
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))

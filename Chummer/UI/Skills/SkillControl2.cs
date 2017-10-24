@@ -125,7 +125,7 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); };
+                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name); };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -331,7 +331,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        /* Delnar: Awaiting other authors' approval before activation.
+        /* Delnar: TODO Awaiting other authors' approval before activation.
         private void chkKarma_CheckChanged(object sender, EventArgs e)
         {
             cboSpec_TextChanged(sender, e);
@@ -340,7 +340,7 @@ namespace Chummer.UI.Skills
 
         private void RatingChanged(object sender, EventArgs e)
         {
-            if (_skill.TotalBaseRating == 0 && _skill.Specializations.Count > 0)
+            if (!_skill.CanHaveSpecs)
             {
                 _skill.Specializations.Clear();
             }

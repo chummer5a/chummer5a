@@ -48,7 +48,7 @@ namespace Chummer
 
         public CharacterShared()
         {
-            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.Skills.First(x => x.Name == "Gunnery"));
+            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
         /// <summary>

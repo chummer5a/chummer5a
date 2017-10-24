@@ -664,7 +664,7 @@ namespace Chummer
                 }
                 if (Name == "Improved Ability (skill)")
                 {
-                    Skill objBoostedSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(objSkill => Extra == objSkill.Name || objSkill.IsExoticSkill && Extra == objSkill.DisplayName + " (" + objSkill.Specialization + ")");
+                    Skill objBoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
                     if (objBoostedSkill != null)
                     {
                         // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division

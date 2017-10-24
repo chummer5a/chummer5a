@@ -3752,7 +3752,7 @@ namespace Chummer
             SpiritControl objSpiritControl = (SpiritControl)sender;
 
             // Retrieve the character's Summoning Skill Rating.
-            int intSkillValue = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == "Summoning")?.Rating ?? 0; //TODO: LOOKUP TABLE
+            int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill("Summoning")?.Rating ?? 0;
 
             if (objSpiritControl.ServicesOwed > intSkillValue && !_objCharacter.IgnoreRules)
             {
@@ -3825,7 +3825,7 @@ namespace Chummer
             SpiritControl objSpriteControl = (SpiritControl)sender;
 
             // Retrieve the character's Compiling Skill Rating.
-            int intSkillValue = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == "Compiling")?.Rating ?? 0;
+            int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill("Compiling")?.Rating ?? 0;
 
             if (objSpriteControl.ServicesOwed > intSkillValue && !_objCharacter.IgnoreRules)
             {
@@ -9053,7 +9053,7 @@ namespace Chummer
             }
 
             // Run through the list of Active Skills and pick out the two applicable ones.
-            int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
+            int intSkillValue = Math.Max(_objCharacter.SkillsSection.GetActiveSkill("Spellcasting")?.Rating ?? 0, _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting")?.Rating ?? 0);
 
             if (intSpellCount >= (2 * intSkillValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
             {
@@ -13180,7 +13180,7 @@ namespace Chummer
                 }
                 foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
                 {
-                    int intSkillValue = _objCharacter.SkillsSection.Skills.First(x => x.Name == imp.ImprovedName).TotalBaseRating;
+                    int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName)?.TotalBaseRating ?? 0;
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))

@@ -1488,7 +1488,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.SkillSpecialization:
-                        Skill objSkill = objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
+                        Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
                         if (objSkill != null)
                         {
                             SkillSpecialization objSkillSpec = objSkill.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);

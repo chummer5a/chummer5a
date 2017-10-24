@@ -600,24 +600,25 @@ namespace Chummer.Backend.Shared_Methods
                     }
                     else
                     {
-                        Skill s = character.SkillsSection.Skills
-                            .Where(objSkill => objSkill.Name == node["name"]?.InnerText &&
-                                               (node["spec"] == null ||
-                                                objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)))
-                            .FirstOrDefault(objSkill => objSkill.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText));
-
-                        if (s != null)
+                        if (node["name"] != null)
                         {
-                            name = s.DisplayName;
-                            if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name && string.IsNullOrEmpty(objImprovement.Condition)))
+                            Skill s = character.SkillsSection.GetActiveSkill(node["name"].InnerText ?? string.Empty);
+                            // Exotic Skill
+                            if (s == null && node["spec"] != null)
+                                s = character.SkillsSection.GetActiveSkill(node["name"].InnerText + " (" + node["spec"].InnerText + ")");
+                            if (s != null && (node["spec"] == null || s.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)) && s.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText))
                             {
-                                name += $" ({node["spec"].InnerText})";
+                                name = s.DisplayName;
+                                if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name && string.IsNullOrEmpty(objImprovement.Condition)))
+                                {
+                                    name += $" ({node["spec"].InnerText})";
+                                }
+                                if (node["val"] != null)
+                                {
+                                    name += $" {node["val"].InnerText}";
+                                }
+                                return true;
                             }
-                            if (node["val"] != null)
-                            {
-                                name += $" {node["val"].InnerText}";
-                            }
-                            return true;
                         }
                     }
                     XmlDocument xmlSkills = XmlManager.Load("skills.xml");

@@ -5902,10 +5902,20 @@ namespace Chummer
         #endregion
     }
 
-    public class MentorSpirit
+    public class MentorSpirit : INamedItemWithNode
     {
         private string _strName = string.Empty;
         private string _strAdvantages = string.Empty;
+        private readonly XmlDocument _objMentorDocument = null;
+        private string _sourceID = string.Empty;
+
+        #region Constructor
+        public MentorSpirit(Improvement.ImprovementType eMentorType, string strSourceID = "")
+        {
+            _objMentorDocument = XmlManager.Load(eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml");
+            _sourceID = strSourceID;
+        }
+        #endregion
 
         #region Properties
         /// <summary>
@@ -5924,6 +5934,26 @@ namespace Chummer
         {
             get => _strAdvantages;
             set => _strAdvantages = value;
+        }
+
+        /// <summary>
+        /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
+        /// </summary>
+        public string SourceID
+        {
+            get => _sourceID;
+            set => _sourceID = value;
+        }
+
+        /// <summary>
+        /// Xml Node containing info of this mentor spirit.
+        /// </summary>
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return _objMentorDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID + "\"]");
+            }
         }
         #endregion
     }

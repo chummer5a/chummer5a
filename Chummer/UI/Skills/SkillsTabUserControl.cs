@@ -35,11 +35,11 @@ namespace Chummer.UI.Skills
 
         private bool _loadCalled = false;
         private bool _initialized = false;
-        private Character _character;
+        private Character _character = null;
         private List<Tuple<string, Predicate<Skill>>> _dropDownList;
         private List<Tuple<string, IComparer<Skill>>>  _sortList;
         private readonly List<SkillControl2> _controls = new List<SkillControl2>();
-        private bool _searchMode;
+        private bool _searchMode = false;
         private List<Tuple<string, Predicate<KnowledgeSkill>>> _dropDownKnowledgeList;
         private List<Tuple<string, IComparer<KnowledgeSkill>>> _sortKnowledgeList;
 
@@ -61,10 +61,8 @@ namespace Chummer.UI.Skills
 
         private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
         {
-            if (_initialized) return;
-
-            if (!(_character != null && _loadCalled)) return;
-
+            if (_initialized || _character == null || !_loadCalled)
+                return;
             _initialized = true;  //Only do once
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
             Stopwatch parts = Stopwatch.StartNew();
@@ -75,7 +73,7 @@ namespace Chummer.UI.Skills
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            //this.SuspendLayout();
+            SuspendLayout();
             MakeSkillDisplays();
 
             parts.TaskEnd("MakeSkillDisplay()");
@@ -183,6 +181,7 @@ namespace Chummer.UI.Skills
                 //lblKnoSp.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 //lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
             }
+            ResumeLayout(true);
         }
 
         private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
@@ -231,8 +230,6 @@ namespace Chummer.UI.Skills
             };
             //TODO: TRANSLATIONS
 
-
-
             ret.AddRange(
                 from XmlNode objNode 
                 in XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
@@ -243,7 +240,7 @@ namespace Chummer.UI.Skills
 
             ret.AddRange(
                 from string attribute
-                in new[]{"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"} //TODO: This should be somewhere in Character or CharacterAttrib i think
+                in Character.AttributeStrings
                 select new Tuple<string, Predicate<Skill>>(
                     $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
                     skill => skill.Attribute == attribute));
@@ -298,8 +295,6 @@ namespace Chummer.UI.Skills
             };
             //TODO: TRANSLATIONS
 
-
-
             ret.AddRange(
                 from XmlNode objNode
                 in XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]")
@@ -310,7 +305,7 @@ namespace Chummer.UI.Skills
 
             ret.AddRange(
                 from string attribute
-                in new[] { "INT", "LOG" } //TODO: This should be somewhere in Character or CharacterAttrib i think
+                in Character.AttributeStrings
                 select new Tuple<string, Predicate<KnowledgeSkill>>(
                     $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
                     skill => skill.Attribute == attribute));
@@ -342,8 +337,6 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(265, 42),
             };
-
-
 
             sw.TaskEnd("_skills");
 
@@ -416,7 +409,6 @@ namespace Chummer.UI.Skills
             {
                 csender.DropDownStyle = ComboBoxStyle.DropDown;
                 _searchMode = true;
-                
             }
             else
             {
@@ -450,13 +442,13 @@ namespace Chummer.UI.Skills
             if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlNode node =
-                document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
+            XmlNode node = document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
             ExoticSkill skill = new ExoticSkill(ObjCharacter, node);
             skill.Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
             skill.Upgrade();
             ObjCharacter.SkillsSection.Skills.Add(skill);
+            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecialization + ")", skill);
         }
 
         private void UpdateKnoSkillRemaining()

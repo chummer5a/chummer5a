@@ -423,19 +423,19 @@ namespace Chummer.Skills
         /// <returns>Price in karma</returns>
         public virtual int UpgradeKarmaCost()
         {
-            int masterAdjustment = 0;
             int intTotalBaseRating = TotalBaseRating;
+            if (intTotalBaseRating >= RatingMaximum)
+            {
+                return -1;
+            }
+            int masterAdjustment = 0;
             if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
             {
                 masterAdjustment = intTotalBaseRating >= 5 ? 2 : -1;
             }
 
-            int upgrade;
-            if (intTotalBaseRating >= RatingMaximum)
-            {
-                upgrade = -1;
-            }
-            else if (intTotalBaseRating == 0)
+            int upgrade = 0;
+            if (intTotalBaseRating == 0)
             {
                 upgrade = _character.Options.KarmaNewActiveSkill + masterAdjustment;
             }

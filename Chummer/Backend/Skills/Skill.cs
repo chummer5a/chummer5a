@@ -98,7 +98,7 @@ namespace Chummer.Skills
             objWriter.WriteElementString("default", Default.ToString());
             objWriter.WriteElementString("rating", Rating.ToString());
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
-            objWriter.WriteElementString("specializedrating",specRating.ToString());
+            objWriter.WriteElementString("specializedrating", specRating.ToString());
             objWriter.WriteElementString("specbonus", (specRating - rating).ToString());
             objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue).ToString());
             objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
@@ -272,7 +272,7 @@ namespace Chummer.Skills
 
             var v = from XmlNode node
                 in n.SelectNodes("skillspecializations/skillspecialization")
-                select SkillSpecialization.Load(node);
+                    select SkillSpecialization.Load(node);
             var q = v.ToList();
             if (q.Count != 0)
             {
@@ -283,7 +283,7 @@ namespace Chummer.Skills
         }
 
         protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
-            //TODO CACHE INVALIDATE
+        //TODO CACHE INVALIDATE
 
         /// <summary>
         /// Load a skill from a data file describing said skill
@@ -358,7 +358,7 @@ namespace Chummer.Skills
 
         //load from data
         protected Skill(Character character, XmlNode n) : this(character, n?["skillgroup"]?.InnerText)
-            //Ugly hack, needs by then
+        //Ugly hack, needs by then
         {
             if (n == null)
                 return;
@@ -397,7 +397,7 @@ namespace Chummer.Skills
             get { return Rating > 0; }
         }
 
-        public bool CanHaveSpecs => Leveled && KarmaUnlocked;
+        public bool CanHaveSpecs => TotalBaseRating > 0 && KarmaUnlocked;
 
         public Character CharacterObject
         {
@@ -412,7 +412,7 @@ namespace Chummer.Skills
         {
             get
             {
-                    return AttributeObject.Abbrev;
+                return AttributeObject.Abbrev;
             }
         }
         /// <summary>
@@ -444,6 +444,18 @@ namespace Chummer.Skills
                 {
                     string strFlyString = CharacterObject.Fly;
                     if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains("Special"))
+                        return false;
+                }
+                if (Name.Contains("Swimming"))
+                {
+                    string strSwimString = CharacterObject.Swim;
+                    if (string.IsNullOrEmpty(strSwimString) || strSwimString == "0" || strSwimString.Contains("Special"))
+                        return false;
+                }
+                if (Name.Contains("Running"))
+                {
+                    string strMovementString = CharacterObject.Movement;
+                    if (string.IsNullOrEmpty(strMovementString) || strMovementString == "0" || strMovementString.Contains("Special"))
                         return false;
                 }
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
@@ -563,7 +575,7 @@ namespace Chummer.Skills
                         break;
                     }
 
-                    if(index >= 0) Specializations.RemoveAt(index);
+                    if (index >= 0) Specializations.RemoveAt(index);
                 }
                 else if (Specializations.Count == 0 && !string.IsNullOrWhiteSpace(value))
                 {
@@ -590,7 +602,7 @@ namespace Chummer.Skills
                 if (!Default && !Leveled)
                 {
                     return "You cannot default in this skill";
-                        //TODO translate (could not find it in lang file, did not check old source)
+                    //TODO translate (could not find it in lang file, did not check old source)
                 }
 
                 IEnumerable<Improvement> lstRelevantImprovements = RelevantImprovements();
@@ -683,7 +695,7 @@ namespace Chummer.Skills
                     }
                 }
 
-                foreach(Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
+                foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
                 {
                     s.Append("\n");
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
@@ -818,7 +830,7 @@ namespace Chummer.Skills
 
             if (string.IsNullOrEmpty(value))
             {
-                Log.Warning(new object[]{"Skill Tooltip GetName value = null", source.SourceName, source.ImproveSource, source.ImproveType, source.ImprovedName});
+                Log.Warning(new object[] { "Skill Tooltip GetName value = null", source.SourceName, source.ImproveSource, source.ImproveType, source.ImprovedName });
                 return source.ImproveSource + " source not found";
             }
             return value;
@@ -855,7 +867,7 @@ namespace Chummer.Skills
                 if (!String.IsNullOrEmpty(_strNotes))
                 {
                     _strNotes = CommonFunctions.WordWrap(_strNotes, 100);
-                    strReturn = LanguageManager.GetString("Label_Notes") + " " +_strNotes + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes") + " " + _strNotes + "\n\n";
                 }
 
                 strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.GetString("String_Page")} {Page}";
@@ -978,7 +990,7 @@ namespace Chummer.Skills
                     return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
                 };
 
-                return _cachedWareRating =  CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+                return _cachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
 
             }
 
@@ -1000,9 +1012,15 @@ namespace Chummer.Skills
                         new ReverseTree<string>(nameof(CanHaveSpecs),
                             new ReverseTree<string>(nameof(Leveled),
                                 new ReverseTree<string>(nameof(Rating),
-                                    new ReverseTree<string>(nameof(Karma)),
-                                    new ReverseTree<string>(nameof(BaseUnlocked),
-                                        new ReverseTree<string>(nameof(Base))
+                                    new ReverseTree<string>(nameof(TotalBaseRating),
+                                        new ReverseTree<string>(nameof(RatingModifiers)),
+                                        new ReverseTree<string>(nameof(LearnedRating),
+                                            new ReverseTree<string>(nameof(KarmaUnlocked),
+                                                new ReverseTree<string>(nameof(Karma))),
+                                            new ReverseTree<string>(nameof(BaseUnlocked),
+                                                new ReverseTree<string>(nameof(Base))
+                                            )
+                                        )
                                     )
                                 )
                             )

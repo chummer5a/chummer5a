@@ -229,26 +229,17 @@ namespace Chummer.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            int cost = 0;
             int intTotalBaseRating = TotalBaseRating;
-            if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
+            int cost = intTotalBaseRating * (intTotalBaseRating + 1);
+            int lower = Base + FreeKarma();
+            cost -= lower * (lower + 1);
+            if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost() && intTotalBaseRating > 3)
             {
-                int lower = Base + FreeKarma();
-
-                for (int i = lower; i < intTotalBaseRating; i += 2) //TODO: this is probably fucked
-                {
-                    cost += (i+1)*CharacterObject.Options.KarmaImproveKnowledgeSkill;
-                }
+                cost -= 1;
             }
-            else
-            {
-                cost = intTotalBaseRating * (intTotalBaseRating + 1);
-                int lower = Base + FreeKarma();
-                cost -= lower * (lower + 1);
 
-                cost /= 2;
-                cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
-            }
+            cost /= 2;
+            cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
 
             cost +=  //Spec
                     (!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?

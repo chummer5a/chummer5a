@@ -1067,22 +1067,19 @@ namespace Chummer
         public MentorSpirit MentorInformation(Improvement.ImprovementType mentorType = Improvement.ImprovementType.MentorSpirit)
         {
             //TODO: STORE ALL THIS IN THE ACTUAL CLASS. SCROUNGING IT UP EVERY TIME IS STUPID. 
-            MentorSpirit objReturn = new MentorSpirit();
             string strMentorSpirit = string.Empty;
 
             // Look for the Mentor Spirit or Paragon Quality based on the type chosen.
             Improvement imp = _objCharacter.Improvements.FirstOrDefault(i => i.ImproveType == mentorType);
-            if (imp == null) return null;
+            if (imp == null)
+                return null;
+            MentorSpirit objReturn = new MentorSpirit(mentorType, imp.UniqueName);
+            // Load the appropriate XML document.
+            XmlNode objXmlMentor = objReturn.MyXmlNode;
 
             Quality source = _objCharacter.Qualities.FirstOrDefault(q => q.InternalId == imp.SourceName);
             string strAdvantage = string.Empty;
             string strDisadvantage = string.Empty;
-
-            // Load the appropriate XML document.
-            XmlDocument doc =
-                XmlManager.Load(mentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml");
-
-            XmlNode objXmlMentor = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + imp.UniqueName + "\"]");
 
             if (objXmlMentor == null) return null;
             // Build the list of advantages gained through the Mentor Spirit.

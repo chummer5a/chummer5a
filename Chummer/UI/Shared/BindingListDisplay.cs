@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,6 +52,17 @@ namespace Chummer.UI.Shared
             }
 
             Application.Idle += ApplicationOnIdle;
+        }
+
+        /// <summary>
+        /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
+        /// </summary>
+        public BindingList<TType> Contents
+        {
+            get
+            {
+                return _contents;
+            }
         }
 
         private void LoadRange(int min, int max, bool blnSuspend = true)
@@ -146,7 +157,7 @@ namespace Chummer.UI.Shared
 
         private int VisibleElements()
         {
-            return _contentList.Count == 0 ? 0 :  Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
+            return _contentList.Count == 0 ? 0 : Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
         }
 
         private void ClearAllCache()
@@ -233,11 +244,11 @@ namespace Chummer.UI.Shared
 
         private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
         {
-            _indexComparer.Reset(_contents);
             switch (eventArgs.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                    return;
+                    _indexComparer.Reset(_contents);
+                    break;
                 //case ListChangedType.Reset:
                 //    break;
                 case ListChangedType.ItemAdded:
@@ -262,11 +273,11 @@ namespace Chummer.UI.Shared
                     Utils.BreakIfDebug();
                     break;
             }
-            pnlDisplay.ResumeLayout();
+            pnlDisplay.SuspendLayout();
             ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
             ClearAllCache();
             LoadScreenContent();
-            pnlDisplay.SuspendLayout();
+            pnlDisplay.ResumeLayout();
         }
 
         private void BindingListDisplay_Scroll(object sender, ScrollEventArgs e)
@@ -280,9 +291,10 @@ namespace Chummer.UI.Shared
         {
             pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
 
-            if (_contentList == null) return; //In some edge case i don't know, this is done before _Load()
-
-            pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
+            if (_contentList == null) //In some edge case i don't know, this is done before _Load()
+                pnlDisplay.Height = Height;
+            else
+                pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
             foreach (Control control in pnlDisplay.Controls)
             {
                 control.Width = pnlDisplay.Width - 2;

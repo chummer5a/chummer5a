@@ -3059,18 +3059,10 @@ namespace Chummer.Backend.Equipment
                     strSkill = _strUseSkill;
 
                 // Locate the Active Skill to be used.
-                Skill objSkill = null;
-                foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    if (!objCharacterSkill.IsKnowledgeSkill && objCharacterSkill.Name == strSkill)
-                    {
-                        if (string.IsNullOrEmpty(strSpec) || objCharacterSkill.HasSpecialization(strSpec))
-                        {
-                            objSkill = objCharacterSkill;
-                            break;
-                        }
-                    }
-                }
+                string strKey = strSkill;
+                if (!string.IsNullOrEmpty(strSpec))
+                    strKey += " (" + strSpec + ")";
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
                 int intDicePool = 0;
                 if (objSkill != null)
                 {

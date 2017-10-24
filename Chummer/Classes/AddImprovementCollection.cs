@@ -3823,8 +3823,9 @@ namespace Chummer.Classes
             else if (bonusNode.Attributes?["skill"] != null)
             {
                 Log.Info("skill");
-                Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode.Attributes["skill"].InnerText);
-                Log.Info(bonusNode.Attributes["skill"].InnerText);
+                string strKey = bonusNode.Attributes?["skill"]?.InnerText ?? string.Empty;
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
+                Log.Info(strKey);
                 if (objSkill != null)
                 {
                     Log.Info("Calling CreateImprovement");
@@ -4407,7 +4408,7 @@ namespace Chummer.Classes
                 if (bonusNode.Attributes["name"] != null)
                 {
                     strName = bonusNode.Attributes["name"].InnerText;
-                    blnAdd = _objCharacter.SkillsSection.Skills.All(objSkill => objSkill.Name != strName);
+                    blnAdd = !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName);
                 }
 
                 if (blnAdd)
@@ -4511,7 +4512,7 @@ namespace Chummer.Classes
         public void addskillspecialization(XmlNode bonusNode)
         {
             
-            Skill objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
+            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
             if (objSkill != null)
             {
                 // Create the Improvement.
@@ -4524,13 +4525,14 @@ namespace Chummer.Classes
 
         public void addskillspecializationoption(XmlNode bonusNode)
         {
-            if (!(_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)) return;
-            var lstSkills = new List<Skill>();
+            if (!_objCharacter.Options.FreeMartialArtSpecialization || _objImprovementSource != Improvement.ImprovementSource.MartialArt)
+                return;
+            List<Skill> lstSkills = new List<Skill>();
             if (bonusNode["skills"] != null)
             {
                 foreach (XmlNode objNode in bonusNode["skills"])
                 {
-                    var objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == objNode.InnerText);
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
                     if (objSkill != null)
                     {
                         lstSkills.Add(objSkill);
@@ -4539,22 +4541,24 @@ namespace Chummer.Classes
             }
             else
             {
-                var objSkill = _objCharacter.SkillsSection.Skills.First(x => x.Name == bonusNode["skill"].InnerText);
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
                 if (objSkill != null)
                 {
                     lstSkills.Add(objSkill);
                 }
             }
-                
-            if (lstSkills.Count == 0) return;
-            foreach (var objSkill in lstSkills)
+
+            if (lstSkills.Count > 0)
             {
-                // Create the Improvement.
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
-                SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
-                objSkill.Specializations.Add(nspec);
+                foreach (Skill objSkill in lstSkills)
+                {
+                    // Create the Improvement.
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
+                    SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
+                    objSkill.Specializations.Add(nspec);
+                }
             }
         }
         
