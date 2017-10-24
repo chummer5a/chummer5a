@@ -164,6 +164,7 @@ Application Changes:
 - Crash Dumper will no longer crash when it cannot connect to an upload service, and it will prompt the user to manually submit an issue to GitHub with the attached minidump.
 - Transformed the GlobalOptions, LanguageManager, and XmlManager classes into fully static classes. For users, this also produces a measurable performance increase and a decrease in the size of Chummer5's executable.
 - Fixed a bug related to selecting the default, blank entry in the Traditions dropdown combobox and then trying to add a spell.
+- Allowed Edge to be burned to zero. Fixes #1989.
 
 Data Changes:
 

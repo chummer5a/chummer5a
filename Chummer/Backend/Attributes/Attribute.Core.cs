@@ -679,22 +679,22 @@ namespace Chummer.Backend.Attributes
                     return 1;
 
                 int intReturn = MetatypeMinimum + MinimumModifiers;
-                if (_objCharacter.IsCritter || _intMetatypeMax == 0)
+                if (intReturn < 1)
                 {
-                    if (intReturn < 0)
+                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || _strAbbrev == "EDG")
                         intReturn = 0;
-                }
-                else
-                {
-                    if (intReturn < 1)
+                    else
                         intReturn = 1;
                 }
+
+                if (_strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
+                    return intReturn;
 
                 int intEssencePenalty = _objCharacter.EssencePenalty;
                 if (_strAbbrev == "MAG")
                     intEssencePenalty = _objCharacter.EssencePenaltyMAG;
-
-                if (intEssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
+                if (intEssencePenalty == 0)
+                    return intReturn;
 
                 if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
@@ -1312,11 +1312,10 @@ namespace Chummer.Backend.Attributes
                 {
                     Base -= 1;
                 }
-                else if
-                    (Abbrev == "EDG" && TotalMinimum > 0)
+                else if (Abbrev == "EDG" && TotalMinimum > 0)
                 {
                     //Edge can reduce the metatype minimum below zero. 
-                    MetatypeMinimum--;
+                    MetatypeMinimum -= 1;
                 }
                 else
                     return;

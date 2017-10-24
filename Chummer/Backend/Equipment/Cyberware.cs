@@ -744,7 +744,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             else
-                _blnAddToParentESS = MyXmlNode["addtoparentess"] != null;
+                _blnAddToParentESS = MyXmlNode?["addtoparentess"] != null;
         }
 
         /// <summary>
