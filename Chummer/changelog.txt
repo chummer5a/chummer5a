@@ -171,6 +171,7 @@ Application Changes:
 - Skill-based item requirement nodes can now process exotic skills.
 - Fixed a bug where specializations could be bought for skills that only had ratings from skillsofts.
 - Fixed a bug where the button to increase a knowledge skill in career mode would be clickable/enabled even when the knowledge skill could not actually be increased.
+- Fixed an issue where martial arts technique names would not get properly translated.
 
 Data Changes:
 
