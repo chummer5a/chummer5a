@@ -9,7 +9,7 @@ using Octokit;
 
 namespace Chummer.Backend
 {
-    public class ClassSaver
+    public static class ClassSaver
     {
         private static readonly HashSet<Type> AttemptSaveList = new HashSet<Type>
         {
@@ -19,10 +19,11 @@ namespace Chummer.Backend
             typeof(float),
             typeof(string),
             typeof(bool),
-            typeof(Enum)
+            typeof(Enum),
+            typeof(Version)
         };
 
-        public void Save(object toSave, XmlTextWriter destination)
+        public static void Save(object toSave, XmlWriter destination)
         {
             if (toSave == null) throw new NullReferenceException(nameof(toSave));
             if (destination == null) throw new NullReferenceException(nameof(destination));
@@ -30,7 +31,7 @@ namespace Chummer.Backend
             SaveInner(toSave, destination.WriteElementString);
         }
 
-        public void Save(object toSave, RegistryKey destination)
+        public static void Save(object toSave, RegistryKey destination)
         {
             if (toSave == null) throw new NullReferenceException(nameof(toSave));
             if (destination == null) throw new NullReferenceException(nameof(destination));
@@ -40,7 +41,7 @@ namespace Chummer.Backend
 
         //Not 99% sure ref is needed, but makes it explicit what happens and might prevent if anybody uses this on a
         //struct in the future
-        public void Load<T>(ref T target, XmlNode source)
+        public static void Load<T>(ref T target, XmlNode source)
         {
             if (target == null) throw new NullReferenceException(nameof(target));
             if (source == null) throw new NullReferenceException(nameof(source));
@@ -49,7 +50,7 @@ namespace Chummer.Backend
 
         }
 
-        public void Load<T>(ref T target, RegistryKey source)
+        public static void Load<T>(ref T target, RegistryKey source)
         {
             if (target == null) throw new NullReferenceException(nameof(target));
             if (source == null) throw new NullReferenceException(nameof(source));
@@ -57,7 +58,7 @@ namespace Chummer.Backend
             LoadInner(ref target, field => source.GetValue(field)?.ToString());
         }
 
-        private void LoadInner<T>(ref T target, Func<string, string> read)
+        private static void LoadInner<T>(ref T target, Func<string, string> read)
         {
             PropertyInfo[] properties = target.GetType().GetProperties();
 
@@ -81,9 +82,9 @@ namespace Chummer.Backend
                 {
                     if (property.CanWrite)
                     {
-                        var converter = TypeDescriptor.GetConverter(property.PropertyType);
-
-                        property.SetValue(target, converter.ConvertFrom(unparsed));
+                        var conv = GetConverter(property.PropertyType);
+                        
+                        property.SetValue(target, conv(unparsed));
                     }
                     else
                     {
@@ -97,6 +98,20 @@ namespace Chummer.Backend
                 }
 
             }
+        }
+
+        private static Func<string, object>  GetConverter(Type type)
+        {
+            var converter = TypeDescriptor.GetConverter(type);
+            if (converter.CanConvertFrom(typeof(string)))
+                return converter.ConvertFrom;
+
+            var method = type.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public);
+            if(method != null)
+                return x => method.Invoke(null, new object[] {x});
+
+            Utils.BreakIfDebug();
+            throw new ArgumentException("Cannot load option of type " + type);
         }
         
         private static void SaveInner(object toSave, Action<string, string> save)

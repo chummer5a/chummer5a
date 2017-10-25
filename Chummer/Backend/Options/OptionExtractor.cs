@@ -123,7 +123,7 @@ namespace Chummer.Backend.Options
             return root;
         }
 
-        public List<OptionItem> BookOptions(CharacterOptions characterOptions, GlobalOptions globalOptions)
+        public List<OptionItem> BookOptions(CharacterOptions characterOptions, ProgramOptions globalOptions)
         {
             List<OptionDictionaryEntryProxy<string, bool>> options = characterOptions
                 .Books.Keys

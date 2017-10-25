@@ -26,7 +26,8 @@ using System.Windows.Forms;
 using System.IO.Compression;
 using System.Reflection;
 ﻿using System.Windows;
-﻿using Application = System.Windows.Forms.Application;
+ using Chummer.Backend;
+ using Application = System.Windows.Forms.Application;
 ﻿using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
@@ -43,7 +44,7 @@ namespace Chummer
 		private string strLatestVersion = "";
 		private string strTempPath = "";
         private readonly string strAppPath = Application.StartupPath;
-		private readonly GlobalOptions _objGlobalOptions = GlobalOptions.Instance;
+		private readonly ProgramOptions _objGlobalOptions = GlobalOptions.Instance;
 		public frmUpdate()
 		{
 			Log.Info("frmUpdate");

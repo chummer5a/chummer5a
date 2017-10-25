@@ -68,7 +68,7 @@ namespace Chummer
             //TODO: Benchmark this
             //TODO: can be done in background?
 
-			foreach (string strFile in GlobalOptions.Instance.MostRecentlyUsedList.Select(x => x.Path).Where(File.Exists))
+			foreach (string strFile in GlobalOptions.MostRecentlyUsedList.Select(x => x.Path).Where(File.Exists))
 			{
 				CacheCharacter(strFile);
 			}

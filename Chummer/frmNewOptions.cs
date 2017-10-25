@@ -47,7 +47,7 @@ namespace Chummer
 
 	        //TODO: dropdown that allows you to select/add multiple
             //TODO: When doing so, remember to include selection login in btnReset_Click
-	        CharacterOptions o = Program.OptionsManager.Default;
+	        CharacterOptions o = GlobalOptions.Default;
 
 	        OptionExtractor extactor = new OptionExtractor(
 	            new List<Predicate<OptionItem>>(
@@ -185,71 +185,10 @@ namespace Chummer
             {
                 item.Save();
             }
-            string optionPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "settings",
-                Program.OptionsManager.Default.FileName);
+            
+            GlobalOptions.SaveCharacterOption(GlobalOptions.Default);
+            GlobalOptions.SaveGlobalOptions();
 
-            ClassSaver saver = new ClassSaver();
-
-            Directory.CreateDirectory(Path.GetDirectoryName(optionPath));
-            using (FileStream fs = new FileStream(optionPath, FileMode.Create))
-            {
-                XmlTextWriter writer = new XmlTextWriter(fs, Encoding.UTF8);
-                writer.WriteStartElement("settings");
-                writer.WriteAttributeString("fileversion", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-                saver.Save(Program.OptionsManager.Default, writer);
-                writer.WriteStartElement("books");
-                foreach (var book in Program.OptionsManager.Default.Books.Where(x => x.Value).Select(x => x.Key))
-                {
-                    writer.WriteStartElement("book");
-                    writer.WriteElementString("book", book);
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndElement();
-                writer.Flush();
-                fs.Flush();
-            }
-
-            if (Utils.IsLinux)
-            {
-                string globalOptionPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    ".config", "Chummer5a", "globaloptions.xml");
-
-                Directory.CreateDirectory(Path.GetDirectoryName(globalOptionPath));
-                using (FileStream fs = new FileStream(globalOptionPath, FileMode.Create))
-                {
-                    XmlTextWriter writer = new XmlTextWriter(fs, Encoding.UTF8);
-                    writer.WriteStartElement("settings");
-
-                    saver.Save(GlobalOptions.Instance, writer);
-
-                    writer.WriteStartElement("books");
-                    foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
-                    {
-                        writer.WriteStartElement("book");
-                        saver.Save(book, writer);
-                        writer.WriteEndElement();
-                    }
-                    writer.WriteEndElement();
-
-                    writer.WriteEndElement();
-                    writer.Flush();
-                    fs.Flush();
-                }
-            }
-            else
-            {
-                RegistryKey rootKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
-                saver.Save(GlobalOptions.Instance, rootKey);
-                int count = 0;
-                RegistryKey bookKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Books");
-                foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
-                {
-                    RegistryKey k2 = bookKey.CreateSubKey(count.ToString("D2"));
-                    saver.Save(book, k2);
-                    count++;
-                }
-            }
             Close();
         }
 
@@ -269,11 +208,11 @@ namespace Chummer
         private void btnDefault_Click(object sender, EventArgs e)
         {
             //TODO: Do for more stuff (GlobalOptions won't handle this)
-            CharacterOptions def = new CharacterOptions(Program.OptionsManager.Default.FileName);
+            CharacterOptions def = new CharacterOptions(GlobalOptions.Default.FileName);
 
             foreach (FieldInfo field in typeof(CharacterOptions).GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {
-                field.SetValue(Program.OptionsManager.Default, field.GetValue(def));
+                field.SetValue(GlobalOptions.Default, field.GetValue(def));
             }
 
             Close();

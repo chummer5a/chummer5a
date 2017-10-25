@@ -90,7 +90,7 @@ namespace Chummer
 	        }
 #endif
 
-			GlobalOptions.Instance.MRUChanged += PopulateMRU;
+			GlobalOptions.MRUChanged += PopulateMRU;
 
 			// Delete the old executable if it exists (created by the update process).
 			if (File.Exists("Chummer.exe.old"))
@@ -691,8 +691,11 @@ namespace Chummer
 					frmCharacter.Show();
 				}
 
-				if (blnIncludeInMRU)
-					GlobalOptions.Instance.MRUAdd(strFileName);
+			    if (blnIncludeInMRU)
+			    {
+			        GlobalOptions.MRUAdd(strFileName);
+			        GlobalOptions.SaveMRUEntries();
+			    }
 
 				objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
 				objCharacter_CharacterNameChanged(objCharacter);
@@ -708,7 +711,7 @@ namespace Chummer
 		/// </summary>
 		public void PopulateMRU()
 		{
-		    List<MRUEntry> entries = GlobalOptions.Instance.MostRecentlyUsedList;
+		    List<MRUEntry> entries = GlobalOptions.MostRecentlyUsedList;
 		    int progress;
 		    for (progress = 0; progress < entries.Count; progress++)
 		    {
@@ -739,7 +742,7 @@ namespace Chummer
             {
                 ToolStripMenuItem item = (ToolStripMenuItem)sender;
                 MRUEntry entry = (MRUEntry)item.Tag;
-                GlobalOptions.Instance.MruToggleSticky(entry);
+                GlobalOptions.MruToggleSticky(entry);
 
                 //TODO: refresh view
             }
@@ -816,7 +819,7 @@ namespace Chummer
 
 		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
 		{
-            GlobalOptions.Instance.MostRecentlyUsedList.RemoveAll(x => !x.Sticky);
+            GlobalOptions.MostRecentlyUsedList.RemoveAll(x => !x.Sticky);
 		}
 	}
 }

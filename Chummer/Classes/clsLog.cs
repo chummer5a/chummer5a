@@ -36,7 +36,7 @@ namespace Chummer
 		static Log()
 		{
 			Stopwatch sw = Stopwatch.StartNew();
-			if (GlobalOptions.Instance.UseLogging)
+			if (GlobalOptions.Instance?.UseLogging ?? false)
 			{
 				//TODO: Add listner to UseLogging to be able to start it mid run
 				string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");

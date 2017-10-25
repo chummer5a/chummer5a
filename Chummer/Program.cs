@@ -82,14 +82,12 @@ namespace Chummer
 			
 	        sw.TaskEnd("infoprnt");
 
-		    GlobalOptions.Instance.SourcebookInfo.Any();
+            GlobalOptions.Load();
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-		    OptionsManager = OptionsManager.Load();
-
-	        sw.TaskEnd("languagefreestartup");
+		    sw.TaskEnd("languagefreestartup");
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
 			// Make sure the default language has been loaded before attempting to open the Main Form.
 
@@ -123,8 +121,8 @@ namespace Chummer
 		}
 
 	    public static bool Debugging { get; private set; } = false;
-	    public static BookImageManager BookImageManager { get; private set; } = new BookImageManager();
-	    public static OptionsManager OptionsManager { get; private set; }
+        public static BookImageManager BookImageManager { get; private set; } = new BookImageManager();
+	    
 	    static ExceptionHeatMap heatmap = new ExceptionHeatMap();
 
 	    static void FixCwd()

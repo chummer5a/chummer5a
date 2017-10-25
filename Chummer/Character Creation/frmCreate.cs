@@ -93,7 +93,7 @@ namespace Chummer
 
 	        tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
 
-            GlobalOptions.Instance.MRUChanged += PopulateMRU;
+            GlobalOptions.MRUChanged += PopulateMRU;
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
@@ -1174,7 +1174,7 @@ namespace Chummer
                 _objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
                 _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
                 _objCharacter.SkillsSection.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
-                GlobalOptions.Instance.MRUChanged -= PopulateMRU;
+                GlobalOptions.MRUChanged -= PopulateMRU;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -16821,7 +16821,7 @@ namespace Chummer
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
-                GlobalOptions.Instance.MRUAdd(_objCharacter.FileName);
+                GlobalOptions.MRUAdd(_objCharacter.FileName);
             }
             UpdateWindowTitle(false);
 
@@ -16870,7 +16870,7 @@ namespace Chummer
                 _objCharacter.Save();
                 _blnIsDirty = false;
                 blnSaved = true;
-                GlobalOptions.Instance.MRUAdd(_objCharacter.FileName);
+                GlobalOptions.MRUAdd(_objCharacter.FileName);
             }
             if (blnEscapeAfterSave)
                 return blnSaved;
