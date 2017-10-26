@@ -310,6 +310,7 @@ Data Changes:
 - Added entries for Modular Gear.
 - Osmium Mace now only has one entry that properly scales its stats with the character's STR.
 - Fixed Osmosis not being allowed to be leveled to Rating 6. Fixes #1996.
+- Fixed Explorer and Aware not properly unlocking Assensing and Astral Combat. Fixes #1991.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

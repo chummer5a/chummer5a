@@ -971,6 +971,7 @@
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
+		<unlockskills>Aware</unlockskills>
       </bonus>
       <forbidden>
         <oneof>
@@ -15269,6 +15270,7 @@
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
+		<unlockskills>Explorer</unlockskills>
       </bonus>
       <forbidden>
         <oneof>

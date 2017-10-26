@@ -734,6 +734,8 @@ namespace Chummer.Skills
                 case FilterOptions.Enchanting:
                     return " and category = 'Magical Active' and (skillgroup = 'Enchanting' or skillgroup = '' or not(skillgroup))";
                 case FilterOptions.Adept:
+                case FilterOptions.Aware:
+                case FilterOptions.Explorer:
                     return " and category = 'Magical Active' and (skillgroup = '' or not(skillgroup))";
                 case FilterOptions.Spellcasting:
                     return " and category = 'Magical Active' and name = 'Spellcasting'";
@@ -755,6 +757,8 @@ namespace Chummer.Skills
             Conjuring,
             Enchanting,
             Adept,
+            Aware,
+            Explorer,
             Technomancer,
             Spellcasting,
             Name
