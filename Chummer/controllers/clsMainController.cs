@@ -24,6 +24,7 @@ using System.Text;
  using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+using Chummer.Backend.Extensions;
 
 namespace Chummer
 {
@@ -32,7 +33,6 @@ namespace Chummer
         public MainController(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objFunctions = new CommonFunctions(_objCharacter);
         }
 
         #region Enums
@@ -136,16 +136,7 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeView treGear)
         {
-            Gear objGear = new Gear(_objCharacter);
-            // Locate the currently selected piece of Gear.
-            foreach (Gear objCharacterGear in _objCharacter.Gear)
-            {
-                if (objCharacterGear.InternalId == treGear.SelectedNode.Tag.ToString())
-                {
-                    objGear = objCharacterGear;
-                    break;
-                }
-            }
+            Gear objGear = _objCharacter.Gear.FirstOrDefault(x => x.InternalId == treGear.SelectedNode.Tag.ToString());
             _objCharacter.Gear.Remove(objGear);
             if (intNewIndex > _objCharacter.Gear.Count)
                 _objCharacter.Gear.Add(objGear);
@@ -220,16 +211,7 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public void MoveLifestyleNode(int intNewIndex, TreeNode objDestination, TreeView treLifestyles)
         {
-            Lifestyle objLifestyle = new Lifestyle(_objCharacter);
-            // Locate the currently selected Lifestyle.
-            foreach (Lifestyle objCharacterLifestyle in _objCharacter.Lifestyles)
-            {
-                if (objCharacterLifestyle.Name == treLifestyles.SelectedNode.Tag.ToString())
-                {
-                    objLifestyle = objCharacterLifestyle;
-                    break;
-                }
-            }
+            Lifestyle objLifestyle = _objCharacter.Lifestyles.FirstOrDefault(x => x.Name == treLifestyles.SelectedNode.Tag.ToString());
             _objCharacter.Lifestyles.Remove(objLifestyle);
             if (intNewIndex > _objCharacter.Lifestyles.Count)
                 _objCharacter.Lifestyles.Add(objLifestyle);
@@ -335,16 +317,7 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeView treWeapons)
         {
-            Weapon objWeapon = new Weapon(_objCharacter);
-            // Locate the currently selected Weapon.
-            foreach (Weapon objCharacterWeapon in _objCharacter.Weapons)
-            {
-                if (objCharacterWeapon.InternalId == treWeapons.SelectedNode.Tag.ToString())
-                {
-                    objWeapon = objCharacterWeapon;
-                    break;
-                }
-            }
+            Weapon objWeapon = _objCharacter.Weapons.FirstOrDefault(x => x.InternalId == treWeapons.SelectedNode.Tag.ToString());
             _objCharacter.Weapons.Remove(objWeapon);
             if (intNewIndex > _objCharacter.Weapons.Count)
                 _objCharacter.Weapons.Add(objWeapon);
@@ -413,24 +386,53 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Move a Cyberware TreeNode after Drag and Drop or changing mount.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="lstNewList">New list to which the Cyberware is being moved.</param>
+        /// <param name="objDestination">New parent node.</param>
+        /// <param name="treOldTreeView">Old tree view from which we are moving the Cyberware.</param>
+        public void MoveCyberwareNode(int intNewIndex, List<Cyberware> lstNewList, TreeNode objDestination, TreeView treOldTreeView)
+        {
+            TreeNode objCyberwareNode = treOldTreeView.SelectedNode;
+            Cyberware objCyberware = CommonFunctions.DeepFindById(objCyberwareNode.Tag.ToString(), _objCharacter.Cyberware);
+            VehicleMod objOldParentVehicleMod = null;
+            if (objCyberware == null)
+            {
+                objCyberware = CommonFunctions.FindVehicleCyberware(objCyberwareNode.Tag.ToString(), _objCharacter.Vehicles, out objOldParentVehicleMod);
+            }
+            Cyberware objOldParentCyberware = objCyberware.Parent;
+            if (objOldParentCyberware != null)
+                objOldParentCyberware.Children.Remove(objCyberware);
+            else if (objOldParentVehicleMod != null)
+                objOldParentVehicleMod.Cyberware.Remove(objCyberware);
+            else
+                _objCharacter.Cyberware.Remove(objCyberware);
+
+            if (intNewIndex > lstNewList.Count)
+                lstNewList.Add(objCyberware);
+            else
+                lstNewList.Insert(intNewIndex, objCyberware);
+
+            TreeNode objNewParent = objDestination;
+
+            TreeNode objOldParent = treOldTreeView.SelectedNode.Parent;
+
+            objOldParent.Nodes.Remove(treOldTreeView.SelectedNode);
+            objNewParent.Nodes.Insert(intNewIndex, objCyberwareNode);
+            objNewParent.Expand();
+        }
+
+        /// <summary>
         /// Move a Vehicle TreeNode after Drag and Drop.
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeView treVehicles)
         {
-            Vehicle objVehicle = new Vehicle(_objCharacter);
-            // Locate the currently selected Vehicle.
-            foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
-            {
-                if (objCharacterVehicle.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                {
-                    objVehicle = objCharacterVehicle;
-                    break;
-                }
-            }
+            Vehicle objVehicle = _objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == treVehicles.SelectedNode.Tag.ToString());
             _objCharacter.Vehicles.Remove(objVehicle);
-            if (intNewIndex > _objCharacter.Weapons.Count)
+            if (intNewIndex > _objCharacter.Vehicles.Count)
                 _objCharacter.Vehicles.Add(objVehicle);
             else
                 _objCharacter.Vehicles.Insert(intNewIndex, objVehicle);
@@ -589,16 +591,7 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public void MoveImprovementNode(int intNewIndex, TreeNode objDestination, TreeView treImprovements)
         {
-            Improvement objImprovement = new Improvement();
-            // Locate the currently selected Lifestyle.
-            foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-            {
-                if (objCharacterImprovement.SourceName == treImprovements.SelectedNode.Tag.ToString())
-                {
-                    objImprovement = objCharacterImprovement;
-                    break;
-                }
-            }
+            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(x => x.SourceName == treImprovements.SelectedNode.Tag.ToString());
 
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
@@ -832,7 +825,7 @@ namespace Chummer
 
                 // Remove any Gear attached to the Cyberware.
                 foreach (Gear objGear in objCyberware.Gear)
-                { _objFunctions.DeleteGear(objGear, treWeapons); }
+                { CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons); }
 
 
                 // Open the Cyberware XML file and locate the selected piece.
@@ -1200,6 +1193,71 @@ namespace Chummer
             {
                 ChangeGearEquippedStatus(objGear, blnEquipped);
             }
+        }
+
+        /// <summary>
+        /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
+        /// </summary>
+        /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
+        /// <returns></returns>
+        public List<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware)
+        {
+            List<ListItem> lstReturn = new List<ListItem>();
+
+            ListItem liMount = new ListItem();
+            liMount.Value = "None";
+            liMount.Name = LanguageManager.GetString("String_None");
+            lstReturn.Add(liMount);
+
+            foreach (Cyberware objLoopCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children))
+            {
+                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && objLoopCyberware.Location == objModularCyberware.Location &&
+                    objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
+                {
+                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                    if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
+                    {
+                        liMount = new ListItem();
+                        liMount.Value = objLoopCyberware.InternalId;
+                        string strName = string.Empty;
+                        if (objLoopCyberware.Parent != null)
+                            strName = objLoopCyberware.Parent.DisplayName;
+                        else
+                            strName = objLoopCyberware.DisplayName;
+                        liMount.Name = strName;
+                        lstReturn.Add(liMount);
+                    }
+                }
+            }
+            foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles)
+            {
+                foreach (VehicleMod objLoopVehicleMod in objLoopVehicle.Mods)
+                {
+                    foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
+                    {
+                        // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                        if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount && objLoopCyberware.Location == objModularCyberware.Location &&
+                            objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name && objLoopCyberware != objModularCyberware)
+                        {
+                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                            if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
+                            {
+                                liMount = new ListItem();
+                                liMount.Value = objLoopCyberware.InternalId;
+                                string strName = objLoopVehicle.DisplayName + " ";
+                                if (objLoopCyberware.Parent != null)
+                                    strName += objLoopCyberware.Parent.DisplayName;
+                                else
+                                    strName += objLoopVehicleMod.DisplayName;
+                                liMount.Name = strName;
+                                lstReturn.Add(liMount);
+                            }
+                        }
+                    }
+                }
+            }
+            return lstReturn;
         }
     }
 }

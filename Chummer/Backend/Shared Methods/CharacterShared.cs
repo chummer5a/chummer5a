@@ -44,7 +44,6 @@ namespace Chummer
         protected Character _objCharacter;
         protected MainController _objController;
         protected CharacterOptions _objOptions;
-        protected CommonFunctions _objFunctions;
 
         public CharacterShared()
         {

@@ -54,6 +54,7 @@ namespace Chummer.Backend.Equipment
         protected bool _blnIncludedInParent = false;
         protected int _intMatrixCMBonus = 0;
         protected int _intMatrixCMFilled = 0;
+        protected string _strForcedValue = string.Empty;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -79,6 +80,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objXmlGear == null)
                 return;
+            _strForcedValue = strForceValue;
             XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid);
             objXmlGear.TryGetStringFieldQuickly("name", ref _strName);
@@ -121,7 +123,7 @@ namespace Chummer.Backend.Equipment
             // Check for a Custom name
             if (_strName == "Custom Item")
             {
-                if (string.IsNullOrEmpty(strForceValue))
+                if (string.IsNullOrEmpty(_strForcedValue))
                 {
                     frmSelectText frmPickText = new frmSelectText();
                     frmPickText.PreventXPathErrors = true;
@@ -136,16 +138,16 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    string strCustomName = LanguageManager.GetString(strForceValue, false);
+                    string strCustomName = LanguageManager.GetString(_strForcedValue, false);
                     if (string.IsNullOrEmpty(strCustomName))
-                        strCustomName = LanguageManager.TranslateExtra(strForceValue);
+                        strCustomName = LanguageManager.TranslateExtra(_strForcedValue);
                     _strName = strCustomName;
                 }
             }
             // Check for a Variable Cost.
             if (!string.IsNullOrEmpty(_strCost))
             {
-                if (_strCost.StartsWith("Variable") && string.IsNullOrEmpty(strForceValue))
+                if (_strCost.StartsWith("Variable") && string.IsNullOrEmpty(_strForcedValue))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
@@ -184,8 +186,8 @@ namespace Chummer.Backend.Equipment
             {
                 frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
                 frmPickWeaponCategory.Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo");
-                if (!string.IsNullOrEmpty(strForceValue) && !strForceValue.Equals(_strName))
-                    frmPickWeaponCategory.OnlyCategory = strForceValue;
+                if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(_strName))
+                    frmPickWeaponCategory.OnlyCategory = _strForcedValue;
 
                 //should really go in a data file
                 if (_strName.StartsWith("Ammo:"))
@@ -263,16 +265,16 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (objXmlGear.InnerXml.Contains("<bonus>"))
+            if (_nodBonus != null)
             {
                 // Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
-                bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selectweapon"));
+                bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !_nodBonus.InnerXml.Contains("selectweapon"));
 
                 if (blnApply)
                 {
-                    ImprovementManager.ForcedValue = strForceValue;
-                    if (!ImprovementManager.CreateImprovements(blnAddImprovements ? _objCharacter : null, Improvement.ImprovementSource.Gear, strSource, objXmlGear["bonus"], false, intRating, DisplayNameShort))
+                    ImprovementManager.ForcedValue = _strForcedValue;
+                    if (!ImprovementManager.CreateImprovements(blnAddImprovements ? _objCharacter : null, Improvement.ImprovementSource.Gear, strSource, _nodBonus, false, intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -501,7 +503,7 @@ namespace Chummer.Backend.Equipment
             TreeNode objChildNode = new TreeNode();
             List<Weapon> lstChildWeapons = new List<Weapon>();
             List<TreeNode> lstChildWeaponNodes = new List<TreeNode>();
-            objChild.Create(objXmlGearNode, objChildNode, intChildRating, lstChildWeapons, lstChildWeaponNodes, strChildForceValue, blnHacked, false, true, blnCreateChildren);
+            objChild.Create(objXmlGearNode, objChildNode, intChildRating, lstChildWeapons, lstChildWeaponNodes, strChildForceValue, blnHacked, false, blnAddChildImprovements, blnCreateChildren);
             objChild.Quantity = decChildQty;
             objChild.Cost = "0";
             objChild.MinRating = intChildRating;
@@ -528,6 +530,38 @@ namespace Chummer.Backend.Equipment
             objNode.Nodes.Add(objChildNode);
 
             CreateChildren(objXmlGearDocument, objXmlChild, objChild, objChildNode, blnHacked, blnAddChildImprovements);
+        }
+
+        public void ChangeModularEquip(bool blnEquip)
+        {
+            if (blnEquip)
+            {
+                // If the item grants a bonus, pass the information to the Improvement Manager.
+                if (_nodBonus != null)
+                {
+                    // Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
+                    // to the character which is incorrect, and once when the Focus is actually Bonded).
+                    bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !_nodBonus.InnerXml.Contains("selectweapon"));
+
+                    if (blnApply)
+                    {
+                        ImprovementManager.ForcedValue = _strForcedValue;
+                        if (string.IsNullOrEmpty(_strForcedValue))
+                            ImprovementManager.ForcedValue = _strExtra;
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, _nodBonus, false, Rating, DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            _strExtra = ImprovementManager.SelectedValue;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
+            }
+            foreach (Gear objChild in Children)
+                objChild.ChangeModularEquip(blnEquip);
         }
 
         /// <summary>
@@ -568,6 +602,7 @@ namespace Chummer.Backend.Equipment
             _intChildAvailModifier = objGear.ChildAvailModifier;
             _intChildCostMultiplier = objGear.ChildCostMultiplier;
             _strGearName = objGear.GearName;
+            _strForcedValue = objGear._strForcedValue;
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
@@ -641,6 +676,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
+            objWriter.WriteElementString("forcedvalue", _strForcedValue);
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("matrixcmbonus", _intMatrixCMBonus.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
@@ -743,6 +779,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
 
             objNode.TryGetStringFieldQuickly("gearname", ref _strGearName);
+            objNode.TryGetStringFieldQuickly("forcedvalue", ref _strForcedValue);
 
             objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
 

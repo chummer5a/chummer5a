@@ -428,7 +428,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
@@ -455,7 +455,7 @@ namespace Chummer
 
         private void lblQualitySource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblQualitySource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblQualitySource.Text, _objCharacter);
         }
         #endregion
 

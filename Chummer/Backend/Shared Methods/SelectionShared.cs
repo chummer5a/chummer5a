@@ -31,7 +31,7 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="objCritterDocument"></param>
         /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <returns></returns>
-        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "", string strSourceName = "")
+        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "", string strSourceName = "", string strLocation = "")
         {
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
@@ -81,14 +81,39 @@ namespace Chummer.Backend.Shared_Methods
                 // Default case is each quality can only be taken once
                 if (string.IsNullOrWhiteSpace(strLimitString))
                 {
-                    if (objXmlNode.Name == "quality")
+                    if (objXmlNode.Name == "quality" || objXmlNode.Name == "cyberware" || objXmlNode.Name == "bioware")
                         strLimitString = "1";
                     else
-                        strLimitString = int.MaxValue.ToString();
+                        strLimitString = "no";
                 }
             }
             if (strLimitString != "no")
             {
+                XmlDocument objDummyDoc = new XmlDocument();
+                XPathNavigator objNavigator = objDummyDoc.CreateNavigator();
+                foreach (string strAttribute in Character.AttributeStrings)
+                {
+                    CharacterAttrib objLoopAttribute = objCharacter.GetAttribute(strAttribute);
+                    strLimitString = strLimitString.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
+                    strLimitString = strLimitString.Replace("{" + strAttribute + "Base}", objLoopAttribute.TotalBase.ToString());
+                }
+                foreach (string strLimb in Character.LimbStrings)
+                {
+                    int objLoopLimbCount = objCharacter.LimbCount(strLimb);
+                    if (!string.IsNullOrEmpty(strLocation))
+                        objLoopLimbCount /= 2;
+                    strLimitString = strLimitString.Replace("{" + strLimb + "}", objLoopLimbCount.ToString());
+                }
+                try
+                {
+                    XPathExpression objExpression = objNavigator.Compile(strLimitString);
+                    strLimitString = objNavigator.Evaluate(objExpression).ToString();
+                }
+                catch (XPathException)
+                {
+                    strLimitString = "1";
+                }
+
                 string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
                 string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
                 
@@ -146,12 +171,28 @@ namespace Chummer.Backend.Shared_Methods
                         }
                 }
 
+                int intLimit = Convert.ToInt32(strLimitString);
+                int intExtendedLimit = intLimit;
+                if (objXmlNode["limitwithinclusions"] != null)
+                {
+                    intExtendedLimit = Convert.ToInt32(objXmlNode["limitwithinclusions"].InnerText);
+                }
                 int intCount = 0;
                 int intExtendedCount = 0;
-                if (objListToCheck != null)
+                if (objListToCheck != null || blnCheckCyberwareChildren)
                 {
                     if (blnCheckCyberwareChildren)
-                        intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                    {
+                        if (string.IsNullOrEmpty(strLocation))
+                        {
+                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), x => x.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                        }
+                        // We only want to check against 'ware that is on the same side as this one
+                        else
+                        {
+                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), x => x.Name != strIgnoreQuality && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                        }
+                    }
                     else
                         intCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                     intExtendedCount = intCount;
@@ -162,18 +203,22 @@ namespace Chummer.Backend.Shared_Methods
                         {
                             lstNamesIncludedInLimit.Add(objChildXml.InnerText);
                         }
-                        
+
                         if (blnCheckCyberwareChildren)
-                            intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                        {
+                            if (string.IsNullOrEmpty(strLocation))
+                            {
+                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                            }
+                            // We only want to check against 'ware that is on the same side as this one
+                            else
+                            {
+                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), x => x.Name != strIgnoreQuality && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                            }
+                        }
                         else
                             intExtendedCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                     }
-                }
-                int intLimit = Convert.ToInt32(strLimitString);
-                int intExtendedLimit = intLimit;
-                if (objXmlNode["limitwithinclusions"] != null)
-                {
-                    intExtendedLimit = Convert.ToInt32(objXmlNode["limitwithinclusions"].InnerText);
                 }
                 if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
                 {
@@ -360,14 +405,14 @@ namespace Chummer.Backend.Shared_Methods
                         name += node.Name == "cyberware"
                             ? "\n\t" + LanguageManager.GetString("Label_Cyberware") + node.InnerText
                             : "\n\t" + LanguageManager.GetString("Label_Bioware") + node.InnerText;
-                        return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                        return character.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), objCyberware =>
                                objCyberware.Name == node.InnerText && node.Attributes?["select"] == null ||
-                               node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+                               node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Extra) >= count;
                     }
                 case "biowarecontains":
                 case "cyberwarecontains":
                 {
-                    int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
+                        int count = node.Attributes?["count"] != null ? Convert.ToInt32(node.Attributes?["count"].InnerText) : 1;
                         name = null;
                         name += node.Name == "cyberware"
                             ? "\n\t" + LanguageManager.GetString("Label_Cyberware") + node.InnerText
@@ -377,9 +422,9 @@ namespace Chummer.Backend.Shared_Methods
                         {
                             source = Improvement.ImprovementSource.Bioware;
                         }
-                        return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                        return character.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), objCyberware =>
                             objCyberware.SourceType == source && objCyberware.Name.Contains(node.InnerText) && node.Attributes?["select"] == null ||
-                            node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Location) >= count;
+                            node.Attributes?["select"] != null && node.Attributes?["select"].InnerText == objCyberware.Extra) >= count;
                 }
                 case "damageresistance":
                     // Damage Resistance must be a particular value.

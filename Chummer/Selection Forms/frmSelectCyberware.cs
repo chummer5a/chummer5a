@@ -39,6 +39,8 @@ namespace Chummer
 
         private string _strSetGrade = string.Empty;
         private string _strSubsystems = string.Empty;
+        private string _strDisallowedMounts = string.Empty;
+        private string _strHasModularMounts = string.Empty;
         private decimal _decMaximumCapacity = -1;
         private bool _blnLockGrade;
         private bool _blnLoading = true;
@@ -375,12 +377,11 @@ namespace Chummer
                 lstCyberware.SetSelected(index, true);
                 break;
             }
-            ;
         }
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
@@ -434,14 +435,14 @@ namespace Chummer
             // Treat everything as being uppercase so the search is case-insensitive.
             string strSearch = "/chummer/" + _strNode + "s/" + _strNode + "[(" + _objCharacter.Options.BookXPath() + ") and " + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
             if (_objCharacter.DEPEnabled && ParentVehicle == null)
-                strSearch += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" )";
+                strSearch += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
             else if (_objParentNode != null)
-                strSearch += " and (requireparent or contains(capacity, \"[\"))";
+                strSearch += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
             else
-                strCategoryFilter += " and not(requireparent)";
+                strSearch += " and not(requireparent)";
             if (!string.IsNullOrEmpty(_strSelectedGrade))
             {
-                strCategoryFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
+                strSearch += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
             }
             strSearch += "]";
 
@@ -602,6 +603,28 @@ namespace Chummer
             set
             {
                 _strSubsystems = value;
+            }
+        }
+
+        /// <summary>
+        /// Comma-separate list of mount locations that are disallowed.
+        /// </summary>
+        public string DisallowedMounts
+        {
+            set
+            {
+                _strDisallowedMounts = value;
+            }
+        }
+
+        /// <summary>
+        /// Comma-separate list of mount locations that already exist on the parent.
+        /// </summary>
+        public string HasModularMounts
+        {
+            set
+            {
+                _strHasModularMounts = value;
             }
         }
 
@@ -981,12 +1004,11 @@ namespace Chummer
                     strCategoryFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
                 }
                 if (_objCharacter.DEPEnabled && ParentVehicle == null)
-                    strCategoryFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" )";
+                    strCategoryFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
                 else if (_objParentNode != null)
-                    strCategoryFilter += " and (requireparent or contains(capacity, \"[\"))";
+                    strCategoryFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
                 else
                     strCategoryFilter += " and not(requireparent)";
-
                 objXmlCyberwareList =
                         _objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strCategoryFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
             }
@@ -1025,14 +1047,46 @@ namespace Chummer
                             continue;
                         }
                     }
+                    // TODO: Fix if someone has an amount of limbs different from the default amount
+                    if (!string.IsNullOrEmpty(_strHasModularMounts) && objXmlCyberware["blocksmounts"] != null)
+                    {
+                        List<Cyberware> lstWareListToCheck = CyberwareParent == null ? (ParentVehicle == null ? _objCharacter.Cyberware : null) : CyberwareParent.Children;
+                        if (objXmlCyberware["selectside"] == null || !string.IsNullOrEmpty(CyberwareParent?.Location) || (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
+                        {
+                            string[] astrBlockedMounts = objXmlCyberware["blocksmounts"].InnerText.Split(',');
+                            foreach (string strLoop in _strHasModularMounts.Split(','))
+                            {
+                                if (astrBlockedMounts.Contains(strLoop))
+                                {
+                                    goto NextCyberware;
+                                }
+                            }
+                        }
+                    }
+                    // TODO: Fix if someone has an amount of limbs different from the default amount
+                    if (!string.IsNullOrEmpty(_strDisallowedMounts) && objXmlCyberware["modularmount"] != null)
+                    {
+                        string strLoopMount = objXmlCyberware["modularmount"].InnerText;
+                        foreach (string strLoop in _strHasModularMounts.Split(','))
+                        {
+                            if (strLoopMount == strLoop)
+                            {
+                                goto NextCyberware;
+                            }
+                        }
+                    }
                     if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier)) continue;
+                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
+                        continue;
+                    if (ParentVehicle == null && !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter))
+                        continue;
                     ListItem objItem = new ListItem
                     {
                         Value = objXmlCyberware["name"]?.InnerText,
                         Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"]?.InnerText
                     };
                     lstCyberwares.Add(objItem);
+                    NextCyberware:;
                 }
             }
             SortListItem objSort = new SortListItem();
@@ -1114,7 +1168,7 @@ namespace Chummer
                     return;
                 }
             }
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objCyberwareNode, true, _objCharacter))
+            if (ParentVehicle == null && !Backend.Shared_Methods.SelectionShared.RequirementsMet(objCyberwareNode, true, _objCharacter))
                 return;
             DialogResult = DialogResult.OK;
         }
@@ -1203,8 +1257,10 @@ namespace Chummer
                     string strItemFilter = "[category = \"" + objXmlCategory.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")";
                     if (!string.IsNullOrEmpty(_strSelectedGrade) && _strSelectedGrade.Contains("Used"))
                         strItemFilter += " and not(nosecondhand)";
-                    if (_objParentNode != null)
-                        strItemFilter += " and (requireparent or contains(capacity, \"[\"))";
+                    if (_objCharacter.DEPEnabled && ParentVehicle == null)
+                        strItemFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
+                    else if (_objParentNode != null)
+                        strItemFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
                     else
                         strItemFilter += " and not(requireparent)";
                     if (!string.IsNullOrEmpty(_strSelectedGrade))

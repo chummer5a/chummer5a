@@ -172,6 +172,15 @@ Application Changes:
 - Fixed a bug where specializations could be bought for skills that only had ratings from skillsofts.
 - Fixed a bug where the button to increase a knowledge skill in career mode would be clickable/enabled even when the knowledge skill could not actually be increased.
 - Fixed an issue where martial arts technique names would not get properly translated.
+- One Trick Pony will now automatically load any new techniques added to Chummer5 without having to update the quality's art's entry.
+- Added the ability for limits to items to include attributes, base attributes, and limb counts. Also added the ability to resolve XPath operations in them.
+- Added the ability for bonuses to add extra limbs. Shiva Arms (Pair) has been updated to reflect this, and the centaur metavariant starts with a new quality that adds two leg limbs.
+- Fixed a bug where children of 'ware with a particular side (left or right) would not automatically inherit the side of their parent.
+- Fixed a bug where Reapply Improvements would not reapply improvements from some nested gear and nested cyberware.
+- Selecting the side of a piece of 'ware is now independent from selecting other bonuses. For example, this means custom cyberfingers will display both their custom function and the side to which they were added.
+- Fixed a bug where the cyberware/bioware selection screen would not properly consider 'ware requirements.
+- Fixed a bug where the technique from One Trick Pony would not be included in the limit of 5 techniques at character generation.
+- Added preliminary handling of modular cyberlimbs. Modular cyberlimbs for vehicles need to be bought through the Cyberware tab and then equipped from there. There are some parts of the current implementation that rely on non-RAW rules because there is no way around it without being insane (e.g. modular limbs don't add essence, all essence is added via connectors); this is subject to change with official errata.
 
 Data Changes:
 
@@ -291,6 +300,15 @@ Data Changes:
 - Altered the location of the main mugshot in the Shadowrun 5 character sheet collection and allowed it to be toggled to show on/off when printed.
 - Added the ability to automatically generate condition monitors of varying scales within character sheets.
 - Added missing weapons from the german 'Schattenhandbuch' and moved the existing ones to 'Schattenhandbuch 2'.
+- Grapple Hand and Raptor Foot weapon entries are now properly classified as Cyberweapons instead of Bio-Weapons.
+- Added appropriate limits all 'ware regarding the maximum number that someone can buy.
+- Added bioware entries for replacement tusks for orks.
+- Corrected page references to Cosmetic Bioware from Chrome Flesh.
+- Swapped out entries for Hand and Foot Webbing, Striking Callus, Claws, Retractable Claws, Tusk(s) Small, Tusk(s) Medium, and Tusk(s) Large for ones that rely on count to represent 'ware count instead of rating. The old entries are kept in for legacy purposes, and existing characters with these 'ware will need to swap them out manually.
+- Updated the restriction requirements for Smart Articulation and Flex Hand so they are properly mutually exclusive with appropriate 'ware.
+- Moved the data files in Custom Content to folders in the customdata folder, and updated them to the newer data file formats.
+- Added entries for Modular Gear.
+- Osmium Mace now only has one entry that properly scales its stats with the character's STR.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
@@ -347,6 +365,7 @@ New Strings:
 - String_Stable
 - String_Nightly
 - String_Update_Available
+- Button_ChangeMountedLocation
 
 Changes Strings:
 - Message_PositiveQualityLimit

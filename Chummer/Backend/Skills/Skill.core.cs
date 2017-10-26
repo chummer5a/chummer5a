@@ -251,7 +251,7 @@ namespace Chummer.Skills
 
                 if (ware == null) return -1;
 
-                if (SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) == true) return 0;
+                if (SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Extra) == true) return 0;
 
                 return -1;
             }
