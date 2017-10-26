@@ -31,15 +31,17 @@ namespace Chummer
         private bool _blnAddAgain = false;
         private string _strMartialArt = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         #region Control Events
         public frmSelectMartialArtAdvantage(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            // Load the Martial Art information.
+            _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
 
         private void frmSelectMartialArtAdvantage_Load(object sender, EventArgs e)
@@ -51,9 +53,6 @@ namespace Chummer
             }
 
             List<ListItem> lstAdvantage = new List<ListItem>();
-
-            // Load the Martial Art information.
-            _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
 
             // Populate the Martial Art Advantage list.
             XmlNodeList objXmlAdvantageList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]/techniques/technique");

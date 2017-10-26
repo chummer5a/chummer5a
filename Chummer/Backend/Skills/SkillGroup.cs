@@ -179,7 +179,7 @@ namespace Chummer.Skills
 
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")} {DisplayName} {Rating} -> {(Rating + 1)}";
+                $"{LanguageManager.GetString("String_ExpenseSkillGroup")} {DisplayName} {Rating} -> {(Rating + 1)}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -240,6 +240,20 @@ namespace Chummer.Skills
             writer.WriteElementString("name", _groupName);
 
             writer.WriteEndElement();
+        }
+
+        internal void Print(XmlWriter objWriter)
+        {
+            objWriter.WriteStartElement("skillgroup");
+
+            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name_english", Name);
+            objWriter.WriteElementString("rating", Rating.ToString());
+            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
+            objWriter.WriteElementString("base", Base.ToString());
+            objWriter.WriteElementString("karma", Karma.ToString());
+
+            objWriter.WriteEndElement();
         }
 
         internal static SkillGroup Load(Character character, XmlNode saved)
@@ -317,8 +331,6 @@ namespace Chummer.Skills
             character.PropertyChanged += Character_PropertyChanged;
         }
 
-
-
         public Character Character
         {
             get { return _character; }
@@ -337,8 +349,8 @@ namespace Chummer.Skills
                 if(_cachedDisplayName != null)
                     return _cachedDisplayName;
 
-                if (GlobalOptions.Instance.Language == "en-us") return _cachedDisplayName = Name;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+                if (GlobalOptions.Language == "en-us") return _cachedDisplayName = Name;
+                XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
                 return _cachedDisplayName = objNode?.Attributes?["translate"]?.InnerText;
             }
@@ -350,7 +362,7 @@ namespace Chummer.Skills
             {
                 if (_character.Created && !CareerIncrease)
                 {
-                    return LanguageManager.Instance.GetString("Label_SkillGroup_Broken");
+                    return LanguageManager.GetString("Label_SkillGroup_Broken");
                 }
                 return GetEnumerable().Min(x => x.TotalBaseRating).ToString();
 
@@ -364,7 +376,7 @@ namespace Chummer.Skills
             {
                 if (_toolTip != null) return _toolTip;
 
-                _toolTip = LanguageManager.Instance.GetString("Tip_SkillGroup_Skills");
+                _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills");
                 _toolTip += " ";
                 _toolTip += string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
 
@@ -374,7 +386,7 @@ namespace Chummer.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), GetEnumerable().Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
+            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem"), GetEnumerable().Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
         }
 
         public Guid Id { get; } = Guid.NewGuid();
@@ -467,13 +479,14 @@ namespace Chummer.Skills
         {
             int rating = GetEnumerable().Min(x => x.TotalBaseRating);
 
+            int intMultiplier = (Character.SkillsSection.Uneducated && HasTechnicalSkills) ? 2 : 1;
             if (rating == 0)
             {
-                return Character.Options.KarmaNewSkillGroup;
+                return Character.Options.KarmaNewSkillGroup * intMultiplier;
             }
             else if (RatingMaximum > rating)
             {
-                return (rating + 1)*Character.Options.KarmaImproveSkillGroup;
+                return (rating + 1)*Character.Options.KarmaImproveSkillGroup * intMultiplier;
             }
             else
             {
@@ -490,11 +503,6 @@ namespace Chummer.Skills
         public override int GetHashCode()
         {
             return Id.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == obj;
         }
 
         public IEnumerable<Skill> GetEnumerable() //Databinding shits itself if this implements IEnumerable

@@ -26,7 +26,7 @@ namespace Chummer.Backend.Attributes
         private int _intAugModifier;
         private int _intBase;
         private int _intKarma;
-        private string _strAbbrev = "";
+        private string _strAbbrev = string.Empty;
         public Character _objCharacter;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -227,7 +227,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        protected int FreeBase
+        public int FreeBase
         {
             get
             {
@@ -309,44 +309,28 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                List<string> lstUniqueName = new List<string>();
-                List<string[,]> lstUniquePair = new List<string[,]>();
+                HashSet<string> lstUniqueName = new HashSet<string>();
+                HashSet<Tuple<string, int>> lstUniquePair = new HashSet<Tuple<string, int>>();
                 int intModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && !objImprovement.Custom)
+                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
-                        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == objImprovement.UniqueName)
-                                    blnFound = true;
-                                break;
-                            }
-                            if (!blnFound)
-                                lstUniqueName.Add(objImprovement.UniqueName);
+                            if (!lstUniqueName.Contains(strUniqueName))
+                                lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
-                            string[,] strValues = new string[,] { { objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString() } };
-                            lstUniquePair.Add(strValues);
+                            lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
                         }
-                        else
-                        {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                            {
-                                if ((Abbrev == "MAG" || Abbrev == "DEP" || Abbrev == "RES") &&
+                        else if (!((Abbrev == "MAG" || Abbrev == "DEP" || Abbrev == "RES") &&
                                      objImprovement.SourceName == "Essence Loss" &&
-                                    _objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0)
-                                {
-                                    // Do Nothing
-                                } else
-                                {
-                                    intModifier += objImprovement.Augmented * objImprovement.Rating;
-                                }
-                            }
+                                    _objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0))
+                        {
+                            intModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
@@ -355,87 +339,78 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve only the highest precedence0 value.
                     // Run through the list of UniqueNames and pick out the highest value for each one.
-                    int intHighest = -999;
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intHighest = int.MinValue;
+                    foreach (Tuple<string, int> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == "precedence0")
+                        if (strValues.Item1 == "precedence0")
                         {
-                            if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                                intHighest = Convert.ToInt32(strValues[0, 1]);
+                            if (strValues.Item2 > intHighest)
+                                intHighest = strValues.Item2;
                         }
                     }
                     if (lstUniqueName.Contains("precedence-1"))
                     {
-                        foreach (string[,] strValues in lstUniquePair)
+                        foreach (Tuple<string, int> strValues in lstUniquePair)
                         {
-                            if (strValues[0, 0] == "precedence-1")
+                            if (strValues.Item1 == "precedence-1")
                             {
-                                intHighest += Convert.ToInt32(strValues[0, 1]);
+                                intHighest += strValues.Item2;
                             }
                         }
                     }
-                    intModifier = intHighest;
+                    intModifier = Math.Max(intHighest, intModifier);
                 }
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
-                    intModifier = 0;
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intTmpModifier = 0;
+                    foreach (Tuple<string, int> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
-                            intModifier += Convert.ToInt32(strValues[0, 1]);
+                        if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
+                            intTmpModifier += strValues.Item2;
                     }
+                    intModifier = Math.Max(intTmpModifier, intModifier);
                 }
                 else
                 {
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strName in lstUniqueName)
                     {
-                        int intHighest = -999;
-                        foreach (string[,] strValues in lstUniquePair)
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int> strValues in lstUniquePair)
                         {
-                            if (strValues[0, 0] == strName)
+                            if (strValues.Item1 == strName)
                             {
-                                if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                                    intHighest = Convert.ToInt32(strValues[0, 1]);
+                                if (strValues.Item2 > intHighest)
+                                    intHighest = strValues.Item2;
                             }
                         }
-                        intModifier += intHighest;
+                        if (intHighest != int.MinValue)
+                            intModifier += intHighest;
                     }
                 }
 
                 // Factor in Custom Improvements.
-                lstUniqueName = new List<string>();
-                lstUniquePair = new List<string[,]>();
+                lstUniqueName.Clear();
+                lstUniquePair.Clear();
                 int intCustomModifier = 0;
-                if (_strAbbrev == "REA")
-                {
-                }
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && objImprovement.Custom)
+                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
-                        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == objImprovement.UniqueName)
-                                    blnFound = true;
-                                break;
-                            }
-                            if (!blnFound)
-                                lstUniqueName.Add(objImprovement.UniqueName);
+                            if (!lstUniqueName.Contains(strUniqueName))
+                                lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
-                            string[,] strValues = new string[,] { { objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString() } };
-                            lstUniquePair.Add(strValues);
+                            lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
                         }
                         else
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
-                                intCustomModifier += objImprovement.Augmented * objImprovement.Rating;
+                            intCustomModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
@@ -443,20 +418,20 @@ namespace Chummer.Backend.Attributes
                 // Run through the list of UniqueNames and pick out the highest value for each one.
                 foreach (string strName in lstUniqueName)
                 {
-                    int intHighest = -999;
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intHighest = int.MinValue;
+                    foreach (Tuple<string, int> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == strName)
+                        if (strValues.Item1 == strName)
                         {
-                            if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                                intHighest = Convert.ToInt32(strValues[0, 1]);
+                            if (strValues.Item2 > intHighest)
+                                intHighest = strValues.Item2;
                         }
                     }
-                    intCustomModifier += intHighest;
+                    if (intHighest != int.MinValue)
+                        intCustomModifier += intHighest;
                 }
 
-                intModifier += intCustomModifier;
-                return intModifier;
+                return intModifier + intCustomModifier;
             }
         }
 
@@ -467,34 +442,26 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                List<string> lstUniqueName = new List<string>();
-                List<string[,]> lstUniquePair = new List<string[,]>();
+                HashSet<string> lstUniqueName = new HashSet<string>();
+                HashSet<Tuple<string, int>> lstUniquePair = new HashSet<Tuple<string, int>>();
                 int intModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled)
+                    if (objImprovement.Enabled && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base" && string.IsNullOrEmpty(objImprovement.Condition))
                     {
-                        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base")
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == objImprovement.UniqueName)
-                                    blnFound = true;
-                                break;
-                            }
-                            if (!blnFound)
-                                lstUniqueName.Add(objImprovement.UniqueName);
+                            if (!lstUniqueName.Contains(strUniqueName))
+                                lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
-                            string[,] strValues = new string[,] { { objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString() } };
-                            lstUniquePair.Add(strValues);
+                            lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
                         }
                         else
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev + "Base")
-                                intModifier += objImprovement.Augmented * objImprovement.Rating;
+                            intModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
@@ -503,52 +470,54 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve only the highest precedence0 value.
                     // Run through the list of UniqueNames and pick out the highest value for each one.
-                    int intHighest = -999;
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intHighest = int.MinValue;
+                    foreach (Tuple<string, int> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == "precedence0")
+                        if (strValues.Item1 == "precedence0")
                         {
-                            if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                                intHighest = Convert.ToInt32(strValues[0, 1]);
+                            if (strValues.Item2 > intHighest)
+                                intHighest = strValues.Item2;
                         }
                     }
                     if (lstUniqueName.Contains("precedence-1"))
                     {
-                        foreach (string[,] strValues in lstUniquePair)
+                        foreach (Tuple<string, int> strValues in lstUniquePair)
                         {
-                            if (strValues[0, 0] == "precedence-1")
+                            if (strValues.Item1 == "precedence-1")
                             {
-                                intHighest += Convert.ToInt32(strValues[0, 1]);
+                                intHighest += strValues.Item2;
                             }
                         }
                     }
-                    intModifier = intHighest;
+                    intModifier = Math.Max(intHighest, intModifier);
                 }
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
-                    intModifier = 0;
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intTmpModifier = 0;
+                    foreach (Tuple<string, int> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
-                            intModifier += Convert.ToInt32(strValues[0, 1]);
+                        if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
+                            intTmpModifier += strValues.Item2;
                     }
+                    intModifier = Math.Max(intTmpModifier, intModifier);
                 }
                 else
                 {
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strName in lstUniqueName)
                     {
-                        int intHighest = -999;
-                        foreach (string[,] strValues in lstUniquePair)
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int> strValues in lstUniquePair)
                         {
-                            if (strValues[0, 0] == strName)
+                            if (strValues.Item1 == strName)
                             {
-                                if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-                                    intHighest = Convert.ToInt32(strValues[0, 1]);
+                                if (strValues.Item2 > intHighest)
+                                    intHighest = strValues.Item2;
                             }
                         }
-                        intModifier += intHighest;
+                        if (intHighest != int.MinValue)
+                            intModifier += intHighest;
                     }
                 }
 
@@ -574,7 +543,7 @@ namespace Chummer.Backend.Attributes
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
+                        if (objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot))
                             return true;
                     }
                 }
@@ -640,6 +609,10 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
         {
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+                return 1;
+
             int intMeat = Value + AttributeModifiers;
             int intReturn = intMeat;
 
@@ -649,8 +622,7 @@ namespace Chummer.Backend.Attributes
                 int intLimbTotal = 0;
                 int intLimbCount = 0;
                 foreach (Cyberware objCyberware in _objCharacter.Cyberware
-                    .Where(objCyberware => objCyberware.Category == "Cyberlimb")
-                    .Where(objCyberware => !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    .Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                 {
                     intLimbCount += objCyberware.LimbSlotCount;
                     switch (_strAbbrev)
@@ -666,16 +638,10 @@ namespace Chummer.Backend.Attributes
 
                 if (intLimbCount > 0)
                 {
-                    intReturn = 0;
-                    if (intLimbCount < _objCharacter.Options.LimbCount)
-                    {
-                        // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
-                        for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
-                            intLimbTotal += intMeat;
-                        intLimbCount = _objCharacter.Options.LimbCount;
-                    }
-                    int intTotal = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.CultureInfo)));
-                    intReturn += intTotal;
+                    int intMissingLimbCount = Math.Max(_objCharacter.Options.LimbCount - intLimbCount, 0);
+                    // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
+                    intLimbTotal += intMeat * intMissingLimbCount;
+                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(_objCharacter.Options.LimbCount, GlobalOptions.CultureInfo)));
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
@@ -683,21 +649,13 @@ namespace Chummer.Backend.Attributes
                 intReturn = TotalAugmentedMaximum;
 
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-            if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
+            if (intReturn < 1)
             {
-                if (intReturn < 0)
+                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
                     return 0;
-            }
-            else
-            {
-                if (intReturn < 1)
+                else
                     return 1;
             }
-
-            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-            if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
-                return 1;
-
             return intReturn;
         }
 
@@ -721,22 +679,22 @@ namespace Chummer.Backend.Attributes
                     return 1;
 
                 int intReturn = MetatypeMinimum + MinimumModifiers;
-                if (_objCharacter.IsCritter || _intMetatypeMax == 0)
+                if (intReturn < 1)
                 {
-                    if (intReturn < 0)
+                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || _strAbbrev == "EDG")
                         intReturn = 0;
-                }
-                else
-                {
-                    if (intReturn < 1)
+                    else
                         intReturn = 1;
                 }
+
+                if (_strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
+                    return intReturn;
 
                 int intEssencePenalty = _objCharacter.EssencePenalty;
                 if (_strAbbrev == "MAG")
                     intEssencePenalty = _objCharacter.EssencePenaltyMAG;
-
-                if (intEssencePenalty == 0 || _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") return intReturn;
+                if (intEssencePenalty == 0)
+                    return intReturn;
 
                 if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
@@ -782,7 +740,7 @@ namespace Chummer.Backend.Attributes
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
                 else
                     intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
-                // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.Instance.CultureInfo) / 2))) + AugmentedMaximumModifiers;
+                // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.CultureInfo) / 2))) + AugmentedMaximumModifiers;
 
                 if (intReturn < 0)
                     intReturn = 0;
@@ -812,7 +770,7 @@ namespace Chummer.Backend.Attributes
                 if (string.IsNullOrWhiteSpace(_strDisplayNameShort))
                 {
                     string strName = "String_Attribute{0}Short".Replace("{0}", _strAbbrev);
-                    _strDisplayNameShort = LanguageManager.Instance.GetString(strName);
+                    _strDisplayNameShort = LanguageManager.GetString(strName);
                     return _strDisplayNameShort;
                 }
                 return _strDisplayNameShort;
@@ -828,7 +786,7 @@ namespace Chummer.Backend.Attributes
                 if (string.IsNullOrWhiteSpace(_strDisplayNameLong))
                 {
                     string strName = "String_Attribute{0}Long".Replace("{0}", _strAbbrev);
-                    _strDisplayNameLong = LanguageManager.Instance.GetString(strName);
+                    _strDisplayNameLong = LanguageManager.GetString(strName);
                     return _strDisplayNameLong;
                 }
                 return _strDisplayNameLong;
@@ -903,7 +861,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Value + 1), UpgradeKarmaCost());
+                return string.Format(LanguageManager.GetString("Tip_ImproveItem"), (Value + 1), UpgradeKarmaCost());
             }
         }
 
@@ -914,47 +872,33 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                string strReturn = "";
+                string strReturn = string.Empty;
                 strReturn += _strAbbrev + " (" + Value.ToString() + ")";
-                string strModifier = "";
+                string strModifier = string.Empty;
 
-                List<string> lstUniqueName = new List<string>();
-                List<string[,]> lstUniquePair = new List<string[,]>();
+                HashSet<string> lstUniqueName = new HashSet<string>();
+                List<Tuple<string, int, string>> lstUniquePair = new List<Tuple<string, int, string>>();
+                int intBaseValue = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && !objImprovement.Custom)
+                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
-                        if (objImprovement.UniqueName != "" && objImprovement.UniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
                             objImprovement.ImprovedName == _strAbbrev)
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == objImprovement.UniqueName)
-                                    blnFound = true;
-                                break;
-                            }
-                            if (!blnFound)
-                                lstUniqueName.Add(objImprovement.UniqueName);
+                            if (!lstUniqueName.Contains(strUniqueName))
+                                lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
-                            string[,] strValues = new string[,]
-                            {
-                                {
-                                    objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString(),
-                                    _objCharacter.GetObjectName(objImprovement)
-                                }
-                            };
-                            lstUniquePair.Add(strValues);
+                            lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement)));
                         }
-                        else
+                        else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                                objImprovement.ImprovedName == _strAbbrev &&
-                                !(objImprovement.Value == 0 && objImprovement.Augmented == 0))
-                                strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
-                                               (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
+                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
+                                           (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
+                            intBaseValue += objImprovement.Augmented * objImprovement.Rating;
                         }
                     }
                 }
@@ -963,55 +907,65 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve only the highest precedence0 value.
                     // Run through the list of UniqueNames and pick out the highest value for each one.
-                    int intHighest = -999;
+                    int intHighest = int.MinValue;
 
-                    foreach (string[,] strValues in lstUniquePair)
+                    string strNewModifier = string.Empty;
+                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == "precedence0")
+                        if (strValues.Item1 == "precedence0")
                         {
-                            if (Convert.ToInt32(strValues[0, 1]) > intHighest)
+                            if (strValues.Item2 > intHighest)
                             {
-                                intHighest = Convert.ToInt32(strValues[0, 1]);
-                                strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                intHighest = strValues.Item2;
+                                strNewModifier = " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ")";
                             }
                         }
                     }
                     if (lstUniqueName.Contains("precedence-1"))
                     {
-                        foreach (string[,] strValues in lstUniquePair)
+                        foreach (Tuple<string, int, string> strValues in lstUniquePair)
                         {
-                            if (strValues[0, 0] == "precedence-1")
+                            if (strValues.Item1 == "precedence-1")
                             {
-                                intHighest += Convert.ToInt32(strValues[0, 1]);
-                                strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                intHighest += strValues.Item2;
+                                strNewModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ")";
                             }
                         }
                     }
+
+                    if (intHighest > intBaseValue)
+                        strModifier = strNewModifier;
                 }
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
-                    strModifier = "";
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intHighest = int.MinValue;
+                    string strNewModifier = string.Empty;
+                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
-                            strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                        if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
+                        {
+                            strNewModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ")";
+                            intHighest += strValues.Item2;
+                        }
                     }
+                    if (intHighest > intBaseValue)
+                        strModifier = strNewModifier;
                 }
                 else
                 {
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strName in lstUniqueName)
                     {
-                        int intHighest = -999;
-                        foreach (string[,] strValues in lstUniquePair)
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int, string> strValues in lstUniquePair)
                         {
-                            if (strValues[0, 0] == strName)
+                            if (strValues.Item1 == strName)
                             {
-                                if (Convert.ToInt32(strValues[0, 1]) > intHighest)
+                                if (strValues.Item2 > intHighest)
                                 {
-                                    intHighest = Convert.ToInt32(strValues[0, 1]);
-                                    strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                    intHighest = strValues.Item2;
+                                    strModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ")";
                                 }
                             }
                         }
@@ -1019,41 +973,25 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // Factor in Custom Improvements.
-                lstUniqueName = new List<string>();
-                lstUniquePair = new List<string[,]>();
+                lstUniqueName.Clear();
+                lstUniquePair.Clear();
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.Enabled && objImprovement.Custom)
+                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && string.IsNullOrEmpty(objImprovement.Condition))
                     {
-                        if (objImprovement.UniqueName != "" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                            objImprovement.ImprovedName == _strAbbrev)
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            bool blnFound = false;
-                            foreach (string strName in lstUniqueName)
-                            {
-                                if (strName == objImprovement.UniqueName)
-                                    blnFound = true;
-                                break;
-                            }
-                            if (!blnFound)
-                                lstUniqueName.Add(objImprovement.UniqueName);
+                            if (!lstUniqueName.Contains(strUniqueName))
+                                lstUniqueName.Add(strUniqueName);
 
                             // Add the values to the UniquePair List so we can check them later.
-                            string[,] strValues = new string[,]
-                            {
-                                {
-                                    objImprovement.UniqueName, (objImprovement.Augmented * objImprovement.Rating).ToString(),
-                                    _objCharacter.GetObjectName(objImprovement)
-                                }
-                            };
-                            lstUniquePair.Add(strValues);
+                            lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement)));
                         }
                         else
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                                objImprovement.ImprovedName == _strAbbrev)
-                                strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
+                            strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" +
                                                (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
                         }
                     }
@@ -1062,15 +1000,15 @@ namespace Chummer.Backend.Attributes
                 // Run through the list of UniqueNames and pick out the highest value for each one.
                 foreach (string strName in lstUniqueName)
                 {
-                    int intHighest = -999;
-                    foreach (string[,] strValues in lstUniquePair)
+                    int intHighest = int.MinValue;
+                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
                     {
-                        if (strValues[0, 0] == strName)
+                        if (strValues.Item1 == strName)
                         {
-                            if (Convert.ToInt32(strValues[0, 1]) > intHighest)
+                            if (strValues.Item2 > intHighest)
                             {
-                                intHighest = Convert.ToInt32(strValues[0, 1]);
-                                strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+                                intHighest = strValues.Item2;
+                                strModifier += " + " + strValues.Item3 + " (" + strValues.Item2.ToString() + ")";
                             }
                         }
                     }
@@ -1080,25 +1018,22 @@ namespace Chummer.Backend.Attributes
                 StringBuilder strCyberlimb = new StringBuilder();
                 if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
                 {
-                    LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+                    LanguageManager.Load(GlobalOptions.Language, null);
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
                         if (objCyberware.Category == "Cyberlimb")
                         {
+                            strCyberlimb.Append("\n");
+                            strCyberlimb.Append(objCyberware.DisplayName + " (");
                             if (_strAbbrev == "AGI")
                             {
-                                strCyberlimb.Append("\n");
-                                strCyberlimb.Append(objCyberware.DisplayName + " (");
                                 strCyberlimb.Append(objCyberware.TotalAgility.ToString());
-                                strCyberlimb.Append(")");
                             }
                             else
                             {
-                                strCyberlimb.Append("\n");
-                                strCyberlimb.Append(objCyberware.DisplayName + " (");
                                 strCyberlimb.Append(objCyberware.TotalStrength.ToString());
-                                strCyberlimb.Append(")");
                             }
+                            strCyberlimb.Append(")");
                         }
                     }
                     strModifier += strCyberlimb;
@@ -1106,7 +1041,7 @@ namespace Chummer.Backend.Attributes
                 /*
                 if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
                 {
-                    strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.Instance.GetString("String_AttributeESSLong")})";
+                    strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.GetString("String_AttributeESSLong")})";
                 }
                 */
 
@@ -1214,38 +1149,23 @@ namespace Chummer.Backend.Attributes
 
         public virtual int TotalKarmaCost()
         {
-            int intCost = 0;
-            if (!_objCharacter.Options.AlternateMetatypeAttributeKarma)
+            if (Karma == 0)
+                return 0;
+
+            int intTotalBase = TotalBase;
+            if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
+                intTotalBase = 1;
+
+            // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
+            // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
+            int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
+
+            // Since Myostatin Inhibitor just gives a flat -2 per karma level, its effect can be calculated by simple multiplication
+            if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x => x.Name == "Myostatin Inhibitor") != null)
             {
-                for (int i = 1; i <= Karma; i++)
-                {
-                    if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
-                        x.Name == "Myostatin Inhibitor") != null)
-                    {
-                        intCost += ((Convert.ToInt32(TotalBase) + i)*_objCharacter.Options.KarmaAttribute) - 2;
-                    }
-                    else
-                    {
-                        intCost += ((Convert.ToInt32(TotalBase) + i)*_objCharacter.Options.KarmaAttribute);
-                    }
-                }
+                intCost -= 2 * Karma;
             }
-            else
-            {
-                for (int i = 1; i <= Karma; i++)
-                {
-                    if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x =>
-                        x.Name == "Myostatin Inhibitor") != null)
-                    {
-                        intCost += (Convert.ToInt32(1 + i) * _objCharacter.Options.KarmaAttribute) - 2;
-                    }
-                    else
-                    {
-                        intCost += (Convert.ToInt32(1 + i) * _objCharacter.Options.KarmaAttribute);
-                    }
-                    
-                }
-            }
+
             return intCost;
         }
 
@@ -1344,7 +1264,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-               return LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", _strAbbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost().ToString()));
+               return LanguageManager.GetString("Message_ConfirmKarmaExpense").Replace("{0}", _strAbbrev.Replace("{1}", (Value + 1).ToString()).Replace("{2}", UpgradeKarmaCost().ToString()));
             }
         }
 
@@ -1357,7 +1277,7 @@ namespace Chummer.Backend.Attributes
             {
                 if (string.IsNullOrWhiteSpace(_strDisplayAbbrev))
                 {
-                    _strDisplayAbbrev = LanguageManager.Instance.GetString($"String_Attribute{Abbrev}Short");
+                    _strDisplayAbbrev = LanguageManager.GetString($"String_Attribute{Abbrev}Short");
                 }
                 return _strDisplayAbbrev;
             }
@@ -1368,7 +1288,7 @@ namespace Chummer.Backend.Attributes
             if (!CanUpgradeCareer) return;
 
             int price = UpgradeKarmaCost();
-            string upgradetext = $"{LanguageManager.Instance.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
+            string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -1392,11 +1312,10 @@ namespace Chummer.Backend.Attributes
                 {
                     Base -= 1;
                 }
-                else if
-                    (Abbrev == "EDG" && TotalMinimum > 0)
+                else if (Abbrev == "EDG" && TotalMinimum > 0)
                 {
                     //Edge can reduce the metatype minimum below zero. 
-                    MetatypeMinimum--;
+                    MetatypeMinimum -= 1;
                 }
                 else
                     return;

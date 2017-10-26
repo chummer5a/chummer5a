@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmCreateImprovement : Form
     {
         private readonly Character _objCharacter;
-        private XmlDocument _objDocument = new XmlDocument();
+        private readonly XmlDocument _objDocument = null;
         private string _strSelect = string.Empty;
         private Improvement _objEditImprovement;
 
@@ -37,15 +37,15 @@ namespace Chummer
         public frmCreateImprovement(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
+            _objDocument = XmlManager.Load("improvements.xml");
         }
 
         private void frmCreateImprovement_Load(object sender, EventArgs e)
         {
             List<ListItem> lstTypes = new List<ListItem>();
-            _objDocument = XmlManager.Instance.Load("improvements.xml");
 
             // Populate the Improvement Type list.
             XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
@@ -170,7 +170,7 @@ namespace Chummer
                 {
                     var frmPickAttribute = new frmSelectAttribute
                     {
-                        Description = LanguageManager.Instance.GetString("Title_SelectAttribute")
+                        Description = LanguageManager.GetString("Title_SelectAttribute")
                     };
                     if (_objCharacter.MAGEnabled)
                         frmPickAttribute.AddMAG();
@@ -188,7 +188,7 @@ namespace Chummer
                 {
                     frmSelectAttribute frmPickAttribute = new frmSelectAttribute
                     {
-                        Description = LanguageManager.Instance.GetString("Title_SelectAttribute")
+                        Description = LanguageManager.GetString("Title_SelectAttribute")
                     };
 
                     List<string> strValue = new List<string> {"LOG", "WIL", "INT", "CHA", "EDG", "MAG", "RES"};
@@ -203,7 +203,7 @@ namespace Chummer
                 case "SelectPhysicalAttribute":
                 {
                     frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-                    frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
+                    frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
 
                     List<string> strValue = new List<string>();
                     strValue.Add("BOD");
@@ -224,7 +224,7 @@ namespace Chummer
                 case "SelectSpecialAttribute":
                 {
                     frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-                    frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
+                    frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
 
                     List<string> strValue = new List<string>();
                     strValue.Add("MAG");
@@ -241,7 +241,7 @@ namespace Chummer
                 case "SelectSkill":
                 {
                     frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                    frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
+                    frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
                     frmPickSkill.ShowDialog(this);
 
                     if (frmPickSkill.DialogResult == DialogResult.OK)
@@ -252,7 +252,7 @@ namespace Chummer
                 {
                     frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
                     frmPickSkill.ShowKnowledgeSkills = true;
-                    frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
+                    frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
                     frmPickSkill.ShowDialog(this);
 
                     if (frmPickSkill.DialogResult == DialogResult.OK)
@@ -261,7 +261,7 @@ namespace Chummer
                     break;
                 case "SelectSkillCategory":
                     frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory();
-                    frmPickSkillCategory.Description = LanguageManager.Instance.GetString("Title_SelectSkillCategory");
+                    frmPickSkillCategory.Description = LanguageManager.GetString("Title_SelectSkillCategory");
                     frmPickSkillCategory.ShowDialog(this);
 
                     if (frmPickSkillCategory.DialogResult == DialogResult.OK)
@@ -269,7 +269,7 @@ namespace Chummer
                     break;
                 case "SelectSkillGroup":
                     frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
-                    frmPickSkillGroup.Description = LanguageManager.Instance.GetString("Title_SelectSkillGroup");
+                    frmPickSkillGroup.Description = LanguageManager.GetString("Title_SelectSkillGroup");
                     frmPickSkillGroup.ShowDialog(this);
 
                     if (frmPickSkillGroup.DialogResult == DialogResult.OK)
@@ -277,7 +277,7 @@ namespace Chummer
                     break;
                 case "SelectWeaponCategory":
                     frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
-                    frmPickWeaponCategory.Description = LanguageManager.Instance.GetString("Title_SelectWeaponCategory");
+                    frmPickWeaponCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory");
                     frmPickWeaponCategory.ShowDialog(this);
 
                     if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
@@ -285,7 +285,7 @@ namespace Chummer
                     break;
                 case "SelectSpellCategory":
                     frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory();
-                    frmPickSpellCategory.Description = LanguageManager.Instance.GetString("Title_SelectSpellCategory");
+                    frmPickSpellCategory.Description = LanguageManager.GetString("Title_SelectSpellCategory");
                     frmPickSpellCategory.ShowDialog(this);
 
                     if (frmPickSpellCategory.DialogResult == DialogResult.OK)
@@ -311,14 +311,14 @@ namespace Chummer
             // Make sure a value has been selected if necessary.
             if (txtSelect.Visible && string.IsNullOrEmpty(txtSelect.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectItem"), LanguageManager.Instance.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectItem"), LanguageManager.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementName"), LanguageManager.Instance.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_ImprovementName"), LanguageManager.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
                 return;
             }

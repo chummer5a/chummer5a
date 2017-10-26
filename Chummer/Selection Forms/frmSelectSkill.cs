@@ -39,19 +39,21 @@ namespace Chummer
         private string _strSourceName = string.Empty;
         private bool _blnKnowledgeSkill = false;
         private int _intMinimumRating = 0;
+        private int _intMaximumRating = int.MaxValue;
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         #region Control Events
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
@@ -59,7 +61,6 @@ namespace Chummer
             List<ListItem> lstSkills = new List<ListItem>();
             if (!_blnKnowledgeSkill)
             {
-                _objXmlDocument = XmlManager.Instance.Load("skills.xml");
                 // Build the list of non-Exotic Skills from the Skills file.
                 XmlNodeList objXmlSkillList;
                 if (!string.IsNullOrEmpty(_strForceSkill))
@@ -141,7 +142,15 @@ namespace Chummer
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
                     string strXmlSkillName = objXmlSkill["name"].InnerText;
-                    if (!_objCharacter.SkillsSection.Skills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating >= _intMinimumRating))
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
+                    if (objExistingSkill == null)
+                    {
+                        if (_intMinimumRating > 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (objExistingSkill.Rating < _intMinimumRating || objExistingSkill.Rating > _intMaximumRating)
                     {
                         continue;
                     }
@@ -158,7 +167,7 @@ namespace Chummer
                     {
                         ExoticSkill objExoticSkill = objSkill as ExoticSkill;
                         bool blnAddSkill = true;
-                        if (objSkill.Rating < _intMinimumRating)
+                        if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
                             blnAddSkill = false;
                         else if (!string.IsNullOrEmpty(_strForceSkill))
                             blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
@@ -196,10 +205,24 @@ namespace Chummer
                 //TODO: This is less robust than it should be. Should be refactored to support the rest of the entries.
                 if (!string.IsNullOrWhiteSpace(_strLimitToSkill))
                 {
-                    _objXmlDocument = XmlManager.Instance.Load("skills.xml");
                     string strFilter = string.Empty;
                     string[] strValue = _strLimitToSkill.Split(',');
-                    strFilter = strValue.Aggregate(strFilter, (current, strSkill) => current + "name = \"" + strSkill.Trim() + "\" or ");
+                    for (int i = 0; i < strValue.Length; i++)
+                        strValue[i] = strValue[i].Trim();
+                    Dictionary<string, bool> dicSkillXmlFound = new Dictionary<string, bool>(strValue.Length);
+                    foreach (string strLoop in strValue)
+                    {
+                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strLoop && objSkill.Rating >= _intMinimumRating))
+                        {
+                            continue;
+                        }
+                        if (_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strLoop && objSkill.Rating > _intMaximumRating))
+                        {
+                            continue;
+                        }
+                        dicSkillXmlFound.Add(strLoop, false);
+                        strFilter += "name = \"" + strLoop + "\" or ";
+                    }
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill[" + strFilter + "]");
@@ -208,19 +231,21 @@ namespace Chummer
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
                         string strXmlSkillName = objXmlSkill["name"].InnerText;
-                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Any(objSkill => objSkill.Name == strXmlSkillName && objSkill.Rating >= _intMinimumRating))
-                        {
-                            continue;
-                        }
+                        dicSkillXmlFound[strXmlSkillName] = true;
                         ListItem objItem = new ListItem();
                         objItem.Value = strXmlSkillName;
-                        if (objXmlSkill.Attributes != null)
-                        {
-                            objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
-                        }
-                        else
-                            objItem.Name = strXmlSkillName;
+                        objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
                         lstSkills.Add(objItem);
+                    }
+                    foreach (KeyValuePair<string, bool> objLoopEntry in dicSkillXmlFound)
+                    {
+                        if (!objLoopEntry.Value)
+                        {
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objLoopEntry.Key;
+                            objItem.Name = objLoopEntry.Key;
+                            lstSkills.Add(objItem);
+                        }
                     }
                 }
                 else
@@ -228,7 +253,7 @@ namespace Chummer
                     // Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
                     foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
-                        if (objKnow.Rating < _intMinimumRating)
+                        if (objKnow.Rating < _intMinimumRating || objKnow.Rating > _intMaximumRating)
                         {
                             continue;
                         }
@@ -241,7 +266,7 @@ namespace Chummer
             }
             if (lstSkills.Count <= 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", _strSourceName));
+                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }
@@ -329,7 +354,7 @@ namespace Chummer
         {
             set
             {
-                _strForceSkill = value.Replace(", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked"), string.Empty);
+                _strForceSkill = value.Replace(", " + LanguageManager.GetString("Label_SelectGear_Hacked"), string.Empty);
             }
         }
 
@@ -389,13 +414,24 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Only show skills with a rating higher than this
+        /// Only show skills with a rating greater than or equal to this
         /// </summary>
         public int MinimumRating
         {
             set
             {
                 _intMinimumRating = value;
+            }
+        }
+
+        /// <summary>
+        /// Only show skills with a rating less than or equal to this
+        /// </summary>
+        public int MaximumRating
+        {
+            set
+            {
+                _intMaximumRating = value;
             }
         }
         #endregion

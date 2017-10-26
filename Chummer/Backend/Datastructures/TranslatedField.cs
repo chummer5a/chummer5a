@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Chummer.Properties;
@@ -28,7 +28,7 @@ namespace Chummer.Datastructures
         {
             //TODO: should probably make sure Language don't change before restart
             //I feel that stuff could break in other cases
-            if (GlobalOptions.Instance.Language == "en-us")
+            if (GlobalOptions.Language == "en-us")
             {
                 return orginal;
             }
@@ -47,7 +47,7 @@ namespace Chummer.Datastructures
 
         public void Write(T value, ref T orginal, ref T translated)
         {
-            if (GlobalOptions.Instance.Language == "en-us")
+            if (GlobalOptions.Language == "en-us")
             {
                 if (orginal != null && value != null)
                 {

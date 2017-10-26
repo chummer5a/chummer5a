@@ -200,7 +200,7 @@
       <bonus>
         <selectskill minimumrating="1">
           <val>Rating</val>
-          <applytorating>yes</applytorating>
+          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
           <skillcategories>
             <category>Combat Active</category>
             <category>Physical Active</category>
@@ -371,6 +371,9 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	    <bonus>
+		    <judgeintentionsdefense>Rating</judgeintentionsdefense>
+	    </bonus>
       <source>SR5</source>
       <page>310</page>
     </power>
@@ -420,6 +423,16 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	  <bonus>
+		<toxincontactresist>1</toxincontactresist>
+		<toxiningestionresist>1</toxiningestionresist>
+		<toxininhalationresist>1</toxininhalationresist>
+		<toxininjectionresist>1</toxininjectionresist>
+		<pathogencontactresist>1</pathogencontactresist>
+		<pathogeningestionresist>1</pathogeningestionresist>
+		<pathogeninhalationresist>1</pathogeninhalationresist>
+		<pathogeninjectionresist>1</pathogeninjectionresist>
+	  </bonus>
       <source>SR5</source>
       <page>311</page>
     </power>
@@ -467,6 +480,10 @@
           </oneof>
         </required>
       </adeptwayrequires>
+	  <bonus>
+		<stuncmrecovery>Rating</stuncmrecovery>
+		<physicalcmrecovery>Rating</physicalcmrecovery>
+	  </bonus>
     </power>
     <power>
       <id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
@@ -643,6 +660,9 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	  <bonus>
+		<detectionspellresist>Rating</detectionspellresist>
+	  </bonus>
       <source>SG</source>
       <page>169</page>
     </power>
@@ -1212,6 +1232,10 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	  <bonus>
+		<firearmor>Rating</firearmor>
+		<coldarmor>Rating</coldarmor>
+	  </bonus>
       <source>SG</source>
       <page>175</page>
     </power>
@@ -1382,6 +1406,9 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
+	  <bonus>
+		<toxiningestionresist>Rating</toxiningestionresist>
+	  </bonus>
     </power>    
     <power>
       <id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
@@ -1389,6 +1416,9 @@
       <points>.25</points>
       <levels>true</levels>
       <limit>1</limit>
+	  <bonus>
+		<fatigueresist>Rating</fatigueresist>
+	  </bonus>
       <source>SSP</source>
       <page>23</page>
     </power>    
@@ -1401,6 +1431,9 @@
       <source>SSP</source>
       <page>23</page>
       <adeptway>0.25</adeptway>
+	  <bonus>
+		<mentalmanipulationresist>Rating</mentalmanipulationresist>
+	  </bonus>
     </power>    
     <power>
       <id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
@@ -1450,6 +1483,10 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
+	  <bonus>
+		<manaillusionresist>Rating</manaillusionresist>
+		<physicalillusionresist>Rating</physicalillusionresist>
+	  </bonus>
     </power>    
     <power>
       <id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
@@ -1457,9 +1494,57 @@
       <points>1</points>
       <levels>false</levels>
       <limit>1</limit>
+	  <includeinlimit>
+        <name>Power Swimming (Elf or Troll)</name>
+      </includeinlimit>
       <source>SSP</source>
       <page>24</page>
       <adeptway>0.5</adeptway>
+	  <bonus>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <val>200</val>
+		</sprintbonus>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <metatype>Elf</metatype>
+		  <metatype>Troll</metatype>
+		</oneof>
+	  </forbidden>
+    </power>
+	<power>
+      <id>639a2d7f-9018-4016-a61c-b7f83ebcd9b9</id>
+      <name>Power Swimming (Elf or Troll)</name>
+      <points>1</points>
+      <levels>false</levels>
+      <limit>1</limit>
+	  <includeinlimit>
+        <name>Power Swimming</name>
+      </includeinlimit>
+      <source>SSP</source>
+      <page>24</page>
+      <adeptway>0.5</adeptway>
+	  <bonus>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <val>400</val>
+		</sprintbonus>
+	  </bonus>
+	  <required>
+		<oneof>
+		  <metatype>Elf</metatype>
+		  <metatype>Troll</metatype>
+		</oneof>
+	  </required>
     </power>
     <power>
       <id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
@@ -1662,6 +1747,9 @@
       <power>Keratin Control</power>
       <source>SG</source>
       <page>157</page>
+	  <bonus>
+		<unarmeddv>1</unarmeddv>
+	  </bonus>
       <required>
         <allof>
           <power>Keratin Control</power>

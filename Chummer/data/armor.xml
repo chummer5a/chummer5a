@@ -47,6 +47,9 @@
       <armorcapacity>8</armorcapacity>
       <avail>8</avail>
       <cost>1500</cost>
+	  <gears>
+        <usegear>Holster</usegear>
+      </gears>
       <source>SR5</source>
       <page>437</page>
     </armor>
@@ -109,18 +112,7 @@
       <armorcapacity>15</armorcapacity>
       <avail>14R</avail>
       <cost>2000</cost>
-      <addmodcategory>Full Body Mods</addmodcategory>
-      <source>SR5</source>
-      <page>437</page>
-    </armor>
-    <armor>
-      <id>71c20b15-de11-49eb-93fe-f4d7491283e3</id>
-      <name>Full Body Armor: Helmet</name>
-      <category>Armor</category>
-      <armor>+3</armor>
-      <armorcapacity>6</armorcapacity>
-      <avail>0</avail>
-      <cost>500</cost>
+      <addmodcategory>Full Body Armor Mods</addmodcategory>
       <source>SR5</source>
       <page>437</page>
     </armor>
@@ -143,20 +135,10 @@
       <armorcapacity>9</armorcapacity>
       <avail>8</avail>
       <cost>650</cost>
+	  <addmodcategory>Urban Explorer Jumpsuit Accessories</addmodcategory>
       <gears>
         <usegear>Biomonitor</usegear>
       </gears>
-      <source>SR5</source>
-      <page>437</page>
-    </armor>
-    <armor>
-      <id>812a7926-3980-4c26-9935-5f1b66abacda</id>
-      <name>Urban Explorer Jumpsuit: Helmet</name>
-      <category>Armor</category>
-      <armor>+2</armor>
-      <armorcapacity>2</armorcapacity>
-      <avail>0</avail>
-      <cost>100</cost>
       <source>SR5</source>
       <page>437</page>
     </armor>
@@ -184,6 +166,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
+		  <condition>For actions where Shield might get in the way.</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -202,6 +185,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
+		  <condition>For actions where Shield might get in the way.</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -960,7 +944,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -983,7 +967,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1006,7 +990,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1040,7 +1024,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1066,7 +1050,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1092,7 +1076,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1151,7 +1135,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only in emergency situations, Must be visible</condition>
+          <condition>Only during emergency situations, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1184,7 +1168,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1217,7 +1201,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for intimidation, Must be visible; reduce by 1 in all other tests</condition>
+          <condition>Only for Intimidation, Must be visible.</condition>
+        </limitmodifier>
+		<limitmodifier>
+          <limit>Social</limit>
+          <value>-1</value>
+          <condition>For all tests except Intimidation, Must be visible.</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1325,12 +1314,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible, general public only; increase by 1 with gang members</condition>
+          <condition>General public only, Must be visible.</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible, gang members only</condition>
+          <condition>Gang members only, Must be visible.</condition>
         </limitmodifier>
       </bonus>
       <source>RG</source>
@@ -1348,12 +1337,12 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Must be visible, general public only; increase by 1 with gang members</condition>
+          <condition>General public only, Must be visible.</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Must be visible, gang members only</condition>
+          <condition>Gang members only, Must be visible.</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1418,7 +1407,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <addmodcategory>Ballistic Mask</addmodcategory>
@@ -1437,7 +1426,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Only for intimidation, Must be visible</condition>
+          <condition>Only for Intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
       <addmodcategory>Ballistic Mask</addmodcategory>
@@ -1554,7 +1543,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for climbing tests</condition>
+          <condition>Only for Gymnastics (Climbing)</condition>
         </limitmodifier>
       </bonus>
       <mods>
@@ -1578,6 +1567,9 @@
       <armorcapacity>6</armorcapacity>
       <avail>6</avail>
       <cost>1200</cost>
+	  <bonus>
+		<fatigueresist>-2</fatigueresist>
+	  </bonus>
       <mods>
         <name>Custom Fit</name>
         <name rating="4">Insulation</name>
@@ -2685,7 +2677,7 @@
       <armorcapacity>18</armorcapacity>
       <avail>16R</avail>
       <cost>20000</cost>
-      <addmodcategory>Full Body Mods</addmodcategory>
+      <addmodcategory>Full Body Armor Mods</addmodcategory>
       <source>2050</source>
       <page>192</page>
     </armor>
@@ -3001,6 +2993,10 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="chemicalprotection">
+		<toxincontactresist>Rating</toxincontactresist>
+		<pathogencontactresist>Rating</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3013,6 +3009,12 @@
       <armorcapacity>[6]</armorcapacity>
       <avail>12R</avail>
       <cost>3000</cost>
+	  <bonus>
+		<toxincontactimmune />
+		<toxininhalationimmune />
+		<pathogencontactimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3025,6 +3027,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>Rating</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3037,6 +3042,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="insulation">
+		<coldarmor>Rating</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3049,6 +3057,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>6</avail>
       <cost>Rating * 250</cost>
+	  <bonus unique="nonconductivity">
+		<electricityarmor>Rating</electricityarmor>
+	  </bonus>
       <source>SR5</source>
       <page>438</page>
     </mod>
@@ -3061,8 +3072,68 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>10R</avail>
       <cost>Rating * 500</cost>
+	  <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>Rating</value>
+          <condition>Only for Sneaking against Thermographic Vision or thermal sensors.</condition>
+        </limitmodifier>
+      </bonus>
       <source>SR5</source>
       <page>438</page>
+    </mod>
+	<mod>
+      <id>71c20b15-de11-49eb-93fe-f4d7491283e3</id>
+      <name>Full Body Armor: Helmet</name>
+      <category>Full Body Armor Mods</category>
+      <armor>+3</armor>
+	  <maxrating>1</maxrating>
+      <armorcapacity>[0]/6</armorcapacity>
+      <avail>0</avail>
+      <cost>500</cost>
+      <source>SR5</source>
+      <page>437</page>
+    </mod>
+    <mod>
+      <id>69423033-a7f8-4b80-96c6-0c4a91cd32aa</id>
+      <name>Full Body Armor: Chemical Seal</name>
+      <category>Full Body Armor Mods</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <avail>+6</avail>
+      <cost>6000</cost>
+	  <bonus>
+		<toxincontactimmune />
+		<toxininhalationimmune />
+		<pathogencontactimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
+      <source>SR5</source>
+      <page>437</page>
+    </mod>
+    <mod>
+      <id>ab16b276-00b3-402e-8629-b38e2905e12f</id>
+      <name>Full Body Armor: Environment Adaptation</name>
+      <category>Full Body Armor Mods</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <avail>+3</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>437</page>
+    </mod>
+	<mod>
+      <id>812a7926-3980-4c26-9935-5f1b66abacda</id>
+      <name>Urban Explorer Jumpsuit: Helmet</name>
+      <category>Urban Explorer Jumpsuit Accessories</category>
+      <armor>+2</armor>
+      <armorcapacity>[0]/2</armorcapacity>
+      <avail>0</avail>
+      <cost>100</cost>
+      <source>SR5</source>
+      <page>437</page>
     </mod>
     <mod>
       <id>dbdaf817-9bfa-4938-a195-b53c63b53e7c</id>
@@ -3085,6 +3156,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>4</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3097,6 +3171,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="chemicalprotection">
+		<toxincontactresist>4</toxincontactresist>
+		<pathogencontactresist>4</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3109,6 +3187,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>4</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3133,6 +3214,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="chemicalprotection">
+		<toxincontactresist>3</toxincontactresist>
+		<pathogencontactresist>3</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3145,6 +3230,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>3</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3157,6 +3245,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>2</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3169,6 +3260,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="chemicalprotection">
+		<toxincontactresist>2</toxincontactresist>
+		<pathogencontactresist>2</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3181,6 +3276,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>2</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3193,6 +3291,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="fireresistance">
+		<firearmor>6</firearmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3205,6 +3306,10 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="chemicalprotection">
+		<toxincontactresist>6</toxincontactresist>
+		<pathogencontactresist>6</pathogencontactresist>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3217,6 +3322,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+	  <bonus unique="insulation">
+		<coldarmor>6</coldarmor>
+	  </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -3367,30 +3475,6 @@
       <page>65</page>
     </mod>
     <mod>
-      <id>69423033-a7f8-4b80-96c6-0c4a91cd32aa</id>
-      <name>Full Body Armor: Chemical Seal</name>
-      <category>Full Body Mods</category>
-      <armor>0</armor>
-      <maxrating>1</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>+6</avail>
-      <cost>6000</cost>
-      <source>SR5</source>
-      <page>437</page>
-    </mod>
-    <mod>
-      <id>ab16b276-00b3-402e-8629-b38e2905e12f</id>
-      <name>Full Body Armor: Environment Adaptation</name>
-      <category>Full Body Mods</category>
-      <armor>0</armor>
-      <maxrating>1</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>+3</avail>
-      <cost>1000</cost>
-      <source>SR5</source>
-      <page>437</page>
-    </mod>
-    <mod>
       <id>9a1a569f-4c0c-4291-af5b-89e1334e95b4</id>
       <name>Rapid Transit: Diamond</name>
       <category>Rapid Transit Detailing</category>
@@ -3529,6 +3613,9 @@
       <armorcapacity>FixedValues([1],[2],[3],[4],[5],[6])</armorcapacity>
       <avail>Rating * 2</avail>
       <cost>Rating * 200</cost>
+	  <bonus>
+		<radiationresist>Rating</radiationresist>
+	  </bonus>
       <source>RG</source>
       <page>84</page>
     </mod>

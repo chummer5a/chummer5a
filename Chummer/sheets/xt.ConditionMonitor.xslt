@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Condition Monitor Box Template -->
 <!-- Created by KeyMasterOfGozer -->
 <!-- Version -500 -->
@@ -24,43 +24,101 @@
       <xsl:param name="TotalBoxes">10</xsl:param>
       <xsl:param name="OverFlow">0</xsl:param>
       <xsl:param name="DamageTaken">0</xsl:param>
+    <xsl:param name="Scale">1</xsl:param>
     <style type="text/css">
       .conditionmonitorbox {
-        border: solid 2px #1c4a2d;
-        width: 29px;
-        height: 24px;
-        text-align: right;
-        vertical-align: text-bottom;
-        font-weight: bold;
+      border: solid 0.1em #1c4a2d;
+      padding: 0.1em 0.1em 0.1em 0.1em;
+      margin: 0;
+      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
+      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      text-align: right;
+      vertical-align: bottom;
+      font-weight: bold;
+      background-color: #edf8f1;
+      overflow: hidden;
+      }
+      .conditionmonitorboxoverflow {
+      border: solid 0.1em #1c4a2d;
+      padding: 0.1em 0.1em 0.1em 0.1em;
+      margin: 0;
+      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
+      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      text-align: right;
+      vertical-align: bottom;
+      font-weight: bold;
+      background-color: #90d5a9;
+      overflow: hidden;
       }
       .conditionmonitorboxfilled {
-        border: solid 2px #1c4a2d;
-        width: 29px;
-        height: 24px;
-        text-align: right;
-        vertical-align: text-bottom;
-        font-weight: bold;
-        background-color: #bbbbbb;
+      border: solid 0.1em #1c4a2d;
+      padding: 0.1em 0.1em 0.1em 0.1em;
+      margin: 0;
+      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
+      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      text-align: right;
+      vertical-align: bottom;
+      font-weight: bold;
+      background-color: #1c4a2d;
+      color: #ffffff;
+      overflow: hidden;
+      }
+      .conditionmonitorboxdead {
+      border: solid 0.1em #1c4a2d;
+      padding: 0.1em 0.1em 0.1em 0.1em;
+      margin: 0;
+      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
+      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      text-align: right;
+      vertical-align: bottom;
+      font-weight: bold;
+      background-color: #3fa665;
+      overflow: hidden;
       }
       .conditionmonitorboxnotused {
-        border: solid 0px red;
-        width: 29px;
-        height: 24px;
-        text-align: right;
-        vertical-align: text-bottom;
-        font-weight: bold;
-        background-color: #FFFFFF;
-      }
-      .indent {
-        padding-left: 20px;
-      }
-      .block {
-        page-break-inside: avoid;
+      border: solid 0.0em red;
+      padding: 0.1em 0.1em 0.1em 0.1em;
+      margin: 0;
+      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
+      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      width: <xsl:value-of select="9.0 * $Scale"/>mm;
+      height: <xsl:value-of select="9.0 * $Scale"/>mm;
+      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      text-align: right;
+      vertical-align: bottom;
+      font-weight: bold;
+      overflow: hidden;
       }
     </style>
 
-    <table cellspacing="0" cellpadding="0" border="0">
-      <tr><td>
+    <table cellspacing="1" cellpadding="0" border="0" align="center" style="margin: auto; page-break-inside: avoid;">
         <xsl:call-template name="ConditionRow">
           <xsl:with-param name="PenaltyBox"><xsl:value-of select="$PenaltyBox" /></xsl:with-param>
           <xsl:with-param name="Offset"><xsl:value-of select="$Offset" /></xsl:with-param>
@@ -71,7 +129,6 @@
           <xsl:with-param name="LowBox">1</xsl:with-param>
           <xsl:with-param name="HighBox"><xsl:value-of select="$CMWidth" /></xsl:with-param>
         </xsl:call-template>
-        </td></tr>
     </table>
   </xsl:template>
 
@@ -159,6 +216,8 @@
         <xsl:choose> <!-- Choose Background Color for this Box. -->
           <xsl:when test="$LowBox &lt;= $DamageTaken">conditionmonitorboxfilled</xsl:when>
           <xsl:when test="$LowBox &gt; ($TotalBoxes + $OverFlow)">conditionmonitorboxnotused</xsl:when>
+          <xsl:when test="$LowBox = ($TotalBoxes + $OverFlow) and $OverFlow &gt; 0">conditionmonitorboxdead</xsl:when>
+          <xsl:when test="$LowBox &gt; $TotalBoxes">conditionmonitorboxoverflow</xsl:when>
           <xsl:otherwise>conditionmonitorbox</xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
@@ -167,15 +226,15 @@
         <xsl:when test="$LowBox &gt; ($TotalBoxes + $OverFlow)">&#160;</xsl:when>
         <!-- Last Box of OverFlow needs DEAD -->
         <xsl:when test="$LowBox = ($TotalBoxes + $OverFlow) and $OverFlow &gt; 0">
-          <text><br/><xsl:value-of select="$lang.Dead"/></text>
+          <xsl:value-of select="$lang.Dead"/>
         </xsl:when>
         <!-- Boxes of OverFlow are Marked OVR -->
         <xsl:when test="$LowBox &gt; $TotalBoxes">
-          <text><br/><xsl:value-of select="$lang.OVR"/></text>
+          <xsl:value-of select="$lang.OVR"/>
         </xsl:when>
         <!-- Last Normal Box -->
         <xsl:when test="$LowBox = $TotalBoxes">
-          <text><br/><xsl:value-of select="$lang.Down"/></text>
+          <xsl:value-of select="$lang.Down"/>
         </xsl:when>
         <!-- Boxes that incur a penalty are shown with the penalty -->
         <xsl:when test="($LowBox - $Offset) mod $PenaltyBox = 0 and $LowBox &gt; $Offset">

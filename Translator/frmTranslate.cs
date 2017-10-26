@@ -164,8 +164,8 @@ namespace Translator
                         if (objAttrib == null)
                             objAttrib = _objDataDoc.CreateAttribute("translated");
                         else
-                            objAttrib.InnerText = true.ToString();
-                        objAttrib.InnerText = true.ToString();
+                            objAttrib.InnerText = System.Boolean.TrueString;
+                        objAttrib.InnerText = System.Boolean.TrueString;
                         xmlNodeLocal.Attributes.Append(objAttrib);
                     }
                 }
@@ -190,12 +190,12 @@ namespace Translator
                     if (itemOf == null)
                     {
                         itemOf = _objDataDoc.CreateAttribute("translated");
-                        itemOf.InnerText = true.ToString();
+                        itemOf.InnerText = System.Boolean.TrueString;
                         xmlNodeLocal.Attributes?.Append(itemOf);
                     }
                     else
                     {
-                        itemOf.InnerText = true.ToString();
+                        itemOf.InnerText = System.Boolean.TrueString;
                     }
                 }
             }

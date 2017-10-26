@@ -22,6 +22,15 @@
   <grades>
     <!-- Region Standard -->
     <grade>
+      <id>9352d1b0-5288-4bbf-82b5-00073f7effc2</id>
+      <name>None</name>
+      <ess>1</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SR5</source>
+      <page>1</page>
+    </grade>
+    <grade>
       <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
       <name>Standard</name>
       <ess>1</ess>
@@ -178,6 +187,7 @@
     <category>Cyberlimb</category>
     <category>Cyberlimb Accessory</category>
     <category>Cyberlimb Enhancement</category>
+    <category>Cybersuite</category>
     <category>Cyber Implant Weapon</category>
     <category>Earware</category>
     <category>Eyeware</category>
@@ -239,14 +249,16 @@
       <page>452</page>
       <minrating>1</minrating>
       <rating>3</rating>
-	  <gears>
-		<usegear>
+      <gears>
+        <usegear>
           <name>Sim Module, Hot</name>
-		  <category>Commlink Accessories</category>
+          <category>Commlink Accessories</category>
         </usegear>
-	  </gears>
-	  <subsystems>
-        <subsystem>Datajack</subsystem>
+      </gears>
+      <subsystems>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
       </subsystems>
     </cyberware>
     <cyberware>
@@ -304,12 +316,12 @@
       <capacity>0</capacity>
       <avail>2</avail>
       <cost>1000</cost>
-	  <gears>
-		<usegear>
+      <gears>
+        <usegear>
           <name>Universal Connector Cord (Meter)</name>
-		  <category>Tools</category>
+          <category>Tools</category>
         </usegear>
-	  </gears>
+      </gears>
       <source>SR5</source>
       <page>452</page>
     </cyberware>
@@ -438,7 +450,6 @@
         <specificskill>
           <name>Impersonation</name>
           <bonus>Rating</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <rating>6</rating>
@@ -462,7 +473,9 @@
       <minrating>1</minrating>
       <rating>4</rating>
       <subsystems>
-        <subsystem>Image Link</subsystem>
+        <cyberware>
+          <name>Image Link</name>
+        </cyberware>
       </subsystems>
     </cyberware>
     <cyberware>
@@ -509,6 +522,7 @@
       <source>SR5</source>
       <page>453</page>
       <addvehicle>Ocular Drone</addvehicle>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>fb0419a3-6f0d-4fbb-8b37-39e853efa195</id>
@@ -561,7 +575,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for visual Perception</condition>
+          <condition>Only for Perception (Visual).</condition>
         </limitmodifier>
       </bonus>
       <rating>3</rating>
@@ -596,7 +610,9 @@
       <minrating>1</minrating>
       <rating>4</rating>
       <subsystems>
-        <subsystem>Sound Link</subsystem>
+        <cyberware>
+          <name>Sound Link</name>
+        </cyberware>
       </subsystems>
     </cyberware>
     <cyberware>
@@ -613,7 +629,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with audio Perception</condition>
+          <condition>Only for Perception (Hearing)</condition>
         </limitmodifier>
       </bonus>
       <rating>3</rating>
@@ -637,6 +653,9 @@
       <capacity>[1]</capacity>
       <avail>6</avail>
       <cost>2250</cost>
+	  <bonus>
+		<sonicresist>2</sonicresist>
+	  </bonus>
       <source>SR5</source>
       <page>454</page>
     </cyberware>
@@ -677,7 +696,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only with Perception to find the source of a sound</condition>
+          <condition>Only for Perception to find the source of a sound</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -700,7 +719,6 @@
       <forbidden>
         <oneof>
           <cyberware>Bone Density Augmentation</cyberware>
-          <cyberware>Siemens Cyberspine</cyberware>
         </oneof>
       </forbidden>
       <notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -724,7 +742,6 @@
       <forbidden>
         <oneof>
           <cyberware>Bone Density Augmentation</cyberware>
-          <cyberware>Siemens Cyberspine</cyberware>
         </oneof>
       </forbidden>
       <notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -748,7 +765,6 @@
       <forbidden>
         <oneof>
           <cyberware>Bone Density Augmentation</cyberware>
-          <cyberware>Siemens Cyberspine</cyberware>
         </oneof>
       </forbidden>
       <notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -807,6 +823,10 @@
       <source>SR5</source>
       <page>455</page>
       <rating>3</rating>
+	  <bonus>
+		<toxininhalationimmune />
+		<pathogeninhalationimmune />
+	  </bonus>
     </cyberware>
     <cyberware>
       <id>46f80a44-80ae-41d7-a7c8-a119c4cff70f</id>
@@ -828,6 +848,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -892,11 +917,6 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Siemens Cyberspine</cyberware>
-        </oneof>
-      </forbidden>
       <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
@@ -961,6 +981,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -996,6 +1017,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1088,6 +1110,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1210,6 +1233,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -1245,6 +1269,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1337,6 +1362,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -1411,6 +1437,7 @@
         <armor>Rating</armor>
       </bonus>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>7d61f860-0637-4214-914d-c68022361d24</id>
@@ -1429,6 +1456,7 @@
       </forbidden>
       <minrating>MinimumSTR</minrating>
       <rating>MaximumSTR</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
@@ -1442,6 +1470,7 @@
       <page>456</page>
       <minrating>MinimumAGI</minrating>
       <rating>MaximumAGI</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>a9f4efd4-b86c-4e90-b0f7-aefa32c3b9de</id>
@@ -1454,6 +1483,7 @@
       <source>SR5</source>
       <page>456</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>2c50d5c1-f2ff-4c7b-bf5e-46925e808648</id>
@@ -1466,6 +1496,7 @@
       <source>SR5</source>
       <page>456</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>eea42123-0449-4c20-8c0b-ae766025b72b</id>
@@ -1477,6 +1508,7 @@
       <cost>2000</cost>
       <source>SR5</source>
       <page>457</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>816fbe31-0bfb-455f-a939-fca85b968bd2</id>
@@ -1488,6 +1520,19 @@
       <cost>6000</cost>
       <source>SR5</source>
       <page>456</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>17e0bf0e-db82-4db7-ad85-d88e9945f5a7</id>
@@ -1499,6 +1544,7 @@
       <cost>3000</cost>
       <source>SR5</source>
       <page>456</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c7a55431-c54c-41ba-8468-0d9c3028010a</id>
@@ -1514,10 +1560,27 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only with Jumping and Sprinting</condition>
+          <condition>Only for Gymnastics (Jumping) and Running (Sprinting)</condition>
         </limitmodifier>
       </bonus>
       <rating>6</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>32096cc1-25c0-4b29-a53d-92528f352d2f</id>
@@ -1530,6 +1593,7 @@
       <source>SR5</source>
       <page>457</page>
       <allowgear />
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>ec5ed166-d1dc-4afe-80a1-71bc315f7d75</id>
@@ -1612,6 +1676,7 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>45a32fd5-6db3-4e1d-aa34-76d1e299ae8b</id>
@@ -1648,6 +1713,22 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Shock Hand</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>841cac06-6839-4041-a8dc-2050048df076</id>
@@ -1671,6 +1752,7 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
@@ -1682,6 +1764,7 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c9e4a11f-ef4f-4cb6-9392-ce7378456d82</id>
@@ -1765,7 +1848,6 @@
         <specificskill>
           <name>Disguise</name>
           <bonus>4</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
     </cyberware>
@@ -1800,7 +1882,6 @@
         <specificskill>
           <name>Mathematics</name>
           <bonus>4</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
     </cyberware>
@@ -2042,7 +2123,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>For musical performances</condition>
+          <condition>Only for Performance</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2060,7 +2141,7 @@
       <page>82</page>
     </cyberware>
     <cyberware>
-      <id>AA9BD255-2FA0-4FFF-826E-1DAE3377AE6E</id>
+      <id>d97a6e2f-0e3d-4f9b-a046-e1a86d5dad88</id>
       <name>Auto Injector Expansion</name>
       <category>Bodyware</category>
       <ess>0.05</ess>
@@ -2095,7 +2176,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>For climbing, jumping, running, or knockdown resist.</condition>
+          <condition>Only for Gymnastics (Climbing), Gymnastics (Jumping), Running, and knockdown resist.</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2123,7 +2204,7 @@
       <rating>6</rating>
     </cyberware>
     <cyberware>
-      <id>4A82E5B3-D7AA-4894-AF18-D90B8245A9C9</id>
+      <id>609fc7eb-d81b-4468-8328-19bb1b48100a</id>
       <name>Cyberfins</name>
       <category>Bodyware</category>
       <ess>0.1</ess>
@@ -2136,9 +2217,50 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Only for making repairs, typing, dancing etc, Must be engaged</condition>
+          <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
         </limitmodifier>
       </bonus>
+	  <pairbonus>
+		<specificskill>
+          <name>Swimming</name>
+          <bonus>1</bonus>
+        </specificskill>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>50</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <percent>50</percent>
+		</sprintbonus>
+	  </pairbonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>80c4f377-0dfd-4abc-8481-79667a8255ac</id>
@@ -2176,9 +2298,27 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Knockdown Test, Must be engaged</condition>
+          <condition>Only for knockdown resist, Must be engaged.</condition>
         </limitmodifier>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>3170d4e0-0369-49f3-9b73-95e07ec3d8d1</id>
@@ -2238,9 +2378,36 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for climbing</condition>
+          <condition>Only for Gymanstics (Climbing)</condition>
         </limitmodifier>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>a35e5b3f-c6a9-4c2e-a8e6-b7ed58d656c9</id>
@@ -2256,12 +2423,12 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>2</value>
-          <condition>Only for Escape Artist and Grapple, Must be loosened</condition>
+          <condition>Only for Escape Artist and Grappling, Must be loosened</condition>
         </limitmodifier>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for test involving endurance, Must be tightened</condition>
+          <condition>Only for tests involving endurance, Must be tightened</condition>
         </limitmodifier>
       </bonus>
     </cyberware>
@@ -2338,6 +2505,7 @@
       <source>CF</source>
       <page>72</page>
       <rating>4</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>b7ec08aa-a328-46a0-9b41-4c9a4bfc13b2</id>
@@ -2353,7 +2521,7 @@
     </cyberware>
     <cyberware>
       <id>cb86075d-7d60-4618-9698-9e9268a28989</id>
-      <name>Breast implant</name>
+      <name>Breast Implant (One Breast)</name>
       <category>Cosmetic Enhancement</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -2364,7 +2532,7 @@
     </cyberware>
     <cyberware>
       <id>21953b9b-43e8-41a9-af03-5af71797585b</id>
-      <name>Breast implant 2.0</name>
+      <name>Breast Implant 2.0 (One Breast)</name>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2470,13 +2638,6 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>74</page>
-      <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>2</value>
-          <condition>Only for Sneaking, Must be loosened</condition>
-        </limitmodifier>
-      </bonus>
     </cyberware>
     <cyberware>
       <id>cb0b533f-6157-4d64-86be-ad9a389a336b</id>
@@ -2488,6 +2649,13 @@
       <cost>8000</cost>
       <source>CF</source>
       <page>74</page>
+	  <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>4</value>
+          <condition>Only for Sneaking, Must be completely naked</condition>
+        </limitmodifier>
+      </bonus>
     </cyberware>
     <cyberware>
       <id>e01ae784-7f20-499c-919b-181a483d4dc4</id>
@@ -2583,6 +2751,14 @@
       </allowgear>
       <bonus>
         <selectside />
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>-50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <val>-1</val>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
@@ -2606,6 +2782,14 @@
       </allowgear>
       <bonus>
         <selectside />
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>-50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <val>-1</val>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
@@ -2629,6 +2813,14 @@
       </allowgear>
       <bonus>
         <selectside />
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>-50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <val>-1</val>
+		</runmultiplier>
       </bonus>
       <limbslot>arm</limbslot>
     </cyberware>
@@ -2658,7 +2850,7 @@
     </cyberware>
     <cyberware>
       <id>e9a0b651-fb8a-4fc3-81a5-b3eab900c1f8</id>
-      <name>Cyberfinger</name>
+      <name>Cyberfinger (Custom)</name>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -2666,6 +2858,26 @@
       <cost>500</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+		<selecttext />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>1b2c94f9-86a6-4d84-8f58-1c16569213fa</id>
@@ -2677,6 +2889,25 @@
       <cost>550</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>caa21274-3a2f-416e-9589-dfeffc11b1a7</id>
@@ -2688,6 +2919,25 @@
       <cost>550</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>2badbf90-bf03-432c-95a6-495359039ba8</id>
@@ -2699,9 +2949,28 @@
       <cost>500</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
       <allowgear>
         <gearcategory>Ammunition</gearcategory>
       </allowgear>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>e6f65d1d-0a49-4256-aca9-2007404013a2</id>
@@ -2713,25 +2982,68 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>86</page>
+	  <bonus>
+		<selectside />
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>87475df7-b371-4a89-8623-2582137b5906</id>
       <name>Digigrade Legs</name>
       <category>Cyberlimb Enhancement</category>
       <ess>0.25</ess>
+	  <addtoparentess />
       <capacity>[4]</capacity>
       <avail>+4</avail>
       <cost>5000</cost>
       <source>CF</source>
       <page>87</page>
-      <bonus>
+      <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for Stealth group, Must be in Pairs</condition>
+          <condition>Only for Stealth group.</condition>
         </limitmodifier>
-        <selectside />
-      </bonus>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
+      </pairbonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
+	  <forbidden>
+		<parentdetails>
+		  <name>Centaur Rear Leg</name>
+		</parentdetails>
+	  </forbidden>
     </cyberware>
     <cyberware>
       <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
@@ -2744,9 +3056,23 @@
       <source>CF</source>
       <page>87</page>
       <addweapon>Grapple Fist</addweapon>
-      <bonus>
+	  <bonus>
         <selectside />
       </bonus>
+      <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>215e0563-b23c-42c0-9d11-aa4ccc8acf6d</id>
@@ -2762,6 +3088,20 @@
       <bonus>
         <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f8baf2a8-2941-4eec-9bac-430e30b8f40c</id>
@@ -2781,6 +3121,24 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>71323559-408e-441f-b53b-d9ffaa49e4c6</id>
@@ -2801,6 +3159,24 @@
         </limitmodifier>
         <selectside />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f7ff7a58-ac0e-49a9-8cbe-741df59a33e5</id>
@@ -2812,14 +3188,38 @@
       <cost>250</cost>
       <source>CF</source>
       <page>88</page>
-      <bonus>
+      <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
           <condition>Only when in use</condition>
         </limitmodifier>
-        <selectside />
-      </bonus>
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>50</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <percent>50</percent>
+		</runmultiplier>
+      </pairbonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>fe394e6c-c9b4-492e-91a3-65b5e63692ed</id>
@@ -2831,13 +3231,38 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
-      <bonus>
+      <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>-2</value>
+		  <condition>Only when in use</condition>
         </limitmodifier>
-        <selectside />
-      </bonus>
+		<walkmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<runmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</runmultiplier>
+      </pairbonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>edb2fd85-6bd8-4c34-be9a-eb9f21a0b8df</id>
@@ -2855,8 +3280,28 @@
           <value>1</value>
           <condition>Only with manual dexterity</condition>
         </limitmodifier>
-        <selectside />
       </bonus>
+	  <pairbonus>
+		<specificskill>
+          <name>Palming</name>
+          <bonus>1</bonus>
+        </specificskill>
+	  </pairbonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>ff29d933-7ef5-4b15-96d2-8e56aa70796d</id>
@@ -2868,9 +3313,16 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>88</page>
-      <bonus>
-        <selectside />
-      </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Foot</name>
+            <name>Synthetic Foot</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>02604fc4-e03a-4c4c-8998-f283f2528a64</id>
@@ -2882,6 +3334,16 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>fcae214b-4fbe-40f7-b5e0-61473d6b9a2e</id>
@@ -2893,6 +3355,24 @@
       <cost>3000</cost>
       <source>CF</source>
       <page>88</page>
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>a40cbc72-7dc6-4f8f-a9ff-e5e3f471b895</id>
@@ -2904,10 +3384,29 @@
       <cost>Rating * 1000</cost>
       <source>CF</source>
       <page>90</page>
-      <bonus>
-        <selectside />
-      </bonus>
       <rating>2</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
@@ -2919,9 +3418,31 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>90</page>
-      <bonus>
-        <selectside />
-      </bonus>
+	  <bonus>
+		<walkmultiplier>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</walkmultiplier>
+		<sprintbonus>
+		  <category>Swim</category>
+		  <percent>100</percent>
+		</sprintbonus>
+	  </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+            <name>Obvious Full Leg</name>
+            <name>Synthetic Full Leg</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Drone Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Leg</name>
+			<name>Obvious Lower Leg</name>
+            <name>Synthetic Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>4f7794ce-fd49-48f2-bde7-3501b1799814</id>
@@ -2933,6 +3454,29 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Arm</name>
+			<name>Obvious Full Leg</name>
+			<name>Synthetic Full Arm</name>
+			<name>Synthetic Full Leg</name>
+			<name>Obvious Lower Arm</name>
+			<name>Obvious Lower Leg</name>
+			<name>Synthetic Lower Arm</name>
+			<name>Synthetic Lower Leg</name>
+			<name>Drone Arm</name>
+			<name>Drone Leg</name>
+			<name>Synthetic Drone Arm</name>
+			<name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>251f792a-8887-4276-a5a9-0e01fec594ac</id>
@@ -2944,6 +3488,25 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>88</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Arm</name>
+			<name>Obvious Full Leg</name>
+			<name>Synthetic Full Arm</name>
+			<name>Synthetic Full Leg</name>
+			<name>Drone Arm</name>
+			<name>Drone Leg</name>
+			<name>Synthetic Drone Arm</name>
+			<name>Synthetic Drone Leg</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>d4d12624-1754-4a67-8e5e-f41817cfc875</id>
@@ -2989,6 +3552,26 @@
       <source>CF</source>
       <page>87</page>
       <rating>6</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Liminal Body, Centaur</name>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+            <name>Synthetic Full Leg</name>
+            <name>Synthetic Drone Leg</name>
+            <name>Synthetic Lower Leg</name>
+			<name>Synthetic Foot</name>
+			<name>Synthetic Full Arm</name>
+            <name>Synthetic Drone Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Synthetic Hand</name>
+			<name>Synthetic Torso</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>b4394ee8-0490-4a56-8b30-8503351a3c58</id>
@@ -3001,26 +3584,42 @@
       <source>CF</source>
       <page>87</page>
       <bonus>
-        <movementpercent>100</movementpercent>
+        <runmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <inheritattributes />
       <limbslot>leg</limbslot>
       <limbslotcount>2</limbslotcount>
       <subsystems>
-        <subsystem>Centaur Full Leg</subsystem>
-        <subsystem>Centaur Full Leg</subsystem>
-        <subsystem>Centaur Full Leg</subsystem>
-        <subsystem>Centaur Full Leg</subsystem>
+        <cyberware>
+          <name>Centaur Front Leg</name>
+		  <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Centaur Front Leg</name>
+		  <forced>Right</forced>
+        </cyberware>
+        <cyberware>
+          <name>Centaur Rear Leg</name>
+		  <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Centaur Rear Leg</name>
+		  <forced>Right</forced>
+        </cyberware>
       </subsystems>
     </cyberware>
     <cyberware>
       <id>8af5027d-a504-484e-8089-c542a95d4831</id>
-      <name>Centaur Full Leg</name>
+      <name>Centaur Front Leg</name>
       <category>Cyberlimb</category>
       <ess>3</ess>
       <capacity>20</capacity>
@@ -3043,6 +3642,37 @@
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
+		<selectside />
+      </bonus>
+      <hide />
+      <limbslot>leg</limbslot>
+    </cyberware>
+	<cyberware>
+      <id>fb43afdc-7176-4640-baba-6087b15acca3</id>
+      <name>Centaur Rear Leg</name>
+      <category>Cyberlimb</category>
+      <ess>3</ess>
+      <capacity>20</capacity>
+      <avail>12</avail>
+      <cost>0</cost>
+      <source>CF</source>
+      <page>87</page>
+      <allowgear>
+        <gearcategory>Sensors</gearcategory>
+      </allowgear>
+      <allowsubsystems>
+        <category>Bodyware</category>
+        <category>Cosmetic Enhancement</category>
+        <category>Cyberlimb Enhancement</category>
+        <category>Cyberlimb Accessory</category>
+        <category>Cyber Implant Weapon</category>
+        <category>Headware</category>
+      </allowsubsystems>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+		<selectside />
       </bonus>
       <hide />
       <limbslot>leg</limbslot>
@@ -3069,11 +3699,15 @@
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
       <bonus>
-        <movementpercent>100</movementpercent>
+        <runmultiplier>
+		  <category>Ground</category>
+		  <percent>100</percent>
+		</runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -3103,6 +3737,7 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
+		  <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -3121,10 +3756,102 @@
       <bonus>
         <selecttext />
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+            <name>Synthetic Full Leg</name>
+            <name>Synthetic Drone Leg</name>
+			<name>Synthetic Full Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Synthetic Torso</name>
+			<name>Synthetic Skull</name>
+			<name>Obvious Full Leg</name>
+            <name>Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Drone Arm</name>
+			<name>Obvious Torso</name>
+			<name>Obvious Skull</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+			<name>Liminal Body, Tank (Full)</name>
+			<name>Liminal Body, Wheeled (Full)</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
-      <name>Bulk Modification</name>
+      <name>Bulk Modification (Hand/Foot/Half-Skull)</name>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[-Rating]</capacity>
+      <avail>+Rating</avail>
+      <cost>Rating * 500</cost>
+      <source>CF</source>
+      <page>86</page>
+      <rating>1</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Foot</name>
+			<name>Obvious Hand</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+	<cyberware>
+      <id>89733e57-d1e3-4b26-ae40-02ee2c2be733</id>
+      <name>Bulk Modification (Lower Arm/Lower Leg/Skull)</name>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[-Rating]</capacity>
+      <avail>+Rating</avail>
+      <cost>Rating * 500</cost>
+      <source>CF</source>
+      <page>86</page>
+      <rating>2</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Lower Leg</name>
+			<name>Obvious Lower Arm</name>
+			<name>Obvious Skull</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+	<cyberware>
+      <id>b1421a8e-6579-44d9-854c-dd15c477032a</id>
+      <name>Bulk Modification (Full Arm/Full Leg)</name>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[-Rating]</capacity>
+      <avail>+Rating</avail>
+      <cost>Rating * 500</cost>
+      <source>CF</source>
+      <page>86</page>
+      <rating>4</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Centaur Front Leg</name>
+			<name>Centaur Rear Leg</name>
+			<name>Obvious Full Leg</name>
+            <name>Drone Leg</name>
+			<name>Obvious Full Arm</name>
+            <name>Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+			<name>Primitive Drone Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+	<cyberware>
+      <id>08b7a781-4631-4a94-bbf2-505bd173d2c5</id>
+      <name>Bulk Modification (Torso/Liminal Chassis)</name>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[-Rating]</capacity>
@@ -3133,6 +3860,15 @@
       <source>CF</source>
       <page>86</page>
       <rating>6</rating>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Torso</name>
+			<name>Liminal Body, Tank (Full)</name>
+			<name>Liminal Body, Wheeled (Full)</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <!-- End Region -->
     <!-- Region Cyber Implant Weaponry -->
@@ -3228,6 +3964,16 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Cyberfangs</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>4887ede8-dbfa-4e09-9ce5-ecaeee31ada3</id>
@@ -3240,6 +3986,16 @@
       <source>CF</source>
       <page>92</page>
       <addweapon>Oral Slasher</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>a086de85-fd2c-4d87-8658-92ce2967cb96</id>
@@ -3268,6 +4024,16 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>6683716f-d70a-484c-b6f3-842e6de12ea2</id>
@@ -3280,6 +4046,16 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Cyberfangs</addweapon>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Skull</name>
+			<name>Synthetic Skull</name>
+			<name>Partial Cyberskull</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>6b167278-501e-4876-8e16-28f9e86064ba</id>
@@ -3331,7 +4107,6 @@
         <specificskill>
           <name>Impersonation</name>
           <bonus>Rating</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <rating>6</rating>
@@ -3414,7 +4189,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>151</page>
-	  <bonus>
+      <bonus>
         <armor group="0">Rating</armor>
       </bonus>
       <rating>6</rating>
@@ -3431,7 +4206,7 @@
       <cost>Rating * 6000</cost>
       <source>CF</source>
       <page>147</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3444,7 +4219,7 @@
       <cost>Rating * 6000</cost>
       <source>CF</source>
       <page>147</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3460,7 +4235,7 @@
       <bonus>
         <selectcyberware />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3473,7 +4248,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>147</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3486,7 +4261,7 @@
       <cost>Rating * 2000</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3499,7 +4274,7 @@
       <cost>Rating * 1000</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3512,7 +4287,7 @@
       <cost>Rating * 600</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3525,7 +4300,7 @@
       <cost>Rating * 4000</cost>
       <source>CF</source>
       <page>148</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <!-- End Region -->
@@ -3543,7 +4318,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
     <cyberware>
@@ -3559,7 +4334,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3570,9 +4345,13 @@
       <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 6000</cost>
+	  <bonus>
+		<stuncmrecovery>Rating</stuncmrecovery>
+		<physicalcmrecovery>Rating</physicalcmrecovery>
+	  </bonus>
       <source>CF</source>
       <page>149</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3588,7 +4367,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -3601,7 +4380,7 @@
       <cost>Rating * 500</cost>
       <source>CF</source>
       <page>149</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3614,7 +4393,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>149</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3631,14 +4410,14 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Intuition-based skills</condition>
+          <condition>Only with Intuition-linked skills</condition>
         </limitmodifier>
         <skillattribute>
           <name>INT</name>
           <bonus>1</bonus>
         </skillattribute>
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3655,14 +4434,14 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only with Logic-based skills</condition>
+          <condition>Only with Logic-linked skills</condition>
         </limitmodifier>
         <skillattribute>
           <name>LOG</name>
           <bonus>1</bonus>
         </skillattribute>
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3678,7 +4457,7 @@
       <bonus>
         <memory>Rating</memory>
       </bonus>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
     <cyberware>
@@ -3691,7 +4470,7 @@
       <cost>Rating * 5000</cost>
       <source>CF</source>
       <page>150</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>9</rating>
     </cyberware>
     <cyberware>
@@ -3702,10 +4481,261 @@
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 1500</cost>
+	  <bonus>
+        <fatigueresist>Rating</fatigueresist>
+      </bonus>
       <source>CF</source>
       <page>150</page>
-      <forcegrade>Standard</forcegrade>
+      <forcegrade>None</forcegrade>
       <rating>5</rating>
+    </cyberware>
+    <!-- End Region -->
+    <!-- Region Cyber Suites -->
+    <cyberware>
+      <id>92a3677e-cd4c-4ce1-9295-612281946709</id>
+      <name>Aztechnology Cuanmiztli A</name>
+      <category>Cybersuite</category>
+      <ess>3.06</ess>
+      <capacity>0</capacity>
+      <avail>8R</avail>
+      <cost>68000</cost>
+      <source>CF</source>
+      <page>92</page>
+      <subsystems>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Retractable Climbing Claws</name>
+        </cyberware>
+        <cyberware>
+          <name>Retractable Climbing Claws</name>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Wired Reflexes</cyberware>
+        </oneof>
+      </forbidden>
+      <forcegrade>Standard</forcegrade>
+    </cyberware>
+    <cyberware>
+      <id>1a112bdd-df4c-4f9f-94cd-f940fa597dda</id>
+      <name>Aztechnology Cuanmiztli B</name>
+      <category>Cybersuite</category>
+      <ess>5.31</ess>
+      <capacity>0</capacity>
+      <avail>12F</avail>
+      <cost>222000</cost>
+      <source>CF</source>
+      <page>92</page>
+      <subsystems>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Spurs</name>
+        </cyberware>
+        <cyberware>
+          <name>Spurs</name>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+    </cyberware>
+    <cyberware>
+      <id>42c65dfa-8135-4757-ac6e-d2ecbcf10c60</id>
+      <name>Evo Atlantis</name>
+      <category>Cybersuite</category>
+      <ess>0.72</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>16000</cost>
+      <source>CF</source>
+      <page>93</page>
+      <subsystems>
+        <cyberware>
+          <name>Internal Air Tank</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberfins</name>
+        </cyberware>
+        <cyberware>
+          <name>Cyberfins</name>
+        </cyberware>
+        <cyberware>
+          <name>OXSYS Cybergill</name>
+        </cyberware>
+        <cyberware>
+          <name>Low-Light Vision</name>
+        </cyberware>
+      </subsystems>
+    </cyberware>
+    <cyberware>
+      <id>188068fe-fe38-4d67-afef-0fc3967e5ae1</id>
+      <name>Horizon Experience!</name>
+      <category>Cybersuite</category>
+      <ess>1.08</ess>
+      <capacity>0</capacity>
+      <avail>12R</avail>
+      <cost>20000</cost>
+      <source>CF</source>
+      <page>93</page>
+      <subsystems>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Olfactory Booster</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Simrig</name>
+        </cyberware>
+        <cyberware>
+          <name>Taste Booster</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Touch Link</name>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Olfactory Booster</cyberware>
+          <cyberware>Taste Booster</cyberware>
+        </oneof>
+      </forbidden>
+    </cyberware>
+    <cyberware>
+      <id>7e341285-c2db-4399-a592-68ab427d2b2e</id>
+      <name>Renraku Tradejack</name>
+      <category>Cybersuite</category>
+      <ess>0.9</ess>
+      <capacity>0</capacity>
+      <avail>12</avail>
+      <cost>124000</cost>
+      <source>CF</source>
+      <page>93</page>
+      <subsystems>
+        <cyberware>
+          <name>Chipjack</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Skillwires</name>
+          <rating>4</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Chipjack</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Skillwires</cyberware>
+        </oneof>
+      </forbidden>
+    </cyberware>
+    <cyberware>
+      <id>eee58e0b-acaf-4c7b-a59d-3667dcbcc95d</id>
+      <name>Saeder-Krupp Cyberlogician</name>
+      <category>Cybersuite</category>
+      <ess>0.81</ess>
+      <capacity>0</capacity>
+      <avail>12</avail>
+      <cost>16000</cost>
+      <source>CF</source>
+      <page>93</page>
+      <subsystems>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Data Lock</name>
+          <rating>6</rating>
+        </cyberware>
+        <cyberware>
+          <name>Image Link</name>
+        </cyberware>
+        <cyberware>
+          <name>Sound Link</name>
+        </cyberware>
+        <cyberware>
+          <name>Math SPU</name>
+        </cyberware>
+        <cyberware>
+          <name>Attention Coprocessor</name>
+        </cyberware>
+      </subsystems>
+    </cyberware>
+    <cyberware>
+      <id>bd5ef116-0e9b-47c0-8285-231a2e3de4b5</id>
+      <name>Shiawase Kacho</name>
+      <category>Cybersuite</category>
+      <ess>0.45</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>6000</cost>
+      <source>CF</source>
+      <page>93</page>
+      <subsystems>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Shiawase Jishi</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Image Link</name>
+        </cyberware>
+        <cyberware>
+          <name>Sound Link</name>
+        </cyberware>
+      </subsystems>
     </cyberware>
     <!-- End Region -->
     <!-- End Region -->
@@ -3736,7 +4766,6 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>Rating</bonus>
-          <applytorating>no</applytorating>
         </specificskill>
       </bonus>
       <rating>4</rating>
@@ -3751,6 +4780,19 @@
       <cost>2750</cost>
       <source>HT</source>
       <page>187</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>4dcc6d9d-824e-4e4a-a0cb-86810838f587</id>
@@ -3762,6 +4804,15 @@
       <cost>3500</cost>
       <source>HT</source>
       <page>187</page>
+	  <requireparent />
+	  <required>
+        <parentdetails>
+          <OR>
+			<name>Obvious Torso</name>
+            <name>Synthetic Torso</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>370546a7-25e8-4a98-9467-d2dec2b3e968</id>
@@ -3773,6 +4824,22 @@
       <cost>500</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f8c23c23-ce74-4942-968d-85896f8f17f2</id>
@@ -3784,6 +4851,22 @@
       <cost>550</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>7ff8850b-d343-42fc-8bef-10acbe46daaa</id>
@@ -3795,6 +4878,22 @@
       <cost>650</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>75d4bef0-b29c-4c77-a2f1-e5955b67fd31</id>
@@ -3806,6 +4905,963 @@
       <cost>750</cost>
       <source>HT</source>
       <page>186</page>
+	  <required>
+        <parentdetails>
+          <OR>
+			<NONE />
+			<name>Obvious Full Arm</name>
+            <name>Synthetic Full Arm</name>
+			<name>Obvious Lower Arm</name>
+            <name>Synthetic Lower Arm</name>
+			<name>Obvious Hand</name>
+            <name>Synthetic Hand</name>
+			<name>Drone Arm</name>
+            <name>Synthetic Drone Arm</name>
+			<name>Primitive Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+    <!-- End Region -->
+    <!-- Region Boston Lockdown -->
+    <cyberware>
+      <id>c1eea4ca-e536-45dc-8919-f18a716d47cc</id>
+      <name>Spinrad Just a Little Edge</name>
+      <category>Cybersuite</category>
+      <ess>3.5</ess>
+      <capacity>0</capacity>
+      <avail>10R</avail>
+      <cost>125000</cost>
+      <source>LCD</source>
+      <page>205</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Bone Lacing (Plastic)</name>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>1</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Bone Density Augmentation</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Muscle Replacement</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>27a86814-3486-446e-acf0-10ad3ca2ddc1</id>
+      <name>Spinrad Peak Performance</name>
+      <category>Cybersuite</category>
+      <ess>5.0</ess>
+      <capacity>0</capacity>
+      <avail>14R</avail>
+      <cost>195000</cost>
+      <source>LCD</source>
+      <page>205</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>3</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Bone Lacing (Aluminum)</name>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Bone Density Augmentation</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Muscle Replacement</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>d245d0f4-191f-4b10-9662-75c27aac41f3</id>
+      <name>Spinrad Super Athlete</name>
+      <category>Cybersuite</category>
+      <ess>4.5</ess>
+      <capacity>0</capacity>
+      <avail>14R</avail>
+      <cost>325000</cost>
+      <source>LCD</source>
+      <page>205</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>3</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>3</rating>
+        </cyberware>
+        <cyberware>
+          <name>Bone Lacing (Aluminum)</name>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Bone Density Augmentation</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Muscle Replacement</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>d6286a7d-e5a5-4277-b1a7-772c23fbeee1</id>
+      <name>Evo Freak</name>
+      <category>Cybersuite</category>
+      <ess>4.5</ess>
+      <capacity>0</capacity>
+      <avail>18R</avail>
+      <cost>150000</cost>
+      <source>LCD</source>
+      <page>206</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Arm</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Arm</name>
+          <forced>Right</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Leg</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Leg</name>
+          <forced>Right</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Skull</name>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Dermal Plating</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Obvious Skull</cyberware>
+          <cyberware>Obvious Hand</cyberware>
+          <cyberware>Obvious Lower Arm</cyberware>
+          <cyberware>Obvious Full Arm</cyberware>
+          <cyberware>Obvious Foot</cyberware>
+          <cyberware>Obvious Lower Leg</cyberware>
+          <cyberware>Obvious Full Leg</cyberware>
+          <cyberware>Synthetic Skull</cyberware>
+          <cyberware>Synthetic Hand</cyberware>
+          <cyberware>Synthetic Lower Arm</cyberware>
+          <cyberware>Synthetic Full Arm</cyberware>
+          <cyberware>Synthetic Foot</cyberware>
+          <cyberware>Synthetic Lower Leg</cyberware>
+          <cyberware>Synthetic Full Leg</cyberware>
+          <cyberware>Primitive Prosthetic Hand</cyberware>
+          <cyberware>Primitive Prosthetic Lower Arm</cyberware>
+          <cyberware>Primitive Prosthetic Full Arm</cyberware>
+          <cyberware>Primitive Prosthetic Foot</cyberware>
+          <cyberware>Primitive Prosthetic Lower Leg</cyberware>
+          <cyberware>Primitive Prosthetic Full Leg</cyberware>
+          <cyberware>Partial Cyberskull</cyberware>
+          <cyberware>Liminal Body, Centaur</cyberware>
+          <cyberware>Liminal Body, Wheeled (Full)</cyberware>
+          <cyberware>Liminal Body, Tank (Full)</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Dermal Plating</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>b5406b3c-44a5-4727-bafc-58ed4cda84b5</id>
+      <name>Evo Better Than Human</name>
+      <category>Cybersuite</category>
+      <ess>4.5</ess>
+      <capacity>0</capacity>
+      <avail>16R</avail>
+      <cost>275000</cost>
+      <source>LCD</source>
+      <page>206</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Full Arm</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Full Arm</name>
+          <forced>Right</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Full Leg</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Full Leg</name>
+          <forced>Right</forced>
+        </cyberware>
+        <bioware>
+          <name>Orthoskin</name>
+          <rating>2</rating>
+        </bioware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>3</rating>
+        </cyberware>
+        <bioware>
+          <name>Synaptic Booster</name>
+          <rating>1</rating>
+        </bioware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+          <bioware>Synaptic Booster</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Obvious Skull</cyberware>
+          <cyberware>Obvious Hand</cyberware>
+          <cyberware>Obvious Lower Arm</cyberware>
+          <cyberware>Obvious Full Arm</cyberware>
+          <cyberware>Obvious Foot</cyberware>
+          <cyberware>Obvious Lower Leg</cyberware>
+          <cyberware>Obvious Full Leg</cyberware>
+          <cyberware>Synthetic Skull</cyberware>
+          <cyberware>Synthetic Hand</cyberware>
+          <cyberware>Synthetic Lower Arm</cyberware>
+          <cyberware>Synthetic Full Arm</cyberware>
+          <cyberware>Synthetic Foot</cyberware>
+          <cyberware>Synthetic Lower Leg</cyberware>
+          <cyberware>Synthetic Full Leg</cyberware>
+          <cyberware>Primitive Prosthetic Hand</cyberware>
+          <cyberware>Primitive Prosthetic Lower Arm</cyberware>
+          <cyberware>Primitive Prosthetic Full Arm</cyberware>
+          <cyberware>Primitive Prosthetic Foot</cyberware>
+          <cyberware>Primitive Prosthetic Lower Leg</cyberware>
+          <cyberware>Primitive Prosthetic Full Leg</cyberware>
+          <cyberware>Partial Cyberskull</cyberware>
+          <cyberware>Liminal Body, Centaur</cyberware>
+          <cyberware>Liminal Body, Wheeled (Full)</cyberware>
+          <cyberware>Liminal Body, Tank (Full)</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+          <cyberware>Dermal Plating</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>5eb13cce-2c2a-41d0-bd5c-5bdc25e5afbd</id>
+      <name>Evo InHuman</name>
+      <category>Cybersuite</category>
+      <ess>5</ess>
+      <capacity>0</capacity>
+      <avail>18R</avail>
+      <cost>175000</cost>
+      <source>LCD</source>
+      <page>206</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Arm</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Arm</name>
+          <forced>Right</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Leg</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Lower Leg</name>
+          <forced>Right</forced>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Skull</name>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Obvious Torso</name>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Obvious Skull</cyberware>
+          <cyberware>Obvious Hand</cyberware>
+          <cyberware>Obvious Lower Arm</cyberware>
+          <cyberware>Obvious Full Arm</cyberware>
+          <cyberware>Obvious Foot</cyberware>
+          <cyberware>Obvious Lower Leg</cyberware>
+          <cyberware>Obvious Full Leg</cyberware>
+          <cyberware>Synthetic Skull</cyberware>
+          <cyberware>Synthetic Hand</cyberware>
+          <cyberware>Synthetic Lower Arm</cyberware>
+          <cyberware>Synthetic Full Arm</cyberware>
+          <cyberware>Synthetic Foot</cyberware>
+          <cyberware>Synthetic Lower Leg</cyberware>
+          <cyberware>Synthetic Full Leg</cyberware>
+          <cyberware>Primitive Prosthetic Hand</cyberware>
+          <cyberware>Primitive Prosthetic Lower Arm</cyberware>
+          <cyberware>Primitive Prosthetic Full Arm</cyberware>
+          <cyberware>Primitive Prosthetic Foot</cyberware>
+          <cyberware>Primitive Prosthetic Lower Leg</cyberware>
+          <cyberware>Primitive Prosthetic Full Leg</cyberware>
+          <cyberware>Partial Cyberskull</cyberware>
+          <cyberware>Obvious Torso</cyberware>
+          <cyberware>Synthetic Torso</cyberware>
+          <cyberware>Liminal Body, Centaur</cyberware>
+          <cyberware>Liminal Body, Wheeled (Full)</cyberware>
+          <cyberware>Liminal Body, Tank (Full)</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Dermal Plating</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>c34d37ff-8bc4-4b8f-809a-c1ad61452a75</id>
+      <name>Transys-Erika Mind Boost</name>
+      <category>Cybersuite</category>
+      <ess>1</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>185000</cost>
+      <source>LCD</source>
+      <page>206</page>
+      <subsystems>
+        <bioware>
+          <name>Cerebral Booster</name>
+          <rating>1</rating>
+        </bioware>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Transys Avalon</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <bioware>
+          <name>Mnemonic Enhancer</name>
+          <rating>1</rating>
+        </bioware>
+        <cyberware>
+          <name>Simrig</name>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Skillwires</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Cerebral Booster</bioware>
+          <bioware>Mnemonic Enhancer</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Skillwires</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>8c156d89-e919-48f9-997e-8d7271c76818</id>
+      <name>Transys-Erika Mental Gymnast</name>
+      <category>Cybersuite</category>
+      <ess>2</ess>
+      <capacity>0</capacity>
+      <avail>20</avail>
+      <cost>375000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <bioware>
+          <name>Cerebral Booster</name>
+          <rating>3</rating>
+        </bioware>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Transys Avalon</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <bioware>
+          <name>Mnemonic Enhancer</name>
+          <rating>3</rating>
+        </bioware>
+        <cyberware>
+          <name>Simrig</name>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Skillwires</name>
+          <rating>4</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Cerebral Booster</bioware>
+          <bioware>Mnemonic Enhancer</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Skillwires</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>63d7f3e9-058e-49c6-96fd-02e16a28d550</id>
+      <name>Transys-Erika Front Line Mind</name>
+      <category>Cybersuite</category>
+      <ess>4.5</ess>
+      <capacity>0</capacity>
+      <avail>14</avail>
+      <cost>575000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <bioware>
+          <name>Cerebral Booster</name>
+          <rating>2</rating>
+        </bioware>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Transys Avalon</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <bioware>
+          <name>Mnemonic Enhancer</name>
+          <rating>2</rating>
+        </bioware>
+        <bioware>
+          <name>Muscle Toner</name>
+          <rating>2</rating>
+        </bioware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Simrig</name>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>6</rating>
+        </cyberware>
+        <cyberware>
+          <name>Skillwires</name>
+          <rating>6</rating>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Cerebral Booster</bioware>
+          <bioware>Mnemonic Enhancer</bioware>
+          <bioware>Muscle Toner</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Skillwires</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>77d5df71-6e69-495d-b51f-98036d01edc4</id>
+      <name>Sony Cybersystems Infiltrator</name>
+      <category>Cybersuite</category>
+      <ess>3</ess>
+      <capacity>0</capacity>
+      <avail>14R</avail>
+      <cost>210000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Sony Ronin</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Synthetic Lower Arm</name>
+          <forced>Left</forced>
+        </cyberware>
+        <cyberware>
+          <name>Synthetic Lower Arm</name>
+          <forced>Right</forced>
+        </cyberware>
+        <bioware>
+          <name>Enhanced Articulation</name>
+        </bioware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Skillwires</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Enhanced Articulation</bioware>
+          <cyberware>Obvious Hand</cyberware>
+          <cyberware>Obvious Lower Arm</cyberware>
+          <cyberware>Obvious Full Arm</cyberware>
+          <cyberware>Synthetic Hand</cyberware>
+          <cyberware>Synthetic Lower Arm</cyberware>
+          <cyberware>Synthetic Full Arm</cyberware>
+          <cyberware>Primitive Prosthetic Hand</cyberware>
+          <cyberware>Primitive Prosthetic Lower Arm</cyberware>
+          <cyberware>Primitive Prosthetic Full Arm</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Skillwires</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>2a7e2b70-d6c4-415c-bf57-23678e2d104e</id>
+      <name>Sony Cybersystems Field Operative</name>
+      <category>Cybersuite</category>
+      <ess>2.5</ess>
+      <capacity>0</capacity>
+      <avail>10R</avail>
+      <cost>120000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Sony Ronin</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>3</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>3</rating>
+        </cyberware>
+        <bioware>
+          <name>Reflex Recorder (Skill)</name>
+          <forced>Locksmith</forced>
+        </bioware>
+        <bioware>
+          <name>Reflex Recorder (Skill)</name>
+          <forced>Pistols</forced>
+        </bioware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>d565a072-af08-47dd-85fb-9ca22eab2bec</id>
+      <name>Sony Cybersystems Ultimate Warrior</name>
+      <category>Cybersuite</category>
+      <ess>5.0</ess>
+      <capacity>0</capacity>
+      <avail>22R</avail>
+      <cost>725000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>Sony Ronin</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>4</rating>
+        </cyberware>
+        <bioware>
+          <name>Enhanced Articulation</name>
+        </bioware>
+        <bioware>
+          <name>Muscle Augmentation</name>
+          <rating>3</rating>
+        </bioware>
+        <bioware>
+          <name>Muscle Toner</name>
+          <rating>3</rating>
+        </bioware>
+        <bioware>
+          <name>Reflex Recorder (Skill)</name>
+          <forced>Automatics</forced>
+        </bioware>
+        <bioware>
+          <name>Reflex Recorder (Skill)</name>
+          <forced>Unarmed Combat</forced>
+        </bioware>
+        <bioware>
+          <name>Suprathyroid Gland</name>
+        </bioware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Enhanced Articulation</bioware>
+          <bioware>Muscle Augmentation</bioware>
+          <bioware>Muscle Toner</bioware>
+          <bioware>Suprathyroid Gland</bioware>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>7143a27a-6544-4dea-a6dc-e9e350e9d306</id>
+      <name>MCT Kaisatsu</name>
+      <category>Cybersuite</category>
+      <ess>2.0</ess>
+      <capacity>0</capacity>
+      <avail>10R</avail>
+      <cost>120000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>MCT-5000</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>92c835be-2152-4623-aa2f-a7967e456fe7</id>
+      <name>MCT Abunai</name>
+      <category>Cybersuite</category>
+      <ess>3.5</ess>
+      <capacity>0</capacity>
+      <avail>14R</avail>
+      <cost>345000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <bioware>
+          <name>Muscle Augmentation</name>
+          <rating>2</rating>
+        </bioware>
+        <bioware>
+          <name>Muscle Toner</name>
+          <rating>2</rating>
+        </bioware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>3</rating>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Muscle Augmentation</bioware>
+          <bioware>Muscle Toner</bioware>
+          <cyberware>Reaction Enhancers</cyberware>
+          <cyberware>Wired Reflexes</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
+    </cyberware>
+    <cyberware>
+      <id>6796a057-b452-4a74-96be-eb710a38977e</id>
+      <name>MCT Kuro</name>
+      <category>Cybersuite</category>
+      <ess>5.25</ess>
+      <capacity>0</capacity>
+      <avail>22R</avail>
+      <cost>725000</cost>
+      <source>LCD</source>
+      <page>207</page>
+      <subsystems>
+        <cyberware>
+          <name>Commlink</name>
+          <gears>
+            <usegear>
+              <name>MCT-5000</name>
+              <category>Commlinks</category>
+            </usegear>
+          </gears>
+        </cyberware>
+        <bioware>
+          <name>Bone Density Augmentation</name>
+          <rating>4</rating>
+        </bioware>
+        <bioware>
+          <name>Enhanced Articulation</name>
+        </bioware>
+        <bioware>
+          <name>Muscle Augmentation</name>
+          <rating>4</rating>
+        </bioware>
+        <bioware>
+          <name>Muscle Toner</name>
+          <rating>4</rating>
+        </bioware>
+        <bioware>
+          <name>Orthoskin</name>
+          <rating>4</rating>
+        </bioware>
+        <bioware>
+          <name>Reflex Recorder (Skill)</name>
+          <forced>Pistols</forced>
+        </bioware>
+        <bioware>
+          <name>Reflex Recorder (Skill)</name>
+          <forced>Unarmed Combat</forced>
+        </bioware>
+        <bioware>
+          <name>Suprathyroid Gland</name>
+        </bioware>
+        <bioware>
+          <name>Synaptic Booster</name>
+          <rating>3</rating>
+        </bioware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <bioware>Bone Density Augmentation</bioware>
+          <bioware>Enhanced Articulation</bioware>
+          <bioware>Muscle Augmentation</bioware>
+          <bioware>Muscle Toner</bioware>
+          <bioware>Orthoskin</bioware>
+          <bioware>Suprathyroid Gland</bioware>
+          <bioware>Synaptic Booster</bioware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Dermal Plating</cyberware>
+        </oneof>
+      </forbidden>
+      <nosecondhand />
     </cyberware>
     <!-- End Region -->
     <!-- Region Howling Shadows -->
@@ -3925,7 +5981,7 @@
         <skillsoftaccess />
       </bonus>
       <rating>4</rating>
-    </cyberware>        
+    </cyberware>
     <cyberware>
       <id>9e961542-91fd-4ea3-bffc-9e19111610bf</id>
       <name>Cortexbombe (2050)</name>
@@ -4009,7 +6065,7 @@
       <cost>5000</cost>
       <source>2050</source>
       <page>201</page>
-    </cyberware>    
+    </cyberware>
     <cyberware>
       <id>f6774ee8-50cb-4524-acd7-2e2357071916</id>
       <name>Flare Compensation (2050)</name>
@@ -4076,7 +6132,7 @@
       <source>2050</source>
       <page>201</page>
       <rating>6</rating>
-    </cyberware>    
+    </cyberware>
     <cyberware>
       <id>9ac9d78f-6a33-4bd1-bb9c-539b487ae618</id>
       <name>Vision Magnifcation (2050)</name>
@@ -4106,7 +6162,9 @@
       </allowsubsystems>
       <rating>0</rating>
       <subsystems>
-        <subsystem>Sound Link</subsystem>
+        <cyberware>
+          <name>Sound Link</name>
+        </cyberware>
       </subsystems>
     </cyberware>
     <cyberware>
@@ -4289,6 +6347,7 @@
       </forbidden>
       <minrating>MinimumSTR</minrating>
       <rating>MaximumSTR</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c6abcc8b-78fb-44a4-a105-450c1b60a57b</id>
@@ -4302,6 +6361,7 @@
       <page>203</page>
       <minrating>MinimumAGI</minrating>
       <rating>MaximumAGI</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
@@ -4317,7 +6377,8 @@
         <armor>Rating</armor>
       </bonus>
       <rating>3</rating>
-    </cyberware>        
+	  <requireparent />
+    </cyberware>
     <cyberware>
       <id>55738f72-0344-435d-8f92-b1e16a66c445</id>
       <name>Cyberlimb Augmentation, Strength (2050)</name>
@@ -4329,6 +6390,7 @@
       <source>2050</source>
       <page>203</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
@@ -4341,6 +6403,7 @@
       <source>2050</source>
       <page>203</page>
       <rating>3</rating>
+	  <requireparent />
     </cyberware>
     <cyberware>
       <id>c7d7d1cb-2506-4b0d-9ae4-7fb1c1135a82</id>
@@ -4547,7 +6610,7 @@
       <bonus>
         <smartlink />
       </bonus>
-    </cyberware>    
+    </cyberware>
     <cyberware>
       <id>20f91caf-b639-4f62-b248-33c0c9fc5134</id>
       <name>Voice Modulator (2050)</name>
@@ -4628,7 +6691,7 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Heavy Pistol (2050)</addweapon>
-    </cyberware>        
+    </cyberware>
     <cyberware>
       <id>f1413ac9-d373-4080-a373-60e5b890b304</id>
       <name>Cyber Submachine Gun (2050)</name>
@@ -4658,24 +6721,29 @@
     <cyberware>
       <id>a77094da-bc4c-4856-a8a0-53d4e6b9a50c</id>
       <name>Siemens Cyberspine</name>
-      <category>Bodyware</category>
+      <category>Cybersuite</category>
       <ess>2.09</ess>
       <capacity>0</capacity>
       <avail>10R</avail>
       <cost>72600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <armor>1</armor>
-        <damageresistance>1</damageresistance>
-        <initiativepass precedence="0">1</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>2</val>
-        </specificattribute>
-        <unarmeddv>1</unarmeddv>
-        <unarmeddvphysical />
-      </bonus>
+      <subsystems>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Bone Lacing (Plastic)</name>
+        </cyberware>
+        <cyberware>
+          <name>Biomonitor</name>
+        </cyberware>
+      </subsystems>
       <forbidden>
         <oneof>
           <bioware>Bone Density Augmentation</bioware>
@@ -4686,127 +6754,329 @@
           <cyberware>Bone Lacing (Titanium)</cyberware>
         </oneof>
       </forbidden>
-	  <forcegrade>Standard</forcegrade>
+      <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>6dd9013a-52c4-45be-a4a2-7210f5caa53b</id>
       <name>Siemens Cyberspine Upgrade (Elite Athletic)</name>
-      <category>Bodyware</category>
+      <category>Cybersuite</category>
       <ess>0.22</ess>
       <capacity>0</capacity>
       <avail>12R</avail>
       <cost>15600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
         </allof>
       </required>
-	  <forcegrade>Standard</forcegrade>
+      <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>0f53caba-37ea-4676-8c6e-68b2d826ecd0</id>
       <name>Siemens Cyberspine Upgrade (Celestial Athletic)</name>
-      <category>Bodyware</category>
+      <category>Cybersuite</category>
       <ess>0.22</ess>
       <capacity>0</capacity>
       <avail>17R</avail>
       <cost>15600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>3</rating>
+        </cyberware>
+      </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
           <cyberware>Siemens Cyberspine Upgrade (Elite Athletic)</cyberware>
         </allof>
       </required>
-	  <forcegrade>Standard</forcegrade>
+      <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>70d15d2b-739d-418b-a7fe-3f03dee79546</id>
       <name>Siemens Cyberspine Upgrade (Elite Warrior)</name>
-      <category>Bodyware</category>
+      <category>Cybersuite</category>
       <ess>0.72</ess>
       <capacity>0</capacity>
       <avail>14R</avail>
       <cost>132000</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <initiativepass precedence="0">2</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
         </allof>
       </required>
-	  <forcegrade>Standard</forcegrade>
+      <forcegrade>Standard</forcegrade>
     </cyberware>
     <cyberware>
       <id>6a4ba6e2-0473-47dc-81f5-fd3a95e4b714</id>
       <name>Siemens Cyberspine Upgrade (Celestial Warrior)</name>
-      <category>Bodyware</category>
+      <category>Cybersuite</category>
       <ess>1.44</ess>
       <capacity>0</capacity>
       <avail>22R</avail>
       <cost>81600</cost>
       <source>SAG</source>
       <page>80</page>
-      <bonus>
-        <initiativepass precedence="0">3</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Wired Reflexes</cyberware>
-          <cyberware>Reaction Enhancers</cyberware>
-        </oneof>
-      </forbidden>
+      <subsystems>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>3</rating>
+        </cyberware>
+      </subsystems>
       <required>
         <allof>
           <cyberware>Siemens Cyberspine</cyberware>
           <cyberware>Siemens Cyberspine Upgrade (Elite Warrior)</cyberware>
         </allof>
       </required>
-	  <forcegrade>Standard</forcegrade>
+      <forcegrade>Standard</forcegrade>
+    </cyberware>
+    <cyberware>
+      <id>a8cff88e-9ea2-41da-9f72-9c45a438a418</id>
+      <name>Zeiss Consortium MET2000 Elitepilot</name>
+      <category>Cybersuite</category>
+      <ess>2.23</ess>
+      <capacity>0</capacity>
+      <avail>12R</avail>
+      <cost>162000</cost>
+      <source>SAG</source>
+      <page>81</page>
+      <subsystems>
+        <cyberware>
+          <name>Attention Coprocessor</name>
+        </cyberware>
+        <cyberware>
+          <name>Gastric Neurostimulator</name>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>2</rating>
+        </cyberware>
+        <cyberware>
+          <name>Control Rig</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Reaction Enhancers</cyberware>
+        </oneof>
+      </forbidden>
+      <forcegrade>Standard</forcegrade>
+    </cyberware>
+    <cyberware>
+      <id>1d574ac6-b07f-46dd-ba06-c896ed2de5e8</id>
+      <name>Zeiss Consortium MET2000 Fernspäher</name>
+      <category>Cybersuite</category>
+      <ess>1.22</ess>
+      <capacity>0</capacity>
+      <avail>11R</avail>
+      <cost>64200</cost>
+      <source>SAG</source>
+      <page>81</page>
+      <subsystems>
+        <cyberware>
+          <name>Attention Coprocessor</name>
+        </cyberware>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>3</rating>
+          <subsystems>
+            <cyberware>
+              <name>Flare Compensation</name>
+            </cyberware>
+            <cyberware>
+              <name>Thermographic Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Low-Light Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Vision Enhancement</name>
+              <rating>2</rating>
+            </cyberware>
+            <cyberware>
+              <name>Smartlink</name>
+            </cyberware>
+          </subsystems>
+        </cyberware>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+          <subsystems>
+            <cyberware>
+              <name>Spatial Recognizer</name>
+            </cyberware>
+            <cyberware>
+              <name>Audio Enhancement</name>
+              <rating>2</rating>
+            </cyberware>
+          </subsystems>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+        </cyberware>
+        <cyberware>
+          <name>Orientation System</name>
+        </cyberware>
+        <cyberware>
+          <name>Radar Sensor</name>
+          <rating>2</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Cyberears</cyberware>
+        </oneof>
+      </forbidden>
+      <forcegrade>Standard</forcegrade>
+    </cyberware>
+    <cyberware>
+      <id>011bedb4-1145-4934-9bd9-dcd92cf296b5</id>
+      <name>Zeiss Consortium MET2000 Sturmpionier</name>
+      <category>Cybersuite</category>
+      <ess>1.4</ess>
+      <capacity>0</capacity>
+      <avail>11R</avail>
+      <cost>74100</cost>
+      <source>SAG</source>
+      <page>81</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>3</rating>
+          <subsystems>
+            <cyberware>
+              <name>Flare Compensation</name>
+            </cyberware>
+            <cyberware>
+              <name>Thermographic Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Low-Light Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Vision Enhancement</name>
+              <rating>2</rating>
+            </cyberware>
+            <cyberware>
+              <name>Smartlink</name>
+            </cyberware>
+          </subsystems>
+        </cyberware>
+        <cyberware>
+          <name>Internal Air Tank</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Modular Mount</name>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Visualizer</name>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Muscle Replacement</cyberware>
+          <cyberware>Skilljack</cyberware>
+        </oneof>
+      </forbidden>
+      <forcegrade>Standard</forcegrade>
+    </cyberware>
+    <cyberware>
+      <id>78cfabfa-cf45-4ea0-830d-f092fa9b3a5f</id>
+      <name>Zeiss Consortium MET2000 Sturmpionier - Trench Wires</name>
+      <category>Cybersuite</category>
+      <ess>1.69</ess>
+      <capacity>0</capacity>
+      <avail>14R</avail>
+      <cost>170100</cost>
+      <source>SAG</source>
+      <page>81</page>
+      <subsystems>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>3</rating>
+          <subsystems>
+            <cyberware>
+              <name>Flare Compensation</name>
+            </cyberware>
+            <cyberware>
+              <name>Thermographic Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Low-Light Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Vision Enhancement</name>
+              <rating>2</rating>
+            </cyberware>
+            <cyberware>
+              <name>Smartlink</name>
+            </cyberware>
+          </subsystems>
+        </cyberware>
+        <cyberware>
+          <name>Internal Air Tank</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>1</rating>
+        </cyberware>
+        <cyberware>
+          <name>Modular Mount</name>
+        </cyberware>
+        <cyberware>
+          <name>Skilljack</name>
+          <rating>4</rating>
+        </cyberware>
+        <cyberware>
+          <name>Visualizer</name>
+        </cyberware>
+        <cyberware>
+          <name>Skillwires</name>
+          <rating>4</rating>
+        </cyberware>
+      </subsystems>
+      <forbidden>
+        <oneof>
+          <cyberware>Cybereyes Basic System</cyberware>
+          <cyberware>Muscle Replacement</cyberware>
+          <cyberware>Skilljack</cyberware>
+          <cyberware>Skillwires</cyberware>
+        </oneof>
+      </forbidden>
+      <forcegrade>Standard</forcegrade>
     </cyberware>
     <!-- End Region -->
     <!-- Region The Complete Trog -->

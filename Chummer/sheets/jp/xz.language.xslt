@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Isolate Japanese (jp) locale literals -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -59,6 +59,8 @@
   <xsl:variable name="lang.Data"      select="'Data'"/>
   <xsl:variable name="lang.Date"      select="'Date'"/>
   <xsl:variable name="lang.Dead"      select="'Dead'"/>
+  <xsl:variable name="lang.Depth"  select="'Depth'"/>
+  <xsl:variable name="lang.DEP"  select="'DEP'"/>
   <xsl:variable name="lang.Description"  select="'Description'"/>
   <xsl:variable name="lang.Detection"    select="'Detection'"/>
   <xsl:variable name="lang.Device"    select="'Device'"/>
@@ -250,12 +252,14 @@
   <xsl:variable name="lang.MatrixAR"      select="'Matrix AR'"/>
   <xsl:variable name="lang.MatrixCold"    select="'Matrix Cold'"/>
   <xsl:variable name="lang.MatrixHot"      select="'Matrix Hot'"/>
+  <xsl:variable name="lang.MatrixTrack"    select="'Matrix Damage Track'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Melee Weapons'"/>
-  <xsl:variable name="lang.OtherMugshots"    select="'Other Mugshots'"/>
+  <xsl:variable name="lang.Mugshot"    select="'Portrait'"/>
+  <xsl:variable name="lang.OtherMugshots"    select="'Other Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.PersonalData"    select="'Personal Data'"/>
-  <xsl:variable name="lang.PhysicalTrack1"  select="'Physical Damage'"/>
-  <xsl:variable name="lang.PhysicalTrack2"  select="'&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Track'"/>
+  <xsl:variable name="lang.PhysicalTrack"  select="'Physical Damage Track'"/>
+  <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'Primary Arm'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Public Awareness'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'Ranged Weapons'"/>
@@ -266,8 +270,8 @@
   <xsl:variable name="lang.SkillGroup"    select="'Skill Group'"/>
   <xsl:variable name="lang.StreetCred"    select="'Street Cred'"/>
   <xsl:variable name="lang.StreetName"    select="'Street Name'"/>
-  <xsl:variable name="lang.StunTrack1"    select="'&#160;&#160;Stun Damage'"/>
-  <xsl:variable name="lang.StunTrack2"    select="'&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Track'"/>
+  <xsl:variable name="lang.StunTrack"    select="'Stun Damage Track'"/>
+  <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Submersion Grade'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unnamed Character'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Body'"/>

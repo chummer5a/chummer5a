@@ -3,6 +3,7 @@
   <xs:element name="bonus">
   <xs:complexType>
     <xs:sequence>
+	<xs:element name="acidarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="adapsin" minOccurs="0" maxOccurs="1" />
     <xs:element name="addcontact" minOccurs="0" maxOccurs="1">
       <xs:complexType>
@@ -14,6 +15,8 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
+	<xs:element name="addesstophysicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="addesstostuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="addqualities" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:sequence>
@@ -53,6 +56,7 @@
 	<xs:element name="biowaretotalessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="blackmarketdiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="bornrich" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="coldarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="collegeeducation" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="complexformlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="composure" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -113,6 +117,7 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
+	<xs:element name="detectionspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="drainresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="enableattribute" minOccurs="0" maxOccurs="1">
       <xs:complexType>
@@ -143,6 +148,7 @@
 	<xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="electricityarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="erased" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="essencemax" type="xs:integer" minOccurs="0" maxOccurs="1" />
 	<xs:element name="essencepenalty" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -150,9 +156,10 @@
 	<xs:element name="essencepenaltymagonlyt100" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="excon" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="fadingresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="fallingarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="fame" type="xs:string" minOccurs="0" maxOccurs="1" />
-    <xs:element name="flypercent" type="xs:string" minOccurs="0" maxOccurs="1" />
-    <xs:element name="flyspeed" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="fatigueresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="firearmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="freenegativequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="freepositivequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="freespiritpowerpoints" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -201,6 +208,8 @@
     <xs:element name="initiativepassadd" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="jackofalltrades" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="judgeintentions" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="judgeintentionsdefense" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="judgeintentionsoffense" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="knowledgeskillpoints" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:sequence>
@@ -227,7 +236,7 @@
       <xs:sequence>
         <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       </xs:complexType>
     </xs:element>
@@ -247,6 +256,8 @@
       </xs:complexType>
     </xs:element>
     <xs:element name="mademan" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="manaillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="manamanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="matrixinitiative" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="matrixinitiativedice" minOccurs="0" maxOccurs="1">
@@ -261,15 +272,12 @@
     <xs:element name="matrixinitiativediceadd" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="memory" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="mentallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
-    <xs:element name="movement" type="xs:string" minOccurs="0" maxOccurs="1" />
-    <xs:element name="movementmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
-    <xs:element name="movementpercent" type="xs:string" minOccurs="0" maxOccurs="1" />
-  <xs:element name="movementreplace" minOccurs="0" maxOccurs="unbounded">
+  <xs:element name="movementreplace" minOccurs="0" maxOccurs="8">
     <xs:complexType>
       <xs:sequence>
-      <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="speed" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="speed" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>
     </xs:element>
@@ -293,10 +301,26 @@
       </xs:complexType>
     </xs:element>
     <xs:element name="overclocker" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogencontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogencontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeningestionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeningestionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninhalationimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninhalationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninjectionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="pathogeninjectionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physicalillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="physicallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physicalmanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physiologicaladdictionalreadyaddicted" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="physiologicaladdictionfirsttime" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="prototypetranshuman" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="psychologicaladdictionalreadyaddicted" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="psychologicaladdictionfirsttime" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="publicawareness" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="quickeningmetamagic" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="radiationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="reach" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="reflexrecorderoptimization" minOccurs="0" maxOccurs="1" />
     <xs:element name="replaceattributes" minOccurs="0" maxOccurs="1">
@@ -319,6 +343,15 @@
     </xs:element>
     <xs:element name="restrictedgear" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="restricteditemcount" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="runmultiplier" type="xs:integer" minOccurs="0" maxOccurs="3">
+	  <xs:complexType>
+        <xs:sequence>
+		  <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+		  <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+		  <xs:element name="percent" type="xs:string" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+      </xs:complexType>
+	</xs:element>
     <xs:element name="schoolofhardknocks" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="selectarmor" minOccurs="0" maxOccurs="1" />
     <xs:element name="selectattribute" minOccurs="0" maxOccurs="1">
@@ -410,6 +443,8 @@
       <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
       <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
       <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+	  <xs:attribute name="minimumrating" type="xs:integer" use="optional" />
+	  <xs:attribute name="maximumrating" type="xs:integer" use="optional" />
       <xs:attribute name="skillcategory" type="xs:string" use="optional" />
       <xs:attribute name="skillgroup" type="xs:string" use="optional" />
       </xs:complexType>
@@ -429,6 +464,7 @@
     <xs:element name="selectweapon" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+	  <xs:attribute name="includeunarmed" type="xs:string" use="optional" />
       </xs:complexType>
     </xs:element>
     <xs:element name="sensitivesystem" minOccurs="0" maxOccurs="1" />
@@ -482,6 +518,7 @@
     <xs:element name="smartlink" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="softweave" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="sonicresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="specificattribute" minOccurs="0" maxOccurs="unbounded">
       <xs:complexType>
       <xs:sequence>
@@ -527,6 +564,8 @@
 				<xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
 				<xs:attribute name="limittoattribute" type="xs:string" use="optional" />
 				<xs:attribute name="limittoskill" type="xs:string" use="optional" />
+				<xs:attribute name="minimumrating" type="xs:integer" use="optional" />
+				<xs:attribute name="maximumrating" type="xs:integer" use="optional" />
 				<xs:attribute name="skillcategory" type="xs:string" use="optional" />
 				<xs:attribute name="skillgroup" type="xs:string" use="optional" />
 			</xs:complexType>
@@ -555,6 +594,8 @@
         <xs:element name="name" minOccurs="0" maxOccurs="1" />
         <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="misceffect" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       <xs:attribute name="precedence" type="xs:integer" use="optional" />
@@ -579,6 +620,16 @@
     <xs:element name="spellkarmadiscount" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="spelllimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="spellresistance" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="sprintbonus" type="xs:integer" minOccurs="0" maxOccurs="3">
+	    <xs:complexType>
+          <xs:sequence>
+			<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="percent" type="xs:string" minOccurs="0" maxOccurs="1" />
+		  </xs:sequence>
+        </xs:complexType>
+	</xs:element>
+	<xs:element name="stuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="submersion" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="swapskillattribute" minOccurs="0" maxOccurs="1">
       <xs:complexType>
@@ -597,10 +648,17 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
-    <xs:element name="swimpercent" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="techschool" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="throwrange" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="throwstr" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxincontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxincontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxiningestionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxiningestionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininhalationimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininhalationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininjectionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="toxininjectionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="transgenicsgenetechcost" minOccurs="0" maxOccurs="1" />
     <xs:element name="trustfund" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="unarmedap" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -617,6 +675,15 @@
       </xs:simpleContent>
       </xs:complexType>
     </xs:element>
+	<xs:element name="walkmultiplier" type="xs:integer" minOccurs="0" maxOccurs="3">
+	    <xs:complexType>
+          <xs:sequence>
+			<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="percent" type="xs:string" minOccurs="0" maxOccurs="1" />
+		  </xs:sequence>
+        </xs:complexType>
+	  </xs:element>
     <xs:element name="weaponcategorydv" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:sequence>

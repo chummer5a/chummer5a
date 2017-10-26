@@ -13,7 +13,7 @@ namespace Chummer
         private readonly Skill _objSkill;
         private readonly Character _objCharacter;
         private string _strForceItem = string.Empty;
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectSpec(Skill skill)
@@ -21,15 +21,14 @@ namespace Chummer
             _objSkill = skill;
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
         {
             List<ListItem> lstItems = new List<ListItem>();
-
-            _objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
             if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
             {
@@ -62,7 +61,7 @@ namespace Chummer
                 if (_objSkill.SkillCategory == "Combat Active")
                 {
                     // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                    XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
                     //Might need to include skill name or might miss some values?
                     XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
                     foreach (XmlNode objXmlWeapon in objXmlWeaponList)

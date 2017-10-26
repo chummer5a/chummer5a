@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ namespace Chummer
         private KarmaExpenseType _objKarmaExpenseType;
         private NuyenExpenseType _objNuyenExpenseType;
         private string _strObjectId;
-        private int _intQty = 0;
+        private decimal _decQty = 0;
         private string _strExtra = string.Empty;
 
         #region Helper Methods
@@ -139,11 +139,11 @@ namespace Chummer
         /// <param name="objExpenseType">Nuyen expense type.</param>
         /// <param name="strObjectId">Object identifier.</param>
         /// <param name="intQty">Amount of Nuyen.</param>
-        public ExpenseUndo CreateNuyen(NuyenExpenseType objExpenseType, string strObjectId, int intQty = 0)
+        public ExpenseUndo CreateNuyen(NuyenExpenseType objExpenseType, string strObjectId, decimal decQty = 0)
         {
             _objNuyenExpenseType = objExpenseType;
             _strObjectId = strObjectId;
-            _intQty = intQty;
+            _decQty = decQty;
 
             return this;
         }
@@ -158,7 +158,7 @@ namespace Chummer
             objWriter.WriteElementString("karmatype", _objKarmaExpenseType.ToString());
             objWriter.WriteElementString("nuyentype", _objNuyenExpenseType.ToString());
             objWriter.WriteElementString("objectid", _strObjectId);
-            objWriter.WriteElementString("qty", _intQty.ToString());
+            objWriter.WriteElementString("qty", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteEndElement();
         }
@@ -176,7 +176,7 @@ namespace Chummer
             if (objNode["nuyentype"] != null)
                 _objNuyenExpenseType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
             objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
-            objNode.TryGetInt32FieldQuickly("qty", ref _intQty);
+            objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
         }
         
@@ -231,15 +231,15 @@ namespace Chummer
         /// <summary>
         /// Quantity of items added (Nuyen only).
         /// </summary>
-        public int Qty
+        public decimal Qty
         {
             get
             {
-                return _intQty;
+                return _decQty;
             }
             set
             {
-                _intQty = value;
+                _decQty = value;
             }
         }
 
@@ -267,7 +267,7 @@ namespace Chummer
     {
         private Guid _guiID = new Guid();
         private DateTime _datDate = new DateTime();
-        private int _intAmount = 0;
+        private decimal _decAmount = 0;
         private string _strReason = string.Empty;
         private ExpenseType _objExpenseType;
         private bool _blnRefund = false;
@@ -318,22 +318,22 @@ namespace Chummer
         public ExpenseLogEntry()
         {
             _guiID = Guid.NewGuid();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+            LanguageManager.Load(GlobalOptions.Language, null);
         }
 
         /// <summary>
         /// Create a new Expense Log Entry.
         /// </summary>
-        /// <param name="intKarma">Amount of the Karma/Nuyen expense.</param>
+        /// <param name="decAmount">Amount of the Karma/Nuyen expense.</param>
         /// <param name="strReason">Reason for the Karma/Nueyn change.</param>
         /// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
         /// <param name="datDate">Date and time of the Expense.</param>
         /// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
-        public ExpenseLogEntry Create(int intKarma, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
+        public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
         {
             if (blnRefund)
-                strReason += " (" + LanguageManager.Instance.GetString("String_Expense_Refund") + ")";
-            _intAmount = intKarma;
+                strReason += " (" + LanguageManager.GetString("String_Expense_Refund") + ")";
+            _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
             _objExpenseType = objExpenseType;
@@ -351,7 +351,7 @@ namespace Chummer
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("date", _datDate.ToString("s"));
-            objWriter.WriteElementString("amount", _intAmount.ToString());
+            objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());
@@ -368,7 +368,7 @@ namespace Chummer
         {
             _guiID = Guid.Parse(objNode["guid"].InnerText);
             _datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-            objNode.TryGetInt32FieldQuickly("amount", ref _intAmount);
+            objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             objNode.TryGetStringFieldQuickly("reason", ref _strReason);
             if (objNode["type"] != null)
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
@@ -389,7 +389,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("date", _datDate.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("amount", _intAmount.ToString());
+            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Karma ? "N0" : "N2", GlobalOptions.CultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());
@@ -431,15 +431,15 @@ namespace Chummer
         /// <summary>
         /// Karma/Nuyen amount gained or spent.
         /// </summary>
-        public int Amount
+        public decimal Amount
         {
             get
             {
-                return _intAmount;
+                return _decAmount;
             }
             set
             {
-                _intAmount = value;
+                _decAmount = value;
             }
         }
 

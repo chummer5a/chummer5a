@@ -1,14 +1,7 @@
-Build 195
+Future Build 196
 
 Application Changes:
 
-- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
-- Fixed translation for weapon availability in the Select Weapon table. 
-- Fixed optional values for Foci not being saved properly. 
-- Fixes an issue in which editing basic lifestyles wouldn't reselect previous qualities. 
-- Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
-- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
-- Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
 - Fixed display of nuyen karma cost in the karma cost summary to not switch to the actual nuyen value. 
 - Fixed quirks with attribute point warnings when moving to career mode. 
 - Fixed an issue when loading critters that caused them to have lower attribute values than intended.
@@ -27,7 +20,7 @@ Application Changes:
 - Fixed a bug that allowed the deletion of some powers without levels that were granted by free levels of adept powers.
 - Maximum values for adept powers should now update properly with changes to MAG values, and in the case of Improved Ability, changes to skill ratings.
 - Cancelling out of a dialog triggered by selecting an adept power or a property of an adept power will now properly cancel the dialog and not actually add the last/default selected choice.
-- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
+- Added support for skill selection dialogs to be able to only show skills for which the runner has a rating greater than or equal to a pre-defined rating and/or less than or equal to a pre-defined rating. In case there are no eligible options, a warning dialog is displayed, and the skill selection dialog is automatically treated as cancelled.
 - Added support for bonuses to defense dice (e.g. Combat Sense, Reakt).
 - Added support for Barehanded Adept and qualities similar to it.
 - Drain for Physical Adepts is now properly displayed and calculated as BOD + WIL.
@@ -121,14 +114,67 @@ Application Changes:
 - Fixed a bug that prevented knowledge skills from having their names translated when printed out to a character sheet. Fixes #1668.
 - Added set of improvements that can disable access to specific grades of bioware and cyberware. These limits are bypassed for all 'ware that forces a particular grade, so any restrictions in those cases need to be applied to the specific piece of 'ware in question.
 - Fixed the "Hide Items Over Avail Limit" checkbox so that it displays the availability limit of the character in parentheses instead of the default availability value.
+- Added the ability for pre-installed subsystems in cyberare to include bioware and pre-installed subsystems in bioware to include cyberware. Added the ability for pre-installed cyberware and bioware subsystems to come with their own pre-installed gear and pre-installed subsystems.
+- Restrictions via the <forbidden> and <required> tags for bioware and cyberware will now also check subsystems, not just top-level cyberware and bioware.
+- Fixed names for improvement sources originating from nested cyberware, bioware, and gear not showing up properly.
+- Fixed bonuses for nested 'ware not getting removed when the parent is removed if the given piece of 'ware is a grandchild or later descendant of the 'ware getting removed.
+- Fixed a bug that caused 'ware grades to not obey the enabled sourcebook rules, e.g. Omegaware would show up even if Chrome Flesh was not enabled.
+- Fixed a bug where the Power selection dialog allowed the user to select a power that was marked as hidden or was from a sourcebook that the user did not have enabled.
+- Unhardcoded Cultured bioware's restriction from Used grade. Now any piece of bioware or cyberware can be marked as being ineligible for Used grade.
+- If Chummer5 encounters an error while loading improvements from a savefile, it will now warn the user to re-apply improvements and continue loading the character instead of crashing.
+- Added a new item in the Special options menu that calculates the total karma value of a character during character creation.
+- Fixed a prompt for modications to items when browsing the Select Armor window.
+- Fixed an incorrect Karma cost change when using the Improved Ability (skill) power in create mode. 
+- Fixed display of karma costs for skills in create mode to not show Karma twice.
+- Fixed the Updater crashing when a .pdb file or .exe file is in use. Also made the updater display a permissions warning if it cannot rename or remove old files instead of having it crash.
+- Fixed Home Node-based stat calculation issues for AIs. The presence of a home node and any stats calculated from it will now be handled correctly. Fixes #1963.
+- Added support for up to 3 free skills to be selected from priorities. If more than 3 skills are defined in a priority entry, Chummer5 will now display the first 3 instead of displaying none. Fixes #1964.
+- Fixed a crash when using Re-apply Improvements while having qualities that add other qualities.
+- Adding multiple instances of overlapping SpecialSkills improvements will no longer duplicate skills, and removing a SpecialSkills improvement will no longer remove skills if another SpecialSkills improvement still exists that would enable the same skills. Fixes #1513.
+- Fixed the Improvements manager not properly detecting some cases of cancelled dialogs. Fixes #1830.
+- Fixed a null reference stack overflow if launching Chummer for the first time without a Sourcebook key in the registry. 
+- Fixed a null reference when selecting weapons with built-in gear.
+- Fixed a bug where trying to change the quantity of a gear plugin in Create mode would not work.
+- Added support for costs, gear quantities, and gear capacities that are not integers. All nuyen costs should now be tracked to decimal precision (precision depends on how large the number is), though Chummer5 will only display up to 2 decimal places.
+- Updated the tool that saves character sheets to PDF so that it shouldn't mess up sheet formatting as much as the previous one.
+- Slightly altered the UI for the quality selection window so that it is clearer what the numerical up-downs in it represent. Fixes #1971.
+- Fixed a bug that caused the dicepool for resisting physical illusion spells to be calculated as WIL + WIL and displayed as INT + WIL instead of the LOG + INT that it should be.
+- Added support for tracking of fatigue resistance, dicepools for addiction tests (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), resistance and/or immunity to toxins (in all four vectors), resistance and/or immunity to pathogens (in all four vectors), natural physical CM recovery, and natural stun CM recovery. All of these stats are now printed with the Print() method, so character sheets can integrate them into their displays.
+- Added support for the following bonuses: extra fatigue resistance dice, extra dice for addiction (physiological, psychological, both in the "not yet addicted" and "already addicted" variety), extra resistance and/or immunity to toxins (in all four vectors), extra resistance and/or immunity to pathogens (in all four vectors), extra natural physical CM recovery, extra natural stun CM recovery, the toggling of adding Essence as bonus dice to natural physical and/or stun CM recovery, bonus dice to resist mental and/or physical manipulation spells, bonus dice to resist mana and/or physical illusion spells, bonus dice to resist detection spells, bonus armor against fire damage, bonus armor against cold damage, bonus armor against electricity damage, bonus armor against acid damage, bonus armor against falling damage, extra radiation resistance dice, extra sonic attack resistance dice, extra dice specifically to resist Judge Intentions, and extra dice specifically for initiating Judge Intentions tests. All existing items that should contain one or more of these bonuses have also been updated.
+- Items that are set to require a certain amount of 'ware grade in essence now properly works with Burnout's Way and Adapsin.
+- Fixed a bug where the initiative roller would calculate initiative with a flat probability distribution instead of with one mirroring the rolling of multiple dice (i.e. binomial-esque).
+- Dice Roller will now display the sum of the dice results (disregarding bubble dice) under the information about whether the roll was a success, a failure, a glitch, and/or a critical glitch.
+- Fixed a bug where bioware subsystems would always add to their parent's essence. This is now instead controlled by a separate tag instead of reliant on 'ware type.
+- Fixed a bug where cyberware and bioware that cost 0 essence but take up capacity when added to a cyberlimb (e.g. cortex bombs) would not show up in the list of standalone 'ware to add.
+- Fixed Detection spell defense being shown as INT + REA instead of LOG + WIL.
+- Adept Way discounts for foci should now be automatically detected in Career mode.
+- Made the reference in for Life Module Selection clickable.
+- Added support for printing of skill groups. Added skill group printing to Fancy Blocks and the Shadowrun 5 character sheet sets.
+- Added a separate section for storing conditions of certain Improvements. Added support for conditions to the specificskill bonus tag.
+- Fixed a bug where removing improvements that gave martial arts, spells, qualities, or critter powers would not remove improvements associated with the given item.
+- Fixed a bug where Chummer5 would calculate incorrect movement speed values from cyberlegs if the option was enabled but only one cyberleg was present.
+- Added backend support for cyberware bonuses that only activate per pair instead of per discrete piece.
+- Fixed a bug where cyberware added to vehicles did not allow for subsystems to be added to it.
+- Fixed issues with skill dicepool tooltips not properly recognizing improvement sources from cyberware, nested 'ware, armor, armor mods, martial arts advantages, critter powers, and nested gear (including ones inside weapons, armor, armor mods, weapon accessories, cyberware, and vehicles).
+- Movement speeds should now properly display decimal values (e.g. "4/8, 1.5m/hit") when applicable.
+- Fixed a crash when adding an item with over 1,000 capacity in a culture using a decimal comma. Fixes #1983.
+- Allowed for full localization of the updater, added a label to indicate whether the user is running the latest version of Chummer5 that is available on their chosen update channel (stable or nightly), and force-disabled the Download button if they are running what is the latest version of their chosen update channel (the button isn't disabled if they're running the latest nightly, but switched update channels to stable). Fixes #1977.
+- Fixed being unable to select underbarrel weapons for SelectWeapon bonuses (e.g. picking a weapon for Spare Clips).
+- Fixed an issue with items that use the SelectWeapon improvement type passing an internal ID rather than the Name of the weapon.
+- Crash Dumper will no longer crash when it cannot connect to an upload service, and it will prompt the user to manually submit an issue to GitHub with the attached minidump.
+- Transformed the GlobalOptions, LanguageManager, and XmlManager classes into fully static classes. For users, this also produces a measurable performance increase and a decrease in the size of Chummer5's executable.
+- Fixed a bug related to selecting the default, blank entry in the Traditions dropdown combobox and then trying to add a spell.
+- Allowed Edge to be burned to zero. Fixes #1989.
+- Allowed filtering for skills that use any attribute, in case custom data adds any that are linked to DEP or ESS.
+- Swimming should no longer show up as a skill to characters who cannot swim or have special Swimming rules, and Running should not show up as a skill to characters who cannot move on land or have special rules for land movement.
+- Fixed a bug where the option that enables education qualities' karma discount at chargen causes every second level to be free instead of decreasing the karma cost of raising skill ratings by 1.
+- Skill-based item requirement nodes can now process exotic skills.
+- Fixed a bug where specializations could be bought for skills that only had ratings from skillsofts.
+- Fixed a bug where the button to increase a knowledge skill in career mode would be clickable/enabled even when the knowledge skill could not actually be increased.
+- Fixed an issue where martial arts technique names would not get properly translated.
 
 Data Changes:
 
-- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
-- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
-- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
-- Critter Body Armor now properly grants armor equal to the Rating. 
-- Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
 - Fixed behaviour of spellcasting foci to scale based on Force. 
 - Fixed missing increased seating bonus for the Amenities (Squatter) vehicle modification.
 - Added entries for Chakram from the Run & Gun errata and the Horizon BoomerEye from the bottom of Boomerang's statblock in Run & Gun.
@@ -158,10 +204,10 @@ Data Changes:
 - Consolidated the following quality entries so that they are now just one quality that can be taken multiple times: Focused Concentration, High Pain Tolerance, Magic Resistance, Will to Live, Gremlins, Perceptive, Spike Resistance, Tough as Nails, Dimmer Bulb, In Debt, Arcane Arrester, Shiva Arms, Social Appearance Anxiety, Infirm, Pilot Origins, Aged, Illness. When loading a save file for a character containing at least one of these existing qualities, they should get converted automatically to the new format.
 - Fixed a bug where the Indomitable quality could be taken more than three times across Physical, Mental, and Social limits.
 - Fixed a bug where Basic and Full levels of the Insomnia quality were not mutually exclusive.
-- Fixed a bug where Bilingual and Black Market Connection could be taken in-game.
+- Fixed a bug where Bilingual Black Market Connection, and all Phenotypic Variations could be taken in-game.
 - Fixed a bug where Loss of Confidence could be taken for skills with Ratings lower than 4, and a bug where Loss of Confidence would not disallow use of specializations for the selected skill.
 - Fixed a bug where Restricted Gear could be taken more than once at chargen.
-- Fixed a bug where Metagenetic Improvement and Impaired Attribute could be taken more than once per attribute.
+- Fixed a bug where Metagenetic Improvement, Impaired Attribute, Genetic Optimization, and Phenotypic Variation - Genetic Optimization could be taken more than once per attribute.
 - Fixed a bug where the Close Combat Mage quality did not allow you to select which bonus was taken.
 - Fixed a bug where Death Dealer could be taken more than once by Physical Adepts.
 - Fixed a bug where the Illusionist quality did not allow you to select the spell type to which it applied (Physical or Mana).
@@ -197,14 +243,56 @@ Data Changes:
 - Fixed Ruthenium Polymer Cloak coming with capacity to add armor mods.
 - Fixed GTS Tower not coming with the Retrans Unit mentioned in its fluff description ("the Tower pulls double-duty as a retransmission drone").
 - Cyber-Snob now properly disallows buying any 'ware below Alphaware grade. Regeneration critter power now properly disables access to all bioware, as well as all cyberware below Deltaware grade.
+- Added cybersuites from Chrome Flesh and Boston Lockdown, as well as the commlinks included in those cybersuites.
+- Added the missing Cybersuites from State of the Art - ADL.
+- Power Foci now properly also boost the dicepool of the Counterspelling skill. Fixes #1944. If you have any existing, bonded Power Foci in your savefiles, please remove and then re-add them for the change to take effect.
+- Altered Credsticks so that they now have capacity for Currency-category gear instead of a rating. There is a legacy shim that should convert credsticks on older characters to the new format. Fixes #130.
+- Added entries for Currency items from the core rulebook and Run Faster.
+- Fixed an incorrect page reference for the Proteus Lamprey.
+- Fixed Balance Receptor and Functional Tail (Prehensile) qualities not giving proper bonuses to Gymnastics.
+- Fixed Sharkskin not giving +1 Reach to unarmed combat.
+- Fixed the Neijia technique being unavailable if a runner only takes martial arts from State of the Art ADL and/or Way of Unified Mana.
+- Fixed Daredrenaline not properly giving Poor Self Control Thrill Seeker when taken.
+- Fixed Knowledge Infusion bioware not giving a free rating of a chosen knowledge skill that is rating 0.
+- Fixed Chemical Gland bioware and its Expanded Resevoir plugin so that its cost and availability properly change with that of the chemical it generates. Exhalation Spray, Spit, Weapon Resevoir, and Internal/Gradual Release are now properly mutually exclusive types of chemical glands rather than an addon to an existing chemical gland with an undefined release method.
+- Metaposeur, Phenotypic Variation - Metaposeur, Cosmetic Alteration, and Phenotypic Variation - Cosmetic Alteration now allow you to type in as what metatype you're posing and/or what cosmetic alterations have been made.
+- Fixed Claws enhancement not giving +1 Unarmed DV.
+- Fixed being able to take a different way alongside Artist's Way.
+- Fixed Beast's Way not giving +1 Animal Handling and Spiritual Way not giving +1 to all Conjuring tests.
+- Fixed being able to take Burnout's Way without being at less than 5 Essence.
+- Added Life Modules from the German Run Faster.
+- Added Life Modules from State of the Art ADL (at least half as the others aren't possible atm).
+- Made QoL tweaks to Fancy Blocks and the Shadowrun 5 character sheet set, such as allowing for the printing of multiple specializations per skill and adding information on natural recovery dicepools.
+- Fixed Auctioneer Business Clothes not coming with a Holster.
+- Fixed Thermal Damping's, Skin Toner's, Chameleon Toner's, and Liar's bonus tags.
+- Implemented latest official errata posting of the core rulebook from the Shadowrun official forums.
+- Fixed incorrect attribute value for the Metagenetic Improvement (Strength) quality.
+- Fixed bugs where various pieces of cyberware subsystems could be added to the incorrect type of cyberware parent (e.g. Improved Synthskin to obvious cyberlimbs).
+- Fixed a bug where Digigrade Legs would not increase the essence cost of cyberlegs for which it is taken.
+- Fixed a bug where Bulk Modification could be taken at a higher rating than is allowed for certain types of cyberlimbs.
+- Differentiated the cyberlegs on a Liminal Body, Centaur from each other. Digigrade Legs cannot be taken on the back pair because a horse's back legs are already digigrade (and the effect is already factored into the running speed boost of Liminal Body, Centaur).
+- Added the ability to pick which side a cyberfinger goes on (e.g. right hand or left hand) and added the ability to have custom cyberfinger types.
+- Water Jets now properly increases Swimming speed.
+- Added pair bonuses to Cyberfins and Snake Fingers. Digigrade Legs, Skimmers, and Skates now use pair bonuses instead of regular ones.
+- Fixed incorrect ammo capacity and type on the Nitama Sporter. Fixes #1982.
+- Fixed being able to take muscle- and/or leg-altering (read: cyberlegs) augmentations with Celerity. Celerity is now a metatype removable quality on metavariants in case they are forced to take leg-altering augmentations.
+- Primitive Leg augmentations now properly reduce walking and running speeds.
+- Digigrade Legs properly increases run multipliers by 1, while Skimmers and Skates now properly grant increases to walking and running speeds.
+- Fixed Liminal Body Centaur and Liminal Body Wheeled increasing all movement rates by 100% instead of just running speed.
+- Power Swimming now properly grants bonuses to swimming speeds, and a separate version of the power has been added for Elves and Trolls that grants the swim sprinting speed appropriate for them.
+- Fixed Celerity increasing all movement speeds by +50% instead of overwriting ground walking and running speeds and adding +1m/hit to ground sprinting speeds.
+- Fixed Satyr Legs replacing ground sprinting speeds with 2m/hit instead of adding +1m/hit.
+- Fixed Adiposis decreasing all movement speeds by 50% instead of overwriting ground walking, running, and sprinting speeds.
+- Fixed being able to select melee weapons for Speed Loader and Vindicator 200-round Belt, and fixed being unable to select a weapon for Weapon Focus (2050).
+- Character sheets will now properly display a character's Depth attribute if they have one.
+- If skill categories are displayed in a sheet belonging to the Shadowrun 5 sheet family, their names should now be localized.
+- The Fancy Blocks character sheet now uses localized strings wherever possible instead of hardcoded English ones.
+- Added Keen-eared to Hobgoblin according to the new print of Run Faster.
+- Altered the location of the main mugshot in the Shadowrun 5 character sheet collection and allowed it to be toggled to show on/off when printed.
+- Added the ability to automatically generate condition monitors of varying scales within character sheets.
+- Added missing weapons from the german 'Schattenhandbuch' and moved the existing ones to 'Schattenhandbuch 2'.
 
 New Strings:
-- Label_Options_SpellShapingFocus
-- Label_Options_RitualSpellcastingFocus
-- Label_Options_QiFocus
-- Label_Options_FlexibleSignatureFocus
-- Label_Options_DisenchantingFocus
-- Label_Options_AlchemicalFocus
 - Message_Improvement_EmptySelectionList
 - Message_Improvement_EmptySelectionListNamed
 - Message_Insufficient_Permissions_Warning
@@ -237,6 +325,28 @@ New Strings:
 - Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills
 - Checkbox_DiceRoller_BubbleDie
 - String_BubbleDie
+- MessageTitle_ImprovementLoadError
+- Message_ImprovementLoadError
+- MessageTitle_KarmaValue
+- Message_KarmaValue
+- Menu_KarmaValue
+- String_Total
+- String_FreeSpells
+- String_FreeCFs
+- Message_File_Cannot_Be_Accessed
+- Label_FilterByKarma
+- Label_CreateImprovementExactly
+- String_Immune
+- Label_DiceRoller_Sum
+- Button_Download
+- Button_Redownload
+- Button_Install_Restart
+- Label_Updater_Status
+- String_Up_To_Date
+- String_Nightly_Changelog_Warning
+- String_Stable
+- String_Nightly
+- String_Update_Available
 
 Changes Strings:
 - Message_PositiveQualityLimit
@@ -244,6 +354,34 @@ Changes Strings:
 
 Removed Strings:
 - Label_MugshotDimensions
+
+Build 195
+
+Application Changes:
+
+- Fixed an issue with Mentor's Mask causing a crash when selecting spells with Force F.
+- Fixed translation for weapon availability in the Select Weapon table. 
+- Fixed optional values for Foci not being saved properly. 
+- Fixes an issue in which editing basic lifestyles wouldn't reselect previous qualities. 
+- Fixes an issue in which changing Priority selection causes a double-up of attribute costs. Existing characters with this issue should reopen the Change Priority Selection menu again. 
+- Reducing a skill's learned rating to 0 in create mode will now remove any specialisations that had been added. 
+- Fixed a crash caused by other applications querying Chummer's windows, such as narration tools. 
+
+Data Changes:
+
+- Fixed modification slots for the Hyundai Shin-Hyung and GMC Bulldog. 
+- Fixed an underbarrel mount for the Steyr Aug-CSL III that caused a stack overflow. 
+- Removed AffectBase modifiers from the Daredrenaline bioware and Improved Physical Attribute power, which caused increased karma costs. Existing characters with these items should remove and re-add the item in order to regenerate the relevant Improvement.
+- Critter Body Armor now properly grants armor equal to the Rating. 
+- Added German-exclusives vehicles from Aspahltkreiger (german Rigger 5.0).
+
+New Strings:
+- Label_Options_SpellShapingFocus
+- Label_Options_RitualSpellcastingFocus
+- Label_Options_QiFocus
+- Label_Options_FlexibleSignatureFocus
+- Label_Options_DisenchantingFocus
+- Label_Options_AlchemicalFocus
 
 Build 194
 
@@ -654,6 +792,8 @@ Data Changes:
 - Added a choice between BioCompatibility (Cyberware) and BioCompatibility (Bioware) to the Test Subject life module.
 - Added Spell Resistance improvement type to qualities and powers that required it. Characters with the Spell Resistance power, Magic Resistance or Arcane Arrester qualities should use the Reapply Improvements menu option to gain these bonuses.
 - Localised all references to d6 in tooltips and such.
+- Removed extra category information from the name of drones from the SAG book. 
+- Fixed missing limbs for the Mitsuhama Monson.
 
 New Strings:
 
@@ -1280,6 +1420,7 @@ Application Changes:
 - SHOULD have fixed an issue where Active Skill controls would overlap the Skill Group controls while in higher-DPI settings, blocking the karma numericupdown in creation mode.
 - Added proper translation for the quality nodes in the Select Advanced Lifestyles form.
 - Fixed an issue with the Matrix condition monitor.
+- Fixed behaviour of the houserule to use Total Value of INT + LOG for Knowledge skills.
 
 Data Changes:
 - Fixed the Infected qualities to work according to the rules. Characters with previous versions of the quality should reapply their improvements, characters that used the terrible metavariant idea will not load properly and should be rebuilt from scratch. If you've been affected by this, please get in contact with me and I'll fix your character for you. Mostly fixes #689.

@@ -40,14 +40,18 @@ namespace Chummer
         private bool _blnUnBlocked;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
+        private string _strCurrentVersion = string.Empty;
         private string _strTempPath = string.Empty;
         private readonly string _strAppPath = Application.StartupPath;
-        private readonly GlobalOptions _objGlobalOptions = GlobalOptions.Instance;
+        private bool _blnPreferNightly = false;
         public frmUpdate()
         {
             Log.Info("frmUpdate");
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            _strCurrentVersion = $"{version.Major}.{version.Minor}.{version.Build}";
+            _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
         }
 
         private void frmUpdate_Load(object sender, EventArgs e)
@@ -84,15 +88,15 @@ namespace Chummer
                 {
                     Log.Info("More than one instance, exiting");
                     if (!_blnSilentMode && !_blnSilentCheck)
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_Update_MultipleInstances"),
-                            LanguageManager.Instance.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances"),
+                            LanguageManager.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     Log.Info("frmUpdate_Load");
                     Close();
                 }
             }
             else
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Warning_Update_CouldNotConnect"), "Chummer5",
+                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log.Exit("frmUpdate_Load");
                 Close();
@@ -127,7 +131,7 @@ namespace Chummer
             if (_blnUnBlocked)
             {
                 string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
-                if (_objGlobalOptions.PreferNightlyBuilds)
+                if (_blnPreferNightly)
                 {
                     strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
                 }
@@ -182,8 +186,9 @@ namespace Chummer
             }
             else
             {
-                LatestVersion = LanguageManager.Instance.GetString("String_No_Update_Found");
+                LatestVersion = LanguageManager.GetString("String_No_Update_Found");
             }
+            DoVersionTextUpdate();
         }
 
         /// <summary>
@@ -232,8 +237,6 @@ namespace Chummer
             }
         }
 
-
-
         /// <summary>
         /// Latest release build number located on Github.
         /// </summary>
@@ -241,9 +244,71 @@ namespace Chummer
         {
             get
             {
-                Version version = Assembly.GetExecutingAssembly().GetName().Version;
-                return $"{version.Major}.{version.Minor}.{version.Build}";
+                return _strCurrentVersion;
             }
+        }
+
+        public void DoVersionTextUpdate()
+        {
+            string strLatestVersion = LatestVersion.Trim();
+            lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6;
+            if (strLatestVersion == LanguageManager.GetString("String_No_Update_Found").Trim())
+            {
+                lblUpdaterStatus.Text = LanguageManager.GetString("Warning_Update_CouldNotConnect");
+                cmdUpdate.Enabled = false;
+                return;
+            }
+
+            string strCurrentVersion = CurrentVersion.Trim();
+            if (strCurrentVersion.StartsWith("Nightly-v"))
+                strCurrentVersion = strCurrentVersion.Replace("Nightly-v", string.Empty);
+            string[] strCurrentVersionNumbers = strCurrentVersion.Split('.');
+            if (strLatestVersion.StartsWith("Nightly-v"))
+                strLatestVersion = strLatestVersion.Replace("Nightly-v", string.Empty);
+            string[] strLatestVersionNumbers = strLatestVersion.Split('.');
+
+            bool blnNeedsUpdate = false;
+            int intLatestTemp = 0;
+            int intCurrentTemp = 0;
+            // Note: this value only matters if blnNeedsUpdate is false, otherwise the relevant code will not run anyway
+            bool blnDisableDownloadButton = true;
+            for (int i = 0; i < strLatestVersionNumbers.Length; ++i)
+            {
+                if (strCurrentVersion.Length <= i)
+                {
+                    blnNeedsUpdate = true;
+                    break;
+                }
+                if (int.TryParse(strLatestVersionNumbers[i], out intLatestTemp) && int.TryParse(strCurrentVersionNumbers[i], out intCurrentTemp))
+                {
+                    if (intLatestTemp != intCurrentTemp)
+                    {
+                        if (intLatestTemp > intCurrentTemp)
+                            blnNeedsUpdate = true;
+                        else
+                            blnDisableDownloadButton = false;
+                        break;
+                    }
+                }
+            }
+
+            if (blnNeedsUpdate)
+            {
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Update_Available").Replace("{0}", strLatestVersion).Replace("{1}", strCurrentVersion);
+            }
+            else
+            {
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date").Replace("{0}", strCurrentVersion).Replace("{1}", LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable")).Replace("{2}", strLatestVersion);
+                if (blnDisableDownloadButton)
+                {
+                    cmdUpdate.Text = LanguageManager.GetString("Button_Up_To_Date");
+                    cmdUpdate.Enabled = false;
+                }
+                else
+                    cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
+            }
+            if (_blnPreferNightly)
+                lblUpdaterStatus.Text += " " + LanguageManager.GetString("String_Nightly_Changelog_Warning");
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)
@@ -263,20 +328,36 @@ namespace Chummer
                 //Create a backup file in the temp directory. 
                 string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
                 Log.Info("Creating archive from application path: ", _strAppPath);
-                if (!File.Exists(strBackupZipPath))
+                try
                 {
-                    ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
+                    if (!File.Exists(strBackupZipPath))
+                    {
+                        ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
+                    }
+                    // Delete the old Chummer5 executables, libraries, and other files whose current versions are in use, then rename the current versions.
+                    foreach (string strLoopExeName in Directory.GetFiles(_strAppPath, "*.exe", SearchOption.AllDirectories))
+                    {
+                        if (File.Exists(strLoopExeName + ".old"))
+                            File.Delete(strLoopExeName + ".old");
+                        File.Move(strLoopExeName, strLoopExeName + ".old");
+                    }
+                    foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll", SearchOption.AllDirectories))
+                    {
+                        if (File.Exists(strLoopDllName + ".old"))
+                            File.Delete(strLoopDllName + ".old");
+                        File.Move(strLoopDllName, strLoopDllName + ".old");
+                    }
+                    foreach (string strLoopPdbName in Directory.GetFiles(_strAppPath, "*.pdb", SearchOption.AllDirectories))
+                    {
+                        if (File.Exists(strLoopPdbName + ".old"))
+                            File.Delete(strLoopPdbName + ".old");
+                        File.Move(strLoopPdbName, strLoopPdbName + ".old");
+                    }
                 }
-                // Delete the old Chummer5 executable.
-                if (File.Exists(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old"))
-                    File.Delete(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old");
-                // Rename the current Chummer5 executable.
-                File.Move(_strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName, _strAppPath + "\\" + AppDomain.CurrentDomain.FriendlyName + ".old");
-                foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll"))
+                catch (UnauthorizedAccessException)
                 {
-                    if (File.Exists(strLoopDllName + ".old"))
-                        File.Delete(strLoopDllName + ".old");
-                    File.Move(strLoopDllName, strLoopDllName + ".old");
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    return;
                 }
 
                 // Copy over the archive from the temp directory.
@@ -296,7 +377,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            MessageBox.Show(LanguageManager.Instance.GetString("Message_Insufficient_Permissions_Warning"));
+                            MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                             break;
                         }
                     }
@@ -341,7 +422,7 @@ namespace Chummer
         /// </summary>
         private void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            cmdUpdate.Text = "Redownload";
+            cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
             cmdUpdate.Enabled = true;
             cmdRestart.Enabled = true;
             Log.Info("wc_DownloadExeFileCompleted");

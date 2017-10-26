@@ -75,7 +75,7 @@ namespace Chummer
         private void TestVehicles()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/vehicles/vehicle").Count;
@@ -93,7 +93,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, null, null, null, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -166,7 +166,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, 1, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -199,7 +199,7 @@ namespace Chummer
         private void TestWeapons()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/weapons/weapon").Count;
@@ -215,10 +215,10 @@ namespace Chummer
                 {
                     TreeNode objTempNode = new TreeNode();
                     Weapon objTemp = new Weapon(objCharacter);
-                    objTemp.Create(objXmlGear, objCharacter, objTempNode, null, null);
+                    objTemp.Create(objXmlGear, objTempNode, null, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -299,7 +299,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, new Tuple<string, string>("" , string.Empty), 0, null);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -324,7 +324,7 @@ namespace Chummer
         private void TestArmor()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/armors/armor").Count;
@@ -343,7 +343,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objTempNode, null, 0, objWeapons);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -419,7 +419,7 @@ namespace Chummer
         private void TestGear()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/gears/gear").Count;
@@ -435,10 +435,10 @@ namespace Chummer
                     Gear objTemp = new Gear(objCharacter);
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstNodes = new List<TreeNode>();
-                    objTemp.Create(objXmlGear, objCharacter, objTempNode, 1, lstWeapons, lstNodes);
+                    objTemp.Create(objXmlGear, objTempNode, 1, lstWeapons, lstNodes);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -471,7 +471,7 @@ namespace Chummer
                     }
                     try
                     {
-                        int objValue = objTemp.CalculatedCost;
+                        decimal objValue = objTemp.CalculatedCost;
                     }
                     catch
                     {
@@ -502,7 +502,7 @@ namespace Chummer
             }
 
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix).Count;
@@ -523,7 +523,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
                     try
                     {
-                        int objValue = objTemp.TotalCost;
+                        decimal objValue = objTemp.TotalCost;
                     }
                     catch
                     {
@@ -588,7 +588,7 @@ namespace Chummer
         private void TestQuality()
         {
             Character objCharacter = new Character();
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/qualities/quality").Count;
@@ -615,7 +615,7 @@ namespace Chummer
 
         void TestMetatype(string strFile)
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile);
 
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
@@ -626,7 +626,7 @@ namespace Chummer
                 pgbProgress.Value++;
                 Application.DoEvents();
 
-                objXmlDocument = XmlManager.Instance.Load(strFile);
+                objXmlDocument = XmlManager.Load(strFile);
                 Character _objCharacter = new Character();
 
                 try
@@ -705,7 +705,7 @@ namespace Chummer
                     if (objXmlMetatype["movement"] != null)
                         _objCharacter.Movement = objXmlMetatype["movement"].InnerText;
                     // Load the Qualities file.
-                    XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
+                    XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
 
                     // Determine if the Metatype has any bonuses.
                     if (objXmlMetatype.InnerXml.Contains("bonus"))
@@ -763,7 +763,7 @@ namespace Chummer
                     // Add any Critter Powers the Metatype/Critter should have.
                     XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
-                    objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+                    objXmlDocument = XmlManager.Load("critterpowers.xml");
                     foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                     {
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -875,7 +875,7 @@ namespace Chummer
                     }
 
                     // Add any Complex Forms the Critter comes with (typically Sprites)
-                    XmlDocument objXmlProgramDocument = XmlManager.Instance.Load("complexforms.xml");
+                    XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
                     foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                     {
                         int intRating = 0;
@@ -887,12 +887,12 @@ namespace Chummer
                         XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
                         TreeNode objNode = new TreeNode();
                         ComplexForm objProgram = new ComplexForm(_objCharacter);
-                        objProgram.Create(objXmlProgram, _objCharacter, objNode, strForceValue);
+                        objProgram.Create(objXmlProgram, objNode, strForceValue);
                         _objCharacter.ComplexForms.Add(objProgram);
                     }
 
                     // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                    XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                    XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                     foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
                     {
                         int intRating = 0;
@@ -906,7 +906,7 @@ namespace Chummer
                         Gear objGear = new Gear(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                        objGear.Create(objXmlGearItem, _objCharacter, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
+                        objGear.Create(objXmlGearItem, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                         objGear.Cost = "0";
                         _objCharacter.Gear.Add(objGear);
                     }

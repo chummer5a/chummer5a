@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Text-Only Character Sheet -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -497 -->
@@ -21,6 +21,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
             font-family: 'courier new', courier;
@@ -135,6 +136,12 @@
               (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total"/>)
             </xsl:if>
           </xsl:if>
+          <xsl:if test="depenabled = 'True'">
+            <br/><xsl:value-of select="$lang.DEP"/>: <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base"/>
+            <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
+              (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total"/>)
+            </xsl:if>
+          </xsl:if>
 
           <br/>
           <br/>== <xsl:value-of select="$lang.DerivedAttributes"/> ==
@@ -174,12 +181,12 @@
             </xsl:call-template>
           <xsl:value-of select="matrixhotinit"/>
           <br/><xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat($lang.PhysicalTrack1,' ',$lang.PhysicalTrack2,': ')"/>
+              <xsl:with-param name="string" select="concat($lang.PhysicalTrack,': ')"/>
               <xsl:with-param name="length" select="27"/>
             </xsl:call-template>
             <xsl:value-of select="physicalcm"/>
           <br/><xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat($lang.StunTrack1,' ',$lang.StunTrack2,': ')"/>
+              <xsl:with-param name="string" select="concat($lang.StunTrack,': ')"/>
               <xsl:with-param name="length" select="27"/>
             </xsl:call-template>
             <xsl:value-of select="stuncm"/>

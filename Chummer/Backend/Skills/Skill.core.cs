@@ -171,7 +171,9 @@ namespace Chummer.Skills
         /// </summary>
         public int TotalBaseRating
         {
-            get { return LearnedRating + RatingModifiers; }
+            get { if (CharacterObject.Created){
+                  return LearnedRating + RatingModifiers; }
+            else  return LearnedRating; }
         }
 
         /// <summary>
@@ -391,7 +393,7 @@ namespace Chummer.Skills
                         : 0;
             }
 
-            if (Unaware()) cost *= 2;
+            if (Unaware() || Uneducated()) cost *= 2;
 
             return cost;
 
@@ -421,19 +423,19 @@ namespace Chummer.Skills
         /// <returns>Price in karma</returns>
         public virtual int UpgradeKarmaCost()
         {
-            int masterAdjustment = 0;
             int intTotalBaseRating = TotalBaseRating;
+            if (intTotalBaseRating >= RatingMaximum)
+            {
+                return -1;
+            }
+            int masterAdjustment = 0;
             if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
             {
                 masterAdjustment = intTotalBaseRating >= 5 ? 2 : -1;
             }
 
-            int upgrade;
-            if (intTotalBaseRating >= RatingMaximum)
-            {
-                upgrade = -1;
-            }
-            else if (intTotalBaseRating == 0)
+            int upgrade = 0;
+            if (intTotalBaseRating == 0)
             {
                 upgrade = _character.Options.KarmaNewActiveSkill + masterAdjustment;
             }
@@ -442,13 +444,13 @@ namespace Chummer.Skills
                 upgrade = (intTotalBaseRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
             }
 
-            if (Unaware()) upgrade *= 2;
+            if (Unaware() || Uneducated()) upgrade *= 2;
 
             return upgrade;
 
         }
 
-        //Character is really bad at this. Uncouth and a social skill or Uneducated and technical skill
+        //Character is really bad at this (double all costs). Uncouth and a social skill.
         private bool Unaware()
         {
             if (CharacterObject.SkillsSection.Uncouth && Category == "Social Active")
@@ -456,6 +458,17 @@ namespace Chummer.Skills
                 return true;
             }
 
+            if (CharacterObject.SkillsSection.Uneducated && Category == "Technical Active")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //Character is uneducated at this (double only karma costs). Uneducated and technical skill.
+        private bool Uneducated()
+        {
             if (CharacterObject.SkillsSection.Uneducated && Category == "Technical Active")
             {
                 return true;
@@ -477,7 +490,7 @@ namespace Chummer.Skills
             }
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.Instance.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
+                $"{LanguageManager.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
             ExpenseLogEntry entry = new    ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -492,14 +505,16 @@ namespace Chummer.Skills
 
         public void AddSpecialization(string name)
         {
-            if (!CharacterObject.CanAffordSpecialization) return;
-            
-
             int price = CharacterObject.Options.KarmaSpecialization;
+            if (IsKnowledgeSkill)
+                price = CharacterObject.Options.KarmaKnowledgeSpecialization;
+
+            if (price < CharacterObject.Karma)
+                return;
 
             //If data file contains {4} this crashes but...
             string upgradetext = //TODO WRONG
-                $"{LanguageManager.Instance.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
+                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
 
             SkillSpecialization nspec = new SkillSpecialization(name, false);
 

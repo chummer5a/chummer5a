@@ -4017,7 +4017,7 @@
     </vehicle>
     <vehicle>
       <id>472a0869-4759-41cf-b529-a42b0f308f69</id>
-      <name>Criado Juan (Anthro)</name>
+      <name>Criado Juan</name>
       <page>146</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4042,7 +4042,7 @@
     </vehicle>
     <vehicle>
       <id>ad77dfa1-36ae-4e66-a319-24de903652aa</id>
-      <name>Horizon Little Buddy (Anthro)</name>
+      <name>Horizon Little Buddy</name>
       <page>146</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4068,7 +4068,7 @@
     </vehicle>
     <vehicle>
       <id>54f7d700-d407-49bf-a231-83777419cbe3</id>
-      <name>MCT Kenchiku-Kikai (Anthro)</name>
+      <name>MCT Kenchiku-Kikai</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4094,7 +4094,7 @@
     </vehicle>
     <vehicle>
       <id>b448855b-57e7-435a-b523-174adb276674</id>
-      <name>NeoNet Juggernaut (Anthro)</name>
+      <name>NeoNet Juggernaut</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4121,7 +4121,7 @@
     </vehicle>
     <vehicle>
       <id>ca18775c-3535-40e1-be69-a07905add421</id>
-      <name>Saeder-Krupp Direktionssekretar (Anthro)</name>
+      <name>Saeder-Krupp Direktionssekretar</name>
       <page>148</page>
       <source>R5</source>
       <accel>2</accel>
@@ -4146,7 +4146,7 @@
     </vehicle>
     <vehicle>
       <id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-      <name>Shiawase I-Doll (Anthro)</name>
+      <name>Shiawase I-Doll</name>
       <page>148</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4761,8 +4761,8 @@
     <vehicle>
       <id>fb002667-22de-4156-ad17-def60a1795c0</id>
       <name>Proteus Lamprey (Sea Sled)</name>
-      <page>112</page>
-      <source>AR</source>
+      <page>464</page>
+      <source>SR5</source>
       <accel>1</accel>
       <armor>6</armor>
       <avail>0</avail>
@@ -4777,9 +4777,7 @@
         <gear rating="3" maxrating="7">Sensor Array</gear>
       </gears>
       <mods>
-        <name>Standard drone rack (medium)</name>
-        <name>Ballast Tanks Level 1</name>
-        <name>Drone Rack, Small Landing</name>
+        <name>Landing Drone Rack (Medium)</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -6842,7 +6840,7 @@
     </vehicle>
     <vehicle>
       <id>6240139c-cf8e-4f7f-be93-a2a87d1bb1d4</id>
-      <name>Jena Robotnik Pilalux (Mini)</name>
+      <name>Jena Robotnik Pilalux</name>
       <page>58</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6868,7 +6866,7 @@
     </vehicle>
     <vehicle>
       <id>78071d83-1328-46d2-bfac-aece4ecc7dff</id>
-      <name>Jena Robotnik Tegenaria (Mini)</name>
+      <name>Jena Robotnik Tegenaria</name>
       <page>59</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6893,7 +6891,7 @@
     </vehicle>
     <vehicle>
       <id>bc48ec25-84ce-435a-a418-ddbac5f7507c</id>
-      <name>Messerschmitt-Kawasaki Hugin (Small)</name>
+      <name>Messerschmitt-Kawasaki Hugin</name>
       <page>60</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6914,7 +6912,7 @@
     </vehicle>
     <vehicle>
       <id>33487443-148e-4a25-b351-3a958aae5a90</id>
-      <name>Messerschmitt-Kawasaki Munin (Small)</name>
+      <name>Messerschmitt-Kawasaki Munin</name>
       <page>60</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6938,7 +6936,7 @@
     </vehicle>
     <vehicle>
       <id>c2073528-54a5-45e0-b5f8-9c1ab74647aa</id>
-      <name>Messerschmitt-Kawasaki Libelle (Small)</name>
+      <name>Messerschmitt-Kawasaki Libelle</name>
       <page>61</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6962,7 +6960,7 @@
     </vehicle>
     <vehicle>
       <id>581eeb8d-3b66-44c0-9e1e-b6d819135b3f</id>
-      <name>Ruhrmetall Skarabäus (Small)</name>
+      <name>Ruhrmetall Skarabäus</name>
       <page>62</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -6988,7 +6986,7 @@
     </vehicle>
     <vehicle>
       <id>41e04bbc-0987-45e8-84fe-f80441bc0ba3</id>
-      <name>Schiebel Robotic Crust Mark II (Small)</name>
+      <name>Schiebel Robotic Crust Mark II</name>
       <page>63</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7037,7 +7035,7 @@
     </vehicle>
     <vehicle>
       <id>b7abae70-ed26-4f8d-9b73-01760009dc1e</id>
-      <name>Messerschmitt-Kawasaki Heuschrecke 2 (Medium)</name>
+      <name>Messerschmitt-Kawasaki Heuschrecke 2</name>
       <page>65</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7063,7 +7061,7 @@
     </vehicle>
     <vehicle>
       <id>02179e64-72e2-462c-9b53-dcbc9aceb9a4</id>
-      <name>Ruhrmetall Murmillo (Medium)</name>
+      <name>Ruhrmetall Murmillo</name>
       <page>66</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7088,7 +7086,7 @@
     </vehicle>
     <vehicle>
       <id>3524337b-03e3-4218-b721-d1df2cc4a8c7</id>
-      <name>Siemens FWD Screamer (Medium)</name>
+      <name>Siemens FWD Screamer</name>
       <page>67</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7113,7 +7111,7 @@
     </vehicle>
     <vehicle>
       <id>47a4d3aa-f9bb-4f16-bbf1-5e8b73f61c0e</id>
-      <name>Messerschmitt-Kawasaki Jagdhund (Large)</name>
+      <name>Messerschmitt-Kawasaki Jagdhund</name>
       <page>68</page>
       <source>SAG</source>
       <accel>3</accel>
@@ -7141,7 +7139,7 @@
     </vehicle>
     <vehicle>
       <id>e338dcf9-3149-4519-9228-589354be5667</id>
-      <name>Messerschmitt-Kawasaki Jagdschreccke (Large)</name>
+      <name>Messerschmitt-Kawasaki Jagdschreccke</name>
       <page>69</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7169,7 +7167,7 @@
     </vehicle>
     <vehicle>
       <id>c4e56ddb-6369-4527-a537-9b8ade6d9ada</id>
-      <name>Mitsuhama FED-11 (Large)</name>
+      <name>Mitsuhama FED-11</name>
       <page>70</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7196,7 +7194,7 @@
     </vehicle>
     <vehicle>
       <id>7c921200-76a8-465f-8207-01a7c1785c67</id>
-      <name>Ruhrmetall Wolfspinne 8V2 (Large)</name>
+      <name>Ruhrmetall Wolfspinne 8V2</name>
       <page>71</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7232,7 +7230,7 @@
     </vehicle>
     <vehicle>
       <id>63a915a3-b71b-4ee4-8638-8a24df833c14</id>
-      <name>Mitsuhama Honson (Anthro)</name>
+      <name>Mitsuhama Honson</name>
       <page>72</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7253,6 +7251,10 @@
       <mods>
         <name>Touch Sensors</name>
         <name>Mini Weapon Mount (Drone)</name>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
@@ -9379,6 +9381,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9404,6 +9408,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9429,6 +9435,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9453,6 +9461,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9477,6 +9487,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>

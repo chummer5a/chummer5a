@@ -30,15 +30,15 @@ namespace Chummer
     public partial class frmSelectWeaponAccessory : Form
     {
         private string _strSelectedAccessory = string.Empty;
-        private int _intMarkup = 0;
+        private decimal _decMarkup = 0;
 
         private string _strAllowedMounts = string.Empty;
-        private int _intWeaponCost = 0;
+        private decimal _decWeaponCost = 0;
         private int _intRating = 0;
         private string _strCurrentWeaponName = string.Empty;
         private bool _blnAddAgain = false;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
         private int _intAccessoryMultiplier = 1;
         private bool _blnBlackMarketDiscount;
@@ -48,12 +48,14 @@ namespace Chummer
         public frmSelectWeaponAccessory(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Weapon information.
+            _objXmlDocument = XmlManager.Load("weapons.xml");
         }
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
@@ -77,9 +79,6 @@ namespace Chummer
         private void BuildAccessoryList()
         {
             List<ListItem> lstAccessories = new List<ListItem>();
-
-            // Load the Weapon information.
-            _objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
             XmlNode objXmlWeaponNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strCurrentWeaponName + "\"]");
 
@@ -360,22 +359,22 @@ namespace Chummer
         /// <summary>
         /// Weapon's Cost.
         /// </summary>
-        public int WeaponCost
+        public decimal WeaponCost
         {
             set
             {
-                _intWeaponCost = value;
+                _decWeaponCost = value;
             }
         }
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
         }
 
@@ -545,60 +544,59 @@ namespace Chummer
                 }
             }
             else
-                lblAvail.Text = "";
-            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                lblAvail.Text = string.Empty;
+            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             if (!chkFreeItem.Checked)
             {
                 string strCost = "0";
                 if (objXmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
-                    strCost = strCost.Replace("Weapon Cost", _intWeaponCost.ToString())
+                    strCost = strCost.Replace("Weapon Cost", _decWeaponCost.ToString(GlobalOptions.InvariantCultureInfo))
                         .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
                 if (strCost.StartsWith("Variable"))
                 {
-                    int intMin = 0;
-                    int intMax = int.MaxValue;
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
                     strCost = strCost.Replace("Variable", string.Empty).Trim("()".ToCharArray());
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        int.TryParse(strValues[0], out intMin);
-                        int.TryParse(strValues[1], out intMax);
+                        decimal.TryParse(strValues[0], out decMin);
+                        decimal.TryParse(strValues[1], out decMax);
                     }
                     else
-                        int.TryParse(strCost.Replace("+", string.Empty), out intMin);
+                        decimal.TryParse(strCost.Replace("+", string.Empty), out decMin);
 
-                    if (intMax == int.MaxValue)
+                    if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{intMin:###,###,##0¥+}";
+                        lblCost.Text = $"{decMin:###,###,##0.##¥+}";
                     }
                     else
-                        lblCost.Text = $"{intMin:###,###,##0} - {intMax:###,###,##0¥}";
+                        lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
 
-                    lblTest.Text = _objCharacter.AvailTest(intMin, lblAvail.Text);
+                    lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }
                 else
                 {
-                    double dblCost = 0;
+                    decimal decCost = 0.0m;
                     try
                     {
                         XPathExpression xprCost = nav.Compile(strCost);
-                        dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                        decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
                     }
                     catch (XPathException)
                     {
                     }
 
                     // Apply any markup.
-                    dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
-                    int intCost = Convert.ToInt32(dblCost);
+                    decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                    lblCost.Text = $"{intCost:###,###,##0¥}";
-                    lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+                    lblCost.Text = $"{decCost:###,###,##0.##¥}";
+                    lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
                 }
             }
             else
             {
-                lblCost.Text = $"{0:###,###,##0¥}";
+                lblCost.Text = $"{0:###,###,##0.##¥}";
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
 
@@ -608,7 +606,7 @@ namespace Chummer
             objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.
@@ -617,7 +615,7 @@ namespace Chummer
         {
             _strSelectedAccessory = lstAccessory.SelectedValue.ToString();
             int.TryParse(nudRating.Value.ToString(GlobalOptions.CultureInfo), out _intRating);
-            int.TryParse(nudMarkup.Value.ToString(GlobalOptions.CultureInfo), out _intMarkup);
+            _decMarkup = nudMarkup.Value;
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
             DialogResult = DialogResult.OK;
         }

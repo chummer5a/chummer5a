@@ -129,7 +129,7 @@
           <depaug>0</depaug>
           <qualities>
             <positive>
-              <quality>Shiva Arms (1 Pair)</quality>
+              <quality>Shiva Arms (Pair)</quality>
             </positive>
             <negative>
               <quality>Striking Skin Pigmentation</quality>
@@ -428,7 +428,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality removable="true">Celerity</quality>
             </positive>
           </qualities>
           <bonus />
@@ -674,7 +674,7 @@
           </bonus>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
+              <quality removable="true">Celerity</quality>
               <quality>Resistance to Pathogens/Toxins</quality>
               <quality>Thermographic Vision</quality>
             </positive>
@@ -853,6 +853,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Fangs</quality>
+			  <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality>Poor Self Control (Vindictive)</quality>

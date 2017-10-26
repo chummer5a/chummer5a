@@ -50,7 +50,8 @@ namespace Chummer.UI.Skills
 
                 btnAddSpec.Visible = true;
                 btnCareerIncrease.Visible = true;
-
+                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
                 lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
@@ -128,12 +129,12 @@ namespace Chummer.UI.Skills
                 string confirmstring;
                 if (_skill.Karma == 0)
                 {
-                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
+                    confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
                         _skill.DisplayName, _skill.Rating + 1, _skill.CharacterObject.Options.KarmaNewKnowledgeSkill, cboType.GetItemText(cboType.SelectedItem));
                 }
                 else
                 {
-                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                    confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                        _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
                 }
 
@@ -150,8 +151,8 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-                        _skill.CharacterObject.Options.KarmaSpecialization);
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
+                        _skill.CharacterObject.Options.KarmaKnowledgeSpecialization);
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;
@@ -187,7 +188,7 @@ namespace Chummer.UI.Skills
 
         private void RatingChanged(object sender, EventArgs e)
         {
-            if (_skill.TotalBaseRating == 0 && _skill.Specializations.Count > 0)
+            if (!_skill.CanHaveSpecs && !_skill.ForcedName)
             {
                 _skill.Specializations.Clear();
             }

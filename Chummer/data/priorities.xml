@@ -775,14 +775,14 @@
           </forbidden>
         </talent>
         <talent>
-          <name>Technomancer - 6 Resonance/5 Complex Forms</name>
+          <name>Technomancer - 6 Resonance/7 Complex Forms</name>
           <value>Technomancer</value>
           <qualities>
             <quality>Technomancer</quality>
           </qualities>
           <resonance>6</resonance>
-          <cfp>5</cfp>
-          <skillqty>2</skillqty>
+          <cfp>7</cfp>
+          <skillqty>3</skillqty>
           <skillval>5</skillval>
           <skilltype>resonance</skilltype>
           <forbidden>
@@ -885,14 +885,14 @@
           </forbidden>
         </talent>
         <talent>
-          <name>Technomancer - 4 Resonance/2 Complex Forms</name>
+          <name>Technomancer - 4 Resonance/5 Complex Forms</name>
           <value>Technomancer</value>
           <qualities>
             <quality>Technomancer</quality>
           </qualities>
           <resonance>4</resonance>
-          <cfp>2</cfp>
-          <skillqty>2</skillqty>
+          <cfp>5</cfp>
+          <skillqty>3</skillqty>
           <skillval>4</skillval>
           <skilltype>resonance</skilltype>
           <forbidden>
@@ -1029,13 +1029,16 @@
           </forbidden>
         </talent>
         <talent>
-          <name>Technomancer - 3 Resonance/1 Complex Forms</name>
+          <name>Technomancer - 3 Resonance/3 Complex Forms</name>
           <value>Technomancer</value>
           <qualities>
             <quality>Technomancer</quality>
           </qualities>
           <resonance>3</resonance>
-          <cfp>1</cfp>
+          <cfp>3</cfp>
+		  <skillqty>3</skillqty>
+          <skillval>2</skillval>
+          <skilltype>resonance</skilltype>
           <forbidden>
             <oneof><metatype>A.I.</metatype></oneof>
           </forbidden>

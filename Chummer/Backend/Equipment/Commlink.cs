@@ -34,9 +34,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Gear Rating.</param>
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
-        public void Create(XmlNode objXmlGear, Character objCharacter, TreeNode objNode, int intRating, bool blnAddImprovements = true, bool blnCreateChildren = true, string strForceValue = "")
+        public void Create(XmlNode objXmlGear, TreeNode objNode, int intRating, bool blnAddImprovements = true, bool blnCreateChildren = true, string strForceValue = "")
         {
-            base.Create(objXmlGear, objCharacter, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), strForceValue, false, false, blnAddImprovements, blnCreateChildren);
+            base.Create(objXmlGear, objNode, intRating, new List<Weapon>(), new List<TreeNode>(), strForceValue, false, false, blnAddImprovements, blnCreateChildren);
 
             if (string.IsNullOrEmpty(objXmlGear["attributearray"]?.InnerText))
             {
@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _blnCanSwapAttributes = true;
-                string[] strArray = objXmlGear["attributearray"].InnerText.ToString().Split(',');
+                string[] strArray = objXmlGear["attributearray"].InnerText.Split(',');
                 _strAttack = strArray[0];
                 _strSleaze = strArray[1];
                 _strDataProcessing = strArray[2];
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWeaponNodes">List of Weapon TreeNodes created by copying the item.</param>
         public void Copy(Commlink objGear, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
         {
-            base.Copy(objGear, objNode, new List<Weapon>(), new List<TreeNode>());
+            base.Copy(objGear, objNode, objWeapons, objWeaponNodes);
             _strOverclocked = objGear.Overclocked;
             _strAttack = objGear.Attack;
             _strDataProcessing = objGear.DataProcessing;
@@ -83,7 +83,8 @@ namespace Chummer.Backend.Equipment
         public override void SaveInner(XmlTextWriter objWriter)
         {
             base.SaveInner(objWriter);
-            objWriter.WriteElementString("overclocked", _blnHomeNode.ToString());
+            objWriter.WriteElementString("iscommlink", System.Boolean.TrueString);
+            objWriter.WriteElementString("overclocked", _strOverclocked);
             objWriter.WriteElementString("attack", _strAttack);
             objWriter.WriteElementString("sleaze", _strSleaze);
             objWriter.WriteElementString("dataprocessing", _strDataProcessing);
@@ -107,6 +108,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             objNode.TryGetBoolFieldQuickly("livingpersona", ref _blnIsLivingPersona);
             objNode.TryGetBoolFieldQuickly("active", ref _blnActiveCommlink);
+            if (_blnHomeNode)
+            {
+                _objCharacter.HomeNodeCommlink = this;
+                _objCharacter.HomeNodeVehicle = null;
+            }
             if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
             {
                 // Legacy shim
@@ -255,20 +261,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Data Processing"))
-                        intGearValue = (_objParent as Commlink).BaseDataProcessing;
+                        intGearValue = objParent.BaseDataProcessing;
                     if (strExpression.Contains("Parent Data Processing"))
-                        strParentValue = (_objParent as Commlink).DataProcessing;
+                        strParentValue = objParent.DataProcessing;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Data Processing"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseDataProcessing;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseDataProcessing;
                     }
                 }
 
@@ -317,20 +325,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Attack"))
-                        intGearValue = (_objParent as Commlink).BaseAttack;
+                        intGearValue = objParent.BaseAttack;
                     if (strExpression.Contains("Parent Attack"))
-                        strParentValue = (_objParent as Commlink).Attack;
+                        strParentValue = objParent.Attack;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Attack"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseAttack;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseAttack;
                     }
                 }
 
@@ -379,20 +389,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Sleaze"))
-                        intGearValue = (_objParent as Commlink).BaseSleaze;
+                        intGearValue = objParent.BaseSleaze;
                     if (strExpression.Contains("Parent Sleaze"))
-                        strParentValue = (_objParent as Commlink).Sleaze;
+                        strParentValue = objParent.Sleaze;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Sleaze"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseSleaze;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseSleaze;
                     }
                 }
 
@@ -441,20 +453,22 @@ namespace Chummer.Backend.Equipment
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                if (_objParent != null && _objParent.GetType() == typeof(Commlink))
+                Commlink objParent = _objParent as Commlink;
+                if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Firewall"))
-                        intGearValue = (_objParent as Commlink).BaseFirewall;
+                        intGearValue = objParent.BaseFirewall;
                     if (strExpression.Contains("Parent Firewall"))
-                        strParentValue = (_objParent as Commlink).Firewall;
+                        strParentValue = objParent.Firewall;
                 }
                 int intTotalChildrenValue = 0;
                 if (_objChildren.Count > 0 && strExpression.Contains("Children Firewall"))
                 {
                     foreach (Gear loopGear in _objChildren)
                     {
-                        if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                            intTotalChildrenValue += (loopGear as Commlink).BaseFirewall;
+                        Commlink objLoopCommlink = loopGear as Commlink;
+                        if (objLoopCommlink != null && loopGear.Equipped)
+                            intTotalChildrenValue += objLoopCommlink.BaseFirewall;
                     }
                 }
 
@@ -737,13 +751,14 @@ namespace Chummer.Backend.Equipment
             lstStatsArray.Sort();
             lstStatsArray.Reverse();
 
-            string[] strCyberdeckArray = MyXmlNode["attributearray"].InnerText.ToString().Split(',');
+            string[] strCyberdeckArray = MyXmlNode["attributearray"].InnerText.Split(',');
             foreach (Gear objChild in Children)
             {
                 XmlNode objLoopNode = objChild.MyXmlNode;
-                if (!string.IsNullOrEmpty(objLoopNode["modattributearray"]?.InnerText))
+                string strLoopArrayText = objLoopNode["modattributearray"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLoopArrayText))
                 {
-                    string[] strLoopArray = objLoopNode["modattributearray"].InnerText.ToString().Split(',');
+                    string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
                         strCyberdeckArray[i] += "+(" + strLoopArray[i] + ")";

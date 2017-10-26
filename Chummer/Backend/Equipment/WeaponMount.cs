@@ -11,7 +11,7 @@ namespace Chummer.Backend.Equipment
     public class WeaponMount : INamedItemWithGuidAndNode
     {
         private Guid _guiID;
-        private int _intMarkup;
+        private decimal _decMarkup;
         private string _strAvail = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
@@ -45,8 +45,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlMod">XmlNode to create the object from.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
-        /// <param name="intMarkup">Discount or markup that applies to the base cost of the mod.</param>
-        public void Create(XmlNode objXmlMod, TreeNode objNode, Vehicle objParent, int intMarkup = 0)
+        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
+        public void Create(XmlNode objXmlMod, TreeNode objNode, Vehicle objParent, decimal decMarkup = 0)
         {
             if (objParent == null) throw new ArgumentNullException(nameof(objParent));
             Parent = objParent;
@@ -61,43 +61,41 @@ namespace Chummer.Backend.Equipment
             // Check for a Variable Cost.
             if (objXmlMod["cost"] != null)
             {
-                if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+                _strCost = objXmlMod["cost"].InnerText;
+                if (_strCost.StartsWith("Variable"))
                 {
-                    int intMin;
-                    var intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = _strCost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
                     if (strCost.Contains("-"))
                     {
                         string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
 
-                    if (intMin != 0 || intMax != 0)
+                    if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        var frmPickNumber = new frmSelectNumber();
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
-                        frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString();
                     }
                 }
-                else
-                    _strCost = objXmlMod["cost"].InnerText;
             }
-            _intMarkup = intMarkup;
+            _decMarkup = decMarkup;
 
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objModNode = MyXmlNode;
                 if (objModNode != null)
@@ -106,7 +104,7 @@ namespace Chummer.Backend.Equipment
                     objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
                 objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
             }
@@ -129,7 +127,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("slots", _strSlots);
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("markup", _intMarkup.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("markup", _decMarkup.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -148,9 +146,8 @@ namespace Chummer.Backend.Equipment
         /// Load the VehicleMod from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="objVehicle">Vehicle that the mod is attached to.</param>
         /// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
-        public void Load(XmlNode objNode, Vehicle objVehicle, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy)
             {
@@ -168,7 +165,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-            objNode.TryGetInt32FieldQuickly("markup", ref _intMarkup);
+            objNode.TryGetDecFieldQuickly("markup", ref _decMarkup);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
             objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
@@ -180,7 +177,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
 
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != "en-us")
             {
                 XmlNode objModNode = MyXmlNode;
                 if (objModNode != null)
@@ -189,7 +186,7 @@ namespace Chummer.Backend.Equipment
                     objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
                 objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
             }
@@ -349,15 +346,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Markup.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
             set
             {
-                _intMarkup = value;
+                _decMarkup = value;
             }
         }
 
@@ -507,7 +504,7 @@ namespace Chummer.Backend.Equipment
                 // Just a straight cost, so return the value.
                 if (strCalculated.Contains("F") || strCalculated.Contains("R"))
                 {
-                    strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)) + strCalculated.Substring(strCalculated.Length - 1, 1);
+                    strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)).ToString() + strCalculated.Substring(strCalculated.Length - 1, 1);
                 }
                 else
                     strCalculated = Convert.ToInt32(strCalculated).ToString();
@@ -522,11 +519,11 @@ namespace Chummer.Backend.Equipment
                 else
                     intAvail = Convert.ToInt32(strCalculated);
 
-                string strReturn = intAvail + strAvailText;
+                string strReturn = intAvail.ToString() + strAvailText;
 
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 return strReturn;
             }
@@ -535,7 +532,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the VehicleMod.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
@@ -546,25 +543,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Vehicle Mod itself.
         /// </summary>
-        public int OwnCost
+        public decimal OwnCost
         {
             get
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                int intReturn = Convert.ToInt32(_strCost);
+                decimal decReturn = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
-                    intReturn = intReturn * 9 / 10;
+                    decReturn *= 0.9m;
 
                 // Apply a markup if applicable.
-                if (_intMarkup != 0)
+                if (_decMarkup != 0)
                 {
-                    double dblCost = Convert.ToDouble(intReturn, GlobalOptions.InvariantCultureInfo);
-                    dblCost *= 1 + (Convert.ToDouble(_intMarkup, GlobalOptions.InvariantCultureInfo) / 100.0);
-                    intReturn = Convert.ToInt32(dblCost);
+                    decReturn *= 1 + (_decMarkup / 100.0m);
                 }
 
-                return intReturn;
+                return decReturn;
             }
         }
 
@@ -599,7 +594,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Instance.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                return XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
             }
         }
         #endregion

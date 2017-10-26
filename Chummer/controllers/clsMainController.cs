@@ -49,7 +49,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new idnex.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public void MoveGearParent(int intNewIndex, TreeNode objDestination, TreeView treGear, ContextMenuStrip cmsGear)
+        public void MoveGearParent(TreeNode objDestination, TreeView treGear, ContextMenuStrip cmsGear)
         {
             // The item cannot be dropped onto itself.
             if (objDestination == treGear.SelectedNode)
@@ -111,9 +111,10 @@ namespace Chummer
                 objParent.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
-                if ((objParent as Commlink)?.CanSwapAttributes == true)
+                Commlink objCommlink = objParent as Commlink;
+                if (objCommlink?.CanSwapAttributes == true)
                 {
-                    (objParent as Commlink).RefreshCyberdeckArray();
+                    objCommlink.RefreshCyberdeckArray();
                 }
             }
 
@@ -160,7 +161,7 @@ namespace Chummer
                 objOldParent = objOldParent.Parent;
 
             // Change the Location on the Gear item.
-            if (objNewParent.Text == LanguageManager.Instance.GetString("Node_SelectedGear"))
+            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedGear"))
                 objGear.Location = string.Empty;
             else
                 objGear.Location = objNewParent.Text;
@@ -275,7 +276,7 @@ namespace Chummer
                 objOldParent = objOldParent.Parent;
 
             // Change the Location on the Armor item.
-            if (objNewParent.Text == LanguageManager.Instance.GetString("Node_SelectedArmor"))
+            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedArmor"))
                 objArmor.Location = string.Empty;
             else
                 objArmor.Location = objNewParent.Text;
@@ -359,7 +360,7 @@ namespace Chummer
                 objOldParent = objOldParent.Parent;
 
             // Change the Location of the Weapon.
-            if (objNewParent.Text == LanguageManager.Instance.GetString("Node_SelectedWeapons"))
+            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedWeapons"))
                 objWeapon.Location = string.Empty;
             else
                 objWeapon.Location = objNewParent.Text;
@@ -452,9 +453,8 @@ namespace Chummer
         /// <summary>
         /// Move a Vehicle Gear TreeNode after Drag and Drop.
         /// </summary>
-        /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public void MoveVehicleGearParent(int intNewIndex, TreeNode objDestination, TreeView treVehicles, ContextMenuStrip cmsVehicleGear)
+        public void MoveVehicleGearParent(TreeNode objDestination, TreeView treVehicles, ContextMenuStrip cmsVehicleGear)
         {
             // The item cannot be dropped onto itself.
             if (objDestination == treVehicles.SelectedNode)
@@ -487,8 +487,7 @@ namespace Chummer
             // Make sure the destination is another piece of Gear or a Location.
             bool blnDestinationGear = true;
             bool blnDestinationLocation = false;
-            Vehicle objTempVehicle;
-            Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles, out objTempVehicle);
+            Gear objDestinationGear = CommonFunctions.FindVehicleGear(objDestination.Tag.ToString(), _objCharacter.Vehicles);
             if (objDestinationGear == null)
                 blnDestinationGear = false;
 
@@ -508,8 +507,10 @@ namespace Chummer
                 return;
 
             // Locate the currently selected piece of Gear.
-            Vehicle objVehicle;
-            Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+            Vehicle objVehicle = null;
+            WeaponAccessory objWeaponAccessory = null;
+            Cyberware objCyberware = null;
+            Gear objGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
 
             // Gear cannot be moved to one of its children.
             bool blnAllowMove = true;
@@ -532,13 +533,21 @@ namespace Chummer
 
             // Remove the Gear from the Vehicle.
             if (objGear.Parent == null)
-                objVehicle.Gear.Remove(objGear);
+            {
+                if (objCyberware != null)
+                    objCyberware.Gear.Remove(objGear);
+                else if (objWeaponAccessory != null)
+                    objWeaponAccessory.Gear.Remove(objGear);
+                else
+                    objVehicle.Gear.Remove(objGear);
+            }
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                Commlink objCommlink = objGear.Parent as Commlink;
+                if (objCommlink?.CanSwapAttributes == true)
                 {
-                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                    objCommlink.RefreshCyberdeckArray();
                 }
             }
 
@@ -555,9 +564,10 @@ namespace Chummer
                 objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
-                if ((objGear.Parent as Commlink)?.CanSwapAttributes == true)
+                Commlink objCommlink = objDestinationGear as Commlink;
+                if (objCommlink?.CanSwapAttributes == true)
                 {
-                    (objGear.Parent as Commlink).RefreshCyberdeckArray();
+                    objCommlink.RefreshCyberdeckArray();
                 }
             }
 
@@ -733,11 +743,11 @@ namespace Chummer
             {
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                 {
-                    objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+                    objXmlDocument = XmlManager.Load("bioware.xml");
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+                    objXmlDocument = XmlManager.Load("cyberware.xml");
                 }
                 // Run through the Cyberware's child elements and remove any Improvements and Cyberweapons.
                 foreach (Cyberware objChildCyberware in objCyberware.Children)
@@ -900,7 +910,7 @@ namespace Chummer
             {
                 List<Focus> removeFoci = new List<Focus>();
                 TreeNode objNode = new TreeNode();
-                objNode.Text = objGear.DisplayName.Replace(LanguageManager.Instance.GetString("String_Rating"), LanguageManager.Instance.GetString("String_Force"));
+                objNode.Text = objGear.DisplayName.Replace(LanguageManager.GetString("String_Rating"), LanguageManager.GetString("String_Force"));
                 objNode.Tag = objGear.InternalId;
                 foreach (Focus objFocus in _objCharacter.Foci)
                 {
@@ -922,7 +932,7 @@ namespace Chummer
                             if (!blnWarned)
                             {
                                 objNode.Checked = false;
-                                MessageBox.Show(LanguageManager.Instance.GetString("Message_FocusMaximumForce"), LanguageManager.Instance.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnWarned = true;
                                 break;
                             }
@@ -946,7 +956,7 @@ namespace Chummer
                         if (objStack.GearId == objGear.InternalId)
                         {
                             TreeNode objNode = new TreeNode();
-                            objNode.Text = LanguageManager.Instance.GetString("String_StackedFocus") + ": " + objStack.Name;
+                            objNode.Text = LanguageManager.GetString("String_StackedFocus") + ": " + objStack.Name;
                             objNode.Tag = objStack.InternalId;
 
                             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
@@ -995,7 +1005,7 @@ namespace Chummer
                 if (_objCharacter.Options.FreeSpiritPowerPointsMAG)
                     intPowerPoints = _objCharacter.MAG.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-                strReturn = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
             }
             else
             {
@@ -1025,7 +1035,7 @@ namespace Chummer
                         intUsed++;
                 }
 
-                strReturn = string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - intUsed, intPowerPoints);
+                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - intUsed, intPowerPoints);
             }
 
             return strReturn;
@@ -1047,7 +1057,7 @@ namespace Chummer
 
             int intPowerPoints = _objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-            return string.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
         }
 
         /// <summary>
@@ -1057,22 +1067,19 @@ namespace Chummer
         public MentorSpirit MentorInformation(Improvement.ImprovementType mentorType = Improvement.ImprovementType.MentorSpirit)
         {
             //TODO: STORE ALL THIS IN THE ACTUAL CLASS. SCROUNGING IT UP EVERY TIME IS STUPID. 
-            MentorSpirit objReturn = new MentorSpirit();
             string strMentorSpirit = string.Empty;
 
             // Look for the Mentor Spirit or Paragon Quality based on the type chosen.
             Improvement imp = _objCharacter.Improvements.FirstOrDefault(i => i.ImproveType == mentorType);
-            if (imp == null) return null;
+            if (imp == null)
+                return null;
+            MentorSpirit objReturn = new MentorSpirit(mentorType, imp.UniqueName);
+            // Load the appropriate XML document.
+            XmlNode objXmlMentor = objReturn.MyXmlNode;
 
             Quality source = _objCharacter.Qualities.FirstOrDefault(q => q.InternalId == imp.SourceName);
             string strAdvantage = string.Empty;
             string strDisadvantage = string.Empty;
-
-            // Load the appropriate XML document.
-            XmlDocument doc =
-                XmlManager.Instance.Load(mentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml");
-
-            XmlNode objXmlMentor = doc.SelectSingleNode("/chummer/mentors/mentor[id = \"" + imp.UniqueName + "\"]");
 
             if (objXmlMentor == null) return null;
             // Build the list of advantages gained through the Mentor Spirit.
@@ -1091,15 +1098,15 @@ namespace Chummer
                 {
                     if (qualityImp.SourceName != source.InternalId) continue;
                     if (!string.IsNullOrEmpty(qualityImp.Notes))
-                        strAdvantage += " " + LanguageManager.Instance.TranslateExtra(qualityImp.Notes) + ".";
+                        strAdvantage += " " + LanguageManager.TranslateExtra(qualityImp.Notes) + ".";
                 }
             }
 
             // Populate the Mentor Spirit object.
             objReturn.Name = objXmlMentor["name"]?.Attributes["translate"]?.InnerText ?? objXmlMentor["name"]?.InnerText;
-            objReturn.Advantages = LanguageManager.Instance.GetString("Label_SelectMentorSpirit_Advantage") + " " +
+            objReturn.Advantages = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + " " +
                                    strAdvantage + "\n\n" +
-                                   LanguageManager.Instance.GetString("Label_SelectMetamagic_Disadvantage") + " " +
+                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + " " +
                                    strDisadvantage;
 
             return objReturn;

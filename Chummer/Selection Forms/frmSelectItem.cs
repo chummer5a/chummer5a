@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectItem()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -71,7 +71,7 @@ namespace Chummer
                         objAmmo.Name += " [" + strPlugins + "]";
                     }
                     if (objGear.Rating > 0)
-                        objAmmo.Name += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + objGear.Rating.ToString() + ")";
+                        objAmmo.Name += " (" + LanguageManager.GetString("String_Rating") + " " + objGear.Rating.ToString() + ")";
                     objAmmo.Name += " x" + objGear.Quantity.ToString();
                     lstItems.Add(objAmmo);
                 }
@@ -113,8 +113,7 @@ namespace Chummer
 
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    objXmlDocument = XmlManager.Instance.Load("licenses.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load("licenses.xml");
                     XmlNodeList objXmlList = objXmlDocument.SelectNodes("/chummer/licenses/license");
 
                     foreach (XmlNode objNode in objXmlList)
@@ -130,7 +129,7 @@ namespace Chummer
                     // Cyberware/Bioware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                        if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objCyberware.DisplayNameShort;
@@ -139,7 +138,7 @@ namespace Chummer
                         }
                         foreach (Cyberware objChild in objCyberware.Children)
                         {
-                            if (objChild.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                            if (objChild.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objChild.DisplayNameShort;
@@ -152,7 +151,7 @@ namespace Chummer
                     // Armor.
                     foreach (Armor objArmor in _objCharacter.Armor)
                     {
-                        if (objArmor.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                        if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objArmor.DisplayNameShort;
@@ -161,7 +160,7 @@ namespace Chummer
                         }
                         foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objMod.DisplayNameShort;
@@ -171,7 +170,7 @@ namespace Chummer
                         }
                         foreach (Gear objGear in objArmor.Gear)
                         {
-                            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objGear.DisplayNameShort;
@@ -184,7 +183,7 @@ namespace Chummer
                     // Weapons.
                     foreach (Weapon objWeapon in _objCharacter.Weapons)
                     {
-                        if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                        if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objWeapon.DisplayNameShort;
@@ -193,7 +192,7 @@ namespace Chummer
                         }
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
+                            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objAccessory.DisplayNameShort;
@@ -205,7 +204,7 @@ namespace Chummer
                         {
                             foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                             {
-                                if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                                if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
                                     ListItem objItem = new ListItem();
                                     objItem.Value = objUnderbarrelWeapon.DisplayNameShort;
@@ -214,7 +213,7 @@ namespace Chummer
                                 }
                                 foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                                 {
-                                    if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
+                                    if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                                     {
                                         ListItem objItem = new ListItem();
                                         objItem.Value = objAccessory.DisplayNameShort;
@@ -229,7 +228,7 @@ namespace Chummer
                     // Gear.
                     foreach (Gear objGear in _objCharacter.Gear)
                     {
-                        if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                        if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objGear.DisplayNameShort;
@@ -238,7 +237,7 @@ namespace Chummer
                         }
                         foreach (Gear objChild in objGear.Children)
                         {
-                            if (objChild.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                            if (objChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objChild.DisplayNameShort;
@@ -247,7 +246,7 @@ namespace Chummer
                             }
                             foreach (Gear objSubChild in objChild.Children)
                             {
-                                if (objSubChild.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                                if (objSubChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
                                     ListItem objItem = new ListItem();
                                     objItem.Value = objSubChild.DisplayNameShort;
@@ -261,7 +260,7 @@ namespace Chummer
                     // Vehicles.
                     foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                     {
-                        if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                        if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objVehicle.DisplayNameShort;
@@ -270,7 +269,7 @@ namespace Chummer
                         }
                         foreach (VehicleMod objMod in objVehicle.Mods)
                         {
-                            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objMod.IncludedInVehicle)
+                            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objMod.IncludedInVehicle)
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objMod.DisplayNameShort;
@@ -279,7 +278,7 @@ namespace Chummer
                             }
                             foreach (Weapon objWeapon in objMod.Weapons)
                             {
-                                if (objWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                                if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
                                     ListItem objItem = new ListItem();
                                     objItem.Value = objWeapon.DisplayNameShort;
@@ -288,7 +287,7 @@ namespace Chummer
                                 }
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
+                                    if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                                     {
                                         ListItem objItem = new ListItem();
                                         objItem.Value = objAccessory.DisplayNameShort;
@@ -300,7 +299,7 @@ namespace Chummer
                                 {
                                     foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                                     {
-                                        if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                                        if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                         {
                                             ListItem objItem = new ListItem();
                                             objItem.Value = objUnderbarrelWeapon.DisplayNameShort;
@@ -309,7 +308,7 @@ namespace Chummer
                                         }
                                         foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                                         {
-                                            if (objAccessory.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
+                                            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                                             {
                                                 ListItem objItem = new ListItem();
                                                 objItem.Value = objAccessory.DisplayNameShort;
@@ -323,7 +322,7 @@ namespace Chummer
                         }
                         foreach (Gear objGear in objVehicle.Gear)
                         {
-                            if (objGear.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
                                 ListItem objItem = new ListItem();
                                 objItem.Value = objGear.DisplayNameShort;
@@ -332,7 +331,7 @@ namespace Chummer
                             }
                             foreach (Gear objChild in objGear.Children)
                             {
-                                if (objChild.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                                if (objChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
                                     ListItem objItem = new ListItem();
                                     objItem.Value = objChild.DisplayNameShort;
@@ -341,7 +340,7 @@ namespace Chummer
                                 }
                                 foreach (Gear objSubChild in objChild.Children)
                                 {
-                                    if (objSubChild.TotalAvail().EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")))
+                                    if (objSubChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                     {
                                         ListItem objItem = new ListItem();
                                         objItem.Value = objSubChild.DisplayNameShort;
@@ -502,6 +501,24 @@ namespace Chummer
                 if (cboAmmo.SelectedValue != null)
                 {
                     return cboAmmo.SelectedValue.ToString();
+                }
+                else
+                {
+                    return cboAmmo.Text;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Name of the item that was selected.
+        /// </summary>
+        public string SelectedName
+        {
+            get
+            {
+                if (cboAmmo.SelectedText != null)
+                {
+                    return cboAmmo.SelectedText.ToString();
                 }
                 else
                 {

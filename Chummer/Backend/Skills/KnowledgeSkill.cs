@@ -18,7 +18,7 @@ namespace Chummer.Skills
 
         static KnowledgeSkill()
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
 
             XmlNodeList objXmlCategoryList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]");
 
@@ -36,7 +36,7 @@ namespace Chummer.Skills
                     continue;
                 string display = objXmlSkill["translate"]?.InnerText ?? strSkillName;
 
-                if (GlobalOptions.Instance.Language != "en-us")
+                if (GlobalOptions.Language != "en-us")
                 {
                     _translator.Add(strSkillName, display);
                 }
@@ -122,7 +122,7 @@ namespace Chummer.Skills
                 SuggestedSpecializations.Clear();
 
                 XmlNodeList list =
-                    XmlManager.Instance.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{name}\"]/specs/spec");
+                    XmlManager.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{name}\"]/specs/spec");
                 foreach (XmlNode node in list)
                 {
                     SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
@@ -138,8 +138,8 @@ namespace Chummer.Skills
         {
             if (name == null) return;
             //TODO: Should this be targeted against guid for uniqueness? Creating a knowledge skill in career always generates a new SkillId instead of using the one from skills.
-            XmlNode skillNode = XmlManager.Instance.Load("skills.xml").SelectSingleNode($"chummer/knowledgeskills/skill[name = \"{name}\"]");
-            _type = skillNode?["category"].InnerText ?? "";
+            XmlNode skillNode = XmlManager.Load("skills.xml").SelectSingleNode($"chummer/knowledgeskills/skill[name = \"{name}\"]");
+            _type = skillNode?["category"].InnerText ?? string.Empty;
             AttributeObject = CharacterObject.GetAttribute(skillNode?["attribute"].InnerText ?? "LOG");
         }
 
@@ -180,7 +180,7 @@ namespace Chummer.Skills
                     //TODO this works with translate?
                     if (gear.Equipped && gear.Category == "Skillsofts" &&
                         (gear.Extra == Name ||
-                         gear.Extra == Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+                         gear.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked")))
                     {
                         return gear.Rating;
                     }
@@ -229,30 +229,21 @@ namespace Chummer.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            int cost = 0;
             int intTotalBaseRating = TotalBaseRating;
+            int cost = intTotalBaseRating * (intTotalBaseRating + 1);
+            int lower = Base + FreeKarma();
+            cost -= lower * (lower + 1);
             if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
             {
-                int lower = Base + FreeKarma();
-
-                for (int i = lower; i < intTotalBaseRating; i += 2) //TODO: this is probably fucked
-                {
-                    cost += (i+1)*CharacterObject.Options.KarmaImproveKnowledgeSkill;
-                }
+                cost -= Math.Max(intTotalBaseRating - 2, 0);
             }
-            else
-            {
-                cost = intTotalBaseRating * (intTotalBaseRating + 1);
-                int lower = Base + FreeKarma();
-                cost -= lower * (lower + 1);
 
-                cost /= 2;
-                cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
-            }
+            cost /= 2;
+            cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
 
             cost +=  //Spec
                     (!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
-                    CharacterObject.Options.KarmaSpecialization : 0;
+                    CharacterObject.Options.KarmaKnowledgeSpecialization : 0;
 
             if (UneducatedEffect()) cost *= 2;
 
@@ -355,7 +346,7 @@ namespace Chummer.Skills
             writer.WriteElementString("name", _name);
             writer.WriteElementString("type", _type);
             if (_translated != null)
-                writer.WriteElementString(GlobalOptions.Instance.Language, _translated);
+                writer.WriteElementString(GlobalOptions.Language, _translated);
             if (ForcedName)
                 writer.WriteElementString("forced", null);
         }
@@ -365,7 +356,7 @@ namespace Chummer.Skills
             if (node == null)
                 return;
             node.TryGetStringFieldQuickly("name", ref _name);
-            node.TryGetStringFieldQuickly(GlobalOptions.Instance.Language, ref _translated);
+            node.TryGetStringFieldQuickly(GlobalOptions.Language, ref _translated);
 
             LoadSuggestedSpecializations(_name);
             string strCategoryString = string.Empty;

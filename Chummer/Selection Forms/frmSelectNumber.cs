@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,13 +23,17 @@ namespace Chummer
 {
     public partial class frmSelectNumber : Form
     {
-        private int _intReturnValue = 0;
+        private decimal _decReturnValue = 0;
 
         #region Control Events
-        public frmSelectNumber()
+        public frmSelectNumber(bool blnCurrency = true)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            if (blnCurrency)
+            {
+                nudNumber.DecimalPlaces = 2;
+            }
         }
 
         private void frmSelectNumber_Shown(object sender, EventArgs e)
@@ -39,7 +43,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _intReturnValue = Convert.ToInt32(nudNumber.Value);
+            _decReturnValue = nudNumber.Value;
             DialogResult = DialogResult.OK;
         }
 
@@ -53,11 +57,11 @@ namespace Chummer
         /// <summary>
         /// Value that was entered in the dialogue.
         /// </summary>
-        public int SelectedValue
+        public decimal SelectedValue
         {
             get
             {
-                return _intReturnValue;
+                return _decReturnValue;
             }
             set
             {
@@ -68,7 +72,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number.
         /// </summary>
-        public int Minimum
+        public decimal Minimum
         {
             set
             {
@@ -79,7 +83,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number.
         /// </summary>
-        public int Maximum
+        public decimal Maximum
         {
             set
             {

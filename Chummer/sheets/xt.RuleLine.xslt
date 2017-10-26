@@ -74,9 +74,9 @@
         color: white;
         display: block;
         font-size: 0;
-        height: 1px;
+        height: 0.1em;
         line-height: 0;
-        margin: -1px 0;
+        margin: -0.0625em 0;
         padding: 0;
         width: 100%;
       "/></td></tr>

@@ -32,15 +32,17 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Powers information.
+            _objXmlDocument = XmlManager.Load("powers.xml");
         }
 
         private void frmSelectPower_Load(object sender, EventArgs e)
@@ -53,30 +55,21 @@ namespace Chummer
 
             List<ListItem> lstPower = new List<ListItem>();
 
-            // Load the Powers information.
-            _objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
             // Populate the Powers list.
-            XmlNodeList objXmlPowerList;
+            string strFilter = string.Empty;
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
-                string strFilter = "(";
+                strFilter = "(";
                 string[] strValue = _strLimitToPowers.Split(',');
                 foreach (string strPower in strValue)
                     strFilter += "name = \"" + strPower.Trim() + "\" or ";
                 // Remove the trailing " or ".
                 strFilter = strFilter.Substring(0, strFilter.Length - 4);
-                strFilter += ")";
-                objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
+                strFilter += ") and ";
             }
-            else
-            {
-                objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
-            }
+            XmlNodeList objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                if (objXmlPower["hide"] != null)
-                    continue;
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 if (objXmlPower["limit"] != null && !IgnoreLimits)
                 {
@@ -102,7 +95,7 @@ namespace Chummer
 
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPower["name"].InnerText;
-                    objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                objItem.Name = objXmlPower["translate"]?.InnerText ?? objItem.Value;
                 lstPower.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -137,7 +130,7 @@ namespace Chummer
             lblPowerPoints.Text = objXmlPower["points"].InnerText;
             if (Convert.ToBoolean(objXmlPower["levels"].InnerText))
             {
-                lblPowerPoints.Text += $" / {LanguageManager.Instance.GetString("Label_Power_Level")}";
+                lblPowerPoints.Text += $" / {LanguageManager.GetString("Label_Power_Level")}";
             }
             if (objXmlPower["extrapointcost"] != null)
             {
@@ -150,7 +143,7 @@ namespace Chummer
                 strPage = objXmlPower["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -175,20 +168,16 @@ namespace Chummer
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                bool blnAdd = true;
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                if (_dblLimitToRating > 0)
+                if (_dblLimitToRating > 0 && dblPoints > _dblLimitToRating)
                 {
-                    blnAdd = dblPoints <= _dblLimitToRating;
+                    continue;
                 }
-                if (blnAdd)
-                {
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlPower["name"].InnerText;
-                    objItem.Name = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                objItem.Name = objXmlPower["translate"]?.InnerText ?? objItem.Value;
                 lstPower.Add(objItem);
-            }
             }
             SortListItem objSort = new SortListItem();
             lstPower.Sort(objSort.Compare);
@@ -247,7 +236,7 @@ namespace Chummer
         /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower { get; private set; } = "";
+        public string SelectedPower { get; private set; } = string.Empty;
 
 
         /// <summary>
@@ -315,10 +304,10 @@ namespace Chummer
 
                 if (!blnRequirementMet)
                 {
-                    string strMessage = LanguageManager.Instance.GetString("Message_SelectPower_PowerRequirement");
+                    string strMessage = LanguageManager.GetString("Message_SelectPower_PowerRequirement");
                     strMessage += strRequirement;
 
-                    MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_SelectPower_PowerRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_SelectPower_PowerRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }

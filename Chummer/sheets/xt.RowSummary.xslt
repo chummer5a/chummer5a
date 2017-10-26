@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Produce Row Summary Line -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -20,53 +20,56 @@
 
     <style type="text/css">
       .rowsummary {
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3a6349', endColorstr='#769582'); /* for IE */
-        background: -webkit-gradient(linear, left top, left bottom, from(#3a6349), to(#769582)); /* for webkit browsers */
-        background: -moz-linear-gradient(top,  #3a6349,  #769582); /* for firefox 3.6+ */ 
-        background-color: #3a6349;
-        border-width: 0 0.5mm 0.5mm 0.5mm;
-        border-top-width: 0;
-        color: #ffffff;
-        font-weight: bold;
-        font-style: italic;
-        page-break-inside: avoid;
-        text-align: left;
-        width: 100%;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1c4a2d', endColorstr='#38945a'); /* for IE */
+      background: -webkit-gradient(linear, left top, left bottom, from(#1c4a2d), to(#38945a)); /* for webkit browsers */
+      background: -moz-linear-gradient(top,  #1c4a2d,  #38945a); /* for firefox 3.6+ */
+      background-color: #1c4a2d;
+      border-width: 0 0.5mm 0.5mm 0.5mm;
+      border-top-width: 0;
+      color: #ffffff;
+      font-weight: bold;
+      font-style: italic;
+      page-break-inside: avoid;
+      text-align: left;
+      width: 100%;
       }
       .rowsummarybutton {
-        color: #ffffff;
-        font-weight: bold;
-        margin-left: 20px;
-      }
-      .rowblock {
-        page-break-inside: avoid;
+      color: #ffffff;
+      font-weight: bold;
+      margin-left: 2.5em;
       }
     </style>
     <style media="print">
       .rowsummary, .noPrint * {
-        display: none;
+      display: none;
       }
       .rowsummarybutton {
-        visibility: hidden;
-        display: none;
+      visibility: hidden;
+      display: none;
       }
       .zalomit {
-        visibility: hidden;
+      visibility: hidden;
       }
       .sectionhide {
-        visibility: hidden;
-        display: none;
+      visibility: hidden;
+      display: none;
+      bottom-padding: 0;
+      page-break-inside: avoid;
+      margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
       }
     </style>
     <style media="screen">
       .rowsummarybutton {
-        visibility: visible;
+      visibility: visible;
       }
       .zalomit {
-        page-break-after: auto;
+      page-break-after: auto;
       }
       .sectionhide {
-        visibility: visible;
+      visibility: visible;
+      bottom-padding: 0;
+      page-break-inside: avoid;
+      margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
       }
     </style>
 
@@ -94,7 +97,7 @@
           }
           else {
             txt = Yes;
-            elem.className = 'rowblock';
+            elem.className = 'block';
           }
           what.innerHTML = lit + txt;
         }
@@ -133,7 +136,7 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
-        <td width="18%" class="rowsummarybutton" style="text-align: left">
+        <td width="30%" class="rowsummarybutton" style="text-align: left">
           <xsl:attribute name="onClick">
             showhide(this,'<xsl:value-of select="$blk"/>',
                     '<xsl:value-of select="$lang.Yes"/>',
@@ -142,7 +145,7 @@
           </xsl:attribute>
           <xsl:value-of select="concat($lang.Show,$lang.Yes)"/>
         </td>
-        <td width="27%" class="rowsummarybutton" style="text-align: left">
+        <td width="40%" class="rowsummarybutton" style="text-align: left">
           <xsl:attribute name="onClick">
             zalomit(this,'<xsl:value-of select="$blk"/>',
                     '<xsl:value-of select="$lang.Yes"/>',
@@ -151,7 +154,6 @@
           </xsl:attribute>
           <xsl:value-of select="concat($lang.PageBreak,$lang.No)"/>
         </td>
-        <td width="25%"/>
       </xsl:if>
     </tr>
     </table>

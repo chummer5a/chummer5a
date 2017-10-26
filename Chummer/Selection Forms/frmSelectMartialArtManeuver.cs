@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Chummer
 
         private bool _blnAddAgain = false;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         #region Control Events
@@ -38,7 +38,9 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            // Load the Martial Art information.
+            _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
 
         private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
@@ -50,9 +52,6 @@ namespace Chummer
             }
 
             List<ListItem> lstManeuver = new List<ListItem>();
-
-            // Load the Martial Art information.
-            _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
 
             // Populate the Martial Art Maneuver list.
             XmlNodeList objManeuverList = _objXmlDocument.SelectNodes("/chummer/maneuvers/maneuver[" + _objCharacter.Options.BookXPath() + "]");
@@ -100,7 +99,7 @@ namespace Chummer
                 strPage = objXmlManeuver["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

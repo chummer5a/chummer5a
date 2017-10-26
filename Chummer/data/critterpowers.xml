@@ -2540,7 +2540,7 @@
         <movementreplace>
           <category>Fly</category>
           <speed>sprint</speed>
-          <val>3</val>
+          <val>300</val>
         </movementreplace>
       </bonus>
       <forbidden>
@@ -2705,6 +2705,16 @@
       <range>Special</range>
       <duration>Instant</duration>
       <karma>8</karma>
+	  <bonus>
+		<toxincontactresist>1</toxincontactresist>
+		<toxiningestionresist>1</toxiningestionresist>
+		<toxininhalationresist>1</toxininhalationresist>
+		<toxininjectionresist>1</toxininjectionresist>
+		<pathogencontactresist>1</pathogencontactresist>
+		<pathogeningestionresist>1</pathogeningestionresist>
+		<pathogeninhalationresist>1</pathogeninhalationresist>
+		<pathogeninjectionresist>1</pathogeninjectionresist>
+	  </bonus>
       <source>HS</source>
       <page>165</page>
     </power>

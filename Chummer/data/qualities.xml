@@ -77,7 +77,7 @@
       <name>Bilingual</name>
       <karma>5</karma>
       <category>Positive</category>
-	  <chargenonly />
+      <chargenonly />
       <bonus>
         <nativelanguagelimit>1</nativelanguagelimit>
       </bonus>
@@ -120,7 +120,7 @@
       <name>Codeslinger</name>
       <karma>10</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -187,8 +187,8 @@
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Technomancer</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -227,11 +227,11 @@
           <thresholdoffset precedence="0">1</thresholdoffset>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
-		  <bioware>Damage Compensators</bioware>
-		  <bioware>Damage Compensators (2050)</bioware>
-		  <power>Pain Resistance</power>
+          <bioware>Damage Compensators</bioware>
+          <bioware>Damage Compensators (2050)</bioware>
+          <power>Pain Resistance</power>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -271,10 +271,10 @@
       <karma>8</karma>
       <category>Positive</category>
       <limit>3</limit>
-	  <includeinlimit>
-		<name>Indomitable (Physical)</name>
-		<name>Indomitable (Social)</name>
-	  </includeinlimit>
+      <includeinlimit>
+        <name>Indomitable (Physical)</name>
+        <name>Indomitable (Social)</name>
+      </includeinlimit>
       <bonus>
         <mentallimit>1</mentallimit>
       </bonus>
@@ -287,10 +287,10 @@
       <karma>8</karma>
       <category>Positive</category>
       <limit>3</limit>
-	  <includeinlimit>
-		<name>Indomitable (Mental)</name>
-		<name>Indomitable (Social)</name>
-	  </includeinlimit>
+      <includeinlimit>
+        <name>Indomitable (Mental)</name>
+        <name>Indomitable (Social)</name>
+      </includeinlimit>
       <bonus>
         <physicallimit>1</physicallimit>
       </bonus>
@@ -303,10 +303,10 @@
       <karma>8</karma>
       <category>Positive</category>
       <limit>3</limit>
-	  <includeinlimit>
-		<name>Indomitable (Physical)</name>
-		<name>Indomitable (Mental)</name>
-	  </includeinlimit>
+      <includeinlimit>
+        <name>Indomitable (Physical)</name>
+        <name>Indomitable (Mental)</name>
+      </includeinlimit>
       <bonus>
         <sociallimit>1</sociallimit>
       </bonus>
@@ -363,8 +363,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -386,8 +386,8 @@
         <oneof>
           <quality>Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -432,10 +432,15 @@
       <name>Natural Immunity (Natural)</name>
       <karma>4</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Weak Immune System</quality>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>76</page>
     </quality>
@@ -444,10 +449,15 @@
       <name>Natural Immunity (Synthetic)</name>
       <karma>10</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Weak Immune System</quality>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>76</page>
     </quality>
@@ -467,7 +477,15 @@
       <name>Quick Healer</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <stuncmrecovery>2</stuncmrecovery>
+        <physicalcmrecovery>2</physicalcmrecovery>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Uncanny Healer</quality>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>77</page>
     </quality>
@@ -476,10 +494,16 @@
       <name>Resistance to Pathogens</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <pathogencontactresist>1</pathogencontactresist>
+        <pathogeningestionresist>1</pathogeningestionresist>
+        <pathogeninhalationresist>1</pathogeninhalationresist>
+        <pathogeninjectionresist>1</pathogeninjectionresist>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resistance to Pathogens and Toxins</quality>
+          <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -490,10 +514,16 @@
       <name>Resistance to Toxins</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <toxincontactresist>1</toxincontactresist>
+        <toxiningestionresist>1</toxiningestionresist>
+        <toxininhalationresist>1</toxininhalationresist>
+        <toxininjectionresist>1</toxininjectionresist>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resistance to Pathogens and Toxins</quality>
+          <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -504,8 +534,17 @@
       <name>Resistance to Pathogens/Toxins</name>
       <karma>8</karma>
       <category>Positive</category>
-      <hide>yes</hide>
-      <bonus />
+      <hide />
+      <bonus>
+        <toxincontactresist>1</toxincontactresist>
+        <toxiningestionresist>1</toxiningestionresist>
+        <toxininhalationresist>1</toxininhalationresist>
+        <toxininjectionresist>1</toxininjectionresist>
+        <pathogencontactresist>1</pathogencontactresist>
+        <pathogeningestionresist>1</pathogeningestionresist>
+        <pathogeninhalationresist>1</pathogeninhalationresist>
+        <pathogeninjectionresist>1</pathogeninjectionresist>
+      </bonus>
       <source>SR5</source>
       <page>77</page>
     </quality>
@@ -514,11 +553,21 @@
       <name>Resistance to Pathogens and Toxins</name>
       <karma>8</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <toxincontactresist>2</toxincontactresist>
+        <toxiningestionresist>2</toxiningestionresist>
+        <toxininhalationresist>2</toxininhalationresist>
+        <toxininjectionresist>2</toxininjectionresist>
+        <pathogencontactresist>2</pathogencontactresist>
+        <pathogeningestionresist>2</pathogeningestionresist>
+        <pathogeninhalationresist>2</pathogeninhalationresist>
+        <pathogeninjectionresist>2</pathogeninjectionresist>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resistance to Pathogens</quality>
           <quality>Resistance to Toxins</quality>
+          <quality>Weak Immune System</quality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -529,7 +578,7 @@
       <name>Spirit Affinity</name>
       <karma>7</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -539,8 +588,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
@@ -636,7 +685,7 @@
       <name>Brand Loyalty (Manufacturer)</name>
       <karma>3</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -649,7 +698,7 @@
       <name>Brand Loyalty (Product)</name>
       <karma>3</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -735,9 +784,9 @@
     <quality>
       <id>8ec5c9bb-aeb9-42f2-a436-a60f764adfe4</id>
       <name>Low-Light Vision</name>
-      <karma>0</karma>
+      <karma>4</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus />
       <source>SR5</source>
       <page>66</page>
@@ -745,9 +794,9 @@
     <quality>
       <id>02e76a38-304e-4a0e-93a3-ad2938306afc</id>
       <name>Thermographic Vision</name>
-      <karma>0</karma>
+      <karma>3</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus />
       <source>SR5</source>
       <page>66</page>
@@ -758,7 +807,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>30</karma>
       <category>Positive</category>
-	  <onlyprioritygiven />
+      <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -773,9 +822,9 @@
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
-		  <quality>Aware</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Aware</quality>
           <quality>Apprentice</quality>
           <quality>Technomancer</quality>
         </oneof>
@@ -789,7 +838,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>20</karma>
       <category>Positive</category>
-	  <onlyprioritygiven />
+      <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -805,8 +854,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Technomancer</quality>
         </oneof>
@@ -820,7 +869,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>35</karma>
       <category>Positive</category>
-	  <onlyprioritygiven />
+      <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -837,8 +886,8 @@
           <quality>Magician</quality>
           <quality>Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Technomancer</quality>
         </oneof>
@@ -852,7 +901,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
-	  <onlyprioritygiven />
+      <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>RES</name>
@@ -870,8 +919,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Adept</quality>
         </oneof>
@@ -885,7 +934,7 @@
       <contributetolimit>False</contributetolimit>
       <karma>15</karma>
       <category>Positive</category>
-	  <onlyprioritygiven />
+      <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -898,8 +947,8 @@
       <forbidden>
         <oneof>
           <quality>Aware</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -914,10 +963,10 @@
       <id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
       <name>Aware</name>
       <contributetolimit>False</contributetolimit>
-      <hide>yes</hide>
+      <hide />
       <karma>15</karma>
       <category>Positive</category>
-	  <onlyprioritygiven />
+      <onlyprioritygiven />
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -927,8 +976,8 @@
         <oneof>
           <quality>Apprentice</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
@@ -1104,8 +1153,8 @@
           <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -1150,7 +1199,7 @@
       <name>Code of Honor</name>
       <karma>-15</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -1163,7 +1212,7 @@
       <name>Codeblock</name>
       <karma>-10</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -1271,8 +1320,8 @@
       <name>Gremlins</name>
       <karma>-4</karma>
       <category>Negative</category>
-	  <limit>4</limit>
-	  <firstlevelbonus>
+      <limit>4</limit>
+      <firstlevelbonus>
         <notoriety>1</notoriety>
       </firstlevelbonus>
       <source>SR5</source>
@@ -1296,11 +1345,11 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
-	  <forbidden>
-		<anyof>
-			<quality>Insomnia (Full)</quality>
-		</anyof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Insomnia (Full)</quality>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>81</page>
     </quality>
@@ -1310,11 +1359,11 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
-	  <forbidden>
-		<anyof>
-			<quality>Insomnia (Basic)</quality>
-		</anyof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Insomnia (Basic)</quality>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>81</page>
     </quality>
@@ -1323,11 +1372,11 @@
       <name>Loss of Confidence</name>
       <karma>-10</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selectskill minimumrating="4">
           <val>-2</val>
-		  <disablespecializationeffects />
+          <disablespecializationeffects />
         </selectskill>
       </bonus>
       <nomission />
@@ -1455,7 +1504,7 @@
       <category>Negative</category>
       <bonus>
         <disablebioware />
-		<cyberwaretotalessmultiplier>200</cyberwaretotalessmultiplier>
+        <cyberwaretotalessmultiplier>200</cyberwaretotalessmultiplier>
       </bonus>
       <source>SR5</source>
       <page>83</page>
@@ -1547,7 +1596,7 @@
       <name>Social Stress</name>
       <karma>-8</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -1560,7 +1609,7 @@
       <name>Spirit Bane</name>
       <karma>-7</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <notoriety>1</notoriety>
         <selecttext />
@@ -1568,8 +1617,8 @@
       <required>
         <oneof>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Aware</quality>
           <quality>Adept</quality>
@@ -1681,6 +1730,15 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Resistance to Pathogens</quality>
+          <quality>Resistance to Toxins</quality>
+          <quality>Resistance to Pathogens and Toxins</quality>
+          <quality>Natural Immunity (Natural)</quality>
+          <quality>Natural Immunity (Synthetic)</quality>
+        </oneof>
+      </forbidden>
       <source>SR5</source>
       <page>87</page>
     </quality>
@@ -1767,7 +1825,7 @@
       </required>
       <forbidden>
         <oneof>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Artisan's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
@@ -1795,7 +1853,12 @@
         </required>
         <value>-3</value>
       </costdiscount>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1806,7 +1869,7 @@
         <oneof>
           <quality>The Artisan's Way</quality>
           <quality>The Athlete's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
@@ -1830,13 +1893,16 @@
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </oneof>
+        <allof>
+          <ess>-5</ess>
+        </allof>
       </required>
       <forbidden>
         <oneof>
           <quality>The Artisan's Way</quality>
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
@@ -1866,7 +1932,7 @@
           <quality>The Athlete's Way</quality>
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
@@ -1896,7 +1962,7 @@
           <quality>The Beast's Way</quality>
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
           <quality>The Warrior's Way</quality>
@@ -1926,7 +1992,7 @@
           <quality>The Burnout's Way</quality>
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Spiritual Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
@@ -1940,7 +2006,12 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <skillgroup>
+          <name>Conjuring</name>
+          <bonus>1</bonus>
+        </skillgroup>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1956,7 +2027,7 @@
           <quality>The Invisible Way</quality>
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
           <quality>The Warrior's Way</quality>
         </oneof>
       </forbidden>
@@ -1986,7 +2057,7 @@
           <quality>The Magician's Way</quality>
           <quality>The Speaker's Way</quality>
           <quality>The Spiritual Way</quality>
-          <quality>The Artisan's Way</quality>
+          <quality>The Artist's Way</quality>
         </oneof>
       </forbidden>
       <source>SG</source>
@@ -2023,7 +2094,7 @@
       <name>Aged</name>
       <karma>-7</karma>
       <category>Negative</category>
-	  <limit>3</limit>
+      <limit>3</limit>
       <bonus>
         <knowledgeskillpoints>
           <val>5</val>
@@ -2053,7 +2124,7 @@
       <name>Illness</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>3</limit>
+      <limit>3</limit>
       <bonus />
       <source>BB</source>
       <page>12</page>
@@ -2106,7 +2177,7 @@
         <oneof>
           <quality>Changeling (Class II SURGE)</quality>
           <quality>Changeling (Class III SURGE)</quality>
-		  <quality>Latent Dracomorphosis</quality>
+          <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -2122,7 +2193,7 @@
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
           <quality>Changeling (Class III SURGE)</quality>
-		  <quality>Latent Dracomorphosis</quality>
+          <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -2138,7 +2209,7 @@
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
           <quality>Changeling (Class II SURGE)</quality>
-		  <quality>Latent Dracomorphosis</quality>
+          <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -2167,7 +2238,7 @@
       <name>Black Market Pipeline</name>
       <karma>10</karma>
       <category>Positive</category>
-	  <chargenonly />
+      <chargenonly />
       <bonus>
         <blackmarketdiscount />
         <selectcontact />
@@ -2504,7 +2575,7 @@
       <name>Perceptive</name>
       <karma>5</karma>
       <category>Positive</category>
-	  <limit>2</limit>
+      <limit>2</limit>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2568,8 +2639,8 @@
       <karma>10</karma>
       <category>Positive</category>
       <limit>3</limit>
-	  <chargenlimit>1</chargenlimit>
-	  <nolevels />
+      <chargenlimit>1</chargenlimit>
+      <nolevels />
       <bonus>
         <restrictedgear />
       </bonus>
@@ -2606,7 +2677,7 @@
       <name>Sensei</name>
       <karma>5</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selectcontact />
         <selecttext />
@@ -2619,7 +2690,7 @@
       <name>Solid Rep</name>
       <karma>2</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -2631,7 +2702,7 @@
       <name>Legendary Rep</name>
       <karma>4</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -2652,7 +2723,7 @@
       <name>Spike Resistance</name>
       <karma>10</karma>
       <category>Positive</category>
-	  <limit>3</limit>
+      <limit>3</limit>
       <bonus />
       <source>RF</source>
       <page>150</page>
@@ -2666,8 +2737,8 @@
       <required>
         <oneof>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Apprentice</quality>
           <quality>Magician</quality>
           <quality>Adept</quality>
@@ -2705,11 +2776,11 @@
       <name>Tough as Nails (Physical)</name>
       <karma>5</karma>
       <category>Positive</category>
-	  <limit>3</limit>
-	  <includeinlimit>
-		<name>Tough as Nails (Stun)</name>
-	  </includeinlimit>
-	  <limitwithinclusions>4</limitwithinclusions>
+      <limit>3</limit>
+      <includeinlimit>
+        <name>Tough as Nails (Stun)</name>
+      </includeinlimit>
+      <limitwithinclusions>4</limitwithinclusions>
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -2723,11 +2794,11 @@
       <name>Tough as Nails (Stun)</name>
       <karma>5</karma>
       <category>Positive</category>
-	  <limit>3</limit>
-	  <includeinlimit>
-		<name>Tough as Nails (Physical)</name>
-	  </includeinlimit>
-	  <limitwithinclusions>4</limitwithinclusions>
+      <limit>3</limit>
+      <includeinlimit>
+        <name>Tough as Nails (Physical)</name>
+      </includeinlimit>
+      <limitwithinclusions>4</limitwithinclusions>
       <bonus>
         <conditionmonitor>
           <stun>1</stun>
@@ -2817,7 +2888,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Situations involving trust.</condition>
+          <condition>Only for situations involving trust.</condition>
         </limitmodifier>
         <skillgroup>
           <name>Influence</name>
@@ -2951,7 +3022,7 @@
       <name>Big Regret</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -2971,8 +3042,8 @@
             <quality>Aware</quality>
             <quality>Magician</quality>
             <quality>Aspected Magician</quality>
-			<quality>Enchanter</quality>
-			<quality>Explorer</quality>
+            <quality>Enchanter</quality>
+            <quality>Explorer</quality>
             <quality>Apprentice</quality>
             <quality>Infected: Mutaqua</quality>
             <quality>Infected: Nosferatu</quality>
@@ -3163,7 +3234,7 @@
       <name>Dimmer Bulb</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>3</limit>
+      <limit>3</limit>
       <bonus />
       <source>RF</source>
       <page>154</page>
@@ -3173,7 +3244,7 @@
       <name>Driven</name>
       <karma>-2</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3186,7 +3257,7 @@
       <name>Emotional Attachment</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3213,7 +3284,7 @@
       <name>Flashbacks I</name>
       <karma>-7</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3226,7 +3297,7 @@
       <name>Flashbacks II</name>
       <karma>-15</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3267,7 +3338,7 @@
       <name>In Debt</name>
       <karma>-1</karma>
       <category>Negative</category>
-	  <limit>15</limit>
+      <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>
       </bonus>
@@ -3289,7 +3360,7 @@
       <name>Infirm</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>5</limit>
+      <limit>5</limit>
       <bonus>
         <specificattribute>
           <name>BOD</name>
@@ -3308,7 +3379,7 @@
           <max>-1</max>
         </specificattribute>
       </bonus>
-	  <firstlevelbonus>
+      <firstlevelbonus>
         <specificattribute>
           <name>BOD</name>
           <aug>-4</aug>
@@ -3338,7 +3409,6 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>-1</value>
-          <condition>Neg Quality: Liar</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -3364,11 +3434,11 @@
           <bonus>-2</bonus>
         </specificskill>
       </bonus>
-	  <forbidden>
-		<anyof>
-			<quality>Oblivious II</quality>
-		</anyof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Oblivious II</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>157</page>
     </quality>
@@ -3383,11 +3453,11 @@
           <bonus>-2</bonus>
         </specificskill>
       </bonus>
-	  <forbidden>
-		<anyof>
-			<quality>Oblivious I</quality>
-		</anyof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Oblivious I</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>157</page>
     </quality>
@@ -3397,11 +3467,11 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
-	  <forbidden>
-		<anyof>
-			<quality>Pacifist II</quality>
-		</anyof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Pacifist II</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>157</page>
     </quality>
@@ -3411,11 +3481,11 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
-	  <forbidden>
-		<anyof>
-			<quality>Pacifist I</quality>
-		</anyof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Pacifist I</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>157</page>
     </quality>
@@ -3446,7 +3516,7 @@
       <name>Phobia (Uncommon, Mild)</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3458,7 +3528,7 @@
       <name>Phobia (Uncommon, Moderate)</name>
       <karma>-7</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3470,7 +3540,7 @@
       <name>Phobia (Uncommon, Severe)</name>
       <karma>-12</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3482,7 +3552,7 @@
       <name>Phobia (Common, Mild)</name>
       <karma>-8</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3494,7 +3564,7 @@
       <name>Phobia (Common, Moderate)</name>
       <karma>-10</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3506,7 +3576,7 @@
       <name>Phobia (Common, Severe)</name>
       <karma>-15</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3519,9 +3589,9 @@
       <karma>-2</karma>
       <category>Negative</category>
       <bonus>
-		<addqualities>
-		  <addquality>High Pain Tolerance</addquality>
-		</addqualities>
+        <addqualities>
+          <addquality>High Pain Tolerance</addquality>
+        </addqualities>
       </bonus>
       <source>RF</source>
       <page>158</page>
@@ -3540,7 +3610,7 @@
       <name>Poor Self Control (Compulsive I, Personal)</name>
       <karma>-4</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3553,7 +3623,7 @@
       <name>Poor Self Control (Compulsive II, Personal)</name>
       <karma>-6</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3565,7 +3635,7 @@
       <name>Poor Self Control (Compulsive III, Personal)</name>
       <karma>-8</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3578,7 +3648,7 @@
       <name>Poor Self Control (Compulsive IV, Personal)</name>
       <karma>-10</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3591,7 +3661,7 @@
       <name>Poor Self Control (Compulsive I, Public Single Aspect)</name>
       <karma>-5</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3604,7 +3674,7 @@
       <name>Poor Self Control (Compulsive II, Public Single Aspect)</name>
       <karma>-7</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3617,7 +3687,7 @@
       <name>Poor Self Control (Compulsive III, Public Single Aspect)</name>
       <karma>-9</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3629,7 +3699,7 @@
       <name>Poor Self Control (Compulsive IV, Public Single Aspect)</name>
       <karma>-11</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3641,7 +3711,7 @@
       <name>Poor Self Control (Compulsive I, Public Broad Aspect)</name>
       <karma>-6</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3653,7 +3723,7 @@
       <name>Poor Self Control (Compulsive II, Public Broad Aspect)</name>
       <karma>-8</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3665,7 +3735,7 @@
       <name>Poor Self Control (Compulsive III, Public Broad Aspect)</name>
       <karma>-10</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3677,7 +3747,7 @@
       <name>Poor Self Control (Compulsive IV, Public Broad Aspect)</name>
       <karma>-12</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3718,7 +3788,7 @@
       <karma>-1</karma>
       <category>Negative</category>
       <limit>10</limit>
-	  <nolevels />
+      <nolevels />
       <bonus>
         <selecttext />
       </bonus>
@@ -3797,8 +3867,8 @@
           <quality>Magician</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
-		  <quality>Enchanter</quality>
-		  <quality>Explorer</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
           <quality>Mystic Adept</quality>
           <quality>Apprentice</quality>
           <quality>Infected: Mutaqua</quality>
@@ -3834,7 +3904,7 @@
       <name>Vendetta</name>
       <karma>-7</karma>
       <category>Negative</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -3873,7 +3943,7 @@
     <quality>
       <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
       <name>Magic Sense</name>
-      <karma>0</karma>
+      <karma>7</karma>
       <category>Positive</category>
       <required>
         <allof>
@@ -3902,7 +3972,7 @@
       <name>Astral Perception</name>
       <karma>0</karma>
       <category>Positive</category>
-      <hide>yes</hide>
+      <hide />
       <bonus>
         <unlockskills name="Assensing">Name</unlockskills>
       </bonus>
@@ -3962,7 +4032,9 @@
       <name>Animal Pelage (Insulating Pelt)</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <coldarmor>4</coldarmor>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4008,7 +4080,7 @@
       <name>Arcane Arrester</name>
       <karma>10</karma>
       <category>Positive</category>
-	  <limit>2</limit>
+      <limit>2</limit>
       <bonus>
         <spellresistance>2</spellresistance>
       </bonus>
@@ -4033,7 +4105,12 @@
       <name>Balance Receptor</name>
       <karma>6</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4051,6 +4128,7 @@
       <karma>3</karma>
       <category>Positive</category>
       <bonus>
+        <toxiningestionresist>1</toxiningestionresist>
         <lifestylecost>-10</lifestylecost>
       </bonus>
       <required>
@@ -4070,6 +4148,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
+        <toxiningestionresist>1</toxiningestionresist>
         <lifestylecost>-10</lifestylecost>
       </bonus>
       <addweapon>Raptor Beak</addweapon>
@@ -4212,7 +4291,20 @@
       <karma>6</karma>
       <category>Positive</category>
       <bonus>
-        <movementpercent>50</movementpercent>
+		<movementreplace>
+          <category>Ground</category>
+          <speed>walk</speed>
+          <val>3</val>
+        </movementreplace>
+		<movementreplace>
+          <category>Ground</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+		<sprintbonus>
+		  <category>Ground</category>
+		  <val>100</val>
+		</sprintbonus>
       </bonus>
       <required>
         <oneof>
@@ -4399,7 +4491,9 @@
       <name>Dermal Alteration (Blubber)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <coldarmor>2</coldarmor>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4424,7 +4518,9 @@
       <name>Dermal Alteration (Dragon Skin)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <firearmor>2</firearmor>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4687,7 +4783,12 @@
       <name>Functional Tail (Prehensile)</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -4989,16 +5090,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>cf429aea-85a7-4108-8fcd-9a062f3fc117</id>
       <name>Metagenetic Improvement (Body)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>BOD</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5012,16 +5113,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
       <name>Metagenetic Improvement (Agility)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>AGI</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5035,16 +5136,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
       <name>Metagenetic Improvement (Reaction)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>REA</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5058,16 +5159,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
       <name>Metagenetic Improvement (Strength)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
-          <name>BOD</name>
+        <specificattribute>
+          <name>STR</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5081,16 +5182,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
       <name>Metagenetic Improvement (Charisma)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>CHA</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5104,16 +5205,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
       <name>Metagenetic Improvement (Intuition)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>INT</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5127,16 +5228,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
       <name>Metagenetic Improvement (Logic)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>LOG</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5150,16 +5251,16 @@
       <page>116</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
       <name>Metagenetic Improvement (Willpower)</name>
       <karma>15</karma>
       <category>Positive</category>
       <bonus>
-		<specificattribute>
+        <specificattribute>
           <name>WIL</name>
           <max>1</max>
-		  <min>1</min>
+          <min>1</min>
         </specificattribute>
       </bonus>
       <required>
@@ -5178,7 +5279,7 @@
       <name>Metahuman Traits</name>
       <karma>2</karma>
       <category>Positive</category>
-	  <limit>no</limit>
+      <limit>no</limit>
       <bonus>
         <selecttext />
       </bonus>
@@ -5649,6 +5750,7 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus>
+        <toxiningestionresist>2</toxiningestionresist>
         <lifestylecost>-20</lifestylecost>
       </bonus>
       <required>
@@ -5710,15 +5812,14 @@
       <category>Positive</category>
       <bonus>
         <movementreplace>
-          <category>ground</category>
+          <category>Ground</category>
           <speed>run</speed>
           <val>6</val>
         </movementreplace>
-        <movementreplace>
-          <category>ground</category>
-          <speed>sprint</speed>
-          <val>2</val>
-        </movementreplace>
+        <sprintbonus>
+          <category>Ground</category>
+          <val>100</val>
+        </sprintbonus>
       </bonus>
       <required>
         <oneof>
@@ -5887,15 +5988,25 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus>
-        <movementpercent>-50</movementpercent>
+        <movementreplace>
+          <category>Ground</category>
+          <speed>walk</speed>
+          <val>1</val>
+        </movementreplace>
+		<movementreplace>
+          <category>Ground</category>
+          <speed>run</speed>
+          <val>2</val>
+        </movementreplace>
+		<movementreplace>
+		  <category>Ground</category>
+		  <speed>sprint</speed>
+		  <val>50</val>
+		</movementreplace>
         <skillcategory>
           <name>Physical Active</name>
           <bonus>-1</bonus>
         </skillcategory>
-        <specificskill>
-          <name>Dodge</name>
-          <bonus>-3</bonus>
-        </specificskill>
       </bonus>
       <source>RF</source>
       <page>119</page>
@@ -5910,8 +6021,8 @@
         <required>
           <oneof>
             <quality>Aspected Magician</quality>
-			<quality>Enchanter</quality>
-			<quality>Explorer</quality>
+            <quality>Enchanter</quality>
+            <quality>Explorer</quality>
             <quality>Apprentice</quality>
             <quality>Magician</quality>
             <quality>Aware</quality>
@@ -6050,115 +6161,115 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>BOD</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>BOD</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>8a1a04ff-5bff-48b2-90c2-b9bdb5fde8e8</id>
       <name>Impaired Attribute (Agility)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>AGI</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>AGI</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>959b00a6-a55b-4c6b-95b0-a9746b31a24d</id>
       <name>Impaired Attribute (Reaction)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>REA</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>REA</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>c00591dc-fe6d-4ff0-8e42-22000878f03f</id>
       <name>Impaired Attribute (Strength)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>STR</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>STR</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>14e71856-7d38-4e04-933f-069ed89a14e9</id>
       <name>Impaired Attribute (Charisma)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>CHA</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>CHA</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>b58b47a7-9011-4bef-8ba2-ae561a443765</id>
       <name>Impaired Attribute (Intuition)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>INT</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>INT</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>0df94dda-5941-4130-b6fc-0a98fcf7f846</id>
       <name>Impaired Attribute (Logic)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>LOG</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>LOG</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
       <metagenetic>yes</metagenetic>
     </quality>
-	<quality>
+    <quality>
       <id>a6a4d71d-452f-4d26-9588-e7a5bc2474c0</id>
       <name>Impaired Attribute (Willpower)</name>
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-		<specificattribute>
-			<name>WIL</name>
-			<max>-2</max>
-		</specificattribute>
+        <specificattribute>
+          <name>WIL</name>
+          <max>-2</max>
+        </specificattribute>
       </bonus>
       <source>RF</source>
       <page>120</page>
@@ -6270,7 +6381,10 @@
       <name>Slow Healer</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <stuncmrecovery>-2</stuncmrecovery>
+        <physicalcmrecovery>-2</physicalcmrecovery>
+      </bonus>
       <source>RF</source>
       <page>122</page>
       <metagenetic>yes</metagenetic>
@@ -6458,7 +6572,7 @@
         <oneof>
           <quality>Magic Resistance</quality>
           <quality>Technomancer</quality>
-		  <quality>Latent Dracomorphosis</quality>
+          <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -6507,7 +6621,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Toxins">Immunity</optionalpower>
@@ -6592,7 +6717,7 @@
         <oneof>
           <quality>Magic Resistance</quality>
           <quality>Technomancer</quality>
-		  <quality>Latent Dracomorphosis</quality>
+          <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
       <naturalweapons>
@@ -6608,7 +6733,7 @@
         </naturalweapon>
       </naturalweapons>
       <source>RF</source>
-      <page>80</page>
+      <page>136</page>
     </quality>
     <quality>
       <id>6556d48f-2cbd-4bc6-a2c8-e9fe3f99ac7e</id>
@@ -6631,7 +6756,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower>Armor</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -7816,7 +7952,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
           <optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8106,7 +8253,18 @@
         <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8247,7 +8405,18 @@
         <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8396,7 +8565,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -8553,7 +8733,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -8684,7 +8875,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -8810,7 +9012,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -8935,7 +9148,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9062,7 +9286,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9199,7 +9434,18 @@
           <name>critter</name>
         </enabletab>
         <initiativepass precedence="-1">1</initiativepass>
-        <movementmultiplier>1</movementmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </walkmultiplier>
+        <walkmultiplier>
+          <val>1</val>
+          <category>Swim</category>
+        </walkmultiplier>
+        <runmultiplier>
+          <val>1</val>
+          <category>Ground</category>
+        </runmultiplier>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10026,7 +10272,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only when communicating via AR or VR</condition>
+          <condition>Only when communicating via AR or VR.</condition>
         </limitmodifier>
       </bonus>
       <required>
@@ -10417,7 +10663,10 @@
       <name>Drug Tolerant</name>
       <karma>6</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <physiologicaladdictionfirsttime>2</physiologicaladdictionfirsttime>
+		<psychologicaladdictionfirsttime>2</psychologicaladdictionfirsttime>
+      </bonus>
       <source>CF</source>
       <page>54</page>
     </quality>
@@ -10466,7 +10715,15 @@
       <name>Uncanny Healer</name>
       <karma>12</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<addesstostuncmrecovery />
+		<addesstophysicalcmrecovery />
+	  </bonus>
+	  <forbidden>
+		<oneof>
+		  <quality>Quick Healer</quality>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>56</page>
     </quality>
@@ -10475,6 +10732,7 @@
     <quality>
       <id>0d5e6819-ac41-4700-ac7d-58fa957b328c</id>
       <name>Phenotypic Variation - Genewipe</name>
+	  <chargenonly />
       <karma>32</karma>
       <category>Positive</category>
       <bonus />
@@ -10484,6 +10742,7 @@
     <quality>
       <id>13edde6a-f920-4665-9e65-53a20b30c2a3</id>
       <name>Phenotypic Variation - Masque</name>
+	  <chargenonly />
       <karma>23</karma>
       <category>Positive</category>
       <bonus />
@@ -10493,6 +10752,7 @@
     <quality>
       <id>eac42e74-2f7b-418d-bd38-c1cdd56ceec4</id>
       <name>Phenotypic Variation - Reprint</name>
+	  <chargenonly />
       <karma>18</karma>
       <category>Positive</category>
       <bonus />
@@ -10502,6 +10762,7 @@
     <quality>
       <id>f0bd7ebc-8b59-4586-b83a-d884540a7651</id>
       <name>Phenotypic Variation - Shuffle</name>
+	  <chargenonly />
       <karma>13</karma>
       <category>Positive</category>
       <bonus />
@@ -10510,35 +10771,180 @@
     </quality>
     <quality>
       <id>9d4dd549-3bce-450d-be6e-8bfaf35d49b1</id>
-      <name>Phenotypic Variation - Genetic Optimization</name>
+      <name>Phenotypic Variation - Genetic Optimization (Body)</name>
+	  <chargenonly />
       <karma>27</karma>
       <category>Positive</category>
       <bonus>
-        <selectattributes>
-          <selectattribute>
-            <excludeattribute>EDG</excludeattribute>
-            <excludeattribute>MAG</excludeattribute>
-            <excludeattribute>RES</excludeattribute>
-            <excludeattribute>DEP</excludeattribute>
-            <max>1</max>
-          </selectattribute>
-        </selectattributes>
+		<specificattribute>
+          <name>BOD</name>
+          <max>1</max>
+        </specificattribute>
       </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Body)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>c42cc305-3d7a-4c68-9ce7-32e1fc628505</id>
+      <name>Phenotypic Variation - Genetic Optimization (Agility)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>AGI</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Agility)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>8c667328-eba0-4dc7-be5a-19c285997f10</id>
+      <name>Phenotypic Variation - Genetic Optimization (Reaction)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>REA</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Reaction)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>a6b946e2-7e58-4607-b9ce-7b27055c9562</id>
+      <name>Phenotypic Variation - Genetic Optimization (Strength)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>STR</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Strength)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>7022143c-3d58-4ad7-9cdb-dab007f75f54</id>
+      <name>Phenotypic Variation - Genetic Optimization (Charisma)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>CHA</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Charisma)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>22a991a5-e8b1-4ca7-98b9-3181df5dbf7e</id>
+      <name>Phenotypic Variation - Genetic Optimization (Intuition)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>INT</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Intuition)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>62035d8e-c784-450e-9b03-501281a6771a</id>
+      <name>Phenotypic Variation - Genetic Optimization (Logic)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>LOG</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Logic)</bioware>
+		</oneof>
+	  </forbidden>
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <id>96ae02da-5824-4ebd-a0c5-65bb5b43fd48</id>
+      <name>Phenotypic Variation - Genetic Optimization (Willpower)</name>
+	  <chargenonly />
+      <karma>27</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificattribute>
+          <name>WIL</name>
+          <max>1</max>
+        </specificattribute>
+      </bonus>
+	  <forbidden>
+		<oneof>
+		  <bioware>Genetic Optimization (Willpower)</bioware>
+		</oneof>
+	  </forbidden>
       <source>CF</source>
       <page>157</page>
     </quality>
     <quality>
       <id>e89ddeca-1de4-410e-916f-205aeaee6ea2</id>
       <name>Phenotypic Variation - Cosmetic Alteration</name>
+	  <chargenonly />
       <karma>21</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<selecttext />
+	  </bonus>
       <source>CF</source>
       <page>158</page>
     </quality>
     <quality>
       <id>b17b895e-6819-4609-91e6-9ce42d0446a9</id>
       <name>Phenotypic Variation - Print Removal</name>
+	  <chargenonly />
       <karma>12</karma>
       <category>Positive</category>
       <bonus />
@@ -10548,9 +10954,12 @@
     <quality>
       <id>89564979-72ca-4e73-9923-0ce088da0227</id>
       <name>Phenotypic Variation - Metaposeur</name>
+	  <chargenonly />
       <karma>22</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<selecttext />
+	  </bonus>
       <source>CF</source>
       <page>158</page>
     </quality>
@@ -10687,7 +11096,12 @@
       <name>Family Curse</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
+		<psychologicaladdictionfirsttime>-2</psychologicaladdictionfirsttime>
+		<physiologicaladdictionalreadyaddicted>-2</physiologicaladdictionalreadyaddicted>
+		<psychologicaladdictionalreadyaddicted>-2</psychologicaladdictionalreadyaddicted>
+      </bonus>
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -10696,7 +11110,32 @@
       <name>Implant-induced Immune Deficiency</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
+		<physiologicaladdictionalreadyaddicted>-2</physiologicaladdictionalreadyaddicted>
+		<toxincontactresist>-2</toxincontactresist>
+		<toxiningestionresist>-2</toxiningestionresist>
+		<toxininhalationresist>-2</toxininhalationresist>
+		<toxininjectionresist>-2</toxininjectionresist>
+		<pathogencontactresist>-2</pathogencontactresist>
+		<pathogeningestionresist>-2</pathogeningestionresist>
+		<pathogeninhalationresist>-2</pathogeninhalationresist>
+		<pathogeninjectionresist>-2</pathogeninjectionresist>
+      </bonus>
+	  <required>
+		<allof>
+		  <ess>-5.0001</ess>
+		</allof>
+		<oneof>
+		  <ess grade="Used">0.0001</ess>
+		  <ess grade="Standard">0.0001</ess>
+		  <ess grade="Alphaware">0.0001</ess>
+		  <ess grade="Betaware">0.0001</ess>
+		  <ess grade="Deltaware">0.0001</ess>
+		  <ess grade="Gammaware">0.0001</ess>
+		  <ess grade="Omegaware">0.0001</ess>
+		</oneof>
+	  </required>
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -11369,7 +11808,9 @@
       <name>Honest Face</name>
       <karma>5</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+		<judgeintentionsdefense>2</judgeintentionsdefense>
+	  </bonus>
       <source>CA</source>
       <page>151</page>
     </quality>
@@ -12298,9 +12739,9 @@
         </oneof>
       </required>
 	  <forbidden>
-		<anyof>
+		<oneof>
 		  <quality>Adept</quality>
-		</anyof>
+		</oneof>
 	  </forbidden>
       <source>FA</source>
       <page>35</page>
@@ -13698,6 +14139,8 @@
 		</allof>
       </required>
       <bonus>
+	    <fatigueresist>1</fatigueresist>
+		<toxininhalationresist>2</toxininhalationresist>
 		<conditionmonitor>
 			<physical>-1</physical>
 			<stun>-1</stun>
@@ -13800,6 +14243,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13837,6 +14282,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13874,6 +14321,7 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
 		<lifestylecost>-10</lifestylecost>
 	  </bonus>
       <source>FA</source>
@@ -13912,6 +14360,7 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-50</essencepenaltyt100>
 		<essencepenaltymagonlyt100>50</essencepenaltymagonlyt100>
+		<fatigueresist>1</fatigueresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13953,6 +14402,9 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
+		<fatigueresist>2</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -13995,6 +14447,8 @@
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>2</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14036,6 +14490,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
+		<fatigueresist>2</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14078,6 +14534,8 @@
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>2</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14119,6 +14577,8 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
+		<fatigueresist>2</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14161,6 +14621,7 @@
 		<essencepenaltyt100>-100</essencepenaltyt100>
 		<essencepenaltymagonlyt100>100</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>2</fatigueresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14205,6 +14666,9 @@
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>3</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14248,6 +14712,9 @@
 		</conditionmonitor>
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
+		<fatigueresist>3</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14292,6 +14759,8 @@
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>3</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14336,6 +14805,8 @@
 		<essencepenaltyt100>-150</essencepenaltyt100>
 		<essencepenaltymagonlyt100>150</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>3</fatigueresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14381,6 +14852,9 @@
 		<essencepenaltyt100>-200</essencepenaltyt100>
 		<essencepenaltymagonlyt100>200</essencepenaltymagonlyt100>
 		<lifestylecost>-10</lifestylecost>
+		<fatigueresist>4</fatigueresist>
+		<toxiningestionresist>2</toxiningestionresist>
+		<toxininjectionresist>2</toxininjectionresist>
 	  </bonus>
       <source>FA</source>
       <page>133</page>
@@ -14971,8 +15445,15 @@
           <karma>-8</karma>
           <category>Negative</category>
           <bonus>
-              <!-- TODO: Addiction, toxin resistance tests. -->
-          </bonus>
+			<physiologicaladdictionfirsttime>-1</physiologicaladdictionfirsttime>
+			<psychologicaladdictionfirsttime>-1</psychologicaladdictionfirsttime>
+			<physiologicaladdictionalreadyaddicted>-1</physiologicaladdictionalreadyaddicted>
+			<psychologicaladdictionalreadyaddicted>-1</psychologicaladdictionalreadyaddicted>
+			<toxincontactresist>-1</toxincontactresist>
+			<toxiningestionresist>-1</toxiningestionresist>
+			<toxininhalationresist>-1</toxininhalationresist>
+			<toxininjectionresist>-1</toxininjectionresist>
+		  </bonus>
           <source>TCT</source>
           <page>189</page>
       </quality>

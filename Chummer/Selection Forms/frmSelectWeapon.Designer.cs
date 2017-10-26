@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectWeapon
     {
@@ -360,7 +360,7 @@
             this.dataGridViewTextBoxColumn13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn13.DataPropertyName = "Cost";
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle11.Format = "#,###,##0¥";
+            dataGridViewCellStyle11.Format = "#,###,##0.##¥";
             dataGridViewCellStyle11.NullValue = null;
             this.dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewCellStyle11;
             this.dataGridViewTextBoxColumn13.FillWeight = 60F;
@@ -858,7 +858,7 @@
             this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Cost.DataPropertyName = "Cost";
             dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle14.Format = "#,###,##0¥";
+            dataGridViewCellStyle14.Format = "#,###,##0.##¥";
             dataGridViewCellStyle14.NullValue = null;
             this.Cost.DefaultCellStyle = dataGridViewCellStyle14;
             this.Cost.FillWeight = 60F;

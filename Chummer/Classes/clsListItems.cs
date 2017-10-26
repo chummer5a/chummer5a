@@ -37,7 +37,7 @@ namespace Chummer
 
         public static ListItem Auto(string value, string languageString)
         {
-            return new ListItem(value, LanguageManager.Instance.GetString(languageString));
+            return new ListItem(value, LanguageManager.GetString(languageString));
         }
 
         public ListItem(string value, string name)
