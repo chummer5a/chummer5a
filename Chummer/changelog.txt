@@ -309,6 +309,7 @@ Data Changes:
 - Moved the data files in Custom Content to folders in the customdata folder, and updated them to the newer data file formats.
 - Added entries for Modular Gear.
 - Osmium Mace now only has one entry that properly scales its stats with the character's STR.
+- Fixed Osmosis not being allowed to be leveled to Rating 6. Fixes #1996.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
