@@ -2396,6 +2396,10 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
+                        if (objChildCyberware.ParentID == InternalId)
+                        {
+                            continue;
+                        }
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         if (strCapacity.Contains("/["))
                             strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
@@ -2409,6 +2413,10 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Gear objChildGear in Gear)
                     {
+                        if (objChildGear.IncludedInParent)
+                        {
+                            continue;
+                        }
                         string strCapacity = objChildGear.CalculatedCapacity;
                         if (strCapacity.Contains("/["))
                             strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
@@ -2428,6 +2436,10 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Cyberware objChildCyberware in Children)
                     {
+                        if (objChildCyberware.ParentID == InternalId)
+                        {
+                            continue;
+                        }
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         if (strCapacity.Contains("/["))
                             strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
@@ -2441,6 +2453,10 @@ namespace Chummer.Backend.Equipment
                     // Run through its Children and deduct the Capacity costs.
                     foreach (Gear objChildGear in Gear)
                     {
+                        if (objChildGear.IncludedInParent)
+                        {
+                            continue;
+                        }
                         string strCapacity = objChildGear.CalculatedCapacity;
                         if (strCapacity.Contains("/["))
                             strCapacity = strCapacity.Substring(strCapacity.IndexOf('[') + 1, strCapacity.IndexOf(']') - strCapacity.IndexOf('[') - 1);
