@@ -8602,7 +8602,7 @@
       </accessorymounts>
       <accessories />
       <useskill>Longarms</useskill>
-      <range>Shotguns</range>
+      <range>Heavy Pistols</range>
       <source>SHB</source>
       <page>0</page>
     </weapon>
@@ -11511,6 +11511,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+	  <range>Heavy Pistols</range>
       <source>SAG</source>
       <page>34</page>
     </weapon>
