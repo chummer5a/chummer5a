@@ -1074,7 +1074,7 @@ namespace Chummer.Backend.Equipment
                         strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-                strCost = strCost.Replace("Vehicle Cost", Parent.OwnCost.ToString());
+                strCost = strCost.Replace("Vehicle Cost", Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strCost = strCost.Replace("Speed", Parent.Speed.ToString());
