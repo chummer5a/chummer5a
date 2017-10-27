@@ -337,13 +337,5 @@ namespace Chummer.UI.Skills
             cboSpec_TextChanged(sender, e);
         }
         */
-
-        private void RatingChanged(object sender, EventArgs e)
-        {
-            if (!_skill.CanHaveSpecs)
-            {
-                _skill.Specializations.Clear();
-            }
-        }
     }
 }

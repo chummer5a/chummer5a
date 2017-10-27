@@ -55,7 +55,6 @@ namespace Chummer
             Reach,
             Nuyen,
             Essence,
-            Reaction,
             PhysicalCM,
             StunCM,
             UnarmedDV,
@@ -187,7 +186,6 @@ namespace Chummer
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
-            DataStore,
             BlockSkillDefault,
             Ambidextrous,
             UnarmedReach,

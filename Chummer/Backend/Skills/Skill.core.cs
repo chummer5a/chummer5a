@@ -146,8 +146,6 @@ namespace Chummer.Skills
 
                 if(old != _karma) OnPropertyChanged();
 
-
-
                 KarmaSpecForcedMightChange();
             }
         }
@@ -171,9 +169,14 @@ namespace Chummer.Skills
         /// </summary>
         public int TotalBaseRating
         {
-            get { if (CharacterObject.Created){
-                  return LearnedRating + RatingModifiers; }
-            else  return LearnedRating; }
+            get
+            {
+                if (CharacterObject.Created)
+                {
+                  return LearnedRating + RatingModifiers;
+                }
+                return LearnedRating;
+            }
         }
 
         /// <summary>
@@ -590,6 +593,10 @@ namespace Chummer.Skills
             {
                 _buyWithKarma = false;
                 OnPropertyChanged(nameof(BuyWithKarma));
+            }
+            if (!CanHaveSpecs && Specializations.Count > 0)
+            {
+                Specializations.Clear();
             }
         }
     }

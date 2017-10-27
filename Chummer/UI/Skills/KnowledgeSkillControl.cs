@@ -181,17 +181,9 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void cboSkill_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboSkill_TextChanged(object sender, EventArgs e)
         {
             _skill.LoadDefaultType(_skill.Name);
-        }
-
-        private void RatingChanged(object sender, EventArgs e)
-        {
-            if (!_skill.CanHaveSpecs && !_skill.ForcedName)
-            {
-                _skill.Specializations.Clear();
-            }
         }
     }
 }

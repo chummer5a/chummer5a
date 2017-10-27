@@ -114,6 +114,8 @@ namespace Chummer.Skills
                 LoadSuggestedSpecializations(Name);
 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Type));
+                OnPropertyChanged(nameof(Base));
             }
         }
 

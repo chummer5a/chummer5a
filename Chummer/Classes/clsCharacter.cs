@@ -8084,12 +8084,17 @@ namespace Chummer
         internal event Action<List<Improvement>> AttributeImprovementEvent;
 
         //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down.
-        public static readonly Improvement.ImprovementType[] SkillRelatedImprovements = {
+        public static readonly HashSet<Improvement.ImprovementType> SkillRelatedImprovements = new HashSet<Improvement.ImprovementType> {
+            Improvement.ImprovementType.Uneducated,
+            Improvement.ImprovementType.FreeKnowledgeSkills,
+            Improvement.ImprovementType.Uncouth,
             Improvement.ImprovementType.Skillwire,
+            Improvement.ImprovementType.SwapSkillAttribute,
             Improvement.ImprovementType.SkillsoftAccess,
+            Improvement.ImprovementType.SchoolOfHardKnocks,
+            Improvement.ImprovementType.CollegeEducation,
             Improvement.ImprovementType.Linguist,
             Improvement.ImprovementType.TechSchool,
-            Improvement.ImprovementType.Attributelevel,
             Improvement.ImprovementType.Hardwire,
             Improvement.ImprovementType.Skill,  //Improve pool of skill based on name
             Improvement.ImprovementType.SkillGroup,  //Group
@@ -8102,15 +8107,28 @@ namespace Chummer
             Improvement.ImprovementType.SkillKnowledgeForced, //A skill gained from a knowsoft
             Improvement.ImprovementType.SpecialSkills,
             Improvement.ImprovementType.ReflexRecorderOptimization,
+            Improvement.ImprovementType.BlockSkillDefault,
+            Improvement.ImprovementType.SkillSpecialization,
+            Improvement.ImprovementType.NativeLanguageLimit,
+            Improvement.ImprovementType.SwapSkillSpecAttribute,
+            Improvement.ImprovementType.FreeSpellsSkill,
             Improvement.ImprovementType.DisableSpecializationEffects,
         };
 
         //List of events that might be able to affect attributes. Changes to these types also invoke data bindings controlling skills, since their pools are controlled by attributes.
-        public static readonly Improvement.ImprovementType[] AttribRelatedImprovements = {
-            Improvement.ImprovementType.Attributelevel,
+        public static readonly HashSet<Improvement.ImprovementType> AttribRelatedImprovements = new HashSet<Improvement.ImprovementType> {
             Improvement.ImprovementType.Attribute,
+            Improvement.ImprovementType.Essence,
+            Improvement.ImprovementType.Infirm,
+            Improvement.ImprovementType.EssenceMax,
+            Improvement.ImprovementType.Attributelevel,
             Improvement.ImprovementType.Seeker,
-            Improvement.ImprovementType.AddLimb
+            Improvement.ImprovementType.ReplaceAttribute,
+            Improvement.ImprovementType.EssencePenalty,
+            Improvement.ImprovementType.EssencePenaltyT100,
+            Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
+            Improvement.ImprovementType.FreeSpellsATT,
+            Improvement.ImprovementType.AddLimb,
         };
         //To get when things change in improvementmanager
         //Ugly, ugly done, but we cannot get events out of it today
@@ -8118,12 +8136,11 @@ namespace Chummer
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
         internal void ImprovementHook(List<Improvement> _lstTransaction)
         {
-            if (_lstTransaction.Any(x => AttribRelatedImprovements.Any(y => y == x.ImproveType)))
+            if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
                 AttributeImprovementEvent?.Invoke(_lstTransaction);
-                SkillImprovementEvent?.Invoke(_lstTransaction);
             }
-            else if (_lstTransaction.Any(x => SkillRelatedImprovements.Any(y => y == x.ImproveType)))
+            else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
             {
                 SkillImprovementEvent?.Invoke(_lstTransaction);
             }

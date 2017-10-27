@@ -160,10 +160,10 @@ namespace Chummer.UI.Shared
             return _contentList.Count == 0 ? 0 : Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
         }
 
-        private void ClearAllCache()
+        private void ClearCache(IEnumerable<ControlWithMetaData> lstToClear)
         {
             _allRendered = false;
-            foreach (ControlWithMetaData item in _contentList)
+            foreach (ControlWithMetaData item in lstToClear)
             {
                 item.Reset();
             }
@@ -179,7 +179,7 @@ namespace Chummer.UI.Shared
             {
                 _resetAtIdle = false;
                 pnlDisplay.SuspendLayout();
-                ClearAllCache();
+                ClearCache(_contentList);
                 LoadScreenContent();  //TODO: Don't do this and call if becomes visible
                 pnlDisplay.ResumeLayout();
             }
@@ -222,7 +222,7 @@ namespace Chummer.UI.Shared
             _visibleFilter = predicate;
 
             pnlDisplay.SuspendLayout();
-            ClearAllCache();
+            ClearCache(_contentList);
             if (_contentList.Count > 0)
             {
                 pnlDisplay.Height = _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
@@ -237,28 +237,31 @@ namespace Chummer.UI.Shared
             _comparison = comparison;
 
             pnlDisplay.SuspendLayout();
-            ClearAllCache();
+            ClearCache(_contentList);
             LoadScreenContent();
             pnlDisplay.ResumeLayout();
         }
 
         private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
         {
+            int intNewIndex = eventArgs?.NewIndex ?? 0;
+            List<ControlWithMetaData> lstToRedraw = null;
             switch (eventArgs.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                    _indexComparer.Reset(_contents);
                     break;
                 //case ListChangedType.Reset:
                 //    break;
                 case ListChangedType.ItemAdded:
-                    _contentList.Insert(eventArgs.NewIndex, new ControlWithMetaData(_contents[eventArgs.NewIndex], this));
+                    _contentList.Insert(intNewIndex, new ControlWithMetaData(_contents[intNewIndex], this));
                     _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
                     break;
                 case ListChangedType.ItemDeleted:
-                    _contentList[eventArgs.NewIndex].Cleanup();
-                    _contentList.RemoveAt(eventArgs.NewIndex);
+                    _contentList[intNewIndex].Cleanup();
+                    _contentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
                     break;
                 //case ListChangedType.ItemMoved:
                 //    break;
@@ -273,11 +276,14 @@ namespace Chummer.UI.Shared
                     Utils.BreakIfDebug();
                     break;
             }
-            pnlDisplay.SuspendLayout();
-            ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            ClearAllCache();
-            LoadScreenContent();
-            pnlDisplay.ResumeLayout();
+            if (lstToRedraw != null && lstToRedraw.Count > 0)
+            {
+                pnlDisplay.SuspendLayout();
+                ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                ClearCache(lstToRedraw);
+                LoadScreenContent();
+                pnlDisplay.ResumeLayout();
+            }
         }
 
         private void BindingListDisplay_Scroll(object sender, ScrollEventArgs e)
@@ -297,7 +303,7 @@ namespace Chummer.UI.Shared
                 pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
             foreach (Control control in pnlDisplay.Controls)
             {
-                control.Width = pnlDisplay.Width - 2;
+                control.Width = pnlDisplay.Width;
             }
         }
 
