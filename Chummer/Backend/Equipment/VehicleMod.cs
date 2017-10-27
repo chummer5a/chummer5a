@@ -314,7 +314,7 @@ namespace Chummer.Backend.Equipment
 			foreach (Cyberware objCyberware in _lstCyberware)
 				objCyberware.Print(objWriter);
 			objWriter.WriteEndElement();
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}

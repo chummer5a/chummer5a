@@ -70,9 +70,9 @@ namespace Chummer
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
 
-            cboBuildMethod.SelectedValue = _objOptions.BuildMethod;
-            nudKarma.Value = _objOptions.BuildPoints;
-            nudMaxAvail.Value = _objOptions.Availability;
+            cboBuildMethod.SelectedValue = GlobalOptions.Instance.BuildMethod;
+            nudKarma.Value = GlobalOptions.Instance.BuildPoints;
+            nudMaxAvail.Value = GlobalOptions.Instance.Availability;
 	        
 
 			// Load the Priority information.
@@ -160,11 +160,11 @@ namespace Chummer
             {
                 if (cboBuildMethod.SelectedValue.ToString() == "Karma")
                 {
-                    if (_objOptions.BuildMethod == CharacterBuildMethod.Karma)
+                    if (GlobalOptions.Instance.BuildMethod == CharacterBuildMethod.Karma)
                     {
-                        lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_KarmaSummary").Replace("{0}", _objOptions.BuildPoints.ToString());
+                        lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_KarmaSummary").Replace("{0}", GlobalOptions.Instance.BuildPoints.ToString());
                         if (!_blnUseCurrentValues)
-                            nudKarma.Value = _objOptions.BuildPoints;
+                            nudKarma.Value = GlobalOptions.Instance.BuildPoints;
                     }
                     else
                     {

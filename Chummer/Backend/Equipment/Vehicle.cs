@@ -604,7 +604,7 @@ namespace Chummer.Backend.Equipment
 			foreach (Weapon objWeapon in _lstWeapons)
 				objWeapon.Print(objWriter);
 			objWriter.WriteEndElement();
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}

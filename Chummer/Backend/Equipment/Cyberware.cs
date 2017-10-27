@@ -613,7 +613,7 @@ namespace Chummer.Backend.Equipment
 				objChild.Print(objWriter);
 			}
 			objWriter.WriteEndElement();
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -1559,7 +1559,7 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 
-				decReturn = Math.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+				decReturn = Math.Round(decReturn, GlobalOptions.Instance.EssenceDecimals, MidpointRounding.AwayFromZero);
 
 				return decReturn;
 			}

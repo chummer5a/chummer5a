@@ -918,7 +918,7 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteElementString("weaponbonusdamage_english", WeaponBonusDamage(true));
 				objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
 			}
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}

@@ -396,7 +396,7 @@ namespace Chummer
 				cmdLifeModule.Visible = true;
 				treQualities.Nodes.Add(new TreeNode("Life Modules"));
 				btnCreateBackstory.Visible = true;
-				btnCreateBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
+				btnCreateBackstory.Visible = GlobalOptions.Instance.AutomaticBackstory;
 			}
 
             // Populate the Qualities list.
@@ -15010,7 +15010,7 @@ namespace Chummer
                 lblNuyenTotal.Text = String.Format("= {0:###,###,##0�}", intNuyen);
 
                 string strFormat;
-                if (_objCharacter.Options.EssenceDecimals == 4)
+                if (GlobalOptions.Instance.EssenceDecimals == 4)
                     strFormat = "{0:0.0000}";
                 else
                     strFormat = "{0:0.00}";
@@ -20189,7 +20189,7 @@ namespace Chummer
 
 			if (blnValid)
             {
-                if (_objOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
+                if (GlobalOptions.Instance.CreateBackupOnCareer && chkCharacterCreated.Checked)
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.

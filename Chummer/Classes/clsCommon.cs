@@ -992,7 +992,7 @@ namespace Chummer
 		/// </summary>
 		public bool ConfirmDelete(string strMessage)
 		{
-			if (!_objCharacter.Options.ConfirmDelete)
+			if (!GlobalOptions.Instance.ConfirmDelete)
 				return true;
 			else
 			{

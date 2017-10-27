@@ -85,6 +85,10 @@ namespace Chummer.Backend.Options
 
                     if(!LanguageManager.Instance.TryGetString(path[i], out header))
                         header = path[i];
+
+                    //If you got an error and arrived here it is because you made an error with a class you are displaying
+                    //OptionAttributesAttribute contains the path in the tree where options should be displayed
+                    // and only the last one can be new.
                     parrent = parrent.Children.First(x => (string) x.Tag == header);
                 }
 

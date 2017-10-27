@@ -2224,7 +2224,7 @@ namespace Chummer
 
                         objWriter.WriteStartElement("limitmodifier");
                         objWriter.WriteElementString("name", strName);
-                        if (this.Options.PrintNotes)
+                        if (GlobalOptions.Instance.PrintNotes)
                             objWriter.WriteElementString("notes", objImprovement.Notes);
                         objWriter.WriteEndElement();
                     }
@@ -2258,7 +2258,7 @@ namespace Chummer
 
                         objWriter.WriteStartElement("limitmodifier");
                         objWriter.WriteElementString("name", strName);
-                        if (this.Options.PrintNotes)
+                        if (GlobalOptions.Instance.PrintNotes)
                             objWriter.WriteElementString("notes", objImprovement.Notes);
                         objWriter.WriteEndElement();
                     }
@@ -2292,7 +2292,7 @@ namespace Chummer
 
                         objWriter.WriteStartElement("limitmodifier");
                         objWriter.WriteElementString("name", strName);
-                        if (this.Options.PrintNotes)
+                        if (GlobalOptions.Instance.PrintNotes)
                             objWriter.WriteElementString("notes", objImprovement.Notes);
                         objWriter.WriteEndElement();
                     }
@@ -2505,7 +2505,7 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             // Print the Expense Log Entries if the option is enabled.
-            if (_objOptions.PrintExpenses)
+            if (GlobalOptions.Instance.PrintExpenses)
             {
                 // <expenses>
                 objWriter.WriteStartElement("expenses");

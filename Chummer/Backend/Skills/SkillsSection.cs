@@ -674,7 +674,7 @@ namespace Chummer.Skills
 		{
 			foreach (Skill skill in Skills)
 			{
-				if (_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0)
+				if (GlobalOptions.Instance.PrintSkillsWithZeroRating || skill.Rating > 0)
 				{
 					skill.Print(objWriter);
 				}

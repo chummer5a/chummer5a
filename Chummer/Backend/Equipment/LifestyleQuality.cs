@@ -248,7 +248,7 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
 				objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 				objWriter.WriteElementString("page", Page);
-				if (_objCharacter.Options.PrintNotes)
+				if (GlobalOptions.Instance.PrintNotes)
 					objWriter.WriteElementString("notes", _strNotes);
 				objWriter.WriteEndElement();
 			}

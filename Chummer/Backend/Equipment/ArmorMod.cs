@@ -306,7 +306,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
 			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}

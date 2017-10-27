@@ -451,7 +451,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteEndElement();
 			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
 			objWriter.WriteElementString("location", _strLocation);
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}

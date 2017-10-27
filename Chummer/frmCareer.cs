@@ -20833,7 +20833,7 @@ namespace Chummer
                 lblMovement.Text = _objCharacter.Movement;
 
 				string strFormat;
-				if (_objCharacter.Options.EssenceDecimals == 4)
+				if (GlobalOptions.Instance.EssenceDecimals == 4)
 					strFormat = "{0:0.0000}";
 				else
 					strFormat = "{0:0.00}";
@@ -25272,7 +25272,7 @@ namespace Chummer
 		/// </summary>
 		public bool ConfirmKarmaExpense(string strMessage)
 		{
-			if (!_objOptions.ConfirmKarmaExpense)
+			if (!GlobalOptions.Instance.ConfirmKarmaExpense)
 				return true;
 			else
 			{

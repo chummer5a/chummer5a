@@ -1461,7 +1461,7 @@ namespace Chummer
 				objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
 				objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 				objWriter.WriteElementString("page", Page);
-				if (_objCharacter.Options.PrintNotes)
+				if (GlobalOptions.Instance.PrintNotes)
 					objWriter.WriteElementString("notes", _strNotes);
 				objWriter.WriteEndElement();
 			}
@@ -2285,7 +2285,7 @@ namespace Chummer
 
 
 
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -2740,7 +2740,7 @@ namespace Chummer
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -3938,7 +3938,7 @@ namespace Chummer
 			objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("grade", _intGrade.ToString());
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -4273,7 +4273,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.Instance.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -4574,7 +4574,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.Instance.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -4958,7 +4958,7 @@ namespace Chummer
 			objWriter.WriteElementString("totalpoints", PowerPoints.ToString());
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in _lstEnhancements)
@@ -5607,7 +5607,7 @@ namespace Chummer
 			objWriter.WriteElementString("target", _strTarget);
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -5909,7 +5909,7 @@ namespace Chummer
 				objAdvantage.Print(objWriter);
 			}
 			objWriter.WriteEndElement();
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -6170,7 +6170,7 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("martialartadvantage");
 			objWriter.WriteElementString("name", DisplayNameShort);
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -6367,7 +6367,7 @@ namespace Chummer
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -6618,7 +6618,7 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifier");
             objWriter.WriteElementString("name", DisplayName);
             objWriter.WriteElementString("condition", _strCondition);
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.Instance.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -6900,7 +6900,7 @@ namespace Chummer
                 objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
 			objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
 			objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType.ToString()));
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
@@ -7341,7 +7341,7 @@ namespace Chummer
 			objWriter.WriteElementString("duration", DisplayDuration);
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
-			if (_objCharacter.Options.PrintNotes)
+			if (GlobalOptions.Instance.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
