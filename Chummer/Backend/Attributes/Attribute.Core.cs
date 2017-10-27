@@ -27,7 +27,7 @@ namespace Chummer.Backend.Attributes
         private int _intBase;
         private int _intKarma;
         private string _strAbbrev = string.Empty;
-        public Character _objCharacter;
+        private Character _objCharacter;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1049,6 +1049,8 @@ namespace Chummer.Backend.Attributes
                 return strReturn + strModifier;
             }
         }
+
+        public Character CharacteObject => _objCharacter;
 
         /// <summary>
         /// Amount of BP/Karma spent on this CharacterAttribute.

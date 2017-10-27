@@ -24,7 +24,7 @@ namespace CrashHandler
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
-		public event CrashDumperProgressChangedEvent CrashDumperProgressChanged;
+		internal Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
 		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
@@ -59,7 +59,7 @@ namespace CrashHandler
 
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("Could not deserialize");
 			}
 
             CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
@@ -474,8 +474,6 @@ namespace CrashHandler
 
         }
     }
-
-    public delegate void CrashDumperProgressChangedEvent(object sender, CrashDumperProgressChangedEventArgs args);
 
 	public class CrashDumperProgressChangedEventArgs : EventArgs
 	{

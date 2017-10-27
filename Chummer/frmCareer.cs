@@ -66,11 +66,8 @@ namespace Chummer
         public Action<Chummer.Character, int> DiceRollerOpenedInt;
 
         #region Form Events
-        public frmCareer(Character objCharacter)
+        public frmCareer(Character objCharacter) : base(objCharacter)
         {
-            _objCharacter = objCharacter;
-            _objOptions = _objCharacter.Options;
-            _objController = new MainController(_objCharacter);
             InitializeComponent();
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
@@ -802,7 +799,7 @@ namespace Chummer
             PopulateGearList();
 
             // Populate Foci.
-            _objController.PopulateFocusList(treFoci);
+            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
 
             // Populate Vehicles.
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
@@ -4568,7 +4565,7 @@ namespace Chummer
             bool blnAddAgain = PickGear();
             if (blnAddAgain)
                 cmdAddGear_Click(sender, e);
-            _objController.PopulateFocusList(treFoci);
+            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
         }
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
@@ -4631,7 +4628,7 @@ namespace Chummer
                         }
                     }
                 }
-                _objController.PopulateFocusList(treFoci);
+                CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
                 ScheduleCharacterUpdate();
                 RefreshSelectedGear();
 
@@ -6421,7 +6418,7 @@ namespace Chummer
             bool blnAddAgain = PickGear((objGear.Category == "Ammunition"), objGear, objGear.Name);
             if (blnAddAgain)
                 cmdGearIncreaseQty_Click(sender, e);
-            _objController.PopulateFocusList(treFoci);
+            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
         }
 
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
@@ -7557,7 +7554,7 @@ namespace Chummer
             objStack.GearId = objStackItem.InternalId;
 
             _blnIsDirty = true;
-            _objController.PopulateFocusList(treFoci);
+            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
             ScheduleCharacterUpdate();
             UpdateWindowTitle();
         }
@@ -9925,7 +9922,7 @@ namespace Chummer
                         }
                     }
                 }
-                _objController.PopulateFocusList(treFoci);
+                CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
                 ScheduleCharacterUpdate();
                 RefreshSelectedGear();
 
@@ -11273,7 +11270,7 @@ namespace Chummer
                         objAddGearNode.Text = objGear.DisplayName;
                     }
 
-                    _objController.PopulateFocusList(treFoci);
+                    CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
                     break;
                 case NuyenExpenseType.AddVehicle:
                     // Locate the Vehicle that was added.
@@ -13950,9 +13947,9 @@ namespace Chummer
             }
 
             if (treWeapons.SelectedNode.Level == 1)
-                _objController.MoveWeaponNode(intNewIndex, nodDestination, treWeapons);
+                CommonFunctions.MoveWeaponNode(_objCharacter, intNewIndex, nodDestination, treWeapons);
             else
-                _objController.MoveWeaponRoot(intNewIndex, nodDestination, treWeapons);
+                CommonFunctions.MoveWeaponRoot(_objCharacter, intNewIndex, nodDestination, treWeapons);
 
             // Clear the background color for all Nodes.
             treWeapons.ClearNodeBackground(null);
@@ -14035,7 +14032,7 @@ namespace Chummer
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
             }
 
-            _objController.MoveArmorNode(intNewIndex, nodDestination, treArmor);
+            CommonFunctions.MoveArmorNode(_objCharacter, intNewIndex, nodDestination, treArmor);
 
             // Clear the background color for all Nodes.
             treArmor.ClearNodeBackground(null);
@@ -14164,7 +14161,7 @@ namespace Chummer
                 nodDestination = treLifestyles.Nodes[treLifestyles.Nodes.Count - 1];
             }
 
-            _objController.MoveLifestyleNode(intNewIndex, nodDestination, treLifestyles);
+            CommonFunctions.MoveLifestyleNode(_objCharacter, intNewIndex, nodDestination, treLifestyles);
 
             // Clear the background color for all Nodes.
             treLifestyles.ClearNodeBackground(null);
@@ -14651,7 +14648,7 @@ namespace Chummer
                     {
                         objSelectedGear.Equipped = chkWeaponAccessoryInstalled.Checked;
 
-                        _objController.ChangeGearEquippedStatus(objSelectedGear, chkWeaponAccessoryInstalled.Checked);
+                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedGear, chkWeaponAccessoryInstalled.Checked);
 
                     ScheduleCharacterUpdate();
                     }
@@ -14727,12 +14724,12 @@ namespace Chummer
             if (_objDragButton == MouseButtons.Left)
             {
                 if (treGear.SelectedNode.Level == 1)
-                    _objController.MoveGearNode(intNewIndex, nodDestination, treGear);
+                    CommonFunctions.MoveGearNode(_objCharacter, intNewIndex, nodDestination, treGear);
                 else
-                    _objController.MoveGearRoot(intNewIndex, nodDestination, treGear);
+                    CommonFunctions.MoveGearRoot(_objCharacter, intNewIndex, nodDestination, treGear);
             }
             if (_objDragButton == MouseButtons.Right)
-                _objController.MoveGearParent(nodDestination, treGear, cmsGear);
+                CommonFunctions.MoveGearParent(_objCharacter, nodDestination, treGear, cmsGear);
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
@@ -14777,7 +14774,7 @@ namespace Chummer
                 {
                 objSelectedGear.Equipped = chkGearEquipped.Checked;
 
-                _objController.ChangeGearEquippedStatus(objSelectedGear, chkGearEquipped.Checked);
+                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedGear, chkGearEquipped.Checked);
 
                     RefreshSelectedGear();
                     ScheduleCharacterUpdate();
@@ -14810,23 +14807,16 @@ namespace Chummer
             string strGuid = treGear.SelectedNode?.Tag.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(strGuid))
             {
-                Commlink objCommlink = CommonFunctions.FindCommlink(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children));
-                if (objCommlink != null)
-                {
-                    objCommlink.HomeNode = chkGearHomeNode.Checked;
-                    CommonFunctions.ReplaceHomeNodes(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children), _objCharacter.Vehicles);
-                    _objCharacter.HomeNodeVehicle = null;
-                    _objCharacter.HomeNodeCommlink = null;
-                    if (chkGearHomeNode.Checked)
-                    {
-                        _objCharacter.HomeNodeCommlink = objCommlink;
-                    }
-                    RefreshSelectedGear();
-                    ScheduleCharacterUpdate();
+                Commlink objCommlink = null;
+                if (chkGearHomeNode.Checked)
+                    objCommlink = CommonFunctions.FindCommlink(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children));
+                CommonFunctions.ReplaceHomeNode(_objCharacter, objCommlink, null);
 
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
+                RefreshSelectedGear();
+                ScheduleCharacterUpdate();
+
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
         }
 
@@ -15661,14 +15651,14 @@ namespace Chummer
 
             if (!_blnDraggingGear)
             {
-                _objController.MoveVehicleNode(intNewIndex, nodDestination, treVehicles);
+                CommonFunctions.MoveVehicleNode(_objCharacter, intNewIndex, nodDestination, treVehicles);
             }
             else
             {
                 if (_objDragButton == MouseButtons.Left)
                     return;
                 else
-                    _objController.MoveVehicleGearParent(nodDestination, treVehicles, cmsVehicleGear);
+                    CommonFunctions.MoveVehicleGearParent(_objCharacter, nodDestination, treVehicles, cmsVehicleGear);
             }
 
             // Clear the background color for all Nodes.
@@ -15955,36 +15945,16 @@ namespace Chummer
             string strGuid = treVehicles.SelectedNode?.Tag.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(strGuid))
             {
-                if (treVehicles.SelectedNode.Level == 1)
+                Commlink objCommlink = null;
+                Vehicle objVehicle = null;
+                if (chkGearHomeNode.Checked)
                 {
-                    Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(strGuid, _objCharacter.Vehicles);
+                    objVehicle = CommonFunctions.FindByIdWithNameCheck(strGuid, _objCharacter.Vehicles);
                     if (objVehicle == null)
-                        return;
-
-                    objVehicle.HomeNode = chkVehicleHomeNode.Checked;
-                    _objCharacter.HomeNodeVehicle = null;
-                    _objCharacter.HomeNodeCommlink = null;
-                    if (chkGearHomeNode.Checked)
-                    {
-                        _objCharacter.HomeNodeVehicle = objVehicle;
-                    }
+                        objCommlink = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles) as Commlink;
                 }
-                else
-                {
-                    Commlink objGear = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles) as Commlink;
-                    if (objGear == null)
-                        return;
+                CommonFunctions.ReplaceHomeNode(_objCharacter, objCommlink, null);
 
-                    objGear.HomeNode = chkVehicleHomeNode.Checked;
-                    _objCharacter.HomeNodeVehicle = null;
-                    _objCharacter.HomeNodeCommlink = null;
-                    if (chkGearHomeNode.Checked)
-                    {
-                        _objCharacter.HomeNodeCommlink = objGear;
-                    }
-                }
-
-                CommonFunctions.ReplaceHomeNodes(strGuid, _objCharacter.Gear.GetAllDescendants(x => x.Children), _objCharacter.Vehicles);
                 RefreshSelectedVehicle();
                 ScheduleCharacterUpdate();
 
@@ -16120,7 +16090,7 @@ namespace Chummer
                                     objSelectedFocus.Extra = objPower.Name;
                                     break;
                                 }
-                            _objController.PopulateFocusList(treFoci);
+                            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
                         }
                     }
                 }
@@ -17371,9 +17341,9 @@ namespace Chummer
             }
 
             if (treImprovements.SelectedNode.Level == 1)
-                _objController.MoveImprovementNode(intNewIndex, nodDestination, treImprovements);
+                CommonFunctions.MoveImprovementNode(_objCharacter, intNewIndex, nodDestination, treImprovements);
             else
-                _objController.MoveImprovementRoot(intNewIndex, nodDestination, treImprovements);
+                CommonFunctions.MoveImprovementRoot(_objCharacter, intNewIndex, nodDestination, treImprovements);
 
             // Clear the background color for all Nodes.
             treImprovements.ClearNodeBackground(null);
@@ -17763,7 +17733,7 @@ namespace Chummer
         /// </summary>
         private void ClearSpellTab()
         {
-            _objController.ClearSpellTab(treSpells);
+            CommonFunctions.ClearSpellTab(_objCharacter, treSpells);
 
             // Remove the Spirits.
             panSpirits.Controls.Clear();
@@ -17777,7 +17747,7 @@ namespace Chummer
         /// </summary>
         private void ClearTechnomancerTab()
         {
-            _objController.ClearTechnomancerTab(treComplexForms);
+            CommonFunctions.ClearTechnomancerTab(_objCharacter, treComplexForms);
 
             // Remove the Sprites.
             panSprites.Controls.Clear();
@@ -17791,7 +17761,7 @@ namespace Chummer
         /// </summary>
         private void ClearAdvancedProgramsTab()
         {
-            _objController.ClearAdvancedProgramsTab(treAIPrograms);
+            CommonFunctions.ClearAdvancedProgramsTab(_objCharacter, treAIPrograms);
 
             _blnIsDirty = true;
             ScheduleCharacterUpdate();
@@ -17802,7 +17772,7 @@ namespace Chummer
         /// </summary>
         private void ClearCyberwareTab()
         {
-            _objController.ClearCyberwareTab(treCyberware, treWeapons, treVehicles, treQualities);
+            CommonFunctions.ClearCyberwareTab(_objCharacter, treCyberware, treWeapons, treVehicles);
 
             _blnIsDirty = true;
             ScheduleCharacterUpdate();
@@ -17813,7 +17783,7 @@ namespace Chummer
         /// </summary>
         private void ClearCritterTab()
         {
-            _objController.ClearCritterTab(treCritterPowers);
+            CommonFunctions.ClearCritterTab(_objCharacter, treCritterPowers);
 
             _blnIsDirty = true;
             ScheduleCharacterUpdate();
@@ -17824,7 +17794,7 @@ namespace Chummer
         /// </summary>
         private void ClearInitiationTab()
         {
-            _objController.ClearInitiationTab(treMetamagic);
+            CommonFunctions.ClearInitiationTab(_objCharacter, treMetamagic);
             UpdateInitiationGradeTree();
 
             _blnIsDirty = true;
@@ -18899,13 +18869,13 @@ namespace Chummer
             {
                 lblCritterPowerPointsLabel.Visible = true;
                 lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = _objController.CalculateFreeSpiritPowerPoints();
+                lblCritterPowerPoints.Text = CommonFunctions.CalculateFreeSpiritPowerPoints(_objCharacter);
             }
-            if (_objCharacter.IsFreeSprite)
+            else if (_objCharacter.IsFreeSprite)
             {
                 lblCritterPowerPointsLabel.Visible = true;
                 lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = _objController.CalculateFreeSpritePowerPoints();
+                lblCritterPowerPoints.Text = CommonFunctions.CalculateFreeSpritePowerPoints(_objCharacter);
             }
 
             // Update the Nuyen and Karma for the character.
@@ -22773,8 +22743,8 @@ namespace Chummer
         private void UpdateMentorSpirits()
         {
             MentorSpirit objMentor = _objCharacter.MAGEnabled
-                ? _objController.MentorInformation()
-                : _objController.MentorInformation(Improvement.ImprovementType.Paragon);
+                ? CommonFunctions.MentorInformation(_objCharacter)
+                : CommonFunctions.MentorInformation(_objCharacter, Improvement.ImprovementType.Paragon);
 
             if (objMentor == null)
             {
@@ -25274,7 +25244,7 @@ namespace Chummer
             if (objModularCyberware == null)
                 return;
             frmSelectItem frmPickMount = new frmSelectItem();
-            frmPickMount.GeneralItems = _objController.ConstructModularCyberlimbList(objModularCyberware);
+            frmPickMount.GeneralItems = CommonFunctions.ConstructModularCyberlimbList(_objCharacter, objModularCyberware);
             frmPickMount.Description = LanguageManager.GetString("MessageTitle_SelectCyberware");
             frmPickMount.ShowDialog();
 
@@ -25289,7 +25259,7 @@ namespace Chummer
             string strSelectedParentID = frmPickMount.SelectedItem;
             if (strSelectedParentID == "None")
             {
-                _objController.MoveCyberwareNode(int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treCyberware);
+                CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treCyberware);
                 objModularCyberware.Parent = null;
             }
             else
@@ -25298,7 +25268,7 @@ namespace Chummer
                 TreeNode objNewNode = CommonFunctions.FindNode(strSelectedParentID, treCyberware);
                 if (objNewParent != null && objNewNode != null)
                 {
-                    _objController.MoveCyberwareNode(int.MaxValue, objNewParent.Children, objNewNode, treCyberware);
+                    CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, objNewParent.Children, objNewNode, treCyberware);
                     objModularCyberware.Parent = objNewParent;
                     objModularCyberware.ChangeModularEquip(true);
                 }
@@ -25312,13 +25282,13 @@ namespace Chummer
                     objNewNode = CommonFunctions.FindNode(strSelectedParentID, treVehicles);
                     if ((objNewVehicleModParent != null || objNewParent != null) && objNewNode != null)
                     {
-                        _objController.MoveCyberwareNode(int.MaxValue, objNewParent == null ? objNewVehicleModParent.Cyberware : objNewParent.Children, objNewNode, treCyberware);
+                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, objNewParent == null ? objNewVehicleModParent.Cyberware : objNewParent.Children, objNewNode, treCyberware);
                         objModularCyberware.Parent = objNewParent;
                         RefreshSelectedVehicle();
                     }
                     else
                     {
-                        _objController.MoveCyberwareNode(int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treCyberware);
+                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treCyberware);
                         objModularCyberware.Parent = null;
                     }
                 }
@@ -25339,7 +25309,7 @@ namespace Chummer
             if (objModularCyberware == null)
                 return;
             frmSelectItem frmPickMount = new frmSelectItem();
-            frmPickMount.GeneralItems = _objController.ConstructModularCyberlimbList(objModularCyberware);
+            frmPickMount.GeneralItems = CommonFunctions.ConstructModularCyberlimbList(_objCharacter, objModularCyberware);
             frmPickMount.Description = LanguageManager.GetString("MessageTitle_SelectCyberware");
             frmPickMount.ShowDialog();
 
@@ -25354,7 +25324,7 @@ namespace Chummer
             string strSelectedParentID = frmPickMount.SelectedItem;
             if (strSelectedParentID == "None")
             {
-                _objController.MoveCyberwareNode(int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treVehicles);
+                CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treVehicles);
                 objModularCyberware.Parent = null;
                 RefreshSelectedCyberware();
             }
@@ -25364,7 +25334,7 @@ namespace Chummer
                 TreeNode objNewNode = CommonFunctions.FindNode(strSelectedParentID, treCyberware);
                 if (objNewParent != null && objNewNode != null)
                 {
-                    _objController.MoveCyberwareNode(int.MaxValue, objNewParent.Children, objNewNode, treVehicles);
+                    CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, objNewParent.Children, objNewNode, treVehicles);
                     objModularCyberware.Parent = objNewParent;
                     objModularCyberware.ChangeModularEquip(true);
                     RefreshSelectedCyberware();
@@ -25379,12 +25349,12 @@ namespace Chummer
                     objNewNode = CommonFunctions.FindNode(strSelectedParentID, treVehicles);
                     if ((objNewVehicleModParent != null || objNewParent != null) && objNewNode != null)
                     {
-                        _objController.MoveCyberwareNode(int.MaxValue, objNewParent == null ? objNewVehicleModParent.Cyberware : objNewParent.Children, objNewNode, treVehicles);
+                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, objNewParent == null ? objNewVehicleModParent.Cyberware : objNewParent.Children, objNewNode, treVehicles);
                         objModularCyberware.Parent = objNewParent;
                     }
                     else
                     {
-                        _objController.MoveCyberwareNode(int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treVehicles);
+                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treVehicles);
                         objModularCyberware.Parent = null;
                         RefreshSelectedCyberware();
                     }

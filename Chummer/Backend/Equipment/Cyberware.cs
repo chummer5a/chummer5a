@@ -1446,7 +1446,7 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objChildGear in Gear)
-                objChildGear.ChangeModularEquip(blnEquip);
+                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objChildGear, blnEquip);
 
             foreach (Cyberware objChild in Children)
                 objChild.ChangeModularEquip(blnEquip);

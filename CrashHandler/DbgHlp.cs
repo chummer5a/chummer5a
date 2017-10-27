@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -11,10 +11,10 @@ namespace CrashHandler
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]  // Pack=4 is important! So it works also for x64!
 	public struct MiniDumpExceptionInformation
 	{
-		public uint ThreadId;
-		public IntPtr ExceptionPointers;
+		internal uint ThreadId;
+		internal IntPtr ExceptionPointers;
 		[MarshalAs(UnmanagedType.Bool)]
-		public bool ClientPointers;
+        internal bool ClientPointers;
 	}
 
 	static class DbgHlp

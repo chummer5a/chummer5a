@@ -21,6 +21,7 @@ namespace Chummer.Backend.Equipment
         private int _intPrograms = 0;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes = false;
+        private bool _blnHomeNode = false;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Commlink(Character objCharacter) : base(objCharacter)
@@ -74,7 +75,8 @@ namespace Chummer.Backend.Equipment
             _strSleaze = objGear.Sleaze;
             _blnIsLivingPersona = objGear.IsLivingPersona;
             _blnActiveCommlink = objGear.IsActive;
-    }
+            _blnHomeNode = objGear.HomeNode;
+        }
 
         /// <summary>
         /// Core code to Save the object's XML to the XmlWriter.
@@ -92,6 +94,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("livingpersona", _blnIsLivingPersona.ToString());
             objWriter.WriteElementString("active", _blnActiveCommlink.ToString());
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
+            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
         }
 
         /// <summary>
@@ -108,10 +111,18 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             objNode.TryGetBoolFieldQuickly("livingpersona", ref _blnIsLivingPersona);
             objNode.TryGetBoolFieldQuickly("active", ref _blnActiveCommlink);
-            if (_blnHomeNode)
+            if (blnCopy)
             {
-                _objCharacter.HomeNodeCommlink = this;
-                _objCharacter.HomeNodeVehicle = null;
+                _blnHomeNode = false;
+            }
+            else
+            {
+                objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
+                if (_blnHomeNode)
+                {
+                    CharacterObject.HomeNodeCommlink = this;
+                    CharacterObject.HomeNodeVehicle = null;
+                }
             }
             if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
             {
@@ -143,10 +154,26 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("devicerating", TotalDeviceRating.ToString());
             objWriter.WriteElementString("processorlimit", ProcessorLimit.ToString());
             objWriter.WriteElementString("active", _blnActiveCommlink.ToString());
+            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
         }
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Whether or not an item is an A.I.'s Home Node.
+        /// </summary>
+        public bool HomeNode
+        {
+            get
+            {
+                return _blnHomeNode;
+            }
+            set
+            {
+                _blnHomeNode = value;
+            }
+        }
+
         /// <summary>
         /// Attack.
         /// </summary>
@@ -255,13 +282,13 @@ namespace Chummer.Backend.Equipment
                 if (strExpression.StartsWith("FixedValues"))
                 {
                     string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    if (_intRating > 0)
-                        strExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                    if (Rating > 0)
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
                 }
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                Commlink objParent = _objParent as Commlink;
+                Commlink objParent = Parent as Commlink;
                 if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Data Processing"))
@@ -270,9 +297,9 @@ namespace Chummer.Backend.Equipment
                         strParentValue = objParent.DataProcessing;
                 }
                 int intTotalChildrenValue = 0;
-                if (_objChildren.Count > 0 && strExpression.Contains("Children Data Processing"))
+                if (Children.Count > 0 && strExpression.Contains("Children Data Processing"))
                 {
-                    foreach (Gear loopGear in _objChildren)
+                    foreach (Gear loopGear in Children)
                     {
                         Commlink objLoopCommlink = loopGear as Commlink;
                         if (objLoopCommlink != null && loopGear.Equipped)
@@ -286,7 +313,7 @@ namespace Chummer.Backend.Equipment
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
                     string strValue = strExpression.Replace("Gear Data Processing", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Children Data Processing", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Parent Data Processing", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
                     XPathExpression xprCost = nav.Compile(strValue);
                     // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -319,13 +346,13 @@ namespace Chummer.Backend.Equipment
                 if (strExpression.StartsWith("FixedValues"))
                 {
                     string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    if (_intRating > 0)
-                        strExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                    if (Rating > 0)
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
                 }
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                Commlink objParent = _objParent as Commlink;
+                Commlink objParent = Parent as Commlink;
                 if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Attack"))
@@ -334,9 +361,9 @@ namespace Chummer.Backend.Equipment
                         strParentValue = objParent.Attack;
                 }
                 int intTotalChildrenValue = 0;
-                if (_objChildren.Count > 0 && strExpression.Contains("Children Attack"))
+                if (Children.Count > 0 && strExpression.Contains("Children Attack"))
                 {
-                    foreach (Gear loopGear in _objChildren)
+                    foreach (Gear loopGear in Children)
                     {
                         Commlink objLoopCommlink = loopGear as Commlink;
                         if (objLoopCommlink != null && loopGear.Equipped)
@@ -350,7 +377,7 @@ namespace Chummer.Backend.Equipment
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
                     string strValue = strExpression.Replace("Gear Attack", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Children Attack", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Parent Attack", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
                     XPathExpression xprValue = nav.Compile(strValue);
                     // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -383,13 +410,13 @@ namespace Chummer.Backend.Equipment
                 if (strExpression.StartsWith("FixedValues"))
                 {
                     string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    if (_intRating > 0)
-                        strExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                    if (Rating > 0)
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
                 }
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                Commlink objParent = _objParent as Commlink;
+                Commlink objParent = Parent as Commlink;
                 if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Sleaze"))
@@ -398,9 +425,9 @@ namespace Chummer.Backend.Equipment
                         strParentValue = objParent.Sleaze;
                 }
                 int intTotalChildrenValue = 0;
-                if (_objChildren.Count > 0 && strExpression.Contains("Children Sleaze"))
+                if (Children.Count > 0 && strExpression.Contains("Children Sleaze"))
                 {
-                    foreach (Gear loopGear in _objChildren)
+                    foreach (Gear loopGear in Children)
                     {
                         Commlink objLoopCommlink = loopGear as Commlink;
                         if (objLoopCommlink != null && loopGear.Equipped)
@@ -414,7 +441,7 @@ namespace Chummer.Backend.Equipment
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
                     string strValue = strExpression.Replace("Gear Sleaze", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Children Sleaze", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Parent Sleaze", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
                     XPathExpression xprValue = nav.Compile(strValue);
                     // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -447,13 +474,13 @@ namespace Chummer.Backend.Equipment
                 if (strExpression.StartsWith("FixedValues"))
                 {
                     string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    if (_intRating > 0)
-                        strExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                    if (Rating > 0)
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
                 }
 
                 int intGearValue = 0;
                 string strParentValue = string.Empty;
-                Commlink objParent = _objParent as Commlink;
+                Commlink objParent = Parent as Commlink;
                 if (objParent != null)
                 {
                     if (strExpression.Contains("Gear Firewall"))
@@ -462,9 +489,9 @@ namespace Chummer.Backend.Equipment
                         strParentValue = objParent.Firewall;
                 }
                 int intTotalChildrenValue = 0;
-                if (_objChildren.Count > 0 && strExpression.Contains("Children Firewall"))
+                if (Children.Count > 0 && strExpression.Contains("Children Firewall"))
                 {
-                    foreach (Gear loopGear in _objChildren)
+                    foreach (Gear loopGear in Children)
                     {
                         Commlink objLoopCommlink = loopGear as Commlink;
                         if (objLoopCommlink != null && loopGear.Equipped)
@@ -478,7 +505,7 @@ namespace Chummer.Backend.Equipment
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
                     string strValue = strExpression.Replace("Gear Firewall", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Children Firewall", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                     strValue = strValue.Replace("Parent Firewall", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
                     XPathExpression xprValue = nav.Compile(strValue);
                     // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -504,13 +531,13 @@ namespace Chummer.Backend.Equipment
             {
                 int intReturn = 0;
 
-                foreach (Gear loopGear in _objChildren)
+                foreach (Gear loopGear in Children)
                 {
                     if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
                         intReturn += (loopGear as Commlink).TotalDataProcessing;
                 }
 
-                if (_objCharacter.Overclocker && Overclocked == "DataProc")
+                if (CharacterObject.Overclocker && Overclocked == "DataProc")
                 {
                     intReturn += 1;
                 }
@@ -528,13 +555,13 @@ namespace Chummer.Backend.Equipment
             {
                 int intReturn = 0;
 
-                foreach (Gear loopGear in _objChildren)
+                foreach (Gear loopGear in Children)
                 {
                     if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
                         intReturn += (loopGear as Commlink).TotalAttack;
                 }
 
-                if (_objCharacter.Overclocker && Overclocked == "Attack")
+                if (CharacterObject.Overclocker && Overclocked == "Attack")
                 {
                     intReturn += 1;
                 }
@@ -552,13 +579,13 @@ namespace Chummer.Backend.Equipment
             {
                 int intReturn = 0;
 
-                foreach (Gear loopGear in _objChildren)
+                foreach (Gear loopGear in Children)
                 {
                     if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
                         intReturn += (loopGear as Commlink).TotalSleaze;
                 }
 
-                if (_objCharacter.Overclocker && Overclocked == "Sleaze")
+                if (CharacterObject.Overclocker && Overclocked == "Sleaze")
                 {
                     intReturn += 1;
                 }
@@ -576,13 +603,13 @@ namespace Chummer.Backend.Equipment
             {
                 int intReturn = 0;
 
-                foreach (Gear loopGear in _objChildren)
+                foreach (Gear loopGear in Children)
                 {
                     if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
                         intReturn += (loopGear as Commlink).TotalFirewall;
                 }
 
-                if (_objCharacter.Overclocker && Overclocked == "Firewall")
+                if (CharacterObject.Overclocker && Overclocked == "Firewall")
                 {
                     intReturn += 1;
                 }

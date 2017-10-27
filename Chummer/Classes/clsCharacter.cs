@@ -309,21 +309,6 @@ namespace Chummer
             _attINI = new CharacterAttrib("INI", this);
             _attESS = new CharacterAttrib("ESS", this, CharacterAttrib.AttributeCategory.Special);
 
-            BOD._objCharacter = this;
-            AGI._objCharacter = this;
-            REA._objCharacter = this;
-            STR._objCharacter = this;
-            CHA._objCharacter = this;
-            INT._objCharacter = this;
-            LOG._objCharacter = this;
-            WIL._objCharacter = this;
-            INI._objCharacter = this;
-            EDG._objCharacter = this;
-            MAG._objCharacter = this;
-            RES._objCharacter = this;
-            ESS._objCharacter = this;
-            DEP._objCharacter = this;
-
             _objOptions = new CharacterOptions(this);
             SkillsSection = new SkillsSection(this);
             SkillsSection.Reset();

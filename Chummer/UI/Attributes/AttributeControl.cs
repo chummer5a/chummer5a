@@ -20,10 +20,12 @@ namespace Chummer.UI.Attributes
         private object sender;
         private decimal _oldBase;
         private decimal _oldKarma;
+        private Character _objCharacter;
 
         public AttributeControl(CharacterAttrib attribute)
         {
             this.attribute = attribute;
+            _objCharacter = attribute.CharacteObject;
             InitializeComponent();
 
             //Display
@@ -31,7 +33,7 @@ namespace Chummer.UI.Attributes
             lblValue.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
             lblLimits.DataBindings.Add("Text", attribute, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("TooltipText", attribute, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
-            if (attribute._objCharacter.Created)
+            if (_objCharacter.Created)
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
@@ -47,14 +49,14 @@ namespace Chummer.UI.Attributes
                 nudBase.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", attribute, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
+                nudBase.DataBindings.Add("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
                     DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.Visible = true;
 
                 nudKarma.Minimum = 0;
                 nudKarma.DataBindings.Add("Maximum", attribute, nameof(CharacterAttrib.KarmaMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("Value", attribute, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", attribute._objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
+                nudKarma.DataBindings.Add("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
                     DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
@@ -78,7 +80,7 @@ namespace Chummer.UI.Attributes
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
-                if (upgradeKarmaCost > attribute._objCharacter.Karma)
+                if (upgradeKarmaCost > _objCharacter.Karma)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -120,9 +122,9 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private bool ShowAttributeRule(decimal value)
         {
-            if (attribute._objCharacter.IgnoreRules || value < attribute.TotalMaximum || attribute.TotalMaximum == 0) return true;
-            bool any = attribute._objCharacter.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
-            if (!any || attribute.AtMetatypeMaximum || attribute._objCharacter.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
+            if (_objCharacter.IgnoreRules || value < attribute.TotalMaximum || attribute.TotalMaximum == 0) return true;
+            bool any = _objCharacter.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
+            if (!any || attribute.AtMetatypeMaximum || _objCharacter.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
             MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum"),
                 LanguageManager.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

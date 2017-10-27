@@ -32,8 +32,8 @@ namespace Chummer.Skills
         public CharacterAttrib AttributeObject { get; protected set; } //Attribute this skill primarily depends on
         private readonly Character _character; //The Character (parent) to this skill
         protected readonly string Category; //Name of the skill category it belongs to
-        protected readonly string _group; //Name of the skill group this skill belongs to (remove?)
-        protected string _name; //English name of this skill
+        private readonly string _group; //Name of the skill group this skill belongs to (remove?)
+        private string _name; //English name of this skill
         private string _strNotes; //Text of any notes that were entered by the user
         protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
         private readonly string _translatedName = null;
@@ -507,6 +507,7 @@ namespace Chummer.Skills
         public virtual string Name
         {
             get { return _name; }
+            set { _name = value; }
         } //I
 
         //TODO RENAME DESCRIPTIVE
@@ -948,7 +949,18 @@ namespace Chummer.Skills
             }
         }
 
-        protected int _cachedWareRating = int.MinValue;
+        private int _cachedWareRating = int.MinValue;
+        public int CachedWareRating
+        {
+            get
+            {
+                return _cachedWareRating;
+            }
+            set
+            {
+                _cachedWareRating = value;
+            }
+        }
         /// <summary>
         /// The attributeValue this skill have from Skillwires + Skilljack or Active Hardwires
         /// </summary>
@@ -956,7 +968,8 @@ namespace Chummer.Skills
         public virtual int CyberwareRating()
         {
 
-            if (_cachedWareRating != int.MinValue) return _cachedWareRating;
+            if (CachedWareRating != int.MinValue)
+                return CachedWareRating;
 
             //TODO: method is here, but not used in any form, needs testing (worried about child items...)
             //this might do hardwires if i understand how they works correctly
@@ -967,7 +980,7 @@ namespace Chummer.Skills
 
             if (hardwire.Count > 0)
             {
-                return _cachedWareRating = hardwire.Max(x => x.Value);
+                return CachedWareRating = hardwire.Max(x => x.Value);
             }
 
 
@@ -990,11 +1003,11 @@ namespace Chummer.Skills
                     return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
                 };
 
-                return _cachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+                return CachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
 
             }
 
-            return _cachedWareRating = 0;
+            return CachedWareRating = 0;
         }
         #endregion
 

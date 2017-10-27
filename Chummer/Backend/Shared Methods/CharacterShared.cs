@@ -42,11 +42,12 @@ namespace Chummer
     public class CharacterShared : Form
     {
         protected Character _objCharacter;
-        protected MainController _objController;
         protected CharacterOptions _objOptions;
 
-        public CharacterShared()
+        public CharacterShared(Character objCharacter)
         {
+            _objCharacter = objCharacter;
+            _objOptions = _objCharacter.Options;
             _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
@@ -193,24 +194,27 @@ namespace Chummer
         protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip)
         {
             // Condition Monitor.
-            int intBOD = _objCharacter.BOD.TotalValue;
-            int intWIL = _objCharacter.WIL.TotalValue;
             int intCMPhysical = _objCharacter.PhysicalCM;
             int intCMStun = _objCharacter.StunCM;
 
             // Update the Condition Monitor labels.
             lblPhysical.Text = intCMPhysical.ToString();
             lblStun.Text = intCMStun.ToString();
-            string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1)/2})";
-            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
-                strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
-            tipTooltip.SetToolTip(lblPhysical, strCM);
-            strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
-            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
-                strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                         ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
-            tipTooltip.SetToolTip(lblStun, strCM);
+            if (tipTooltip != null)
+            {
+                int intBOD = _objCharacter.BOD.TotalValue;
+                int intWIL = _objCharacter.WIL.TotalValue;
+                string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1) / 2})";
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
+                tipTooltip.SetToolTip(lblPhysical, strCM);
+                strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
+                tipTooltip.SetToolTip(lblStun, strCM);
+            }
         }
 
         /// <summary>
@@ -224,15 +228,18 @@ namespace Chummer
         {
             // Armor Ratings.
             lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-            string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
-            if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
-                strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                                   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
-            tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
-            if (lblCMArmor != null)
+            if (tipTooltip != null)
             {
-                lblCMArmor.Text = _objCharacter.TotalArmorRating.ToString();
-                tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
+                if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
+                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                                       (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
+                tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
+                if (lblCMArmor != null)
+                {
+                    lblCMArmor.Text = _objCharacter.TotalArmorRating.ToString();
+                    tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
+                }
             }
 
             // Remove any Improvements from Armor Encumbrance.
@@ -261,17 +268,19 @@ namespace Chummer
             lblMental.Text = _objCharacter.LimitMental.ToString();
             lblSocial.Text = _objCharacter.LimitSocial.ToString();
 
-            string strPhysical =
-                $"({_objCharacter.STR.DisplayAbbrev} [{_objCharacter.STR.TotalValue}] * 2) + {_objCharacter.BOD.DisplayAbbrev} [{_objCharacter.BOD.TotalValue}] + {_objCharacter.REA.DisplayAbbrev} [{_objCharacter.REA.TotalValue}] / 3";
-            string strMental =
-                $"({_objCharacter.LOG.DisplayAbbrev} [{_objCharacter.LOG.TotalValue}] * 2) + {_objCharacter.INT.DisplayAbbrev} [{_objCharacter.INT.TotalValue}] + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] / 3";
-            string strSocial =
-                $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence.ToString(GlobalOptions.CultureInfo)}] / 3";
+            if (tipTooltip != null)
+            {
+                string strPhysical =
+                    $"({_objCharacter.STR.DisplayAbbrev} [{_objCharacter.STR.TotalValue}] * 2) + {_objCharacter.BOD.DisplayAbbrev} [{_objCharacter.BOD.TotalValue}] + {_objCharacter.REA.DisplayAbbrev} [{_objCharacter.REA.TotalValue}] / 3";
+                string strMental =
+                    $"({_objCharacter.LOG.DisplayAbbrev} [{_objCharacter.LOG.TotalValue}] * 2) + {_objCharacter.INT.DisplayAbbrev} [{_objCharacter.INT.TotalValue}] + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] / 3";
+                string strSocial =
+                    $"({_objCharacter.CHA.DisplayAbbrev} [{_objCharacter.CHA.TotalValue}] * 2) + {_objCharacter.WIL.DisplayAbbrev} [{_objCharacter.WIL.TotalValue}] + {_objCharacter.ESS.DisplayAbbrev} [{_objCharacter.Essence.ToString(GlobalOptions.CultureInfo)}] / 3";
 
-            foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(
-                objLoopImprovment => (objLoopImprovment.ImproveType == Improvement.ImprovementType.PhysicalLimit 
-                || objLoopImprovment.ImproveType == Improvement.ImprovementType.SocialLimit 
-                || objLoopImprovment.ImproveType == Improvement.ImprovementType.MentalLimit) && objLoopImprovment.Enabled))
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(
+                    objLoopImprovment => (objLoopImprovment.ImproveType == Improvement.ImprovementType.PhysicalLimit
+                    || objLoopImprovment.ImproveType == Improvement.ImprovementType.SocialLimit
+                    || objLoopImprovment.ImproveType == Improvement.ImprovementType.MentalLimit) && objLoopImprovment.Enabled))
                 {
                     switch (objLoopImprovement.ImproveType)
                     {
@@ -287,9 +296,10 @@ namespace Chummer
                     }
                 }
 
-            tipTooltip.SetToolTip(lblPhysical, strPhysical);
-            tipTooltip.SetToolTip(lblMental, strMental);
-            tipTooltip.SetToolTip(lblSocial, strSocial);
+                tipTooltip.SetToolTip(lblPhysical, strPhysical);
+                tipTooltip.SetToolTip(lblMental, strMental);
+                tipTooltip.SetToolTip(lblSocial, strSocial);
+            }
 
             lblAstral.Text = _objCharacter.LimitAstral.ToString();
         }

@@ -103,12 +103,15 @@ namespace Chummer.Skills
 
         public string WriteableName
         {
-            get { return _translator.Read(_name, ref _translated); }
+            get { return _translator.Read(Name, ref _translated); }
             set
             {
-                if (ForcedName) return;
-                _translator.Write(value,ref _name, ref _translated);
-                LoadSuggestedSpecializations(_name);
+                if (ForcedName)
+                    return;
+                string strOriginal = Name;
+                _translator.Write(value, ref strOriginal, ref _translated);
+                Name = strOriginal;
+                LoadSuggestedSpecializations(Name);
 
                 OnPropertyChanged();
             }
@@ -170,7 +173,8 @@ namespace Chummer.Skills
         public override int CyberwareRating()
         {
 
-            if (_cachedWareRating != int.MinValue) return _cachedWareRating;
+            if (CachedWareRating != int.MinValue)
+                return CachedWareRating;
 
             if (IsKnowledgeSkill && CharacterObject.SkillsoftAccess)
             {
@@ -187,11 +191,10 @@ namespace Chummer.Skills
                     return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
                 };
 
-                return _cachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
-
+                return CachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
             }
 
-            return _cachedWareRating = 0;
+            return CachedWareRating = 0;
         }
 
         public string Type
@@ -343,7 +346,7 @@ namespace Chummer.Skills
 
         protected override void SaveExtendedData(XmlTextWriter writer)
         {
-            writer.WriteElementString("name", _name);
+            writer.WriteElementString("name", Name);
             writer.WriteElementString("type", _type);
             if (_translated != null)
                 writer.WriteElementString(GlobalOptions.Language, _translated);
@@ -355,10 +358,12 @@ namespace Chummer.Skills
         {
             if (node == null)
                 return;
-            node.TryGetStringFieldQuickly("name", ref _name);
+            string strTemp = Name;
+            if (node.TryGetStringFieldQuickly("name", ref strTemp))
+                Name = strTemp;
             node.TryGetStringFieldQuickly(GlobalOptions.Language, ref _translated);
 
-            LoadSuggestedSpecializations(_name);
+            LoadSuggestedSpecializations(Name);
             string strCategoryString = string.Empty;
             if ((node.TryGetStringFieldQuickly("type", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
                 || (node.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))

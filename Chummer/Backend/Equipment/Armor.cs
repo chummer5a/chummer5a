@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
         private List<ArmorMod> _lstArmorMods = new List<ArmorMod>();
         private List<Gear> _lstGear = new List<Gear>();
         private string _strNotes = string.Empty;
-        protected string _strLocation = string.Empty;
+        private string _strLocation = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
