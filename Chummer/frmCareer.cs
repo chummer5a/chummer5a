@@ -3986,12 +3986,11 @@ namespace Chummer
                         objParent.Children.Remove(objCyberware);
                 }
 
+                ScheduleCharacterUpdate();
                 RefreshSelectedCyberware();
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
-
-                ScheduleCharacterUpdate();
             }
         }
 
@@ -9627,12 +9626,12 @@ namespace Chummer
                         treCyberware.SelectedNode.Remove();
                     }
 
+                    ScheduleCharacterUpdate();
+                    RefreshSelectedCyberware();
+
                     _blnIsDirty = true;
                     UpdateWindowTitle();
                 }
-                RefreshSelectedCyberware();
-
-                ScheduleCharacterUpdate();
             }
         }
 
@@ -19095,7 +19094,6 @@ namespace Chummer
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
                 if (objCyberware.AddToParentESS)
                     lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
-                ScheduleCharacterUpdate();
             }
             else
             {
@@ -25294,8 +25292,8 @@ namespace Chummer
                 }
             }
 
-            RefreshSelectedCyberware();
             ScheduleCharacterUpdate();
+            RefreshSelectedCyberware();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -25361,8 +25359,8 @@ namespace Chummer
                 }
             }
 
-            RefreshSelectedVehicle();
             ScheduleCharacterUpdate();
+            RefreshSelectedVehicle();
 
             _blnIsDirty = true;
             UpdateWindowTitle();

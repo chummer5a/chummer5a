@@ -4113,9 +4113,8 @@ namespace Chummer
 
                 // Remove the item from the TreeView.
                 treCyberware.Nodes.Remove(treCyberware.SelectedNode);
-                RefreshSelectedCyberware();
-
                 ScheduleCharacterUpdate();
+                RefreshSelectedCyberware();
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
@@ -10174,6 +10173,7 @@ namespace Chummer
                     objChildCyberware.Grade = objCyberware.Grade;
                 }
 
+                ScheduleCharacterUpdate();
                 RefreshSelectedCyberware();
 
                 _blnIsDirty = true;
@@ -10209,12 +10209,8 @@ namespace Chummer
             if (!_blnSkipRefresh)
             {
                 // Locate the selected piece of Cyberware.
-                bool blnFound = false;
                 Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
                 if (objCyberware != null)
-                    blnFound = true;
-
-                if (blnFound)
                 {
                     // Update the selected Cyberware Rating.
                     objCyberware.Rating = Convert.ToInt32(nudCyberwareRating.Value);
@@ -10283,12 +10279,12 @@ namespace Chummer
                     treCyberware.SelectedNode.Text = objGear.DisplayName;
                 }
 
+                ScheduleCharacterUpdate();
                 RefreshSelectedCyberware();
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
             }
-            ScheduleCharacterUpdate();
         }
         #endregion
 
@@ -13858,7 +13854,6 @@ namespace Chummer
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
                 if (objCyberware.AddToParentESS)
                     lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
-                ScheduleCharacterUpdate();
             }
             else
             {
