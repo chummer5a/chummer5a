@@ -638,10 +638,11 @@ namespace Chummer.Backend.Attributes
 
                 if (intLimbCount > 0)
                 {
-                    int intMissingLimbCount = Math.Max(_objCharacter.Options.LimbCount - intLimbCount, 0);
+                    int intMaxLimbs = _objCharacter.LimbCount();
+                    int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
                     // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
                     intLimbTotal += intMeat * intMissingLimbCount;
-                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(_objCharacter.Options.LimbCount, GlobalOptions.CultureInfo)));
+                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intMaxLimbs, GlobalOptions.CultureInfo)));
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.

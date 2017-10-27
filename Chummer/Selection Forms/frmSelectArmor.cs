@@ -329,7 +329,7 @@ namespace Chummer
         }
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
 
         private void dgvArmor_CellContentClick(object sender, DataGridViewCellEventArgs e)

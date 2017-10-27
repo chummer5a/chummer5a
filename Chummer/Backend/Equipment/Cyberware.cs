@@ -20,7 +20,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strLimbSlot = string.Empty;
-        private int _intLimbSlotCount = 1;
+        private string _strLimbSlotCount = "1";
         private bool _blnInheritAttributes = false;
         private string _strESS = string.Empty;
         private decimal _decExtraESSAdditiveMultiplier = 0.0m;
@@ -37,6 +37,7 @@ namespace Chummer.Backend.Equipment
         private string _strAllowSubsystems = string.Empty;
         private bool _blnSuite = false;
         private string _strLocation = string.Empty;
+        private string _strExtra = string.Empty;
         private Guid _guiWeaponID = new Guid();
         private Guid _guiVehicleID = new Guid();
         private Grade _objGrade = new Grade();
@@ -60,6 +61,10 @@ namespace Chummer.Backend.Equipment
         private Cyberware _objParent;
         private bool _blnAddToParentESS = false;
         private string _strParentID = string.Empty;
+        private string _strHasModularMount = string.Empty;
+        private string _strPlugsIntoModularMount = string.Empty;
+        private string _strBlocksMounts = string.Empty;
+        private string _strForced = string.Empty;
 
         private readonly Character _objCharacter;
 
@@ -115,13 +120,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
-        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null)
+        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, bool blnVehicleMounted = false)
         {
             Parent = objParent;
+            _strForced = strForced;
+            _blnVehicleMounted = blnVehicleMounted;
             objXmlCyberware.TryGetStringFieldQuickly("name", ref _strName);
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
-            objXmlCyberware.TryGetInt32FieldQuickly("limbslotcount", ref _intLimbSlotCount);
+            objXmlCyberware.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
             _blnInheritAttributes = objXmlCyberware["inheritattributes"] != null;
             _objGrade = objGrade;
             objXmlCyberware.TryGetStringFieldQuickly("ess", ref _strESS);
@@ -136,6 +143,9 @@ namespace Chummer.Backend.Equipment
             _blnWirelessOn = _nodWirelessBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
             objXmlCyberware.TryGetField("id", Guid.TryParse, out _sourceID);
+            objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
+            objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
+            objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
 
             _objImprovementSource = objSource;
             if (objXmlCyberware["rating"] != null)
@@ -303,38 +313,95 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            // If the piece grants a bonus, pass the information to the Improvement Manager.
-            if (blnCreateImprovements)
+            /*
+             * This needs to be handled separately from usual bonus nodes because:
+             * - Children must always inherit the side of their parent(s)
+             * - In case of numerical limits, we must be able to apply them separately to each side
+             * - Modular cyberlimbs need a constant side regardless of their equip status
+             * - In cases where modular mounts might get blocked, we must force the 'ware to the unblocked side
+             */
+            if (objXmlCyberware["selectside"] != null)
             {
-                if (_nodBonus != null || _nodWirelessBonus != null || _nodPairBonus != null)
+                string strParentSide = Parent?.Location;
+                if (!string.IsNullOrEmpty(strParentSide))
                 {
-                    if (!string.IsNullOrEmpty(strForced))
-                        ImprovementManager.ForcedValue = strForced;
+                    _strLocation = strParentSide;
+                }
+                else
+                {
+                    frmSelectSide frmPickSide = new frmSelectSide();
+                    frmPickSide.Description = LanguageManager.GetString("Label_SelectSide").Replace("{0}", DisplayNameShort);
+                    string strForcedSide = string.Empty;
+                    if (_strForced == "Right" || _strForced == "Left")
+                        strForcedSide = _strForced;
+                    // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
+                    if (string.IsNullOrEmpty(strForcedSide) && !VehicleMounted)
+                    {
+                        List<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
+                        if (!Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Left") ||
+                            (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
+                            (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
+                            strForcedSide = "Right";
+                        else if (!Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Right") ||
+                            (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Right" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
+                            (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Right" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
+                            strForcedSide = "Left";
+                    }
+                    if (!string.IsNullOrEmpty(strForcedSide))
+                        frmPickSide.ForceValue(strForcedSide);
+                    else
+                        frmPickSide.ShowDialog();
 
-                    if (_nodBonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodBonus, false, _intRating, DisplayNameShort))
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSide.DialogResult == DialogResult.Cancel)
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        _strLocation = ImprovementManager.SelectedValue;
 
-                    if (_nodWirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodWirelessBonus, false, _intRating, DisplayNameShort))
+                    _strLocation = frmPickSide.SelectedSide;
+                }
+            }
+
+            // If the piece grants a bonus, pass the information to the Improvement Manager.
+            // Modular cyberlimbs only get their bonuses applied when they are equipped onto a limb, so we're skipping those here
+            if (blnCreateImprovements && string.IsNullOrEmpty(_strPlugsIntoModularMount))
+            {
+                if (Bonus != null || WirelessBonus != null || PairBonus != null)
+                {
+                    if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                        ImprovementManager.ForcedValue = _strForced;
+
+                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), Bonus, false, _intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strLocation))
-                        _strLocation = ImprovementManager.SelectedValue;
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
 
-                    if (_nodPairBonus != null && objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && (x.Location == Location || (!string.IsNullOrEmpty(LimbSlot) && x.LimbSlot == LimbSlot)) && x.Parent?.LimbSlot == Parent?.LimbSlot).Count() % 2 == 1 &&
-                        !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), _nodPairBonus, false, _intRating, DisplayNameShort))
+                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), WirelessBonus, false, _intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strLocation))
-                        _strLocation = ImprovementManager.SelectedValue;
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+
+                    if (PairBonus != null)
+                    {
+                        List<Cyberware> lstPairableCyberwares = objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                        bool blnAdd = lstPairableCyberwares.Count % 2 == 1;
+                        if (!string.IsNullOrEmpty(Location))
+                        {
+                            blnAdd = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1) % 2 == 1;
+                        }
+                        if (blnAdd && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, _intRating, DisplayNameShort))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -387,7 +454,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnCreateChildren)
-                CreateChildren(objXmlCyberware, objNode, objGrade, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements);
+                CreateChildren(objXmlCyberware, objNode, objGrade, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements && string.IsNullOrEmpty(_strPlugsIntoModularMount));
         }
 
         private void CreateChildren(XmlNode objParentNode, TreeNode objParentTreeNode, Grade objGrade, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true)
@@ -484,7 +551,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(objXmlChild["devicerating"]?.InnerText))
                     {
                         Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Create(objXmlGear, objChildNode, intChildRating, true, true, strChildForceValue);
+                        objCommlink.Create(objXmlGear, objChildNode, intChildRating, blnCreateImprovements, true, strChildForceValue);
                         objCommlink.Quantity = decChildQty;
                         objChildNode.Text = objCommlink.DisplayName;
 
@@ -493,7 +560,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         Gear objGear = new Gear(_objCharacter);
-                        objGear.Create(objXmlGear, objChildNode, intChildRating, objChildWeapons, objChildWeaponNodes, strChildForceValue);
+                        objGear.Create(objXmlGear, objChildNode, intChildRating, objChildWeapons, objChildWeaponNodes, strChildForceValue, false, false, blnCreateImprovements);
                         objGear.Quantity = decChildQty;
                         objChildNode.Text = objGear.DisplayName;
 
@@ -537,7 +604,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("limbslot", _strLimbSlot);
-            objWriter.WriteElementString("limbslotcount", _intLimbSlotCount.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("limbslotcount", _strLimbSlotCount);
             objWriter.WriteElementString("inheritattributes", _blnInheritAttributes.ToString());
             objWriter.WriteElementString("ess", _strESS);
             objWriter.WriteElementString("capacity", _strCapacity);
@@ -546,12 +613,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
+            objWriter.WriteElementString("hasmodularmount", _strHasModularMount);
+            objWriter.WriteElementString("plugsintomodularmount", _strPlugsIntoModularMount);
+            objWriter.WriteElementString("blocksmounts", _strBlocksMounts);
+            objWriter.WriteElementString("forced", _strForced);
             objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("minrating", _intMinRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("subsystems", _strAllowSubsystems);
             objWriter.WriteElementString("grade", _objGrade.Name);
             objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("suite", _blnSuite.ToString());
             objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("extraessadditivemultiplier", _decExtraESSAdditiveMultiplier.ToString(CultureInfo.InvariantCulture));
@@ -631,7 +703,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
-            objNode.TryGetInt32FieldQuickly("limbslotcount", ref _intLimbSlotCount);
+            objNode.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
             objNode.TryGetBoolFieldQuickly("inheritattributes", ref _blnInheritAttributes);
             objNode.TryGetStringFieldQuickly("ess", ref _strESS);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
@@ -640,7 +712,13 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
-
+            if (!objNode.TryGetStringFieldQuickly("hasmodularmount", ref _strHasModularMount))
+                _strHasModularMount = MyXmlNode?["hasmodularmount"]?.InnerText ?? string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("plugsintomodularmount", ref _strPlugsIntoModularMount))
+                _strPlugsIntoModularMount = MyXmlNode?["plugsintomodularmount"]?.InnerText ?? string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts))
+                _strBlocksMounts = MyXmlNode?["blocksmounts"]?. InnerText ?? string.Empty;
+            objNode.TryGetStringFieldQuickly("forced", ref _strForced);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
             objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
@@ -648,6 +726,11 @@ namespace Chummer.Backend.Equipment
             if (objNode["grade"] != null)
                 _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter.Options);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+            if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" && _strLocation != "Right")
+            {
+                _strExtra = _strLocation;
+                _strLocation = string.Empty;
+            }
             objNode.TryGetBoolFieldQuickly("suite", ref _blnSuite);
             objNode.TryGetInt32FieldQuickly("essdiscount", ref _intEssenceDiscount);
             objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
@@ -779,6 +862,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("grade", _objGrade.DisplayName);
             objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_lstGear.Count > 0)
             {
@@ -993,11 +1077,23 @@ namespace Chummer.Backend.Equipment
                     strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 }
 
-                if (!string.IsNullOrEmpty(_strLocation))
+                if (!string.IsNullOrEmpty(_strExtra))
                 {
                     LanguageManager.Load(GlobalOptions.Language, this);
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.TranslateExtra(_strLocation) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
+                }
+
+                if (!string.IsNullOrEmpty(_strLocation))
+                {
+                    string strSide = string.Empty;
+                    LanguageManager.Load(GlobalOptions.Language, this);
+                    if (_strLocation == "Left")
+                        strSide = LanguageManager.GetString("String_Improvement_SideLeft");
+                    else if (_strLocation == "Right")
+                        strSide = LanguageManager.GetString("String_Improvement_SideRight");
+                    if (!string.IsNullOrEmpty(strSide))
+                        strReturn += " (" + strSide + ")";
                 }
                 return strReturn;
             }
@@ -1054,11 +1150,17 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _intLimbSlotCount;
+                if (_strLimbSlotCount == "all")
+                {
+                    return _objCharacter.LimbCount(LimbSlot);
+                }
+                int intReturn = 0;
+                int.TryParse(_strLimbSlotCount, out intReturn);
+                return intReturn;
             }
             set
             {
-                _intLimbSlotCount = value;
+                _strLimbSlotCount = value.ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -1086,7 +1188,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// The location of a Cyberlimb.
+        /// The location of a Cyberlimb (Left or Right).
         /// </summary>
         public string Location
         {
@@ -1097,6 +1199,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _strLocation = value;
+            }
+        }
+
+        /// <summary>
+        /// Extra string associted with the 'ware.
+        /// </summary>
+        public string Extra
+        {
+            get
+            {
+                return _strExtra;
+            }
+            set
+            {
+                _strExtra = value;
             }
         }
 
@@ -1205,6 +1322,148 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _strParentID = value;
+            }
+        }
+
+        /// <summary>
+        /// The modular mount this cyberware contains. Returns string.Empty if it contains no mount.
+        /// </summary>
+        public string HasModularMount
+        {
+            get
+            {
+                return _strHasModularMount;
+            }
+            set
+            {
+                _strHasModularMount = value;
+            }
+        }
+
+        /// <summary>
+        /// What modular mount this cyberware plugs into. Returns string.Empty if it doesn't plug into a modular mount.
+        /// </summary>
+        public string PlugsIntoModularMount
+        {
+            get
+            {
+                return _strPlugsIntoModularMount;
+            }
+            set
+            {
+                _strPlugsIntoModularMount = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the 'ware is currently equipped (with improvements applied) or not.
+        /// </summary>
+        public bool IsModularCurrentlyEquipped
+        {
+            get
+            {
+                // Cyberware always equipped if it's not a modular one
+                bool blnReturn = string.IsNullOrEmpty(PlugsIntoModularMount);
+                if (blnReturn)
+                    return true;
+                Cyberware objCurrentParent = Parent;
+                // If top-level parent is one that has a modular mount but also does not plug into another modular mount itself, then return true, otherwise return false
+                while (objCurrentParent != null)
+                {
+                    if (!string.IsNullOrEmpty(objCurrentParent.HasModularMount))
+                        blnReturn = true;
+                    if (!string.IsNullOrEmpty(PlugsIntoModularMount))
+                        blnReturn = false;
+                    objCurrentParent = Parent.Parent;
+                }
+                return blnReturn;
+            }
+        }
+
+        /// <summary>
+        /// Equips a piece of modular cyberware, activating the improvements of it and its children. Call after attaching onto objCharacter.Cyberware or a parent
+        /// </summary>
+        public void ChangeModularEquip(bool blnEquip)
+        {
+            if (blnEquip)
+            {
+                // If the piece grants a bonus, pass the information to the Improvement Manager.
+                if (Bonus != null || WirelessBonus != null || PairBonus != null)
+                {
+                    if (!string.IsNullOrEmpty(_strForced) && _strForced != "Right" && _strForced != "Left")
+                        ImprovementManager.ForcedValue = _strForced;
+
+                    if (Bonus != null)
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, _intRating, DisplayNameShort);
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+
+                    if (WirelessBonus != null && WirelessOn)
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, _intRating, DisplayNameShort);
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+
+                    if (PairBonus != null)
+                    {
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                        bool blnAdd = lstPairableCyberwares.Count % 2 == 0;
+                        if (!string.IsNullOrEmpty(Location))
+                        {
+                            blnAdd = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location)) % 2 == 0;
+                        }
+                        if (blnAdd)
+                        {
+                            ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, PairBonus, false, _intRating, DisplayNameShort);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
+                if (PairBonus != null)
+                {
+                    List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                    int intCyberwaresCount = lstPairableCyberwares.Count - 1;
+                    if (!string.IsNullOrEmpty(Location))
+                    {
+                        intCyberwaresCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location) - 1, lstPairableCyberwares.Count(x => x.Location != Location));
+                    }
+                    foreach (Cyberware objLoopCyberware in lstPairableCyberwares.Where(x => x.InternalId != InternalId))
+                    {
+                        ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
+                        if (objLoopCyberware.Bonus != null)
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
+                        {
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        }
+                        intCyberwaresCount -= 1;
+                    }
+                }
+            }
+
+            foreach (Gear objChildGear in Gear)
+                objChildGear.ChangeModularEquip(blnEquip);
+
+            foreach (Cyberware objChild in Children)
+                objChild.ChangeModularEquip(blnEquip);
+        }
+
+        /// <summary>
+        /// Comma-separated list of mount locations with which this 'ware is mutually exclusive.
+        /// </summary>
+        public string BlocksMounts
+        {
+            get
+            {
+                return _strBlocksMounts;
+            }
+            set
+            {
+                _strBlocksMounts = value;
             }
         }
 
@@ -1483,6 +1742,20 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _objParent = value;
+            }
+        }
+
+        /// <summary>
+        /// Topmost Parent Cyberware.
+        /// </summary>
+        public Cyberware TopMostParent
+        {
+            get
+            {
+                Cyberware objReturn = this;
+                while (objReturn.Parent != null)
+                    objReturn = objReturn.Parent;
+                return objReturn;
             }
         }
 
@@ -2224,7 +2497,7 @@ namespace Chummer.Backend.Equipment
                     if (objChild.Name == "Enhanced Strength")
                         intBonus = objChild.Rating;
                 }
-                if (!_blnVehicleMounted)
+                if (!VehicleMounted)
                 {
                     return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
                 }
@@ -2321,7 +2594,7 @@ namespace Chummer.Backend.Equipment
                         intBonus = objChild.Rating;
                 }
 
-                if (!_blnVehicleMounted)
+                if (!VehicleMounted)
                 {
                     return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
                 }

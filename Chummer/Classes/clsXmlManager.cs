@@ -317,7 +317,7 @@ namespace Chummer
                                                     }
                                                     break;
                                                 case "martialarts.xml":
-                                                    if (objChild["advantages"] != null)
+                                                    if (objChild["techniques"] != null)
                                                     {
                                                         foreach (XmlNode objAdvantage in objChild.SelectNodes("techniques/technique"))
                                                         {
@@ -790,7 +790,7 @@ namespace Chummer
 
                                             if (strFile == "martialarts.xml")
                                             {
-                                                if (objChild["advantages"] != null)
+                                                if (objChild["techniques"] != null)
                                                 {
                                                     foreach (XmlNode objAdvantage in objChild.SelectNodes("techniques/technique"))
                                                     {

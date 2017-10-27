@@ -17,6 +17,14 @@
     </xs:element>
 	<xs:element name="addesstophysicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="addesstostuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="addlimb" type="xs:string" minOccurs="0" maxOccurs="1">
+	<xs:complexType>
+      <xs:sequence>
+		<xs:element name="limbslot" type="xs:string" minOccurs="1" maxOccurs="1" />
+		<xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+	</xs:element>
     <xs:element name="addqualities" minOccurs="0" maxOccurs="1">
       <xs:complexType>
       <xs:sequence>

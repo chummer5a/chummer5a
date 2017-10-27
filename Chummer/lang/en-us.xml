@@ -4241,6 +4241,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_EssenceHole</key>
       <text>Essence Hole:</text>
     </string>
+	<string>
+      <key>Button_ChangeMountedLocation</key>
+      <text>Change Mounted Location</text>
+    </string>
     <!-- End Region-->
     <!-- Region Street Gear/Lifestyle Tab -->
     <string>

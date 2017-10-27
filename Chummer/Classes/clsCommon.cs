@@ -25,19 +25,13 @@ using System.Diagnostics;
  using System.Linq;
  using Chummer.Backend.Equipment;
 using Chummer.Backend.Extensions;
+using System.Xml;
 
 namespace Chummer
 {
-    public class CommonFunctions
+    public static class CommonFunctions
     {
         #region Constructor
-        private readonly Character _objCharacter;
-
-        public CommonFunctions(Character objCharacter)
-        {
-            _objCharacter = objCharacter;
-        }
-
         public enum LogType
         {
             Message = 0,
@@ -709,25 +703,25 @@ namespace Chummer
         /// </summary>
         /// <param name="objCommlink">Current commlink to process.</param>
         /// <param name="blnActivateCommlink">Mark current commlink as active.</param>
-        public void ChangeActiveCommlink(Commlink objCommlink, bool blnActivateCommlink = true)
+        public static void ChangeActiveCommlink(Character objCharacter, Commlink objCommlink, bool blnActivateCommlink = true)
         {
-            List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+            List<Gear> lstGearToSearch = new List<Gear>(objCharacter.Gear);
+            foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
             {
                 lstGearToSearch.AddRange(objCyberware.Gear);
             }
-            foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+            foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
             {
                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                 {
                     lstGearToSearch.AddRange(objAccessory.Gear);
                 }
             }
-            foreach (Armor objArmor in _objCharacter.Armor)
+            foreach (Armor objArmor in objCharacter.Armor)
             {
                 lstGearToSearch.AddRange(objArmor.Gear);
             }
-            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            foreach (Vehicle objVehicle in objCharacter.Vehicles)
             {
                 lstGearToSearch.AddRange(objVehicle.Gear);
                 foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -796,19 +790,19 @@ namespace Chummer
         /// <param name="objGear">Gear to delete.</param>
         /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public decimal DeleteGear(Gear objGear, TreeView treWeapons)
+        public static decimal DeleteGear(Character objCharacter, Gear objGear, TreeView treWeapons)
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in objGear.Children)
-                decReturn += DeleteGear(objChild, treWeapons);
+                decReturn += DeleteGear(objCharacter, objChild, treWeapons);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (objGear.WeaponID != Guid.Empty.ToString())
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Weapon> lstWeaponsToDelete = new List<Weapon>();
-                foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                 {
                     if (objWeapon.ParentID == objGear.InternalId)
                     {
@@ -823,13 +817,13 @@ namespace Chummer
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else
-                        _objCharacter.Weapons.Remove(objWeapon);
+                        objCharacter.Weapons.Remove(objWeapon);
 
                     foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
                     {
                         foreach (Gear objLoopGear in objLoopAccessory.Gear)
                         {
-                            decReturn += DeleteGear(objLoopGear, treWeapons);
+                            decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
                         }
                     }
                 }
@@ -840,13 +834,13 @@ namespace Chummer
                 }
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
 
             // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
             if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
             {
                 HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
-                foreach (Focus objFocus in _objCharacter.Foci)
+                foreach (Focus objFocus in objCharacter.Foci)
                 {
                     if (objFocus.GearId == objGear.InternalId)
                         lstRemoveFoci.Add(objFocus);
@@ -854,7 +848,7 @@ namespace Chummer
                 foreach (Focus objFocus in lstRemoveFoci)
                 {
                     /*
-                    foreach (Power objPower in _objCharacter.Powers)
+                    foreach (Power objPower in objCharacter.Powers)
                     {
                         if (objPower.BonusSource == objFocus.GearId)
                         {
@@ -862,24 +856,24 @@ namespace Chummer
                         }
                     }
                     */
-                    _objCharacter.Foci.Remove(objFocus);
+                    objCharacter.Foci.Remove(objFocus);
                 }
             }
             // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
             else if (objGear.Category == "Stacked Focus")
             {
-                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
+                StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
                 if (objStack != null)
                 {
-                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                    _objCharacter.StackedFoci.Remove(objStack);
+                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                    objCharacter.StackedFoci.Remove(objStack);
                 }
             }
 
             Commlink objCommlink = (objGear as Commlink);
             if (objCommlink?.IsActive == true)
             {
-                ChangeActiveCommlink(objCommlink, false);
+                ChangeActiveCommlink(objCharacter, objCommlink, false);
             }
             return decReturn;
         }
@@ -890,19 +884,19 @@ namespace Chummer
         /// <param name="objGear">Gear to delete.</param>
         /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public decimal DeleteCyberware(Cyberware objCyberware, TreeView treWeapons, TreeView treVehicles)
+        public static decimal DeleteCyberware(Character objCharacter, Cyberware objCyberware, TreeView treWeapons, TreeView treVehicles)
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Cyberware objChild in objCyberware.Children)
-                decReturn += DeleteCyberware(objChild, treWeapons, treVehicles);
+                decReturn += DeleteCyberware(objCharacter, objChild, treWeapons, treVehicles);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (objCyberware.WeaponID != Guid.Empty.ToString())
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Weapon> lstWeaponsToDelete = new List<Weapon>();
-                foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                 {
                     if (objWeapon.ParentID == objCyberware.InternalId)
                     {
@@ -917,13 +911,13 @@ namespace Chummer
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else
-                        _objCharacter.Weapons.Remove(objWeapon);
+                        objCharacter.Weapons.Remove(objWeapon);
 
                     foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
                     {
                         foreach (Gear objLoopGear in objLoopAccessory.Gear)
                         {
-                            decReturn += DeleteGear(objLoopGear, treWeapons);
+                            decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
                         }
                     }
                 }
@@ -939,7 +933,7 @@ namespace Chummer
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Vehicle> lstVehiclesToRemove = new List<Vehicle>();
-                foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles)
+                foreach (Vehicle objLoopVehicle in objCharacter.Vehicles)
                 {
                     if (objLoopVehicle.ParentID == objCyberware.InternalId)
                     {
@@ -950,10 +944,10 @@ namespace Chummer
                 foreach (Vehicle objLoopVehicle in lstVehiclesToRemove)
                 {
                     decReturn += objLoopVehicle.TotalCost;
-                    _objCharacter.Vehicles.Remove(objLoopVehicle);
+                    objCharacter.Vehicles.Remove(objLoopVehicle);
                     foreach (Gear objLoopGear in objLoopVehicle.Gear)
                     {
-                        decReturn += DeleteGear(objLoopGear, treWeapons);
+                        decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
                     }
                     foreach (Weapon objLoopWeapon in objLoopVehicle.Weapons)
                     {
@@ -961,7 +955,7 @@ namespace Chummer
                         {
                             foreach (Gear objLoopGear in objLoopAccessory.Gear)
                             {
-                                decReturn += DeleteGear(objLoopGear, treWeapons);
+                                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
                             }
                         }
                     }
@@ -973,13 +967,13 @@ namespace Chummer
                             {
                                 foreach (Gear objLoopGear in objLoopAccessory.Gear)
                                 {
-                                    decReturn += DeleteGear(objLoopGear, treWeapons);
+                                    decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
                                 }
                             }
                         }
                         foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                         {
-                            decReturn += DeleteCyberware(objLoopCyberware, treWeapons, treVehicles);
+                            decReturn += DeleteCyberware(objCharacter, objLoopCyberware, treWeapons, treVehicles);
                         }
                     }
                 }
@@ -990,21 +984,25 @@ namespace Chummer
                 }
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId);
+            ImprovementManager.RemoveImprovements(objCharacter, objCyberware.SourceType, objCyberware.InternalId);
             if (objCyberware.PairBonus != null)
             {
-                List<Cyberware> lstPairableCyberwares = new List<Cyberware>(_objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == objCyberware.Name && (x.Location == objCyberware.Location || (!string.IsNullOrEmpty(objCyberware.LimbSlot) && x.LimbSlot == objCyberware.LimbSlot)) && x.Parent?.LimbSlot == objCyberware.Parent?.LimbSlot));
+                List<Cyberware> lstPairableCyberwares = objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped).ToList();
                 int intCyberwaresCount = lstPairableCyberwares.Count - 1;
+                if (!string.IsNullOrEmpty(objCyberware.Location))
+                {
+                    intCyberwaresCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == objCyberware.Location) - 1, lstPairableCyberwares.Count(x => x.Location != objCyberware.Location));
+                }
                 foreach (Cyberware objLoopCyberware in lstPairableCyberwares.Where(x => x.InternalId != objCyberware.InternalId))
                 {
-                    ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
+                    ImprovementManager.RemoveImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
                     if (objLoopCyberware.Bonus != null)
-                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
                     if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
                     if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
                     {
-                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
                     }
                     intCyberwaresCount -= 1;
                 }
@@ -1012,7 +1010,7 @@ namespace Chummer
 
             foreach (Gear objLoopGear in objCyberware.Gear)
             {
-                decReturn += DeleteGear(objLoopGear, treWeapons);
+                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
             }
 
             return decReturn;
@@ -1024,9 +1022,9 @@ namespace Chummer
         /// <param name="treArmor"></param>
         /// <param name="treWeapons"></param>
         /// <param name="_objImprovementManager"></param>
-        public decimal DeleteArmor(TreeView treArmor, TreeView treWeapons)
+        public static decimal DeleteArmor(Character objCharacter, TreeView treArmor, TreeView treWeapons)
         {
-            if (!ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
+            if (!ConfirmDelete(objCharacter, LanguageManager.GetString("Message_DeleteArmor")))
                 return 0.0m;
 
             TreeNode objSelectedNode = treArmor.SelectedNode;
@@ -1036,7 +1034,7 @@ namespace Chummer
             decimal decReturn = 0.0m;
             if (objSelectedNode.Level == 1)
             {
-                Armor objArmor = FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), _objCharacter.Armor);
+                Armor objArmor = FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), objCharacter.Armor);
                 if (objArmor == null)
                     return 0.0m;
                 // Remove any Improvements created by the Armor and its children.
@@ -1046,7 +1044,7 @@ namespace Chummer
                     if (objMod.WeaponID != Guid.Empty.ToString())
                     {
                         List<string> lstNodesToRemoveIds = new List<string>();
-                        foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                        foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                         {
                             if (objWeapon.ParentID == objMod.InternalId)
                             {
@@ -1056,7 +1054,7 @@ namespace Chummer
                                 if (objWeapon.Parent != null)
                                     objWeapon.Parent.Children.Remove(objWeapon);
                                 else
-                                    _objCharacter.Weapons.Remove(objWeapon);
+                                    objCharacter.Weapons.Remove(objWeapon);
                             }
                         }
                         foreach (string strNodeId in lstNodesToRemoveIds)
@@ -1066,19 +1064,19 @@ namespace Chummer
                         }
                     }
 
-                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                 }
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
+                ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
 
                 // Remove any Improvements created by the Armor's Gear.
                 foreach (Gear objGear in objArmor.Gear)
-                    decReturn += DeleteGear(objGear, treWeapons);
+                    decReturn += DeleteGear(objCharacter, objGear, treWeapons);
 
                 // Remove the Cyberweapon created by the Mod if applicable.
                 if (objArmor.WeaponID != Guid.Empty.ToString())
                 {
                     List<string> lstNodesToRemoveIds = new List<string>();
-                    foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                    foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                     {
                         if (objWeapon.ParentID == objArmor.InternalId)
                         {
@@ -1088,7 +1086,7 @@ namespace Chummer
                             if (objWeapon.Parent != null)
                                 objWeapon.Parent.Children.Remove(objWeapon);
                             else
-                                _objCharacter.Weapons.Remove(objWeapon);
+                                objCharacter.Weapons.Remove(objWeapon);
                         }
                     }
                     foreach (string strNodeId in lstNodesToRemoveIds)
@@ -1098,18 +1096,18 @@ namespace Chummer
                     }
                 }
 
-                _objCharacter.Armor.Remove(objArmor);
+                objCharacter.Armor.Remove(objArmor);
             }
             else if (objSelectedNode.Level == 2)
             {
-                ArmorMod objMod = FindArmorMod(objSelectedNode.Tag.ToString(), _objCharacter.Armor);
+                ArmorMod objMod = FindArmorMod(objSelectedNode.Tag.ToString(), objCharacter.Armor);
                 if (objMod != null)
                 {
                     // Remove the Cyberweapon created by the Mod if applicable.
                     if (objMod.WeaponID != Guid.Empty.ToString())
                     {
                         List<string> lstNodesToRemoveIds = new List<string>();
-                        foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                        foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                         {
                             if (objWeapon.ParentID == objMod.InternalId)
                             {
@@ -1119,7 +1117,7 @@ namespace Chummer
                                 if (objWeapon.Parent != null)
                                     objWeapon.Parent.Children.Remove(objWeapon);
                                 else
-                                    _objCharacter.Weapons.Remove(objWeapon);
+                                    objCharacter.Weapons.Remove(objWeapon);
                             }
                         }
                         foreach (string strNodeId in lstNodesToRemoveIds)
@@ -1130,16 +1128,16 @@ namespace Chummer
                     }
 
                     // Remove any Improvements created by the ArmorMod.
-                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                     objMod.Parent.ArmorMods.Remove(objMod);
                 }
                 else
                 {
                     Armor objSelectedArmor;
-                    Gear objGear = FindArmorGear(objSelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+                    Gear objGear = FindArmorGear(objSelectedNode.Tag.ToString(), objCharacter.Armor, out objSelectedArmor);
                     if (objGear != null)
                     {
-                        decReturn += DeleteGear(objGear, treWeapons);
+                        decReturn += DeleteGear(objCharacter, objGear, treWeapons);
                         objSelectedArmor.Gear.Remove(objGear);
                     }
                 }
@@ -1147,7 +1145,7 @@ namespace Chummer
             else if (objSelectedNode.Level > 2)
             {
                 Armor objSelectedArmor;
-                Gear objGear = FindArmorGear(objSelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+                Gear objGear = FindArmorGear(objSelectedNode.Tag.ToString(), objCharacter.Armor, out objSelectedArmor);
                 if (objGear != null)
                 {
                     objGear.Parent.Children.Remove(objGear);
@@ -1156,7 +1154,7 @@ namespace Chummer
                     {
                         objCommlink.RefreshCyberdeckArray();
                     }
-                    decReturn += DeleteGear(objGear, treWeapons);
+                    decReturn += DeleteGear(objCharacter, objGear, treWeapons);
                     objSelectedArmor.Gear.Remove(objGear);
                 }
             }
@@ -1167,11 +1165,32 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>
-        public bool ConfirmDelete(string strMessage)
+        public static bool ConfirmDelete(Character objCharacter, string strMessage)
         {
-            return !_objCharacter.Options.ConfirmDelete ||
+            return !objCharacter.Options.ConfirmDelete ||
                    MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+        #endregion
+
+        #region Add Improvements Functions
+        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears)
+        {
+            XmlNode objNode = objGear.MyXmlNode;
+            if (objNode?["bonus"] != null)
+            {
+                ImprovementManager.ForcedValue = objGear.Extra;
+                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    objGear.Extra = ImprovementManager.SelectedValue;
+                    TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                    if (objGearNode != null)
+                        objGearNode.Text = objGear.DisplayName;
+                }
+            }
+            foreach (Gear objChild in objGear.Children)
+                ReaddGearImprovements(objCharacter, objChild, treGears);
         }
         #endregion
 
@@ -1524,22 +1543,12 @@ namespace Chummer
         #endregion
 
         #region PDF Functions
-
         /// <summary>
-        /// Open a PDF file using the provided source information.
-        /// </summary>
-        /// <param name="strSource">Book coode and page number to open.</param>
-        public void OpenPDF(string strSource)
-        {
-            StaticOpenPDF(strSource, _objCharacter);
-        }
-
-        /// <summary>
-        /// Static Function to open a PDF file using the provided source information.
+        /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book coode and page number to open.</param>
         /// <param name="objCharacter">Character from which alternate sources should be fetched.</param>
-        public static void StaticOpenPDF(string strSource, Character objCharacter = null)
+        public static void OpenPDF(string strSource, Character objCharacter = null)
         {
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             if (string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters))

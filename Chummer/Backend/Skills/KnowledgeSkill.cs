@@ -233,9 +233,9 @@ namespace Chummer.Skills
             int cost = intTotalBaseRating * (intTotalBaseRating + 1);
             int lower = Base + FreeKarma();
             cost -= lower * (lower + 1);
-            if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost() && intTotalBaseRating > 3)
+            if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
             {
-                cost -= 1;
+                cost -= Math.Max(intTotalBaseRating - 2, 0);
             }
 
             cost /= 2;

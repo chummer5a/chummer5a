@@ -1997,8 +1997,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
-    <Content Include="Custom Content\custom_radarsensorfunction_gear.xml" />
-    <Content Include="Custom Content\override_cyberlimbheadware_cyberware.xml" />
+    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\options.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

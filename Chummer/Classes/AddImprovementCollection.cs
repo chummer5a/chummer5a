@@ -3389,7 +3389,7 @@ namespace Chummer.Classes
             }
             else
             {
-                SelectedValue = objCyberware.Location;
+                SelectedValue = objCyberware.Extra;
             }
             if (_blnConcatSelectedValue)
                 SourceName += " (" + SelectedValue + ")";
@@ -4660,6 +4660,14 @@ namespace Chummer.Classes
                 CreateImprovement("Fly", _objImprovementSource, SourceName, imp, _strUnique,
                     ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
             }
+        }
+        public void addlimb(XmlNode bonusNode)
+        {
+            Log.Info("addlimb");
+            Log.Info("addlimb = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["limbslot"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
         }
         #endregion
     }

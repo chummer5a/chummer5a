@@ -971,6 +971,7 @@
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
+		<unlockskills>Aware</unlockskills>
       </bonus>
       <forbidden>
         <oneof>
@@ -3940,6 +3941,25 @@
       <source>RF</source>
       <page>105</page>
     </quality>
+	<quality>
+      <id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+      <name>Centaur Body</name>
+      <karma>0</karma>
+      <category>Positive</category>
+	  <bonus>
+		<addlimb>
+		  <limbslot>leg</limbslot>
+		  <val>2</val>
+		</addlimb>
+	  </bonus>
+      <required>
+        <allof>
+          <metatype>Centaur</metatype>
+        </allof>
+      </required>
+      <source>RF</source>
+      <page>105</page>
+    </quality>
     <quality>
       <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
       <name>Magic Sense</name>
@@ -5855,7 +5875,12 @@
       <karma>8</karma>
       <category>Positive</category>
       <limit>2</limit>
-      <bonus />
+      <bonus>
+		<addlimb>
+		  <limbslot>arm</limbslot>
+		  <val>2</val>
+		</addlimb>
+	  </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -15245,6 +15270,7 @@
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
+		<unlockskills>Explorer</unlockskills>
       </bonus>
       <forbidden>
         <oneof>

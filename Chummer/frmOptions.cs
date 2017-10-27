@@ -411,7 +411,7 @@ namespace Chummer
 
             SaveRegistrySettings();
 
-            CommonFunctions.StaticOpenPDF(treSourcebook.SelectedNode.Tag + " 5");
+            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
         }
         #endregion
 

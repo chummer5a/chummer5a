@@ -69,6 +69,7 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponSlots = string.Empty;
         private bool _blnCyberware = false;
         private string _strParentID = string.Empty;
+        private bool _blnAllowAccessory = true;
 
         private readonly Character _objCharacter;
         private string _mount;
@@ -196,6 +197,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
             objXmlWeapon.TryGetStringFieldQuickly("spec", ref _strSpec);
             objXmlWeapon.TryGetStringFieldQuickly("spec2", ref _strSpec2);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory);
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
@@ -210,6 +212,8 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeaponNode =
                         objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
                     objUnderbarrelWeapon.Create(objXmlWeaponNode, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    if (!AllowAccessory)
+                        objUnderbarrelWeapon.AllowAccessory = false;
                     objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.Parent = this;
@@ -375,6 +379,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
+            objWriter.WriteElementString("allowaccessory", _blnAllowAccessory.ToString());
             objWriter.WriteElementString("weaponname", _strWeaponName);
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
             objWriter.WriteElementString("installed", _blnInstalled.ToString());
@@ -474,6 +479,18 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            // Legacy shim
+            if (Name.Contains("Osmium Mace (STR"))
+            {
+                XmlNode objNewOsmiumMaceNode = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
+                if (objNewOsmiumMaceNode != null)
+                {
+                    objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
+                    _sourceID = Guid.Parse(objNewOsmiumMaceNode["id"].InnerText);
+                    objNewOsmiumMaceNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+                    objNewOsmiumMaceNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+                }
+            }
             objNode.TryGetStringFieldQuickly("ap", ref _strAP);
             objNode.TryGetStringFieldQuickly("mode", ref _strMode);
             objNode.TryGetStringFieldQuickly("rc", ref _strRC);
@@ -487,6 +504,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
+            if (!objNode.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory))
+                _blnAllowAccessory = Convert.ToBoolean(MyXmlNode?["allowaccessory"]?.InnerText ?? "True");
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
@@ -1167,6 +1186,24 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _strParentID = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether the object allows accessories.
+        /// </summary>
+        public bool AllowAccessory
+        {
+            get
+            {
+                return _blnAllowAccessory;
+            }
+            set
+            {
+                _blnAllowAccessory = value;
+                if (!_blnAllowAccessory)
+                    foreach (Weapon objChild in UnderbarrelWeapons)
+                        objChild.AllowAccessory = false;
             }
         }
 
@@ -2431,46 +2468,50 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strAccuracy = _strAccuracy;
-                int intAccuracy;
+                int intAccuracy = 0;
 
-                if (strAccuracy.StartsWith("Physical"))
+                if (strAccuracy.Contains("Physical"))
                 {
                     strAccuracy = strAccuracy.Replace("Physical", _objCharacter.LimitPhysical.ToString());
-
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    XPathExpression xprAccuracy = nav.Compile(strAccuracy);
-                    intAccuracy = Convert.ToInt32(nav.Evaluate(xprAccuracy));
                 }
-                else if (strAccuracy.StartsWith("Missile"))
+                if (strAccuracy.Contains("Missile"))
                 {
                     strAccuracy = strAccuracy.Replace("Missile", _objCharacter.LimitPhysical.ToString());
-
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    XPathExpression xprAccuracy = nav.Compile(strAccuracy);
-                    intAccuracy = Convert.ToInt32(nav.Evaluate(xprAccuracy));
                 }
-                else
+                foreach(string strAttribute in Character.AttributeStrings)
                 {
-                    intAccuracy = Convert.ToInt32("0" + strAccuracy);
-                    foreach (WeaponAccessory wa in _lstAccessories)
+                    Attributes.CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
+                    strAccuracy = strAccuracy.Replace("{" + strAttribute + "Augmented}", objLoopAttribute.Augmented.ToString());
+                    strAccuracy = strAccuracy.Replace("{" + strAttribute + "Base}", objLoopAttribute.TotalBase.ToString());
+                    strAccuracy = strAccuracy.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
+                }
+
+                XmlDocument objXmlDocument = new XmlDocument();
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                //try
+                {
+                    intAccuracy = Convert.ToInt32(nav.Evaluate(strAccuracy));
+                }
+                //catch (XPathException)
+                {
+                }
+
+                foreach (WeaponAccessory wa in _lstAccessories)
+                {
+                    if (wa.Name == "Laser Sight" || wa.Name == "Holographic Sight")
                     {
-                        if (wa.Name == "Laser Sight" || wa.Name == "Holographic Sight")
+                        // Skip it if there is a smartgun on this weapon
+                        bool blnFound = false;
+                        foreach (WeaponAccessory wal in _lstAccessories)
                         {
-                            // Skip it if there is a smartgun on this weapon
-                            bool blnFound = false;
-                            foreach (WeaponAccessory wal in _lstAccessories)
-                            {
-                                if (wal.Name.StartsWith("Smartgun"))
-                                    blnFound = true;
-                            }
-                            if (!blnFound)
-                                intAccuracy += wa.Accuracy;
+                            if (wal.Name.StartsWith("Smartgun"))
+                                blnFound = true;
                         }
-                        else
+                        if (!blnFound)
                             intAccuracy += wa.Accuracy;
                     }
+                    else
+                        intAccuracy += wa.Accuracy;
                 }
 
                 // Look for Powers that increase accuracy
@@ -3088,20 +3129,57 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                Tuple<int, string> objAvailPair = TotalAvailPair;
+                string strReturn = objAvailPair.Item1 + objAvailPair.Item2;
+                // Translate the Avail string.
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Total Availability as a pair: first item is availability magnitude, second is untranslated Restricted/Forbidden state (empty of neither).
+        /// </summary>
+        public Tuple<int, string> TotalAvailPair
+        {
+            get
+            {
                 string strAvail = string.Empty;
-                string strAvailExpr = string.Empty;
+                string strAvailExpr = _strAvail;
                 int intAvail = 0;
 
-                if (_strAvail.Substring(_strAvail.Length - 1, 1) == "F" || _strAvail.Substring(_strAvail.Length - 1, 1) == "R")
+                if (strAvailExpr.Substring(_strAvail.Length - 1, 1) == "F" || strAvailExpr.Substring(_strAvail.Length - 1, 1) == "R")
                 {
-                    strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
+                    strAvail = strAvailExpr.Substring(_strAvail.Length - 1, 1);
                     // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = _strAvail.Substring(0, _strAvail.Length - 1);
-                    intAvail = Convert.ToInt32(strAvailExpr);
+                    strAvailExpr = strAvailExpr.Substring(0, _strAvail.Length - 1);
                 }
-                else
+                if (strAvailExpr.Contains("{Children Avail}"))
                 {
-                    intAvail = Convert.ToInt32(_strAvail);
+                    int intMaxChildAvail = 0;
+                    foreach (Weapon objUnderbarrel in UnderbarrelWeapons)
+                    {
+                        Tuple<int, string> objLoopAvail = objUnderbarrel.TotalAvailPair;
+                        if (objLoopAvail.Item1 > intMaxChildAvail)
+                            intMaxChildAvail = objLoopAvail.Item1;
+                        if (objLoopAvail.Item2.EndsWith("F"))
+                            strAvail = "F";
+                        else if (objLoopAvail.Item2.EndsWith("R") && strAvail != "F")
+                            strAvail = "R";
+                    }
+                    strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
+                }
+                XmlDocument objDummyDoc = new XmlDocument();
+                XPathNavigator objNav = objDummyDoc.CreateNavigator();
+                try
+                {
+                    XPathExpression objExpression = objNav.Compile(strAvailExpr);
+                    intAvail = Convert.ToInt32(objNav.Evaluate(objExpression));
+                }
+                catch (XPathException)
+                {
                 }
 
                 // Run through the Accessories and add in their availability.
@@ -3124,13 +3202,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
-
-                string strReturn = intAvail.ToString() + strAvail;
-                // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-
-                return strReturn;
+                return new Tuple<int,string>(intAvail, strAvail);
             }
         }
 

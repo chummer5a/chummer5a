@@ -255,6 +255,7 @@ namespace Chummer
             ManaIllusionResist,
             PhysicalIllusionResist,
             DetectionSpellResist,
+            AddLimb,
             // V This one should always be the last defined enum
             NumImprovementTypes
         }
@@ -1076,17 +1077,17 @@ namespace Chummer
         {
             if (bonusNode == null)
                 return false;
-                //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
-                //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
-                //getting a different parameter injected
+            //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
+            //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+            //getting a different parameter injected
 
-                AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                    strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
-                    strFriendlyName, intRating, ValueToInt, Rollback);
+            AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
+                strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
+                strFriendlyName, intRating, ValueToInt, Rollback);
 
-                MethodInfo info;
-                if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
-                {
+            MethodInfo info;
+            if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
+            {
                 try
                 {
                     info.Invoke(container, new object[] {bonusNode});
@@ -1097,21 +1098,19 @@ namespace Chummer
                     return false;
                 }
 
-                    strSourceName = container.SourceName;
-                    _strForcedValue = container.ForcedValue;
-                    _strLimitSelection = container.LimitSelection;
-                    _strSelectedValue = container.SelectedValue;
-                }
-            else if
-                    (bonusNode.ChildNodes.Count == 0)
-                {
-                    return true;
-                }
+                strSourceName = container.SourceName;
+                _strForcedValue = container.ForcedValue;
+                _strLimitSelection = container.LimitSelection;
+                _strSelectedValue = container.SelectedValue;
+            }
+            else if (bonusNode.ChildNodes.Count == 0)
+            {
+                return true;
+            }
             else if (bonusNode.NodeType != XmlNodeType.Comment)
-                {
-                        Utils.BreakIfDebug();
-                        Log.Warning(new object[]
-                        {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+            {
+                Utils.BreakIfDebug();
+                Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
                 return false;
             }
             return true;

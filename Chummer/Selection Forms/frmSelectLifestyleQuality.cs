@@ -721,16 +721,16 @@ namespace Chummer
                                 {
                                     foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => (objCyberware.Name == objXmlCyberware.InnerText)))
                                     {
-                                            if (objXmlCyberware.Attributes["select"] == null)
-                                            {
-                                                intTotal++;
-                                                break;
-                                            }
-                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
-                                            {
-                                                intTotal++;
-                                                break;
-                                            }
+                                        if (objXmlCyberware.Attributes["select"] == null)
+                                        {
+                                            intTotal++;
+                                            break;
+                                        }
+                                        if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
+                                        {
+                                            intTotal++;
+                                            break;
+                                        }
                                     }
                                 }
 
@@ -753,7 +753,7 @@ namespace Chummer
                                             intTotal++;
                                             break;
                                         }
-                                        if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+                                        if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
                                         {
                                             intTotal++;
                                             break;
@@ -773,7 +773,7 @@ namespace Chummer
                                                 intTotal++;
                                                 break;
                                             }
-                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
                                             {
                                                 intTotal++;
                                                 break;
@@ -991,7 +991,7 @@ namespace Chummer
                                                 intTotal++;
                                                 break;
                                             }
-                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
                                             {
                                                 intTotal++;
                                                 break;
@@ -1021,7 +1021,7 @@ namespace Chummer
                                                 intTotal++;
                                                 break;
                                             }
-                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
                                             {
                                                 intTotal++;
                                                 break;
@@ -1042,7 +1042,7 @@ namespace Chummer
                                                 intTotal++;
                                                 break;
                                             }
-                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
                                             {
                                                 intTotal++;
                                                 break;
@@ -1122,7 +1122,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }
