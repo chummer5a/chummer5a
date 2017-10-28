@@ -127,7 +127,7 @@ namespace Chummer.UI.Shared
                 _displayIndex.Add(objTTypeIndexDictionary[objLoopTType]);
             }
 
-            if (_rendered.Length != _displayIndex.Count)
+            if (_rendered == null || _rendered.Length != _displayIndex.Count)
                 _rendered = new BitArray(_displayIndex.Count);
             else
                 _rendered.SetAll(false);

@@ -867,7 +867,7 @@ namespace Chummer.Backend.Equipment
                 string strAvailText = string.Empty;
                 if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
                 {
-                    strAvailText = strCalculated.Substring(strCalculated.Length, 1);
+                    strAvailText = strCalculated.Substring(strCalculated.Length - 1, 1);
                     strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);
                 }
 
