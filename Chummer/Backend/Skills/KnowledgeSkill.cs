@@ -256,7 +256,7 @@ namespace Chummer.Skills
 
             if (UneducatedEffect()) cost *= 2;
 
-            return cost;
+            return Math.Max(cost, 0);
         }
 
         public static int CompareKnowledgeSkills(KnowledgeSkill rhs, KnowledgeSkill lhs)
