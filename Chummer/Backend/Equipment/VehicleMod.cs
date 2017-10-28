@@ -249,6 +249,28 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
             objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
+            // Legacy Shims
+            if (Name.StartsWith("Gecko Tips (Bod"))
+            {
+                Name = "Gecko Tips";
+                XmlNode objNewNode = MyXmlNode;
+                if (objNewNode != null)
+                {
+                    objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
+                    objNewNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+                }
+            }
+            if (Name.StartsWith("Gliding System (Bod"))
+            {
+                Name = "Gliding System";
+                XmlNode objNewNode = MyXmlNode;
+                if (objNewNode != null)
+                {
+                    objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
+                    objNewNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+                    objNewNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+                }
+            }
 
             if (objNode.InnerXml.Contains("<weapons>"))
             {
@@ -842,46 +864,34 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                if (strCalculated.Contains("Rating"))
-                {
-                    // If the availability is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    string strAvail = string.Empty;
-                    string strAvailExpr = strCalculated;
-
-                    if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
-                    {
-                        strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-                        // Remove the trailing character if it is "F" or "R".
-                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                    }
-                    XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
-                    strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
-                }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    if (strCalculated.Contains("F") || strCalculated.Contains("R"))
-                    {
-                        strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)).ToString() + strCalculated.Substring(strCalculated.Length - 1, 1);
-                    }
-                    else
-                        strCalculated = Convert.ToInt32(strCalculated).ToString();
-                }
-
-                int intAvail;
                 string strAvailText = string.Empty;
-                if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+                if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
                 {
-                    strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                    intAvail = Convert.ToInt32(strCalculated.Replace(strAvailText, string.Empty));
+                    strAvailText = strCalculated.Substring(strCalculated.Length, 1);
+                    strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);
                 }
-                else
-                    intAvail = Convert.ToInt32(strCalculated);
 
-                string strReturn = intAvail.ToString() + strAvailText;
+                // If the availability is determined by the Rating, evaluate the expression.
+                XmlDocument objXmlDocument = new XmlDocument();
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+                string strAvailExpr = strCalculated.Replace("Rating", _intRating.ToString());
+                strAvailExpr = strAvailExpr.Replace("Vehicle Cost", Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                strAvailExpr = strAvailExpr.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
+                strAvailExpr = strAvailExpr.Replace("Acceleration", Parent.Accel.ToString());
+                strAvailExpr = strAvailExpr.Replace("Handling", Parent.Handling.ToString());
+                string strReturn = string.Empty;
+                try
+                {
+                    XPathExpression xprAvail = nav.Compile(strAvailExpr);
+                    strReturn = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvailText;
+                }
+                catch (XPathException)
+                {
+                    strReturn = strCalculated + strAvailText;
+                }
 
                 // Translate the Avail string.
                 strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
@@ -1103,22 +1113,26 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strSlots.StartsWith("FixedValues"))
-                {
-                    string[] strValues = _strSlots.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-                    return Convert.ToInt32(strValues[Convert.ToInt32(_intRating) - 1]);
-                }
-                else
-                {
-                    // If the slots is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
+                // If the slots is determined by the Rating, evaluate the expression.
+                XmlDocument objXmlDocument = new XmlDocument();
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-                    //return Convert.ToInt32(_strSlots.Replace("Rating", _intRating.ToString()));
-                    XPathExpression xprSlots = nav.Compile(_strSlots.Replace("Rating", _intRating.ToString()));
-                    int intReturn = Convert.ToInt32(nav.Evaluate(xprSlots)?.ToString());
-                    return intReturn;
+                string strSlotsExpression = _strSlots;
+                if (_strCost.StartsWith("FixedValues"))
+                {
+                    string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    if (_intRating > 0)
+                        strSlotsExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
+                string strSlots = strSlotsExpression.Replace("Rating", _intRating.ToString());
+                strSlots = strSlots.Replace("Vehicle Cost", Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                strSlots = strSlots.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                strSlots = strSlots.Replace("Speed", Parent.Speed.ToString());
+                strSlots = strSlots.Replace("Acceleration", Parent.Accel.ToString());
+                strSlots = strSlots.Replace("Handling", Parent.Handling.ToString());
+                XPathExpression xprSlots = nav.Compile(strSlots);
+                return Convert.ToInt32(nav.Evaluate(xprSlots)?.ToString());
             }
         }
 

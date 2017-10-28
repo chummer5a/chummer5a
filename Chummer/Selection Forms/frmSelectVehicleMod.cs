@@ -605,30 +605,29 @@ namespace Chummer
                     {
                         intRating = strValues.Length -1;
                     }
-                        strAvailExpr = strValues[intRating];
+                    strAvailExpr = strValues[intRating];
                 }
                 else
                 {
                     strAvailExpr = objXmlMod["avail"].InnerText;
                 }
 
-                XPathExpression xprAvail;
-                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                if (strAvailExpr.EndsWith("F") || strAvailExpr.EndsWith("R"))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                    strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
                 try
                 {
-                    xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString(GlobalOptions.InvariantCultureInfo)));
-                    lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
+                    lblAvail.Text = Convert.ToInt32(nav.Evaluate(ReplaceStrings(strAvailExpr))).ToString();
                 }
                 catch (XPathException)
                 {
                     lblAvail.Text = objXmlMod["avail"].InnerText;
                 }
-                lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+                lblAvail.Text = lblAvail.Text + strAvail;
 
                 // Cost.
                 decimal decItemCost = 0;

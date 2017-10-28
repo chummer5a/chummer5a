@@ -83,18 +83,6 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private bool UnrenderedInRange(int min, int max)
-        {
-            bool any = false;
-
-            for (int i = min; i < max; i++)
-            {
-                if (_rendered[i] == false) any = true;
-            }
-
-            return !any;
-        }
-
         private void InitialSetup()
         {
             pnlDisplay.SuspendLayout();
@@ -139,7 +127,10 @@ namespace Chummer.UI.Shared
                 _displayIndex.Add(objTTypeIndexDictionary[objLoopTType]);
             }
 
-            _rendered = new BitArray(_displayIndex.Count);
+            if (_rendered.Length != _displayIndex.Count)
+                _rendered = new BitArray(_displayIndex.Count);
+            else
+                _rendered.SetAll(false);
         }
 
         private void LoadScreenContent()

@@ -312,6 +312,7 @@ Data Changes:
 - Fixed Osmosis not being allowed to be leveled to Rating 6. Fixes #1996.
 - Fixed Explorer and Aware not properly unlocking Assensing and Astral Combat. Fixes #1991.
 - Added Dodge Hurricane from german Rigger 5.0 and its variants.
+- Gecko Tips and Gliding System vehicle mods now only have one entry that automatically scale their stats appropriately depending on the vehicle's body range.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

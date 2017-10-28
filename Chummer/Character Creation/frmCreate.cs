@@ -11783,7 +11783,7 @@ namespace Chummer
 
         private void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboTradition.IsInitalized(_blnLoading) || string.IsNullOrEmpty(cboTradition.SelectedValue?.ToString()))
+            if (cboTradition.IsInitalized(_blnLoading))
                 return;
 
             XmlDocument objXmlDocument = XmlManager.Load("traditions.xml");

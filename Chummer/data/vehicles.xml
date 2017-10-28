@@ -7914,68 +7914,30 @@
     </mod>
     <mod>
       <id>06940788-ad0b-453c-bc8a-e54e6221c185</id>
-      <name>Gecko Tips (Bod 1-3)</name>
+      <name>Gecko Tips</name>
       <page>154</page>
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>1000</cost>
+      <cost>1000 + 4000*number(Body >= 4)</cost>
       <rating>0</rating>
-      <slots>1</slots>
+      <slots>1 + 3*number(Body >= 4)</slots>
       <required>
         <vehicledetails>
-          <body operation="lessthanequals">3</body>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>a11be6d9-109e-4662-a23a-2c8081c6c948</id>
-      <name>Gecko Tips (Bod 4-6)</name>
-      <page>154</page>
-      <source>R5</source>
-      <avail>6</avail>
-      <category>Powertrain</category>
-      <cost>5000</cost>
-      <rating>0</rating>
-      <slots>4</slots>
-      <required>
-        <vehicledetails>
-          <body operation="greaterthanequals">4</body>
           <body operation="lessthanequals">6</body>
         </vehicledetails>
       </required>
     </mod>
     <mod>
       <id>fd32b5eb-c791-4117-a9fe-5d5d86952827</id>
-      <name>Gliding System (Bod 1-12)</name>
+      <name>Gliding System</name>
       <page>154</page>
       <source>R5</source>
-      <avail>12R</avail>
+      <avail>(12 + 4*number(Body > 12))R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000</cost>
+      <cost>Body * 3000 + (Body * 1000)*number(Body > 12)</cost>
       <rating>0</rating>
-      <slots>5</slots>
-      <required>
-        <vehicledetails>
-          <body operation="lessthanequals">12</body>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>f9b96303-d8de-436f-94f3-b1793a7a809a</id>
-      <name>Gliding System (Bod 12+)</name>
-      <page>154</page>
-      <source>R5</source>
-      <avail>16R</avail>
-      <category>Powertrain</category>
-      <cost>Body * 4000</cost>
-      <rating>0</rating>
-      <slots>10</slots>
-      <required>
-        <vehicledetails>
-          <body operation="greaterthanequals">13</body>
-        </vehicledetails>
-      </required>
+      <slots>5 + 5*number(Body > 12)</slots>
     </mod>
     <mod>
       <id>956a20f7-64f3-4160-88a0-d6d6b29b0bd1</id>
