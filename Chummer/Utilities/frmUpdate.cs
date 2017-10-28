@@ -259,12 +259,9 @@ namespace Chummer
                 return;
             }
 
-            string strCurrentVersion = CurrentVersion.Trim();
-            if (strCurrentVersion.StartsWith("Nightly-v"))
-                strCurrentVersion = strCurrentVersion.Replace("Nightly-v", string.Empty);
+            string strCurrentVersion = CurrentVersion.Trim().TrimStart("Nightly-v");
             string[] strCurrentVersionNumbers = strCurrentVersion.Split('.');
-            if (strLatestVersion.StartsWith("Nightly-v"))
-                strLatestVersion = strLatestVersion.Replace("Nightly-v", string.Empty);
+            strLatestVersion = strLatestVersion.TrimStart("Nightly-v");
             string[] strLatestVersionNumbers = strLatestVersion.Split('.');
 
             bool blnNeedsUpdate = false;

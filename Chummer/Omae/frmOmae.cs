@@ -143,16 +143,8 @@ namespace Chummer
         /// <param name="strValue">File name to parse.</param>
         private string FileSafe(string strValue)
         {
-            string strReturn = strValue;
-            strReturn = strReturn.Replace(" ", "_");
+            string strReturn = strValue.FastEscape(" _/:*?<>|".ToCharArray());
             strReturn = strReturn.Replace("\\", string.Empty);
-            strReturn = strReturn.Replace("/", string.Empty);
-            strReturn = strReturn.Replace(":", string.Empty);
-            strReturn = strReturn.Replace("*", string.Empty);
-            strReturn = strReturn.Replace("?", string.Empty);
-            strReturn = strReturn.Replace("<", string.Empty);
-            strReturn = strReturn.Replace(">", string.Empty);
-            strReturn = strReturn.Replace("|", string.Empty);
             return strReturn;
         }
 

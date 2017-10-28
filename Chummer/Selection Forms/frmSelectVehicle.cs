@@ -419,28 +419,28 @@ namespace Chummer
             lblVehicleSeats.Text = objXmlVehicle["seats"]?.InnerText;
             lblVehicleSensor.Text = objXmlVehicle["sensor"]?.InnerText;
 
-            string strAvail = objXmlVehicle["avail"]?.InnerText;
+            string strAvail = objXmlVehicle["avail"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strAvail))
             {
                 if (chkUsedVehicle.Checked)
                 {
                     string strSuffix = string.Empty;
-                    if (strAvail.Contains("R") || strAvail.Contains("F"))
+                    if (strAvail.EndsWith("R") || strAvail.EndsWith("F"))
                     {
                         strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-                        strAvail = strAvail.Replace(strSuffix, string.Empty);
+                        // Translate the Avail string.
+                        if (strSuffix == "R")
+                            strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        else if (strSuffix == "F")
+                            strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        strAvail = strAvail.Substring(0, strAvail.Length - 1);
                     }
                     int intTmp;
                     if (int.TryParse(strAvail, out intTmp))
                         strAvail = (intTmp + 4).ToString() + strSuffix;
                 }
-                lblVehicleAvail.Text = strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted"))
-                        .Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             }
-            else
-            {
-                lblVehicleAvail.Text = string.Empty;
-            }
+            lblVehicleAvail.Text = strAvail;
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
             if (objXmlVehicle["cost"]?.InnerText.StartsWith("Variable") == true)

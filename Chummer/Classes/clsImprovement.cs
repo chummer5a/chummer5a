@@ -865,7 +865,7 @@ namespace Chummer
             //Log.Info("intRating = " + intRating.ToString());
             if (strValue.Contains("FixedValues"))
             {
-                string[] strValues = strValue.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strValue.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                 if (strValues.Length >= intRating)
                     strValue = strValues[intRating - 1];
                 else

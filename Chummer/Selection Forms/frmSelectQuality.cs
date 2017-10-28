@@ -112,15 +112,15 @@ namespace Chummer
             {
                 int intMin = 0;
                 int intMax = int.MaxValue;
-                string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                if (strCost.Contains("-"))
+                string strCost = objXmlQuality["karma"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
                     int.TryParse(strValues[0], out intMin);
                     int.TryParse(strValues[1], out intMax);
                 }
                 else
-                    int.TryParse(strCost.Replace("+", string.Empty), out intMin);
+                    int.TryParse(strCost.FastEscape('+'), out intMin);
 
                 if (intMax == int.MaxValue)
                 {

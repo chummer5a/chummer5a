@@ -6456,12 +6456,12 @@ namespace Chummer
            get
             {
                 string strReturn = Movement;
-                if (strReturn.Contains(","))
+                if (strReturn.Contains(','))
                 {
                     string[] strMovementWithSprint = strReturn.Split(',');
                     strReturn = strMovementWithSprint[0].Trim();
                 }
-                if (strReturn.Contains("/"))
+                if (strReturn.Contains('/'))
                 {
                     string[] strMovement = strReturn.Split('/');
                     decimal decWalking = Convert.ToDecimal(strMovement[0], GlobalOptions.CultureInfo);
@@ -7117,9 +7117,9 @@ namespace Chummer
         {
             string strReturn;
             int intAvail;
-            int.TryParse(strAvail.Replace(LanguageManager.GetString("String_AvailRestricted"), string.Empty).Replace(LanguageManager.GetString("String_AvailForbidden"), string.Empty), out intAvail);
+            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted")).TrimEnd(LanguageManager.GetString("String_AvailForbidden")), out intAvail);
 
-            if (intAvail != 0 && (strAvail.Contains(LanguageManager.GetString("String_AvailRestricted")) || strAvail.Contains(LanguageManager.GetString("String_AvailForbidden"))))
+            if (intAvail != 0 && (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) || strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden"))))
             {
                 string strInterval;
                 int intTest = 0;

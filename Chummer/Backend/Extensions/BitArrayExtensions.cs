@@ -15,6 +15,5 @@ namespace Chummer.Backend
 
             return -1;
         }
-
     }
 }

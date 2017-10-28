@@ -184,15 +184,15 @@ namespace Chummer
                     decimal decMin = 0.0m;
                     decimal decMax = decimal.MaxValue;
                     char[] charParentheses = { '(', ')' };
-                    string strCost = strKarmaNodeTest.Replace("Variable", string.Empty).Trim(charParentheses);
-                    if (strCost.Contains("-"))
+                    string strCost = strKarmaNodeTest.TrimStart("Variable", true).Trim(charParentheses);
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                         decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
@@ -1417,7 +1417,7 @@ namespace Chummer
             {
                 string strDV = _strDV;
                 int intPos = 0;
-                if (strDV.Contains("-"))
+                if (strDV.Contains('-'))
                 {
                     intPos = strDV.IndexOf('-') + 1;
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
@@ -1427,7 +1427,7 @@ namespace Chummer
                     intAfter += 2;
                     strDV += intAfter.ToString();
                 }
-                else if (strDV.Contains("+"))
+                else if (strDV.Contains('+'))
                 {
                     intPos = strDV.IndexOf('+');
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);

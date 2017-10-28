@@ -134,7 +134,7 @@ namespace Chummer
             while ((strLine = objFile.ReadLine()) != null)
             {
                 if (strLine.StartsWith("<!-- ext:"))
-                    strExtension = strLine.Replace("<!-- ext:", string.Empty).Replace("-->", string.Empty).Trim();
+                    strExtension = strLine.TrimStart("<!-- ext:", true).Replace("-->", string.Empty).Trim();
             }
             objFile.Close();
 

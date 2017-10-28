@@ -643,7 +643,7 @@ namespace Chummer
                                 if (objXmlRequired.InnerText.StartsWith("-"))
                                 {
                                     // Essence must be less than the value.
-                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.InvariantCultureInfo))
+                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
                                         blnOneOfMet = true;
                                 }
                                 else
@@ -906,7 +906,7 @@ namespace Chummer
                                 if (objXmlRequired.InnerText.StartsWith("-"))
                                 {
                                     // Essence must be less than the value.
-                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.InvariantCultureInfo))
+                                    if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
                                         blnFound = true;
                                 }
                                 else

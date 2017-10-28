@@ -705,7 +705,7 @@ namespace Chummer
                     // Add +2 to the DV value if Extended is selected.
                     int intPos = strDV.IndexOf(')') + 1;
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                    strDV = strDV.Remove(intPos, strDV.Length - intPos);
+                    strDV = strDV.Substring(0, intPos);
                     if (string.IsNullOrEmpty(strAfter))
                         strAfter = "+2";
                     else
@@ -724,18 +724,18 @@ namespace Chummer
                 if (chkLimited.Checked)
                 {
                     int intPos = 0;
-                    if (strDV.Contains("-"))
+                    if (strDV.Contains('-'))
                     {
-                        intPos = strDV.IndexOf("-") + 1;
+                        intPos = strDV.IndexOf('-') + 1;
                         string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                         strDV = strDV.Substring(0, intPos);
                         int intAfter = Convert.ToInt32(strAfter);
                         intAfter += 2;
                         strDV += intAfter.ToString();
                     }
-                    else if (strDV.Contains("+"))
+                    else if (strDV.Contains('+'))
                     {
-                        intPos = strDV.IndexOf("-");
+                        intPos = strDV.IndexOf('-');
                         string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                         strDV = strDV.Substring(0, intPos);
                         int intAfter = Convert.ToInt32(strAfter);

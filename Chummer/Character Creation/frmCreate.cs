@@ -6695,15 +6695,15 @@ namespace Chummer
             {
                 decimal decMin = 0;
                 decimal decMax = decimal.MaxValue;
-                string strCost = objAccessory.Cost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                if (strCost.Contains("-"))
+                string strCost = objAccessory.Cost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
                     decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                     decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
@@ -10266,9 +10266,7 @@ namespace Chummer
                         ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
                         if (!string.IsNullOrEmpty(objGear.Extra))
                         {
-                            ImprovementManager.ForcedValue = objGear.Extra;
-                            if (objGear.Extra.EndsWith(", Hacked"))
-                                ImprovementManager.ForcedValue = objGear.Extra.Replace(", Hacked", string.Empty);
+                            ImprovementManager.ForcedValue = objGear.Extra.TrimEnd(", Hacked");
                         }
                         if (objGear.Bonus != null)
                             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
@@ -10604,9 +10602,7 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
                     if (!string.IsNullOrEmpty(objGear.Extra))
                     {
-                        ImprovementManager.ForcedValue = objGear.Extra;
-                        if (objGear.Extra.EndsWith(", Hacked"))
-                            ImprovementManager.ForcedValue = objGear.Extra.Replace(", Hacked", string.Empty);
+                        ImprovementManager.ForcedValue = objGear.Extra.TrimEnd(", Hacked");
                     }
                     bool blnAddBonus = true;
                     if (objGear.Name == "Qi Focus")
@@ -13057,10 +13053,10 @@ namespace Chummer
             {
                 // Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
                 string strFocusName = objFocus.Name;
-                int intPosition = strFocusName.IndexOf("(");
+                int intPosition = strFocusName.IndexOf('(');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition - 1);
-                intPosition = strFocusName.IndexOf(",");
+                intPosition = strFocusName.IndexOf(',');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition);
                 int intKarmaMultiplier = 0;
@@ -17955,7 +17951,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strNewName))
                             strNewName = _objCharacter.Name;
                         if (string.IsNullOrEmpty(strNewName))
-                            strNewName = Guid.NewGuid().ToString().Substring(0, 13).Replace("-", string.Empty);
+                            strNewName = Guid.NewGuid().ToString().Substring(0, 13).FastEscape('-');
                         strNewName += " (" + LanguageManager.GetString("Title_CreateMode") + ").chum5";
                     }
 
@@ -19449,13 +19445,11 @@ namespace Chummer
         /// <param name="strAvail">Availability string to parse.</param>
         private int GetAvailInt(string strAvail)
         {
-            string strReturn = strAvail;
-            if (strAvail.StartsWith("+"))
-                strReturn = strReturn.Replace("+", string.Empty);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                strReturn = strReturn.Replace(LanguageManager.GetString("String_AvailRestricted"), string.Empty);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")))
-                strReturn = strReturn.Replace(LanguageManager.GetString("String_AvailForbidden"), string.Empty);
+            string strReturn = strAvail.TrimStart('+');
+            if (strReturn.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                strReturn = strReturn.TrimEnd(LanguageManager.GetString("String_AvailRestricted"), true);
+            if (strReturn.EndsWith(LanguageManager.GetString("String_AvailForbidden")))
+                strReturn = strReturn.TrimEnd(LanguageManager.GetString("String_AvailForbidden"), true);
 
             return Convert.ToInt32(strReturn);
         }

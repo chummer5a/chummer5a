@@ -115,15 +115,15 @@ namespace Chummer.Backend.Equipment
                     decimal decMin = 0.0m;
                     decimal decMax = decimal.MaxValue;
                     char[] charParentheses = { '(', ')' };
-                    string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
-                    if (strCost.Contains("-"))
+                    string strCost = objXmlArmorNode["cost"].InnerText.TrimStart("Variable", true).Trim(charParentheses);
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                         decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
@@ -694,7 +694,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-                if (_strAvail.Contains("+"))
+                if (_strAvail.Contains('+'))
                     return _strAvail;
 
                 string strCalculated;
@@ -720,7 +720,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     // Just a straight cost, so return the value.
-                    if (_strAvail.Contains("F") || _strAvail.Contains("R"))
+                    if (_strAvail.EndsWith("F") || _strAvail.EndsWith("R"))
                     {
                         strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
                     }
@@ -730,19 +730,20 @@ namespace Chummer.Backend.Equipment
 
                 int intAvail;
                 string strAvailText = string.Empty;
-                if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+                if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                    intAvail = Convert.ToInt32(strCalculated.Replace(strAvailText, string.Empty));
+                    // Translate the Avail string.
+                    if (strAvailText == "R")
+                        strAvailText = LanguageManager.GetString("String_AvailRestricted");
+                    else if (strAvailText == "F")
+                        strAvailText = LanguageManager.GetString("String_AvailForbidden");
+                    intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
                 }
                 else
                     intAvail = Convert.ToInt32(strCalculated);
 
                 string strReturn = intAvail.ToString() + strAvailText;
-
-                // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 return strReturn;
             }
@@ -764,7 +765,7 @@ namespace Chummer.Backend.Equipment
                 strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
                 if (strCapacity.StartsWith("FixedValues"))
                 {
-                    string[] strValues = strCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     strCapacity = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
                 bool blnSquareBrackets = strCapacity.Contains('[');
@@ -794,7 +795,7 @@ namespace Chummer.Backend.Equipment
                 string strCostExpr = _strCost;
                 if (strCostExpr.StartsWith("FixedValues"))
                 {
-                    string[] strValues = strCostExpr.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = strCostExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (_intRating > 0)
                         strCostExpr = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }

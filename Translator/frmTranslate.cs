@@ -324,7 +324,7 @@ namespace Translator
         private void LoadLanguageFiles()
         {
             // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            _strCode = Language.Substring(Language.IndexOf("(") + 1, 2);
+            _strCode = Language.Substring(Language.IndexOf('(') + 1, 2);
             _objTranslationDoc.Load(string.Concat(_strPath, "lang\\", _strCode, ".xml"));
             _objDataDoc.Load(string.Concat(_strPath, "lang\\", _strCode, "_data.xml"));
         }

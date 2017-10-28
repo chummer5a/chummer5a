@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
+using System.Text;
 
 namespace Chummer
 {
@@ -596,26 +597,27 @@ namespace Chummer
                 // Avail.
                 // If avail contains "F" or "R", remove it from the string so we can use the expression.
                 string strAvail = string.Empty;
-                string strAvailExpr = string.Empty;
-                if (objXmlMod["avail"].InnerText.StartsWith("FixedValues"))
+                string strAvailExpr = objXmlMod["avail"].InnerText;
+                if (strAvailExpr.StartsWith("FixedValues"))
                 {
                     int intRating = Convert.ToInt32(nudRating.Value - 1);
-                    string[] strValues = objXmlMod["avail"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    strAvailExpr = strAvailExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray());
+                    string[] strValues = strAvailExpr.Split(',');
                     if (intRating > strValues.Length || intRating < 0)
                     {
                         intRating = strValues.Length -1;
                     }
                     strAvailExpr = strValues[intRating];
                 }
-                else
-                {
-                    strAvailExpr = objXmlMod["avail"].InnerText;
-                }
 
                 if (strAvailExpr.EndsWith("F") || strAvailExpr.EndsWith("R"))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-                    strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+                    // Translate the Avail string.
+                    if (strAvail == "R")
+                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                    else if (strAvail == "F")
+                        strAvail = LanguageManager.GetString("String_AvailForbidden");
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -635,15 +637,16 @@ namespace Chummer
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objXmlMod["cost"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                    if (strCost.Contains("-"))
+                    string strCost = objXmlMod["cost"].InnerText;
+                    strCost = strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                         decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMax == decimal.MaxValue)
                     {
@@ -662,19 +665,17 @@ namespace Chummer
                         strCost = "0";
                     else
                     {
-                        if (objXmlMod["cost"].InnerText.StartsWith("FixedValues"))
+                        strCost = objXmlMod["cost"].InnerText;
+                        if (strCost.StartsWith("FixedValues"))
                         {
                             int intRating = Convert.ToInt32(nudRating.Value) - 1;
-                            string[] strValues = objXmlMod["cost"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                            strCost = strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray());
+                            string[] strValues = strCost.Split(',');
                             if (intRating < 0 || intRating > strValues.Length)
                             {
                                 intRating = 0;
                             }
                             strCost = strValues[intRating];
-                        }
-                        else
-                        {
-                            strCost = objXmlMod["cost"].InnerText;
                         }
                         strCost = ReplaceStrings(strCost);
                     }
@@ -702,7 +703,7 @@ namespace Chummer
                 string strSlots = string.Empty;
                 if (objXmlMod["slots"].InnerText.StartsWith("FixedValues"))
                 {
-                    string[] strValues = objXmlMod["slots"].InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = objXmlMod["slots"].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     strSlots = strValues[Convert.ToInt32(nudRating.Value) - 1];
                 }
                 else
@@ -815,21 +816,22 @@ namespace Chummer
         }
         private string ReplaceStrings(string strInput)
         {
-            strInput = strInput.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-            strInput = strInput.Replace("Vehicle Cost", _objVehicle.Cost);
-            strInput = strInput.Replace("Weapon Cost", _intWeaponCost.ToString());
-            strInput = strInput.Replace("Total Cost", _intTotalWeaponCost.ToString());
-            strInput = strInput.Replace("Body", _objVehicle.Body.ToString());
-            strInput = strInput.Replace("Handling", _objVehicle.Handling.ToString());
-            strInput = strInput.Replace("Offroad Handling", _objVehicle.OffroadHandling.ToString());
-            strInput = strInput.Replace("Speed", _objVehicle.Speed.ToString());
-            strInput = strInput.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString());
-            strInput = strInput.Replace("Acceleration", _objVehicle.Accel.ToString());
-            strInput = strInput.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString());
-            strInput = strInput.Replace("Sensor", _objVehicle.BaseSensor.ToString());
-            strInput = strInput.Replace("Armor", _objVehicle.Armor.ToString());
+            StringBuilder objInputBuilder = new StringBuilder(strInput);
+            objInputBuilder.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+            objInputBuilder.Replace("Vehicle Cost", _objVehicle.Cost);
+            objInputBuilder.Replace("Weapon Cost", _intWeaponCost.ToString());
+            objInputBuilder.Replace("Total Cost", _intTotalWeaponCost.ToString());
+            objInputBuilder.Replace("Body", _objVehicle.Body.ToString());
+            objInputBuilder.Replace("Handling", _objVehicle.Handling.ToString());
+            objInputBuilder.Replace("Offroad Handling", _objVehicle.OffroadHandling.ToString());
+            objInputBuilder.Replace("Speed", _objVehicle.Speed.ToString());
+            objInputBuilder.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString());
+            objInputBuilder.Replace("Acceleration", _objVehicle.Accel.ToString());
+            objInputBuilder.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString());
+            objInputBuilder.Replace("Sensor", _objVehicle.BaseSensor.ToString());
+            objInputBuilder.Replace("Armor", _objVehicle.Armor.ToString());
 
-            return strInput;
+            return objInputBuilder.ToString();
         }
         #endregion
 

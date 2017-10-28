@@ -128,16 +128,15 @@ namespace Chummer.Backend.Equipment
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
-                    if (strCost.Contains("-"))
+                    string strCost = objXmlWeapon["cost"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                         decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
@@ -1481,7 +1480,7 @@ namespace Chummer.Backend.Equipment
                 strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
 
                 string strExpression = strMin;
-                strExpression = strExpression.Replace("min", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty);
+                strExpression = strExpression.Replace("min", string.Empty).FastEscape("()".ToCharArray());
 
                 string[] strValue = strExpression.Split(',');
                 strExpression = Math.Min(Convert.ToInt32(strValue[0]), Convert.ToInt32(strValue[1])).ToString();
@@ -1497,15 +1496,15 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (strDamage.Contains("P"))
+                if (strDamage.Contains('P'))
                 {
                     strDamageType = "P";
-                    strDamage = strDamage.Replace("P", string.Empty);
+                    strDamage = strDamage.FastEscape('P');
                 }
-                if (strDamage.Contains("S"))
+                if (strDamage.Contains('S'))
                 {
                     strDamageType = "S";
-                    strDamage = strDamage.Replace("S", string.Empty);
+                    strDamage = strDamage.FastEscape('S');
                 }
             }
             // Place any extra text like (e) and (f) in a string and remove it from the expression.
@@ -1677,15 +1676,15 @@ namespace Chummer.Backend.Equipment
                     strDamageType = "P or S";
                     strDamage = strDamage.Replace("P or S", string.Empty);
                 }
-                if (strDamage.Contains("P"))
+                if (strDamage.Contains('P'))
                 {
                     strDamageType = "P";
-                    strDamage = strDamage.Replace("P", string.Empty);
+                    strDamage = strDamage.FastEscape('P');
                 }
-                if (strDamage.Contains("S"))
+                if (strDamage.Contains('S'))
                 {
                     strDamageType = "S";
-                    strDamage = strDamage.Replace("S", string.Empty);
+                    strDamage = strDamage.FastEscape('S');
                 }
                 // Place any extra text like (e) and (f) in a string and remove it from the expression.
                 if (strDamage.Contains("(e)"))
@@ -1767,7 +1766,7 @@ namespace Chummer.Backend.Equipment
             foreach (string strAmmo in strAmmos)
             {
                 string strThisAmmo = strAmmo;
-                if (strThisAmmo.Contains("("))
+                if (strThisAmmo.Contains('('))
                 {
                     string strAmmoString = string.Empty;
                     string strPrepend = string.Empty;
@@ -2259,7 +2258,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 intRCBase = Convert.ToInt32(strRCBase);
-                intRCFull = Convert.ToInt32(strRCFull.Replace("(", string.Empty).Replace(")", string.Empty));
+                intRCFull = Convert.ToInt32(strRCFull.Trim("()".ToCharArray()));
 
                 if (intRCBase < 0)
                 {
@@ -3130,12 +3129,12 @@ namespace Chummer.Backend.Equipment
             get
             {
                 Tuple<int, string> objAvailPair = TotalAvailPair;
-                string strReturn = objAvailPair.Item1 + objAvailPair.Item2;
+                string strAvail = objAvailPair.Item2;
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+                strAvail = strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
+                strAvail = strAvail.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
-                return strReturn;
+                return objAvailPair.Item1 + strAvail;
             }
         }
 

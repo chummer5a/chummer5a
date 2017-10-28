@@ -8109,15 +8109,15 @@ namespace Chummer
             {
                 decimal decMin = 0;
                 decimal decMax = decimal.MaxValue;
-                string strCost = objAccessory.Cost.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                if (strCost.Contains("-"))
+                string strCost = objAccessory.Cost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
                     decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                     decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
@@ -14340,7 +14340,7 @@ namespace Chummer
 
             string ammoString = objWeapon.CalculatedAmmo(true);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.Contains(" or ") || ammoString.Contains("x") || ammoString.Contains("Special") || ammoString.Contains("+"))
+            if (ammoString.Contains(" or ") || ammoString.Contains('x') || ammoString.Contains("Special") || ammoString.Contains('+'))
             {
                 string strWeaponAmmo = ammoString.ToLower();
                 if (strWeaponAmmo.Contains("external source"))
@@ -14362,8 +14362,8 @@ namespace Chummer
                     if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
                         strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
 
-                    if (strThisAmmo.Contains("("))
-                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf("("));
+                    if (strThisAmmo.Contains('('))
+                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
 
                     lstCount.Add(strThisAmmo);
                 }
@@ -14372,8 +14372,8 @@ namespace Chummer
             {
                 // Nothing weird in the ammo string, so just use the number given.
                 string strAmmo = ammoString;
-                if (strAmmo.Contains("("))
-                    strAmmo = strAmmo.Substring(0, strAmmo.IndexOf("("));
+                if (strAmmo.Contains('('))
+                    strAmmo = strAmmo.Substring(0, strAmmo.IndexOf('('));
                 lstCount.Add(strAmmo);
             }
 
@@ -15719,9 +15719,10 @@ namespace Chummer
             Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
 
             // Determine which loading methods are available to the Weapon.
-            if (objWeapon.CalculatedAmmo().Contains(" or ") || objWeapon.CalculatedAmmo().Contains("x") || objWeapon.CalculatedAmmo().Contains("Special") || objWeapon.CalculatedAmmo().Contains("+"))
+            string ammoString = objWeapon.CalculatedAmmo();
+            if (ammoString.Contains(" or ") || ammoString.Contains('x') || ammoString.Contains("Special") || ammoString.Contains('+'))
             {
-                string strWeaponAmmo = objWeapon.CalculatedAmmo().ToLower();
+                string strWeaponAmmo = ammoString.ToLower();
                 if (strWeaponAmmo.Contains("external source"))
                     blnExternalSource = true;
                 // Get rid of external source, special, or belt, and + energy.
@@ -15741,8 +15742,8 @@ namespace Chummer
                     if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
                         strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
 
-                    if (strThisAmmo.Contains("("))
-                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf("("));
+                    if (strThisAmmo.Contains('('))
+                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
 
                     lstCount.Add(strThisAmmo);
                 }
@@ -15750,10 +15751,9 @@ namespace Chummer
             else
             {
                 // Nothing weird in the ammo string, so just use the number given.
-                string strAmmo = objWeapon.CalculatedAmmo();
-                if (strAmmo.Contains("("))
-                    strAmmo = strAmmo.Substring(0, strAmmo.IndexOf("("));
-                lstCount.Add(strAmmo);
+                if (ammoString.Contains('('))
+                    ammoString = ammoString.Substring(0, ammoString.IndexOf('('));
+                lstCount.Add(ammoString);
             }
 
             // Find all of the Ammo for the current Weapon that the character is carrying.
@@ -16268,10 +16268,10 @@ namespace Chummer
                 string strFocusName = objFocus.Name;
                 if (!string.IsNullOrEmpty(objFocus.Extra))
                     strFocusName += " (" + objFocus.Extra + ")";
-                int intPosition = strFocusName.IndexOf("(");
+                int intPosition = strFocusName.IndexOf('(');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition - 1);
-                intPosition = strFocusName.IndexOf(",");
+                intPosition = strFocusName.IndexOf(',');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition);
                 int intKarmaMultiplier = 0;

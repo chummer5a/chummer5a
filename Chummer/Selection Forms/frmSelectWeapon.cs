@@ -190,15 +190,15 @@ namespace Chummer
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objXmlWeapon["cost"].InnerText.Replace("Variable", string.Empty).Trim("()".ToCharArray());
-                    if (strCost.Contains("-"))
+                    string strCost = objXmlWeapon["cost"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decimal.TryParse(strValues[0], out decMin);
                         decimal.TryParse(strValues[1], out decMax);
                     }
                     else
-                        decimal.TryParse(strCost.Replace("+", string.Empty), out decMin);
+                        decimal.TryParse(strCost.FastEscape('+'), out decMin);
 
                     if (decMax == decimal.MaxValue)
                     {

@@ -158,7 +158,7 @@ namespace Chummer
             else
             {
                 string strPowerName = Name;
-                if (strPowerName.Contains("("))
+                if (strPowerName.Contains('('))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
@@ -172,7 +172,7 @@ namespace Chummer
             else
             {
                 string strPowerName = Name;
-                if (strPowerName.Contains("("))
+                if (strPowerName.Contains('('))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");

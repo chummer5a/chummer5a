@@ -1110,10 +1110,10 @@ namespace Chummer
 
                         if (objCostNode.InnerText.StartsWith("FixedValues"))
                         {
-                            string[] strValues = objCostNode.InnerText.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                            string[] strValues = objCostNode.InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                             string strCost = "0";
                             if (nudRating.Value > 0)
-                                strCost = strValues[Convert.ToInt32(nudRating.Value) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                                strCost = strValues[Convert.ToInt32(nudRating.Value) - 1].Trim("[]".ToCharArray());
                             decimal decCost = Convert.ToDecimal(strCost, GlobalOptions.InvariantCultureInfo) * decMultiplier;
                             decCost *= 1 + (nudMarkup.Value / 100.0m);
                             if (chkBlackMarketDiscount.Checked)
@@ -1130,15 +1130,15 @@ namespace Chummer
                         {
                             decimal decMin = 0;
                             decimal decMax = decimal.MaxValue;
-                            string strCost = objCostNode.InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
-                            if (strCost.Contains("-"))
+                            string strCost = objCostNode.InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                            if (strCost.Contains('-'))
                             {
                                 string[] strValues = strCost.Split('-');
                                 decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                                 decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                             }
                             else
-                                decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                                decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                             if (decMax == decimal.MaxValue)
                             {
@@ -1190,7 +1190,7 @@ namespace Chummer
                             {
                                 if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
                                 {
-                                    string[] strValues = objXmlGear[strCapacityField].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                                    string[] strValues = objXmlGear[strCapacityField].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else
@@ -1218,7 +1218,7 @@ namespace Chummer
                             {
                                 if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
                                 {
-                                    string[] strValues = objXmlGear[strCapacityField].InnerText.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                                    string[] strValues = objXmlGear[strCapacityField].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -281,9 +282,9 @@ namespace Chummer.Backend.Equipment
 
                 if (strExpression.StartsWith("FixedValues"))
                 {
-                    string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
                 }
 
                 int intGearValue = 0;
@@ -307,7 +308,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains("+") || strExpression.Contains("Rating"))
+                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -345,9 +346,9 @@ namespace Chummer.Backend.Equipment
 
                 if (strExpression.StartsWith("FixedValues"))
                 {
-                    string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
                 }
 
                 int intGearValue = 0;
@@ -371,7 +372,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains("+") || strExpression.Contains("Rating"))
+                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -409,9 +410,9 @@ namespace Chummer.Backend.Equipment
 
                 if (strExpression.StartsWith("FixedValues"))
                 {
-                    string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
                 }
 
                 int intGearValue = 0;
@@ -435,7 +436,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains("+") || strExpression.Contains("Rating"))
+                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -473,9 +474,9 @@ namespace Chummer.Backend.Equipment
 
                 if (strExpression.StartsWith("FixedValues"))
                 {
-                    string[] strValues = strExpression.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
+                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
                 }
 
                 int intGearValue = 0;
@@ -499,7 +500,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains("+") || strExpression.Contains("Rating"))
+                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();

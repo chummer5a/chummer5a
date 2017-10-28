@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -106,7 +107,7 @@ namespace Chummer
             int startingLength = story.Length;
 
             String[] words;
-            if (innerText.StartsWith("$") && innerText.IndexOf(" ") < 0)
+            if (innerText.StartsWith("$") && innerText.IndexOf(' ') < 0)
             {
                 words = Macro(innerText).Split(" \n\r\t".ToCharArray());
             }
@@ -154,11 +155,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
-            String macroName, macroPool;
-            if (endString.Contains("_"))
+            string endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
+            string macroName, macroPool;
+            if (endString.Contains('_'))
             {
-                String[] split = endString.Split('_');
+                string[] split = endString.Split('_');
                 macroName = split[0];
                 macroPool = split[1];
             }
@@ -196,12 +197,12 @@ namespace Chummer
                     }
                     return (2075 - year).ToString();
                 }
-                return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
+                return string.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
             }
 
             //Did not meet predefined macros, check user defined
             
-            String searchString = "/chummer/storybuilder/macros/" + macroName;
+            string searchString = "/chummer/storybuilder/macros/" + macroName;
             XmlDocument objXmlLifeModulesDocument = XmlManager.Load("lifemodules.xml");
 
             if (objXmlLifeModulesDocument != null)

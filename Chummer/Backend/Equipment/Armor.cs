@@ -103,15 +103,15 @@ namespace Chummer.Backend.Equipment
                     decimal decMin = 0.0m;
                     decimal decMax = decimal.MaxValue;
                     char[] charParentheses = { '(', ')' };
-                    string strCost = objXmlArmorNode["cost"].InnerText.Replace("Variable", string.Empty).Trim(charParentheses);
-                    if (strCost.Contains("-"))
+                    string strCost = objXmlArmorNode["cost"].InnerText.TrimStart("Variable", true).Trim(charParentheses);
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
                         decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.Replace("+", string.Empty), GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
@@ -1126,6 +1126,7 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Complex Properties
+        private static char[] chrAvails = { 'F', 'R' };
         /// <summary>
         /// Total Availablility of the Armor and its Modifications and Gear.
         /// </summary>
@@ -1134,13 +1135,13 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-                if (_strAvail.Contains("+"))
+                if (_strAvail.Contains('+'))
                     return _strAvail;
 
                 string strCalculated;
 
                 // Just a straight cost, so return the value.
-                if (_strAvail.Contains("F") || _strAvail.Contains("R"))
+                if (_strAvail.EndsWith("F") || _strAvail.EndsWith("R"))
                 {
                     strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
                 }
@@ -1149,10 +1150,10 @@ namespace Chummer.Backend.Equipment
 
                 int intAvail;
                 string strAvailText = string.Empty;
-                if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+                if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                    intAvail = Convert.ToInt32(strCalculated.Replace(strAvailText, string.Empty));
+                    intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
                 }
                 else
                     intAvail = Convert.ToInt32(strCalculated);
@@ -1160,7 +1161,7 @@ namespace Chummer.Backend.Equipment
                 // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
                 foreach (Gear objChild in _lstGear)
                 {
-                    if (objChild.Avail.Contains("+") && !objChild.IncludedInParent)
+                    if (objChild.Avail.Contains('+') && !objChild.IncludedInParent)
                     {
                         if (objChild.Avail.Contains("Rating"))
                         {
@@ -1171,12 +1172,12 @@ namespace Chummer.Backend.Equipment
                             string strAvailExpression = (objChild.Avail);
 
                             string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
-                            if (strAvailability.Contains("R") || strAvailability.Contains("F"))
+                            if (strAvailability.EndsWith("R") || strAvailability.EndsWith("F"))
                             {
                                 if (strAvailText != "F")
                                     strAvailText = objChild.Avail.Substring(strAvailability.Length - 1);
+                                strAvailability = strAvailability.Substring(0, strAvailability.Length - 1);
                             }
-                            strAvailability = strAvailability.Replace("F", string.Empty).Replace("R", string.Empty);
                             if (strAvailability.StartsWith("+"))
                                 strAvailability = strAvailability.Substring(1);
                             XPathExpression xprCost = nav.Compile(strAvailability);
@@ -1184,11 +1185,11 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            if (objChild.Avail.Contains("R") || objChild.Avail.Contains("F"))
+                            if (objChild.Avail.EndsWith("R") || objChild.Avail.EndsWith("F"))
                             {
                                 if (strAvailText != "F")
                                     strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
-                                intAvail += Convert.ToInt32(objChild.Avail.Replace("F", string.Empty).Replace("R", string.Empty));
+                                intAvail += Convert.ToInt32(objChild.Avail.Substring(0, objChild.Avail.Length - 1));
                             }
                             else
                                 intAvail += Convert.ToInt32(objChild.Avail);
@@ -1199,24 +1200,26 @@ namespace Chummer.Backend.Equipment
                 // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
                 foreach (ArmorMod objChild in _lstArmorMods)
                 {
-                    if (objChild.Avail.Contains("+") && !objChild.IncludedInArmor)
+                    if (objChild.Avail.Contains('+') && !objChild.IncludedInArmor)
                     {
-                        if (objChild.Avail.Contains("R") || objChild.Avail.Contains("F"))
+                        if (objChild.Avail.EndsWith("R") || objChild.Avail.EndsWith("F"))
                         {
                             if (strAvailText != "F")
                                 strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
-                            intAvail += Convert.ToInt32(objChild.Avail.Replace("F", string.Empty).Replace("R", string.Empty));
+                            intAvail += Convert.ToInt32(objChild.Avail.Substring(0, objChild.Avail.Length - 1));
                         }
                         else
                             intAvail += Convert.ToInt32(objChild.Avail);
                     }
                 }
 
-                string strReturn = intAvail.ToString() + strAvailText;
-
                 // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+                if (strAvailText == "R")
+                    strAvailText = LanguageManager.GetString("String_AvailRestricted");
+                else if (strAvailText == "F")
+                    strAvailText = LanguageManager.GetString("String_AvailForbidden");
+
+                string strReturn = intAvail.ToString() + strAvailText;
 
                 return strReturn;
             }
@@ -1267,8 +1270,7 @@ namespace Chummer.Backend.Equipment
                         // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                         string strCapacity = objArmorMod.ArmorCapacity;
                         strCapacity = strCapacity.Replace("[-", string.Empty);
-                        strCapacity = strCapacity.Replace("[", string.Empty);
-                        strCapacity = strCapacity.Replace("]", string.Empty);
+                        strCapacity = strCapacity.FastEscape("[]".ToCharArray());
                         strCapacity = strCapacity.Replace("Capacity", _strArmorCapacity);
                         strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
                         XPathExpression xprCapacity = nav.Compile(strCapacity);
@@ -1322,7 +1324,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(intPos + 1);
                         }
 
-                        if (strCapacity.Contains("["))
+                        if (strCapacity.Contains('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";
@@ -1340,7 +1342,7 @@ namespace Chummer.Backend.Equipment
                             strCapacity = strCapacity.Substring(intPos + 1);
                         }
 
-                        if (strCapacity.Contains("["))
+                        if (strCapacity.Contains('['))
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacity == "*")
                             strCapacity = "0";

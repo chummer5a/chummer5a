@@ -310,8 +310,7 @@ namespace Chummer
         private void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
-            string strNumber = strFileName.Substring(0, 3);
-            strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
+            strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
             LoadCharacter(strFileName);
         }
 
@@ -320,8 +319,7 @@ namespace Chummer
             if (e.Button == MouseButtons.Right)
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
-                string strNumber = strFileName.Substring(0, 3);
-                strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
+                strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
 
                 GlobalOptions.RemoveFromMRUList(strFileName);
                 GlobalOptions.AddToMRUList(strFileName, "stickymru");
