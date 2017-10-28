@@ -31110,27 +31110,15 @@
             </mod>
             <mod>
                 <id>06940788-ad0b-453c-bc8a-e54e6221c185</id>
-                <name>Gecko Tips (Bod 1-3)</name>
+                <name>Gecko Tips</name>
                 <page>162</page>
-                <translate>Geckofüße (Rumpf 1-3)</translate>
-            </mod>
-            <mod>
-                <id>a11be6d9-109e-4662-a23a-2c8081c6c948</id>
-                <name>Gecko Tips (Bod 4-6)</name>
-                <page>162</page>
-                <translate>Geckofüße (Rumpf 4-6)</translate>
+                <translate>Geckofüße</translate>
             </mod>
             <mod>
                 <id>fd32b5eb-c791-4117-a9fe-5d5d86952827</id>
-                <name>Gliding System (Bod 1-12)</name>
+                <name>Gliding System</name>
                 <page>162</page>
-                <translate>Gleitsystem (Rumpf 1-12)</translate>
-            </mod>
-            <mod>
-                <id>f9b96303-d8de-436f-94f3-b1793a7a809a</id>
-                <name>Gliding System (Bod 12+)</name>
-                <page>162</page>
-                <translate>Gleitsystem (Rumpf 12+)</translate>
+                <translate>Gleitsystem</translate>
             </mod>
             <mod>
                 <id>956a20f7-64f3-4160-88a0-d6d6b29b0bd1</id>
