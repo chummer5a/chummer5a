@@ -568,8 +568,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -13541,9 +13541,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -13764,8 +13764,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -13996,9 +13996,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>160</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -14008,9 +14008,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -14871,9 +14871,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -15094,8 +15094,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -15326,9 +15326,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>160</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -15338,9 +15338,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -16201,9 +16201,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -16424,8 +16424,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -16656,9 +16656,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>170</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -16668,9 +16668,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -17531,9 +17531,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -17754,8 +17754,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -17986,9 +17986,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>110</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -17998,9 +17998,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -18986,9 +18986,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -19298,8 +19298,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -19626,9 +19626,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>150</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -19638,9 +19638,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
