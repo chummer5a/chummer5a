@@ -11360,8 +11360,7 @@
         </metavariant>
       </metavariants>
     </metatype>
-    <!-- TODO: Initial entry after this point -->
-	<metatype>
+	  <metatype>
       <id>5bc6b1d8-8772-41f9-8c45-6f9abbd42cb1</id>
       <name>Shapeshifter: Lupine</name>
       <karma>120</karma>
@@ -11459,11 +11458,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
+          <qualities>
+            <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+            </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
+          </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -11513,16 +11536,37 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Shiva Arms (1 Pair)</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Striking Skin Pigmentation</quality>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -11572,16 +11616,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -11631,16 +11694,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality>Symbiosis</quality>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -11690,19 +11773,39 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality>Keen-Eared</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
-              <quality select="Sunlight">Allergy (Common, Mild)</quality>
-              <quality>Nocturnal</quality>
-              <quality select ="Colored Fur">Unusual Hair</quality>
+              <quality>Uneducated</quality>
+              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Metahuman Form Only">Nocturnal</quality>
+              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -11752,16 +11855,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Pollution">Allergy (Common, Mild)</quality>
+              <quality>Uneducated</quality>
+              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -11810,15 +11933,37 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <karma>135</karma>
           <source>RF</source>
@@ -11869,17 +12014,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -11930,18 +12094,39 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <bonus>
-            <initiativedice>2</initiativedice>
-            <lifestylecost>20</lifestylecost>
-          </bonus>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
-              <quality>Neoteny</quality>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Neoteny</quality>
             </negative>
           </qualities>
+          <bonus>
+            <enabletab>critter</enabletab>
+            <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>RF</source>
           <page>89</page>
         </metavariant>
@@ -11990,20 +12175,41 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <bonus>
-            <initiativedice>2</initiativedice>
-            <lifestylecost>20</lifestylecost>
-          </bonus>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
-              <quality>Monkey Paws</quality>
-              <quality>Functional Tail (Prehensile)</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality select="Metahuman Form Only">Monkey Paws</quality>
+              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality>Unusual Hair</quality>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
+          <bonus>
+            <enabletab>critter</enabletab>
+            <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>RF</source>
           <page>89</page>
         </metavariant>
@@ -12052,20 +12258,41 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <bonus>
-            <initiativedice>2</initiativedice>
-            <lifestylecost>20</lifestylecost>
-          </bonus>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
-              <quality>Resistance to Pathogens/Toxins</quality>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality select="Metahuman Form Only">Celerity</quality>
             </positive>
             <negative>
-              <quality>Unusual Hair</quality>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
+          <bonus>
+            <enabletab>critter</enabletab>
+            <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <source>RF</source>
           <page>90</page>
         </metavariant>
@@ -12114,16 +12341,40 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Resistance to Pathogens</quality>
-              <quality>Thermographic Vision</quality>
-              <quality>Underwater Vision</quality>
-              <quality>Webbed Digits</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Underwater Vision</quality>
+              <quality select="Metahuman Form Only">Webbed Digits</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
+            <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>90</page>
@@ -12173,16 +12424,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -12232,15 +12502,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality>Fangs</quality>
+              <quality select="Metahuman Form Only">Fangs</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>5</karma>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -12290,14 +12581,35 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>8</karma>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -12347,17 +12659,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality>Striking Skin Pigmentation</quality>
+              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality>Uneducated</quality>
             </negative>
           </qualities>
-          <karma>4</karma>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -12406,19 +12737,38 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>2/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality>Satyr Legs</quality>
+              <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>140</karma>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
           </bonus>
+          <karma>140</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -12467,16 +12817,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-          <walk>2/1/0</walk>
-          <run>4/0/0</run>
-          <sprint>1/1/0</sprint>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -12517,8 +12887,8 @@
           <inimax>11</inimax>
           <iniaug>19</iniaug>
           <edgmin>1</edgmin>
-          <edgmax>6</edgmax>
-          <edgaug>6</edgaug>
+          <edgmax>5</edgmax>
+          <edgaug>5</edgaug>
           <magmin>1</magmin>
           <magmax>6</magmax>
           <magaug>6</magaug>
@@ -12531,17 +12901,38 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality>Cyclopean Eye</quality>
+              <quality>Uneducated</quality>
+              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
             </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
+            <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
@@ -12593,14 +12984,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="2/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>12</karma>
           <bonus>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
@@ -12652,13 +13065,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
+            <enabletab>critter</enabletab>
+            <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
             <initiativedice>2</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -12711,13 +13147,36 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <walk alt="2/1/0">1/1/0</walk>
+          <run alt="4/1/0">5/1/0</run>
+          <sprint alt="1/1/0">3/1/0</sprint>
+          <powers>
+            <power>Shift (Metahuman Form)</power>
+          </powers>
           <qualities>
             <positive>
-              <quality>Thermographic Vision</quality>
+              <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
+              <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality>Uneducated</quality>
+            </negative>
           </qualities>
-          <karma>2</karma>
           <bonus>
+            <enabletab>critter</enabletab>
+            <initiativedice>2</initiativedice>
+            <naturalweapon>
+              <name>Bite (Lupine Form)</name>
+              <reach>0</reach>
+              <damage>(STR+2)P</damage>
+              <ap>-1</ap>
+              <useskill>Unarmed Combat</useskill>
+              <accuracy>Physical</accuracy>
+              <source>RF</source>
+              <page>105</page>
+            </naturalweapon>
             <initiativedice>2</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
@@ -12727,6 +13186,7 @@
         </metavariant>
       </metavariants>
     </metatype>
+    <!-- TODO: Initial entry after this point -->
     <metatype>
       <id>6b9844d0-3e17-442f-a34d-f12f52b1c291</id>
       <name>Shapeshifter: Pantherine</name>
@@ -19908,7 +20368,6 @@
         </metavariant>
       </metavariants>
     </metatype>
-
     <!-- End Region -->
   </metatypes>
 </chummer>
