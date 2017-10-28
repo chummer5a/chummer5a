@@ -149,9 +149,14 @@ namespace Chummer.Skills
             bool blnIsKnowledgeSkill = false;
             if (n.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
-                KnowledgeSkill knoSkill = new KnowledgeSkill(character);
-                knoSkill.Load(n);
-                skill = knoSkill;
+                if (n["forced"] != null)
+                    skill = new KnowledgeSkill(character, n["name"]?.InnerText ?? string.Empty);
+                else
+                {
+                    KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+                    knoSkill.Load(n);
+                    skill = knoSkill;
+                }
             }
             else if (suid != Guid.Empty)
             {
@@ -185,9 +190,18 @@ namespace Chummer.Skills
                 }
             }
             */
-
+            // Legacy shim
             if (skill == null)
-                skill = new KnowledgeSkill(character, n["name"]?.InnerText ?? string.Empty);
+            {
+                if (n["forced"] != null)
+                    skill = new KnowledgeSkill(character, n["name"]?.InnerText ?? string.Empty);
+                else
+                {
+                    KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+                    knoSkill.Load(n);
+                    skill = knoSkill;
+                }
+            }
             XmlElement element = n["guid"];
             if (element != null) skill.Id = Guid.Parse(element.InnerText);
 
