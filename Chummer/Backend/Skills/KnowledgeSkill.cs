@@ -244,12 +244,14 @@ namespace Chummer.Skills
             cost -= lower * (lower + 1);
             if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
             {
-                cost -= Math.Max(intTotalBaseRating - 2, 0);
+                cost -= Math.Max(intTotalBaseRating - Math.Max(2, lower), 0);
             }
 
             cost /= 2;
             cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
-
+            // We have bought the first level with karma, too
+            if (lower == 0 && cost > 0)
+                cost += CharacterObject.Options.KarmaNewKnowledgeSkill - CharacterObject.Options.KarmaImproveKnowledgeSkill;
             cost +=  //Spec
                     (!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
                     CharacterObject.Options.KarmaKnowledgeSpecialization : 0;
