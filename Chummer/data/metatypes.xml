@@ -9317,7 +9317,6 @@
         </metavariant>
       </metavariants>
     </metatype>
-    <!-- TODO: Initial entry after this point -->
     <metatype>
       <id>addc3f0f-5a61-44d0-b980-a1db52256faa</id>
       <name>Shapeshifter: Leonine</name>
@@ -9351,11 +9350,11 @@
       <inimax>12</inimax>
       <iniaug>20</iniaug>
       <edgmin>1</edgmin>
-      <edgmax>6</edgmax>
-      <edgaug>6</edgaug>
+      <edgmax>5</edgmax>
+      <edgaug>5</edgaug>
       <magmin>1</magmin>
-      <magmax>5</magmax>
-      <magaug>5</magaug>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
       <resmin>1</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
@@ -9365,9 +9364,9 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <walk>1/1/0</walk>
-      <run>4/1/0</run>
-      <sprint>4/1/0</sprint>
+      <walk>2/1/0</walk>
+      <run>5/1/0</run>
+      <sprint>2/1/0</sprint>
       <source>RF</source>
       <page>105</page>
       <metavariants>
@@ -9418,14 +9417,14 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
@@ -9506,7 +9505,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -9551,7 +9550,7 @@
         </metavariant>
         <metavariant>
           <name>Elf</name>
-          <karma>175</karma>
+          <karma>165</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -9596,7 +9595,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -9684,7 +9683,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -9729,7 +9728,7 @@
         <metavariant>
           <name>Nocturna</name>
           <bodmin>1</bodmin>
-          <karma>175</karma>
+          <karma>165</karma>
           <bodmax>5</bodmax>
           <bodaug>9</bodaug>
           <agimin>3</agimin>
@@ -9773,7 +9772,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -9792,6 +9791,7 @@
             </negative>
           </qualities>
           <bonus>
+		    <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -9814,14 +9814,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <qualities>
-            <positive>
-              <quality>Low-Light Vision</quality>
-            </positive>
-            <negative>
-            </negative>
-          </qualities>
-          <bonus />
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -9829,7 +9821,7 @@
           <name>Xapiri Thëpë</name>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
-          <karma>173</karma>
+          <karma>163</karma>
           <bodaug>10</bodaug>
           <agimin>2</agimin>
           <agimax>7</agimax>
@@ -9840,9 +9832,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -9872,7 +9864,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -9960,7 +9952,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -10192,8 +10184,8 @@
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
-          <agimin>1</agimin>
-          <agimax>6</agimax>
+          <agimin>2</agimin>
+          <agimax>7</agimax>
           <agiaug>11</agiaug>
           <reamin>1</reamin>
           <reamax>6</reamax>
@@ -10216,9 +10208,9 @@
           <edgmin>1</edgmin>
           <edgmax>6</edgmax>
           <edgaug>6</edgaug>
-          <inimin>2</inimin>
-          <inimax>12</inimax>
-          <iniaug>20</iniaug>
+          <inimin>3</inimin>
+          <inimax>13</inimax>
+          <iniaug>21</iniaug>
           <magmin>1</magmin>
           <magmax>6</magmax>
           <magaug>6</magaug>
@@ -10247,8 +10239,7 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
@@ -10511,7 +10502,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -10555,9 +10546,9 @@
         <metavariant>
           <name>Hobgoblin</name>
           <karma>170</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -10567,9 +10558,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -10599,7 +10590,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -10638,7 +10629,6 @@
               <page>105</page>
             </naturalweapon>
           </bonus>
-          <karma>175</karma>
           <source>RF</source>
           <page>104</page>
         </metavariant>
@@ -10689,7 +10679,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -10777,7 +10767,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -10865,7 +10855,7 @@
           <depaug>0</depaug>
           <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
-          <sprint alt="1/1/0">2/1/0</sprint>
+          <sprint alt="2/1/0">2/1/0</sprint>
           <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
@@ -11370,7 +11360,8 @@
         </metavariant>
       </metavariants>
     </metatype>
-    <metatype>
+    <!-- TODO: Initial entry after this point -->
+	<metatype>
       <id>5bc6b1d8-8772-41f9-8c45-6f9abbd42cb1</id>
       <name>Shapeshifter: Lupine</name>
       <karma>120</karma>
