@@ -181,6 +181,7 @@ Application Changes:
 - Fixed a bug where the cyberware/bioware selection screen would not properly consider 'ware requirements.
 - Fixed a bug where the technique from One Trick Pony would not be included in the limit of 5 techniques at character generation.
 - Added preliminary handling of modular cyberlimbs. Modular cyberlimbs for vehicles need to be bought through the Cyberware tab and then equipped from there. There are some parts of the current implementation that rely on non-RAW rules because there is no way around it without being insane (e.g. modular limbs don't add essence, all essence is added via connectors); this is subject to change with official errata.
+- KnowledgeSkillPoints Spent over the limit in Karma/Life Module are no longer subtracted from (non-existent) active SkillPoints. Instead the remaining points are negative and prevent crossing over to career mode.
 
 Data Changes:
 
