@@ -509,6 +509,11 @@ namespace Chummer.Skills
             get
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
+                if (_character.BuildMethod == CharacterBuildMethod.Karma ||
+                    _character.BuildMethod == CharacterBuildMethod.LifeModule)
+                {
+                    return 0;
+                }
                 int work = 0;
                 if (KnowledgeSkillRanksSum > KnowledgeSkillPoints)
                     work -= KnowledgeSkillPoints - KnowledgeSkillRanksSum;
