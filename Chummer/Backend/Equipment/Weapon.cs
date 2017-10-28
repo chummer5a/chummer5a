@@ -3131,8 +3131,10 @@ namespace Chummer.Backend.Equipment
                 Tuple<int, string> objAvailPair = TotalAvailPair;
                 string strAvail = objAvailPair.Item2;
                 // Translate the Avail string.
-                strAvail = strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strAvail = strAvail.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+                if (strAvail == "F")
+                    strAvail = LanguageManager.GetString("String_AvailForbidden");
+                else if (strAvail == "R")
+                    strAvail = LanguageManager.GetString("String_AvailRestricted");
 
                 return objAvailPair.Item1 + strAvail;
             }

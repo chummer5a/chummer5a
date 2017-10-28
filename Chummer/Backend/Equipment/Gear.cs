@@ -1671,18 +1671,20 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            // Translate the Avail string.
+            if (!blnForceEnglish)
+            {
+                if (strAvailText == "F")
+                    strAvailText = LanguageManager.GetString("String_AvailForbidden");
+                else if (strAvailText == "R")
+                    strAvailText = LanguageManager.GetString("String_AvailRestricted");
+            }
+
             // Add any Avail modifier that comes from its Parent.
             if (_objParent != null)
                 intAvail += _objParent.ChildAvailModifier;
 
             string strReturn = intAvail.ToString() + strAvailText;
-
-            // Translate the Avail string.
-            if (!blnForceEnglish)
-            {
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-            }
 
             if (blnIncludePlus)
                 strReturn = "+" + strReturn;

@@ -868,6 +868,11 @@ namespace Chummer.Backend.Equipment
                 if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1, 1);
+                    // Translate the Avail string.
+                    if (strAvailText == "F")
+                        strAvailText = LanguageManager.GetString("String_AvailForbidden");
+                    else if (strAvailText == "R")
+                        strAvailText = LanguageManager.GetString("String_AvailRestricted");
                     strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);
                 }
 
@@ -886,18 +891,14 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     XPathExpression xprAvail = nav.Compile(strAvailExpr);
-                    strReturn = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvailText;
+                    strReturn = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString();
                 }
                 catch (XPathException)
                 {
-                    strReturn = strCalculated + strAvailText;
+                    strReturn = strCalculated;
                 }
 
-                // Translate the Avail string.
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-
-                return strReturn;
+                return strReturn + strAvailText;
             }
         }
 
