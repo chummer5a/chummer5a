@@ -410,7 +410,7 @@ namespace Chummer.Backend.Equipment
             objNode.Tag = _guiID.ToString();
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (MyXmlNode["forcegrade"]?.InnerText != "None")
+            if (MyXmlNode?["forcegrade"]?.InnerText != "None")
             {
                 // Apply the character's Cyberware Essence cost multiplier if applicable.
                 if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
@@ -701,6 +701,8 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (objNode["improvementsource"] != null)
+                _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objNode.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
@@ -746,8 +748,6 @@ namespace Chummer.Backend.Equipment
                 _blnWirelessOn = _nodWirelessBonus != null;
             }
             _nodAllowGear = objNode["allowgear"];
-            if (objNode["improvementsource"] != null)
-                _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             // Legacy Sweep
             if (_strForceGrade != "None" && (_strCategory.StartsWith("Genetech") || _strCategory.StartsWith("Genetic Infusions") || _strCategory.StartsWith("Genemods")))
             {
@@ -1795,14 +1795,41 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                XmlNode objReturn = null;
+                XmlDocument objDoc = null;
                 if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
                 {
-                    return XmlManager.Load("bioware.xml")?.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                    objDoc = XmlManager.Load("bioware.xml");
+                    if (objDoc != null)
+                    {
+                        objReturn = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                        if (objReturn == null)
+                        {
+                            objReturn = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
+                            if (objReturn != null)
+                            {
+                                objReturn.TryGetField("id", Guid.TryParse, out _sourceID);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    return XmlManager.Load("cyberware.xml")?.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                    objDoc = XmlManager.Load("cyberware.xml");
+                    if (objDoc != null)
+                    {
+                        objReturn = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                        if (objReturn == null)
+                        {
+                            objReturn = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
+                            if (objReturn != null)
+                            {
+                                objReturn.TryGetField("id", Guid.TryParse, out _sourceID);
+                            }
+                        }
+                    }
                 }
+                return objReturn;
             }
         }
         #endregion
