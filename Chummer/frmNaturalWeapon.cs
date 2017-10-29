@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ namespace Chummer
 {
     public partial class frmNaturalWeapon : Form
     {
-        private readonly XmlDocument _objXmlPowersDocument = new XmlDocument();
-        private readonly XmlDocument _objXmlSkillsDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlPowersDocument = XmlManager.Load("critterpowers.xml");
+        private readonly XmlDocument _objXmlSkillsDocument = XmlManager.Load("skills.xml");
 
         private readonly Character _objCharacter;
         private Weapon _objWeapon;
@@ -37,10 +37,8 @@ namespace Chummer
         public frmNaturalWeapon(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            _objXmlPowersDocument = XmlManager.Instance.Load("critterpowers.xml");
-            _objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
             MoveControls();
         }
 
@@ -76,12 +74,12 @@ namespace Chummer
             List<ListItem> lstDVType = new List<ListItem>();
             ListItem objDVPhysical = new ListItem();
             objDVPhysical.Value = "P";
-            objDVPhysical.Name = LanguageManager.Instance.GetString("String_DamagePhysical");
+            objDVPhysical.Name = LanguageManager.GetString("String_DamagePhysical");
             lstDVType.Add(objDVPhysical);
 
             ListItem objDVStun = new ListItem();
             objDVStun.Value = "S";
-            objDVStun.Name = LanguageManager.Instance.GetString("String_DamageStun");
+            objDVStun.Name = LanguageManager.GetString("String_DamageStun");
             lstDVType.Add(objDVStun);
 
             // Bind the Lists to the ComboBoxes.
@@ -163,7 +161,7 @@ namespace Chummer
             // Create the Weapon.
             _objWeapon = new Weapon(_objCharacter);
             _objWeapon.Name = txtName.Text;
-            _objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+            _objWeapon.Category = LanguageManager.GetString("Tab_Critter");
             _objWeapon.WeaponType = "Melee";
             _objWeapon.Reach = Convert.ToInt32(nudReach.Value);
             _objWeapon.Damage = strDamage;

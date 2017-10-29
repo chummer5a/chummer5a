@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,24 +30,24 @@ namespace Chummer
         public frmExpense()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
             DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
             string strDatePattern = objDateTimeInfo.FullDateTimePattern.Replace(":ss", string.Empty);
-            if (!GlobalOptions.Instance.DatesIncludeTime)
+            if (!GlobalOptions.DatesIncludeTime)
                 strDatePattern = objDateTimeInfo.LongDatePattern;
             datDate.CustomFormat = strDatePattern;
             datDate.Value = DateTime.Now;
 
-            txtDescription.Text = LanguageManager.Instance.GetString("String_ExpenseDefault");
+            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % 2000 != 0)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_KarmaNuyenExchange"), LanguageManager.Instance.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -65,14 +65,14 @@ namespace Chummer
         /// <summary>
         /// Amount gained or spent.
         /// </summary>
-        public int Amount
+        public decimal Amount
         {
             get
             {
                 decimal decReturn = nudAmount.Value;
                 if (_objMode == ExpenseType.Nuyen)
-                    decReturn *= (nudPercent.Value / 100);
-                return Convert.ToInt32(Math.Round(decReturn, 0));
+                    decReturn *= (nudPercent.Value / 100.0m);
+                return decReturn;
             }
             set
             {
@@ -138,16 +138,16 @@ namespace Chummer
             {
                 if (value == ExpenseType.Nuyen)
                 {
-                    lblKarma.Text = LanguageManager.Instance.GetString("Label_Expense_NuyenAmount");
-                    Text = LanguageManager.Instance.GetString("Title_Expense_Nuyen");
-                    chkRefund.Text = LanguageManager.Instance.GetString("Checkbox_Expense_RefundNuyen");
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
+                    Text = LanguageManager.GetString("Title_Expense_Nuyen");
+                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen");
                     nudPercent.Visible = true;
                     lblPercent.Visible = true;
                 }
                 else
                 {
-                    lblKarma.Text = LanguageManager.Instance.GetString("Label_Expense_KarmaAmount");
-                    Text = LanguageManager.Instance.GetString("Title_Expense_Karma");
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount");
+                    Text = LanguageManager.GetString("Title_Expense_Karma");
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }

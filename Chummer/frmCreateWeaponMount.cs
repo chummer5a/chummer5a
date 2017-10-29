@@ -32,7 +32,7 @@ namespace Chummer
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
         {
-            _xmlDoc = XmlManager.Instance.Load("vehicles.xml");
+            _xmlDoc = XmlManager.Load("vehicles.xml");
 
             // Populate the Armor Category list.
             XmlNodeList nodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount");
@@ -129,7 +129,7 @@ namespace Chummer
                 slots += Convert.ToInt32(node["slots"].InnerText);
             }
 
-            lblCost.Text = $"{cost:###,###,##0¥}";
+            lblCost.Text = $"{cost:###,###,##0.##¥}";
             lblSlots.Text = slots.ToString();
             lblAvailability.Text = $"{avail}{availSuffix}";
         }

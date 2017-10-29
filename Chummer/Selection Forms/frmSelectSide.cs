@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,17 +30,17 @@ namespace Chummer
         public frmSelectSide()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Create a list for the sides.
             List<ListItem> lstSides = new List<ListItem>();
             ListItem objLeft = new ListItem();
             objLeft.Value = "Left";
-            objLeft.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+            objLeft.Name = LanguageManager.GetString("String_Improvement_SideLeft");
 
             ListItem objRight = new ListItem();
             objRight.Value = "Right";
-            objRight.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+            objRight.Name = LanguageManager.GetString("String_Improvement_SideRight");
 
             lstSides.Add(objLeft);
             lstSides.Add(objRight);

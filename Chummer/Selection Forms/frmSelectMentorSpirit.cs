@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace Chummer
         private XmlNode _nodChoice2Bonus;
         private string _strXmlFile = "mentors.xml";
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         private List<ListItem> _lstCategory = new List<ListItem>();
@@ -40,23 +40,22 @@ namespace Chummer
         public frmSelectMentorSpirit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            // Load the Mentor information.
+            _objXmlDocument = XmlManager.Load(_strXmlFile);
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
         {
             if (_strXmlFile == "paragons.xml")
-                Text = LanguageManager.Instance.GetString("Title_SelectMentorSpirit_Paragon");
+                Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon");
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith("["))
                     objLabel.Text = string.Empty;
             }
-
-            // Load the Mentor information.
-            _objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
 
             List<ListItem> lstMentors = new List<ListItem>();
 
@@ -112,7 +111,7 @@ namespace Chummer
                 List<ListItem> lstChoice2 = new List<ListItem>();
 
                 foreach (XmlNode objChoice in objXmlMentor["choices"].SelectNodes("choice"))
-                {                    
+                {
                     bool blnShow = !(objChoice["name"].InnerText.StartsWith("Adept:") && !_objCharacter.AdeptEnabled);
                     if (objChoice["name"].InnerText.StartsWith("Magician:") && !_objCharacter.MagicianEnabled)
                         blnShow = false;
@@ -179,7 +178,7 @@ namespace Chummer
                 strPage = objXmlMentor["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
         #endregion
 
@@ -265,7 +264,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

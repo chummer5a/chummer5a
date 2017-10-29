@@ -1,4 +1,4 @@
-﻿using Chummer.Backend;
+using Chummer.Backend;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -146,8 +146,6 @@ namespace Chummer.Skills
 
                 if(old != _karma) OnPropertyChanged();
 
-
-
                 KarmaSpecForcedMightChange();
             }
         }
@@ -162,7 +160,22 @@ namespace Chummer.Skills
             {
                 int skillWire = CyberwareRating();
 
-                return Math.Max(skillWire, LearnedRating + Bonus(true));
+                return Math.Max(skillWire, TotalBaseRating);
+            }
+        }
+
+        /// <summary>
+        /// The rating the character has paid for, plus any improvement-based bonuses to skill rating.
+        /// </summary>
+        public int TotalBaseRating
+        {
+            get
+            {
+                if (CharacterObject.Created)
+                {
+                  return LearnedRating + RatingModifiers;
+                }
+                return LearnedRating;
             }
         }
 
@@ -241,7 +254,7 @@ namespace Chummer.Skills
 
                 if (ware == null) return -1;
 
-                if (SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) == true) return 0;
+                if (SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Extra) == true) return 0;
 
                 return -1;
             }
@@ -268,7 +281,7 @@ namespace Chummer.Skills
             }
         }
 
-        private int Bonus(bool AddToRating)
+        protected int Bonus(bool AddToRating)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
             return RelevantImprovements().Where(x => x.AddToRating == AddToRating).Sum(x => x.Value);
@@ -320,7 +333,7 @@ namespace Chummer.Skills
         {
             get
             {
-                return Math.Min(0, new ImprovementManager(_character).ValueOf(Improvement.ImprovementType.ConditionMonitor));
+                return Math.Min(0, ImprovementManager.ValueOf(_character, Improvement.ImprovementType.ConditionMonitor));
             }
         }
 
@@ -347,7 +360,8 @@ namespace Chummer.Skills
         {
             //No rating can obv not cost anything
             //Makes debugging easier as we often only care about value calculation
-            if (LearnedRating == 0) return 0;
+            int intTotalBaseRating = TotalBaseRating;
+            if (intTotalBaseRating == 0) return 0;
 
             int cost;
             if (SkillGroupObject?.Karma > 0)
@@ -357,13 +371,13 @@ namespace Chummer.Skills
 
                 int lower = Base + FreeKarma(); //Might be an error here
 
-                cost = RangeCost(lower, groupLower) + RangeCost(groupUpper, LearnedRating);
+                cost = RangeCost(lower, groupLower) + RangeCost(groupUpper, intTotalBaseRating);
             }
             else
             {
                 int lower = Base + FreeKarma();
 
-                cost = RangeCost(lower, LearnedRating);
+                cost = RangeCost(lower, intTotalBaseRating);
             }
 
             //Don't think this is going to happen, but if it happens i want to know
@@ -382,7 +396,7 @@ namespace Chummer.Skills
                         : 0;
             }
 
-            if (Unaware()) cost *= 2;
+            if (Unaware() || Uneducated()) cost *= 2;
 
             return cost;
 
@@ -412,33 +426,34 @@ namespace Chummer.Skills
         /// <returns>Price in karma</returns>
         public virtual int UpgradeKarmaCost()
         {
+            int intTotalBaseRating = TotalBaseRating;
+            if (intTotalBaseRating >= RatingMaximum)
+            {
+                return -1;
+            }
             int masterAdjustment = 0;
             if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
             {
-                masterAdjustment = LearnedRating >= 5 ? 2 : -1;
+                masterAdjustment = intTotalBaseRating >= 5 ? 2 : -1;
             }
 
-            int upgrade;
-            if (LearnedRating >= RatingMaximum)
-            {
-                upgrade = -1;
-            }
-            else if (LearnedRating == 0)
+            int upgrade = 0;
+            if (intTotalBaseRating == 0)
             {
                 upgrade = _character.Options.KarmaNewActiveSkill + masterAdjustment;
             }
             else
             {
-                upgrade = (LearnedRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
+                upgrade = (intTotalBaseRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
             }
 
-            if (Unaware()) upgrade *= 2;
+            if (Unaware() || Uneducated()) upgrade *= 2;
 
             return upgrade;
 
         }
 
-        //Character is really bad at this. Uncouth and a social skill or Uneducated and technical skill
+        //Character is really bad at this (double all costs). Uncouth and a social skill.
         private bool Unaware()
         {
             if (CharacterObject.SkillsSection.Uncouth && Category == "Social Active")
@@ -454,11 +469,23 @@ namespace Chummer.Skills
             return false;
         }
 
+        //Character is uneducated at this (double only karma costs). Uneducated and technical skill.
+        private bool Uneducated()
+        {
+            if (CharacterObject.SkillsSection.Uneducated && Category == "Technical Active")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void Upgrade()
         {
             if (!CanUpgradeCareer) return;
 
             int price = UpgradeKarmaCost();
+            int intTotalBaseRating = TotalBaseRating;
             string strSkillType = "String_ExpenseActiveSkill";
             if (IsKnowledgeSkill)
             {
@@ -466,11 +493,11 @@ namespace Chummer.Skills
             }
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.Instance.GetString(strSkillType)} {DisplayName} {LearnedRating} -> {(LearnedRating + 1)}";
+                $"{LanguageManager.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
             ExpenseLogEntry entry = new    ExpenseLogEntry();
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-            entry.Undo = new ExpenseUndo().CreateKarma(LearnedRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Id.ToString());
+            entry.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Id.ToString());
             
             CharacterObject.ExpenseEntries.Add(entry);
 
@@ -481,14 +508,16 @@ namespace Chummer.Skills
 
         public void AddSpecialization(string name)
         {
-            if (!CharacterObject.CanAffordSpecialization) return;
-            
-
             int price = CharacterObject.Options.KarmaSpecialization;
+            if (IsKnowledgeSkill)
+                price = CharacterObject.Options.KarmaKnowledgeSpecialization;
+
+            if (price < CharacterObject.Karma)
+                return;
 
             //If data file contains {4} this crashes but...
             string upgradetext = //TODO WRONG
-                $"{LanguageManager.Instance.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
+                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
 
             SkillSpecialization nspec = new SkillSpecialization(name, false);
 
@@ -538,7 +567,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         private bool ForceBuyWithKarma()
         {
-            return !string.IsNullOrWhiteSpace(Specialization) && ((_karma > 0 && Ibase == 0)  || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0);
+            return !string.IsNullOrWhiteSpace(Specialization) && ((_karma > 0 && Ibase == 0 && !CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills)  || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0);
         }
 
         /// <summary>
@@ -547,7 +576,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         private bool UnForceBuyWithKarma()
         {
-            return LearnedRating == 0 || (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0));
+            return TotalBaseRating == 0 || (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0));
         }
 
         /// <summary>
@@ -564,6 +593,10 @@ namespace Chummer.Skills
             {
                 _buyWithKarma = false;
                 OnPropertyChanged(nameof(BuyWithKarma));
+            }
+            if (!CanHaveSpecs && Specializations.Count > 0)
+            {
+                Specializations.Clear();
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -23,20 +23,25 @@ namespace Chummer.Backend
             if (list == null) throw new NullReferenceException(nameof(list));
             if (item == null) throw new NullReferenceException(nameof(item));
             if (comparison == null) throw new NullReferenceException(nameof(comparison));
-
             //if (list.Count == 0)
             //{
             //    list.Add(item);
             //    return;
             //}
 
-            int mergeIndex = 0;
-
-            while (list.Count > mergeIndex && comparison(list[mergeIndex], item) < 0)
-                mergeIndex++;
+            int mergeIndex = -1;
+            for (int i = 0; i < list.Count; ++i)
+            {
+                int intCompareResult = comparison(list[i], item);
+                if (intCompareResult == 0)
+                    return;
+                else if (intCompareResult > 0 && mergeIndex < 0)
+                    mergeIndex = i - 1;
+            }
+            if (mergeIndex < 0)
+                mergeIndex = 0;
 
             list.Insert(mergeIndex, item);
-
         }
 
         internal static void RemoveAll<T>(this BindingList<T> list, Predicate<T> predicate)

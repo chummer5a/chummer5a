@@ -40,7 +40,6 @@
     <category>Drones: Missile</category>
   </categories>
   <modcategories>
-    <category>All</category>
     <category>Body</category>
     <category>Cosmetic</category>
     <category>Electromagnetic</category>
@@ -3844,6 +3843,7 @@
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
+		<name>Retrans Unit</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -4017,7 +4017,7 @@
     </vehicle>
     <vehicle>
       <id>472a0869-4759-41cf-b529-a42b0f308f69</id>
-      <name>Criado Juan (Anthro)</name>
+      <name>Criado Juan</name>
       <page>146</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4042,7 +4042,7 @@
     </vehicle>
     <vehicle>
       <id>ad77dfa1-36ae-4e66-a319-24de903652aa</id>
-      <name>Horizon Little Buddy (Anthro)</name>
+      <name>Horizon Little Buddy</name>
       <page>146</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4068,7 +4068,7 @@
     </vehicle>
     <vehicle>
       <id>54f7d700-d407-49bf-a231-83777419cbe3</id>
-      <name>MCT Kenchiku-Kikai (Anthro)</name>
+      <name>MCT Kenchiku-Kikai</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4094,7 +4094,7 @@
     </vehicle>
     <vehicle>
       <id>b448855b-57e7-435a-b523-174adb276674</id>
-      <name>NeoNet Juggernaut (Anthro)</name>
+      <name>NeoNet Juggernaut</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4121,7 +4121,7 @@
     </vehicle>
     <vehicle>
       <id>ca18775c-3535-40e1-be69-a07905add421</id>
-      <name>Saeder-Krupp Direktionssekretar (Anthro)</name>
+      <name>Saeder-Krupp Direktionssekretar</name>
       <page>148</page>
       <source>R5</source>
       <accel>2</accel>
@@ -4146,7 +4146,7 @@
     </vehicle>
     <vehicle>
       <id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-      <name>Shiawase I-Doll (Anthro)</name>
+      <name>Shiawase I-Doll</name>
       <page>148</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4761,8 +4761,8 @@
     <vehicle>
       <id>fb002667-22de-4156-ad17-def60a1795c0</id>
       <name>Proteus Lamprey (Sea Sled)</name>
-      <page>112</page>
-      <source>AR</source>
+      <page>464</page>
+      <source>SR5</source>
       <accel>1</accel>
       <armor>6</armor>
       <avail>0</avail>
@@ -4777,9 +4777,7 @@
         <gear rating="3" maxrating="7">Sensor Array</gear>
       </gears>
       <mods>
-        <name>Standard drone rack (medium)</name>
-        <name>Ballast Tanks Level 1</name>
-        <name>Drone Rack, Small Landing</name>
+        <name>Landing Drone Rack (Medium)</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -5099,7 +5097,7 @@
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
-      <hidden />
+      <hide />
     </vehicle>
     <vehicle>
       <id>d187e9f7-b308-426f-ac35-957ba601c70c</id>
@@ -5584,7 +5582,7 @@
       <pilot>0</pilot>
       <sensor>0</sensor>
       <speed>0</speed>
-      <hidden />
+      <hide />
     </vehicle>
     <vehicle>
       <id>2013dff9-f313-441b-9207-3fdb8a44c8ba</id>
@@ -6842,7 +6840,7 @@
     </vehicle>
     <vehicle>
       <id>6240139c-cf8e-4f7f-be93-a2a87d1bb1d4</id>
-      <name>Jena Robotnik Pilalux (Mini)</name>
+      <name>Jena Robotnik Pilalux</name>
       <page>58</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6868,7 +6866,7 @@
     </vehicle>
     <vehicle>
       <id>78071d83-1328-46d2-bfac-aece4ecc7dff</id>
-      <name>Jena Robotnik Tegenaria (Mini)</name>
+      <name>Jena Robotnik Tegenaria</name>
       <page>59</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6893,7 +6891,7 @@
     </vehicle>
     <vehicle>
       <id>bc48ec25-84ce-435a-a418-ddbac5f7507c</id>
-      <name>Messerschmitt-Kawasaki Hugin (Small)</name>
+      <name>Messerschmitt-Kawasaki Hugin</name>
       <page>60</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6914,7 +6912,7 @@
     </vehicle>
     <vehicle>
       <id>33487443-148e-4a25-b351-3a958aae5a90</id>
-      <name>Messerschmitt-Kawasaki Munin (Small)</name>
+      <name>Messerschmitt-Kawasaki Munin</name>
       <page>60</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6938,7 +6936,7 @@
     </vehicle>
     <vehicle>
       <id>c2073528-54a5-45e0-b5f8-9c1ab74647aa</id>
-      <name>Messerschmitt-Kawasaki Libelle (Small)</name>
+      <name>Messerschmitt-Kawasaki Libelle</name>
       <page>61</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -6962,7 +6960,7 @@
     </vehicle>
     <vehicle>
       <id>581eeb8d-3b66-44c0-9e1e-b6d819135b3f</id>
-      <name>Ruhrmetall Skarabäus (Small)</name>
+      <name>Ruhrmetall Skarabäus</name>
       <page>62</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -6988,7 +6986,7 @@
     </vehicle>
     <vehicle>
       <id>41e04bbc-0987-45e8-84fe-f80441bc0ba3</id>
-      <name>Schiebel Robotic Crust Mark II (Small)</name>
+      <name>Schiebel Robotic Crust Mark II</name>
       <page>63</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7037,7 +7035,7 @@
     </vehicle>
     <vehicle>
       <id>b7abae70-ed26-4f8d-9b73-01760009dc1e</id>
-      <name>Messerschmitt-Kawasaki Heuschrecke 2 (Medium)</name>
+      <name>Messerschmitt-Kawasaki Heuschrecke 2</name>
       <page>65</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7063,7 +7061,7 @@
     </vehicle>
     <vehicle>
       <id>02179e64-72e2-462c-9b53-dcbc9aceb9a4</id>
-      <name>Ruhrmetall Murmillo (Medium)</name>
+      <name>Ruhrmetall Murmillo</name>
       <page>66</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7088,7 +7086,7 @@
     </vehicle>
     <vehicle>
       <id>3524337b-03e3-4218-b721-d1df2cc4a8c7</id>
-      <name>Siemens FWD Screamer (Medium)</name>
+      <name>Siemens FWD Screamer</name>
       <page>67</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7113,7 +7111,7 @@
     </vehicle>
     <vehicle>
       <id>47a4d3aa-f9bb-4f16-bbf1-5e8b73f61c0e</id>
-      <name>Messerschmitt-Kawasaki Jagdhund (Large)</name>
+      <name>Messerschmitt-Kawasaki Jagdhund</name>
       <page>68</page>
       <source>SAG</source>
       <accel>3</accel>
@@ -7141,7 +7139,7 @@
     </vehicle>
     <vehicle>
       <id>e338dcf9-3149-4519-9228-589354be5667</id>
-      <name>Messerschmitt-Kawasaki Jagdschreccke (Large)</name>
+      <name>Messerschmitt-Kawasaki Jagdschreccke</name>
       <page>69</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7169,7 +7167,7 @@
     </vehicle>
     <vehicle>
       <id>c4e56ddb-6369-4527-a537-9b8ade6d9ada</id>
-      <name>Mitsuhama FED-11 (Large)</name>
+      <name>Mitsuhama FED-11</name>
       <page>70</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7196,7 +7194,7 @@
     </vehicle>
     <vehicle>
       <id>7c921200-76a8-465f-8207-01a7c1785c67</id>
-      <name>Ruhrmetall Wolfspinne 8V2 (Large)</name>
+      <name>Ruhrmetall Wolfspinne 8V2</name>
       <page>71</page>
       <source>SAG</source>
       <accel>1</accel>
@@ -7232,7 +7230,7 @@
     </vehicle>
     <vehicle>
       <id>63a915a3-b71b-4ee4-8638-8a24df833c14</id>
-      <name>Mitsuhama Honson (Anthro)</name>
+      <name>Mitsuhama Honson</name>
       <page>72</page>
       <source>SAG</source>
       <accel>2</accel>
@@ -7253,6 +7251,10 @@
       <mods>
         <name>Touch Sensors</name>
         <name>Mini Weapon Mount (Drone)</name>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
@@ -7549,8 +7551,129 @@
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
     </vehicle>
-  
+  <vehicle>
+      <id>98dc1868-0c72-468a-bf82-a87dbbcd0002</id>
+      <name>Dodge Hurricane</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>37000</cost>
+      <handling>4/4</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
+      <name>Dodge Hurricane Crew Modell</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>43000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
+      <name>Dodge Hurricane Security Modell</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>14</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>67000</cost>
+      <handling>4/3</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+      </gears>
+      <seats>5</seats>
+    </vehicle>
   <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+          <id>c659ace5-1dfb-4eeb-b49d-5867b3153649</id>
+          <name>Avibras-Nissan AN 822</name>
+          <page>31</page>
+          <source>SFME</source>
+          <accel>0</accel>
+          <armor>10</armor>
+          <avail>10</avail>
+          <body>14</body>
+          <category>Rotorcraft</category>
+          <cost>221500</cost>
+          <handling>5</handling>
+          <pilot>3</pilot>
+          <sensor>3</sensor>
+		  <seats>5</seats>
+          <speed>6</speed>
+          <gears>
+              <gear rating="3" maxrating="3">Sensor Array</gear>
+              <gear rating="2" select="Evasion">Skill Autosoft</gear>
+              <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
+              <gear rating="2" select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
+          </gears>
+          <mods>
+              <name>Rigger Interface</name>
+			  <name>Manual Controls</name>
+			  <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+          </mods>
+      </vehicle>
+      <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+		<id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
+		<name>Ares Citymaster</name>
+		<handling>4/3</handling>
+		<speed>4/3</speed>
+		<accel>2</accel>
+		<body>18</body>
+		<armor>22</armor>
+		<pilot>5</pilot>	  
+		<sensor>5</sensor>
+		<seats>12</seats>  
+		<avail>0</avail>
+		<cost>0</cost>  
+		<source>SPS</source>
+		<page>40</page>
+		<category>Cars</category>	  
+		<gears>
+			<gear rating="5" maxrating="5">Sensor Array</gear>
+		</gears>
+		<mods>
+			<name>Rigger Interface</name>
+			<name select="Chemical Seal">Special Equipment</name>
+			<name>Heavy Weapon Mount</name>
+		</mods>
+		<weapons>
+        <weapon>
+          <name>Stoner-Ares M202</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+      <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
@@ -7753,6 +7876,25 @@
         </vehicledetails>
       </required>
     </mod>
+	<mod>
+      <id>d3f7ebdb-bdf9-4b62-9934-a12b132c6731</id>
+      <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+      <page>31</page>
+      <source>SFME</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+	  <bonus>
+        <devicerating>1</devicerating>
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name operation="contains">Avibras-Nissan AN 822</name>
+        </vehicledetails>
+      </required>
+    </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
     <mod>
@@ -7772,68 +7914,30 @@
     </mod>
     <mod>
       <id>06940788-ad0b-453c-bc8a-e54e6221c185</id>
-      <name>Gecko Tips (Bod 1-3)</name>
+      <name>Gecko Tips</name>
       <page>154</page>
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>1000</cost>
+      <cost>1000 + 4000*number(Body >= 4)</cost>
       <rating>0</rating>
-      <slots>1</slots>
+      <slots>1 + 3*number(Body >= 4)</slots>
       <required>
         <vehicledetails>
-          <body operation="lessthanequals">3</body>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>a11be6d9-109e-4662-a23a-2c8081c6c948</id>
-      <name>Gecko Tips (Bod 4-6)</name>
-      <page>154</page>
-      <source>R5</source>
-      <avail>6</avail>
-      <category>Powertrain</category>
-      <cost>5000</cost>
-      <rating>0</rating>
-      <slots>4</slots>
-      <required>
-        <vehicledetails>
-          <body operation="greaterthanequals">4</body>
           <body operation="lessthanequals">6</body>
         </vehicledetails>
       </required>
     </mod>
     <mod>
       <id>fd32b5eb-c791-4117-a9fe-5d5d86952827</id>
-      <name>Gliding System (Bod 1-12)</name>
+      <name>Gliding System</name>
       <page>154</page>
       <source>R5</source>
-      <avail>12R</avail>
+      <avail>(12 + 4*number(Body > 12))R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000</cost>
+      <cost>Body * 3000 + (Body * 1000)*number(Body > 12)</cost>
       <rating>0</rating>
-      <slots>5</slots>
-      <required>
-        <vehicledetails>
-          <body operation="lessthanequals">12</body>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>f9b96303-d8de-436f-94f3-b1793a7a809a</id>
-      <name>Gliding System (Bod 12+)</name>
-      <page>154</page>
-      <source>R5</source>
-      <avail>16R</avail>
-      <category>Powertrain</category>
-      <cost>Body * 4000</cost>
-      <rating>0</rating>
-      <slots>10</slots>
-      <required>
-        <vehicledetails>
-          <body operation="greaterthanequals">13</body>
-        </vehicledetails>
-      </required>
+      <slots>5 + 5*number(Body > 12)</slots>
     </mod>
     <mod>
       <id>956a20f7-64f3-4160-88a0-d6d6b29b0bd1</id>
@@ -9298,6 +9402,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9323,6 +9429,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9348,6 +9456,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9372,6 +9482,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9396,6 +9508,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9497,7 +9611,7 @@
       <name>Pilot Program (Drone)</name>
       <page>126</page>
       <source>R5</source>
-      <avail>FixedValues(4,0,8R,12R,16F,24F</avail>
+      <avail>FixedValues(4,0,8R,12R,16F,24F)</avail>
       <category>All</category>
       <cost>FixedValues(100,400,1800,3200,10000,20000)</cost>
       <rating>6</rating>

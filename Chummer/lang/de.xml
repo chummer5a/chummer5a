@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -21,6 +21,14 @@
   <version>-495</version>
   <name>Deutsch (DE)</name>
   <strings>
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
     <string>
       <key>String_BP</key>
       <text>GP</text>
@@ -7434,6 +7442,14 @@
     <string>
       <key>String_CustomItem_SelectText</key>
       <text>Geben Sie einen Namen für diesen Gegenstand an.</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
     </string>
     <string>
       <key>String_MetamagicSkillBase</key>

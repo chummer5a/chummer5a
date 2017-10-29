@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,17 +33,19 @@ namespace Chummer
         private string _strLimitCategory = string.Empty;
         private readonly Character _objCharacter;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
-        private bool _blnBiowireEnabled = false;
+        //private bool _blnBiowireEnabled = false;
 
         #region Control Events
         public frmSelectProgram(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Programs information.
+            _objXmlDocument = XmlManager.Load("complexforms.xml");
         }
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
@@ -54,29 +56,27 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            // Load the Programs information.
-            _objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
-
             // Populate the Program list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + _objCharacter.Options.BookXPath() + "]");
 
             bool blnCheckForOptional = false;
             XmlNode objXmlCritter = null;
-            XmlDocument objXmlCritterDocument = new XmlDocument();
             if (_objCharacter.IsCritter)
             {
-                objXmlCritterDocument = XmlManager.Instance.Load("critters.xml");
+                XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
                 objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (objXmlCritter.InnerXml.Contains("<optionalcomplexforms>"))
                     blnCheckForOptional = true;
             }
 
+            /*
             // Check to see if the character has the Biowire Echo.
             foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
             {
                 if (objMetamagic.Name == "Biowire")
                     _blnBiowireEnabled = true;
             }
+            */
 
             trePrograms.TreeViewNodeSorter = new SortByName();
             foreach (XmlNode objXmlProgram in objXmlNodeList)
@@ -90,7 +90,7 @@ namespace Chummer
                 if (blnCheckForOptional)
                 {
                     blnAdd = false;
-                    foreach (XmlNode objXmlForm in objXmlCritter.SelectNodes("optionalcomplexforms/complexform"))
+                    foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
                     {
                         if (objXmlForm.InnerText == objXmlProgram["name"].InnerText)
                             blnAdd = true;
@@ -126,7 +126,7 @@ namespace Chummer
 
                 tipTooltip.SetToolTip(lblSource,
                     _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " +
-                    LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                    LanguageManager.GetString("String_Page") + " " + strPage);
             }
         }
 
@@ -262,7 +262,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

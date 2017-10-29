@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,7 +19,7 @@ namespace CrashHandler
 
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
-		private string _strDefaultUserStory = "";
+		private string _strDefaultUserStory = string.Empty;
 
 		public frmCrashReporter(CrashDumper dumper)
 		{
@@ -116,8 +116,7 @@ namespace CrashHandler
 		{
 			string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={0}&body={1}";
 			strSend = strSend.Replace("{0}",$" Issue: - PLEASE ENTER DESCRIPTION HERE");
-			string strBody = "";
-			strBody += "### Environment\n";
+			string strBody = "### Environment\n";
 			strBody += $"Crash ID: {_dumper.Attributes["visible-crash-id"]}\n";
 			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
 			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";

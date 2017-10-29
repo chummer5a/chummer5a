@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ namespace Chummer
             Text += " DEBUG BUILD";
 #endif
 
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             /** Dashboard **/
             //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
@@ -70,7 +70,7 @@ namespace Chummer
 #if RELEASE
             if (Utils.GitUpdateAvailable() > 0)
             {
-                if (GlobalOptions.Instance.AutomaticUpdate)
+                if (GlobalOptions.AutomaticUpdate)
                 {
                     frmUpdate frmAutoUpdate = new frmUpdate();
                     frmAutoUpdate.SilentMode = true;
@@ -84,7 +84,7 @@ namespace Chummer
             }
 #endif
 
-            GlobalOptions.Instance.MRUChanged += PopulateMRU;
+            GlobalOptions.MRUChanged += PopulateMRU;
 
             // Delete the old executable if it exists (created by the update process).
             foreach (string strLoopOldFilePath in Directory.GetFiles(Application.StartupPath, "*.old"))
@@ -96,14 +96,14 @@ namespace Chummer
             // Populate the MRU list.
             PopulateMRU();
 
-            GlobalOptions.Instance.MainForm = this;
+            GlobalOptions.MainForm = this;
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
             {
                 if (objItem.Tag != null)
                 {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
                 }
             }
 
@@ -113,45 +113,45 @@ namespace Chummer
                 foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
                 {
                     if (objButton.Tag != null)
-                        objButton.Text = LanguageManager.Instance.GetString(objButton.Tag.ToString());
+                        objButton.Text = LanguageManager.GetString(objButton.Tag.ToString());
                 }
             }
 
             // Attempt to cache all XML files that are used the most.
             Timekeeper.Start("cache_load");
-            XmlManager.Instance.Load("armor.xml");
-            XmlManager.Instance.Load("bioware.xml");
-            XmlManager.Instance.Load("books.xml");
-            XmlManager.Instance.Load("complexforms.xml");
-            XmlManager.Instance.Load("contacts.xml");
-            XmlManager.Instance.Load("critters.xml");
-            XmlManager.Instance.Load("critterpowers.xml");
-            XmlManager.Instance.Load("cyberware.xml");
-            // XmlManager.Instance.Load("drugcomponents.xml"); TODO: Re-enable when Custom Drugs branch is merged
-            XmlManager.Instance.Load("echoes.xml");
-            XmlManager.Instance.Load("gameplayoptions.xml");
-            XmlManager.Instance.Load("gear.xml");
-            XmlManager.Instance.Load("improvements.xml");
-            XmlManager.Instance.Load("licenses.xml");
-            XmlManager.Instance.Load("lifemodules.xml");
-            XmlManager.Instance.Load("lifestyles.xml");
-            XmlManager.Instance.Load("martialarts.xml");
-            XmlManager.Instance.Load("mentors.xml");
-            XmlManager.Instance.Load("metamagic.xml");
-            XmlManager.Instance.Load("metatypes.xml");
-            XmlManager.Instance.Load("options.xml");
-            XmlManager.Instance.Load("packs.xml");
-            XmlManager.Instance.Load("powers.xml");
-            XmlManager.Instance.Load("priorities.xml");
-            XmlManager.Instance.Load("programs.xml");
-            XmlManager.Instance.Load("qualities.xml");
-            XmlManager.Instance.Load("ranges.xml");
-            XmlManager.Instance.Load("skills.xml");
-            XmlManager.Instance.Load("spells.xml");
-            XmlManager.Instance.Load("spiritpowers.xml");
-            XmlManager.Instance.Load("traditions.xml");
-            XmlManager.Instance.Load("vehicles.xml");
-            XmlManager.Instance.Load("weapons.xml");
+            XmlManager.Load("armor.xml");
+            XmlManager.Load("bioware.xml");
+            XmlManager.Load("books.xml");
+            XmlManager.Load("complexforms.xml");
+            XmlManager.Load("contacts.xml");
+            XmlManager.Load("critters.xml");
+            XmlManager.Load("critterpowers.xml");
+            XmlManager.Load("cyberware.xml");
+            // XmlManager.Load("drugcomponents.xml"); TODO: Re-enable when Custom Drugs branch is merged
+            XmlManager.Load("echoes.xml");
+            XmlManager.Load("gameplayoptions.xml");
+            XmlManager.Load("gear.xml");
+            XmlManager.Load("improvements.xml");
+            XmlManager.Load("licenses.xml");
+            XmlManager.Load("lifemodules.xml");
+            XmlManager.Load("lifestyles.xml");
+            XmlManager.Load("martialarts.xml");
+            XmlManager.Load("mentors.xml");
+            XmlManager.Load("metamagic.xml");
+            XmlManager.Load("metatypes.xml");
+            XmlManager.Load("options.xml");
+            XmlManager.Load("packs.xml");
+            XmlManager.Load("powers.xml");
+            XmlManager.Load("priorities.xml");
+            XmlManager.Load("programs.xml");
+            XmlManager.Load("qualities.xml");
+            XmlManager.Load("ranges.xml");
+            XmlManager.Load("skills.xml");
+            XmlManager.Load("spells.xml");
+            XmlManager.Load("spiritpowers.xml");
+            XmlManager.Load("traditions.xml");
+            XmlManager.Load("vehicles.xml");
+            XmlManager.Load("weapons.xml");
             Timekeeper.Finish("cache_load");
 
             frmCharacterRoster frmCharacter = new frmCharacterRoster();
@@ -177,11 +177,13 @@ namespace Chummer
             frmCharacter.Show();
         }
 
+        /*
         public sealed override string Text
         {
             get { return base.Text; }
             set { base.Text = value; }
         }
+        */
 
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -287,13 +289,13 @@ namespace Chummer
                     return;
 
             // Add the Unarmed Attack Weapon to the character.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
                 TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objWeapon.Create(objXmlWeapon, objDummy, null, null);
                 objCharacter.Weapons.Add(objWeapon);
             }
 
@@ -308,8 +310,7 @@ namespace Chummer
         private void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
-            string strNumber = strFileName.Substring(0, 3);
-            strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
+            strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
             LoadCharacter(strFileName);
         }
 
@@ -318,11 +319,10 @@ namespace Chummer
             if (e.Button == MouseButtons.Right)
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
-                string strNumber = strFileName.Substring(0, 3);
-                strFileName = strFileName.Replace(strNumber, string.Empty).Trim();
+                strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
 
-                GlobalOptions.Instance.RemoveFromMRUList(strFileName);
-                GlobalOptions.Instance.AddToMRUList(strFileName, "stickymru");
+                GlobalOptions.RemoveFromMRUList(strFileName);
+                GlobalOptions.AddToMRUList(strFileName, "stickymru");
             }
         }
 
@@ -338,8 +338,8 @@ namespace Chummer
             {
                 string strFileName = ((ToolStripMenuItem)sender).Text;
 
-                GlobalOptions.Instance.RemoveFromMRUList(strFileName, "stickymru");
-                GlobalOptions.Instance.AddToMRUList(strFileName);
+                GlobalOptions.RemoveFromMRUList(strFileName, "stickymru");
+                GlobalOptions.AddToMRUList(strFileName);
             }
         }
 
@@ -368,7 +368,7 @@ namespace Chummer
                     }
                     else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
                     {
-                        tp.Text = LanguageManager.Instance.GetString("String_CharacterRoster");
+                        tp.Text = LanguageManager.GetString("String_CharacterRoster");
                     }
 
                     tabForms.SelectedTab = tp;
@@ -420,7 +420,7 @@ namespace Chummer
                     }
                     else if (string.IsNullOrEmpty(strTitle))
                     {
-                        strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
+                        strTitle = LanguageManager.GetString("String_UnnamedCharacter");
                     }
 
                     tabForms.SelectedTab.Text = strTitle;
@@ -430,7 +430,7 @@ namespace Chummer
 
         private void mnuToolsDiceRoller_Click(object sender, EventArgs e)
         {
-            if (GlobalOptions.Instance.SingleDiceRoller)
+            if (GlobalOptions.SingleDiceRoller)
             {
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if (_frmRoller == null)
@@ -472,7 +472,7 @@ namespace Chummer
             {
                 if (objItem.Tag != null)
                 {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
                 }
             }
         }
@@ -484,7 +484,7 @@ namespace Chummer
             {
                 if (objItem.Tag != null)
                 {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
                 }
             }
         }
@@ -497,7 +497,7 @@ namespace Chummer
                 foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
                 {
                     if (objButton.Tag != null)
-                        objButton.Text = LanguageManager.Instance.GetString(objButton.Tag.ToString());
+                        objButton.Text = LanguageManager.GetString(objButton.Tag.ToString());
                 }
             }
         }
@@ -510,7 +510,7 @@ namespace Chummer
                 foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
                 {
                     if (objButton.Tag != null)
-                        objButton.Text = LanguageManager.Instance.GetString(objButton.Tag.ToString());
+                        objButton.Text = LanguageManager.GetString(objButton.Tag.ToString());
                 }
             }
         }
@@ -532,12 +532,12 @@ namespace Chummer
                 Size = Properties.Settings.Default.Size;
             }
 
-            if (GlobalOptions.Instance.StartupFullscreen)
+            if (GlobalOptions.StartupFullscreen)
                 WindowState = FormWindowState.Maximized;
 
-            mnuToolsOmae.Visible = GlobalOptions.Instance.OmaeEnabled;
+            mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
 
-    //        if (GlobalOptions.Instance.UseLogging)
+    //        if (GlobalOptions.UseLogging)
     //        {
                 //CommonFunctions objFunctions = new CommonFunctions();
     //        }
@@ -567,15 +567,9 @@ namespace Chummer
 
         private void trySkillToolStripMenuItem_Click(object sender, EventArgs e, Character objCharacter)
         {
-            if (objCharacter?.SkillsSection?.Skills == null)
-                return;
-            foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
-            {
-                if (objSkill.Name == "Impersonation")
-                {
-                    MessageBox.Show(objSkill.Rating.ToString());
-                }
-            }
+            Skill objImpersonation = objCharacter?.SkillsSection?.GetActiveSkill("Impersonation");
+            if (objImpersonation != null)
+                MessageBox.Show(objImpersonation.Rating.ToString());
         }
 
         #endregion
@@ -589,7 +583,7 @@ namespace Chummer
             string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
             if (!File.Exists(strFilePath))
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     frmOptions frmOptions = new frmOptions();
                     frmOptions.ShowDialog();
@@ -640,13 +634,13 @@ namespace Chummer
             }
 
             // Add the Unarmed Attack Weapon to the character.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
                 TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
+                objWeapon.Create(objXmlWeapon, objDummy, null, null);
                 objCharacter.Weapons.Add(objWeapon);
             }
 
@@ -709,7 +703,7 @@ namespace Chummer
                     }
                     catch (XmlException ex)
                     {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.Instance.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -775,14 +769,14 @@ namespace Chummer
                 }
 
                 if (blnIncludeInMRU)
-                    GlobalOptions.Instance.AddToMRUList(strFileName);
+                    GlobalOptions.AddToMRUList(strFileName);
 
                 objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
                 objCharacter_CharacterNameChanged(objCharacter);
             }
             else
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_FileNotFound").Replace("{0}", strFileName), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -791,8 +785,8 @@ namespace Chummer
         /// </summary>
         public void PopulateMRU()
         {
-            List<string> strStickyMRUList = GlobalOptions.Instance.ReadMRUList("stickymru");
-            List<string> strMRUList = GlobalOptions.Instance.ReadMRUList();
+            List<string> strStickyMRUList = GlobalOptions.ReadMRUList("stickymru");
+            List<string> strMRUList = GlobalOptions.ReadMRUList();
 
             for (int i = 0; i < 10; i++)
             {
@@ -878,7 +872,7 @@ namespace Chummer
 
         private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)
         {
-            if (GlobalOptions.Instance.SingleDiceRoller)
+            if (GlobalOptions.SingleDiceRoller)
             {
                 if (_frmRoller == null)
                 {
@@ -901,9 +895,9 @@ namespace Chummer
 
         private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
         {
-            foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
+            foreach (string strFile in GlobalOptions.ReadMRUList())
             {
-                GlobalOptions.Instance.RemoveFromMRUList(strFile);
+                GlobalOptions.RemoveFromMRUList(strFile);
             }
         }
 

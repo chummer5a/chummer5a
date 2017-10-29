@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,13 +29,13 @@ namespace Chummer
         public frmDiceHits()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.Instance.GetString("String_DiceHits_HitsOn") + " " + _intDice.ToString() + "D6: ";
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + " " + _intDice.ToString() + "D6: ";
             nudDiceResult.Maximum = _intDice;
             nudDiceResult.Minimum = 0;
             lblResult.Text = string.Empty;

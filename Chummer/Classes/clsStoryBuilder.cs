@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -28,7 +29,8 @@ namespace Chummer
     {
         private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
         private Character _objCharacter;
-        Random random = new Random();
+        Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp = 0;
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -39,7 +41,7 @@ namespace Chummer
         public String GetStory()
         {
             //Little bit of data required for following steps
-            XmlDocument xdoc = XmlManager.Instance.Load("lifemodules.xml");
+            XmlDocument xdoc = XmlManager.Load("lifemodules.xml");
 
             if (xdoc != null)
             {
@@ -105,7 +107,7 @@ namespace Chummer
             int startingLength = story.Length;
 
             String[] words;
-            if (innerText.StartsWith("$") && innerText.IndexOf(" ") < 0)
+            if (innerText.StartsWith("$") && innerText.IndexOf(' ') < 0)
             {
                 words = Macro(innerText).Split(" \n\r\t".ToCharArray());
             }
@@ -153,11 +155,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
-            String macroName, macroPool;
-            if (endString.Contains("_"))
+            string endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
+            string macroName, macroPool;
+            if (endString.Contains('_'))
             {
-                String[] split = endString.Split('_');
+                string[] split = endString.Split('_');
                 macroName = split[0];
                 macroPool = split[1];
             }
@@ -195,13 +197,13 @@ namespace Chummer
                     }
                     return (2075 - year).ToString();
                 }
-                return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
+                return string.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
             }
 
             //Did not meet predefined macros, check user defined
             
-            String searchString = "/chummer/storybuilder/macros/" + macroName;
-            XmlDocument objXmlLifeModulesDocument = XmlManager.Instance.Load("lifemodules.xml");
+            string searchString = "/chummer/storybuilder/macros/" + macroName;
+            XmlDocument objXmlLifeModulesDocument = XmlManager.Load("lifemodules.xml");
 
             if (objXmlLifeModulesDocument != null)
             {
@@ -212,7 +214,7 @@ namespace Chummer
                     if (userMacro.FirstChild != null)
                     {
                         string selected;
-                        //Allready defined, no need to do anything fancy
+                        //Already defined, no need to do anything fancy
                         if (!persistenceDictionary.TryGetValue(macroPool, out selected))
                         {
                             if (userMacro.FirstChild.Name == "random")
@@ -220,7 +222,19 @@ namespace Chummer
                                 //Any node not named 
                                 XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
                                 if (possible != null && possible.Count > 0)
-                                    selected = possible[random.Next(possible.Count)].Name;
+                                {
+                                    if (possible.Count > 1)
+                                    {
+                                        do
+                                        {
+                                            _intModuloTemp = _objRandom.Next();
+                                        }
+                                        while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
+                                    }
+                                    else
+                                        _intModuloTemp = 1;
+                                    selected = possible[_intModuloTemp % possible.Count].Name;
+                                }
                             }
                             else if (userMacro.FirstChild.Name == "persistent")
                             {
@@ -228,7 +242,17 @@ namespace Chummer
                                 XmlNodeList possible = userMacro.FirstChild.SelectNodes("./*[not(self::default)]");
                                 if (possible != null && possible.Count > 0)
                                 {
-                                    selected = possible[random.Next(possible.Count)].Name;
+                                    if (possible.Count > 1)
+                                    {
+                                        do
+                                        {
+                                            _intModuloTemp = _objRandom.Next();
+                                        }
+                                        while (_intModuloTemp >= int.MaxValue - int.MaxValue % possible.Count); // Modulo bias removal
+                                    }
+                                    else
+                                        _intModuloTemp = 1;
+                                    selected = possible[_intModuloTemp % possible.Count].Name;
                                     persistenceDictionary.Add(macroPool, selected);
                                 }
                             }

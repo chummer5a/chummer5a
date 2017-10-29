@@ -65,6 +65,7 @@
             this.chkAerodynamic = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -127,8 +128,13 @@
             // 
             this.nudRating.Enabled = false;
             this.nudRating.Location = new System.Drawing.Point(422, 127);
+            this.nudRating.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(37, 20);
+            this.nudRating.Size = new System.Drawing.Size(97, 20);
             this.nudRating.TabIndex = 11;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
@@ -183,7 +189,7 @@
             // lblMaximumCapacity
             // 
             this.lblMaximumCapacity.AutoSize = true;
-            this.lblMaximumCapacity.Location = new System.Drawing.Point(362, 296);
+            this.lblMaximumCapacity.Location = new System.Drawing.Point(362, 289);
             this.lblMaximumCapacity.Name = "lblMaximumCapacity";
             this.lblMaximumCapacity.Size = new System.Drawing.Size(101, 13);
             this.lblMaximumCapacity.TabIndex = 30;
@@ -211,7 +217,7 @@
             // 
             // cmdOKAdd
             // 
-            this.cmdOKAdd.Location = new System.Drawing.Point(559, 349);
+            this.cmdOKAdd.Location = new System.Drawing.Point(559, 351);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 37;
@@ -242,7 +248,7 @@
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.lblSource.Location = new System.Drawing.Point(413, 321);
+            this.lblSource.Location = new System.Drawing.Point(419, 311);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 32;
@@ -252,7 +258,7 @@
             // lblSourceLabel
             // 
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(362, 321);
+            this.lblSourceLabel.Location = new System.Drawing.Point(362, 311);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 31;
@@ -286,8 +292,13 @@
             0,
             0,
             0});
+            this.nudGearQty.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudGearQty.Name = "nudGearQty";
-            this.nudGearQty.Size = new System.Drawing.Size(56, 20);
+            this.nudGearQty.Size = new System.Drawing.Size(97, 20);
             this.nudGearQty.TabIndex = 14;
             this.nudGearQty.Value = new decimal(new int[] {
             1,
@@ -386,7 +397,7 @@
             this.chkStack.AutoSize = true;
             this.chkStack.Checked = true;
             this.chkStack.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkStack.Location = new System.Drawing.Point(484, 154);
+            this.chkStack.Location = new System.Drawing.Point(525, 154);
             this.chkStack.Name = "chkStack";
             this.chkStack.Size = new System.Drawing.Size(54, 17);
             this.chkStack.TabIndex = 15;
@@ -416,7 +427,7 @@
             // chkInherentProgram
             // 
             this.chkInherentProgram.AutoSize = true;
-            this.chkInherentProgram.Location = new System.Drawing.Point(484, 128);
+            this.chkInherentProgram.Location = new System.Drawing.Point(525, 128);
             this.chkInherentProgram.Name = "chkInherentProgram";
             this.chkInherentProgram.Size = new System.Drawing.Size(107, 17);
             this.chkInherentProgram.TabIndex = 12;
@@ -466,7 +477,7 @@
             // chkHideOverAvailLimit
             // 
             this.chkHideOverAvailLimit.AutoSize = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(362, 337);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(362, 332);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
@@ -475,6 +486,18 @@
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
+            // chkShowOnlyAffordItems
+            // 
+            this.chkShowOnlyAffordItems.AutoSize = true;
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(362, 355);
+            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
+            this.chkShowOnlyAffordItems.TabIndex = 66;
+            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+            // 
             // frmSelectGear
             // 
             this.AcceptButton = this.cmdOK;
@@ -482,6 +505,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(646, 414);
+            this.Controls.Add(this.chkShowOnlyAffordItems);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.chkBlackMarketDiscount);
             this.Controls.Add(this.chkAerodynamic);
@@ -574,5 +598,6 @@
         private System.Windows.Forms.CheckBox chkAerodynamic;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
     }
 }

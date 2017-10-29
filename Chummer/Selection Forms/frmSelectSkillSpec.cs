@@ -11,30 +11,31 @@ namespace Chummer
     public partial class frmSelectSpec : Form
     {
         private readonly Skill _objSkill;
+        private readonly Character _objCharacter;
         private string _strForceItem = string.Empty;
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectSpec(Skill skill)
         {
             _objSkill = skill;
+            _objCharacter = skill.CharacterObject;
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
         {
             List<ListItem> lstItems = new List<ListItem>();
 
-            _objXmlDocument = XmlManager.Instance.Load("skills.xml");
-
             if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
             {
                 chkKarma.Checked = true;
                 chkKarma.Visible = false;
             }
-            XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\"]");
+            XmlNode objXmlSkill = null;
             if (Mode == "Knowledge")
             {
                 objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]");
@@ -43,6 +44,8 @@ namespace Chummer
                     objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");
                 }
             }
+            else
+                objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
             ListItem objItem = new ListItem();
             objItem.Value = "Custom";
@@ -58,9 +61,9 @@ namespace Chummer
                 if (_objSkill.SkillCategory == "Combat Active")
                 {
                     // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                    XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
                     //Might need to include skill name or might miss some values?
-                    XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\"]");
+                    XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
                     foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                     {
                         objItem = new ListItem();

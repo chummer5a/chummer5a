@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xs:include schemaLocation="../data../conditions.xsd" />
 
@@ -14,6 +14,7 @@
                         </xs:simpleContent>
                     </xs:complexType>
                 </xs:element>
+				<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                 <xs:element name="addslots" type="xs:string" minOccurs="0" />
                 <xs:element name="mod" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
@@ -165,7 +166,7 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="hidden" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="hide" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="mods" minOccurs="0" maxOccurs="1">
                                             <xs:complexType>
                                                 <xs:sequence>
@@ -213,6 +214,7 @@
                         <xs:sequence>
                             <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
                             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                             <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                             <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                             <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Chummer.Skills;
@@ -15,6 +15,7 @@ namespace Chummer.UI.Skills
 
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
+            SuspendLayout();
             lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
 
             tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
@@ -48,19 +49,19 @@ namespace Chummer.UI.Skills
                     nudSkill.Enabled = false;
                 }
             }
-
+            ResumeLayout();
             sw.TaskEnd("Create skillgroup");
         }
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer parrent = ParentForm as frmCareer;
-            if (parrent != null)
+            frmCareer objParent = ParentForm as frmCareer;
+            if (objParent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
 
-                if (!parrent.ConfirmKarmaExpense(confirmstring))
+                if (!objParent.ConfirmKarmaExpense(confirmstring))
                     return;
             }
 

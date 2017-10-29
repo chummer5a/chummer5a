@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +16,7 @@ namespace Chummer.Skills
 
         static ExoticSkill()
         {
-            XmlNodeList exotic = XmlManager.Instance.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
+            XmlNodeList exotic = XmlManager.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
 
             if (exotic != null)
             {
@@ -66,7 +66,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            return RangeCost(Base + FreeKarma(), LearnedRating);
+            return RangeCost(Base + FreeKarma(), TotalBaseRating);
         }
 
         public override bool IsExoticSkill

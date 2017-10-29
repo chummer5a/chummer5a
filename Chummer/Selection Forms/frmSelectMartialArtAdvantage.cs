@@ -31,15 +31,17 @@ namespace Chummer
         private bool _blnAddAgain = false;
         private string _strMartialArt = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         #region Control Events
         public frmSelectMartialArtAdvantage(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            // Load the Martial Art information.
+            _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
 
         private void frmSelectMartialArtAdvantage_Load(object sender, EventArgs e)
@@ -52,25 +54,27 @@ namespace Chummer
 
             List<ListItem> lstAdvantage = new List<ListItem>();
 
-            // Load the Martial Art information.
-            _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-
             // Populate the Martial Art Advantage list.
-            XmlNodeList objXmlAdvantageList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]/techniques/technique");
+            XmlNode objMartialArtNode = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]");
+            if (objMartialArtNode["alltechniques"] != null)
+                objMartialArtNode = _objXmlDocument.SelectSingleNode("/chummer");
+            XmlNodeList objXmlAdvantageList = objMartialArtNode.SelectNodes("techniques/technique");
             foreach (XmlNode objXmlAdvantage in objXmlAdvantageList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlAdvantage["name"].InnerText;
-                objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? objXmlAdvantage["name"].InnerText;
-
-                bool blnIsNew = true;
+                string strAdvantageName = objXmlAdvantage["name"].InnerText;
                 foreach (MartialArt objMartialArt in _objCharacter.MartialArts.Where(objMartialArt => objMartialArt.Name == _strMartialArt))
                 {
-                    blnIsNew = objMartialArt.Advantages.All(advantage => advantage.Name != objItem.Value);
+                    if (objMartialArt.Advantages.Any(advantage => advantage.Name == strAdvantageName))
+                    {
+                        goto NotNewAdvantage;
+                    }
                 }
 
-                if (blnIsNew)
-                    lstAdvantage.Add(objItem);
+                ListItem objItem = new ListItem();
+                objItem.Value = strAdvantageName;
+                objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
+                lstAdvantage.Add(objItem);
+                NotNewAdvantage:;
             }
             SortListItem objSort = new SortListItem();
             lstAdvantage.Sort(objSort.Compare);

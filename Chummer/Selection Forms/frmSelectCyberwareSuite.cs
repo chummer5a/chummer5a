@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,29 +33,30 @@ namespace Chummer
         private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
         private string _strType = "cyberware";
         private Character _objCharacter;
-        private int _intCost = 0;
+        private decimal _decCost = 0;
 
         List<Cyberware> _lstCyberware = new List<Cyberware>();
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control events
         public frmSelectCyberwareSuite(Improvement.ImprovementSource objSource, Character objCharacter)
         {
             InitializeComponent();
             _objSource = objSource;
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             if (_objSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.Instance.GetString("Title_SelectBiowareSuite");
-                lblCyberwareLabel.Text = LanguageManager.Instance.GetString("Label_SelectBiowareSuite_PartsInSuite");
+                Text = LanguageManager.GetString("Title_SelectBiowareSuite");
+                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite");
             }
 
             _objCharacter = objCharacter;
+            _objXmlDocument = XmlManager.Load(_strType + ".xml", true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -83,15 +84,29 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            _objXmlDocument = XmlManager.Instance.Load(_strType + ".xml", true);
-
             if (_objCharacter.DEPEnabled)
                 return;
 
             XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
+            GradeList lstGrades = null;
+            if (_objSource == Improvement.ImprovementSource.Bioware)
+            {
+                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
+                lstGrades = GlobalOptions.BiowareGrades;
+            }
+            else
+            {
+                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
+                lstGrades = GlobalOptions.CyberwareGrades;
+            }
 
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {
+                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
+                if (string.IsNullOrEmpty(strGrade) && (!lstGrades.Any(x => x.Name == strGrade) ||
+                    _objCharacter.Improvements.Any(x => ((_objSource == Improvement.ImprovementSource.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                    && strGrade.Contains(x.ImprovedName) && x.Enabled)))
+                    continue;
                 lstCyberware.Items.Add(objXmlSuite["name"].InnerText);
             }
         }
@@ -103,30 +118,30 @@ namespace Chummer
 
             _lstCyberware.Clear();
 
-            XmlNode objXmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + lstCyberware.Text + "\"]");
+            XmlNode objXmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + lstCyberware.Text + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 
             decimal decTotalESS = 0.0m;
-            int intTotalCost = 0;
+            decimal decTotalCost = 0;
 
             // Retrieve the information for the selected Grade.
-            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\"]");
+            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 
             XPathNavigator nav = _objXmlDocument.CreateNavigator();
             lblCyberware.Text = string.Empty;
 
-            Grade objGrade = new Cyberware(_objCharacter).ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
             ParseNode(objXmlSuite, objGrade, null);
             foreach (Cyberware objCyberware in _lstCyberware)
             {
                 WriteList(objCyberware, 0);
-                intTotalCost += objCyberware.TotalCost;
+                decTotalCost += objCyberware.TotalCost;
                 decTotalESS += objCyberware.CalculatedESS();
             }
 
             lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
-            lblCost.Text = $"{intTotalCost:###,###,##0¥}";
+            lblCost.Text = $"{decTotalCost:###,###,##0.##¥}";
             lblGrade.Text = objXmlSuite["grade"].InnerText;
-            _intCost = intTotalCost;
+            _decCost = decTotalCost;
         }
         #endregion
 
@@ -156,11 +171,11 @@ namespace Chummer
         /// <summary>
         /// Total cost of the Cyberware Suite. This is done to make it easier to obtain the actual cost in Career Mode.
         /// </summary>
-        public int TotalCost
+        public decimal TotalCost
         {
             get
             {
-                return _intCost;
+                return _decCost;
             }
         }
         #endregion

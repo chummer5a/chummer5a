@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -124,7 +124,7 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); };
+                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name); };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -149,7 +149,7 @@ namespace Chummer.UI.Skills
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
             {
                 if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
         }
 
@@ -211,7 +211,7 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
@@ -226,7 +226,7 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
                         _skill.CharacterObject.Options.KarmaSpecialization);
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
@@ -327,23 +327,23 @@ namespace Chummer.UI.Skills
         
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
+            CommonFunctions.OpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
         }
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
+                !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
             {
                 chkKarma.Checked = true;
             }
         }
 
-        private void RatingChanged(object sender, EventArgs e)
+        /* Delnar: TODO Awaiting other authors' approval before activation.
+        private void chkKarma_CheckChanged(object sender, EventArgs e)
         {
-            if (_skill.LearnedRating == 0 && _skill.Specializations.Count > 0)
-            {
-                _skill.Specializations.Clear();
-            }
+            cboSpec_TextChanged(sender, e);
         }
+        */
     }
 }

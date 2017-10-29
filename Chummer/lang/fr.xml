@@ -21,6 +21,15 @@
   <version>-494</version>
   <name>Français</name>
   <strings>
+	<!-- Meta Strings -->
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
     <!-- Common Strings -->
     <string>
       <key>String_BP</key>
@@ -6909,6 +6918,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>String_CustomItem_SelectText</key>
       <text>Entrez un nom pour cet objet personnalisé.</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
     </string>
     <string>
       <key>MessageTitle_Metatype_SelectTalent</key>

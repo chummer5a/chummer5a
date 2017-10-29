@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -116,23 +116,23 @@ namespace Chummer
         
         public static void RestartApplication(string strText = "Message_Options_Restart")
         {
-            string text = LanguageManager.Instance.GetString(strText);
-            string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+            string text = LanguageManager.GetString(strText);
+            string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
 
             if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            arguments += GlobalOptions.Instance.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
+            arguments += GlobalOptions.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
-            foreach (Form objForm in GlobalOptions.Instance.MainForm.MdiChildren)
+            foreach (Form objForm in GlobalOptions.MainForm.MdiChildren)
             {
                 objForm.Close();
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + "\\Chummer5.exe",
+                FileName = Application.StartupPath + "\\" + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();

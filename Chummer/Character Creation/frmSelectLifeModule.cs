@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _intStage = stage;
             MoveControls();
@@ -50,7 +50,7 @@ namespace Chummer
         {
             MoveControls();
 
-            _xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
+            _xmlDocument = XmlManager.Load("lifemodules.xml");
             String selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode stageNode = _xmlDocument.SelectSingleNode(selectString);
@@ -81,7 +81,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (Quality.IsValid(_objCharacter, xmlNode) || !chkLimitList.Checked)
+                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode();
@@ -215,7 +215,7 @@ namespace Chummer
                     {
                         new ListItem()
                         {
-                            Name = LanguageManager.Instance.GetString("String_All"),
+                            Name = LanguageManager.GetString("String_All"),
                             Value = "0"
                         }
                     };
@@ -353,6 +353,11 @@ namespace Chummer
 
 
             return working;
+        }
+
+        private void lblSource_Click(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

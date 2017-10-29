@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace Chummer
         public OmaeRecord(XmlNode objNode, int intTypeID, OmaeMode objMode)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Populate the basic information.
             _intCharacterID = Convert.ToInt32(objNode["id"].InnerText);
@@ -45,12 +45,12 @@ namespace Chummer
             lblCharacterName.Text = objNode["name"].InnerText;
             lblUser.Text = objNode["user"].InnerText;
             if (string.IsNullOrEmpty(objNode["description"].InnerText))
-                lblDescription.Text = LanguageManager.Instance.GetString("Omae_NoDescription");
+                lblDescription.Text = LanguageManager.GetString("Omae_NoDescription");
             else
                 lblDescription.Text = objNode["description"].InnerText;
             DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo);
-            lblDate.Text = LanguageManager.Instance.GetString("Omae_UpdatedDate") + " " + datDate.ToShortDateString();
-            lblCount.Text = LanguageManager.Instance.GetString("Omae_DownloadCount").Replace("{0}", objNode["count"].InnerText);
+            lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate") + " " + datDate.ToShortDateString();
+            lblCount.Text = LanguageManager.GetString("Omae_DownloadCount").Replace("{0}", objNode["count"].InnerText);
 
             if (objMode == OmaeMode.Character)
             {
@@ -58,7 +58,7 @@ namespace Chummer
                 string strMetatype = objNode["metatype"].InnerText;
                 if (!string.IsNullOrEmpty(objNode["metavariant"].InnerText))
                     strMetatype += "(" + objNode["metavariant"].InnerText;
-                lblMetatype.Text = LanguageManager.Instance.GetString("Label_Metatype") + " " + strMetatype;
+                lblMetatype.Text = LanguageManager.GetString("Label_Metatype") + " " + strMetatype;
             }
             else if (objMode == OmaeMode.Data)
             {

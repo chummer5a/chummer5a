@@ -26,7 +26,7 @@ namespace Chummer
 {
     public partial class frmCreateSpell : Form
     {
-        private readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private bool _blnLoading = false;
         private bool _blnSkipRefresh = false;
         private Spell _objSpell;
@@ -36,8 +36,8 @@ namespace Chummer
         {
             _objSpell = new Spell(objCharacter);
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-            _objXmlDocument = XmlManager.Instance.Load("spells.xml");
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objXmlDocument = XmlManager.Load("spells.xml");
             MoveControls();
         }
 
@@ -69,10 +69,10 @@ namespace Chummer
             // Populate the list of Spell Types.
             ListItem itmPhysical = new ListItem();
             itmPhysical.Value = "P";
-            itmPhysical.Name = LanguageManager.Instance.GetString("String_DescPhysical");
+            itmPhysical.Name = LanguageManager.GetString("String_DescPhysical");
             ListItem itmMana = new ListItem();
             itmMana.Value = "M";
-            itmMana.Name = LanguageManager.Instance.GetString("String_DescMana");
+            itmMana.Name = LanguageManager.GetString("String_DescMana");
             List<ListItem> lstTypes = new List<ListItem>();
             lstTypes.Add(itmPhysical);
             lstTypes.Add(itmMana);
@@ -84,10 +84,10 @@ namespace Chummer
             // Populate the list of Ranges.
             ListItem itmTouch = new ListItem();
             itmTouch.Value = "T";
-            itmTouch.Name = LanguageManager.Instance.GetString("String_SpellRangeTouchLong");
+            itmTouch.Name = LanguageManager.GetString("String_SpellRangeTouchLong");
             ListItem itmLOS = new ListItem();
             itmLOS.Value = "LOS";
-            itmLOS.Name = LanguageManager.Instance.GetString("String_SpellRangeLineOfSight");
+            itmLOS.Name = LanguageManager.GetString("String_SpellRangeLineOfSight");
             List<ListItem> lstRanges = new List<ListItem>();
             lstRanges.Add(itmTouch);
             lstRanges.Add(itmLOS);
@@ -99,13 +99,13 @@ namespace Chummer
             // Populate the list of Durations.
             ListItem itmInstant = new ListItem();
             itmInstant.Value = "I";
-            itmInstant.Name = LanguageManager.Instance.GetString("String_SpellDurationInstantLong");
+            itmInstant.Name = LanguageManager.GetString("String_SpellDurationInstantLong");
             ListItem itmPermanent = new ListItem();
             itmPermanent.Value = "P";
-            itmPermanent.Name = LanguageManager.Instance.GetString("String_SpellDurationPermanentLong");
+            itmPermanent.Name = LanguageManager.GetString("String_SpellDurationPermanentLong");
             ListItem itmSustained = new ListItem();
             itmSustained.Value = "S";
-            itmSustained.Name = LanguageManager.Instance.GetString("String_SpellDurationSustainedLong");
+            itmSustained.Name = LanguageManager.GetString("String_SpellDurationSustainedLong");
             List<ListItem> lstDurations = new List<ListItem>();
             lstDurations.Add(itmInstant);
             lstDurations.Add(itmPermanent);
@@ -457,88 +457,88 @@ namespace Chummer
             {
                 case "Detection":
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_DetectionSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_DetectionSpell2");
                     chkModifier3.Tag = "+0";
-                    chkModifier3.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_DetectionSpell3");
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_DetectionSpell4");
                     chkModifier5.Tag = "+0";
-                    chkModifier5.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_DetectionSpell5");
                     chkModifier6.Tag = "+0";
-                    chkModifier6.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell6");
+                    chkModifier6.Text = LanguageManager.GetString("Checkbox_DetectionSpell6");
                     chkModifier7.Tag = "+1";
-                    chkModifier7.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell7");
+                    chkModifier7.Text = LanguageManager.GetString("Checkbox_DetectionSpell7");
                     chkModifier8.Tag = "+1";
-                    chkModifier8.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell8");
+                    chkModifier8.Text = LanguageManager.GetString("Checkbox_DetectionSpell8");
                     chkModifier9.Tag = "+2";
-                    chkModifier9.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell9");
+                    chkModifier9.Text = LanguageManager.GetString("Checkbox_DetectionSpell9");
                     chkModifier10.Tag = "+4";
-                    chkModifier10.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell10");
+                    chkModifier10.Text = LanguageManager.GetString("Checkbox_DetectionSpell10");
                     chkModifier11.Tag = "+1";
-                    chkModifier11.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell11");
+                    chkModifier11.Text = LanguageManager.GetString("Checkbox_DetectionSpell11");
                     chkModifier12.Tag = "+2";
-                    chkModifier12.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell12");
+                    chkModifier12.Text = LanguageManager.GetString("Checkbox_DetectionSpell12");
                     chkModifier13.Tag = "+4";
-                    chkModifier13.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell13");
+                    chkModifier13.Text = LanguageManager.GetString("Checkbox_DetectionSpell13");
                     chkModifier14.Tag = "+2";
-                    chkModifier14.Text = LanguageManager.Instance.GetString("Checkbox_DetectionSpell14");
+                    chkModifier14.Text = LanguageManager.GetString("Checkbox_DetectionSpell14");
                     break;
                 case "Health":
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.Instance.GetString("Checkbox_HealthSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_HealthSpell1");
                     chkModifier2.Tag = "+4";
-                    chkModifier2.Text = LanguageManager.Instance.GetString("Checkbox_HealthSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_HealthSpell2");
                     chkModifier3.Tag = "-2";
-                    chkModifier3.Text = LanguageManager.Instance.GetString("Checkbox_HealthSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_HealthSpell3");
                     chkModifier4.Tag = "+2";
-                    chkModifier4.Text = LanguageManager.Instance.GetString("Checkbox_HealthSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_HealthSpell4");
                     chkModifier5.Tag = "-2";
-                    chkModifier5.Text = LanguageManager.Instance.GetString("Checkbox_HealthSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_HealthSpell5");
                     break;
                 case "Illusion":
                     chkModifier1.Tag = "-1";
-                    chkModifier1.Text = LanguageManager.Instance.GetString("Checkbox_IllusionSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_IllusionSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.Instance.GetString("Checkbox_IllusionSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_IllusionSpell2");
                     chkModifier3.Tag = "-2";
-                    chkModifier3.Text = LanguageManager.Instance.GetString("Checkbox_IllusionSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_IllusionSpell3");
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.Instance.GetString("Checkbox_IllusionSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_IllusionSpell4");
                     chkModifier5.Tag = "+2";
-                    chkModifier5.Text = LanguageManager.Instance.GetString("Checkbox_IllusionSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_IllusionSpell5");
                     break;
                 case "Manipulation":
                     chkModifier1.Tag = "-2";
-                    chkModifier1.Text = LanguageManager.Instance.GetString("Checkbox_ManipulationSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_ManipulationSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.Instance.GetString("Checkbox_ManipulationSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_ManipulationSpell2");
                     chkModifier3.Tag = "+0";
-                    chkModifier3.Text = LanguageManager.Instance.GetString("Checkbox_ManipulationSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_ManipulationSpell3");
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.Instance.GetString("Checkbox_ManipulationSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_ManipulationSpell4");
                     chkModifier5.Tag = "+2";
-                    chkModifier5.Text = LanguageManager.Instance.GetString("Checkbox_ManipulationSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_ManipulationSpell5");
                     chkModifier6.Tag = "+2";
-                    chkModifier6.Text = LanguageManager.Instance.GetString("Checkbox_ManipulationSpell6");
+                    chkModifier6.Text = LanguageManager.GetString("Checkbox_ManipulationSpell6");
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier6.Top - 1;
                     break;
                 default:
                     // Combat.
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.Instance.GetString("Checkbox_CombatSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_CombatSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.Instance.GetString("Checkbox_CombatSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_CombatSpell2");
                     chkModifier3.Tag = "+2";
-                    chkModifier3.Text = LanguageManager.Instance.GetString("Checkbox_CombatSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_CombatSpell3");
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier3.Top - 1;
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.Instance.GetString("Checkbox_CombatSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_CombatSpell4");
                     chkModifier5.Tag = "-1";
-                    chkModifier5.Text = LanguageManager.Instance.GetString("Checkbox_CombatSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_CombatSpell5");
                     break;
             }
 
@@ -626,7 +626,7 @@ namespace Chummer
             if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = "(" + LanguageManager.Instance.GetString("String_SpellDamageValue") + ")";
+                strBase = "(" + LanguageManager.GetString("String_SpellDamageValue") + ")";
             }
             else
             {
@@ -640,8 +640,8 @@ namespace Chummer
             if (intDV == 0)
                 strDV = string.Empty;
             lblDV.Text = (strBase + strDV).Replace("/", "÷");
-            lblDV.Text = lblDV.Text.Replace("F", LanguageManager.Instance.GetString("String_SpellForce"));
-            lblDV.Text = lblDV.Text.Replace("Damage Value", LanguageManager.Instance.GetString("String_SpellDamageValue"));
+            lblDV.Text = lblDV.Text.Replace("F", LanguageManager.GetString("String_SpellForce"));
+            lblDV.Text = lblDV.Text.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
 
             return strBase + strDV;
         }
@@ -657,7 +657,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += '\n';
-                strMessage += LanguageManager.Instance.GetString("Message_SpellName");
+                strMessage += LanguageManager.GetString("Message_SpellName");
             }
 
             // Make sure a Restricted value if the field is enabled.
@@ -665,7 +665,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += '\n';
-                strMessage += LanguageManager.Instance.GetString("Message_SpellRestricted");
+                strMessage += LanguageManager.GetString("Message_SpellRestricted");
             }
 
             // Make sure the Spell has met all of its requirements.
@@ -676,7 +676,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_CombatSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
                 }
 
                 // Either Physical damage or Stun damage must be selected.
@@ -684,7 +684,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_CombatSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
                 }
             }
             else if (cboCategory.SelectedValue.ToString() == "Detection")
@@ -694,7 +694,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_DetectionSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
                 }
 
                 // Either Active or Passive must be selected.
@@ -702,7 +702,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_DetectionSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
                 }
             }
             else if (cboCategory.SelectedValue.ToString() == "Health")
@@ -716,7 +716,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_IllusionSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
                 }
 
                 // Either Single-Sense or Multi-Sense must be selected.
@@ -724,7 +724,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_IllusionSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
                 }
             }
             else if (cboCategory.SelectedValue.ToString() == "Manipulation")
@@ -734,7 +734,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_ManipulationSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
                 }
 
                 // Either Minor Change or Major Change must be selected.
@@ -742,14 +742,14 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.Instance.GetString("Message_ManipulationSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
                 }
             }
 
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                MessageBox.Show(strMessage, LanguageManager.Instance.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

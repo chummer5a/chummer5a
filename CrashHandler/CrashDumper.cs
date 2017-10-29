@@ -24,7 +24,7 @@ namespace CrashHandler
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
-		public event CrashDumperProgressChangedEvent CrashDumperProgressChanged;
+		internal Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
 		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
@@ -38,7 +38,7 @@ namespace CrashHandler
 		private volatile CrashDumperProgress _progress;
 		private Thread _worker;
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
-
+        private string _strLatestDumpName = string.Empty;
 	    
 	    private TextWriter CrashLogWriter;
 
@@ -59,7 +59,7 @@ namespace CrashHandler
 
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("Could not deserialize");
 			}
 
             CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
@@ -187,10 +187,10 @@ namespace CrashHandler
 		    catch (RemoteServiceException rex)
 		    {
 		        SetProgress(CrashDumperProgress.Error);
-		        System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message);
+
+		        System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message + "\n\nPlease manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
 		        Process?.Kill();
 		        Environment.Exit(-1);
-
 		    }
 		    catch (Exception ex)
 			{
@@ -208,11 +208,11 @@ namespace CrashHandler
 		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
-			bool ret;
-			using (FileStream file = File.Create(Path.Combine(WorkingDirectory, "crashdump.dmp")))
+            bool ret = false;
+            _strLatestDumpName = "crashdump-" + DateTime.Now.ToFileTimeUtc().ToString() + ".dmp";
+            using (FileStream file = File.Create(Path.Combine(WorkingDirectory, _strLatestDumpName)))
 			{
-
-				MiniDumpExceptionInformation info = new MiniDumpExceptionInformation();
+                MiniDumpExceptionInformation info = new MiniDumpExceptionInformation();
 				info.ClientPointers = true;
 				info.ExceptionPointers = exceptionInfo;
 				info.ThreadId = threadId;
@@ -348,17 +348,24 @@ namespace CrashHandler
 
 	    private string ExtractUrl(string input)
 		{
-			Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
-		    if ("success".Equals(top["status"]))
-		    {
-		        Dictionary<string, object> files = (Dictionary<string, object>) ((ArrayList) top["files"])[0];
-		        string ret = (string) files["url"];
-		        return ret;
-		    }
-		    else
-		    {
-		        throw new RemoteServiceException(top["reason"].ToString());
-		    }
+            try
+            {
+                Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
+                if ("success".Equals(top["status"]))
+                {
+                    Dictionary<string, object> files = (Dictionary<string, object>)((ArrayList)top["files"])[0];
+                    string ret = (string)files["url"];
+                    return ret;
+                }
+                else
+                {
+                    throw new RemoteServiceException(top["reason"].ToString());
+                }
+            }
+            catch (ArgumentException)
+            {
+                throw new RemoteServiceException("Unable to connect to Crash Dump upload server.");
+            }
 		}
 
 		private void UploadToAws()
@@ -467,8 +474,6 @@ namespace CrashHandler
 
         }
     }
-
-    public delegate void CrashDumperProgressChangedEvent(object sender, CrashDumperProgressChangedEventArgs args);
 
 	public class CrashDumperProgressChangedEventArgs : EventArgs
 	{

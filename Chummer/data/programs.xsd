@@ -27,6 +27,7 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="skill" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
           <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -55,6 +56,7 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
           <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
           <xs:element name="programtypes" minOccurs="0" maxOccurs="1">

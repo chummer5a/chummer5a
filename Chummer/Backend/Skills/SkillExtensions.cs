@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace Chummer.Skills
     {
         public static bool HasSpecialization(this Skill skill, string specialization)
         {
-            return skill.Specializations.Any(x => x.Name == specialization || x.DisplayName == specialization);
+            return skill.Specializations.Any(x => (x.Name == specialization || x.DisplayName == specialization) && !skill.CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == skill.Name && string.IsNullOrEmpty(objImprovement.Condition)));
         }
 
         public static string GetDisplayName(this Skill skill)

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace Chummer
         public frmLifestyleNuyen()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -38,16 +38,16 @@ namespace Chummer
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.Instance.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
+            lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
             MoveControls();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
         }
         #endregion
 
@@ -60,17 +60,17 @@ namespace Chummer
         /// <summary>
         /// Extra number that is added to the dice roll.
         /// </summary>
-        public int Extra { get; set; } = 0;
+        public decimal Extra { get; set; } = 0;
 
         /// <summary>
         /// D6 multiplier for the Lifestyle.
         /// </summary>
-        public int Multiplier { get; set; } = 0;
+        public decimal Multiplier { get; set; } = 0;
 
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.
         /// </summary>
-        public int StartingNuyen => Convert.ToInt32((nudDiceResult.Value + Extra) * Multiplier);
+        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * Multiplier);
 
         #endregion
 

@@ -29,19 +29,19 @@ namespace Chummer
         private string _strForceValue = string.Empty;
         private string _strExcludeCategory = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectSkillGroup()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSkillGroup_Load(object sender, EventArgs e)
         {
             List<ListItem> lstGroups = new List<ListItem>();
-            _objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
             if (string.IsNullOrEmpty(_strForceValue))
             {

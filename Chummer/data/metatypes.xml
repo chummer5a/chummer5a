@@ -129,7 +129,7 @@
           <depaug>0</depaug>
           <qualities>
             <positive>
-              <quality>Shiva Arms (1 Pair)</quality>
+              <quality>Shiva Arms (Pair)</quality>
             </positive>
             <negative>
               <quality>Striking Skin Pigmentation</quality>
@@ -428,7 +428,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Elongated Limbs</quality>
-              <quality>Celerity</quality>
+              <quality removable="true">Celerity</quality>
             </positive>
           </qualities>
           <bonus />
@@ -674,7 +674,7 @@
           </bonus>
           <qualities>
             <positive>
-              <quality>Celerity</quality>
+              <quality removable="true">Celerity</quality>
               <quality>Resistance to Pathogens/Toxins</quality>
               <quality>Thermographic Vision</quality>
             </positive>
@@ -853,6 +853,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Fangs</quality>
+			  <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality>Poor Self Control (Vindictive)</quality>
@@ -1414,6 +1415,7 @@
           <quality>Thermographic Vision</quality>
           <quality>Natural Weapon: Kick (Centaur)</quality>
           <quality>Magic Sense</quality>
+		  <quality>Centaur Body</quality>
         </positive>
       </qualities>
       <powers>
@@ -1651,6 +1653,7 @@
       <page>99</page>
     </metatype>
     <metatype>
+      <id>79b7b632-2e2d-4d7f-b8c7-c99071bd9632</id>
       <name>A.I.</name>
       <category>Metasapient</category>
       <karma>180</karma>
@@ -1734,9 +1737,7 @@
           <quality>Golden Screwdriver</quality>
           <quality>Guts</quality>
           <quality>Hello World!</quality>
-          <quality>High Pain Tolerance (Rating 1)</quality>
-          <quality>High Pain Tolerance (Rating 2)</quality>
-          <quality>High Pain Tolerance (Rating 3)</quality>
+          <quality>High Pain Tolerance</quality>
           <quality>Home Ground</quality>
           <quality>I C U</quality>
           <quality>Indomitable (Mental)</quality>
@@ -1754,12 +1755,9 @@
           <quality>Munge</quality>
           <quality>Ninja Vanish</quality>
           <quality>Overclocker</quality>
-          <quality>Perceptive I</quality>
-          <quality>Perceptive II</quality>
+          <quality>Perceptive</quality>
           <quality>Photographic Memory</quality>
-          <quality>Pilot Origins (Rating 1)</quality>
-          <quality>Pilot Origins (Rating 2)</quality>
-          <quality>Pilot Origins (Rating 3)</quality>
+          <quality>Pilot Origins</quality>
           <quality>Prime Datahaven Membership</quality>
           <quality>Quick Healer</quality>
           <quality>Redundancy</quality>
@@ -1912,9 +1910,7 @@
               <quality>Golden Screwdriver</quality>
               <quality>Guts</quality>
               <quality>Hello World!</quality>
-              <quality>High Pain Tolerance (Rating 1)</quality>
-              <quality>High Pain Tolerance (Rating 2)</quality>
-              <quality>High Pain Tolerance (Rating 3)</quality>
+              <quality>High Pain Tolerance</quality>
               <quality>Home Ground</quality>
               <quality>I C U</quality>
               <quality>Indomitable (Mental)</quality>
@@ -1932,12 +1928,9 @@
               <quality>Munge</quality>
               <quality>Ninja Vanish</quality>
               <quality>Overclocker</quality>
-              <quality>Perceptive I</quality>
-              <quality>Perceptive II</quality>
+              <quality>Perceptive</quality>
               <quality>Photographic Memory</quality>
-              <quality>Pilot Origins (Rating 1)</quality>
-              <quality>Pilot Origins (Rating 2)</quality>
-              <quality>Pilot Origins (Rating 3)</quality>
+              <quality>Pilot Origins</quality>
               <quality>Prime Datahaven Membership</quality>
               <quality>Quick Healer</quality>
               <quality>Redundancy</quality>
@@ -2102,9 +2095,7 @@
               <quality>Golden Screwdriver</quality>
               <quality>Guts</quality>
               <quality>Hello World!</quality>
-              <quality>High Pain Tolerance (Rating 1)</quality>
-              <quality>High Pain Tolerance (Rating 2)</quality>
-              <quality>High Pain Tolerance (Rating 3)</quality>
+              <quality>High Pain Tolerance</quality>
               <quality>Home Ground</quality>
               <quality>I C U</quality>
               <quality>Indomitable (Mental)</quality>
@@ -2122,12 +2113,9 @@
               <quality>Munge</quality>
               <quality>Ninja Vanish</quality>
               <quality>Overclocker</quality>
-              <quality>Perceptive I</quality>
-              <quality>Perceptive II</quality>
+              <quality>Perceptive</quality>
               <quality>Photographic Memory</quality>
-              <quality>Pilot Origins (Rating 1)</quality>
-              <quality>Pilot Origins (Rating 2)</quality>
-              <quality>Pilot Origins (Rating 3)</quality>
+              <quality>Pilot Origins</quality>
               <quality>Prime Datahaven Membership</quality>
               <quality>Quick Healer</quality>
               <quality>Redundancy</quality>
@@ -2291,9 +2279,7 @@
               <quality>Golden Screwdriver</quality>
               <quality>Guts</quality>
               <quality>Hello World!</quality>
-              <quality>High Pain Tolerance (Rating 1)</quality>
-              <quality>High Pain Tolerance (Rating 2)</quality>
-              <quality>High Pain Tolerance (Rating 3)</quality>
+              <quality>High Pain Tolerance</quality>
               <quality>Home Ground</quality>
               <quality>I C U</quality>
               <quality>Indomitable (Mental)</quality>
@@ -2311,12 +2297,9 @@
               <quality>Munge</quality>
               <quality>Ninja Vanish</quality>
               <quality>Overclocker</quality>
-              <quality>Perceptive I</quality>
-              <quality>Perceptive II</quality>
+              <quality>Perceptive</quality>
               <quality>Photographic Memory</quality>
-              <quality>Pilot Origins (Rating 1)</quality>
-              <quality>Pilot Origins (Rating 2)</quality>
-              <quality>Pilot Origins (Rating 3)</quality>
+              <quality>Pilot Origins</quality>
               <quality>Prime Datahaven Membership</quality>
               <quality>Quick Healer</quality>
               <quality>Redundancy</quality>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -41,6 +41,7 @@ namespace Chummer
         private bool _blnAutomaticCopyProtection = true;
         private bool _blnAutomaticRegistration = true;
         private bool _blnStrictSkillGroupsInCreateMode;
+        private bool _blnAllowPointBuySpecializationsOnKarmaSkills = false;
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnCapSkillRating;
         private bool _blnConfirmDelete = true;
@@ -98,14 +99,14 @@ namespace Chummer
         private int _intFreeKnowledgeMultiplier = 2;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
-        private int _intNuyenPerBP = 2000;
+        private decimal _decNuyenPerBP = 2000.0m;
         private int _intRestrictedCostMultiplier = 1;
         private bool _automaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
         private bool _blnEducationQualitiesApplyOnChargenKarma;
 
-        private readonly XmlDocument _objBookDoc = new XmlDocument();
+        private readonly XmlDocument _objBookDoc = null;
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
 
@@ -149,6 +150,7 @@ namespace Chummer
         private int _intKarmaNuyenPer = 2000;
         private int _intKarmaQuality = 1;
         private int _intKarmaSpecialization = 7;
+        private int _intKarmaKnoSpecialization = 7;
         private int _intKarmaSpell = 5;
         private int _intKarmaSpirit = 1;
         private int _intKarmaNewAIProgram = 5;
@@ -177,8 +179,11 @@ namespace Chummer
         private int _intBuildPoints = 800;
         private int _intAvailability = 12;
 
+        // List of names of custom data directories
+        private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
+
         // Sourcebook list.
-        private readonly List<string> _lstBooks = new List<string>();
+        private readonly HashSet<string> _lstBooks = new HashSet<string>();
         private bool _mysaddPpCareer;
         private bool _blnReverseAttributePriorityOrder;
         private bool _blnHhideItemsOverAvailLimit = true;
@@ -192,7 +197,16 @@ namespace Chummer
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
-                Directory.CreateDirectory(settingsDirectoryPath);
+            {
+                try
+                {
+                    Directory.CreateDirectory(settingsDirectoryPath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                }
+            }
 
             // If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
             string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
@@ -205,10 +219,10 @@ namespace Chummer
             else
                 Load("default.xml");
             // Load the language file.
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
             // Load the book information.
-            _objBookDoc = XmlManager.Instance.Load("books.xml");
+            _objBookDoc = XmlManager.Load("books.xml");
         }
 
         /// <summary>
@@ -255,7 +269,7 @@ namespace Chummer
             // <printexpenses />
             objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
             // <nuyenperbp />
-            objWriter.WriteElementString("nuyenperbp", _intNuyenPerBP.ToString());
+            objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <hideitemsoveravaillimit />
             objWriter.WriteElementString("hideitemsoveravaillimit", _blnHhideItemsOverAvailLimit.ToString());
             // <UnarmedImprovementsApplyToWeapons />
@@ -375,6 +389,8 @@ namespace Chummer
             objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
             // <breakskillgroupsincreatemode />
             objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
+            // <allowpointbuyspecializationsonkarmaskills />
+            objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString());
             // <extendanydetectionspell />
             objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
             // <allowskilldicerolling />
@@ -456,6 +472,8 @@ namespace Chummer
             objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString());
             // <karmaspecialization />
             objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString());
+            // <karmaknospecialization />
+            objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString());
             // <karmanewknowledgeskill />
             objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString());
             // <karmanewactiveskill />
@@ -546,6 +564,15 @@ namespace Chummer
             // </books>
             objWriter.WriteEndElement();
 
+
+            // <customdatadirectorynames>
+            objWriter.WriteStartElement("customdatadirectorynames");
+            foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
+                objWriter.WriteElementString("directoryname", strDirectoryName);
+            // </customdatadirectorynames>
+            objWriter.WriteEndElement();
+            // <hascustomdirectories>
+
             // <defaultbuild>
             objWriter.WriteStartElement("defaultbuild");
             // <buildmethod />
@@ -583,15 +610,15 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
@@ -627,7 +654,7 @@ namespace Chummer
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
             // Nuyen per Build Point
-            objXmlNode.TryGetInt32FieldQuickly("nuyenperbp", ref _intNuyenPerBP);
+            objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Hide Items Over Avail Limit in Create Mode
             objXmlNode.TryGetBoolFieldQuickly("hideitemsoveravaillimit", ref _blnHhideItemsOverAvailLimit);
             // Knucks use Unarmed
@@ -754,6 +781,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("usecontactpoints", ref _blnUseContactPoints);
             // Whether or not the user can break Skill Groups while in Create Mode.
             objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
+            // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+            objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills", ref _blnAllowPointBuySpecializationsOnKarmaSkills);
             // Whether or not any Detection Spell can be taken as Extended range version.
             objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
             // Whether or not dice rolling id allowed for Skills.
@@ -809,6 +838,7 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
             objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
             objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+            objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
             objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
             objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
             objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
@@ -858,6 +888,11 @@ namespace Chummer
                 _lstBooks.Add(objXmlBook.InnerText);
             RecalculateBookXPath();
 
+            // Load Custom Data Directory names.
+            _lstCustomDataDirectoryNames.Clear();
+            foreach (XmlNode objXmlDirectoryName in objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+                _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
+
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
             objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
@@ -887,15 +922,30 @@ namespace Chummer
         /// <summary>
         /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private void LoadInt32FromRegistry(ref int intStorage, string strBoolName)
+        private void LoadInt32FromRegistry(ref int intStorage, string strIntName)
         {
-            object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
+            object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
             if (objRegistryResult != null)
             {
                 int intTemp;
                 if (int.TryParse(objRegistryResult.ToString(), out intTemp))
                     intStorage = intTemp;
-                _objBaseChummerKey.DeleteValue(strBoolName);
+                _objBaseChummerKey.DeleteValue(strIntName);
+            }
+        }
+
+        /// <summary>
+        /// Load a Decimal Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
+        /// </summary>
+        private void LoadDecFromRegistry(ref decimal decStorage, string strDecName)
+        {
+            object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
+            if (objRegistryResult != null)
+            {
+                decimal decTemp;
+                if (decimal.TryParse(objRegistryResult.ToString(), out decTemp))
+                    decStorage = decTemp;
+                _objBaseChummerKey.DeleteValue(strDecName);
             }
         }
 
@@ -934,7 +984,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
 
             // Nuyen per Build Point
-            LoadInt32FromRegistry(ref _intNuyenPerBP, "nuyenperbp");
+            LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp");
 
             // Free Contacts Multiplier Enabled
             LoadBoolFromRegistry(ref _blnFreeContactsMultiplierEnabled, "freekarmacontactsmultiplierenabled");
@@ -964,6 +1014,7 @@ namespace Chummer
             LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute");
             LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality");
             LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization");
+            LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization");
             LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill");
             LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill");
             LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup");
@@ -1001,12 +1052,12 @@ namespace Chummer
             }
             string[] strBooks = strBookList.Split(',');
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
             foreach (string strBookCode in strBooks)
             {
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-                if (objXmlBook?["code"] != null)
+                if (objXmlBook?["code"] != null && objXmlBook["hide"] == null)
                 {
                     _lstBooks.Add(objXmlBook["code"].InnerText);
                 }
@@ -1110,33 +1161,19 @@ namespace Chummer
         /// </summary>
         public string BookXPath()
         {
-            string strPath = _strBookXPath;
+            string strPath = "not(hide)";
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                if (GlobalOptions.Instance.MissionsOnly)
-                {
-                    strPath += " and not(nomission)";
-                }
-
-                if (!GlobalOptions.Instance.Dronemods)
-                {
-                    strPath += " and not(optionaldrone)";
-                }
+                strPath += " and " + _strBookXPath;
             }
-            else
+            if (GlobalOptions.MissionsOnly)
             {
-                if (GlobalOptions.Instance.MissionsOnly)
-                {
-                    strPath += "not(nomission)";
-                    if (!GlobalOptions.Instance.Dronemods)
-                    {
-                        strPath += " and not(optionaldrone)";
-                    }
-                }
-                else if (!GlobalOptions.Instance.Dronemods)
-                {
-                    strPath += "not(optionaldrone)";
-                }
+                strPath += " and not(nomission)";
+            }
+
+            if (!GlobalOptions.Dronemods)
+            {
+                strPath += " and not(optionaldrone)";
             }
             return strPath;
         }
@@ -1282,15 +1319,15 @@ namespace Chummer
         /// <summary>
         /// Amount of Nuyen gained per BP spent.
         /// </summary>
-        public int NuyenPerBP
+        public decimal NuyenPerBP
         {
             get
             {
-                return _intNuyenPerBP;
+                return _decNuyenPerBP;
             }
             set
             {
-                _intNuyenPerBP = value;
+                _decNuyenPerBP = value;
             }
         }
 
@@ -1648,11 +1685,22 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public List<string> Books
+        public HashSet<string> Books
         {
             get
             {
                 return _lstBooks;
+            }
+        }
+
+        /// <summary>
+        /// Names of custom data directories
+        /// </summary>
+        public List<string> CustomDataDirectoryNames
+        {
+            get
+            {
+                return _lstCustomDataDirectoryNames;
             }
         }
 
@@ -2182,6 +2230,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// </summary>
+        public bool AllowPointBuySpecializationsOnKarmaSkills
+        {
+            get
+            {
+                return _blnAllowPointBuySpecializationsOnKarmaSkills;
+            }
+            set
+            {
+                _blnAllowPointBuySpecializationsOnKarmaSkills = value;
+            }
+        }
+
+        /// <summary>
         /// Whether or not any Detection Spell can be taken as Extended range version.
         /// </summary>
         public bool ExtendAnyDetectionSpell
@@ -2621,7 +2684,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost to purchase a Specialization = this value.
+        /// Karma cost to purchase a Specialization for an active skill = this value.
         /// </summary>
         public int KarmaSpecialization
         {
@@ -2632,6 +2695,23 @@ namespace Chummer
             set
             {
                 _intKarmaSpecialization = value;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
+        /// </summary>
+        public int KarmaKnowledgeSpecialization
+        {
+            get
+            {
+                // TODO: Once new options have been merged, get this implemented
+                return _intKarmaSpecialization;
+                //return _intKarmaKnoSpecialization;
+            }
+            set
+            {
+                _intKarmaKnoSpecialization = value;
             }
         }
 

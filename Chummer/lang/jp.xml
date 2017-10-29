@@ -23,6 +23,15 @@
   <version>-497</version>
   <name>日本語 (JP)</name>
   <strings>
+	<!-- Meta Strings -->
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
     <!-- Common Strings -->
     <string>
       <key>String_BP</key>
@@ -7346,6 +7355,14 @@
     <string>
       <key>String_CustomItem_SelectText</key>
       <text>Enter a name for this custom item.</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
     </string>
     <string>
       <key>String_MetamagicSkillBase</key>

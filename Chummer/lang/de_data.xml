@@ -20483,15 +20483,9 @@
             </quality>
             <quality>
                 <id>4d5c22b9-4908-493d-a6f7-4ccc3066888c</id>
-                <name>Focused Concentration (Rating 1)</name>
+                <name>Focused Concentration</name>
                 <page>84</page>
-                <translate>Erhöhte Konzentrationsfähigkeit (Stufe 1)</translate>
-            </quality>
-            <quality>
-                <id>082d7513-1539-4e79-ac3e-91c6f2ea32ed</id>
-                <name>Focused Concentration (Rating 2)</name>
-                <page>84</page>
-                <translate>Erhöhte Konzentrationsfähigkeit (Stufe 2)</translate>
+                <translate>Erhöhte Konzentrationsfähigkeit</translate>
             </quality>
             <quality>
                 <id>0d0cb0fc-c79d-418e-9216-8a197369e52d</id>
@@ -20501,21 +20495,9 @@
             </quality>
             <quality>
                 <id>b7866fb4-3747-4caf-9240-69cbdd79ce78</id>
-                <name>High Pain Tolerance (Rating 1)</name>
+                <name>High Pain Tolerance</name>
                 <page>84</page>
-                <translate>Hohe Schmerztoleranz (Stufe 1)</translate>
-            </quality>
-            <quality>
-                <id>4c2804b5-2934-46f1-992c-87a943ce044b</id>
-                <name>High Pain Tolerance (Rating 2)</name>
-                <page>84</page>
-                <translate>Hohe Schmerztoleranz (Stufe 2)</translate>
-            </quality>
-            <quality>
-                <id>c1f41d1f-6345-4d4b-9041-ef93aad61948</id>
-                <name>High Pain Tolerance (Rating 3)</name>
-                <page>84</page>
-                <translate>Hohe Schmerztoleranz (Stufe 3)</translate>
+                <translate>Hohe Schmerztoleranz</translate>
             </quality>
             <quality>
                 <id>823eb204-c155-45a9-bb9a-98dcbe17a707</id>
@@ -20561,27 +20543,9 @@
             </quality>
             <quality>
                 <id>f80ef6fc-e844-441c-81e3-b1264b34a4e7</id>
-                <name>Magic Resistance (Rating 1)</name>
+                <name>Magic Resistance</name>
                 <page>85</page>
-                <translate>Magieresistenz (Stufe 1)</translate>
-            </quality>
-            <quality>
-                <id>4779f545-b27d-42d9-8664-269253e2f901</id>
-                <name>Magic Resistance (Rating 2)</name>
-                <page>85</page>
-                <translate>Magieresistenz (Stufe 2)</translate>
-            </quality>
-            <quality>
-                <id>c55ac86e-212e-4e18-a9c2-68304b6bea89</id>
-                <name>Magic Resistance (Rating 3)</name>
-                <page>85</page>
-                <translate>Magieresistenz (Stufe 3)</translate>
-            </quality>
-            <quality>
-                <id>2f239f68-c93f-4ab9-b9a0-44386b4ea190</id>
-                <name>Magic Resistance (Rating 4)</name>
-                <page>85</page>
-                <translate>Magieresistenz (Stufe 4)</translate>
+                <translate>Magieresistenz</translate>
             </quality>
             <quality>
                 <id>ced3fecf-2277-4b20-b1e0-894162ca9ae2</id>
@@ -20722,21 +20686,9 @@
             </quality>
             <quality>
                 <id>18d2a522-6460-4654-916b-a96631f11323</id>
-                <name>Will to Live (Rating 1)</name>
+                <name>Will to Live</name>
                 <page>86</page>
-                <translate>Überlebenswille (Stufe 1)</translate>
-            </quality>
-            <quality>
-                <id>5b785abd-91b7-4a94-8856-e98e71a32118</id>
-                <name>Will to Live (Rating 2)</name>
-                <page>86</page>
-                <translate>Überlebenswille (Stufe 2)</translate>
-            </quality>
-            <quality>
-                <id>2916b7de-7265-4e31-b872-074863c5aff3</id>
-                <name>Will to Live (Rating 3)</name>
-                <page>86</page>
-                <translate>Überlebenswille (Stufe 3)</translate>
+                <translate>Überlebenswille</translate>
             </quality>
             <quality>
                 <id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
@@ -20860,27 +20812,9 @@
             </quality>
             <quality>
                 <id>de12b672-f60a-486d-85f6-b94a80a058da</id>
-                <name>Gremlins (Rating 1)</name>
+                <name>Gremlins</name>
                 <page>91</page>
-                <translate>Gremlins (Stufe 1)</translate>
-            </quality>
-            <quality>
-                <id>b71cecd5-7197-4372-bcf8-d55bf1c5d328</id>
-                <name>Gremlins (Rating 2)</name>
-                <page>91</page>
-                <translate>Gremlins (Stufe 2)</translate>
-            </quality>
-            <quality>
-                <id>1e819d6e-0ddb-441e-9025-f286fecf93e3</id>
-                <name>Gremlins (Rating 3)</name>
-                <page>91</page>
-                <translate>Gremlins (Stufe 3)</translate>
-            </quality>
-            <quality>
-                <id>564284b5-da31-4915-bc69-a893ab25b519</id>
-                <name>Gremlins (Rating 4)</name>
-                <page>91</page>
-                <translate>Gremlins (Stufe 4)</translate>
+                <translate>Gremlins</translate>
             </quality>
             <quality>
                 <id>216290b9-053d-4f6d-81c9-d1fe8ae346be</id>
@@ -20989,30 +20923,6 @@
                 <name>Sharpshooter</name>
                 <page>11</page>
                 <translate>Scharfschütze</translate>
-            </quality>
-            <quality>
-                <id>c6939a14-58c0-4168-b936-8124fd09ffe6</id>
-                <name>Focused Concentration (Rating 3)</name>
-                <page>84</page>
-                <translate>Erhöhte Konzentrationsfähigkeit (Stufe 3)</translate>
-            </quality>
-            <quality>
-                <id>79979e99-6776-4c93-b202-b630fabf3b30</id>
-                <name>Focused Concentration (Rating 4)</name>
-                <page>84</page>
-                <translate>Erhöhte Konzentrationsfähigkeit (Stufe 4)</translate>
-            </quality>
-            <quality>
-                <id>0e911cb1-da5c-4117-ae20-ffbf7f607c7d</id>
-                <name>Focused Concentration (Rating 5)</name>
-                <page>84</page>
-                <translate>Erhöhte Konzentrationsfähigkeit (Stufe 5)</translate>
-            </quality>
-            <quality>
-                <id>90ce7689-1dd8-437b-98ad-f10207380684</id>
-                <name>Focused Concentration (Rating 6)</name>
-                <page>84</page>
-                <translate>Erhöhte Konzentrationsfähigkeit (Stufe 6)</translate>
             </quality>
             <quality>
                 <id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
@@ -21236,39 +21146,15 @@
             </quality>
             <quality>
                 <id>97e9b186-8924-4885-a948-3c781244a5cb</id>
-                <name>Aged (Rating 1)</name>
+                <name>Aged</name>
                 <page>12</page>
-                <translate>Alt (50-59 Jahre)</translate>
-            </quality>
-            <quality>
-                <id>dd0b1ba0-6262-4eb9-9784-c4d29d6b7771</id>
-                <name>Aged (Rating 2)</name>
-                <page>12</page>
-                <translate>Alt (60-69 Jahre)</translate>
-            </quality>
-            <quality>
-                <id>d93fdb8e-c8ca-4699-a610-75cad195b50d</id>
-                <name>Aged (Rating 3)</name>
-                <page>12</page>
-                <translate>Alt (70+ Jahre)</translate>
+                <translate>Alt</translate>
             </quality>
             <quality>
                 <id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
-                <name>Illness (Rating 1)</name>
+                <name>Illness</name>
                 <page>13</page>
-                <translate>Krankheit (Leicht)</translate>
-            </quality>
-            <quality>
-                <id>16c8e91c-0d65-42bb-bc85-4af17c681714</id>
-                <name>Illness (Rating 2)</name>
-                <page>13</page>
-                <translate>Krankheit (Mittel)</translate>
-            </quality>
-            <quality>
-                <id>cea9bcde-4cbf-475e-b641-b6385d518543</id>
-                <name>Illness (Rating 3)</name>
-                <page>13</page>
-                <translate>Krankheit (Schwer)</translate>
+                <translate>Krankheit</translate>
             </quality>
             <quality>
                 <id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>
@@ -21486,17 +21372,10 @@
             </quality>
             <quality>
                 <id>1bad26cf-9d67-4bb1-9b4f-e9c80d668651</id>
-                <name>Perceptive I</name>
+                <name>Perceptive</name>
                 <source>RF</source>
                 <page>123</page>
-                <translate>Aufmerksamkeit I</translate>
-            </quality>
-            <quality>
-                <id>1faea6b4-99d2-4bb6-a292-c5d8e6d16956</id>
-                <name>Perceptive II</name>
-                <source>RF</source>
-                <page>123</page>
-                <translate>Aufmerksamkeit II</translate>
+                <translate>Aufmerksamkeit</translate>
             </quality>
             <quality>
                 <id>fd78fa11-5ab6-40db-bdb8-9fd722b08054</id>
@@ -21577,24 +21456,10 @@
             </quality>
             <quality>
                 <id>60972204-7dc5-4882-be7d-781f533dabef</id>
-                <name>Spike Resistance I</name>
+                <name>Spike Resistance</name>
                 <source>RF</source>
                 <page>124</page>
-                <translate>Biofeedback-Resistenz I</translate>
-            </quality>
-            <quality>
-                <id>176830e4-6d4b-4f8c-b207-4169be58e969</id>
-                <name>Spike Resistance II</name>
-                <source>RF</source>
-                <page>124</page>
-                <translate>Biofeedback-Resistenz II</translate>
-            </quality>
-            <quality>
-                <id>a1c2c6f4-3247-40c6-a983-b740f51d8280</id>
-                <name>Spike Resistance III</name>
-                <source>RF</source>
-                <page>124</page>
-                <translate>Biofeedback-Resistenz III</translate>
+                <translate>Biofeedback-Resistenz</translate>
             </quality>
             <quality>
                 <id>af460f42-c0d2-4f7d-8b80-8e71d19b5aac</id>
@@ -21619,45 +21484,17 @@
             </quality>
             <quality>
                 <id>3deeaa50-96d3-4c21-8f09-b9c224af5de3</id>
-                <name>Tough as Nails Physical I</name>
+                <name>Tough as Nails (Physical)</name>
                 <source>RF</source>
                 <page>126</page>
-                <translate>Knallhart Körperlich I</translate>
-            </quality>
-            <quality>
-                <id>ae04dc1d-d0f9-4807-800e-40828ab46e5e</id>
-                <name>Tough as Nails Physical II</name>
-                <source>RF</source>
-                <page>126</page>
-                <translate>Knallhart Körperlich II</translate>
-            </quality>
-            <quality>
-                <id>ede449f6-f4f4-423a-b3b0-a6b82c306fec</id>
-                <name>Tough as Nails Physical III</name>
-                <source>RF</source>
-                <page>126</page>
-                <translate>Knallhart Körperlich III</translate>
+                <translate>Knallhart (Körperlich)</translate>
             </quality>
             <quality>
                 <id>798c8081-d7a8-4c11-8d6f-80fb12a48062</id>
-                <name>Tough as Nails Stun I</name>
+                <name>Tough as Nails (Stun)</name>
                 <source>RF</source>
                 <page>126</page>
-                <translate>Knallhart Geistig I</translate>
-            </quality>
-            <quality>
-                <id>3c44ba25-b059-4446-8dd6-9da6e37de699</id>
-                <name>Tough as Nails Stun II</name>
-                <source>RF</source>
-                <page>126</page>
-                <translate>Knallhart Geistig II</translate>
-            </quality>
-            <quality>
-                <id>677c5510-cd57-4640-b437-6c6509f1390d</id>
-                <name>Tough as Nails Stun III</name>
-                <source>RF</source>
-                <page>126</page>
-                <translate>Knallhart Geistig III</translate>
+                <translate>Knallhart (Geistig)</translate>
             </quality>
             <quality>
                 <id>2656bcd7-3fe1-4c34-a4fb-89ebebfbf016</id>
@@ -21857,24 +21694,10 @@
             </quality>
             <quality>
                 <id>7706ce23-77c2-470f-bb7e-6a4e56fa78fe</id>
-                <name>Dimmer Bulb I</name>
+                <name>Dimmer Bulb</name>
                 <source>RF</source>
                 <page>133</page>
-                <translate>Keine grosse Leuchte I</translate>
-            </quality>
-            <quality>
-                <id>579fee35-82f9-4dd1-a4ed-8463c7a87e5b</id>
-                <name>Dimmer Bulb II</name>
-                <source>RF</source>
-                <page>133</page>
-                <translate>Keine grosse Leuchte II</translate>
-            </quality>
-            <quality>
-                <id>f79a1c58-6cac-476e-bfc3-45f9293c6af7</id>
-                <name>Dimmer Bulb III</name>
-                <source>RF</source>
-                <page>133</page>
-                <translate>Keine grosse Leuchte III</translate>
+                <translate>Keine grosse Leuchte</translate>
             </quality>
             <quality>
                 <id>4d435a24-f8f9-456d-83c1-6fecb217cf67</id>
@@ -21934,108 +21757,10 @@
             </quality>
             <quality>
                 <id>2b4dd1b1-b806-44e3-9067-65dc39c82d13</id>
-                <name>In Debt I</name>
+                <name>In Debt</name>
                 <source>RF</source>
                 <page>137</page>
-                <translate>Verschuldet I</translate>
-            </quality>
-            <quality>
-                <id>3a4120ac-9788-4813-95a0-2a57bc844aac</id>
-                <name>In Debt II</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet II</translate>
-            </quality>
-            <quality>
-                <id>93b54fdf-6d1f-4d91-a754-419ee586cbf9</id>
-                <name>In Debt III</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet III</translate>
-            </quality>
-            <quality>
-                <id>0ede6fab-d882-4ec1-ac4c-d37bd870757f</id>
-                <name>In Debt IV</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet IV</translate>
-            </quality>
-            <quality>
-                <id>949d1fc5-78b5-4b7b-bef0-f1dd54816076</id>
-                <name>In Debt V</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet V</translate>
-            </quality>
-            <quality>
-                <id>d8815a08-135b-4a16-99bb-bc770ad5d9a6</id>
-                <name>In Debt VI</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet VI</translate>
-            </quality>
-            <quality>
-                <id>2553b9bd-898f-4816-acea-d62290ea9d2c</id>
-                <name>In Debt VII</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet VII</translate>
-            </quality>
-            <quality>
-                <id>974b3191-c524-45ba-be78-225bc599317a</id>
-                <name>In Debt VIII</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet VIII</translate>
-            </quality>
-            <quality>
-                <id>4aa3e87b-1f73-4c23-80f5-13e306633ef1</id>
-                <name>In Debt IX</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet IX</translate>
-            </quality>
-            <quality>
-                <id>4399a563-eee8-41ac-bb16-ddde4ccb5b46</id>
-                <name>In Debt X</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet X</translate>
-            </quality>
-            <quality>
-                <id>8c79a44a-1951-4f8f-90b1-fd3e1bd9d617</id>
-                <name>In Debt XI</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet XI</translate>
-            </quality>
-            <quality>
-                <id>7032c82f-ebd2-498f-9fd9-871349fe6d72</id>
-                <name>In Debt XII</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet XII</translate>
-            </quality>
-            <quality>
-                <id>78601939-9c6a-42d8-83bc-b6ab57251b45</id>
-                <name>In Debt XIII</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet XIII</translate>
-            </quality>
-            <quality>
-                <id>d3bd2fc0-dbea-4073-8c86-4a7b15987988</id>
-                <name>In Debt XIV</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet XIV</translate>
-            </quality>
-            <quality>
-                <id>a04672fa-95b1-47c1-9697-c45026cd430a</id>
-                <name>In Debt XV</name>
-                <source>RF</source>
-                <page>137</page>
-                <translate>Verschuldet XV</translate>
+                <translate>Verschuldet</translate>
             </quality>
             <quality>
                 <id>43cab487-f5f7-4fc1-bc61-c011c3aa3a67</id>
@@ -22046,38 +21771,10 @@
             </quality>
             <quality>
                 <id>34ed73cb-28a3-43e1-a2bc-addbe2ccbbd3</id>
-                <name>Infirm I</name>
+                <name>Infirm</name>
                 <source>RF</source>
                 <page>133</page>
-                <translate>Körperliche Schwäche I</translate>
-            </quality>
-            <quality>
-                <id>1d3709e2-9c1e-4b5e-b37a-14978bdd39a1</id>
-                <name>Infirm II</name>
-                <source>RF</source>
-                <page>133</page>
-                <translate>Körperliche Schwäche II</translate>
-            </quality>
-            <quality>
-                <id>a9cc86d5-bc0c-4fb6-9b28-6e587341bc02</id>
-                <name>Infirm III</name>
-                <source>RF</source>
-                <page>133</page>
-                <translate>Körperliche Schwäche III</translate>
-            </quality>
-            <quality>
-                <id>9a5c2740-1805-440f-a36e-76dc796da4be</id>
-                <name>Infirm IV</name>
-                <source>RF</source>
-                <page>133</page>
-                <translate>Körperliche Schwäche IV</translate>
-            </quality>
-            <quality>
-                <id>c825cc1c-ba80-40e5-af6d-46ddab625444</id>
-                <name>Infirm V</name>
-                <source>RF</source>
-                <page>133</page>
-                <translate>Körperliche Schwäche V</translate>
+                <translate>Körperliche Schwäche</translate>
             </quality>
             <quality>
                 <id>bf50a6c9-f165-451c-8d38-89240f39bb44</id>
@@ -22434,14 +22131,7 @@
                 <name>Arcane Arrester</name>
                 <source>RF</source>
                 <page>89</page>
-                <translate>Arkaner Blitzableiter I</translate>
-            </quality>
-            <quality>
-                <id>0a566660-4b37-4f61-a5e5-c85fcf01ddc6</id>
-                <name>Arcane Arrester II</name>
-                <source>RF</source>
-                <page>89</page>
-                <translate>Arkaner Blitzableiter II</translate>
+                <translate>Arkaner Blitzableiter</translate>
             </quality>
             <quality>
                 <id>cdcb6ace-b35e-48bc-8eb0-d7a48626e350</id>
@@ -22767,10 +22457,59 @@
             </quality>
             <quality>
                 <id>cf429aea-85a7-4108-8fcd-9a062f3fc117</id>
-                <name>Metagenetic Improvement</name>
+                <name>Metagenetic Improvement (Body)</name>
                 <source>RF</source>
                 <page>93</page>
-                <translate>Metagenetische Verbesserung</translate>
+                <translate>Metagenetische Verbesserung (Konstitution)</translate>
+            </quality>
+			<quality>
+                <id>96c4c8e1-2f5d-431c-96c8-db83820f747b</id>
+                <name>Metagenetic Improvement (Agility)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Geschicklichkeit)</translate>
+            </quality>
+			<quality>
+                <id>c734c06d-c9e4-431d-93ba-033e82444efc</id>
+                <name>Metagenetic Improvement (Reaction)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Reaktion)</translate>
+            </quality>
+			<quality>
+                <id>76ac03f1-b379-48a8-a6e8-d8611fce0adf</id>
+                <name>Metagenetic Improvement (Strength)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Stärke)</translate>
+            </quality>
+			<quality>
+                <id>f1609199-e601-4b69-837f-2029b2ea94f0</id>
+                <name>Metagenetic Improvement (Charisma)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Charisma)</translate>
+            </quality>
+			<quality>
+                <id>7ee0765f-34f4-43ef-82c0-55c1b8bef8d8</id>
+                <name>Metagenetic Improvement (Intuition)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Intuition)</translate>
+            </quality>
+			<quality>
+                <id>bfdffed5-b687-4cb4-ad6a-ac59788fdc8a</id>
+                <name>Metagenetic Improvement (Logic)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Logik)</translate>
+            </quality>
+			<quality>
+                <id>a6536e32-5f2f-4865-8f6a-d2ba268d4647</id>
+                <name>Metagenetic Improvement (Willpower)</name>
+                <source>RF</source>
+                <page>93</page>
+                <translate>Metagenetische Verbesserung (Willenskraft)</translate>
             </quality>
             <quality>
                 <id>dc510f9d-0648-474b-8016-11a810ada098</id>
@@ -22914,17 +22653,10 @@
             </quality>
             <quality>
                 <id>51ba5e67-f2fd-4149-b24c-9b502ed0e7c7</id>
-                <name>Shiva Arms (1 Pair)</name>
+                <name>Shiva Arms (Pair)</name>
                 <source>RF</source>
                 <page>95</page>
-                <translate>Shiva-Arme (1 Paar)</translate>
-            </quality>
-            <quality>
-                <id>697e7f6f-448e-4d30-9f77-232476448c0c</id>
-                <name>Shiva Arms (2 Pairs)</name>
-                <source>RF</source>
-                <page>95</page>
-                <translate>Shiva-Arme (2 Paare)</translate>
+                <translate>Shiva-Arme (Paar)</translate>
             </quality>
             <quality>
                 <id>9b205e4a-66c7-45d9-b87b-d0c743944d60</id>
@@ -23047,10 +22779,59 @@
             </quality>
             <quality>
                 <id>1279503d-0bd4-43b5-930c-3f1743685dde</id>
-                <name>Impaired Attribute</name>
+                <name>Impaired Attribute (Body)</name>
                 <source>RF</source>
                 <page>97</page>
-                <translate>Eingeschränktes (Attribut)</translate>
+                <translate>Eingeschränktes Attribut (Konstitution)</translate>
+            </quality>
+			<quality>
+                <id>8a1a04ff-5bff-48b2-90c2-b9bdb5fde8e8</id>
+                <name>Impaired Attribute (Agility)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Geschicklichkeit)</translate>
+            </quality>
+			<quality>
+                <id>959b00a6-a55b-4c6b-95b0-a9746b31a24d</id>
+                <name>Impaired Attribute (Reaction)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Reaktion)</translate>
+            </quality>
+			<quality>
+                <id>c00591dc-fe6d-4ff0-8e42-22000878f03f</id>
+                <name>Impaired Attribute (Strength)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Stärke)</translate>
+            </quality>
+			<quality>
+                <id>14e71856-7d38-4e04-933f-069ed89a14e9</id>
+                <name>Impaired Attribute (Charisma)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Charisma)</translate>
+            </quality>
+			<quality>
+                <id>b58b47a7-9011-4bef-8ba2-ae561a443765</id>
+                <name>Impaired Attribute (Intuition)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Intuition)</translate>
+            </quality>
+			<quality>
+                <id>0df94dda-5941-4130-b6fc-0a98fcf7f846</id>
+                <name>Impaired Attribute (Logic)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Logik)</translate>
+            </quality>
+			<quality>
+                <id>a6a4d71d-452f-4d26-9588-e7a5bc2474c0</id>
+                <name>Impaired Attribute (Willpower)</name>
+                <source>RF</source>
+                <page>97</page>
+                <translate>Eingeschränktes Attribut (Willenskraft)</translate>
             </quality>
             <quality>
                 <id>7618be2b-b4c1-4f7c-905b-7698cc2e744e</id>
@@ -23510,21 +23291,9 @@
             </quality>
             <quality>
                 <id>91a06a6b-7d4a-4b10-9180-18dd3da623ab</id>
-                <name>Pilot Origins (Rating 1)</name>
+                <name>Pilot Origins</name>
                 <page>158</page>
-                <translate>Pilotenerbe (Stufe 1)</translate>
-            </quality>
-            <quality>
-                <id>839a175f-3710-44f8-9372-78f2b1e19c31</id>
-                <name>Pilot Origins (Rating 2)</name>
-                <page>158</page>
-                <translate>Pilotenerbe (Stufe 2)</translate>
-            </quality>
-            <quality>
-                <id>80ba0f08-029d-4b0b-9286-9f7d182ac389</id>
-                <name>Pilot Origins (Rating 3)</name>
-                <page>158</page>
-                <translate>Pilotenerbe (Stufe 3)</translate>
+                <translate>Pilotenerbe</translate>
             </quality>
             <quality>
                 <id>364CDB2A-C405-488C-8E08-631EF02EBCF2</id>
@@ -26250,7 +26019,7 @@
                     <spec translate="Medizin">Medicine</spec>
                     <spec translate="Matrixkriminalität">Matrix Crime</spec>
                     <spec translate="Geldwäsche">Money Laundering</spec>
-                    <spec translate="Organhändler">>Organleggers</spec>
+                    <spec translate="Organhändler">Organleggers</spec>
                     <spec translate="Pornographie">Pornography</spec>
                     <spec translate="Prostitution">Prostitution</spec>
                     <spec translate="Schutzgeld">Protection</spec>
@@ -31341,27 +31110,15 @@
             </mod>
             <mod>
                 <id>06940788-ad0b-453c-bc8a-e54e6221c185</id>
-                <name>Gecko Tips (Bod 1-3)</name>
+                <name>Gecko Tips</name>
                 <page>162</page>
-                <translate>Geckofüße (Rumpf 1-3)</translate>
-            </mod>
-            <mod>
-                <id>a11be6d9-109e-4662-a23a-2c8081c6c948</id>
-                <name>Gecko Tips (Bod 4-6)</name>
-                <page>162</page>
-                <translate>Geckofüße (Rumpf 4-6)</translate>
+                <translate>Geckofüße</translate>
             </mod>
             <mod>
                 <id>fd32b5eb-c791-4117-a9fe-5d5d86952827</id>
-                <name>Gliding System (Bod 1-12)</name>
+                <name>Gliding System</name>
                 <page>162</page>
-                <translate>Gleitsystem (Rumpf 1-12)</translate>
-            </mod>
-            <mod>
-                <id>f9b96303-d8de-436f-94f3-b1793a7a809a</id>
-                <name>Gliding System (Bod 12+)</name>
-                <page>162</page>
-                <translate>Gleitsystem (Rumpf 12+)</translate>
+                <translate>Gleitsystem</translate>
             </mod>
             <mod>
                 <id>956a20f7-64f3-4160-88a0-d6d6b29b0bd1</id>

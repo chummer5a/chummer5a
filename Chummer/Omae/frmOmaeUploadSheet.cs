@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,14 +41,14 @@ namespace Chummer
         public frmOmaeUploadSheet(string strUserName, int intSheetID = 0, string strDescription = "", string strName = "")
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _strUserName = strUserName;
             _intSheetID = intSheetID;
             txtDescription.Text = strDescription;
             txtName.Text = strName;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.Instance.GetString("Message_Omae_CannotConnection");
-            NO_CONNECTION_TITLE = LanguageManager.Instance.GetString("MessageTitle_Omae_CannotConnection");
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection");
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection");
 
             MoveControls();
         }
@@ -78,7 +78,7 @@ namespace Chummer
             {
                 if (!strFile.EndsWith(".xsl") && !strFile.EndsWith(".xslt"))
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_CannotUploadSheet"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CannotUploadSheet"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -99,21 +99,21 @@ namespace Chummer
             // Make sure a name has been entered.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_SheetName"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_SheetName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SheetName"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
             if (string.IsNullOrEmpty(txtDescription.Text.Trim()))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OameUpload_SheetDescription"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_SheetDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OameUpload_SheetDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure at least 1 file was selected.
             if (string.IsNullOrEmpty(txtFilePath.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_SheetSelectFiles"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SheetSelectFiles"), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -125,7 +125,7 @@ namespace Chummer
             // Make sure the file doesn't exceed 250K in size (256,000 bytes).
             if (bytFile.Length > 256000)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_FileTooLarge"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_FileTooLarge"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge"), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -139,11 +139,11 @@ namespace Chummer
                 if (objService.UploadSheet(_strUserName, _intSheetID, txtName.Text, txtDescription.Text, bytFile))
                 {
                     blnSuccess = true;
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_UploadComplete"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_UploadComplete"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_OmaeUpload_UploadFailed"), LanguageManager.Instance.GetString("MessageTitle_OmaeUpload_UploadFailed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (EndpointNotFoundException)

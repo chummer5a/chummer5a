@@ -1,0 +1,3052 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema actions.xsd">
+  <version>0</version>
+  <actions>
+  <!-- Region Core Rulebook -->
+  <!-- Region Basic Actions  -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Melee Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{REA} + {INT} + {Improvement Value: Dodge} v. {Action: Melee Attack}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Ranged Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{REA} + {INT} + {Improvement Value: Dodge}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>186</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Suppressive Fire Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{REA} + {EDG}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>179</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Resist Surprise</name>
+      <type>No</type>
+	  <test>
+		<dice>{INT} + {REA} + {Improvement Value: SurpriseResist}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>192</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Direct, Physical Combat Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{BOD} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>283</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Direct, Mana Combat Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>283</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Detection Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: DetectionSpellResist}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>285</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Physical Illusion Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {INT} + {Improvement Value: SpellResistance} + {Improvement Value: PhysicalIllusionResist}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>290</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Mana Illusion Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: MentalManipulationResist}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>290</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Physical Manipulation Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{BOD} + {STR} + {Improvement Value: SpellResistance} + {Improvement Value: PhysicalManipulationResist}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>292</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Mental Manipulation Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: ManaIllusionResist}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>292</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {BOD} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{BOD} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {AGI} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{AGI} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {REA} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{REA} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {STR} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{STR} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {CHA} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{CHA} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {INT} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{INT} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {LOG} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decrease {WIL} Spell Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{WIL} + {WIL} + {Improvement Value: SpellResistance}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>288</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Change Linked Device Mode</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Activate, deactivate, or switch the mode of any device to which you have a direct neural interface connection.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>163</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Change Gun Mode (Linked Smartgun)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Change the firing mode of a readied firearm with a linked smartgun system.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Drop Object</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Drop one object held in your hand(s).</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>163</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Drop Prone</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Drop to prone.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Eject Clip (Smartgun)</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Eject the detachable magazine of a smartgun.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Gesture</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Make a few quick gestures. Targets unfamiliar with the gestures may roll {INT} v. {Threshold: 2} to understand them.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Multiple Attacks</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Attack multiple targets in a single action, splitting your dicepool. Must be combined with {Action: Fire Single-Shot}, {Action: Fire Semi-Auto}, {Action: Fire Burst Fire}, {Action: Fire Full-Auto Simple}, {Action: Fire Semi-Auto Burst}, {Action: Fire Long Burst}, {Action: Fire Full-Auto Complex}, {Action: Throw Weapon (Non-Grenade)}, {Action: Throw Weapon (Grenade)}, {Action: Melee Attack}, {Action: Reckless Spellcasting}, or {Action: Cast Spell}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Run</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Inflicts Running movement modifiers, and can move up to Running Movement Rate for the rest of the combat turn.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Speak/Text/Transmit Phrase</name>
+      <type>Free</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Send or speak a short message.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Activate Focus</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Activate a focus you are carrying.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Call Spirit</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Call a spirit that has already been summoned and placed on standby.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Change Device Mode</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Activate, deactivate, or change the mode of any device with a simple switch, virtual button, or command from a commlink or other control device.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>164</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Change Gun Mode (Not Linked Smartgun)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Change the firing mode of a readied firearm that is either not a smartgun or does not have its system linked.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Command Spirit</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Issue a command to a single spirit or group of spirits under your control.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Dismiss Spirit</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Free a spirit from under your control. The spirit is not immediately sent back, but instead is freed to do as it chooses.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Bow</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Single-Shot</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 1 shot without recoil penalties. Can use {Action: Multiple Attacks} if using two weapons. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Semi-Auto</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 1 shot. Can only use {Action: Multiple Attacks} if using two weapons. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Burst Fire</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense} - 2</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 3 shots. Can use {Action: Multiple Attacks}. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Full-Auto Simple</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense} - 5</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 6 shots. Can use {Action: Multiple Attacks}. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Insert Clip</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Insert a fresh detachable magazine into a readied firearm, but only if the previous magazine has been removed.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Nock Arrow</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Loads a bow with an arrow.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>163</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Observe in Detail</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Make a Perception test. At the GM's discretion, immediately obvious things do not need a test.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Pick Up / Put Down</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Pick up an object in reach or put it down (gently).</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Quick Draw</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{REA} + {Weapon: Skill} v. {Threshold: {Weapon: Quick Draw Threshold}}</dice>
+		<limit>{Physical}</limt>
+		<bonusstring>Weapon must be properly holstered. On success, the weapon is readied and immediately make a Simple Action attack. On fail, the weapon is readied. On glitch, the weapon is not readied and your action phase ends. On a critical glitch, bad things happen.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Ready Weapon</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Weapon is readied for attacks. Weapons not in traditional holsters may require a Complex action at the GM's discretion. Small throwing weapons can be readied {{AGI} / 2} at a time per action.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Direct, Physical Combat)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Direct, Physical Combat Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Direct, Mana Combat)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Direct, Mana Combat Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Indirect, Single-target Combat)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Ranged Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Indirect, AoE Combat)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Threshold: 3}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Detection)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Detection Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Physical Illusion)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Physical Illusion Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Mana Illusion)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Mana Illusion Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Physical Manipulation)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Physical Manipulation Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Mental Manipulation)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Mental Manipulation Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {BOD})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {BOD} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {AGI})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {AGI} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {REA})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {REA} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {STR})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {STR} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {CHA})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {CHA} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {INT})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {INT} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {LOG})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {LOG} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reckless Spellcasting (Decrease {WIL})</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {WIL} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>165</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Remove Clip</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Remove a detachable magazine from a weapon.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Shift Perception</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Shift to or from Astral Perception.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Stand Up</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Stand up from being prone. If wounded, must make {{BOD} + {WIL}} v. {Threshold: 2} test to succeed.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Take Aim</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Add +1 dice or +1 Accuracy to your next attack test. If using a smartgun, apply both bonuses. If using Vision Magnification, apply its effects instead. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Take Cover</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Move behind cover. Must not be surprised.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Throw Weapon (Grenade)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Throwing Weapons} v. {Threshold: 3}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>Throw a readied grenade. Can use {Action: Multiple Attacks} if multiple grenades are readied.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Throw Weapon (Non-Grenade)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{AGI} + {Throwing Weapons} v. {Action: Ranged Defense}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>Throw a readied weapon that is not a grenade. Can use {Action: Multiple Attacks} if multiple weapons are readied. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Use Simple Device</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Use a simple device, like those activated by a simple movement, e.g. a thumb trigger, pressing a single key, or tapping a single icon.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>166</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Astral Projection</name>
+      <type>Complex</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>If capable of Astral Projection, shift consciousness to the Astral Plane.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Banish Spirit</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Banishing} v. {Spirit: Force}</dice>
+		<limit>{Astral}</limit>
+		<bonusstring>On success, reduce target spirit's services by net hits. After action, take drain equal to twice the spirit's total hits with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Direct, Physical Combat)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Direct, Physical Combat Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Direct, Mana Combat)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Direct, Mana Combat Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Indirect, Single-target Combat)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Ranged Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {{Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Indirect, AoE Combat)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Threshold: 3}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Detection)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Detection Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Physical Illusion)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Physical Illusion Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Mana Illusion)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Mana Illusion Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Physical Manipulation)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Physical Manipulation Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Mental Manipulation)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Action: Mental Manipulation Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {BOD})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {BOD} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {AGI})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {AGI} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {REA})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {REA} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {STR})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {STR} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {CHA})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {CHA} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {INT})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {INT} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {LOG})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {LOG} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Cast Spell (Decrease {WIL})</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spell: Spellcasting} v. {Decrease {WIL} Spell Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Semi-Auto Burst</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense} - 2</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 3 shots. Can use {Action: Multiple Attacks}. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Long Burst</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense} - 5</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 6 shots. Can use {Action: Multiple Attacks}. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Full-Auto Complex</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense} - 9</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 10 shots. Can use {Action: Multiple Attacks}. On success, target must resist {Weapon: DV} + net hits damage with an armor modifier of {Weapon: AP}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Suppressive Fire</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Fires 20 shots without recoil penalties. Select a 10m x 2m cross-section within weapon range to suppress. Suppression zone remains until the end of the combat turn unless the shooter moves or takes another action. On success, everyone in the zone must always resist {Weapon: DV} damage with an armor modifier of {Weapon: AP}, and they get a penalty to all actions equal to net hits.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>179</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Fire Mounted or Vehicle Weapon</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill}</dice>
+		<limit>{Max: {Weapon: Accuracy} or {Vehicle: Sensor}}</limit>
+		<bonusstring>Fires a vehicle-mounted weapon.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Load and Fire Bow</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Either load and fire or fire and load a readied bow.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Melee Attack</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reload Firearm</name>
+      <type>Complex</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Reload a weapon that is belt-fed (belt), break-action (b), or muzzle loaded (ml), has a cylinder (cy), drum (d), or internal magazine (m), or uses a Speed Loader.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Rigger Jump In</name>
+      <type>Complex</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Jump into a vehicle with a rigger adaptation. Must have a Control Rig or equivalent.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sprint</name>
+      <type>Complex</type>
+	  <specname>Sprinting</specname>
+	  <test>
+		<dice>{STR} + {Running}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>Increase run speed by 2m/hit or 1m/hit depending on metatype.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Summoning</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Spirit: Summoning} v. {Spirit: Force}</dice>
+		<limit>{Spirit: Force}</limit>
+		<bonusstring>On success, spirit is summoned with a number of services equal to net hits. After action, take drain equal to twice the spirit's total hits with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Use Skill</name>
+      <type>Complex</type>
+	  <test>
+		<dice>Variable</dice>
+		<limit>Variable</limit>
+		<bonusstring>Use a skill with the approrpiate dicepool and limit.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>167</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Block</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <specname>Blocking</specname>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>One Attack</duration>
+		  <dicebonus>{Unarmed Combat}</dicebonus>
+		  <addlimit>{Physical}</addlimit>
+		<boost>
+	  </boosts>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Dodge</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <specname>Dodging</specname>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>One Attack</duration>
+		  <dicebonus>{Gymnastics}</dicebonus>
+		  <addlimit>{Physical}</addlimit>
+		<boost>
+	  </boosts>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hit the Dirt</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Drop prone where you are, usually to avoid {Action: Suppressive Fire}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Intercept</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Intercept a target attempting to move past you within {1 + {Weapon: Reach}} meters and perform {Action: Melee Attack} against them.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Parry</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <specname>Parrying</specname>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>One Attack</duration>
+		  <dicebonus>{Weapon: Skill}</dicebonus>
+		  <addlimit>{Weapon: Accuracy}</addlimit>
+		<boost>
+	  </boosts>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Full Defense</name>
+      <type>Interrupt</type>
+	  <initiativecost>10</initiativecost>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Ranged Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Suppressive Fire Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+	  </boosts>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Evade</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Gymnastics} v. {Threshold: 1}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, can move past one character per net hit; they cannot use {Action: Intercept} to stop you unless it is {Action: Shadow Block v. Evade}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>194</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Escape (Subduing)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{STR} + {Unarmed Combat} v. {Threshold: {Action: Subduing}}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, break out of Subduing.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>195</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Subduing</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, if {STR} + net hits exceeds {Target: {Physical}}, target is grappled and subdued. Causes no damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>195</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Vehicle Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Use Sensors (Detect or Active Targeting) v. Living Beings</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{INT} + {Perception} + {Target: {Improvement Value: DetectionModifier}} - 3 v. {AGI} + {Sneaking}</dice>
+		<limit>{Vehicle: Sensor}</limit>
+		<bonusstring>On success, if this is an active targeting, apply net hits as negative dicepool modifier to target's {Action: Ranged Defense} and {Action: Melee Defense}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>184</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Use Sensors (Detect or Active Targeting) v. Vehicles</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{INT} + {Perception} + {Target: {Improvement Value: DetectionModifier}} v. {REA} + {Min: {Sneaking}, {Vehicle: Skill}}</dice>
+		<limit>{Vehicle: Sensor}</limit>
+		<bonusstring>On success, if this is an active targeting, apply net hits as negative dicepool modifier to target's {Action: Ranged Defense} and {Action: Melee Defense}.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>184</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Control Vehicle</name>
+      <type>Complex</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Vehicle is considered under control for the remainder of the combat turn.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>203</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Make Vehicle Test</name>
+      <type>Complex</type>
+	  <test>
+		<dice>Variable</dice>
+		<limit>{Vehicle: Handling}</limit>
+		<bonusstring>Attempt to make a vehicle action.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>203</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Ramming</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{REA} + {Vehicle: Skill} v. {Action: Melee Defense}</dice>
+		<limit>{Vehicle: Handling}</limit>
+		<bonusstring>On success, vehicle rams target. Target cannot use {Action: Block} or {Action: Parry} against this action.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>203</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Matrix Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>WIL Attack Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{WIL} + {Icon: Attack}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>WIL Sleaze Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{WIL} + {Icon: Sleaze}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>WIL Data Processing Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{WIL} + {Icon: Data Processing}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>WIL Firewall Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{WIL} + {Icon: Firewall}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>INT Firewall Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{INT} + {Icon: Firewall}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>INT Data Processing Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{INT} + {Icon: Data Processing}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>LOG Firewall Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {Icon: Firewall}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>LOG Sleaze Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {Icon: Sleaze}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>LOG Attack Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {Icon: Attack}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>LOG Data Processing Defense</name>
+      <type>No</type>
+	  <test>
+		<dice>{LOG} + {Icon: Sleaze}</dice>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Brute Force (1 Mark)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, gain mark on target. Every 2 net hits can be used to inflict 1 DV Matrix damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Brute Force (2 Marks)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} - 4 v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, gain two marks on target. Every 2 net hits can be used to inflict 1 DV Matrix damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Brute Force (3 Marks)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} - 10 v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, gain three marks on target. Every 2 net hits can be used to inflict 1 DV Matrix damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Change Icon</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on target. Changes the Matrix sculpt of an Icon.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Check Overwatch Score</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. 6</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>On success, you know your OS. OS from opposed hits added after this.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Control Device (Free)</name>
+      <type>Free</type>
+	  <test>
+		<dice>Variable</dice>
+		<limit>Variable</limit>
+		<bonusstring>Requires 1 mark on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Free Action with the device.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Control Device (Simple)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>Variable</dice>
+		<limit>Variable</limit>
+		<bonusstring>Requires 2 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Simple Action with the device.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Control Device (Complex)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>Variable</dice>
+		<limit>Variable</limit>
+		<bonusstring>Requires 3 marks on target device. If there is no eligible test, it is {{INT} + {Electronic Warfare}} [{Icon: Sleaze}] v. {Target: {Action: INT Firewall Defense}}. On success, you perform a Complex Action with the device.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Crack File</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Hacking} v. 2 * {Icon: Rating}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Requires 1 mark on target file. On success, target file's protection is removed.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Crash Program</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Requires 1 mark on target persona. On success, the specified running program is crashed on the target persona.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>238</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Data Spike</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, target icon must resist {Icon: Attack} + net hits Matrix damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Disarm Data Bomb</name>
+      <type>Complex</type>
+	  <specname>Data Bombs</specname>
+	  <test>
+		<dice>{INT} + {Software} v. 2 * {Icon: Rating}</dice>
+		<limit>{Icon: Firewall}</limit>
+		<bonusstring>On success, target data bomb is disarmed. On fail, the data bomb detonates.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Edit File</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires 1 mark on target file. On success, you can edit the target file, though any data bombs on it will detonate. You cannot edit files that are protected. You may use this test to protect a file as well, in which case hits become the file's protection rating.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Enter/Exit Host</name>
+      <type>Complex</type>
+	  <test>
+		<dice>None</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>You enter or exit the target host. When you leave a host, you return to the grid from which you entered.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Erase Mark (1 Mark)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Requires 3 marks on target icon. On success, you remove one mark of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Erase Mark (2 Marks)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Computer} - 4 v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Requires 3 marks on target icon. On success, you remove two marks of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Erase Mark (3 Marks)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Computer} - 10 v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Requires 3 marks on target icon. On success, you remove three marks of a chosen persona from the target. You do not need marks on the owner of the mark that you remove.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Erase Matrix Signature</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Computer} v. 2 * {Icon: Rating}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, the target Resonance signature is removed.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Format Device</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 3 marks on target device. On success, the device will shut down for good on its next reboot and require a Software test to replace.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>239</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Full Matrix Defense</name>
+      <type>Interrupt</type>
+	  <initiativecost>10</initiativecost>
+	  <boosts>
+		<boost>
+		  <name>LOG Attack Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>LOG Sleaze Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>LOG Data Processing Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>LOG Firewall Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>INT Data Processing Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>INT Firewall Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>WIL Attack Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>WIL Sleaze Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>WIL Data Processing Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+		<boost>
+		  <name>WIL Firewall Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{WIL}</dicebonus>
+		<boost>
+	  </boosts>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Grid Hop</name>
+      <type>Complex</type>
+	  <test>
+		<dice>None</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>You hop to the target grid. If you do not have access to the target grid through your lifestyle, you must gain 1 mark on it to perform this action.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hack on the Fly (1 Mark)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Hacking} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>On success, gain 1 mark on target icon. Every 2 net hits can be used as one net hit on a {Action: Matrix Perception} test.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hack on the Fly (2 Marks)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Hacking} - 4 v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>On success, gain 2 marks on target icon. Every 2 net hits can be used as one net hit on a {Action: Matrix Perception} test.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hack on the Fly (3 Mark)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Hacking} - 10 v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>On success, gain 3 marks on target icon. Every 2 net hits can be used as one net hit on a {Action: Matrix Perception} test.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hide</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Electronic Warfare} v. {Action: INT Data Processing Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>On success, if the target persona does not have a mark on you, it is no longer spotting you.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Invite Mark</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires Owner marks on the target icon. Choose a number of marks between 1 and 3 and send an invitation to an invitee persona. The invitee persona may gain the chosen amount of marks on the target icon with a single Free Action. You may rescind the invitation before the invitee gains the marks, but not after.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Jack Out</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{WIL} + {Hardware} v. {Action: LOG Attack Defense}</dice>
+		<limit>{Icon: Firewall}</limit>
+		<bonusstring>Can only target your own persona. Defense test only applies if you are link-locked, and if you are link-locked by multiple personas, each one rolls a defense test. On success, your persona and its device are instantly rebooted, and if you are in VR, you suffer Dumpshock.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Jam Signals</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>Requires Owner marks on the target device. On success, the device increases the ambient noise penalty of all devices within a 100m radius by net hits.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>240</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Jump into Rigged Device</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires 3 marks on the target device. Requires VR and a Control Rig or equivalent. Requires target device to have rigger adaptation and to not currently be jumped into by someone else. No test is needed if you have Owner marks on the target device or the target device's onwer has given you permission. On success, jump into target device.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>241</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Matrix Perception</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Computer} v. {Action: LOG Sleaze Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If you do not know a specific feature of a running silent icon, you must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>241</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Matrix Search</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Computer}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, use net hits to find pieces of information on the Matrix (see SR5 241) and/or to speed up the amount of time it takes to complete the search.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>241</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reboot Device</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires 3 marks on the target device. Requires target to not be link-locked. On success, target device immediately goes offline and will come back online at the end of the next combat turn. The exact delay can be chosen to be longer, but this can be overriden with physical access to the target. If target is running a persona, the persona's OS and marks are reset, and all marks others have on the persona are cleared; if the persona was in VR, they suffer dumpshock.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>242</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Send Message</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Send a text or audio message the length of a short sentence, an image, or a file to a target persona whose commcode you have. If you have a direct neural interface, you can send longer and more complicated messages (about a paragraph's worth), even in AR. You can also use this action to open a live ffed to one or more recipients using any digital devices you have.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>242</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Set Data Bomb</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Software} v. 2 * {Icon: Rating}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 1 mark on target file. On success, select a Data Bomb rating up to net hits, select a passcode for the Data Bomb, and select whether or not the Data Bomb deletes the file when it detonates. A file can only have one Data Bomb at a time, and if the target file already has a Data Bomb, it immediately detonates. The Data Bomb is triggered if someone attempts to read, edit, copy, protect, delete, or put a Data Bomb on the target file without using the already-in-place Data Bomb's passcode. When a Data Bomb detonates, the persona who detonated it must resist (Data Bomb Rating)D6 Matrix damage, and then the Data Bomb deletes itself. Data Bombs can be detected with Matrix Perception.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>242</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Snoop</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 1 mark on target icon. On success, intercept all Matrix traffic sent to and from the target as long as you have a mark on the target. You can listen to, view, and/or read this data live and/or save it for later playback/viewing on a device.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>242</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Spoof Command</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>Requires 1 mark on the persona of the owner of the target device or agent. On success, the target device or agent believes that a Matrix action command you sent to it is legitimately from its owner.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>242</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Switch Interface Mode</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires that your persona not be link-locked. If you are in VR, you switch your persona to AR. If you are in AR, you switch your persona to VR. If you switch from VR to AR, you immediately lose the effect of any bonus initiative dice.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>243</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Trace Icon</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Computer} v. {Action: WIL Sleaze Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>Requires 2 marks on the target device or persona. On success, obtain the precise physical location of the target device or the device that is running the target persona. The target's physical location is known for as long as you have at least 1 mark on the target.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>243</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region IC Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Acid IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, reduce target persona's Firewall by 1 until they reboot. If they are at 0 Firewall, target persona must resist 1 DV Matrix damage per net hit.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Binder IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: WIL Data Processing Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, reduce target persona's Data Processing by 1 until they reboot. If they are at 0 Data Processing, target persona must resist 1 DV Matrix damage per net hit.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Black IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, link-lock target persona and they must resist {Icon: Attack} + net hits + 2 per mark Matrix DV and an equal amount of biofeedback damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Blaster IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, link-lock target persona and they must resist {Icon: Attack} + net hits + 2 per mark Matrix DV and an equal amount of biofeedback damage. Biofeedback damage taken this way can only be Stun damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Crash IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, a running cyberprogram on the target persona crashes and cannot be run again until the target persona reboots.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Jammer IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: WIL Attack Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, reduce target persona's Attack by 1 until they reboot. If they are at 0 Attack, target persona must resist 1 DV Matrix damage per net hit.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Killer IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, target persona must resist {Icon: Attack} + net hits + 2 per mark Matrix DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Marker IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: WIL Sleaze Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, reduce target persona's Sleaze by 1 until they reboot. If they are at 0 Sleaze, target persona must resist 1 DV Matrix damage per net hit.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Patrol IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: LOG Sleaze Defense}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, the host spots the target persona.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Probe IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, the host and all its IC gain a mark on the target persona.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Scramble IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, if the host has 3 marks on the target persona, the target persona is forced to reboot; if they are in VR, they suffer dumpshock.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sparky IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, target persona must resist {Icon: Attack} + net hits + 2 per mark Matrix DV. The attack itself is laced with biofeedback.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>248</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Tar Baby IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: LOG Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, target persona is link-locked. If the target persona is already link-locked by the host, the host and all its IC gain a mark on the target persona.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>249</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Track IC</name>
+      <type>Complex</type>
+	  <test>
+		<dice>2 * {Icon: Rating} v. {Action: WIL Sleaze Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, if the host has 2 on the target persona, the target persona's real-world location is discovered and usually reported to real-world authorities immediately.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>249</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Resonance Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Call/Dismiss Sprite</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Call a registered sprite that is waiting in the Resonance, who will appear at the start of the next combat turn. The action can also be used to send a sprite of yours back to the Resonance, releasing it from any tasks it still owes.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Command Sprite</name>
+      <type>Simple</type>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Command a sprite to do something for you, using up a task.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Compile Sprite</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Compiling} v. {Icon: Rating}</dice>
+		<limit>{Target: {Icon: Rating}}</limit>
+		<bonusstring>On success, a sprite is compiled with tasks equal to net hits. After action, resist fading equal to twice the sprite's total hits with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Decompile Sprite</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Decompiling} v. {Icon: Rating}</dice>
+		<limit>{Target: {Icon: Rating}}</limit>
+		<bonusstring>On success, reduce the target sprite's tasks by 1 for each net hit. After action, resist fading equal to twice the sprite's total hits with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Kill Complex Form</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Software} v. {Spell: Force} + {RES}</dice>
+		<limit>{Target: {Spell: Force}}</limit>
+		<bonusstring>On success, reduce the number of hits on the target complex form by 1 for each net hit. After action, resist {Target: {Spell: Drain}} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Register Sprite</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Registering} v. 2 * {Icon: Rating}</dice>
+		<limit>{Target: {Icon: Rating}}</limit>
+		<bonusstring>On success, target sprite is registered and its OS erase, and target sprite gains 1 extra task per net hit. After action, resist fading equal to twice the sprite's total hits with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Thread Complex Form (No Opposed Test)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Software}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>On success, complex form is threaded. After action, resist fading equal to {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Thread Complex Form (v. INT Data Processing)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Software} v. {Action: INT Data Processing Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>On success, complex form is threaded. After action, resist fading equal to {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Thread Complex Form (v. WIL Firewall)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Software} v. {Action: WIL Firewall Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>On success, complex form is threaded. After action, resist fading equal to {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Thread Complex Form (v. LOG Data Processing)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Software} v. {Action: LOG Data Processing Defense}</dice>
+		<limit>{Spell: Force}</limit>
+		<bonusstring>On success, complex form is threaded. After action, resist fading equal to {Spell: Drain} with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>250</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Sprite Powers -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sprite Power: Cookie</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Hacking} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Sleaze}</limit>
+		<bonusstring>On success, sprite power succeeds against target persona. Cookie file remains until its pre-programmed duration expires, after which it returns to its sprite if it is online, but otherwise disappears.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>256</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sprite Power: Diagnostics</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Hardware}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, sprite power succeeds against target device. The power consumes the sprite's complete attention while active.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>257</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sprite Power: Electron Storm</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, sprite power succeeds against target persona. The power remains until the sprite takes any Matrix damage.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>257</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sprite Power: Gremlins</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{RES} + {Hardware} v. {Icon}</dice>
+		<limit>{Icon: Attack}</limit>
+		<bonusstring>On success, sprite power succeeds against target device and immedatiately causes it to suffer a glitch; if 4 or more net hits were obtained, this is upgraded to a critical glitch.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>257</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Rigger Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Compensate for Noise</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{LOG} + {Electronic Warfare}</dice>
+		<limit>{Icon: Data Processing}</limit>
+		<bonusstring>On success, add 1 noise reduction per net hit until the end of the combat turn.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>257</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Magic-Specific Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Dispelling</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {Counterspelling} v. {Spell: Force} + {MAG}</dice>
+		<limit>{Astral}</limit>
+		<bonusstring>On success, reduce the hits on the target spell by 1 for each net hit. After action, resist drain equal to {Target: {Spell: Drain}}, with a minimum of 2 DV.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>295</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Assense</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Assensing}</dice>
+		<limit>{Astral}</limit>
+		<bonusstring>On success, consult the appropraite table to see what information is revealed.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>312</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Press through Mana Barrier</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{MAG} + {CHA} v. 2 * {Spell: Force}</dice>
+		<limit>{Astral}</limit>
+		<bonusstring>On success, pass through the barrier, and you may bring one magically-active entity with you per net hit.</bonusstring>
+	  </test>
+      <source>SR5</source>
+      <page>312</page>
+    </action>
+	<!-- End Region -->
+	<!-- Region Misc. Actions -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hide Gear (No Pat-Down)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Palming} v. {INT} + {Max: {Perception} or {Palming}} + {Target: {Gear: Concealability}}</dice>
+		<limit>{Physical}</limit>
+		<defenselimit>{Mental}</defenselimit>
+	  </test>
+      <source>SR5</source>
+      <page>419</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Hide Gear (Pat-Down)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Palming} v. {Max: {INT} or {AGI}} + {Max: {Perception} or {Palming}} + {If: {Target: {Gear: Concealability}} gte 0; Then: {2 * {Target: {Gear: Concealability}}}; Else: {{Target: {Gear: Concealability}} / 2}}</dice>
+		<limit>{Physical}</limit>
+		<defenselimit>{Max: {Physical} or {Mental}}</defenselimit>
+	  </test>
+      <source>SR5</source>
+      <page>419</page>
+    </action>
+	<!-- End Region -->
+	<!-- End Region -->
+	<!-- Region R&G -->
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Aimed Burst</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{Action: Fire Long Burst} v. {Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>+1 DV. Fires 3 shots instead of 6.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>119</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Ballestra</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>+1 Reach. After action, -1 to all Defense tests until next action phase and cannot use Active Defense techniques until next action phase.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>119</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Brain Blaster</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{Action: Fire Full-Auto Complex} v. {Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>+2 DV. Fires 6 shots instead of 10.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>119</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Clinch</name>
+      <type>Simple</type>
+	  <requireunlock />
+	  <test>
+		<dice>{AGI} + {Gymnastics} v. {REA} + {INT}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, gain Superior Position and cannot move far away from target.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>119</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Double Tap</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{Action: Fire Semi-Auto Burst} v. {Ranged Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>+1 DV. Fires 2 shots instead of 3.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>120</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Escape (Clinch)</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{STR} + {Unarmed Combat} v. {Threshold: {Action: Clinch}}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, break out of Clinch.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>120</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Enhanced Suppresion</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>Identical to {Action: Suppressive Fire} with a narrower AoE, but targets cannot use {Action: Drop Prone} or {Action: Hit the Dirt}.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>120</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Finishing Move</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <edgecost>1</edgecost>
+	  <test>
+		<dice>{Action: Melee Attack} + 2 v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>Can only be performed once per Combat Turn.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>120</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Flechette Suppressive Fire</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>Requires flechette ammo type. Identical to {Action: Enhanced Suppresion}, but also get modifiers per tables on RG 121.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>120</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Flying Kick</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} + 1 v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>+1 Reach. On fail, -1 to all Defense tests until next action phase.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>121</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Full Offense</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{Action: Melee Attack} + 2 v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>After action, cannot use any Defensive Interrupt actions until next action phase.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>121</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Half Sword</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Limit}</limit>
+		<bonusstring>Extra AP -2. On fail, -2 to next action (not Defense tests) and cannot use {Action: Parry} or {Action: Block} until next action phase. Requires Ready Weapon before next attack. Requires both hands.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>121</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Haymaker</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense} + 2</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>+1 DV.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>121</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Herding</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense} + 2</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Moves opponent 1m/hit instead of dealing damage, up to maximum walking rate.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>121</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Iaijutsu</name>
+      <type>Simple</type>
+	  <requireunlock />
+	  <test>
+		<dice>{REA} + {Weapon: Skill} v. {Threshold: {Weapon: Quick Draw Threshold}}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, can make {Action: Melee Attack} with a Simple Action for that action phase.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Kip-Up</name>
+      <type>Simple</type>
+	  <requireunlock />
+	  <test>
+		<dice>{AGI} + {Gymnastics} v. {Threshold: 3}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, can immediately make {Action: Melee Attack} against a nearby target. On fail, remain prone.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Playing Possum (Con)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{CHA} + {Con} v. {CHA} + {Con}</dice>
+		<limit>{Social}</limit>
+		<bonusstring>Wound penalties act as bonus instead of penalty for this action. Net hits become {Perception} threshold for target to avoid being caught unaware.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Playing Possum (Performance)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{CHA} + {Performance} v. {CHA} + {WIL}</dice>
+		<limit>{Social}</limit>
+		<bonusstring>Wound penalties act as bonus instead of penalty for this action. Net hits become {Perception} threshold for target to avoid being caught unaware.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Pouncing Dragon</name>
+      <type>Complex</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>+2 DV. Requires Superior Position. After action, lose Superior Position.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Pre-Emptive Block</name>
+      <type>Free</type>
+	  <initiativecost>5</initiativecost>
+	  <specname>Blocking</specname>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Unarmed Combat}</dicebonus>
+		  <addlimit>{Physical}</addlimit>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Pre-Emptive Dodge</name>
+      <type>Free</type>
+	  <initiativecost>5</initiativecost>
+	  <specname>Dodging</specname>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Gymnastics}</dicebonus>
+		  <addlimit>{Physical}</addlimit>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Pre-Emptive Parry</name>
+      <type>Free</type>
+	  <initiativecost>5</initiativecost>
+	  <specname>Parrying</specname>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Weapon: Skill}</dicebonus>
+		  <addlimit>{Weapon: Accuracy}</addlimit>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>122</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Push (Simple)</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, target pushed out of reach. Cannot be in Grapple or Clinch.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Push (Intercept)</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, target pushed out of reach. Cannot be in Grapple or Clinch.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Shove</name>
+      <type>Simple</type>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, if {STR} + net hits exceeds {Target: {Physical}}, target can be pushed. On fail, fall prone. Must be running at target.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sacrifice Move</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, if {{STR} + {BOD}} + net hits exceeds {Target: {Physical}}, fall prone, and target is pushed and falls prone. On fail, fall prone. Must be running at target.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reading the Defense</name>
+      <type>Complex</type>
+	  <test>
+		<dice>{INT} + {Weapon: Skill} v. {Threshold: 3}</dice>
+		<limit>{Mental}</limit>
+		<bonusstring>On success, +3 dice to next {Action: Melee Attack} against target. On fail, -1 die to next {Action: Melee Attack} against target.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Throw Person (Simple)</name>
+      <type>Simple</type>
+	  <requireunlock />
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Require Clinch or Subduing against target. On success, if {STR} + net hits exceeds {Target: {Physical}}, target can be thrown. On fail, target escapes Clinch or Subduing.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Throw Person (Interrupt)</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Require Clinch or Subduing against target. On success, if {STR} + net hits exceeds {Target: {Physical}}, target can be thrown. On fail, target escapes Clinch or Subduing.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>123</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Counterstrike</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>7</initiativecost>
+	  <test>
+		<dice>{REA} + {Unarmed Combat} v. {Action: Melee Attack}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, avoid attack and target takes damage. On fail, take damage as normal.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>124</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Dive For Cover</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Go prone behind any nearby cover within 4m.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>124</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reversal (Clinch)</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>7</initiativecost>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Threshold: {Action: Clinch}}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Requires being in Clinch from target. On success, reverse positions in Clinch.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>124</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Reversal (Subduing)</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>7</initiativecost>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Threshold: {Action: Subduing}}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Requires being in Subduing from target. On success, reverse positions in Subduing.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>124</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Right Back at Ya!</name>
+      <type>Interrupt</type>
+	  <initiativecost>10</initiativecost>
+	  <test>
+		<dice>{AGI} v. {Threshold: 2}</dice>
+		<bonusstring>On success, perform {Action: Throw Weapon (Grenade)} at -2 penalty to throw grenade back. Bad things happen if grenade triggers before throw.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>124</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Run for Your Life / Dive on the Grenade</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Can immediately move away from grenade or indirect, combat, AoE spell.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>125</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Sacrifice Throw</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <test>
+		<dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>Require Clinch or Subduing against target. On success, if {{STR} + {BOD}} + net hits exceeds {Target: {Physical}}, become prone and target can be thrown. On fail, take damage and become prone.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>125</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Riposte</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>7</initiativecost>
+	  <test>
+		<dice>{REA} + {Weapon: Skill} v. {Action: Melee Attack}</dice>
+		<limit>{Weapon: Accuracy}</limit>
+		<bonusstring>On success, avoid attack and target takes damage. On fail, take damage with +2 DV extra.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>125</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Protecting the Principle</name>
+      <type>Interrupt</type>
+	  <initiativecost>5</initiativecost>
+	  <edgecost>1</edgecost>
+	  <test>
+		<dice>None</dice>
+		<bonusstring>Move up to 2m and take damage from an attack intended at a target. Can only be used once per combat turn.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>125</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Shadow Block v. Dodge</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{AGI} + {Gymnastics} v. {Action: Dodge}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, negate hits on target's {Action: Dodge} by net hits.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>125</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Shadow Block v. Evade</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>5</initiativecost>
+	  <test>
+		<dice>{AGI} + {Gymnastics} v. {Action: Evade}</dice>
+		<limit>{Physical}</limit>
+		<bonusstring>On success, negate hits on target's {Action: Evade} by net hits.</bonusstring>
+	  </test>
+      <source>RG</source>
+      <page>125</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Acrobatic Defender</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Gymnastics}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Ranged Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Gymnastics}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Suppressive Fire Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Gymnastics}</dicebonus>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>127</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Agile Defender</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{AGI}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Ranged Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{AGI}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Suppressive Fire Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{AGI}</dicebonus>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>127</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Perceptive Defender</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Perception}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Ranged Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Perception}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Suppressive Fire Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{Perception}</dicebonus>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>127</page>
+    </action>
+	<action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Too Pretty to Hit</name>
+      <type>Interrupt</type>
+	  <requireunlock />
+	  <initiativecost>10</initiativecost>
+	  <boosts>
+		<boost>
+		  <name>Melee Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{CHA}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Ranged Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{CHA}</dicebonus>
+		<boost>
+		<boost>
+		  <name>Suppressive Fire Defense</name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>{CHA}</dicebonus>
+		<boost>
+	  </boosts>
+      <source>RG</source>
+      <page>127</page>
+    </action>
+	<!-- End Region -->
+    <action>
+      <id>295d4984-3449-41d0-a366-253aca494dfb</id>
+      <name>Full Defense</name>
+      <type>Interrupt</type>
+	  <initiativecost>10</initiativecost>
+	  <edgecost>0</edgecost>
+	  <boosts>
+		<boost>
+		  <name></name>
+		  <duration>Rest of Turn</duration>
+		  <dicebonus>WIL</dicebonus>
+		  <bonusstring></bonusstring>
+		<boost>
+	  </boosts>
+	  <test>
+		<dice></dice>
+		<limit></limit>
+		<bonusstring></bonusstring>
+		<penaltyonfail></penaltyonfail>
+	  </test>
+      <source>SR5</source>
+      <page>168</page>
+    </action>
+  </actions>
+</chummer>

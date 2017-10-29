@@ -29,13 +29,13 @@ namespace Chummer
         private string _strSelectedVehicle = string.Empty;
         private bool _blnUsedVehicle = false;
         private string _strUsedAvail = string.Empty;
-        private int _intUsedCost = 0;
-        private int _intMarkup = 0;
+        private decimal _decUsedCost = 0;
+        private decimal _decMarkup = 0;
 
         private bool _blnAddAgain = false;
         private static string _strSelectCategory = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         private List<ListItem> _lstCategory = new List<ListItem>();
@@ -45,12 +45,14 @@ namespace Chummer
         public frmSelectVehicle(Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = blnCareer;
             nudMarkup.Visible = blnCareer;
             lblMarkupPercentLabel.Visible = blnCareer;
             _objCharacter = objCharacter;
             MoveControls();
+            // Load the Vehicle information.
+            _objXmlDocument = XmlManager.Load("vehicles.xml");
         }
 
         private void frmSelectVehicle_Load(object sender, EventArgs e)
@@ -61,11 +63,8 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.Options.Availability.ToString());
+                    _objCharacter.MaximumAvailability.ToString());
             chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
-
-            // Load the Vehicle information.
-            _objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
 
             // Populate the Vehicle Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -76,6 +75,17 @@ namespace Chummer
                 objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
                 _lstCategory.Add(objItem);
             }
+            SortListItem objSort = new SortListItem();
+            _lstCategory.Sort(objSort.Compare);
+
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
+
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
@@ -96,17 +106,40 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+            {
+                txtSearch_TextChanged(sender, e);
+                return;
+            }
             // Update the list of Vehicles based on the selected Category.
             List<ListItem> lstVehicles = new List<ListItem>();
 
+            string strSelectedCategoryPath = string.Empty;
+            // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
+            if (cboCategory.SelectedValue?.ToString() != "Show All")
+            {
+                strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
+            }
+            else
+            {
+                foreach (object objListItem in cboCategory.Items)
+                {
+                    ListItem objItem = (ListItem)objListItem;
+                    if (!string.IsNullOrEmpty(objItem.Value))
+                        strSelectedCategoryPath += "category = \"" + objItem.Value + "\" or ";
+                }
+                if (!string.IsNullOrEmpty(strSelectedCategoryPath))
+                {
+                    // Cut off the trailing " or " and replace it with a trailing "and"
+                    strSelectedCategoryPath = "(" + strSelectedCategoryPath.Substring(0, strSelectedCategoryPath.Length - 4) + ") and ";
+                }
+            }
             // Retrieve the list of Vehicles for the selected Category.
-            XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+            XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
                 {
-                    if (objXmlVehicle["hidden"] != null)
-                        continue;
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
                     objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
                     lstVehicles.Add(objItem);
@@ -146,15 +179,33 @@ namespace Chummer
                 return;
             }
 
+            string strSelectedCategoryPath = string.Empty;
+            // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            {
+                strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
+            }
+            else
+            {
+                foreach (object objListItem in cboCategory.Items)
+                {
+                    ListItem objItem = (ListItem)objListItem;
+                    if (!string.IsNullOrEmpty(objItem.Value))
+                        strSelectedCategoryPath += "category = \"" + objItem.Value + "\" or ";
+                }
+                if (!string.IsNullOrEmpty(strSelectedCategoryPath))
+                {
+                    // Cut off the trailing " or " and replace it with a trailing "and"
+                    strSelectedCategoryPath = "(" + strSelectedCategoryPath.Substring(0, strSelectedCategoryPath.Length - 4) + ") and ";
+                }
+            }
             // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
+            string strSearch = "/chummer/vehicles/vehicle[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
 
             XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes(strSearch);
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (objXmlVehicle["hidden"] != null)
-                    continue;
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
@@ -298,11 +349,11 @@ namespace Chummer
         /// <summary>
         /// Cost of the Vehicle's cost by when it is used.
         /// </summary>
-        public int UsedCost
+        public decimal UsedCost
         {
             get
             {
-                return _intUsedCost;
+                return _decUsedCost;
             }
         }
 
@@ -331,11 +382,11 @@ namespace Chummer
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup
+        public decimal Markup
         {
             get
             {
-                return _intMarkup;
+                return _decMarkup;
             }
         }
         #endregion
@@ -349,7 +400,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(lstVehicle.Text))
                 return;
 
-            double dblCostModifier = 1.0;
+            decimal decCostModifier = 1.0m;
 
             // Retireve the information for the selected Vehicle.
             XmlNode objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + lstVehicle.SelectedValue + "\"]");
@@ -357,7 +408,7 @@ namespace Chummer
                 return;
 
             if (chkUsedVehicle.Checked)
-                dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.InvariantCultureInfo);
+                decCostModifier = 1.0m - (nudUsedVehicleDiscount.Value / 100.0m);
 
             lblVehicleHandling.Text = objXmlVehicle["handling"]?.InnerText;
             lblVehicleAccel.Text = objXmlVehicle["accel"]?.InnerText;
@@ -368,28 +419,28 @@ namespace Chummer
             lblVehicleSeats.Text = objXmlVehicle["seats"]?.InnerText;
             lblVehicleSensor.Text = objXmlVehicle["sensor"]?.InnerText;
 
-            string strAvail = objXmlVehicle["avail"]?.InnerText;
+            string strAvail = objXmlVehicle["avail"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strAvail))
             {
                 if (chkUsedVehicle.Checked)
                 {
                     string strSuffix = string.Empty;
-                    if (strAvail.Contains("R") || strAvail.Contains("F"))
+                    if (strAvail.EndsWith("R") || strAvail.EndsWith("F"))
                     {
                         strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-                        strAvail = strAvail.Replace(strSuffix, string.Empty);
+                        // Translate the Avail string.
+                        if (strSuffix == "R")
+                            strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        else if (strSuffix == "F")
+                            strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        strAvail = strAvail.Substring(0, strAvail.Length - 1);
                     }
                     int intTmp;
                     if (int.TryParse(strAvail, out intTmp))
                         strAvail = (intTmp + 4).ToString() + strSuffix;
                 }
-                lblVehicleAvail.Text = strAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"))
-                        .Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
             }
-            else
-            {
-                lblVehicleAvail.Text = string.Empty;
-            }
+            lblVehicleAvail.Text = strAvail;
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
             if (objXmlVehicle["cost"]?.InnerText.StartsWith("Variable") == true)
@@ -399,25 +450,23 @@ namespace Chummer
             }
             else
             {
-                int intCost = 0;
-                objXmlVehicle.TryGetInt32FieldQuickly("cost", ref intCost);
-
-                // Apply the markup if applicable.
-                double dblCost = Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * dblCostModifier;
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.CultureInfo) / 100.0);
-
-                if (chkBlackMarketDiscount.Checked)
+                decimal decCost = 0.0m;
+                if (!chkFreeItem.Checked)
                 {
-                    dblCost *= 0.90;
+                    objXmlVehicle.TryGetDecFieldQuickly("cost", ref decCost);
+
+                    // Apply the markup if applicable.
+                    decCost *= decCostModifier;
+                    decCost *= 1 + (nudMarkup.Value / 100.0m);
+
+                    if (chkBlackMarketDiscount.Checked)
+                    {
+                        decCost *= 0.9m;
+                    }
                 }
 
-                intCost = Convert.ToInt32(dblCost);
-
-                if (chkFreeItem.Checked)
-                    intCost = 0;
-
-                lblVehicleCost.Text = $"{intCost:###,###,##0¥}";
-                lblTest.Text = _objCharacter.AvailTest(intCost, lblVehicleAvail.Text);
+                lblVehicleCost.Text = $"{decCost:###,###,##0.##¥}";
+                lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
             }
 
 
@@ -427,7 +476,7 @@ namespace Chummer
                 strPage = objXmlVehicle["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         /// <summary>
@@ -441,19 +490,19 @@ namespace Chummer
 
             if (chkUsedVehicle.Checked)
             {
-                double dblCostModifier = Convert.ToDouble(1 - (nudUsedVehicleDiscount.Value / 100), GlobalOptions.CultureInfo);
-                int intCost = Convert.ToInt32(objXmlVehicle["cost"]?.InnerText);
-                intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.InvariantCultureInfo) * dblCostModifier));
+                decimal decCostModifier = 1 - (nudUsedVehicleDiscount.Value / 100.0m);
+                decimal decCost = Convert.ToDecimal(objXmlVehicle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                decCost *= decCostModifier;
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.Instance.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.Instance.GetString("String_AvailForbidden"), "F");
-                _intUsedCost = intCost;
+                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.GetString("String_AvailForbidden"), "F");
+                _decUsedCost = decCost;
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
             _strSelectCategory = objXmlVehicle["category"]?.InnerText;
             _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
-            _intMarkup = Convert.ToInt32(nudMarkup.Value);
+            _decMarkup = nudMarkup.Value;
 
             DialogResult = DialogResult.OK;
         }
@@ -503,7 +552,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }
