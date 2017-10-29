@@ -118,6 +118,7 @@ namespace Chummer.UI.Options.ControlGenerators
 
             private void UiElementOnSelectedIndexChanged(object sender, EventArgs eventArgs)
             {
+                //TODO: This crashes with dropdowns and (scroll?)
                 _backingField.Value = _items[_uiElement.SelectedIndex].Value;
             }
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -20,311 +22,374 @@ namespace Chummer.Backend.Options
      */
     public class TabAlignmentGroupLayoutProvider : IGroupLayoutProvider
     {
-        private class LineInfo
+        private class UserLine
         {
-            public int Parts { get; set; }
-            public int ControlIndex { get; set; } = -1;
+            public List<DisplayBlock> DisplayBlocks { get; } = new List<DisplayBlock>() {new DisplayBlock()};
         }
+
+        private class DisplayBlock
+        {
+            public List<TextOrControl> AtomicParts { get; } = new List<TextOrControl>();
+        }
+
+        private class TabLayoutGroupComputation : LayoutGroupComputation
+        {
+            public List<UserLine> UserLines { get; }
+            public List<int> MaxSizeOfBlockAtIndex { get; }
+            public Dictionary<string, RectangleF> StringPieces { get; }
+
+            public TabLayoutGroupComputation(List<UserLine> userLines, List<int> maxSizeOfBlockAtIndex, Dictionary<string, RectangleF> stringPieces)
+            {
+                UserLines = userLines;
+                MaxSizeOfBlockAtIndex = maxSizeOfBlockAtIndex;
+                StringPieces = stringPieces;
+            }
+        }
+
+        //TODO: This is a sum type and should use some shared implementation, but im not aware of any implementation that is available atm
+        [DebuggerDisplay("{(IsControl ? \"Control\" : _text)}")]
+        private class TextOrControl
+        {
+            /// <summary>
+            /// If this is set, a tooltip has been active over every item before it and on this one. 
+            /// </summary>
+            public string EndOfToolTipHere { get; set; }
+            public bool IsControl { get; }
+            private Rectangle _control;
+            private string _text;
+
+            public Rectangle Control
+            {
+                get
+                {
+                    if (IsControl) return _control;
+                    throw new InvalidOperationException();
+                }
+            }
+
+            public string Text
+            {
+                get
+                {
+                    if (!IsControl) return _text;
+                    throw new InvalidOperationException();
+                }
+            }
+
+            public TextOrControl(Rectangle sizeOfControl)
+            {
+                IsControl = true;
+                _control = sizeOfControl;
+            }
+
+            public TextOrControl(string text)
+            {
+                IsControl = false;
+                _text = text;
+            }
+        }
+
+        private readonly string[] _split = { "\\t" };
+        public LayoutGroupComputation ComputeLayoutGroup(Graphics willBeRenderedOn, List<LayoutLineInfo> contents, ref object crossGroupSharedData)
+        {
+            //Input (contents) is organized in lines. In most cases we are also working on lines, but not always, and even then, different lines. 
+            //First step is to convert it to lines user sees, composed of displayblocks, itself composed of text and controls
+
+            //All strings we have seen (and will render)
+            HashSet<string> stringPieces = new HashSet<string>();
+            //List of all lines
+            List<UserLine> userLines = new List<UserLine>(contents.Count);
+            //Current working line
+            UserLine currentUserLine = new UserLine();
+
+            foreach (LayoutLineInfo layoutLine in contents)
+            {
+
+                string layoutString = layoutLine.LayoutString;
+
+                //below should never run, but prevents bad things happening if layoutLine has multiple {} in it
+                if (layoutString.IndexOf("{}", StringComparison.Ordinal) != layoutString.LastIndexOf("{}", StringComparison.Ordinal))
+                {
+                    Utils.BreakIfDebug();
+                    string[] parts = layoutString.Split(new[] {"{}"}, StringSplitOptions.None);
+
+                    layoutString = parts[0] + "{}" + string.Join(null, parts.Skip(1));
+
+                }
+
+                //HI THERE: IF YOUR STRING GETS INTERPRENTED WRONG THIS IS MOST LIKELY YOUR GOAT. IT IS PRIMITIVE!
+                string[] alignmentPieces = layoutString.TrimEnd('\\').Split(_split, StringSplitOptions.None);
+
+
+                //Go over every text piece. Those will all be converted to displayBlocks
+                for (int index = 0; index < alignmentPieces.Length; index++)
+                {
+                    string alignmentPiece = alignmentPieces[index];
+                    int indexOfControl = alignmentPiece.IndexOf("{}", StringComparison.Ordinal);
+
+                    //If the displayblock contains one {} it has a control.
+                    //But it might also just be a piece of text
+                    //If it contains a {}, the displayBlock should have the text in front and back(if any) added
+                    //Otherwise just the text
+
+                    //We are not creating the displayBlock here as it can come from a few things. One is implicit part of the UserLine, and we create a new one _ONLY_ if we move to the next
+                    //This allows us to do weird shit like glue lines together to create fancy single line options
+                    //TODO: EDGE CASE?: NO TEXT
+                     
+                    if (indexOfControl != -1)
+                    {
+                        //This would be a good candidate for code to extract and unit test
+
+                        //if {} is in front, don't add leading text
+                        if (indexOfControl != 0)
+                        {
+                            string str = alignmentPiece.Substring(0, indexOfControl);
+                            stringPieces.Add(str);
+                            currentUserLine.DisplayBlocks.Last()
+                                .AtomicParts.Add(new TextOrControl(str));
+                        }
+
+                        //Add control in place of {}
+                        currentUserLine.DisplayBlocks.Last().AtomicParts.Add(new TextOrControl(layoutLine.ControlRectangle));
+
+                        //if {} is in back, don't add trailing text
+                        if (indexOfControl != alignmentPiece.Length - 2)
+                        {
+                            string str = alignmentPiece.Substring(indexOfControl + 2);
+                            stringPieces.Add(str);
+                            currentUserLine.DisplayBlocks.Last()
+                                .AtomicParts.Add(new TextOrControl(str));
+                        }
+                        
+                    }
+                    else
+                    {
+                        stringPieces.Add(alignmentPiece);
+                        currentUserLine.DisplayBlocks.Last().AtomicParts.Add(new TextOrControl(alignmentPiece));
+                    }
+
+                    //If this was not the last DisplayBlock, add a new displayBlock
+                    if (index != alignmentPieces.Length - 1)
+                    {
+                        currentUserLine.DisplayBlocks.Add(new DisplayBlock());
+                    }
+                }
+
+                currentUserLine.DisplayBlocks.Last().AtomicParts.Last().EndOfToolTipHere = layoutLine.ToolTip;
+
+                //Normaly we start a new line, but if string ends with \ we glue the next line on here
+                if (!layoutLine.LayoutString.EndsWith("\\"))
+                {
+                    userLines.Add(currentUserLine);
+                    currentUserLine = new UserLine();
+                }
+            }
+
+            //We now have a load of lines. Goal is now to compute how large text on said lines is.
+
+            //First step is to measure the size of all text
+            Dictionary<string, RectangleF> textSizes = ComputeTextSize(willBeRenderedOn, stringPieces.ToList());
+
+
+            //We can now compute how big each displayblock is. Do this, and compute the size of the largest first block, second block, ect is
+            //To ensure consistency over multiple groups, save it in crossGroupSharedData
+            List<int> maxSizeOfBlockAtIndex = crossGroupSharedData as List<int> ?? new List<int>();
+
+            foreach (UserLine line in userLines)
+            {
+                for (int i = 0; i < line.DisplayBlocks.Count; i++)
+                {
+                    int sizeOfDispayBlock = ComputeSizeOfDisplayBlock(textSizes, line.DisplayBlocks[i]);
+
+
+                    if (maxSizeOfBlockAtIndex.Count > i)
+                    {
+                        maxSizeOfBlockAtIndex[i] = Math.Max(maxSizeOfBlockAtIndex[i], sizeOfDispayBlock);
+                    }
+                    else
+                    {
+                        maxSizeOfBlockAtIndex.Add(sizeOfDispayBlock);
+                    }
+                }
+            }
+
+            crossGroupSharedData = maxSizeOfBlockAtIndex;
+
+            return new TabLayoutGroupComputation(userLines, maxSizeOfBlockAtIndex, textSizes);
+        }
+
+        public RenderedLayoutGroup RenderLayoutGroup(Graphics willBeRenderedOn, LayoutGroupComputation preComputedLayoutGroup,
+            object crossGroupSharedData = null)
+        {
+            TabLayoutGroupComputation preComputed = preComputedLayoutGroup as TabLayoutGroupComputation;
+            if(preComputed == null) throw new ArgumentException("preComputedLayoutGroup needs to have been provided by the same IGroupLayoutProvider and not be null");
+
+
+            //Currently only tracking how big each displayBlock is. Now compute where each displayBlock will start
+            int usedSize = 0;
+            List<int> displayBlockStartAt = new List<int>(preComputed.MaxSizeOfBlockAtIndex.Count);
+            foreach (int blockSize in preComputed.MaxSizeOfBlockAtIndex)
+            {
+                displayBlockStartAt.Add(usedSize);
+                usedSize += blockSize;
+            }
+
+            List<Point> controlLocations = new List<Point>();
+            List<RenderedLayoutGroup.TextRenderInfo> textLocations = new List<RenderedLayoutGroup.TextRenderInfo>();
+            List<RenderedLayoutGroup.ToolTipData> toolTips = new List<RenderedLayoutGroup.ToolTipData>();
+
+            int nextLineBeginsAt = 0;
+            int toolTipBeginsAt = 0;
+            foreach (UserLine userLine in preComputed.UserLines)
+            {
+                //if (userLine.DisplayBlocks.SelectMany(x => x.AtomicParts).Count(x => x.IsControl) > 1)
+                //    Debugger.Break();
+                
+                int lineBottom = nextLineBeginsAt;
+                for (int index = 0; index < userLine.DisplayBlocks.Count; index++)
+                {
+                    DisplayBlock displayBlock = userLine.DisplayBlocks[index];
+                    int elementStartingPoint = displayBlockStartAt[index];
+                    
+                    foreach (TextOrControl textOrControl in displayBlock.AtomicParts)
+                    {
+                        if (textOrControl.IsControl)
+                        {
+                            controlLocations.Add(
+                                new Point(
+                                    textOrControl.Control.X + elementStartingPoint + LayoutOptions.ControlMargin,
+                                    textOrControl.Control.Y + nextLineBeginsAt));  //TODO: This line probably lacks something, controls could once move up or down a little
+                            elementStartingPoint += LayoutOptions.ControlMargin + textOrControl.Control.Width;
+
+                            lineBottom = Math.Max(lineBottom, nextLineBeginsAt + textOrControl.Control.Height);
+                        }
+                        else
+                        {
+                            var size = ToSize(preComputed.StringPieces[textOrControl.Text]);
+                            textLocations.Add(new RenderedLayoutGroup.TextRenderInfo
+                            {
+                                Text = textOrControl.Text,
+                                Size = size,
+                                Location = new Point(elementStartingPoint, nextLineBeginsAt),
+                                Style = FontStyle.Regular //TODO: Does this get used? Do i want to support it?
+                            });
+
+                            elementStartingPoint += size.Width;
+                            lineBottom = Math.Max(lineBottom, nextLineBeginsAt + size.Height);
+                        }
+
+                        if (textOrControl.EndOfToolTipHere != null)
+                        {
+                            toolTips.Add(
+                                new RenderedLayoutGroup.ToolTipData(
+                                    textOrControl.EndOfToolTipHere,
+                                    new Rectangle(
+                                        toolTipBeginsAt, 
+                                        nextLineBeginsAt, 
+                                        elementStartingPoint - toolTipBeginsAt,
+                                        lineBottom - nextLineBeginsAt)));
+                        }
+                    }
+                }
+
+                nextLineBeginsAt = lineBottom + LayoutOptions.Linespacing;
+            }
+            
+
+            return new RenderedLayoutGroup()
+            {
+                ControlLocations = controlLocations,
+                TextLocations = textLocations,
+                ToolTips = toolTips,
+                Width = usedSize,
+                Height = nextLineBeginsAt,
+            }; 
+        }
+
+        Dictionary<string, RectangleF> ComputeTextSize(Graphics graphics, List<string> lines)
+        {
+            //TODO: Might be able to make this global, and this part is slowish
+            //Compute text size of every line
+            //It might be possible to do this in a better(faster while still accurate) way, but we ask the Graphics object how large strings will be
+
+            //Only hazzle is the Graphics object is slow.
+            //We try to do it faster by batching (Nobody actually measured if batching is faster....)
+            //But the graphics object will at max accept a batchsize of 32 or it will crap itself
+
+            //So the following code is just an elaborate way of calling Graphics.MeasureText in big chunks
+
+            Dictionary<string, RectangleF> resultDictionary = new Dictionary<string, RectangleF>(lines.Count);
+            List<CharacterRange> ranges = new List<CharacterRange>(32);
+            var format = new StringFormat();
+
+            for (int start = 0; start < lines.Count; start += 32)
+            {
+                int end = Math.Min(lines.Count, start + 32);
+
+                //Optimization, compute lenght of strings that will be added
+                StringBuilder combinedText = new StringBuilder();
+                
+
+                for (int i = start; i < end; i++)
+                {
+                    string line = lines[i];
+                    ranges.Add(new CharacterRange(combinedText.Length, line.Length));
+                    combinedText.AppendLine(line);
+                }
+                combinedText.Length--; //Remove last newline
+
+                format.SetMeasurableCharacterRanges(ranges.ToArray());
+                Region[] regions = graphics.MeasureCharacterRanges(
+                    combinedText.ToString(), 
+                    LayoutOptions.Font,
+                    new RectangleF(0, 0, float.MaxValue, float.MaxValue), 
+                    format);
+
+                for (int i = start; i < end; i++)
+                {
+                    string line = lines[i];
+                    Region region = regions[i - start];
+                    resultDictionary.Add(line, region.GetBounds(graphics));
+                }
+
+                ranges.Clear();
+            }
+
+            return resultDictionary;
+        }
+
+        int ComputeSizeOfDisplayBlock(Dictionary<string, RectangleF> testSizes, DisplayBlock displayBlock)
+        {
+            int sizeSoFar = 0;
+            foreach (TextOrControl atomicPart in displayBlock.AtomicParts)
+            {
+                if (atomicPart.IsControl)
+                {
+                    sizeSoFar += atomicPart.Control.Width + (LayoutOptions.ControlMargin*2);
+                }
+                else
+                {
+                    sizeSoFar += (int) Math.Ceiling(testSizes[atomicPart.Text].Width);
+                }
+            }
+            return sizeSoFar;
+        }
+
         //The layout procedure is rather simple (in theory).  It interprents multiple \t inside text and makes sure every
         //tab accros multiple lines share same end
         //Basically the same as normal text tab, but instead of having a defined lenght in spaces, it findes
         //the minimum possible accross all, without exeeding it
         //In other words, after every \t the next following character will align on all lines
 
-
         /// <summary>
         /// Various tweakable settings that can be changed
         /// </summary>
         public LayoutOptionsContainer LayoutOptions { get; set; } = new LayoutOptionsContainer();
-
-        public object ComputeLayoutSpacing(Graphics rendergarget, List<LayoutLineInfo> contents,
-            List<int> additonalConformTarget = null)
-        {
-            //Go over every line and calculate the lenght of every piece
-            //    (Lenght is lenght of text, plausibly with the lenght of a control if {} is found)
-            //    Some batching logic is included
-
-            List<int> alignmentLenghts = additonalConformTarget ?? new List<int>();
-            StringBuilder builder = new StringBuilder();
-            List<LineInfo> controlIndex = new List<LineInfo>();
-            List<CharacterRange> ranges = new List<CharacterRange>();
-            List<Region> regions = new List<Region>();
-            StringFormat format = new StringFormat();
-            int count;
-            foreach (LayoutLineInfo line in contents)
-            {
-                string[] alignmentPieces = line.LayoutString.TrimEnd('\\').Split(new[] {"\\t"}, StringSplitOptions.None);
-                LineInfo currentLine = new LineInfo
-                {
-                    Parts = alignmentPieces.Length
-                };
-//Console.WriteLine("Working on big piece \"{0}\" {1}", line.LayoutString, regions.Count + ranges.Count);
-                for (int i = 0; i < alignmentPieces.Length; i++)
-                {
-//                    Console.Write("Working on part \"{0}\"", alignmentPieces[i]);
-                    if (alignmentPieces[i].Contains("{}"))
-                    {
-//                        Console.WriteLine(" double");
-                        currentLine.ControlIndex = i + 1;
-                        currentLine.Parts++;
-                        string[] sides = alignmentPieces[i].Split(split, 2, StringSplitOptions.None);
-
-                        ranges.Add(new CharacterRange(builder.Length, sides[0].Length));
-                        builder.Append(sides[0]);
-                        //builder.Append('\n');
-                        UpdateRegions(builder, regions, ranges, format, rendergarget);
-
-                        ranges.Add(new CharacterRange(builder.Length, sides[1].Length));
-                        builder.Append(sides[1]);
-                        //builder.Append('\n');
-                        UpdateRegions(builder, regions, ranges, format, rendergarget);
-                    }
-                    else
-                    {
-//                        Console.WriteLine(" single");
-                        ranges.Add(new CharacterRange(builder.Length, alignmentPieces[i].Length));
-                        builder.Append(alignmentPieces[i]);
-                        //builder.Append('\n');
-                        UpdateRegions(builder, regions, ranges, format, rendergarget);
-                    }
-
-                }
-                controlIndex.Add(currentLine);
-            }
-
-
-            UpdateRegions(builder, regions, ranges, format, rendergarget, force: true);
-
-
-            //TODO: If layoutstring ends with '\' and the following contains '\t' this will break
-            //It needs to move to the next line (j++) without resetting i, then updating the last written 
-            //element with current size + size of new element, then move for the next elements as it was one long line.
-
-            //Keeps the mimumum size required for each tab.
-            //Loop over every line in the layout and calculate how big elements need to be
-            int regionCount = 0;
-            for (int j = 0; j < contents.Count; j++)
-            {
-                LayoutLineInfo line = contents[j];
-                string[] alignmentPieces = line.LayoutString.Split(new[] {"\\t"}, StringSplitOptions.None);
-                //For every aligntment piece (piece of text with \t before/after) find out how large it needs to be
-                //If a previous size requirement for that tab count is already found, take the biggest one
-                //Otherwise store a new one
-                for (int i = 0; i < alignmentPieces.Length; i++)
-                {
-                    RectangleF rect = regions[regionCount++].GetBounds(rendergarget);
-                    float size = rect.Width;
-                    if (alignmentPieces[i].Contains("{}") /*controlIndex[j].ControlIndex == 1 */)
-                    {
-                        size += line.ControlSize.Width + regions[regionCount++].GetBounds(rendergarget).Width;
-                    }
-                    if (alignmentLenghts.Count > i)
-                    {
-
-                        alignmentLenghts[i] = Math.Max(alignmentLenghts[i], (int) size);
-                    }
-                    else
-                    {
-                        alignmentLenghts.Add((int) size);
-                    }
-                }
-            }
-
-//            Console.WriteLine("Cache count = {0}", regions.Count);
-            return regions;
-        }
-
-        private void UpdateRegions(StringBuilder builder, List<Region> regions, List<CharacterRange> ranges,
-            StringFormat format, Graphics target, bool force = false)
-        {
-            if (ranges.Count >= 32 || force)
-            {
-                format.SetMeasurableCharacterRanges(ranges.ToArray());
-                var r = target.MeasureCharacterRanges(builder.ToString(), LayoutOptions.Font,
-                    new RectangleF(0, 0, float.MaxValue, float.MaxValue), format);
-                regions.AddRange(r);
-
-                //Console.WriteLine("=======REGIONS=======");
-                for (var index = 0; index < r.Length; index++)
-                {
-                    Region region = r[index];
-
-                    //Console.WriteLine($"({region.GetBounds(target).Width / ranges[index].Length :0000.00})\t{ranges[index].First},{ranges[index].Length}\"{builder.ToString(ranges[index].First, ranges[index].Length)}\"\t{region.GetBounds(target)}");
-                }
-
-                //Console.WriteLine("=====================");
-
-                builder.Clear();
-                ranges.Clear();
-            }
-        }
-
-        /// <summary>
-        /// Transforms a list of LayoutLineInfo that contains a size of a control element and supporting text into a
-        /// list of positions for the control elements and strings and positions for labels.
-        /// Supporting text can be broken down into smaller labels to make space for control elements inside the text,
-        /// or to align with other parts
-        /// </summary>
-        /// <param name="contents"></param>
-        /// <returns></returns>
-        public LayoutRenderInfo PerformLayout(Graphics renderGraphics, List<LayoutLineInfo> contents,
-            List<int> preComputedLayoutSpacing, object CachedCompute)
-        {
-            int cacheIndex = 0;
-            List<Region> cache = (List<Region>) CachedCompute;
-
-            Console.WriteLine("Cache count = {0}", cache.Count);
-            //Create the container with all return information
-            LayoutRenderInfo ret = new LayoutRenderInfo()
-            {
-                ControlLocations = new List<Point>(),
-                TextLocations = new List<TextRenderInfo>(),
-                ToolTips = new List<ToolTipData>()
-            };
-
-
-
-
-
-            //After previous loop alignmentLenghts contain the the size of each group.
-            //The following lines convert this to pixel offsets for each group
-
-            //First group should start at 0, not reservering a free space to house a duplicate for first group.
-            List<int> alignmentLenghts = new List<int> {0};
-            alignmentLenghts.AddRange(preComputedLayoutSpacing);
-            Console.WriteLine(string.Join(", ", alignmentLenghts));
-
-            //Then add the sum of all prievious elements to all elements, convering lenghts to starting indexes
-            for (int i = 1; i < alignmentLenghts.Count; i++)
-            {
-                alignmentLenghts[i] += alignmentLenghts[i - 1];
-//                Console.WriteLine($"[{i}] <- {alignmentLenghts[i]} added {alignmentLenghts[i - 1]}");
-            }
-
-            //Keeps track of widest line width
-            int lineMaxRight = 0;
-
-            //LineTop defines the top of the current line, lineButtom keeps track of how far down it goes
-            int lineTop = 0;
-            int lineBottom = 0;
-
-            //Perform the actual layout
-            int regionCount = 0;
-            int lineRight = 0;
-            int iext = 0;
-            for (int j = 0; j < contents.Count; j++)
-            {
-                LayoutLineInfo line = contents[j];
-                string[] alignmentPieces = line.LayoutString.TrimEnd('\\').Split(new[] {"\\t"}, StringSplitOptions.None);
-                bool controlRendered = false;
-                for (int i = 0; i < alignmentPieces.Length; i++)
-                {
-                    Size size = ToSize(cache[regionCount++].GetBounds(renderGraphics));
-
-                    if (!controlRendered && alignmentPieces[i].Contains("{}"))
-                    {
-                        string[] sides = alignmentPieces[i].Split(split, 2, StringSplitOptions.None);
-                        Size size2 = ToSize(cache[regionCount++].GetBounds(renderGraphics));
-                        TextRenderInfo tri = new TextRenderInfo
-                        {
-                            Location = new Point(GetAlignment(alignmentLenghts, i, iext, lineRight), lineTop),
-                            Size = size,
-                            Text = sides[0]
-                        };
-                        ret.TextLocations.Add(new TextRenderInfo
-                        {
-                            Location =
-                                new Point(
-                                    GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width + line.ControlSize.Width +
-                                    LayoutOptions.ControlMargin * 2, lineTop),
-                            Size = size2,
-                            Text = sides[1]
-                        });
-                        ret.TextLocations.Add(tri);
-                        ret.ControlLocations.Add(new Point(
-                            GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width + LayoutOptions.ControlMargin,
-                            lineTop + line.ControlOffset.Y));
-
-                        lineBottom = Math.Max(lineBottom,
-                            lineTop + Math.Max(size.Height,
-                                line.ControlSize.Height - Math.Min(0, line.ControlOffset.Y)));
-
-                        lineRight = GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width + line.ControlSize.Width +
-                                    LayoutOptions.ControlMargin * 2 + size2.Width;
-                        controlRendered = true;
-                    }
-                    else
-                    {
-                        TextRenderInfo tri = new TextRenderInfo
-                        {
-                            Location = new Point(GetAlignment(alignmentLenghts, i, iext, lineRight), lineTop),
-                            Size = size,
-                            Text = alignmentPieces[i]
-                        };
-                        ret.TextLocations.Add(tri);
-                        lineBottom = Math.Max(lineBottom, lineTop + size.Height);
-
-                        lineRight = GetAlignment(alignmentLenghts, i, iext, lineRight) + size.Width;
-                    }
-                }
-
-                if (!controlRendered)
-                {
-                    ret.ControlLocations.Add(new Point(lineRight + LayoutOptions.ControlMargin,
-                        lineTop + line.ControlOffset.Y));
-
-                    lineRight = lineRight + LayoutOptions.ControlMargin + line.ControlSize.Width;
-                }
-
-//                Console.WriteLine("EOL {0} -> {1}(+{2})", lineTop, lineBottom + LayoutOptions.Linespacing, (lineBottom + LayoutOptions.Linespacing) - lineTop);
-
-                if (line.ToolTip != null)
-                    ret.ToolTips.Add(new ToolTipData(line.ToolTip,
-                        new Rectangle(0, lineTop, lineRight, lineBottom - lineTop)));
-
-                if (line.LayoutString.EndsWith("\\"))
-                {
-                    iext = iext + alignmentPieces.Length;
-                    continue;
-                }
-                else iext = 0;
-                
-
-                lineMaxRight = Math.Max(lineMaxRight, lineRight);
-                lineTop = lineBottom + LayoutOptions.Linespacing;
-                lineRight = 0;
-            }
-
-
-            ret.Width = lineMaxRight;
-            ret.Height = lineTop;
-
-            return ret;
-        }
-
-        private int GetAlignment(List<int> alignment, int index, int extension, int firstpad)
-        {
-            if (extension > 0)
-            {
-                //Only first needs padding as it is part of previous group
-                if (index != 0) firstpad = 0;
-
-                //All groups with extension is off by one as first is acctually previous group with a little extra (already rendered stuff)
-                return alignment[index + extension - 1] + firstpad;
-            }
-            else return alignment[index];
-        }
 
         private Size ToSize(RectangleF getBounds)
         {
             //Console.WriteLine("Rectangle of {0} {1}", getBounds.Width, getBounds.Height);
             return new Size((int) getBounds.Width, (int) getBounds.Height);
         }
-
-        private readonly SizeF Big = new SizeF(int.MaxValue, int.MaxValue);
-        private string[] split = new[] {"{}"};
-
-
-
     }
 }

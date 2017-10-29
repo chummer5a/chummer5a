@@ -16,8 +16,7 @@ namespace Chummer.UI.Options
     {
         private readonly IGroupLayoutProvider _defaultGroupLayoutProvider;
         private readonly List<PreRenderGroup> _preRenderData = new List<PreRenderGroup>();
-        private readonly List<LayoutRenderInfo> _renderData = new List<LayoutRenderInfo>();
-        private readonly List<int> _sharedLayoutSpacing = new List<int>();
+        private readonly List<RenderedLayoutGroup> _renderData = new List<RenderedLayoutGroup>();
         // ReSharper disable once PossibleLossOfFraction
         private readonly Font _headerFont = new Font(DefaultFont.FontFamily, FIXED_SPACING * 2 / 3, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly HowerHelper _howerHelper = new HowerHelper();
@@ -35,8 +34,7 @@ namespace Chummer.UI.Options
             _defaultGroupLayoutProvider = layoutProvider;
             IntitializeComponent();
         }
-
-
+        
         private void IntitializeComponent()
         {
             AutoScroll = true;
@@ -79,7 +77,7 @@ namespace Chummer.UI.Options
 
             for (var index = 0; index < _renderData.Count; index++)
             {
-                LayoutRenderInfo renderGroup = _renderData[index];
+                RenderedLayoutGroup renderGroup = _renderData[index];
                 e.Graphics.DrawString(
                     _preRenderData[index].Header,
                     _headerFont,
@@ -88,8 +86,16 @@ namespace Chummer.UI.Options
                         renderGroup.Offset.X + AutoScrollPosition.X,
                         renderGroup.Offset.Y + AutoScrollPosition.Y
                     ));
-                foreach (TextRenderInfo renderInfo in renderGroup.TextLocations)
+                foreach (RenderedLayoutGroup.TextRenderInfo renderInfo in renderGroup.TextLocations)
                 {
+                    ////Draw a rectangle under text to show what render is doing
+                    //e.Graphics.DrawRectangle(
+                    //    new Pen(Color.Aqua), 
+                    //    renderInfo.Location.X + renderGroup.Offset.X + AutoScrollPosition.X,
+                    //    renderInfo.Location.Y + renderGroup.Offset.Y + AutoScrollPosition.Y + FIXED_SPACING, 
+                    //    renderInfo.Size.Width, 
+                    //    renderInfo.Size.Height);
+
                     e.Graphics.DrawString(
                         renderInfo.Text,
                         GetCachedFont(renderInfo.Style),
@@ -129,7 +135,8 @@ namespace Chummer.UI.Options
                 {
                     if (displayEntries.Count != 0)
                     {
-                        _preRenderData.Add(CreatePreRenderGroup(nonDisplayEntries, displayEntries));
+                        _preRenderData.Add(
+                            CreatePreRenderGroup(nonDisplayEntries, displayEntries));
 
                         displayEntries.Clear();
                         nonDisplayEntries.Clear();
@@ -155,46 +162,37 @@ namespace Chummer.UI.Options
 
         private PreRenderGroup CreatePreRenderGroup(List<OptionRenderItem> nonDisplayEntries, List<OptionItem> displayEntries)
         {
+            List<Control> controls = new List<Control>(displayEntries.Count);
+            List<LayoutLineInfo> lines = new List<LayoutLineInfo>();
 
-            List<OptionItem> entries = displayEntries
-                .Where(o => Factories.Any(x => x.IsSupported(o)))
-                .ToList();
-
-
-            List<Control> controls = entries
-                .Select(
-                    o => Factories
-                        .First(f => f.IsSupported(o))
-                        .Construct(o)
-                ).ToList();
-
-            foreach (Control control in controls)
+            for (int i = 0; i < displayEntries.Count; i++)
             {
+                OptionItem entry = displayEntries[i];
+                IOptionWinFromControlFactory factory = Factories.FirstOrDefault(x => x.IsSupported(entry));
+
+                if (factory == null) continue;
+
+                Control control = factory.Construct(entry);
+
+                OptionEntryProxy entryAsProxy = entry as OptionEntryProxy;
+                LayoutLineInfo line = new LayoutLineInfo
+                {
+                    ControlRectangle = new Rectangle(control.Location, control.Size),
+                    LayoutString = displayEntries[i].DisplayString,
+                    ToolTip = entryAsProxy?.ToolTip
+                };
+
+                //NB Big and Small C. One is controls in this control, other is controls that the render can play with
                 Controls.Add(control);
+                controls.Add(control);
+                lines.Add(line);
             }
+
             PreRenderGroup @group =  new PreRenderGroup
             {
                 Controls = controls,
-                Lines = entries.Select((x, i) =>
-                    {
-                        var l = new LayoutLineInfo
-                        {
-                            ControlOffset = controls[i].Location,
-                            ControlSize = controls[i].Size,
-                            LayoutString = x.DisplayString,
-                        };
-
-                        OptionEntryProxy proxy = x as OptionEntryProxy;
-                        if (proxy != null && proxy.ToolTip != null)
-                        {
-                            l.ToolTip = proxy.ToolTip;
-                        }
-
-                        return l;
-                    })
-                    .ToList()
+                Lines = lines
             };
-
 
             foreach (OptionRenderItem displayDirective in nonDisplayEntries)
             {
@@ -214,33 +212,28 @@ namespace Chummer.UI.Options
 
             _preRenderData.Clear();
             _renderData.Clear();
-            _sharedLayoutSpacing.Clear();
         }
-
 
         void SetupLayout()
         {
+            object share = null;
             Graphics g = CreateGraphics();
-            _sharedLayoutSpacing.Clear();
             _renderData.Clear();
 
+            List<LayoutGroupComputation> layouts = new List<LayoutGroupComputation>();
+
             foreach (PreRenderGroup preRenderGroup in _preRenderData)
             {
-                object cache = _defaultGroupLayoutProvider.ComputeLayoutSpacing(
-                    g                    ,
+                layouts.Add(_defaultGroupLayoutProvider.ComputeLayoutGroup(
+                    g,
                     preRenderGroup.Lines,
-                    _sharedLayoutSpacing
-                );
-                preRenderGroup.Cache = cache;
+                    ref share
+                ));
             }
 
-            foreach (PreRenderGroup preRenderGroup in _preRenderData)
+            foreach (LayoutGroupComputation layoutGroupComputation in layouts)
             {
-                LayoutRenderInfo renderGroup = _defaultGroupLayoutProvider.PerformLayout(g,
-                    preRenderGroup.Lines, _sharedLayoutSpacing, preRenderGroup.Cache);
-
-
-                _renderData.Add(renderGroup);
+                _renderData.Add(_defaultGroupLayoutProvider.RenderLayoutGroup(g, layoutGroupComputation, share));
             }
 
             LayoutGroups();
@@ -259,7 +252,7 @@ namespace Chummer.UI.Options
             for (int i = 0; i < usedSpace.Length; i++)
                 usedSpace[i] = 5;
 
-            foreach (LayoutRenderInfo renderInfo in _renderData)
+            foreach (RenderedLayoutGroup renderInfo in _renderData)
             {
                 int smallest = 0;
                 for (int i = 0; i < usedSpace.Length; i++)
@@ -275,7 +268,7 @@ namespace Chummer.UI.Options
             for (var index = 0; index < _preRenderData.Count; index++)
             {
                 PreRenderGroup preRenderGroup = _preRenderData[index];
-                LayoutRenderInfo renderGroup = _renderData[index];
+                RenderedLayoutGroup renderGroup = _renderData[index];
                 for (int i = 0; i < preRenderGroup.Controls.Count; i++)
                 {
                     Point controlPoint = new Point(
@@ -286,7 +279,7 @@ namespace Chummer.UI.Options
                     preRenderGroup.Controls[i].Location = controlPoint;
                 }
 
-                foreach (ToolTipData toolTip in renderGroup.ToolTips)
+                foreach (RenderedLayoutGroup.ToolTipData toolTip in renderGroup.ToolTips)
                 {
                     Rectangle r = toolTip.Location;
                     r.Y += FIXED_SPACING;

@@ -8054,7 +8054,7 @@ Do you want to continue?</text>
   </string>
   <string>
     <key>Display_LimbCount</key>
-    <text>{} Limbs for Standard Characters:</text>
+    <text>Limbs for Standard Characters:{}</text>
   </string>
   <string>
     <key>Display_ExcludeLimbSlot</key>

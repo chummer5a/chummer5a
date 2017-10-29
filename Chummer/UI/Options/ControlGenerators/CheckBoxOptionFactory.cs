@@ -15,7 +15,11 @@ namespace Chummer.UI.Options.ControlGenerators
 
         public Control Construct(OptionItem backingEntry)
         {
-            CheckBox box = new CheckBox(){Location = new Point(0, -4), Width = 15};
+            CheckBox box = new CheckBox()
+            {
+                Location = new Point(0, -4),
+                Width = 15
+            };
             box.DataBindings.Add(
                 nameof(CheckBox.Checked),
                 backingEntry,

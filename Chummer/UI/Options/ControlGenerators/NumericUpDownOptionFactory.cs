@@ -25,7 +25,10 @@ namespace Chummer.UI.Options.ControlGenerators
         {
             OptionEntryProxy proxy = (OptionEntryProxy) backingEntry;
 
-            NumericUpDown nud = new NumericUpDown(){Maximum = 10000, Location = new Point(0, -2)};
+            NumericUpDown nud = new NumericUpDown(){
+                Maximum = 10000,
+                Location = new Point(0, -2)
+            };
             /*nud.DataBindings.Add(
                 nameof(NumericUpDown.Value),
                 proxy,
