@@ -3958,9 +3958,9 @@
       <strmin>1</strmin>
       <strmax>5</strmax>
       <straug>9</straug>
-      <chamin>1</chamin>
-      <chamax>5</chamax>
-      <chaaug>9</chaaug>
+      <chamin>2</chamin>
+      <chamax>7</chamax>
+      <chaaug>11</chaaug>
       <intmin>2</intmin>
       <intmax>7</intmax>
       <intaug>11</intaug>
@@ -11307,7 +11307,6 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Metahuman Form Only">Goring Horns</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>			  
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
@@ -13147,7 +13146,6 @@
             <positive>
               <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Goring Horns</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
@@ -13176,8 +13174,7 @@
           <page>104</page>
         </metavariant>
       </metavariants>
-    </metatype>
-    
+    </metatype>    
 	<metatype>
       <id>6b9844d0-3e17-442f-a34d-f12f52b1c291</id>
       <name>Shapeshifter: Pantherine</name>
@@ -17265,8 +17262,8 @@
       <strmax>12</strmax>
       <straug>16</straug>
       <chamin>1</chamin>
-      <chamax>5</chamax>
-      <chaaug>9</chaaug>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
       <intmin>1</intmin>
       <intmax>6</intmax>
       <intaug>10</intaug>
