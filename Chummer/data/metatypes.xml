@@ -2567,7 +2567,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (1 Pair)</quality>
+              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -21360,7 +21360,7 @@
               <quality>Webbed Digits</quality>
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (1 Pair)</quality>
+              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>

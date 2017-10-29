@@ -435,7 +435,7 @@ namespace Chummer
 			cboAttributeCategory.Visible = _objCharacter.MetatypeCategory == "Shapeshifter";
 			if (_objCharacter.MetatypeCategory == "Shapeshifter")
 			{
-				XmlDocument objDoc = XmlManager.Instance.Load("metatypes.xml");
+				XmlDocument objDoc = XmlManager.Load("metatypes.xml");
 				List<ListItem> lstAttributeCategories = new List<ListItem>();
 				XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
 				ListItem objItem = new ListItem();
@@ -25360,6 +25360,14 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
+        }
+        private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _objCharacter.AttributeSection.AttributeCategory = _objCharacter.AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
+            _objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
+            _objCharacter.AttributeSection.ResetBindings();
+
+            objAttribute_ValueChanged(null);
         }
     }
 }

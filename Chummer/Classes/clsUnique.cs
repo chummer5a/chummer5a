@@ -324,7 +324,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strExtra = objImprovementManager.SelectedValue;
+                    _strExtra = ImprovementManager.SelectedValue;
                 }
             }
             else if (!string.IsNullOrEmpty(strForceValue))

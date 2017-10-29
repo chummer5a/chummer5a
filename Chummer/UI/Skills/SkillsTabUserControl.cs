@@ -10,6 +10,7 @@ using System.Xml;
 using Chummer.Backend.Skills;
 using Chummer.Skills;
 using Chummer.UI.Shared;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
 {
@@ -240,7 +241,7 @@ namespace Chummer.UI.Skills
 
             ret.AddRange(
                 from string attribute
-                in Character.AttributeStrings
+                in AttributeSection.AttributeStrings
                 select new Tuple<string, Predicate<Skill>>(
                     $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
                     skill => skill.Attribute == attribute));
@@ -305,7 +306,7 @@ namespace Chummer.UI.Skills
 
             ret.AddRange(
                 from string attribute
-                in Character.AttributeStrings
+                in AttributeSection.AttributeStrings
                 select new Tuple<string, Predicate<KnowledgeSkill>>(
                     $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
                     skill => skill.Attribute == attribute));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -224,6 +224,11 @@ namespace Chummer.Backend.Attributes
             }
 	    }
 
-	    #endregion
-	}
+        internal void ForceAttributePropertyChangedNotificationAll(string v, string improvedName)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

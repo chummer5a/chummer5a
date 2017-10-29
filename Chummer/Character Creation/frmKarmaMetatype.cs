@@ -576,7 +576,7 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstMetatypes.Text))
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
+                XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
 
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
@@ -682,7 +682,7 @@ namespace Chummer
                 }
 
                 //Load any critter powers the character has. 
-                objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+                objXmlDocument = XmlManager.Load("critterpowers.xml");
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                 {
                     XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -696,7 +696,7 @@ namespace Chummer
                     if (objXmlPower.Attributes["select"] != null)
                         strForcedValue = objXmlPower.Attributes["select"].InnerText;
 
-                    objPower.Create(objXmlCritterPower, _objCharacter, objNode, intRating, strForcedValue);
+                    objPower.Create(objXmlCritterPower, objNode, intRating, strForcedValue);
                     objPower.CountTowardsLimit = false;
                     _objCharacter.CritterPowers.Add(objPower);
                 }
@@ -706,7 +706,7 @@ namespace Chummer
                 {
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+                    objWeapon.Category = LanguageManager.GetString("Tab_Critter");
                     objWeapon.WeaponType = "Melee";
                     objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
                     objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
@@ -818,7 +818,7 @@ namespace Chummer
                 foreach (Weapon objWeapon in objWeapons)
                     _objCharacter.Weapons.Add(objWeapon);
 
-                XmlDocument objSkillDocument = XmlManager.Instance.Load("skills.xml");
+                XmlDocument objSkillDocument = XmlManager.Load("skills.xml");
                 //Set the Active Skill Ratings for the Critter.
                 foreach (XmlNode objXmlSkill in charNode.SelectNodes("skills/skill"))
                 {
@@ -890,7 +890,7 @@ namespace Chummer
                 }
 
                 // Add any Complex Forms the Critter comes with (typically Sprites)
-                XmlDocument objXmlProgramDocument = XmlManager.Instance.Load("complexforms.xml");
+                XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
                 foreach (XmlNode objXmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
                 {
                     string strForceValue = string.Empty;
@@ -904,7 +904,7 @@ namespace Chummer
                 }
 
                 // Add any Advanced Programs the Critter comes with (typically Sprites)
-                XmlDocument objXmlAIProgramDocument = XmlManager.Instance.Load("programs.xml");
+                XmlDocument objXmlAIProgramDocument = XmlManager.Load("programs.xml");
                 foreach (XmlNode objXmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
                     string strForceValue = string.Empty;
@@ -921,7 +921,7 @@ namespace Chummer
                 }
 
                 // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode objXmlGear in charNode.SelectNodes("gears/gear"))
                 {
                     int intRating = 0;

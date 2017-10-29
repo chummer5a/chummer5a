@@ -101,6 +101,7 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
+        public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
 
         // AI Home Node
         private Commlink _objHomeNodeCommlink = null;
@@ -6228,7 +6229,7 @@ namespace Chummer
                 if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
                 {
                     string strReturn = string.Empty;
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+                    XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
                     XmlNode variant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]/metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
                     XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 
@@ -6310,8 +6311,7 @@ namespace Chummer
                 }
                 return intTmp;
             }
-
-            string[] strReturn = _strWalk.Split('/');
+            
             switch (strType)
             {
                 case "Fly":
@@ -6351,9 +6351,7 @@ namespace Chummer
             {
                 strReturn = _strRunAlt.Split('/');
             }
-            int intTmp = 0;
 
-            string[] strReturn = _strRun.Split('/');
             switch (strType)
             {
                 case "Fly":

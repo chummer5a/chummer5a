@@ -15023,7 +15023,7 @@ namespace Chummer
 	        if (_objCharacter.MetatypeCategory == "Shapeshifter")
 	        {
 		        List<CharacterAttrib> staging = new List<CharacterAttrib>();
-		        XmlDocument xmlDoc = XmlManager.Instance.Load("metatypes.xml");
+		        XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
                 string s = $"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]";
 		        foreach (CharacterAttrib att in _objCharacter.AttributeSection.AttributeList)
 		        {
@@ -21430,7 +21430,7 @@ namespace Chummer
                 int intTemp = 0;
                 int intTemp2 = 0;
                 // Value from attribute points and raised attribute minimums
-                foreach (string strAttributeName in Character.AttributeStrings)
+                foreach (string strAttributeName in AttributeSection.AttributeStrings)
                 {
                     if (strAttributeName != "ESS")
                     {

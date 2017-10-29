@@ -1139,7 +1139,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(lstMetatypes.Text))
             {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
+                XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
                 
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
@@ -1198,7 +1198,7 @@ namespace Chummer
 
                 // Determine if the Metatype has any bonuses.
                 if (charNode?.InnerXml.Contains("bonus") == true)
-                    objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), charNode.SelectSingleNode("bonus"), false, 1, lstMetatypes.SelectedValue.ToString());
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, lstMetatypes.SelectedValue.ToString(), charNode.SelectSingleNode("bonus"), false, 1, lstMetatypes.SelectedValue.ToString());
 
                 List<Weapon> objWeapons = new List<Weapon>();
 
@@ -1239,7 +1239,7 @@ namespace Chummer
                 }
 
                 //Load any critter powers the character has. 
-                objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+                objXmlDocument = XmlManager.Load("critterpowers.xml");
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                 {
                     XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -1263,7 +1263,7 @@ namespace Chummer
                 {
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+                    objWeapon.Category = LanguageManager.GetString("Tab_Critter");
                     objWeapon.WeaponType = "Melee";
                     objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
                     objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
