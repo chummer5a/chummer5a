@@ -337,18 +337,20 @@ namespace Chummer
             {
                 OutputFilePath = strSaveFile
             });
-
-            Uri uriPath = new Uri(strSaveFile);
-            string strParams = GlobalOptions.PDFParameters;
-            strParams = strParams.Replace("{page}", 1.ToString());
-            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
-            ProcessStartInfo objProgress = new ProcessStartInfo
+            if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
             {
-                FileName = GlobalOptions.PDFAppPath,
-                Arguments = strParams
-            };
-            Process.Start(objProgress);
+                Uri uriPath = new Uri(strSaveFile);
+                string strParams = GlobalOptions.PDFParameters;
+                strParams = strParams.Replace("{page}", 1.ToString());
+                strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+                strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+                ProcessStartInfo objProgress = new ProcessStartInfo
+                {
+                    FileName = GlobalOptions.PDFAppPath,
+                    Arguments = strParams
+                };
+                Process.Start(objProgress);
+            }
         }
         private List<ListItem> GetXslFilesFromSheetsDirectory()
         {
