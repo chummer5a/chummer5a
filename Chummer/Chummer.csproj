@@ -179,7 +179,7 @@
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
     <Compile Include="Backend\UI\BookImageManager.cs" />
-    <Compile Include="Backend\UI\HowerHelper.cs" />
+    <Compile Include="Backend\UI\HoverHelper.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
