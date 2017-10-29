@@ -105,9 +105,9 @@ namespace Chummer.UI.Options
         public void SetContents(List<OptionRenderItem> contents)
         {
             Stopwatch sw = Stopwatch.StartNew();
+            CleanOldContents();
             if (contents.Count == 0)
             {
-                if (Controls.Count > 0) CleanOldContents();
                 return;
             }
 

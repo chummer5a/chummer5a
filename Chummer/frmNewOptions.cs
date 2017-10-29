@@ -24,9 +24,10 @@ namespace Chummer
 	    private Control _currentVisibleControl;
 	    private AbstractOptionTree _winformTree;
 	    private OptionCollectionCache _options;
-	    private Lazy<OptionRender> _searchControl;
+	    private Lazy<OptionRender> _sharedRender;
+        List<IOptionWinFromControlFactory> controlFactories;
 
-	    public frmNewOptions()
+        public frmNewOptions()
 		{
 			InitializeComponent();
 
@@ -35,14 +36,14 @@ namespace Chummer
 
 	    private void OnLoad(object sender, EventArgs eventArgs)
 	    {
-	        List<IOptionWinFromControlFactory> controlFactories = new List<IOptionWinFromControlFactory>()
+	        controlFactories = new List<IOptionWinFromControlFactory>()
 	        {
 	            new CheckBoxOptionFactory(),
 	            new NumericUpDownOptionFactory(),
-                new BookOptionFactory(),
+	            new BookOptionFactory(),
 	            new PathSelectiorFactory(),
-                new DropDownFactory(),
-                new StringControlFactory()
+	            new DropDownFactory(),
+	            new StringControlFactory()
 	        };
 
 	        //TODO: dropdown that allows you to select/add multiple
@@ -72,7 +73,7 @@ namespace Chummer
 
 	        textBox1.TextChanged += SearchBoxChanged;
 
-	        _searchControl = new Lazy<OptionRender>(() =>
+	        _sharedRender = new Lazy<OptionRender>(() =>
 	        {
 	            OptionRender c = new OptionRender();
 	            c.Factories = controlFactories;
@@ -119,15 +120,15 @@ namespace Chummer
 
 	        if (hits.Count > 0)
 	        {
-	            _searchControl.Value.SetContents(hits);
+	            _sharedRender.Value.SetContents(hits);
 
 
-	            _currentVisibleControl = _searchControl.Value;
+	            _currentVisibleControl = _sharedRender.Value;
 	            _currentVisibleControl.Visible = true;
 	        }
 	        else
 	        {
-	            _currentVisibleControl = _searchControl.Value;
+	            _currentVisibleControl = _sharedRender.Value;
 	        }
 	    }
 
@@ -143,17 +144,30 @@ namespace Chummer
 	        AbstractOptionTree tree = (AbstractOptionTree) selectedNode.Tag;
 	        if (_currentVisibleControl != null) _currentVisibleControl.Visible = false;
 
-	        if (!tree.Created)
+	        SimpleOptionTree simpleOptionTree = tree as SimpleOptionTree;
+	        if (simpleOptionTree != null)
 	        {
-	            Control c = tree.ControlLazy();
-                SetupControl(c);
-                Controls.Add(c);
-                
-	        }
+	            _sharedRender.Value.SetContents(simpleOptionTree.Items);
+                _currentVisibleControl = _sharedRender.Value;
 
-	      
-           _currentVisibleControl = tree.ControlLazy();
-           _currentVisibleControl.Visible = true;
+	        }
+            else
+	        {
+	            _currentVisibleControl = tree.ControlLazy();
+
+	            if (_currentVisibleControl.Parent == null)
+	            {
+	                SetupControl(_currentVisibleControl);
+	                Controls.Add(_currentVisibleControl);
+	            }
+#if DEBUG
+	            else if (_currentVisibleControl.Parent != this)
+	            {
+	                Utils.BreakIfDebug();
+	            }
+#endif
+	        }
+	        _currentVisibleControl.Visible = true;
         }
 
 	    private void SetupControl(Control c)

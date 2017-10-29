@@ -13,7 +13,6 @@ namespace Chummer.Classes
 {
     abstract class AbstractOptionTree
     {
-        public abstract bool Created { get; }
         public string Name { get; }
         public List<AbstractOptionTree> Children { get; }= new List<AbstractOptionTree>();
 
@@ -28,13 +27,13 @@ namespace Chummer.Classes
 
     class SimpleOptionTree : AbstractOptionTree
     {
-        private readonly List<OptionRenderItem> _items;
+        public List<OptionRenderItem> Items { get; }
         private readonly List<IOptionWinFromControlFactory> _factories;
         private Lazy<Control> _lazyItem;
 
         public SimpleOptionTree(string name, List<OptionRenderItem> items, List<IOptionWinFromControlFactory> factories) : base(name)
         {
-            _items = items;
+            Items = items;
             _factories = factories;
             if(string.IsNullOrWhiteSpace(name)) throw new ArgumentException(nameof(name) +" needs to be a visible string");
 
@@ -43,15 +42,13 @@ namespace Chummer.Classes
             _lazyItem = new Lazy<Control>(GenerateItem);
         }
 
-        public override bool Created => _lazyItem.IsValueCreated;
-
         public override Control ControlLazy() => _lazyItem.Value;
 
         private OptionRender GenerateItem()
         {
             OptionRender item = new OptionRender();
             item.Factories = _factories;
-            item.SetContents(_items);
+            item.SetContents(Items);
             return item;
         }
     }
@@ -63,8 +60,7 @@ namespace Chummer.Classes
         public DummyOptionTree(string name) : base(name)
         {
         }
-
-        public override bool Created => p != null;
+        
         
         public override Control ControlLazy()
         {
@@ -88,8 +84,7 @@ namespace Chummer.Classes
             _enabledBooks = enabledBooks;
             _bookControl = new Lazy<BookControl>(() => new BookControl(_enabledBooks));
         }
-
-        public override bool Created => _bookControl.IsValueCreated;
+        
         public override Control ControlLazy() => _bookControl.Value;
     }
 }
