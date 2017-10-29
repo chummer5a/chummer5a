@@ -19,7 +19,7 @@ namespace Chummer.UI.Options
         private readonly List<RenderedLayoutGroup> _renderData = new List<RenderedLayoutGroup>();
         // ReSharper disable once PossibleLossOfFraction
         private readonly Font _headerFont = new Font(DefaultFont.FontFamily, FIXED_SPACING * 2 / 3, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly HowerHelper _howerHelper = new HowerHelper();
+        private readonly HoverHelper _hoverHelper = new HoverHelper();
         private readonly ToolTip _toolTip = new ToolTip();
         private RTree<string> _toolTipTree = new RTree<string>();
 
@@ -41,13 +41,13 @@ namespace Chummer.UI.Options
             Size = new Size(300, 200);
             Resize += OnResize;
             _defaultGroupLayoutProvider.LayoutOptions.Font = Font;
-            MouseMove += _howerHelper.MouseEventHandler;
-            _howerHelper.Hover += OnHover;
-            _howerHelper.StopHover += StopHower;
+            MouseMove += _hoverHelper.MouseEventHandler;
+            _hoverHelper.Hover += OnHover;
+            _hoverHelper.StopHover += StopHover;
 
         }
 
-        private void StopHower(object sender, EventArgs e)
+        private void StopHover(object sender, EventArgs e)
         {
             _toolTip.Hide(this);
         }
