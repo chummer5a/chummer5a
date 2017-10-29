@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Chummer.Backend.UI
 {
-    public class HowerHelper
+    public class HoverHelper
     {
         public event EventHandler<MouseEventArgs> Hover;
         public event EventHandler<MouseEventArgs> StopHover;
@@ -35,7 +35,7 @@ namespace Chummer.Backend.UI
             set { _timer.Interval = value; }
         }
 
-        public HowerHelper()
+        public HoverHelper()
         {
             _timer.Tick += HoverLimitReached;
         }
