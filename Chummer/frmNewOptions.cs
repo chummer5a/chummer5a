@@ -84,6 +84,8 @@ namespace Chummer
 	        });
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+
+            textBox1.WatermarkText = LanguageManager.Instance.GetString("String_Search");
         }
 
 	    private void SearchBoxChanged(object sender, EventArgs args)

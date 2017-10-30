@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new Chummer.helpers.TextBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
             this.chkAutomaticUpdate = new System.Windows.Forms.CheckBox();
@@ -55,11 +55,14 @@
             // 
             // textBox1
             // 
+            this.textBox1.ForeColor = System.Drawing.Color.Gray;
             this.textBox1.Location = new System.Drawing.Point(8, 8);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(160, 20);
             this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "Search";
+            this.textBox1.Tag = "String_Search";
+            this.textBox1.WatermarkActive = true;
+            this.textBox1.WatermarkText = "";
             // 
             // treeView1
             // 
@@ -342,7 +345,7 @@
 		}
 
 		#endregion
-		private System.Windows.Forms.TextBox textBox1;
+		private Chummer.helpers.TextBox textBox1;
 		private UI.Options.OptionsNumberControl optionsNumberControl1;
 		private UI.Options.OptionsNumberControl optionsNumberControl2;
 		private UI.Options.OptionsNumberControl optionsNumberControl3;
