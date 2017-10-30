@@ -28,7 +28,7 @@ namespace Chummer.Backend.Attributes
 			_bindings.Clear();
 			_bindings.Add(new KeyValuePair<string, BindingSource>("BOD", BODBinding));
 			_bindings.Add(new KeyValuePair<string, BindingSource>("AGI", AGIBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("REA", RESBinding));
+			_bindings.Add(new KeyValuePair<string, BindingSource>("REA", REABinding));
 			_bindings.Add(new KeyValuePair<string, BindingSource>("STR", STRBinding));
 			_bindings.Add(new KeyValuePair<string, BindingSource>("CHA", CHABinding));
 			_bindings.Add(new KeyValuePair<string, BindingSource>("INT", INTBinding));
@@ -223,12 +223,6 @@ namespace Chummer.Backend.Attributes
 	            AttributeCategoryChanged?.Invoke(this);
             }
 	    }
-
-        internal void ForceAttributePropertyChangedNotificationAll(string v, string improvedName)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
     }
 }
