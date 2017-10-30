@@ -12450,7 +12450,7 @@ namespace Chummer
                 frmPickCyberware.Subsystems = objMod.Subsystems;
                 HashSet<string> setDisallowedMounts = new HashSet<string>();
                 HashSet<string> setHasMounts = new HashSet<string>();
-                foreach (Cyberware objLoopCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount))))
+                foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                 {
                     string[] strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
                     foreach (string strLoop in strLoopDisallowedMounts)
@@ -12504,7 +12504,7 @@ namespace Chummer
                 string strLoopHasModularMount = objCyberwareParent.HasModularMount;
                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                     setHasMounts.Add(strLoopHasModularMount);
-                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.GetAllDescendants(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount))))
+                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                 {
                     strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
                     foreach (string strLoop in strLoopDisallowedMounts)
@@ -20386,7 +20386,7 @@ namespace Chummer
                 string strLoopHasModularMount = objSelectedCyberware.HasModularMount;
                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                     setHasMounts.Add(strLoopHasModularMount);
-                foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.GetAllDescendants(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount))))
+                foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                 {
                     strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
                     foreach (string strLoop in strLoopDisallowedMounts)

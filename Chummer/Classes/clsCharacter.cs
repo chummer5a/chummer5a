@@ -6391,21 +6391,20 @@ namespace Chummer
             {
                 strReturn = _strSprintAlt.Split('/');
             }
-            int intTmp = 0;
-                switch (strType)
-                {
-                case "Fly":
-                    if (strReturn.Length > 2)
-                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
-                    break;
-                case "Swim":
-                    if (strReturn.Length > 1)
-                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
-                    break;
-                case "Ground":
-                    if (strReturn.Length > 0)
-                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
-                    break;
+            switch (strType)
+            {
+            case "Fly":
+                if (strReturn.Length > 2)
+                    decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
+                break;
+            case "Swim":
+                if (strReturn.Length > 1)
+                    decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
+                break;
+            case "Ground":
+                if (strReturn.Length > 0)
+                    decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
+                break;
             }
             return decTmp;
         }

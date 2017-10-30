@@ -185,12 +185,12 @@ namespace Chummer.Backend.Shared_Methods
                     {
                         if (string.IsNullOrEmpty(strLocation))
                         {
-                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), x => x.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                         }
                         // We only want to check against 'ware that is on the same side as this one
                         else
                         {
-                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), x => x.Name != strIgnoreQuality && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                         }
                     }
                     else
@@ -208,12 +208,12 @@ namespace Chummer.Backend.Shared_Methods
                         {
                             if (string.IsNullOrEmpty(strLocation))
                             {
-                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, objItem => objItem.Name != strIgnoreQuality && string.IsNullOrEmpty(objItem.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
                             }
                             // We only want to check against 'ware that is on the same side as this one
                             else
                             {
-                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), x => x.Name != strIgnoreQuality && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                             }
                         }
                         else
@@ -409,8 +409,9 @@ namespace Chummer.Backend.Shared_Methods
                             ? "\n\t" + LanguageManager.GetString("Label_Cyberware") + strNodeInnerText
                             : "\n\t" + LanguageManager.GetString("Label_Bioware") + strNodeInnerText;
                         string strWareNodeSelectAttribute = node.Attributes?["select"]?.InnerText ?? string.Empty;
-                        return character.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), objCyberware =>
-                               objCyberware.Name == strNodeInnerText && string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra) >= count;
+                        return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                               objCyberware.Name == strNodeInnerText && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
+                               string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra) >= count;
                     }
                 case "biowarecontains":
                 case "cyberwarecontains":
@@ -426,8 +427,8 @@ namespace Chummer.Backend.Shared_Methods
                             source = Improvement.ImprovementSource.Bioware;
                         }
                         string strWareContainsNodeSelectAttribute = node.Attributes?["select"]?.InnerText ?? string.Empty;
-                        return character.Cyberware.DeepCount(x => x.Children.Where(y => string.IsNullOrEmpty(y.PlugsIntoModularMount)), objCyberware =>
-                            objCyberware.SourceType == source && objCyberware.Name.Contains(strNodeInnerText) &&
+                        return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                            objCyberware.SourceType == source && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) && objCyberware.Name.Contains(strNodeInnerText) &&
                             string.IsNullOrEmpty(strWareContainsNodeSelectAttribute) || strWareContainsNodeSelectAttribute == objCyberware.Extra) >= count;
                 }
                 case "damageresistance":
