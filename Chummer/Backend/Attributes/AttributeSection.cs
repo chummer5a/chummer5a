@@ -57,8 +57,81 @@ namespace Chummer.Backend.Attributes
                 {
                     // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
                     XmlDocument objXmlDocument = XmlManager.Load(_character.IsCritter ? "critters.xml" : "metatypes.xml");
-                    attNodeList = objXmlDocument.SelectNodes("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
-                    ?? objXmlDocument.SelectNodes("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
+                    if (_character.MetatypeCategory == "Shapeshifter")
+                    {
+                        XmlNode attNode =
+                            objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" +
+                                                            _character.Metatype +
+                                                            "\"]/metavariants/metavariant[name = \"" +
+                                                            _character.Metavariant + "\"]");
+                        CharacterAttrib att = new CharacterAttrib(_character, s);
+                        att.MetatypeMinimum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "min"].InnerText);
+                        att.MetatypeMaximum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "max"].InnerText);
+                        att.MetatypeAugmentedMaximum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "aug"].InnerText);
+                        att.MetatypeCategory = CharacterAttrib.AttributeCategory.Standard;
+                        switch (att.ConvertToAttributeCategory(att.Abbrev))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                SpecialAttributeList.Add(att);
+                                break;
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                AttributeList.Add(att);
+                                break;
+                        }
+                        attNode =
+                            objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" +
+                                                            _character.Metatype +
+                                                            "\"]");
+                        att = new CharacterAttrib(_character, s, CharacterAttrib.AttributeCategory.Shapeshifter);
+                        att.MetatypeMinimum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "min"].InnerText);
+                        att.MetatypeMaximum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "max"].InnerText);
+                        att.MetatypeAugmentedMaximum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "aug"].InnerText);
+                        att.MetatypeCategory = CharacterAttrib.AttributeCategory.Shapeshifter;
+                        switch (att.ConvertToAttributeCategory(att.Abbrev))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                SpecialAttributeList.Add(att);
+                                break;
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                AttributeList.Add(att);
+                                break;
+                        }
+
+                    }
+                    else
+                    {
+                        XmlNode attNode;
+                        if (string.IsNullOrEmpty(_character.Metavariant))
+                        {
+                            attNode =
+                                objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" +
+                                                                _character.Metatype +
+                                                                "\"]");
+                        }
+                        else
+                        {
+                            attNode =
+                                objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" +
+                                                                _character.Metatype +
+                                                                "\"]/metavariants/metavariant[name = \"" +
+                                                                _character.Metavariant + "\"]");
+                        }
+
+                        CharacterAttrib att = new CharacterAttrib(_character, s);
+                        att.MetatypeMinimum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "min"].InnerText);
+                        att.MetatypeMaximum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "max"].InnerText);
+                        att.MetatypeAugmentedMaximum = Convert.ToInt32(attNode[att.Abbrev.ToLower() + "aug"].InnerText);
+                        switch (att.ConvertToAttributeCategory(att.Abbrev))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                SpecialAttributeList.Add(att);
+                                break;
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                AttributeList.Add(att);
+                                break;
+                        }
+                    }
+                    continue;
                 }
 
                 foreach (XmlNode attNode in attNodeList)
@@ -100,7 +173,7 @@ namespace Chummer.Backend.Attributes
 			{
 				return _character.MetatypeCategory == "Shapeshifter" && _character.Created && _character.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter
 				? AttributeList.First(att => att.Abbrev == abbrev && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) 
-				: AttributeList.First(att => att.Abbrev == abbrev);
+				: AttributeList.First(att => att.Abbrev == abbrev && att.MetatypeCategory != CharacterAttrib.AttributeCategory.Shapeshifter);
 			}
 			if (SpecialAttributeList.Any(att => att.Abbrev == abbrev))
 			{
