@@ -15056,7 +15056,7 @@ namespace Chummer
 	        {
 		        List<CharacterAttrib> staging = new List<CharacterAttrib>();
 		        XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
-                string s = $"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]";
+                string s = $"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]";
 		        foreach (CharacterAttrib att in _objCharacter.AttributeSection.AttributeList)
 		        {
 			        CharacterAttrib newAtt = new CharacterAttrib(_objCharacter, att.Abbrev,

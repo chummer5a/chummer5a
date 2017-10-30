@@ -439,7 +439,7 @@ namespace Chummer
 				List<ListItem> lstAttributeCategories = new List<ListItem>();
 				XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
 				ListItem objItem = new ListItem();
-				objItem.Value = "Standard";
+				objItem.Value = "Shapeshifter";
 				objItem.Name = node["name"].Attributes["translate"] != null
 					? node["name"].Attributes["translate"].InnerText
 					: node["name"].InnerText;
@@ -448,7 +448,7 @@ namespace Chummer
 				node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]");
 
 				objItem = new ListItem();
-				objItem.Value = "Shapeshifter";
+				objItem.Value = "Standard";
 				objItem.Name = node["name"].Attributes["translate"] != null
 					? node["name"].Attributes["translate"].InnerText
 					: node["name"].InnerText;

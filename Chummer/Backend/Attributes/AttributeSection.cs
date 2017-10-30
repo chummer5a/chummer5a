@@ -12,7 +12,7 @@ namespace Chummer.Backend.Attributes
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-	    private List<KeyValuePair<string,BindingSource>> _bindings = new List<KeyValuePair<string, BindingSource>>();
+	    private Dictionary<string, BindingSource> _bindings = new Dictionary<string, BindingSource>(AttributeStrings.Length);
 		private readonly Character _character;
 		private CharacterAttrib.AttributeCategory _attributeCategory = CharacterAttrib.AttributeCategory.Standard;
 	    public Action<object> AttributeCategoryChanged;
@@ -26,19 +26,10 @@ namespace Chummer.Backend.Attributes
 		private void BuildBindingList()
 		{
 			_bindings.Clear();
-			_bindings.Add(new KeyValuePair<string, BindingSource>("BOD", BODBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("AGI", AGIBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("REA", REABinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("STR", STRBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("CHA", CHABinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("INT", INTBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("LOG", LOGBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("WIL", WILBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("EDG", EDGBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("MAG", MAGBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("RES", RESBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("ESS", ESSBinding));
-			_bindings.Add(new KeyValuePair<string, BindingSource>("DEP", DEPBinding));
+            foreach (string strAttributeString in AttributeStrings)
+            {
+                _bindings.Add(strAttributeString, new BindingSource { DataSource = GetAttributeByName(strAttributeString) });
+            }
 		}
 
 		internal void Save(XmlTextWriter objWriter)
@@ -60,26 +51,29 @@ namespace Chummer.Backend.Attributes
 			SpecialAttributeList.Clear();
             foreach (string s in AttributeStrings)
             {
-                XmlNode attNode = xmlDoc.SelectSingleNode("/character/attributes/attribute[name = \"" + s + "\"]");
+                XmlNodeList attNodeList = xmlDoc.SelectNodes("/character/attributes/attribute[name = \"" + s + "\"]");
                 
-                if (attNode == null)
+                if (attNodeList.Count == 0)
                 {
                     // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
                     XmlDocument objXmlDocument = XmlManager.Load(_character.IsCritter ? "critters.xml" : "metatypes.xml");
-                    attNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
-                    ?? objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
+                    attNodeList = objXmlDocument.SelectNodes("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
+                    ?? objXmlDocument.SelectNodes("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
                 }
 
-                CharacterAttrib att = new CharacterAttrib(_character, s);
-                att.Load(attNode);
-                switch (att.ConvertToAttributeCategory(att.Abbrev))
+                foreach (XmlNode attNode in attNodeList)
                 {
-                    case CharacterAttrib.AttributeCategory.Special:
-                        SpecialAttributeList.Add(att);
-                        break;
-                    case CharacterAttrib.AttributeCategory.Standard:
-                        AttributeList.Add(att);
-                        break;
+                    CharacterAttrib att = new CharacterAttrib(_character, s);
+                    att.Load(attNode);
+                    switch (att.ConvertToAttributeCategory(att.Abbrev))
+                    {
+                        case CharacterAttrib.AttributeCategory.Special:
+                            SpecialAttributeList.Add(att);
+                            break;
+                        case CharacterAttrib.AttributeCategory.Standard:
+                            AttributeList.Add(att);
+                            break;
+                    }
                 }
             }
             ResetBindings();
@@ -117,7 +111,10 @@ namespace Chummer.Backend.Attributes
 
 		public BindingSource GetAttributeBindingByName(string abbrev)
 		{
-			return _bindings.FirstOrDefault(b => b.Key == abbrev).Value;
+            BindingSource objAttributeBinding;
+            if (_bindings.TryGetValue(abbrev, out objAttributeBinding))
+                return objAttributeBinding;
+            return null;
 		}
 
 		internal void ForceAttributePropertyChangedNotificationAll(string name)
@@ -155,7 +152,6 @@ namespace Chummer.Backend.Attributes
 						break;
 				}
 			}
-			ResetBindings();
 			BuildBindingList();
 		}
 
@@ -180,36 +176,11 @@ namespace Chummer.Backend.Attributes
 		/// </summary>
 		public void ResetBindings()
 		{
-			BODBinding.DataSource = _character.BOD;
-			AGIBinding.DataSource = _character.AGI;
-			REABinding.DataSource = _character.REA;
-			STRBinding.DataSource = _character.STR;
-			CHABinding.DataSource = _character.CHA;
-			INTBinding.DataSource = _character.INT;
-			LOGBinding.DataSource = _character.LOG;
-			WILBinding.DataSource = _character.WIL;
-			EDGBinding.DataSource = _character.EDG;
-			MAGBinding.DataSource = _character.MAG;
-			RESBinding.DataSource = _character.RES;
-			DEPBinding.DataSource = _character.DEP;
-			ESSBinding.DataSource = _character.ESS;
+            foreach (KeyValuePair<string, BindingSource> objBindingEntry in _bindings)
+            {
+                objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
+            }
 		}
-		#endregion
-
-		#region Bindings
-		public BindingSource BODBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource AGIBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource REABinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource STRBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource CHABinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource INTBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource LOGBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource WILBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource EDGBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource MAGBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource RESBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource DEPBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
-		public BindingSource ESSBinding = new BindingSource { DataSource = typeof(CharacterAttrib) };
 		#endregion
 
 		#region Properties
