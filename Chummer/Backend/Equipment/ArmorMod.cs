@@ -838,7 +838,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return XmlManager.Load("armors.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                return XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
             }
         }
         #endregion
