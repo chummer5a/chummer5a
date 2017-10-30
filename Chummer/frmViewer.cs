@@ -341,7 +341,7 @@ namespace Chummer
             {
                 Uri uriPath = new Uri(strSaveFile);
                 string strParams = GlobalOptions.PDFParameters;
-                strParams = strParams.Replace("{page}", 1.ToString());
+                strParams = strParams.Replace("{page}", "1");
                 strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
                 strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
                 ProcessStartInfo objProgress = new ProcessStartInfo

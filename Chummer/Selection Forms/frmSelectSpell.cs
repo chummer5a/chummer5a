@@ -690,7 +690,7 @@ namespace Chummer
                         break;
                 }
 
-                string strDV = objXmlSpell["dv"].InnerText.Replace("/", "÷")
+                string strDV = objXmlSpell["dv"].InnerText.Replace('/', '÷')
                     .Replace("F", LanguageManager.GetString("String_SpellForce"));
                 strDV = strDV.Replace("Overflow damage",
                     LanguageManager.GetString("String_SpellOverflowDamage"));

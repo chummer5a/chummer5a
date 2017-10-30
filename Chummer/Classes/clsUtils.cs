@@ -94,7 +94,7 @@ namespace Chummer
             foreach (string line in result.Where(line => line.Contains("tag_name")))
             {
                 string strVersion = line.Split(':')[1];
-                strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
+                strVersion = strVersion.Split('}')[0].FastEscape('\"');
                 strVersion = strVersion + ".0";
                 Version.TryParse(strVersion, out verLatestVersion);
                 break;

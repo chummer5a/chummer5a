@@ -507,7 +507,7 @@ namespace Chummer
                         strReturn = GetString("String_AttributeDEPShort");
                         break;
                     default:
-                        string strExtraNoQuotes = strExtra.Replace("\"", string.Empty);
+                        string strExtraNoQuotes = strExtra.FastEscape('\"');
                         XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                         XmlNode objNode =
                             objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" +
