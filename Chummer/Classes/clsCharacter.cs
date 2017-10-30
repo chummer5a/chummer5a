@@ -101,6 +101,7 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
+        public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
 
         // AI Home Node
         private Commlink _objHomeNodeCommlink = null;
@@ -127,6 +128,9 @@ namespace Chummer
         private string _strWalk = string.Empty;
         private string _strRun = string.Empty;
         private string _strSprint = string.Empty;
+        private string _strWalkAlt = string.Empty;
+        private string _strRunAlt = string.Empty;
+        private string _strSprintAlt = string.Empty;
         private int _intMetatypeBP = 0;
 
         // Special Flags.
@@ -150,32 +154,8 @@ namespace Chummer
         private bool _blnFame = false;
         private bool _blnBornRich = false;
         private bool _blnErased = false;
-        private int _intTrustFund = 0;
-        private decimal _decPrototypeTranshuman = 0m;
-
-        // Attributes.
-        public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
-        public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
-        private List<CharacterAttrib> _attributes = new List<CharacterAttrib>();
-        private List<CharacterAttrib> _specialAttributes = new List<CharacterAttrib>();
-
-        private CharacterAttrib _attBOD;
-        private CharacterAttrib _attAGI;
-        private CharacterAttrib _attREA;
-        private CharacterAttrib _attSTR;
-        private CharacterAttrib _attCHA;
-        private CharacterAttrib _attINT;
-        private CharacterAttrib _attLOG;
-        private CharacterAttrib _attWIL;
-        private CharacterAttrib _attINI;
-        private CharacterAttrib _attEDG;
-        private CharacterAttrib _attMAG;
-        private CharacterAttrib _attRES;
-        private CharacterAttrib _attESS;
-        private CharacterAttrib _attDEP;
-
-        // Shapeshifter Attributes.
-
+		private int _intTrustFund = 0;
+		private decimal _decPrototypeTranshuman = 0m;
         private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnDEPEnabled = false;
@@ -194,7 +174,7 @@ namespace Chummer
         private string _strTraditionDrain = string.Empty;
         private string _strTraditionName = string.Empty;
         private string _strSpiritCombat = string.Empty;
-        private string _strSpiritDetection = string.Empty;
+		private string _strSpiritDetection = string.Empty;
         private string _strSpiritHealth = string.Empty;
         private string _strSpiritIllusion = string.Empty;
         private string _strSpiritManipulation = string.Empty;
@@ -294,27 +274,16 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            _attBOD = new CharacterAttrib("BOD", this);
-            _attAGI = new CharacterAttrib("AGI", this);
-            _attREA = new CharacterAttrib("REA", this);
-            _attSTR = new CharacterAttrib("STR", this);
-            _attCHA = new CharacterAttrib("CHA", this);
-            _attINT = new CharacterAttrib("INT", this);
-            _attLOG = new CharacterAttrib("LOG", this);
-            _attWIL = new CharacterAttrib("WIL", this);
-            _attEDG = new CharacterAttrib("EDG", this, CharacterAttrib.AttributeCategory.Special);
-            _attMAG = new CharacterAttrib("MAG", this, CharacterAttrib.AttributeCategory.Special);
-            _attRES = new CharacterAttrib("RES", this, CharacterAttrib.AttributeCategory.Special);
-            _attDEP = new CharacterAttrib("DEP", this,CharacterAttrib.AttributeCategory.Special);
-            _attINI = new CharacterAttrib("INI", this);
-            _attESS = new CharacterAttrib("ESS", this, CharacterAttrib.AttributeCategory.Special);
-
-            _objOptions = new CharacterOptions(this);
-            SkillsSection = new SkillsSection(this);
-            SkillsSection.Reset();
+			_objOptions = new CharacterOptions(this);
+			AttributeSection = new AttributeSection(this);
+			AttributeSection.Reset();
+			SkillsSection = new SkillsSection(this);
+			SkillsSection.Reset();
         }
 
-        /// <summary>
+	    public AttributeSection AttributeSection { get; set; }
+
+	    /// <summary>
         /// Save the Character to an XML file.
         /// </summary>
         public void Save(string strFileName = "")
@@ -364,6 +333,12 @@ namespace Chummer
             objWriter.WriteElementString("run", _strRun);
             // <sprint />
             objWriter.WriteElementString("sprint", _strSprint);
+            // <walk />
+            objWriter.WriteElementString("walkalt", _strWalk);
+            // <run />
+            objWriter.WriteElementString("runalt", _strRun);
+            // <sprint />
+            objWriter.WriteElementString("sprintalt", _strSprint);
 
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
@@ -551,16 +526,9 @@ namespace Chummer
 
             objWriter.WriteElementString("erased", _blnErased.ToString());
 
-            // <attributes>
-            objWriter.WriteStartElement("attributes");
-            foreach (CharacterAttrib objAttribute in _attributes)
-            {
-                objAttribute.Save(objWriter);
-            }
-            foreach (CharacterAttrib objAttribute in _specialAttributes)
-            {
-                objAttribute.Save(objWriter);
-            }
+			// <attributes>
+			objWriter.WriteStartElement("attributes");
+	        AttributeSection.Save(objWriter);
             // </attributes>
             objWriter.WriteEndElement();
 
@@ -1087,6 +1055,10 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("run", ref _strRun);
             objXmlCharacter.TryGetStringFieldQuickly("sprint", ref _strSprint);
 
+            _strRunAlt = objXmlCharacter["run"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+            _strWalkAlt = objXmlCharacter["walk"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+            _strSprintAlt = objXmlCharacter["sprint"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+
             objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
             objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
 
@@ -1284,103 +1256,9 @@ namespace Chummer
             // If old Qualities are in use, they need to be converted before we can continue.
             if (blnHasOldQualities)
                 ConvertOldQualities(objXmlNodeList);
-            Timekeeper.Finish("load_char_quality");
-            Timekeeper.Start("load_char_attrib");
-            // Attributes.
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"BOD\"]");
-            if (objXmlCharacter != null)
-            {
-                _attBOD.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"AGI\"]");
-            if (objXmlCharacter != null)
-            {
-                _attAGI.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
-            if (objXmlCharacter != null)
-            {
-                _attREA.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
-            if (objXmlCharacter != null)
-            {
-                _attSTR.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
-            if (objXmlCharacter != null)
-            {
-                _attCHA.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
-            if (objXmlCharacter != null)
-            {
-                _attINT.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
-            if (objXmlCharacter != null)
-            {
-                _attLOG.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
-            if (objXmlCharacter != null)
-            {
-                _attWIL.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
-            if (objXmlCharacter != null)
-            {
-                _attINI.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
-            if (objXmlCharacter != null)
-            {
-                _attEDG.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
-            if (objXmlCharacter != null)
-            {
-                _attMAG.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
-            if (objXmlCharacter != null)
-            {
-                _attRES.Load(objXmlCharacter);
-            }
-            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
-            if (objXmlCharacter != null)
-            {
-                _attESS.Load(objXmlCharacter);
-            }
-
-            // A.I. Attributes.
-            try
-            {
-                objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
-                if (objXmlCharacter != null)
-                {
-                    _attDEP.Load(objXmlCharacter);
-                }
-            }
-            catch
-            {
-            }
-
-            AttributeList.Add(_attBOD);
-            AttributeList.Add(_attAGI);
-            AttributeList.Add(_attREA);
-            AttributeList.Add(_attSTR);
-            AttributeList.Add(_attCHA);
-            AttributeList.Add(_attINT);
-            AttributeList.Add(_attLOG);
-            AttributeList.Add(_attWIL);
-            SpecialAttributeList.Add(_attEDG);
-            SpecialAttributeList.Add(_attMAG);
-            SpecialAttributeList.Add(_attRES);
-            SpecialAttributeList.Add(_attDEP);
-
-            Timekeeper.Finish("load_char_attrib");
-            Timekeeper.Start("load_char_misc2");
+	        Timekeeper.Finish("load_char_quality");
+			AttributeSection.Load(objXmlDocument);
+			Timekeeper.Start("load_char_misc2");
 
             objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
 
@@ -2189,8 +2067,8 @@ namespace Chummer
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
-                if (string.IsNullOrEmpty(strDrain))
+                string strDrain = AttributeSection.AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+				if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
                 }
@@ -2260,7 +2138,7 @@ namespace Chummer
                 string strDrainAtt = string.Empty;
                 objXmlDocument = new XmlDocument();
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strDrain = AttributeSection.AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
                 if (string.IsNullOrEmpty(strDrain))
                     strDrain = "0";
                 XPathExpression xprDrain = nav.Compile(strDrain);
@@ -2273,19 +2151,7 @@ namespace Chummer
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
-            _attBOD.Print(objWriter);
-            _attAGI.Print(objWriter);
-            _attREA.Print(objWriter);
-            _attSTR.Print(objWriter);
-            _attCHA.Print(objWriter);
-            _attINT.Print(objWriter);
-            _attLOG.Print(objWriter);
-            _attWIL.Print(objWriter);
-            _attINI.Print(objWriter);
-            _attEDG.Print(objWriter);
-            _attMAG.Print(objWriter);
-            _attESS.Print(objWriter);
-            _attRES.Print(objWriter);
+	        AttributeSection.Print(objWriter);
 
             // </attributes>
             objWriter.WriteEndElement();
@@ -2879,12 +2745,8 @@ namespace Chummer
             _blnCritterEnabled = false;
 
             // Reset Attributes.
-            _attributes.Clear();
-            foreach (string strAttribute in AttributeStrings)
-            {
-                CharacterAttrib objLoopAttrib = new CharacterAttrib(strAttribute,this);
-            }
-            _blnMAGEnabled = false;
+	        AttributeSection.Reset();
+			_blnMAGEnabled = false;
             _blnRESEnabled = false;
             _blnDEPEnabled = false;
             _blnGroupMember = false;
@@ -3275,38 +3137,11 @@ namespace Chummer
                 CharacterNameChanged?.Invoke(this);
             }
         }
-        /// <summary>
-        /// Character's Attributes.
-        /// </summary>
-        public List<CharacterAttrib> AttributeList
-        {
-            get
-            {
-                return _attributes;
-            }
-            set
-            {
-                _attributes = value;
-            }
-        }
-        /// <summary>
-        /// Character's Attributes.
-        /// </summary>
-        public List<CharacterAttrib> SpecialAttributeList
-        {
-            get
-            {
-                return _specialAttributes;
-            }
-            set
-            {
-                _specialAttributes = value;
-            }
-        }
-        /// <summary>
-        /// Character's portraits encoded using Base64.
-        /// </summary>
-        public List<string> Mugshots
+
+		/// <summary>
+		/// Character's portraits encoded using Base64.
+		/// </summary>
+		public List<string> Mugshots
         {
             get
                 {
@@ -4151,51 +3986,7 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         public CharacterAttrib GetAttribute(string strAttribute)
         {
-            switch (strAttribute)
-            {
-                case "BOD":
-                case "BODBase":
-                    return _attBOD;
-                case "AGI":
-                case "AGIBase":
-                    return _attAGI;
-                case "REA":
-                case "REABase":
-                    return _attREA;
-                case "STR":
-                case "STRBase":
-                    return _attSTR;
-                case "CHA":
-                case "CHABase":
-                    return _attCHA;
-                case "INT":
-                case "INTBase":
-                    return _attINT;
-                case "LOG":
-                case "LOGBase":
-                    return _attLOG;
-                case "WIL":
-                case "WILBase":
-                    return _attWIL;
-                case "INI":
-                    return _attINI;
-                case "EDG":
-                case "EDGBase":
-                    return _attEDG;
-                case "MAG":
-                case "MAGBase":
-                    return _attMAG;
-                case "RES":
-                case "RESBase":
-                    return _attRES;
-                case "DEP":
-                case "DEPBase":
-                    return _attDEP;
-                case "ESS":
-                    return _attESS;
-                default:
-                    return _attBOD;
-            }
+	        return AttributeSection.GetAttributeByName(strAttribute);
         }
 
         /// <summary>
@@ -4205,8 +3996,8 @@ namespace Chummer
         {
             get
             {
-                return _attBOD;
-            }
+				return AttributeSection.GetAttributeByName("BOD");
+			}
         }
 
         /// <summary>
@@ -4216,8 +4007,8 @@ namespace Chummer
         {
             get
             {
-                return _attAGI;
-            }
+				return AttributeSection.GetAttributeByName("AGI");
+			}
         }
 
         /// <summary>
@@ -4227,8 +4018,8 @@ namespace Chummer
         {
             get
             {
-                return _attREA;
-            }
+				return AttributeSection.GetAttributeByName("REA");
+			}
         }
 
         /// <summary>
@@ -4238,8 +4029,8 @@ namespace Chummer
         {
             get
             {
-                return _attSTR;
-            }
+				return AttributeSection.GetAttributeByName("STR");
+			}
         }
 
         /// <summary>
@@ -4249,8 +4040,8 @@ namespace Chummer
         {
             get
             {
-                return _attCHA;
-            }
+				return AttributeSection.GetAttributeByName("CHA");
+			}
         }
 
         /// <summary>
@@ -4260,8 +4051,8 @@ namespace Chummer
         {
             get
             {
-                return _attINT;
-            }
+				return AttributeSection.GetAttributeByName("INT");
+			}
         }
 
         /// <summary>
@@ -4271,8 +4062,8 @@ namespace Chummer
         {
             get
             {
-                return _attLOG;
-            }
+				return AttributeSection.GetAttributeByName("LOG");
+			}
         }
 
         /// <summary>
@@ -4282,8 +4073,8 @@ namespace Chummer
         {
             get
             {
-                return _attWIL;
-            }
+				return AttributeSection.GetAttributeByName("WIL");
+			}
         }
 
         /// <summary>
@@ -4292,9 +4083,9 @@ namespace Chummer
         public CharacterAttrib INI
         {
             get
-            {
-                return _attINI;
-            }
+			{
+				return AttributeSection.GetAttributeByName("INT");
+			}
         }
 
         /// <summary>
@@ -4304,8 +4095,8 @@ namespace Chummer
         {
             get
             {
-                return _attEDG;
-            }
+				return AttributeSection.GetAttributeByName("EDG");
+			}
         }
 
         /// <summary>
@@ -4315,8 +4106,8 @@ namespace Chummer
         {
             get
             {
-                return _attMAG;
-            }
+				return AttributeSection.GetAttributeByName("MAG");
+			}
         }
 
         /// <summary>
@@ -4324,24 +4115,33 @@ namespace Chummer
         /// </summary>
         public CharacterAttrib RES
         {
-            get { return _attRES; }
-        }
-
+	        get
+	        {
+				return AttributeSection.GetAttributeByName("RES");
+			}
+		}
+        
         /// <summary>
         /// Depth (DEP) Attribute.
         /// </summary>
         public CharacterAttrib DEP
-        {
-            get { return _attDEP; }
-        }
+		{
+			get
+			{
+				return AttributeSection.GetAttributeByName("DEP");
+			}
+		}
 
         /// <summary>
         /// Essence (ESS) Attribute.
         /// </summary>
         public CharacterAttrib ESS
         {
-            get { return _attESS; }
-        }
+			get
+			{
+				return AttributeSection.GetAttributeByName("ESS");
+			}
+		}
 
         /// <summary>
         /// Is the MAG CharacterAttribute enabled?
@@ -4701,7 +4501,7 @@ namespace Chummer
                 decESS -= decHole;
 
                 //1781 Essence is not printing
-                _attESS.Base = Convert.ToInt32(decESS);
+                ESS.Base = Convert.ToInt32(decESS);
 
                 return decESS;
             }
@@ -6426,19 +6226,25 @@ namespace Chummer
                 {
                     return "Special";
                 }
-
-                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
-                XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-                if (objXmlNode != null)
+                if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
                 {
                     string strReturn = string.Empty;
-                    if (objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn) && strReturn == "Special")
+                    XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+                    XmlNode variant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]/metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
+                    XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+
+                    strReturn = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
+                    _strRun = variant?["run"]?.InnerText ?? meta?["run"]?.InnerText ?? string.Empty;
+                    _strWalk = variant?["walk"]?.InnerText ?? meta?["walk"]?.InnerText ?? string.Empty;
+                    _strSprint = variant?["sprint"]?.InnerText ?? meta?["sprint"]?.InnerText ?? string.Empty;
+
+                    _strRunAlt = variant?["run"]?.Attributes["alt"]?.InnerText ?? meta?["run"].Attributes["alt"]?.InnerText ?? string.Empty;
+                    _strWalkAlt = variant?["walk"]?.Attributes["alt"]?.InnerText ?? meta?["walk"].Attributes["alt"]?.InnerText ?? string.Empty;
+                    _strSprintAlt = variant?["sprint"]?.Attributes["alt"]?.InnerText ?? meta?["sprint"].Attributes["alt"]?.InnerText ?? string.Empty;
+                    if (strReturn == "Special")
                     {
                         return "Special";
                     }
-                    objXmlNode.TryGetStringFieldQuickly("run", ref _strRun);
-                    objXmlNode.TryGetStringFieldQuickly("walk", ref _strWalk);
-                    objXmlNode.TryGetStringFieldQuickly("sprint", ref _strSprint);
                 }
 
                 return CalculatedMovement("Ground", true);
@@ -6485,6 +6291,17 @@ namespace Chummer
         /// </summary>
         private int WalkingRate(string strType = "Ground")
         {
+            string[] strReturn;
+            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            {
+                strReturn = _strWalk.Split('/');
+            }
+            else
+            {
+                strReturn = _strWalkAlt.Split('/');
+            }
+            
+
             int intTmp = 0;
             if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType))
             {
@@ -6494,8 +6311,7 @@ namespace Chummer
                 }
                 return intTmp;
             }
-
-            string[] strReturn = _strWalk.Split('/');
+            
             switch (strType)
             {
                 case "Fly":
@@ -6523,14 +6339,19 @@ namespace Chummer
             int intTmp = 0;
             if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType))
             {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType))
-                {
-                    intTmp = Math.Max(intTmp, objImprovement.Value);
-                }
-                return intTmp;
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType);
+                return imp.Value;
+            }
+            string[] strReturn;
+            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+            {
+                strReturn = _strRun.Split('/');
+            }
+            else
+            {
+                strReturn = _strRunAlt.Split('/');
             }
 
-            string[] strReturn = _strRun.Split('/');
             switch (strType)
             {
                 case "Fly":
@@ -6558,16 +6379,21 @@ namespace Chummer
             decimal decTmp = 0;
             if (Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
             {
-                foreach (Improvement objImprovement in Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType))
-                {
-                    decTmp = Math.Max(decTmp, objImprovement.Value) / 100.0m;
-                }
-                return decTmp;
+                Improvement imp = Improvements.First(i => i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType);
+                return imp.Value;
             }
-
-            string[] strReturn = _strSprint.Split('/');
-            switch (strType)
+            string[] strReturn;
+            if (this.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
             {
+                strReturn = _strSprint.Split('/');
+            }
+            else
+            {
+                strReturn = _strSprintAlt.Split('/');
+            }
+            int intTmp = 0;
+                switch (strType)
+                {
                 case "Fly":
                     if (strReturn.Length > 2)
                         decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
@@ -8146,19 +7972,5 @@ namespace Chummer
             }
         }
 
-        internal void ForceAttributePropertyChangedNotificationAll(string name, string abbrev = "")
-        {
-            if (!string.IsNullOrWhiteSpace(abbrev))
-            {
-                GetAttribute(abbrev).ForceEvent(name);
-            }
-            else
-            {
-                foreach (CharacterAttrib att in _attributes)
-                {
-                    att.ForceEvent(name);
-                }
-            }
-        }
-    }
+	}
 }

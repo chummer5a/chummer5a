@@ -91,7 +91,7 @@ namespace Chummer.Backend.Shared_Methods
             {
                 XmlDocument objDummyDoc = new XmlDocument();
                 XPathNavigator objNavigator = objDummyDoc.CreateNavigator();
-                foreach (string strAttribute in Character.AttributeStrings)
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objLoopAttribute = objCharacter.GetAttribute(strAttribute);
                     strLimitString = strLimitString.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
@@ -366,10 +366,10 @@ namespace Chummer.Backend.Shared_Methods
                     string strNodeAttributes = node["attributes"].InnerText;
                     int intNodeVal = Convert.ToInt32(node["val"].InnerText);
                     // Check if the character's Attributes add up to a particular total.
-                    string strAttributes = Character.AttributeStrings.Aggregate(strNodeAttributes,
+                    string strAttributes = AttributeSection.AttributeStrings.Aggregate(strNodeAttributes,
                         (current, strAttribute) => current.Replace(strAttribute, character.GetAttribute(strAttribute).DisplayAbbrev));
                     name = $"\n\t{strAttributes} {intNodeVal}";
-                    strAttributes = Character.AttributeStrings.Aggregate(strNodeAttributes,
+                    strAttributes = AttributeSection.AttributeStrings.Aggregate(strNodeAttributes,
                         (current, strAttribute) => current.Replace(strAttribute, character.GetAttribute(strAttribute).Value.ToString()));
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();

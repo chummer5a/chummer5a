@@ -8,6 +8,7 @@ using System.Xml.XPath;
 using Chummer.Skills;
 using Chummer.Backend.Extensions;
 using System.Drawing;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
@@ -1456,11 +1457,11 @@ namespace Chummer.Backend.Equipment
                         strDamage = strDamageExpression.Replace("STR", (_objCharacter.STR.TotalValue + intThrowDV).ToString());
                 }
 
-                foreach(Attributes.CharacterAttrib objLoopAttribute in _objCharacter.AttributeList)
+                foreach(Attributes.CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
                     strDamage = strDamage.Replace(objLoopAttribute.Abbrev, objLoopAttribute.TotalValue.ToString());
                 }
-                foreach (Attributes.CharacterAttrib objLoopAttribute in _objCharacter.SpecialAttributeList)
+                foreach (Attributes.CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
                 {
                     strDamage = strDamage.Replace(objLoopAttribute.Abbrev, objLoopAttribute.TotalValue.ToString());
                 }
@@ -2477,7 +2478,8 @@ namespace Chummer.Backend.Equipment
                 {
                     strAccuracy = strAccuracy.Replace("Missile", _objCharacter.LimitPhysical.ToString());
                 }
-                foreach(string strAttribute in Character.AttributeStrings)
+                string[] atts = AttributeSection.AttributeStrings;
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     Attributes.CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
                     strAccuracy = strAccuracy.Replace("{" + strAttribute + "Augmented}", objLoopAttribute.Augmented.ToString());

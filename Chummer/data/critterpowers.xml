@@ -1537,51 +1537,7 @@
     </power>
     <power>
       <id>a94dba2a-7699-4eb4-80a8-862f07beb6f6</id>
-      <name>Shift (Human)</name>
-      <category>Shapeshifter</category>
-      <type>M</type>
-      <action>Complex</action>
-      <range>Self</range>
-      <duration>Special</duration>
-      <source>RF</source>
-      <page>102</page>
-    </power>
-    <power>
-      <id>9f4e4ee5-5d7b-4360-b91a-15a0c97b2fd9</id>
-      <name>Shift (Elf)</name>
-      <category>Shapeshifter</category>
-      <type>M</type>
-      <action>Complex</action>
-      <range>Self</range>
-      <duration>Special</duration>
-      <source>RF</source>
-      <page>102</page>
-    </power>
-    <power>
-      <id>6b9cb5f4-cf9a-4cf2-bfd1-dc585f96e66d</id>
-      <name>Shift (Dwarf)</name>
-      <category>Shapeshifter</category>
-      <type>M</type>
-      <action>Complex</action>
-      <range>Self</range>
-      <duration>Special</duration>
-      <source>RF</source>
-      <page>102</page>
-    </power>
-    <power>
-      <id>3215688d-7c67-46da-ab78-d7c6c6196e65</id>
-      <name>Shift (Ork)</name>
-      <category>Shapeshifter</category>
-      <type>M</type>
-      <action>Complex</action>
-      <range>Self</range>
-      <duration>Special</duration>
-      <source>RF</source>
-      <page>102</page>
-    </power>
-    <power>
-      <id>6c64785b-f9f7-4f6b-80de-4065867a9a74</id>
-      <name>Shift (Troll)</name>
+      <name>Shift (Metahuman Form)</name>
       <category>Shapeshifter</category>
       <type>M</type>
       <action>Complex</action>

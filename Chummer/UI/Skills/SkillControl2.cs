@@ -40,9 +40,8 @@ namespace Chummer.UI.Skills
             lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 
             skill.PropertyChanged += Skill_PropertyChanged;
-
+            skill.CharacterObject.AttributeSection.AttributeCategoryChanged += AttributeCategoryOnPropertyChanged;
             _attributeActive = skill.AttributeObject;
-            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
             Skill_PropertyChanged(null, null);  //if null it updates all
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);
@@ -135,7 +134,16 @@ namespace Chummer.UI.Skills
 
             ResumeLayout();
         }
-        
+
+        private void AttributeCategoryOnPropertyChanged(object obj)
+        {
+            _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+            _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
+
+            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+            AttributeActiveOnPropertyChanged(null, null);
+        }
+
         private void ContextMenu_Opening(object sender, CancelEventArgs e)
         {
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
@@ -241,8 +249,8 @@ namespace Chummer.UI.Skills
         private void SetupDropdown()
         {
             List<ListItem> lstAttributeItems = new List<ListItem>();
-            foreach (string strLoopAttribute in Character.AttributeStrings)
-            {
+		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
+		    {
                 lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
             }
 
@@ -316,7 +324,7 @@ namespace Chummer.UI.Skills
         {
             Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
         }
-
+        
         private void lblName_Click(object sender, EventArgs e)
         {
             CommonFunctions.OpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);

@@ -136,6 +136,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />

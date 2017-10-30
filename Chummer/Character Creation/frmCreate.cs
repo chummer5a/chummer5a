@@ -36,6 +36,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Chummer.UI.Attributes;
 using Chummer.Backend.Extensions;
+using System.Reflection;
 
 namespace Chummer
 {
@@ -12929,15 +12930,15 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = CalculateAttributeBP(_objCharacter.AttributeList);
-            lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
-            intAttributePointsUsed += CalculateAttributeBP(_objCharacter.SpecialAttributeList);
-            intKarmaPointsRemain -= intAttributePointsUsed;
-            lblAttributesBP.Text = BuildAttributes(_objCharacter.AttributeList, null);
-            lblPBuildSpecial.Text = BuildAttributes(_objCharacter.SpecialAttributeList,null,true);
-            // ------------------------------------------------------------------------------
-            // Include the BP used by Martial Arts.
-            int intMartialArtsPoints = 0;
+            int intAttributePointsUsed = CalculateAttributeBP(_objCharacter.AttributeSection.AttributeList);
+			lblAttributesBP.Text = string.Format("{0} " + strPoints, intAttributePointsUsed.ToString());
+			intAttributePointsUsed += CalculateAttributeBP(_objCharacter.AttributeSection.SpecialAttributeList);
+			intKarmaPointsRemain -= intAttributePointsUsed;
+			lblAttributesBP.Text = BuildAttributes(_objCharacter.AttributeSection.AttributeList, null);
+			lblPBuildSpecial.Text = BuildAttributes(_objCharacter.AttributeSection.SpecialAttributeList, null,true);
+			// ------------------------------------------------------------------------------
+			// Include the BP used by Martial Arts.
+			int intMartialArtsPoints = 0;
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
                 if (!objMartialArt.IsQuality)
@@ -15051,8 +15052,25 @@ namespace Chummer
                 objKarmaUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
                 objKarma.Undo = objKarmaUndo;
             }
+	        if (_objCharacter.MetatypeCategory == "Shapeshifter")
+	        {
+		        List<CharacterAttrib> staging = new List<CharacterAttrib>();
+		        XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
+                string s = $"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]";
+		        foreach (CharacterAttrib att in _objCharacter.AttributeSection.AttributeList)
+		        {
+			        CharacterAttrib newAtt = new CharacterAttrib(_objCharacter, att.Abbrev,
+				        CharacterAttrib.AttributeCategory.Shapeshifter);
+					_objCharacter.AttributeSection.CopyAttribute(att,newAtt, s, xmlDoc);
+					staging.Add(newAtt);
+		        }
+		        foreach (CharacterAttrib att in staging)
+		        {
+					_objCharacter.AttributeSection.AttributeList.Add(att);
+				}
+	        }
 
-            // Create an Expense Entry for Starting Nuyen.
+	        // Create an Expense Entry for Starting Nuyen.
             ExpenseLogEntry objNuyen = new ExpenseLogEntry();
             objNuyen.Create(_objCharacter.Nuyen, "Starting Nuyen", ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objNuyen);
@@ -17210,7 +17228,7 @@ namespace Chummer
                 }
 
             }
-            int i = _objCharacter.TotalAttributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
+            int i = _objCharacter.TotalAttributes - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes
             if (i < 0)
             {
@@ -17219,7 +17237,7 @@ namespace Chummer
                 strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidAttributeExcess").Replace("{0}", (i * -1).ToString());
             }
 
-            i = _objCharacter.TotalSpecial - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
+            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (i < 0)
             {
@@ -17743,7 +17761,7 @@ namespace Chummer
             }
 
 
-            i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeList);
+            i = _objCharacter.Attributes - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.AttributeList);
             // Check if the character has gone over on Primary Attributes
             if (blnValid && i > 0)
             {
@@ -17758,7 +17776,7 @@ namespace Chummer
                 }
             }
 
-            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.SpecialAttributeList);
+            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (blnValid && _objCharacter.Special > 0)
             {
@@ -21415,7 +21433,7 @@ namespace Chummer
                 int intTemp = 0;
                 int intTemp2 = 0;
                 // Value from attribute points and raised attribute minimums
-                foreach (string strAttributeName in Character.AttributeStrings)
+                foreach (string strAttributeName in AttributeSection.AttributeStrings)
                 {
                     if (strAttributeName != "ESS")
                     {

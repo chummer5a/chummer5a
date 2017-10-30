@@ -687,7 +687,7 @@ namespace Chummer
             // Update the Fading CharacterAttribute Value.
             var objXmlDocument = new XmlDocument();
             XPathNavigator nav = objXmlDocument.CreateNavigator();
-            foreach (string strAttribute in Character.AttributeStrings)
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                 strDrain = strDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
@@ -699,7 +699,7 @@ namespace Chummer
             intDrain += ImprovementManager.ValueOf(_objCharacter, drain);
             attributeText.Text = strDisplayDrain;
             valueText.Text = intDrain.ToString();
-            strTip = Character.AttributeStrings.Select(strAttribute => _objCharacter.GetAttribute(strAttribute)).Aggregate(strTip, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")"));
+            strTip = AttributeSection.AttributeStrings.Select(strAttribute => _objCharacter.GetAttribute(strAttribute)).Aggregate(strTip, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")"));
             tooltip.SetToolTip(valueText, strTip);
         }
     }

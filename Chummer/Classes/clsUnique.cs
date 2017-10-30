@@ -325,8 +325,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
-                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
+            }
+            else if (!string.IsNullOrEmpty(strForceValue))
+            {
+                _strExtra = strForceValue;
             }
             if (Levels == 0 && objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0)
             {

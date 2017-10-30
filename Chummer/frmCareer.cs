@@ -432,14 +432,41 @@ namespace Chummer
             cboStream.DataSource = lstStreams;
             cboStream.EndUpdate();
 
-            // Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
-            // to UpdateCharacterInformation();
-            MetatypeSelected();
+			cboAttributeCategory.Visible = _objCharacter.MetatypeCategory == "Shapeshifter";
+			if (_objCharacter.MetatypeCategory == "Shapeshifter")
+			{
+				XmlDocument objDoc = XmlManager.Load("metatypes.xml");
+				List<ListItem> lstAttributeCategories = new List<ListItem>();
+				XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
+				ListItem objItem = new ListItem();
+				objItem.Value = "Standard";
+				objItem.Name = node["name"].Attributes["translate"] != null
+					? node["name"].Attributes["translate"].InnerText
+					: node["name"].InnerText;
+				lstAttributeCategories.Add(objItem);
+				
+				node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]/metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]");
 
-            // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-            {
-                lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
+				objItem = new ListItem();
+				objItem.Value = "Shapeshifter";
+				objItem.Name = node["name"].Attributes["translate"] != null
+					? node["name"].Attributes["translate"].InnerText
+					: node["name"].InnerText;
+				lstAttributeCategories.Add(objItem);
+
+				lstAttributeCategories.Sort(objSort.Compare);
+				cboAttributeCategory.BeginUpdate();
+				cboAttributeCategory.ValueMember = "Value";
+				cboAttributeCategory.DisplayMember = "Name";
+				cboAttributeCategory.DataSource = lstAttributeCategories;
+				cboAttributeCategory.EndUpdate();
+				cboAttributeCategory.SelectedValue = "Standard";
+			}
+
+			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
+			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
+			{
+				lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
 
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
@@ -817,7 +844,7 @@ namespace Chummer
                 string strDrainAtt = string.Empty;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = Character.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strDrain = AttributeSection.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
                 if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
@@ -839,7 +866,7 @@ namespace Chummer
                 string strDrainAtt = string.Empty;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strFading = Character.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                string strFading = AttributeSection.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
                 if (string.IsNullOrEmpty(strFading))
                 {
                     strFading = "0";
@@ -16129,7 +16156,7 @@ namespace Chummer
 
                     string strDrain = lblDrainAttributes.Text;
 
-                    foreach (string strAttribute in Character.AttributeStrings)
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                         strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
@@ -16147,7 +16174,7 @@ namespace Chummer
 
                     strTip = lblDrainAttributes.Text;
 
-                    foreach (string strAttribute in Character.AttributeStrings)
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                         strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
@@ -16835,7 +16862,7 @@ namespace Chummer
 
             XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + cboStream.SelectedValue + "\"]");
             string strDrain = objXmlTradition["drain"].InnerText;
-            foreach (string strAttribute in Character.AttributeStrings)
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
                 strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
@@ -18289,40 +18316,6 @@ namespace Chummer
 #endregion
 
 #region Custom Methods
-        /// <summary>
-        /// Let the application know that a Metatype has been selected.
-        /// </summary>
-        public void MetatypeSelected()
-        {
-            // Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
-            // Also update the Maximum and Augmented Maximum values displayed.
-            /*
-            _blnSkipUpdate = true;
-
-            int intEssenceLoss = 0;
-            if (!_objOptions.ESSLossReducesMaximumOnly)
-                intEssenceLoss = _objCharacter.EssencePenalty;
-            else
-            {
-                if (_objCharacter.MAGEnabled)
-                {
-                    if (_objCharacter.MAG.Value > _objCharacter.MAG.TotalMaximum)
-                        intEssenceLoss = _objCharacter.MAG.Value - _objCharacter.MAG.TotalMaximum;
-                }
-                else if (_objCharacter.RESEnabled)
-                {
-                    if (_objCharacter.RES.Value > _objCharacter.RES.TotalMaximum)
-                        intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
-                }
-            }
-
-            _blnSkipUpdate = false;
-            */
-            ScheduleCharacterUpdate();
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-
         public void RefreshContacts()
         {
             HashSet<Contact> existing = new HashSet<Contact>();
@@ -18775,7 +18768,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = new XmlDocument();
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
                 string strDrain = lblDrainAttributes.Text;
-                foreach (string strAttribute in Character.AttributeStrings)
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     strDrain = strDrain.Replace(LanguageManager.GetString("String_Attribute" + strAttribute + "Short"),
                         _objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
@@ -18808,7 +18801,7 @@ namespace Chummer
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
                 string strFading = lblFadingAttributes.Text;
                 strTip = lblFadingAttributes.Text;
-                foreach (string strAttribute in Character.AttributeStrings)
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     string strShortAttribute = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
                     string strAttributeValue = _objCharacter.GetAttribute(strAttribute).TotalValue.ToString();
@@ -25213,7 +25206,7 @@ namespace Chummer
 
         private void BuildAttributePanel()
         {
-            pnlAttributes.Controls.Clear();
+			pnlAttributes.Controls.Clear();
             lstPrimaryAttributes.Clear();
             lstSpecialAttributes.Clear();
             lstPrimaryAttributes.Add(_objCharacter.BOD);
@@ -25378,6 +25371,14 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
+        }
+        private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _objCharacter.AttributeSection.AttributeCategory = _objCharacter.AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
+            _objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
+            _objCharacter.AttributeSection.ResetBindings();
+
+            objAttribute_ValueChanged(null);
         }
     }
 }

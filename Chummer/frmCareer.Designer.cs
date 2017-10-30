@@ -1150,6 +1150,7 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cboAttributeCategory = new Chummer.helpers.ComboBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -4612,6 +4613,7 @@ namespace Chummer
             // tabCommon
             // 
             this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCommon.Controls.Add(this.cboAttributeCategory);
             this.tabCommon.Controls.Add(this.nudQualityLevel);
             this.tabCommon.Controls.Add(this.lblQualityLevelLabel);
             this.tabCommon.Controls.Add(this.cmdIncreasePowerPoints);
@@ -13640,6 +13642,16 @@ namespace Chummer
             this.tsAIProgramNotes.Text = "&Notes";
             this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
             // 
+            // cboAttributeCategory
+            // 
+            this.cboAttributeCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboAttributeCategory.FormattingEnabled = true;
+            this.cboAttributeCategory.Location = new System.Drawing.Point(631, 74);
+            this.cboAttributeCategory.Name = "cboAttributeCategory";
+            this.cboAttributeCategory.Size = new System.Drawing.Size(198, 21);
+            this.cboAttributeCategory.TabIndex = 107;
+            this.cboAttributeCategory.SelectedIndexChanged += new System.EventHandler(this.cboAttributeCategory_SelectedIndexChanged);
+            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14877,6 +14889,7 @@ namespace Chummer
         private Label lblAttributesAug;
         private Label lblAttributesMetatype;
         private Chummer.helpers.Button cmdIncreasePowerPoints;
+        private ComboBox cboAttributeCategory;
         private Label lblQualityLevelLabel;
         private NumericUpDown nudQualityLevel;
         private Label lblWeaponRangeAlternate;

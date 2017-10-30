@@ -871,11 +871,11 @@ namespace Chummer
                 else
                     strValue = strValues[strValues.Length - 1];
             }
-            if (strValue.Contains("Rating") || Character.AttributeStrings.Any(strValue.Contains))
+            if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString());
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                foreach (string strAttribute in Character.AttributeStrings)
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     strReturn = strReturn.Replace(strAttribute, objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
@@ -1238,7 +1238,7 @@ namespace Chummer
                                     break;
                             }
                         }
-                        objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers),objImprovement.ImprovedName);
+                        objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers),objImprovement.ImprovedName);
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
