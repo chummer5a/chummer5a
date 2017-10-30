@@ -1083,14 +1083,14 @@ namespace Chummer
                 strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
                 strFriendlyName, intRating, ValueToInt, Rollback);
 
-            MethodInfo info;
-            if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
+            Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
+            if (objImprovementMethod != null)
             {
                 try
                 {
-                    info.Invoke(container, new object[] {bonusNode});
+                    objImprovementMethod.Invoke(bonusNode);
                 }
-                catch (TargetInvocationException ex) when (ex.InnerException?.GetType() == typeof(AbortedException))
+                catch (AbortedException)
                 {
                     Rollback(objCharacter);
                     return false;
@@ -1108,19 +1108,11 @@ namespace Chummer
             else if (bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
-                Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+                Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml});
                 return false;
             }
             return true;
         }
-
-        //this should probably be somewhere else...
-        private static readonly Lazy<Dictionary<string, MethodInfo>> AddMethods = new Lazy<Dictionary<string, MethodInfo>>(() =>
-        {
-            MethodInfo[] allMethods = typeof(AddImprovementCollection).GetMethods();
-
-            return allMethods.ToDictionary(x => x.Name.ToUpperInvariant());
-        });
 
         /// <summary>
         /// Remove all of the Improvements for an XML Node.

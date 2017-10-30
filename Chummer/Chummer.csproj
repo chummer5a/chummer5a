@@ -140,6 +140,11 @@
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
+    <Compile Include="Backend\Improvements\ImprovementMethods.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImprovementMethods.tt</DependentUpon>
+    </Compile>
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
@@ -1590,6 +1595,10 @@
     <None Include="icons\emoticon_waii.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Backend\Improvements\ImprovementMethods.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImprovementMethods.cs</LastGenOutput>
+    </None>
     <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

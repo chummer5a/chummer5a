@@ -15,7 +15,7 @@ using Chummer.Backend.Extensions;
 
 namespace Chummer.Classes
 {
-    class AddImprovementCollection
+    public class AddImprovementCollection
     {
         private Character _objCharacter;
 
@@ -74,7 +74,6 @@ namespace Chummer.Classes
 
 
         #region
-
         public void qualitylevel(XmlNode bonusNode)
         {
             //List of qualities to work with
@@ -299,11 +298,11 @@ namespace Chummer.Classes
         public void cyberseeker(XmlNode bonusNode)
         {
             //Check if valid attrib
-            if (new string[] { "BOD", "AGI", "STR", "REA", "LOG", "CHA", "INT", "WIL", "BOX" }.Any(x => x == bonusNode.InnerText))
+            string strBonusNodeText = bonusNode.InnerText;
+            if (strBonusNodeText == "BOX" || AttributeSection.AttributeStrings.Any(x => x == strBonusNodeText))
             {
-                CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.Seeker,
+                CreateImprovement(strBonusNodeText, _objImprovementSource, SourceName, Improvement.ImprovementType.Seeker,
                     _strUnique, 0, 0, 0, 0, 0, 0);
-
             }
             else
             {
