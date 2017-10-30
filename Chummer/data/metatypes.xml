@@ -7396,7 +7396,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -7482,7 +7482,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
@@ -7570,7 +7570,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -7658,7 +7658,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -7747,7 +7747,7 @@
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -7837,7 +7837,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -7923,7 +7923,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
@@ -8015,7 +8015,7 @@
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -8103,7 +8103,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -8191,7 +8191,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
@@ -8282,7 +8282,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -8378,7 +8378,7 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -8465,7 +8465,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -8554,7 +8554,7 @@
             <positive>
               <quality select="Metahuman Form Only">Fangs</quality>
 			  <quality select="Metahuman Form Only">Keen-Eared</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -8641,7 +8641,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -8728,7 +8728,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
@@ -8815,7 +8815,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
@@ -8904,7 +8904,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -8996,7 +8996,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9086,7 +9086,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9175,7 +9175,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
@@ -9265,7 +9265,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Goring Horns</quality>
-              <quality select="Shapeshifter Form Only">Hawk Eyed</quality>
+              <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
