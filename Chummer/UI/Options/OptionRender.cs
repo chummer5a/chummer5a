@@ -22,11 +22,13 @@ namespace Chummer.UI.Options
         private readonly HoverHelper _hoverHelper = new HoverHelper();
         private readonly ToolTip _toolTip = new ToolTip();
         private RTree<string> _toolTipTree = new RTree<string>();
+        private readonly Graphics _objGraphics;
 
         public List<IOptionWinFromControlFactory> Factories { get; set; }
 
         public OptionRender() : this(new TabAlignmentGroupLayoutProvider())
         {
+            _objGraphics = CreateGraphics();
         }
 
         public OptionRender(IGroupLayoutProvider layoutProvider)
@@ -74,35 +76,37 @@ namespace Chummer.UI.Options
             //Console.WriteLine("{0}->{1}, {2}", e.ClipRectangle.Top, e.ClipRectangle.Bottom, this.AutoScrollPosition.Y);
 
             //Can probably also restrict drawing arear...
-
+            SolidBrush objBrush = new SolidBrush(ForeColor);
             for (var index = 0; index < _renderData.Count; index++)
             {
                 RenderedLayoutGroup renderGroup = _renderData[index];
+                float fltRenderGroupX = renderGroup.Offset.X + AutoScrollPosition.X;
+                float fltRenderGroupY = renderGroup.Offset.Y + AutoScrollPosition.Y;
                 e.Graphics.DrawString(
                     _preRenderData[index].Header,
                     _headerFont,
-                    new SolidBrush(ForeColor),
+                    objBrush,
                     new PointF(
-                        renderGroup.Offset.X + AutoScrollPosition.X,
-                        renderGroup.Offset.Y + AutoScrollPosition.Y
+                        fltRenderGroupX,
+                        fltRenderGroupY
                     ));
                 foreach (RenderedLayoutGroup.TextRenderInfo renderInfo in renderGroup.TextLocations)
                 {
                     ////Draw a rectangle under text to show what render is doing
                     //e.Graphics.DrawRectangle(
                     //    new Pen(Color.Aqua), 
-                    //    renderInfo.Location.X + renderGroup.Offset.X + AutoScrollPosition.X,
-                    //    renderInfo.Location.Y + renderGroup.Offset.Y + AutoScrollPosition.Y + FIXED_SPACING, 
+                    //    renderInfo.Location.X + fltRenderGroupX,
+                    //    renderInfo.Location.Y + fltRenderGroupY + FIXED_SPACING, 
                     //    renderInfo.Size.Width, 
                     //    renderInfo.Size.Height);
 
                     e.Graphics.DrawString(
                         renderInfo.Text,
                         GetCachedFont(renderInfo.Style),
-                        new SolidBrush(ForeColor),
+                        objBrush,
                         new PointF(
-                            renderInfo.Location.X + renderGroup.Offset.X + AutoScrollPosition.X,
-                            renderInfo.Location.Y + renderGroup.Offset.Y + AutoScrollPosition.Y + FIXED_SPACING),
+                            renderInfo.Location.X + fltRenderGroupX,
+                            renderInfo.Location.Y + fltRenderGroupY + FIXED_SPACING),
                         StringFormat.GenericTypographic);
                 }
             }
@@ -124,7 +128,7 @@ namespace Chummer.UI.Options
             sw.TaskEnd("Initial");
 
             List<OptionItem> displayEntries = new List<OptionItem>();
-            List<OptionRenderItem> nonDisplayEntries = new List<OptionRenderItem>();
+            HeaderRenderDirective objLoopRenderDirective = null;
 
             foreach (OptionRenderItem item in contents)
             {
@@ -135,18 +139,16 @@ namespace Chummer.UI.Options
                 {
                     if (displayEntries.Count != 0)
                     {
-                        _preRenderData.Add(
-                            CreatePreRenderGroup(nonDisplayEntries, displayEntries));
+                        _preRenderData.Add(CreatePreRenderGroup(objLoopRenderDirective, displayEntries));
 
                         displayEntries.Clear();
-                        nonDisplayEntries.Clear();
                     }
 
-                    nonDisplayEntries.Add(item);
+                    objLoopRenderDirective = item as HeaderRenderDirective;
                 }
             }
 
-            _preRenderData.Add(CreatePreRenderGroup(nonDisplayEntries, displayEntries));
+            _preRenderData.Add(CreatePreRenderGroup(objLoopRenderDirective, displayEntries));
 
             sw.TaskEnd("PreRender");
 
@@ -160,9 +162,9 @@ namespace Chummer.UI.Options
             sw.TaskEnd("Last");
         }
 
-        private PreRenderGroup CreatePreRenderGroup(List<OptionRenderItem> nonDisplayEntries, List<OptionItem> displayEntries)
+        private PreRenderGroup CreatePreRenderGroup(HeaderRenderDirective objRenderDirective, List<OptionItem> displayEntries)
         {
-            List<Control> controls = new List<Control>(displayEntries.Count);
+            List<Control> lstControlsToRender = new List<Control>(displayEntries.Count);
             List<LayoutLineInfo> lines = new List<LayoutLineInfo>();
 
             for (int i = 0; i < displayEntries.Count; i++)
@@ -178,30 +180,22 @@ namespace Chummer.UI.Options
                 LayoutLineInfo line = new LayoutLineInfo
                 {
                     ControlRectangle = new Rectangle(control.Location, control.Size),
-                    LayoutString = displayEntries[i].DisplayString,
+                    LayoutString = entry.DisplayString,
                     ToolTip = entryAsProxy?.ToolTip
                 };
 
                 //NB Big and Small C. One is controls in this control, other is controls that the render can play with
                 Controls.Add(control);
-                controls.Add(control);
+                lstControlsToRender.Add(control);
                 lines.Add(line);
             }
 
             PreRenderGroup @group =  new PreRenderGroup
             {
-                Controls = controls,
+                Header = objRenderDirective?.Title ?? string.Empty,
+                Controls = lstControlsToRender,
                 Lines = lines
             };
-
-            foreach (OptionRenderItem displayDirective in nonDisplayEntries)
-            {
-                HeaderRenderDirective d;
-                if ((d = displayDirective as HeaderRenderDirective) != null)
-                {
-                    group.Header = d.Title;
-                }
-            }
 
             return group;
         }
@@ -211,13 +205,11 @@ namespace Chummer.UI.Options
             Controls.Clear();
 
             _preRenderData.Clear();
-            _renderData.Clear();
         }
 
         void SetupLayout()
         {
             object share = null;
-            Graphics g = CreateGraphics();
             _renderData.Clear();
 
             List<LayoutGroupComputation> layouts = new List<LayoutGroupComputation>();
@@ -225,7 +217,7 @@ namespace Chummer.UI.Options
             foreach (PreRenderGroup preRenderGroup in _preRenderData)
             {
                 layouts.Add(_defaultGroupLayoutProvider.ComputeLayoutGroup(
-                    g,
+                    _objGraphics,
                     preRenderGroup.Lines,
                     ref share
                 ));
@@ -233,7 +225,7 @@ namespace Chummer.UI.Options
 
             foreach (LayoutGroupComputation layoutGroupComputation in layouts)
             {
-                _renderData.Add(_defaultGroupLayoutProvider.RenderLayoutGroup(g, layoutGroupComputation, share));
+                _renderData.Add(_defaultGroupLayoutProvider.RenderLayoutGroup(_objGraphics, layoutGroupComputation, share));
             }
 
             LayoutGroups();
@@ -249,13 +241,13 @@ namespace Chummer.UI.Options
             if (columnCount == 0) columnCount = 1;
 
             int[] usedSpace = new int[columnCount];
-            for (int i = 0; i < usedSpace.Length; i++)
+            for (int i = 0; i < columnCount; i++)
                 usedSpace[i] = 5;
 
             foreach (RenderedLayoutGroup renderInfo in _renderData)
             {
                 int smallest = 0;
-                for (int i = 0; i < usedSpace.Length; i++)
+                for (int i = 0; i < columnCount; i++)
                 {
                     if (usedSpace[i] < usedSpace[smallest])
                         smallest = i;
@@ -269,11 +261,14 @@ namespace Chummer.UI.Options
             {
                 PreRenderGroup preRenderGroup = _preRenderData[index];
                 RenderedLayoutGroup renderGroup = _renderData[index];
+                int intRenderGroupX = renderGroup.Offset.X + (int)offset.X;
+                int intRenderGroupY = renderGroup.Offset.Y + (int)offset.Y;
                 for (int i = 0; i < preRenderGroup.Controls.Count; i++)
                 {
+                    Point objLoopPoint = renderGroup.ControlLocations[i];
                     Point controlPoint = new Point(
-                        renderGroup.ControlLocations[i].X + (int) offset.X + renderGroup.Offset.X,
-                        renderGroup.ControlLocations[i].Y + (int) offset.Y + renderGroup.Offset.Y + FIXED_SPACING);
+                        objLoopPoint.X + intRenderGroupX,
+                        objLoopPoint.Y + intRenderGroupY + FIXED_SPACING);
 
 
                     preRenderGroup.Controls[i].Location = controlPoint;
@@ -286,8 +281,6 @@ namespace Chummer.UI.Options
                     _toolTipTree.Insert(toolTip.Text, r);
                 }
             }
-
-
         }
 
         private readonly Dictionary<FontStyle, Font> _fontCache = new Dictionary<FontStyle, Font>();
