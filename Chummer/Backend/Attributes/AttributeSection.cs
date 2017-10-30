@@ -56,24 +56,33 @@ namespace Chummer.Backend.Attributes
 		public void Load(XmlDocument xmlDoc)
 		{
 			Timekeeper.Start("load_char_attrib");
-			XmlNodeList nodes = xmlDoc.SelectNodes("/character/attributes/attribute");
-			if (nodes == null) Utils.BreakIfDebug();
 			AttributeList.Clear();
 			SpecialAttributeList.Clear();
-			foreach (XmlNode node in nodes)
-			{
-				CharacterAttrib att = new CharacterAttrib(_character,node["name"].InnerText);
-				att.Load(node);
-				switch (att.ConvertToAttributeCategory(att.Abbrev))
-				{
-					case CharacterAttrib.AttributeCategory.Special:
-						SpecialAttributeList.Add(att);
-						break;
-					case CharacterAttrib.AttributeCategory.Standard:
-						AttributeList.Add(att);
-						break;
-				}
-			}
+            foreach (string s in AttributeStrings)
+            {
+                XmlNode attNode = xmlDoc.SelectSingleNode("/character/attributes/attribute[name = \"" + s + "\"]");
+                
+                if (attNode == null)
+                {
+                    // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
+                    XmlDocument objXmlDocument = XmlManager.Load(_character.IsCritter ? "critters.xml" : "metatypes.xml");
+                    attNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
+                    ?? objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
+                }
+
+                CharacterAttrib att = new CharacterAttrib(_character, s);
+                att.Load(attNode);
+                switch (att.ConvertToAttributeCategory(att.Abbrev))
+                {
+                    case CharacterAttrib.AttributeCategory.Special:
+                        SpecialAttributeList.Add(att);
+                        break;
+                    case CharacterAttrib.AttributeCategory.Standard:
+                        AttributeList.Add(att);
+                        break;
+                }
+            }
+            ResetBindings();
 			Timekeeper.Finish("load_char_attrib");
 		}
 
