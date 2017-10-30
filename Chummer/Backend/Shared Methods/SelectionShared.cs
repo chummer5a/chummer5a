@@ -411,7 +411,7 @@ namespace Chummer.Backend.Shared_Methods
                         string strWareNodeSelectAttribute = node.Attributes?["select"]?.InnerText ?? string.Empty;
                         return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                objCyberware.Name == strNodeInnerText && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                               string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra) >= count;
+                               (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                     }
                 case "biowarecontains":
                 case "cyberwarecontains":
@@ -429,7 +429,7 @@ namespace Chummer.Backend.Shared_Methods
                         string strWareContainsNodeSelectAttribute = node.Attributes?["select"]?.InnerText ?? string.Empty;
                         return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
                             objCyberware.SourceType == source && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) && objCyberware.Name.Contains(strNodeInnerText) &&
-                            string.IsNullOrEmpty(strWareContainsNodeSelectAttribute) || strWareContainsNodeSelectAttribute == objCyberware.Extra) >= count;
+                            (string.IsNullOrEmpty(strWareContainsNodeSelectAttribute) || strWareContainsNodeSelectAttribute == objCyberware.Extra)) >= count;
                 }
                 case "damageresistance":
                     // Damage Resistance must be a particular value.
