@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Attributes
 {
@@ -49,22 +50,48 @@ namespace Chummer.Backend.Attributes
 			Timekeeper.Start("load_char_attrib");
 			AttributeList.Clear();
 			SpecialAttributeList.Clear();
+            XmlDocument objXmlDocument = XmlManager.Load(_character.IsCritter ? "critters.xml" : "metatypes.xml");
+            XPathNavigator nav = objXmlDocument.CreateNavigator();
+            XmlNode objCharNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
+                        ?? objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
             foreach (string s in AttributeStrings)
             {
                 XmlNodeList attNodeList = xmlDoc.SelectNodes("/character/attributes/attribute[name = \"" + s + "\"]");
-                
+                // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
                 if (attNodeList.Count == 0)
                 {
-                    // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
-                    XmlDocument objXmlDocument = XmlManager.Load(_character.IsCritter ? "critters.xml" : "metatypes.xml");
-                    attNodeList = objXmlDocument.SelectNodes("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
-                    ?? objXmlDocument.SelectNodes("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
-                }
-
-                foreach (XmlNode attNode in attNodeList)
-                {
                     CharacterAttrib att = new CharacterAttrib(_character, s);
-                    att.Load(attNode);
+                    string strAttributeLower = s.ToLowerInvariant();
+                    int intMinValue = 1;
+                    int intMaxValue = 1;
+                    int intAugValue = 1;
+
+                    object xprEvaluateMinResult = null;
+                    object xprEvaluateMaxResult = null;
+                    object xprEvaluateAugResult = null;
+                    // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+                    try
+                    {
+                        xprEvaluateMinResult = nav.Evaluate(objCharNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace("F", "0").Replace("1D6", "0").Replace("2D6", "0"));
+                    }
+                    catch (XPathException) { }
+                    try
+                    {
+                        xprEvaluateMaxResult = nav.Evaluate(objCharNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace("F", "0").Replace("1D6", "0").Replace("2D6", "0"));
+                    }
+                    catch (XPathException) { }
+                    try
+                    {
+                        xprEvaluateAugResult = nav.Evaluate(objCharNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace("F", "0").Replace("1D6", "0").Replace("2D6", "0"));
+                    }
+                    catch (XPathException) { }
+                    if (xprEvaluateMinResult != null)
+                        intMinValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateMinResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                    if (xprEvaluateMaxResult != null)
+                        intMaxValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateMaxResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                    if (xprEvaluateAugResult != null)
+                        intAugValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateAugResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                    att.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
                     switch (att.ConvertToAttributeCategory(att.Abbrev))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
@@ -73,6 +100,23 @@ namespace Chummer.Backend.Attributes
                         case CharacterAttrib.AttributeCategory.Standard:
                             AttributeList.Add(att);
                             break;
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode attNode in attNodeList)
+                    {
+                        CharacterAttrib att = new CharacterAttrib(_character, s);
+                        att.Load(attNode);
+                        switch (att.ConvertToAttributeCategory(att.Abbrev))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                SpecialAttributeList.Add(att);
+                                break;
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                AttributeList.Add(att);
+                                break;
+                        }
                     }
                 }
             }
