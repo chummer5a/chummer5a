@@ -255,13 +255,14 @@ namespace Chummer.Backend.Options
                     {
                         if (textOrControl.IsControl)
                         {
+                            Rectangle objPartRectangle = textOrControl.Control;
                             controlLocations.Add(
                                 new Point(
-                                    textOrControl.Control.X + elementStartingPoint + LayoutOptions.ControlMargin,
-                                    textOrControl.Control.Y + nextLineBeginsAt));  //TODO: This line probably lacks something, controls could once move up or down a little
-                            elementStartingPoint += LayoutOptions.ControlMargin + textOrControl.Control.Width;
+                                    objPartRectangle.X + elementStartingPoint + LayoutOptions.ControlMargin,
+                                    objPartRectangle.Y + nextLineBeginsAt));  //TODO: This line probably lacks something, controls could once move up or down a little
+                            elementStartingPoint += LayoutOptions.ControlMargin + objPartRectangle.Width;
 
-                            lineBottom = Math.Max(lineBottom, nextLineBeginsAt + textOrControl.Control.Height);
+                            lineBottom = Math.Max(lineBottom, nextLineBeginsAt + objPartRectangle.Height);
                         }
                         else
                         {
@@ -306,6 +307,8 @@ namespace Chummer.Backend.Options
             }; 
         }
 
+        //The graphics object will at max accept a batchsize of 32 or it will crap itself
+        private const int BATCH_SIZE = 32;
         Dictionary<string, RectangleF> ComputeTextSize(Graphics graphics, List<string> lines)
         {
             //TODO: Might be able to make this global, and this part is slowish
@@ -317,28 +320,39 @@ namespace Chummer.Backend.Options
             //But the graphics object will at max accept a batchsize of 32 or it will crap itself
 
             //So the following code is just an elaborate way of calling Graphics.MeasureText in big chunks
-
-            Dictionary<string, RectangleF> resultDictionary = new Dictionary<string, RectangleF>(lines.Count);
-            List<CharacterRange> ranges = new List<CharacterRange>(32);
+            int intLineCount = lines.Count;
+            Dictionary<string, RectangleF> resultDictionary = new Dictionary<string, RectangleF>(intLineCount);
+            CharacterRange[] ranges = new CharacterRange[Math.Min(BATCH_SIZE, intLineCount)];
             var format = new StringFormat();
 
-            for (int start = 0; start < lines.Count; start += 32)
+            for (int start = 0; start < intLineCount; start += BATCH_SIZE)
             {
-                int end = Math.Min(lines.Count, start + 32);
+                int end = Math.Min(intLineCount, start + BATCH_SIZE);
 
                 //Optimization, compute lenght of strings that will be added
                 StringBuilder combinedText = new StringBuilder();
-                
 
                 for (int i = start; i < end; i++)
                 {
                     string line = lines[i];
-                    ranges.Add(new CharacterRange(combinedText.Length, line.Length));
+                    ranges[i-start] = new CharacterRange(combinedText.Length, line.Length);
                     combinedText.AppendLine(line);
                 }
                 combinedText.Length--; //Remove last newline
 
-                format.SetMeasurableCharacterRanges(ranges.ToArray());
+                // The last batch of a set may be smaller than 32, in which case we need to return a smaller array than the one we've been using
+                int intRangeSize = end - start;
+                if (intRangeSize < ranges.Length)
+                {
+                    CharacterRange[] objLastRanges = new CharacterRange[intRangeSize];
+                    for (int i = 0; i < intRangeSize; i++)
+                    {
+                        objLastRanges[i] = ranges[i];
+                    }
+                    format.SetMeasurableCharacterRanges(objLastRanges);
+                }
+                else
+                    format.SetMeasurableCharacterRanges(ranges);
                 Region[] regions = graphics.MeasureCharacterRanges(
                     combinedText.ToString(), 
                     LayoutOptions.Font,
@@ -351,8 +365,6 @@ namespace Chummer.Backend.Options
                     Region region = regions[i - start];
                     resultDictionary.Add(line, region.GetBounds(graphics));
                 }
-
-                ranges.Clear();
             }
 
             return resultDictionary;
@@ -386,7 +398,7 @@ namespace Chummer.Backend.Options
         /// </summary>
         public LayoutOptionsContainer LayoutOptions { get; set; } = new LayoutOptionsContainer();
 
-        private Size ToSize(RectangleF getBounds)
+        private static Size ToSize(RectangleF getBounds)
         {
             //Console.WriteLine("Rectangle of {0} {1}", getBounds.Width, getBounds.Height);
             return new Size((int) getBounds.Width, (int) getBounds.Height);
