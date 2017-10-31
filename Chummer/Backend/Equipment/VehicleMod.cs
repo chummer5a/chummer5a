@@ -1077,9 +1077,9 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
 
                 string strCostExpression = _strCost;
-                if (_strCost.StartsWith("FixedValues"))
+                if (strCostExpression.StartsWith("FixedValues"))
                 {
-                    string[] strValues = _strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCostExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (_intRating > 0)
                         strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
@@ -1118,9 +1118,9 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
 
                 string strSlotsExpression = _strSlots;
-                if (_strCost.StartsWith("FixedValues"))
+                if (strSlotsExpression.StartsWith("FixedValues"))
                 {
-                    string[] strValues = _strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strSlotsExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     if (_intRating > 0)
                         strSlotsExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
