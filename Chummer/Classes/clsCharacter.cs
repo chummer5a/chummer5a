@@ -1415,9 +1415,9 @@ namespace Chummer
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/character/powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value) + "]");
                 if (objNode != null)
                 {
-                objPower.Load(objNode);
-                _lstPowers.Add(objPower);
-            }
+                    objPower.Load(objNode);
+                    _lstPowers.Add(objPower);
+                }
             }
 
             Timekeeper.Finish("load_char_powers");

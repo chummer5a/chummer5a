@@ -170,11 +170,11 @@ namespace Chummer.UI.Powers
 
         private void Panel1_Resize()
         {
-            int height = pnlPowers.Height;
-            const int intWidth = 255;
-            if (_powers == null) return;
-            _powers.Height = height - _powers.Top;
-            _powers.Size = new Size(pnlPowers.Width - (intWidth+10), pnlPowers.Height - 39);
+            if (_powers != null)
+            {
+                _powers.Height = pnlPowers.Height - _powers.Top;
+                _powers.Width = pnlPowers.Width - _powers.Left;
+            }
         }
 
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -186,7 +186,6 @@ namespace Chummer.UI.Powers
             {
                 csender.DropDownStyle = ComboBoxStyle.DropDown;
                 _searchMode = true;
-                
             }
             else
             {

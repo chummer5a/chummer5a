@@ -184,6 +184,9 @@ Application Changes:
 - KnowledgeSkillPoints Spent over the limit in Karma/Life Module are no longer subtracted from (non-existent) active SkillPoints. Instead the remaining points are negative and prevent crossing over to career mode.
 - KnowledgeSkill with price reuction qualities (Linguist, College Education, etc) no longer have negative Karma cost.
 - Fixed a bug where if knowledge skills are bought with karma in create mode, and the cost for buying new knowledge skills is set to a different value (in the options menu) from the cost of improving them, Chummer5 would not recognize that it needs to use the "new knowledge skill" cost for the first level instead of the "improve knowledge skill" cost.
+- Fixed a crash caused by loading old character save files whose options do not have some of the categories looked for in newer versions of Chummer.
+- Fixed a weird cutoff of the controls of some adept powers.
+- Added a legacy shimmer that should catch and convert old cases of Improved Reflexes adept power to the new system, as these would not be fixed with Reapply Improvements.
 
 Data Changes:
 

@@ -90,7 +90,7 @@ namespace Chummer
             CharacterObject.SourceProcess(_strSource);
         }
 
-        public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null)
+        public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null, bool blnCreateImprovements = true)
         {
             Name = objNode["name"].InnerText;
             _sourceID = Guid.Parse(objNode["id"].InnerText);
@@ -124,7 +124,7 @@ namespace Chummer
                         Enhancements.Add(objEnhancement);
                     }
             }
-            if (Bonus != null && Bonus.HasChildNodes)
+            if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
                 if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
                 {
@@ -205,16 +205,33 @@ namespace Chummer
                 {
                     _nodAdeptWayRequirements = objNode["adeptwayrequires"];
                 }
-            } 
-            if (!objNode.InnerXml.Contains("enhancements")) return;
-            XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
-            if (nodEnhancements == null) return;
-            foreach (XmlNode nodEnhancement in nodEnhancements)
+            }
+            if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes"))
             {
-                Enhancement objEnhancement = new Enhancement(CharacterObject);
-                objEnhancement.Load(nodEnhancement);
-                objEnhancement.Parent = this;
-                Enhancements.Add(objEnhancement);
+                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                if (objXmlPower != null)
+                {
+                    int intTemp;
+                    if (int.TryParse(Name.TrimStart("Improved Reflexes", true).Trim(), out intTemp))
+                    {
+                        Create(objXmlPower, intTemp, null, false);
+                        objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                    }
+                }
+            }
+            else
+            {
+                if (!objNode.InnerXml.Contains("enhancements")) return;
+                XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
+                if (nodEnhancements == null) return;
+                foreach (XmlNode nodEnhancement in nodEnhancements)
+                {
+                    Enhancement objEnhancement = new Enhancement(CharacterObject);
+                    objEnhancement.Load(nodEnhancement);
+                    objEnhancement.Parent = this;
+                    Enhancements.Add(objEnhancement);
+                }
             }
         }
 

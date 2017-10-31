@@ -818,69 +818,75 @@ namespace Chummer
 
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
             // Attempt to populate the BP vlaues.
-            objXmlNode.TryGetInt32FieldQuickly("bpattribute", ref _intBPAttribute);
-            objXmlNode.TryGetInt32FieldQuickly("bpattributemax", ref _intBPAttributeMax);
-            objXmlNode.TryGetInt32FieldQuickly("bpcontact", ref _intBPContact);
-            objXmlNode.TryGetInt32FieldQuickly("bpmartialart", ref _intBPMartialArt);
-            objXmlNode.TryGetInt32FieldQuickly("bpmartialartmaneuver", ref _intBPMartialArtManeuver);
-            objXmlNode.TryGetInt32FieldQuickly("bpskillgroup", ref _intBPSkillGroup);
-            objXmlNode.TryGetInt32FieldQuickly("bpactiveskill", ref _intBPActiveSkill);
-            objXmlNode.TryGetInt32FieldQuickly("bpactiveskillspecialization", ref _intBPActiveSkillSpecialization);
-            objXmlNode.TryGetInt32FieldQuickly("bpknowledgeskill", ref _intBPKnowledgeSkill);
-            objXmlNode.TryGetInt32FieldQuickly("bpspell", ref _intBPSpell);
-            objXmlNode.TryGetInt32FieldQuickly("bpfocus", ref _intBPFocus);
-            objXmlNode.TryGetInt32FieldQuickly("bpspirit", ref _intBPSpirit);
-            objXmlNode.TryGetInt32FieldQuickly("bpcomplexform", ref _intBPComplexForm);
-            objXmlNode.TryGetInt32FieldQuickly("bpcomplexformoption", ref _intBPComplexFormOption);
+            if (objXmlNode != null)
+            {
+                objXmlNode.TryGetInt32FieldQuickly("bpattribute", ref _intBPAttribute);
+                objXmlNode.TryGetInt32FieldQuickly("bpattributemax", ref _intBPAttributeMax);
+                objXmlNode.TryGetInt32FieldQuickly("bpcontact", ref _intBPContact);
+                objXmlNode.TryGetInt32FieldQuickly("bpmartialart", ref _intBPMartialArt);
+                objXmlNode.TryGetInt32FieldQuickly("bpmartialartmaneuver", ref _intBPMartialArtManeuver);
+                objXmlNode.TryGetInt32FieldQuickly("bpskillgroup", ref _intBPSkillGroup);
+                objXmlNode.TryGetInt32FieldQuickly("bpactiveskill", ref _intBPActiveSkill);
+                objXmlNode.TryGetInt32FieldQuickly("bpactiveskillspecialization", ref _intBPActiveSkillSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("bpknowledgeskill", ref _intBPKnowledgeSkill);
+                objXmlNode.TryGetInt32FieldQuickly("bpspell", ref _intBPSpell);
+                objXmlNode.TryGetInt32FieldQuickly("bpfocus", ref _intBPFocus);
+                objXmlNode.TryGetInt32FieldQuickly("bpspirit", ref _intBPSpirit);
+                objXmlNode.TryGetInt32FieldQuickly("bpcomplexform", ref _intBPComplexForm);
+                objXmlNode.TryGetInt32FieldQuickly("bpcomplexformoption", ref _intBPComplexFormOption);
+            }
 
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
-            objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
-            objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-            objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-            objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
-            objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
-            objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
-            objXmlNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
-            objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
-            objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-            objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
-            objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
-            objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-            objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
-            objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-            objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
-            objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
-            
-            // Attempt to load the Karma costs for Foci.
-            objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
-            objXmlNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+            if (objXmlNode != null)
+            {
+                objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
+                objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
+                objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
+                objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
+                objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
+                objXmlNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
+                objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
+                objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
+                objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
+                objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+                objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
+                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
+                objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
+                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
+                objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
+
+                // Attempt to load the Karma costs for Foci.
+                objXmlNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
+                objXmlNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+            }
 
             // Load Books.
             _lstBooks.Clear();
@@ -895,9 +901,12 @@ namespace Chummer
 
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
-            objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
-            objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
-            objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+            if (objXmlNode != null)
+            {
+                objXmlNode.TryGetStringFieldQuickly("buildmethod", ref _strBuildMethod);
+                objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+            }
 
             return true;
         }
