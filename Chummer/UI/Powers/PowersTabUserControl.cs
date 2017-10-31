@@ -31,7 +31,6 @@ namespace Chummer.UI.Powers
             CalculatePowerPoints();
         }
 
-        private bool _loadCalled;
         private bool _initialized;
         private Character _character;
         private List<Tuple<string, Predicate<Power>>> _dropDownList;
@@ -50,15 +49,12 @@ namespace Chummer.UI.Powers
 
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
-            _loadCalled = true;
             RealLoad();
         }
 
         private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
         {
-            if (_initialized) return;
-
-            if (!(_character != null && _loadCalled)) return;
+            if (_initialized || _character == null) return;
 
             _initialized = true;  //Only do once
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
@@ -70,7 +66,8 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            //this.SuspendLayout();
+            this.SuspendLayout();
+            DoubleBuffered = true;
             MakePowerDisplays();
 
             parts.TaskEnd("MakePowerDisplay()");
@@ -108,11 +105,11 @@ namespace Chummer.UI.Powers
             parts.TaskEnd("visible");
             Panel1_Resize();
             parts.TaskEnd("resize");
+            //this.Update();
+            this.ResumeLayout(true);
+            //this.PerformLayout();
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-            //this.Update();
-            //this.ResumeLayout(true);
-            //this.PerformLayout();
         }
 
         private List<Tuple<string, IComparer<Power>>> GenerateSortList()

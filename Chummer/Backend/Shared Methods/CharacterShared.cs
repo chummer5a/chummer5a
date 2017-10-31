@@ -51,6 +51,12 @@ namespace Chummer
             _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        public CharacterShared()
+        {
+            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
+        }
+
         /// <summary>
         /// Wrapper for relocating contact forms. 
         /// </summary>
@@ -602,13 +608,9 @@ namespace Chummer
                 // Convert the image to a string usinb Base64.
                 _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
 
-                Image imgMugshot = new Bitmap(openFileDialog.FileName, true);
-                MemoryStream objStream = new MemoryStream();
-                imgMugshot.Save(objStream, imgMugshot.RawFormat);
-                string strResult = Convert.ToBase64String(objStream.ToArray());
-                objStream.Close();
+                Bitmap imgMugshot = (new Bitmap(openFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
 
-                _objCharacter.Mugshots.Add(strResult);
+                _objCharacter.Mugshots.Add(imgMugshot);
             }
             return blnSuccess;
         }
@@ -620,21 +622,13 @@ namespace Chummer
         /// <param name="intCurrentMugshotIndexInList"></param>
         protected bool UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
         {
-            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count || string.IsNullOrEmpty(_objCharacter.Mugshots[intCurrentMugshotIndexInList]))
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count || _objCharacter.Mugshots[intCurrentMugshotIndexInList] == null)
             {
                 picMugshot.Image = null;
                 return false;
             }
 
-            Image imgMugshot = null;
-            byte[] bytImage = Convert.FromBase64String(_objCharacter.Mugshots[intCurrentMugshotIndexInList]);
-            if (bytImage.Length > 0)
-            {
-                MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                objImageStream.Write(bytImage, 0, bytImage.Length);
-                imgMugshot = Image.FromStream(objImageStream, true);
-                objImageStream.Close();
-            }
+            Image imgMugshot = _objCharacter.Mugshots[intCurrentMugshotIndexInList];
 
             if (imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width)
                 picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;

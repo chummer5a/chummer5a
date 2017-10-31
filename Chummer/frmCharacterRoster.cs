@@ -142,13 +142,10 @@ namespace Chummer
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
                 objCache.Created = Convert.ToBoolean(objXmlSourceNode["created"]?.InnerText);
                 objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
-                if (!string.IsNullOrEmpty(objXmlSourceNode["mugshot"]?.InnerText))
+                string strMugshotBase64 = objXmlSourceNode["mugshot"]?.InnerText;
+                if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
-                    byte[] bytImage = Convert.FromBase64String(objXmlSourceNode["mugshot"]?.InnerText);
-                    MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                    objStream.Write(bytImage, 0, bytImage.Length);
-                    Image imgMugshot = Image.FromStream(objStream, true);
-                    objCache.Mugshot = imgMugshot;
+                    objCache.Mugshot = strMugshotBase64.ToImage();
                 }
                 else
                 {
@@ -159,20 +156,10 @@ namespace Chummer
                     if (intMainMugshotIndex >= lstMugshots.Count)
                         intMainMugshotIndex = 0;
                     else if (intMainMugshotIndex < 0)
-                    {
-                        if (lstMugshots.Count > 0)
-                            intMainMugshotIndex = lstMugshots.Count - 1;
-                        else
-                            intMainMugshotIndex = 0;
-                    }
+                        intMainMugshotIndex = lstMugshots.Count - 1;
+
                     if (lstMugshots.Count > 0)
-                    {
-                        byte[] bytImage = Convert.FromBase64String(lstMugshots.ElementAt(intMainMugshotIndex));
-                        MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                        objStream.Write(bytImage, 0, bytImage.Length);
-                        Image imgMugshot = Image.FromStream(objStream, true);
-                        objCache.Mugshot = imgMugshot;
-                    }
+                        objCache.Mugshot = lstMugshots.ElementAt(intMainMugshotIndex).ToImage();
                     else
                         objCache.Mugshot = null;
                 }

@@ -84,7 +84,7 @@ namespace Chummer
 
         // General character info.
         private string _strName = string.Empty;
-        private List<string> _lstMugshots = new List<string>();
+        private List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = 0;
         private string _strSex = string.Empty;
         private string _strAge = string.Empty;
@@ -369,9 +369,9 @@ namespace Chummer
             // <mugshot>
             objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString());
             objWriter.WriteStartElement("mugshots");
-            foreach (string strMugshot in _lstMugshots)
+            foreach (Image imgMugshot in _lstMugshots)
             {
-                objWriter.WriteElementString("mugshot", strMugshot);
+                objWriter.WriteElementString("mugshot", imgMugshot.ToBase64String());
             }
             // </mugshot>
             objWriter.WriteEndElement();
@@ -1078,7 +1078,7 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
                 {
-                    Mugshots.Add(objXmlMugshot.InnerText);
+                    Mugshots.Add(objXmlMugshot.InnerText.ToImage());
                 }
             }
             if (Mugshots.Count == 0)
@@ -1086,7 +1086,7 @@ namespace Chummer
                 XmlNode objOldMugshotNode = objXmlDocument.SelectSingleNode("/character/mugshot");
                 if (objOldMugshotNode != null)
                 {
-                    Mugshots.Add(objOldMugshotNode.InnerText);
+                    Mugshots.Add(objOldMugshotNode.InnerText.ToImage());
                 }
             }
             objXmlCharacter.TryGetStringFieldQuickly("sex", ref _strSex);
@@ -1908,33 +1908,25 @@ namespace Chummer
                 }
             }
             // <mainmugshotpath />
-            if (MainMugshot.Length > 0)
+            if (MainMugshot != null)
             {
-                byte[] bytImage = Convert.FromBase64String(MainMugshot);
-                MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                objImageStream.Write(bytImage, 0, bytImage.Length);
-                Image imgMugshot = Image.FromStream(objImageStream, true);
+                Image imgMainMugshot = MainMugshot;
                 string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + ".img");
-                imgMugshot.Save(imgMugshotPath);
+                imgMainMugshot.Save(imgMugshotPath);
                 objWriter.WriteElementString("mainmugshotpath",
                     "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                 // <mainmugshotbase64 />
-                objWriter.WriteElementString("mainmugshotbase64", MainMugshot);
+                objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
                 objWriter.WriteStartElement("othermugshots");
                 int i = 0;
-                foreach (string strMugshot in Mugshots)
+                foreach (Image imgMugshot in Mugshots)
                 {
-                    if (strMugshot == MainMugshot)
+                    if (imgMugshot == MainMugshot)
                         continue;
                     objWriter.WriteStartElement("mugshot");
-                    objWriter.WriteElementString("stringbase64", strMugshot);
-
-                    bytImage = Convert.FromBase64String(strMugshot);
-                    objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
-                    objImageStream.Write(bytImage, 0, bytImage.Length);
-                    imgMugshot = Image.FromStream(objImageStream, true);
+                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
                     imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
@@ -3141,7 +3133,7 @@ namespace Chummer
 		/// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public List<string> Mugshots
+		public List<Image> Mugshots
         {
             get
                 {
@@ -3151,17 +3143,17 @@ namespace Chummer
                 {
                 _lstMugshots = value;
             }
-                }
+        }
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
         /// </summary>
-        public string MainMugshot
+        public Image MainMugshot
         {
             get
             {
                 if (_intMainMugshotIndex >= _lstMugshots.Count || _intMainMugshotIndex < 0)
-                    return string.Empty;
+                    return null;
                 else
                     return _lstMugshots[_intMainMugshotIndex];
             }
@@ -4501,7 +4493,7 @@ namespace Chummer
                 decESS -= decHole;
 
                 //1781 Essence is not printing
-                ESS.Base = Convert.ToInt32(decESS);
+                //ESS.Base = Convert.ToInt32(decESS); -- Disabled becauses this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
 
                 return decESS;
             }

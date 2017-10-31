@@ -66,6 +66,11 @@ namespace Chummer
         public Action<Chummer.Character, int> DiceRollerOpenedInt;
 
         #region Form Events
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        public frmCareer() : base()
+        {
+            InitializeComponent();
+        }
         public frmCareer(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
@@ -89,7 +94,6 @@ namespace Chummer
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
             tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 
-            Application.Idle += UpdateCharacterInfo;
             GlobalOptions.MRUChanged += PopulateMRU;
             GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
             LanguageManager.Load(GlobalOptions.Language, this);
@@ -972,6 +976,11 @@ namespace Chummer
             }
             mnuSpecialPossess.Visible = blnAllowPossession;
 
+            tabSkillsUc.ObjCharacter = _objCharacter;
+
+            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            BuildAttributePanel();
 
             // Set the visibility of the Armor Degradation buttons.
             cmdArmorDecrease.Visible = _objOptions.ArmorDegradation;
@@ -990,14 +999,12 @@ namespace Chummer
             RefreshImprovements();
 
             ScheduleCharacterUpdate();
+            // Directly calling here so that we can properly unset the dirty flag after the update
+            UpdateCharacterInfo();
+            // Now we can start checking for character updates
+            Application.Idle += UpdateCharacterInfo;
 
-            tabSkillsUc.ObjCharacter = _objCharacter;
-
-
-            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            BuildAttributePanel();
-
+            // Clear the Dirty flag which gets set when creating a new Character.
             _blnIsDirty = false;
             UpdateWindowTitle(false);
             RefreshPasteStatus();

@@ -19,9 +19,9 @@ namespace Chummer.UI.Shared
         private readonly BindingList<TType> _contents; //List of all items supposed to be displayed
         private readonly Func<TType, Control> _createFunc;  //Function to create a control out of a item
         private readonly bool _loadVisibleOnly;
-        private List<ControlWithMetaData> _contentList;
+        private readonly List<ControlWithMetaData> _contentList;
         private readonly List<int> _displayIndex = new List<int>();
-        private IndexComparer _indexComparer;
+        private readonly IndexComparer _indexComparer;
         private BitArray _rendered;
         private int _offScreenChunkSize = 1;
         private bool _allRendered;
@@ -29,28 +29,30 @@ namespace Chummer.UI.Shared
         private Predicate<TType> _visibleFilter = x => true;
         private IComparer<TType> _comparison;
 
-        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadFast = false, bool loadVisibleOnly = true)
+        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadVisibleOnly = true)
         {
             InitializeComponent();
             _contents = contents;
             _createFunc = createFunc;
             _loadVisibleOnly = loadVisibleOnly;
-
-            if (loadFast)
+            DoubleBuffered = true;
+            pnlDisplay.SuspendLayout();
+            _contentList = new List<ControlWithMetaData>();
+            foreach (TType objLoopTType in _contents)
             {
-                InitialSetup();
+                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
             }
+            _indexComparer = new IndexComparer(_contents);
+            if (_comparison == null) _comparison = _indexComparer;
+            _contents.ListChanged += ContentsChanged;
+            ComptuteDisplayIndex();
+            LoadScreenContent();
+            BindingListDisplay_SizeChanged(null, null);
+            pnlDisplay.ResumeLayout();
         }
 
-        private void SkillsDisplay_Load(object sender, EventArgs e)
+        private void BindingListDisplay_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
-
-            if (_contentList == null)
-            {
-                InitialSetup();
-            }
-
             Application.Idle += ApplicationOnIdle;
         }
 
@@ -81,28 +83,6 @@ namespace Chummer.UI.Shared
                 item.Control.Visible = true;
                 _rendered[i] = true;
             }
-        }
-
-        private void InitialSetup()
-        {
-            pnlDisplay.SuspendLayout();
-            SetupContentList();
-            ComptuteDisplayIndex();
-            LoadScreenContent();
-            BindingListDisplay_SizeChanged(null, null);
-            pnlDisplay.ResumeLayout();
-        }
-
-        private void SetupContentList()
-        {
-            _contentList = new List<ControlWithMetaData>();
-            foreach (TType objLoopTType in _contents)
-            {
-                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
-            }
-            _indexComparer = new IndexComparer(_contents);
-            if (_comparison == null) _comparison = _indexComparer;
-            _contents.ListChanged += ContentsChanged;
         }
 
         private void ComptuteDisplayIndex()

@@ -66,6 +66,12 @@ namespace Chummer
         private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
         #region Form Events
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        public frmCreate() : base()
+        {
+            InitializeComponent();
+        }
+
         public frmCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
@@ -109,7 +115,6 @@ namespace Chummer
             nudMysticAdeptMAGMagician.DataBindings.Add("Value", this._objCharacter, nameof(_objCharacter.MysticAdeptPowerPoints), false,
                             DataSourceUpdateMode.OnPropertyChanged);
 
-            Application.Idle += UpdateCharacterInfo;
             GlobalOptions.MRUChanged += PopulateMRU;
 
             LanguageManager.Load(GlobalOptions.Language, this);
@@ -127,8 +132,6 @@ namespace Chummer
             MoveControls();
             nudQualityLevel_UpdateValue(null);
         }
-
-
 
         /// <summary>
         /// Set the form to Loading mode so that certain events do not fire while data is being populated.
@@ -836,11 +839,12 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objCharacter.SpiritManipulation))
                 cboSpiritManipulation.SelectedValue = _objCharacter.SpiritManipulation;
 
-            // Clear the Dirty flag which gets set when creating a new Character.
+            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            BuildAttributePanel();
+
             CalculateBP();
             CalculateNuyen();
-            _blnIsDirty = false;
-            UpdateWindowTitle();
 
             treGear.ItemDrag += treGear_ItemDrag;
             treGear.DragEnter += treGear_DragEnter;
@@ -880,12 +884,14 @@ namespace Chummer
             treMartialArts.SortCustom();
             UpdateMentorSpirits();
             UpdateInitiationGradeTree();
+
             ScheduleCharacterUpdate();
+            // Directly calling here so that we can properly unset the dirty flag after the update
+            UpdateCharacterInfo();
+            // Now we can start checking for character updates
+            Application.Idle += UpdateCharacterInfo;
 
-            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            BuildAttributePanel();
-
+            // Clear the Dirty flag which gets set when creating a new Character.
             _blnIsDirty = false;
             UpdateWindowTitle(false);
             RefreshPasteStatus();
@@ -893,9 +899,9 @@ namespace Chummer
 
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
+
             Timekeeper.Finish("load_frm_create");
             Timekeeper.Finish("loading");
-
         }
 
         private void BindEvents(ContactControl objContactControl)

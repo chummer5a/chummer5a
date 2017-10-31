@@ -138,6 +138,7 @@
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">

@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Shared
+namespace Chummer.UI.Shared
 {
     partial class BindingListDisplay<TType>
     {
@@ -46,7 +46,7 @@
             this.Controls.Add(this.pnlDisplay);
             this.Name = "BindingListDisplay";
             this.Size = new System.Drawing.Size(606, 433);
-            this.Load += new System.EventHandler(this.SkillsDisplay_Load);
+            this.Load += new System.EventHandler(this.BindingListDisplay_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.BindingListDisplay_Scroll);
             this.SizeChanged += new System.EventHandler(this.BindingListDisplay_SizeChanged);
             this.ResumeLayout(false);

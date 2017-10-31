@@ -34,7 +34,6 @@ namespace Chummer.UI.Skills
             UpdateKnoSkillRemaining();
         }
 
-        private bool _loadCalled = false;
         private bool _initialized = false;
         private Character _character = null;
         private List<Tuple<string, Predicate<Skill>>> _dropDownList;
@@ -56,13 +55,12 @@ namespace Chummer.UI.Skills
 
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
-            _loadCalled = true;
             RealLoad();
         }
 
         private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
         {
-            if (_initialized || _character == null || !_loadCalled)
+            if (_initialized || _character == null)
                 return;
             _initialized = true;  //Only do once
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
@@ -148,8 +146,6 @@ namespace Chummer.UI.Skills
             Panel1_Resize(null, null);
             Panel2_Resize(null, null);
             parts.TaskEnd("resize");
-            sw.Stop();
-            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
             //this.Update();
             //this.ResumeLayout(true);
             //this.PerformLayout();
@@ -183,6 +179,8 @@ namespace Chummer.UI.Skills
                 //lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             ResumeLayout(true);
+            sw.Stop();
+            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
         private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
