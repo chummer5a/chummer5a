@@ -761,7 +761,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strArmorCapacity))
                     return "0";
                 string strCapacity = _strArmorCapacity;
-                strCapacity = strCapacity.Replace("Capacity", _objParent.ArmorCapacity);
+                strCapacity = strCapacity.Replace("Capacity", Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
                 strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
                 if (strCapacity.StartsWith("FixedValues"))
                 {
