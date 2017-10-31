@@ -1259,7 +1259,7 @@ namespace Chummer
                 }
 
                 //Load any natural weapons the character has. 
-                foreach (XmlNode objXmlNaturalWeapon in charNode["naturalweapons"]?.SelectNodes("naturalweapon"))
+                foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
                 {
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
