@@ -432,7 +432,12 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _stage);
             }
-            objNode.TryGetField("id", Guid.TryParse, out _qualiyGuid);
+            if (!objNode.TryGetField("id", Guid.TryParse, out _qualiyGuid))
+            {
+                XmlNode objNewNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                if (objNewNode != null)
+                    objNewNode.TryGetField("id", Guid.TryParse, out _qualiyGuid);
+            }
 
             if (GlobalOptions.Language != "en-us")
             {
@@ -493,7 +498,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier for the quality type
         /// </summary>
-        public string QualityId => _qualiyGuid.ToString();
+        public string QualityId => _qualiyGuid.Equals(Guid.Empty) ? string.Empty : _qualiyGuid.ToString();
 
         /// <summary>
         /// Guid of a Weapon.
