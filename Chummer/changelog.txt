@@ -187,7 +187,9 @@ Application Changes:
 - Fixed a crash caused by loading old character save files whose options do not have some of the categories looked for in newer versions of Chummer.
 - Fixed a weird cutoff of the controls of some adept powers.
 - Added a legacy shimmer that should catch and convert old cases of Improved Reflexes adept power to the new system, as these would not be fixed with Reapply Improvements.
-- The mouse cursor will now change to "Waiting" mode while a character is being loaded in.
+- The mouse cursor will now change to "Waiting" mode while a character is being loaded in or while a character is getting their improvements re-applied.
+- Re-apply improvements will now collect the names of outdated items and warn the user at the end to manually re-add them and/or to make sure they have all custom data files that they were previously using still present.
+- Fixed a bug where bonuses that let you select an attribute would not record the choice in their parent item.
 
 Data Changes:
 

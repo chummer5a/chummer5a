@@ -1185,23 +1185,30 @@ namespace Chummer
         #endregion
 
         #region Add Improvements Functions
-        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears)
+        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems)
         {
             XmlNode objNode = objGear.MyXmlNode;
-            if (objNode?["bonus"] != null)
+            if (objNode != null)
             {
-                ImprovementManager.ForcedValue = objGear.Extra;
-                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (objNode["bonus"] != null)
                 {
-                    objGear.Extra = ImprovementManager.SelectedValue;
-                    TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
-                    if (objGearNode != null)
-                        objGearNode.Text = objGear.DisplayName;
+                    ImprovementManager.ForcedValue = objGear.Extra;
+                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    {
+                        objGear.Extra = ImprovementManager.SelectedValue;
+                        TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                        if (objGearNode != null)
+                            objGearNode.Text = objGear.DisplayName;
+                    }
                 }
             }
+            else
+            {
+                strOutdatedItems += objGear.DisplayName + "\n";
+            }
             foreach (Gear objChild in objGear.Children)
-                ReaddGearImprovements(objCharacter, objChild, treGears);
+                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems);
         }
         #endregion
 

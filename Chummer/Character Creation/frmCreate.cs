@@ -1924,6 +1924,9 @@ namespace Chummer
             if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
+            UseWaitCursor = true;
+            string strOutdatedItems = string.Empty;
+
             // Record the status of any flags that normally trigger character events.
             bool blnMAGEnabled = _objCharacter.MAGEnabled;
             bool blnRESEnabled = _objCharacter.RESEnabled;
@@ -1948,17 +1951,24 @@ namespace Chummer
                 string strSelected = objQuality.Extra;
 
                 XmlNode objNode = objQuality.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    ImprovementManager.ForcedValue = strSelected;
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId, objNode["bonus"], false, 1, objQuality.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    if (objNode["bonus"] != null)
                     {
-                        objQuality.Extra = ImprovementManager.SelectedValue;
-                        TreeNode objTreeNode = CommonFunctions.FindNode(objQuality.InternalId, treQualities);
-                        if (objTreeNode != null)
-                            objTreeNode.Text = objQuality.DisplayName;
+                        ImprovementManager.ForcedValue = strSelected;
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId, objNode["bonus"], false, 1, objQuality.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objQuality.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objTreeNode = CommonFunctions.FindNode(objQuality.InternalId, treQualities);
+                            if (objTreeNode != null)
+                                objTreeNode.Text = objQuality.DisplayName;
+                        }
                     }
+                }
+                else
+                {
+                    strOutdatedItems += objQuality.DisplayName + "\n";
                 }
             }
 
@@ -1977,30 +1987,41 @@ namespace Chummer
                         }
                     }
                 }
+                else
+                {
+                    strOutdatedItems += objMartialArt.DisplayName + "\n";
+                }
             }
 
             // Refresh Spells.
             foreach (Spell objSpell in _objCharacter.Spells)
             {
                 XmlNode objNode = objSpell.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    ImprovementManager.ForcedValue = objSpell.Extra;
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], false, 1, objSpell.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        objSpell.Extra = ImprovementManager.SelectedValue;
-
-                    foreach (TreeNode objParentNode in treSpells.Nodes)
+                    if (objNode["bonus"] != null)
                     {
-                        foreach (TreeNode objChildNode in objParentNode.Nodes)
+                        ImprovementManager.ForcedValue = objSpell.Extra;
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], false, 1, objSpell.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            objSpell.Extra = ImprovementManager.SelectedValue;
+
+                        foreach (TreeNode objParentNode in treSpells.Nodes)
                         {
-                            if (objChildNode.Tag.ToString() == objSpell.InternalId)
+                            foreach (TreeNode objChildNode in objParentNode.Nodes)
                             {
-                                objChildNode.Text = objSpell.DisplayName;
-                                break;
+                                if (objChildNode.Tag.ToString() == objSpell.InternalId)
+                                {
+                                    objChildNode.Text = objSpell.DisplayName;
+                                    break;
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    strOutdatedItems += objSpell.DisplayName + "\n";
                 }
             }
 
@@ -2008,10 +2029,17 @@ namespace Chummer
             foreach (Power objPower in _objCharacter.Powers)
             {
                 XmlNode objNode = objPower.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    ImprovementManager.ForcedValue = objPower.Extra;
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Power, objPower.InternalId, objNode["bonus"], false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort);
+                    if (objNode["bonus"] != null)
+                    {
+                        ImprovementManager.ForcedValue = objPower.Extra;
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Power, objPower.InternalId, objNode["bonus"], false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort);
+                    }
+                }
+                else
+                {
+                    strOutdatedItems += objPower.DisplayName + "\n";
                 }
             }
 
@@ -2019,22 +2047,29 @@ namespace Chummer
             foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
             {
                 XmlNode objNode = objComplexForm.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        objComplexForm.Extra = ImprovementManager.SelectedValue;
-                    foreach (TreeNode objParentNode in treComplexForms.Nodes)
+                    if (objNode["bonus"] != null)
                     {
-                        foreach (TreeNode objChildNode in objParentNode.Nodes)
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            objComplexForm.Extra = ImprovementManager.SelectedValue;
+                        foreach (TreeNode objParentNode in treComplexForms.Nodes)
                         {
-                            if (objChildNode.Tag.ToString() == objComplexForm.InternalId)
+                            foreach (TreeNode objChildNode in objParentNode.Nodes)
                             {
-                                objChildNode.Text = objComplexForm.DisplayName;
-                                break;
+                                if (objChildNode.Tag.ToString() == objComplexForm.InternalId)
+                                {
+                                    objChildNode.Text = objComplexForm.DisplayName;
+                                    break;
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    strOutdatedItems += objComplexForm.DisplayName + "\n";
                 }
             }
 
@@ -2042,22 +2077,29 @@ namespace Chummer
             foreach (AIProgram objProgram in _objCharacter.AIPrograms)
             {
                 XmlNode objNode = objProgram.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        objProgram.Extra = ImprovementManager.SelectedValue;
-                    foreach (TreeNode objParentNode in treAIPrograms.Nodes)
+                    if (objNode["bonus"] != null)
                     {
-                        foreach (TreeNode objChildNode in objParentNode.Nodes)
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            objProgram.Extra = ImprovementManager.SelectedValue;
+                        foreach (TreeNode objParentNode in treAIPrograms.Nodes)
                         {
-                            if (objChildNode.Tag.ToString() == objProgram.InternalId)
+                            foreach (TreeNode objChildNode in objParentNode.Nodes)
                             {
-                                objChildNode.Text = objProgram.DisplayName;
-                                break;
+                                if (objChildNode.Tag.ToString() == objProgram.InternalId)
+                                {
+                                    objChildNode.Text = objProgram.DisplayName;
+                                    break;
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    strOutdatedItems += objProgram.DisplayName + "\n";
                 }
             }
 
@@ -2065,29 +2107,36 @@ namespace Chummer
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
                 XmlNode objNode = objPower.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    string strSelected = objPower.Extra;
-                    int intRating = 0;
-                    if (!int.TryParse(strSelected, out intRating))
+                    if (objNode["bonus"] != null)
                     {
-                        ImprovementManager.ForcedValue = strSelected;
-                    }
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objNode["bonus"], false, intRating, objPower.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        objPower.Extra = ImprovementManager.SelectedValue;
-
-                    foreach (TreeNode objParentNode in treCritterPowers.Nodes)
-                    {
-                        foreach (TreeNode objChildNode in objParentNode.Nodes)
+                        string strSelected = objPower.Extra;
+                        int intRating = 0;
+                        if (!int.TryParse(strSelected, out intRating))
                         {
-                            if (objChildNode.Tag.ToString() == objPower.InternalId)
+                            ImprovementManager.ForcedValue = strSelected;
+                        }
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objNode["bonus"], false, intRating, objPower.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            objPower.Extra = ImprovementManager.SelectedValue;
+
+                        foreach (TreeNode objParentNode in treCritterPowers.Nodes)
+                        {
+                            foreach (TreeNode objChildNode in objParentNode.Nodes)
                             {
-                                objChildNode.Text = objPower.DisplayName;
-                                break;
+                                if (objChildNode.Tag.ToString() == objPower.InternalId)
+                                {
+                                    objChildNode.Text = objPower.DisplayName;
+                                    break;
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    strOutdatedItems += objPower.DisplayName + "\n";
                 }
             }
 
@@ -2095,8 +2144,15 @@ namespace Chummer
             foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
             {
                 XmlNode objNode = objMetamagic.MyXmlNode;
-                if (objNode?["bonus"] != null)
-                    ImprovementManager.CreateImprovements(_objCharacter, objMetamagic.SourceType, objMetamagic.InternalId, objNode["bonus"], false, 1, objMetamagic.DisplayNameShort);
+                if (objNode != null)
+                {
+                    if (objNode["bonus"] != null)
+                        ImprovementManager.CreateImprovements(_objCharacter, objMetamagic.SourceType, objMetamagic.InternalId, objNode["bonus"], false, 1, objMetamagic.DisplayNameShort);
+                }
+                else
+                {
+                    strOutdatedItems += objMetamagic.DisplayName + "\n";
+                }
             }
 
             // Refresh Cyberware and Bioware.
@@ -2104,19 +2160,26 @@ namespace Chummer
             foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.IsModularCurrentlyEquipped))
             {
                 XmlNode objNode = objCyberware.MyXmlNode;
-                if (objNode?["bonus"] != null || (objCyberware.WirelessOn && objNode["wirelessbonus"] != null))
+                if (objNode != null)
                 {
-                    if (objNode["bonus"] != null)
-                        ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        objCyberware.Extra = ImprovementManager.SelectedValue;
+                    if (objNode["bonus"] != null || (objCyberware.WirelessOn && objNode["wirelessbonus"] != null))
+                    {
+                        if (objNode["bonus"] != null)
+                            ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            objCyberware.Extra = ImprovementManager.SelectedValue;
 
-                    if (objCyberware.WirelessOn && objNode["wirelessbonus"] != null)
-                        ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["wirelessbonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                        objCyberware.Extra = ImprovementManager.SelectedValue;
+                        if (objCyberware.WirelessOn && objNode["wirelessbonus"] != null)
+                            ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["wirelessbonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                    }
                 }
-                if (objCyberware.PairBonus != null)
+                else
+                {
+                    strOutdatedItems += objCyberware.DisplayName + "\n";
+                }
+                if (objCyberware.PairBonus != null || objNode?["pairbonus"] != null)
                 {
                     Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
                     if (objMatchingCyberware != null)
@@ -2126,7 +2189,7 @@ namespace Chummer
                 }
                 foreach (Gear objGear in objCyberware.Gear)
                 {
-                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treCyberware);
+                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treCyberware, ref strOutdatedItems);
                 }
                 TreeNode objWareNode = CommonFunctions.FindNode(objCyberware.InternalId, treCyberware);
                 if (objWareNode != null)
@@ -2160,47 +2223,61 @@ namespace Chummer
             foreach (Armor objArmor in _objCharacter.Armor)
             {
                 XmlNode objNode = objArmor.MyXmlNode;
-                if (objNode?["bonus"] != null)
+                if (objNode != null)
                 {
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objNode["bonus"], false, 1, objArmor.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    if (objNode["bonus"] != null)
                     {
-                        objArmor.Extra = ImprovementManager.SelectedValue;
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objNode["bonus"], false, 1, objArmor.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objArmor.Extra = ImprovementManager.SelectedValue;
 
-                        TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
-                        if (objArmorNode != null)
-                            objArmorNode.Text = objArmor.DisplayName;
+                            TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
+                            if (objArmorNode != null)
+                                objArmorNode.Text = objArmor.DisplayName;
+                        }
                     }
+                }
+                else
+                {
+                    strOutdatedItems += objArmor.DisplayName + "\n";
                 }
 
                 foreach (ArmorMod objMod in objArmor.ArmorMods)
                 {
                     XmlNode objChild = objMod.MyXmlNode;
 
-                    if (objChild?["bonus"] != null)
+                    if (objChild != null)
                     {
-                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objChild["bonus"], false, 1, objMod.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        if (objChild["bonus"] != null)
                         {
-                            objMod.Extra = ImprovementManager.SelectedValue;
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objChild["bonus"], false, 1, objMod.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objMod.Extra = ImprovementManager.SelectedValue;
 
-                            TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
-                            if (objPluginNode != null)
-                                objPluginNode.Text = objMod.DisplayName;
+                                TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
+                                if (objPluginNode != null)
+                                    objPluginNode.Text = objMod.DisplayName;
+                            }
                         }
+                    }
+                    else
+                    {
+                        strOutdatedItems += objMod.DisplayName + "\n";
                     }
                 }
 
                 foreach (Gear objGear in objArmor.Gear)
                 {
-                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor);
+                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor, ref strOutdatedItems);
                 }
             }
 
             // Refresh Gear.
             foreach (Gear objGear in _objCharacter.Gear)
             {
-                CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treGear);
+                CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treGear, ref strOutdatedItems);
             }
 
             // Refresh Weapons Gear
@@ -2211,7 +2288,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in objAccessory.Gear)
                     {
-                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treWeapons);
+                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treWeapons, ref strOutdatedItems);
                     }
                 }
             }
@@ -2233,6 +2310,14 @@ namespace Chummer
                 objCharacter_FriendsInHighPlacesChanged(this);
             if (blnSchoolOfHardKnocks != _objCharacter.SkillsSection.SchoolOfHardKnocks)
                 objCharacter_SchoolOfHardKnocksChanged(this);
+
+            UseWaitCursor = false;
+
+            if (!string.IsNullOrEmpty(strOutdatedItems))
+            {
+                strOutdatedItems = LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top") + strOutdatedItems + LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom");
+                MessageBox.Show(strOutdatedItems, LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             _blnIsDirty = true;
             UpdateWindowTitle();

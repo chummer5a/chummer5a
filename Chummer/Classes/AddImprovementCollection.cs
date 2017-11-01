@@ -670,10 +670,10 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                /*SelectedValue = frmPickAttribute.SelectedAttribute;
+                SelectedValue = frmPickAttribute.SelectedAttribute;
                 if (_blnConcatSelectedValue)
                     SourceName += " (" + SelectedValue + ")";
-                */
+
                 Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
                 Log.Info("SourceName = " + SourceName);
 
@@ -1568,6 +1568,10 @@ namespace Chummer.Classes
                 {
                     throw new AbortedException();
                 }
+
+                SelectedValue = frmPickAttribute.SelectedAttribute;
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedValue + ")";
 
                 Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
                 Log.Info("SourceName = " + SourceName);

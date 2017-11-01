@@ -2671,6 +2671,14 @@
       <key>MessageTitle_ConfirmReapplyImprovements</key>
       <text>Re-apply Improvements</text>
     </string>
+	<string>
+      <key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>
+      <text>While reapplying improvements, the following items were found to not have data file entries:\n\n</text>
+    </string>
+	<string>
+      <key>Message_ReapplyImprovementsFoundOutdatedItems_Bottom</key>
+      <text>\nAny improvements they granted could not be added back. Please manually remove and replace these items and/or make sure any custom data files used when creating this character are still present and active.</text>
+    </string>
     <string>
       <key>MessageTitle_Possession</key>
       <text>Possession/Inhabitation</text>
