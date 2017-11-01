@@ -3149,6 +3149,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (_strAvail.Length == 0)
+                    return new Tuple<int, string>(0, string.Empty);
                 string strAvail = string.Empty;
                 string strAvailExpr = _strAvail;
                 int intAvail = 0;
