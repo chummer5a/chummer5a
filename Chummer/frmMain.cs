@@ -286,7 +286,8 @@ namespace Chummer
             frmSelectMetatype.ShowDialog();
 
             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                    return;
+                return;
+            Cursor.Current = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
@@ -305,6 +306,7 @@ namespace Chummer
             frmNewCharacter.Show();
 
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+            Cursor.Current = Cursors.Default;
         }
 
         private void mnuMRU_Click(object sender, EventArgs e)
@@ -632,6 +634,7 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
             }
+            Cursor.Current = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
@@ -651,6 +654,7 @@ namespace Chummer
 
             OpenCharacters.Add(objCharacter);
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+            Cursor.Current = Cursors.Default;
         }
 
         /// <summary>
@@ -689,6 +693,7 @@ namespace Chummer
             if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
             {
                 Timekeeper.Start("loading");
+                Cursor.Current = Cursors.WaitCursor;
                 bool blnLoaded = false;
                 Character objCharacter = new Character();
                 objCharacter.FileName = strFileName;
@@ -735,7 +740,10 @@ namespace Chummer
                 Timekeeper.Finish("load_file");
                 Timekeeper.Start("load_free");
                 if (!blnLoaded)
+                {
+                    Cursor.Current = Cursors.Default;
                     return;
+                }
 
                 // If a new name is given, set the character's name to match (used in cloning).
                 if (!string.IsNullOrEmpty(strNewName))
@@ -773,6 +781,7 @@ namespace Chummer
 
                 objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
                 objCharacter_CharacterNameChanged(objCharacter);
+                Cursor.Current = Cursors.Default;
             }
             else
             {
