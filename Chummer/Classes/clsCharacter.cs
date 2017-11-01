@@ -1078,7 +1078,7 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
                 {
-                    Mugshots.Add(objXmlMugshot.InnerText.ToImage());
+                    Mugshots.Add(objXmlMugshot.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
                 }
             }
             if (Mugshots.Count == 0)
@@ -1086,7 +1086,7 @@ namespace Chummer
                 XmlNode objOldMugshotNode = objXmlDocument.SelectSingleNode("/character/mugshot");
                 if (objOldMugshotNode != null)
                 {
-                    Mugshots.Add(objOldMugshotNode.InnerText.ToImage());
+                    Mugshots.Add(objOldMugshotNode.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
                 }
             }
             objXmlCharacter.TryGetStringFieldQuickly("sex", ref _strSex);

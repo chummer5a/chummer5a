@@ -30,6 +30,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Converts a Base64 String into a Bitmap with a specific format.
+        /// </summary>
+        /// <param name="strBase64String">String to convert.</param>
+        /// <param name="objFormat">Pixel format in which the Bitmap is returned.</param>
+        /// <returns>Image from the Base64 string.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Bitmap ToImage(this string strBase64String, PixelFormat objFormat)
+        {
+            return (new Bitmap(strBase64String.ToImage())).ConvertPixelFormat(objFormat);
+        }
+
+        /// <summary>
         /// Converts an Image into a Base64 string.
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
@@ -40,7 +52,14 @@ namespace Chummer
             string strReturn = string.Empty;
             using (MemoryStream objImageStream = new MemoryStream())
             {
-                imgToConvert.Save(objImageStream, imgToConvert.RawFormat);
+                try
+                {
+                    imgToConvert.Save(objImageStream, imgToConvert.RawFormat);
+                }
+                catch (ArgumentNullException)
+                {
+                    imgToConvert.Save(objImageStream, ImageFormat.Png);
+                }
                 strReturn = Convert.ToBase64String(objImageStream.ToArray());
             }
             return strReturn;
