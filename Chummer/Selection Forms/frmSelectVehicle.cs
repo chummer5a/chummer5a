@@ -59,7 +59,7 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
@@ -425,7 +425,7 @@ namespace Chummer
                 if (chkUsedVehicle.Checked)
                 {
                     string strSuffix = string.Empty;
-                    if (strAvail.EndsWith("R") || strAvail.EndsWith("F"))
+                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
                     {
                         strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
                         // Translate the Avail string.

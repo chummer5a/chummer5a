@@ -109,7 +109,7 @@ namespace Chummer
             string availSuffix = string.Empty;
             int slots = Convert.ToInt32(node["slots"].InnerText);
 
-            if (node["avail"].InnerText.EndsWith("F") || node["avail"].InnerText.EndsWith("R"))
+            if (node["avail"].InnerText.EndsWith('F') || node["avail"].InnerText.EndsWith('R'))
             {
                 availSuffix = node["avail"].InnerText.Substring(node["avail"].InnerText.Length - 1, 1);
                 avail = Convert.ToInt32(node["avail"].InnerText.Substring(0, node["avail"].InnerText.Length - 1));

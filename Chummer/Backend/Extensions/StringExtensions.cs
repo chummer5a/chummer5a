@@ -94,5 +94,28 @@ namespace Chummer
             }
             return strBase;
         }
+
+        /// <summary>
+        /// Determines whether the first char of this string instance matches the specified char.
+        /// </summary>
+        /// <param name="strBase">String to check.</param>
+        /// <param name="chrCharToCheck">Char to check.</param>
+        /// <returns>True if string has a non-zero length and begins with the char, false otherwise.</returns>
+        public static bool StartsWith(this string strBase, char chrCharToCheck)
+        {
+            return (strBase.Length > 0 && strBase[0] == chrCharToCheck);
+        }
+
+        /// <summary>
+        /// Determines whether the last char of this string instance matches the specified char.
+        /// </summary>
+        /// <param name="strBase">String to check.</param>
+        /// <param name="chrCharToCheck">Char to check.</param>
+        /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
+        public static bool EndsWith(this string strBase, char chrCharToCheck)
+        {
+            int intLength = strBase.Length;
+            return (intLength > 0 && strBase[intLength - 1] == chrCharToCheck);
+        }
     }
 }

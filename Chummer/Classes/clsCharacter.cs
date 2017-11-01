@@ -4592,7 +4592,7 @@ namespace Chummer
         {
             get
             {
-                int intExtraIP = 1 + Convert.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice)) + Convert.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd));
+                int intExtraIP = 1 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd);
 
                 return Math.Min(intExtraIP, 5);
             }
@@ -5130,9 +5130,7 @@ namespace Chummer
         {
             get
             {
-                string strReturn = string.Empty;
-
-                strReturn += "(" + LanguageManager.GetString("String_CareerKarma") + " ÷ 10)";
+                string strReturn = "(" + LanguageManager.GetString("String_CareerKarma") + " ÷ 10)";
                 if (BurntStreetCred != 0)
                     strReturn += " - " + LanguageManager.GetString("String_BurntStreetCred");
 
@@ -5148,13 +5146,7 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);
-
-                foreach (Contact objContact in _lstContacts)
-                {
-                    if (objContact.EntityType == ContactType.Enemy)
-                        intReturn += 1;
-                }
+                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety) + _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
 
                 return intReturn;
             }
@@ -5179,7 +5171,6 @@ namespace Chummer
             get
             {
                 string strReturn = string.Empty;
-                int intEnemies = 0;
 
                 foreach (Improvement objImprovement in _lstImprovements)
                 {
@@ -5187,12 +5178,7 @@ namespace Chummer
                         strReturn += " + " + GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
                 }
 
-                foreach (Contact objContact in _lstContacts)
-                {
-                    if (objContact.EntityType == ContactType.Enemy)
-                        intEnemies += 1;
-                }
-
+                int intEnemies = _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
                 if (intEnemies > 0)
                     strReturn += " + " + LanguageManager.GetString("Label_SummaryEnemies") + " (" + intEnemies.ToString() + ")";
 
@@ -5200,7 +5186,7 @@ namespace Chummer
                     strReturn += " - " + LanguageManager.GetString("String_BurntStreetCred") + " (" + (BurntStreetCred / 2).ToString() + ")";
 
                 strReturn = strReturn.Trim();
-                if (strReturn.StartsWith("+") || strReturn.StartsWith("-"))
+                if (strReturn.StartsWith('+') || strReturn.StartsWith('-'))
                     strReturn = strReturn.Substring(2, strReturn.Length - 2);
 
                 return strReturn;
@@ -5243,14 +5229,12 @@ namespace Chummer
         {
             get
             {
-                string strReturn = string.Empty;
-
                 if (_objOptions.UseCalculatedPublicAwareness)
                 {
-                    strReturn += "(" + LanguageManager.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+                    return "(" + LanguageManager.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
                 }
 
-                return strReturn;
+                return string.Empty;
             }
         }
 #endregion
@@ -5618,7 +5602,7 @@ namespace Chummer
                 bool blnCustomFit = false;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => !objArmor.ArmorValue.StartsWith("+")))
+                foreach (Armor objArmor in _lstArmor.Where(objArmor => !objArmor.ArmorValue.StartsWith('+')))
                 {
                     // Don't look at items that start with "+" since we'll consider those next.
                     if (objArmor.TotalArmor > intHighest && objArmor.Equipped)
@@ -5635,16 +5619,16 @@ namespace Chummer
                 int intStacking = 0;
                 foreach (Armor objArmor in _lstArmor)
                 {
-                    if (objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "Clothing" && objArmor.Equipped)
+                    if (objArmor.ArmorValue.StartsWith('+') && objArmor.Category != "Clothing" && objArmor.Equipped)
                         intStacking += objArmor.TotalArmor;
-                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
+                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+'))
                     {
                         strHighest = objArmor.Name;
                         blnCustomFit = (objArmor.Category == "High-Fashion Armor Clothing");
                     }
                 }
 
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")) && objArmor.Equipped))
+                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Equipped))
                 {
                     if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
                     {
@@ -5654,7 +5638,7 @@ namespace Chummer
                 }
 
                 // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
-                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith("+") && objArmor.Category == "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
+                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith('+') && objArmor.Category == "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
 
                 if (intClothing > intArmor)
                     intArmor = intClothing;
@@ -5755,24 +5739,25 @@ namespace Chummer
                 // This is used for Custom-Fit armour's stacking.
                 foreach (Armor objArmor in _lstArmor)
                 {
-                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
+                    int intLoopTotal = objArmor.TotalArmor;
+                    if (intLoopTotal > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+'))
                     {
                         blnCustomFit = (objArmor.Category == "High-Fashion Armor Clothing");
-                        intHighest = objArmor.TotalArmor;
+                        intHighest = intLoopTotal;
                         strHighest = objArmor.Name;
                     }
                 }
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith("+") || objArmor.ArmorOverrideValue.StartsWith("+")) && objArmor.Equipped))
+                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Equipped))
                 {
                     if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
                     {
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        {
+                            if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
                             {
-                                if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest)
-                                {
-                                    intTotalA += Convert.ToInt32(objArmor.TotalArmor);
-                                }
+                                intTotalA += Convert.ToInt32(objArmor.TotalArmor);
                             }
+                        }
                     }
                     else
                     {
@@ -5781,8 +5766,9 @@ namespace Chummer
                 }
 
                 // calculate armor encumberance
-                if (intTotalA > STR.TotalValue)
-                    return (intTotalA - STR.TotalValue) / 2 * -1;  // we expect a negative number
+                int intSTRTotalValue = STR.TotalValue;
+                if (intTotalA > intSTRTotalValue)
+                    return (intTotalA - intSTRTotalValue) / 2 * -1;  // we expect a negative number
                 return 0;
             }
         }

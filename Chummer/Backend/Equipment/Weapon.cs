@@ -112,7 +112,7 @@ namespace Chummer.Backend.Equipment
                 {
                     strMounts += objXmlMount.InnerText + "/";
                 }
-                if (strMounts.EndsWith("/"))
+                if (strMounts.EndsWith('/'))
                 {
                     strMounts = strMounts.Substring(0, strMounts.Length - 1);
                 }
@@ -3167,9 +3167,9 @@ namespace Chummer.Backend.Equipment
                         Tuple<int, string> objLoopAvail = objUnderbarrel.TotalAvailPair;
                         if (objLoopAvail.Item1 > intMaxChildAvail)
                             intMaxChildAvail = objLoopAvail.Item1;
-                        if (objLoopAvail.Item2.EndsWith("F"))
+                        if (objLoopAvail.Item2.EndsWith('F'))
                             strAvail = "F";
-                        else if (objLoopAvail.Item2.EndsWith("R") && strAvail != "F")
+                        else if (objLoopAvail.Item2.EndsWith('R') && strAvail != "F")
                             strAvail = "R";
                     }
                     strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
@@ -3193,12 +3193,12 @@ namespace Chummer.Backend.Equipment
 
                     if (!objAccessory.IncludedInWeapon)
                     {
-                        if (strAccAvail.StartsWith("+") || strAccAvail.StartsWith("-"))
+                        if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
                         {
                             strAccAvail += objAccessory.TotalAvail;
-                            if (strAccAvail.EndsWith("F"))
+                            if (strAccAvail.EndsWith('F'))
                                 strAvail = "F";
-                            if (strAccAvail.EndsWith("F") || strAccAvail.EndsWith("R"))
+                            if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
                                 strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
                             intAccAvail = Convert.ToInt32(strAccAvail);
                             intAvail += intAccAvail;

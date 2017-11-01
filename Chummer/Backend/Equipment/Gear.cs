@@ -1602,7 +1602,7 @@ namespace Chummer.Backend.Equipment
             bool blnIncludePlus = false;
 
             // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-            if (_strAvail.StartsWith("+"))
+            if (_strAvail.StartsWith('+'))
             {
                 if (!blnCalculateAdditions)
                     return _strAvail;
@@ -1634,14 +1634,14 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Just a straight cost, so return the value.
-                strCalculated = strAvailExpression.EndsWith("F") || strAvailExpression.EndsWith("R")
+                strCalculated = strAvailExpression.EndsWith('F') || strAvailExpression.EndsWith('R')
                     ? Convert.ToInt32(strAvailExpression.Substring(0, strAvailExpression.Length - 1)).ToString() + strAvailExpression.Substring(strAvailExpression.Length - 1, 1)
                     : Convert.ToInt32(strAvailExpression).ToString();
             }
 
             int intAvail;
             string strAvailText = string.Empty;
-            if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
+            if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
             {
                 strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                 intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
@@ -1652,11 +1652,11 @@ namespace Chummer.Backend.Equipment
             // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
             foreach (Gear objChild in _objChildren)
             {
-                if (objChild.Avail.StartsWith("+"))
+                if (objChild.Avail.StartsWith('+'))
                 {
                     string strAvail = objChild.Avail.Replace("Rating", objChild.Rating.ToString());
                     strAvail = strAvail.Substring(1).Trim();
-                    if (strAvail.EndsWith("R") || strAvail.EndsWith("F"))
+                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
                     {
                         if (strAvailText != "F")
                             strAvailText = strAvail.Substring(strAvail.Length - 1);
@@ -2095,7 +2095,7 @@ namespace Chummer.Backend.Equipment
                         strReturn += _nodWeaponBonus["damagetype"].InnerText;
 
                     // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith("-"))
+                    if (!strReturn.StartsWith('-'))
                         strReturn = "+" + strReturn;
                 }
 
@@ -2131,7 +2131,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = _nodWeaponBonus["ap"].InnerText;
 
                         // If this does not start with "-", add a "+" to the string.
-                        if (!strReturn.StartsWith("-"))
+                        if (!strReturn.StartsWith('-'))
                             strReturn = "+" + strReturn;
                     }
 

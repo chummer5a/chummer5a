@@ -1845,7 +1845,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlDocument = new XmlDocument();
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
                 // If the Avail starts with "+", return the base string and don't try to calculate anything since we're looking at a child component.
-                if (_strAvail.StartsWith("+"))
+                if (_strAvail.StartsWith('+'))
                 {
                     if (_strAvail.Contains("Rating") || _strAvail.Contains("MinRating"))
                     {
@@ -1901,7 +1901,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     // Just a straight cost, so return the value.
-                    if (strBaseAvail.EndsWith("F") || strBaseAvail.EndsWith("R"))
+                    if (strBaseAvail.EndsWith('F') || strBaseAvail.EndsWith('R'))
                     {
                         strCalculated = (Convert.ToInt32(strBaseAvail.Substring(0, strBaseAvail.Length - 1)) + intAvailModifier).ToString() + strBaseAvail.Substring(strBaseAvail.Length - 1, 1);
                     }
@@ -1911,7 +1911,7 @@ namespace Chummer.Backend.Equipment
 
                 int intAvail = 0;
                 string strAvailText = string.Empty;
-                if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
+                if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                     intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
@@ -1930,7 +1930,7 @@ namespace Chummer.Backend.Equipment
                             strChildAvail = strChildAvail.Replace("MinRating", objChild.MinRating.ToString());
                             strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
                             string strChildAvailText = string.Empty;
-                            if (strChildAvail.EndsWith("R") || strChildAvail.EndsWith("F"))
+                            if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
                             {
                                 strChildAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
                                 strChildAvail = strChildAvail.Substring(0, strChildAvail.Length - 1);
@@ -1946,7 +1946,7 @@ namespace Chummer.Backend.Equipment
                                 strChildAvail += strChildAvailText;
                         }
 
-                        if (strChildAvail.EndsWith("R") || strChildAvail.EndsWith("F"))
+                        if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
                         {
                             if (strAvailText != "F")
                                 strAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
@@ -1968,9 +1968,9 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objLoopGear in Gear)
                     {
                         string strLoopAvail = objLoopGear.TotalAvail(false, true);
-                        if (strLoopAvail.EndsWith("R") || strLoopAvail.EndsWith("F"))
+                        if (strLoopAvail.EndsWith('R') || strLoopAvail.EndsWith('F'))
                         {
-                            if (strAvailText != "F" && strLoopAvail.EndsWith("F"))
+                            if (strAvailText != "F" && strLoopAvail.EndsWith('F'))
                                 strAvailText = "F";
                             else
                                 strAvailText = "R";
@@ -2331,7 +2331,7 @@ namespace Chummer.Backend.Equipment
                     if (objChild.Capacity != "[*]")
                     {
                         // If the child cost starts with "*", multiply the item's base cost.
-                        if (objChild.Cost.StartsWith("*"))
+                        if (objChild.Cost.StartsWith('*'))
                         {
                             decimal decPluginCost = 0;
                             string strMultiplier = objChild.Cost;

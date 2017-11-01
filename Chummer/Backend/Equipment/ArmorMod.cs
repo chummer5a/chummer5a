@@ -720,7 +720,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     // Just a straight cost, so return the value.
-                    if (_strAvail.EndsWith("F") || _strAvail.EndsWith("R"))
+                    if (_strAvail.EndsWith('F') || _strAvail.EndsWith('R'))
                     {
                         strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
                     }
@@ -730,7 +730,7 @@ namespace Chummer.Backend.Equipment
 
                 int intAvail;
                 string strAvailText = string.Empty;
-                if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
+                if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                     // Translate the Avail string.

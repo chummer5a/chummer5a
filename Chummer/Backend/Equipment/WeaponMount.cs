@@ -497,7 +497,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-                if (_strAvail.StartsWith("+"))
+                if (_strAvail.StartsWith('+'))
                     return _strAvail;
 
                 string strCalculated = _strAvail;
@@ -512,7 +512,7 @@ namespace Chummer.Backend.Equipment
 
                 int intAvail;
                 string strAvailText = string.Empty;
-                if (strCalculated.EndsWith("F") || strCalculated.EndsWith("R"))
+                if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                     intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));

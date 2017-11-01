@@ -379,14 +379,11 @@ namespace Chummer.UI.Skills
                         intWidth = objControl.PreferredSize.Width;
                     }
                 }
-                _groups.Height = height - _groups.Top;
-                _groups.Size = new Size(intWidth, splitSkills.Panel1.Height - 15);
+                _groups.Size = new Size(intWidth, height - _groups.Top);
             }
             if (_skills != null)
             {
-                _skills.Height = height - _skills.Top;
-                _skills.Size = new Size(splitSkills.Panel1.Width - (intWidth+10), splitSkills.Panel1.Height - 39);
-
+                _skills.Size = new Size(splitSkills.Panel1.Width - (intWidth + 10), height - _skills.Top);
             }
         }
 

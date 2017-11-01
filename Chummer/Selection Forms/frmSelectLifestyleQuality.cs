@@ -68,7 +68,7 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -640,7 +640,7 @@ namespace Chummer
                                 break;
                             case "ess":
                                 // Check Essence requirement.
-                                if (objXmlRequired.InnerText.StartsWith("-"))
+                                if (objXmlRequired.InnerText.StartsWith('-'))
                                 {
                                     // Essence must be less than the value.
                                     if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
@@ -903,7 +903,7 @@ namespace Chummer
                                 break;
                             case "ess":
                                 // Check Essence requirement.
-                                if (objXmlRequired.InnerText.StartsWith("-"))
+                                if (objXmlRequired.InnerText.StartsWith('-'))
                                 {
                                     // Essence must be less than the value.
                                     if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))

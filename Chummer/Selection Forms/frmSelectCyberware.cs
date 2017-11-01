@@ -104,7 +104,7 @@ namespace Chummer
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -738,7 +738,7 @@ namespace Chummer
                     if (Convert.ToInt32(nudRating.Value) > 0)
                         strAvailExpr = strValues[Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
-                if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
+                if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
                 {
                     strPrefix = strAvailExpr.Substring(0, 1);
                     strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);

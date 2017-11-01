@@ -233,17 +233,19 @@ namespace Chummer
         protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, Label lblCMArmor = null)
         {
             // Armor Ratings.
-            lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
+            int intTotalArmorRating = _objCharacter.TotalArmorRating;
+            int intArmorRating = _objCharacter.ArmorRating;
+            lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
-                if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + intArmorRating.ToString() + ")";
+                if (intArmorRating != intTotalArmorRating)
                     strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                                       (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
+                                       (intTotalArmorRating - intArmorRating).ToString() + ")";
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
                 {
-                    lblCMArmor.Text = _objCharacter.TotalArmorRating.ToString();
+                    lblCMArmor.Text = intTotalArmorRating.ToString();
                     tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
                 }
             }
@@ -251,12 +253,13 @@ namespace Chummer
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
             // Create the Armor Encumbrance Improvements.
-            if (_objCharacter.ArmorEncumbrance < 0)
+            int intEncumbrance = _objCharacter.ArmorEncumbrance;
+            if (intEncumbrance < 0)
             {
                 ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
-                    Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
+                    Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
                 ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
-                    Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
+                    Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
             }
         }
 

@@ -393,7 +393,7 @@ namespace Chummer
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -610,7 +610,7 @@ namespace Chummer
                     strAvailExpr = strValues[intRating];
                 }
 
-                if (strAvailExpr.EndsWith("F") || strAvailExpr.EndsWith("R"))
+                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Translate the Avail string.

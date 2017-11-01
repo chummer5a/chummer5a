@@ -107,7 +107,7 @@ namespace Chummer
             int startingLength = story.Length;
 
             String[] words;
-            if (innerText.StartsWith("$") && innerText.IndexOf(' ') < 0)
+            if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
                 words = Macro(innerText).Split(" \n\r\t".ToCharArray());
             }
@@ -125,7 +125,7 @@ namespace Chummer
                     story.Append('$');
                     mfix = true;
                 }
-                else if (trim.StartsWith("$"))
+                else if (trim.StartsWith('$'))
                 {
                     //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
                     Write(story, trim, --levels);

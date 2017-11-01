@@ -81,7 +81,7 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
             chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
@@ -92,7 +92,7 @@ namespace Chummer
             // Populate the Gear Category list.
             if (!string.IsNullOrEmpty(_strAllowedCategories))
             {
-                if (_strAllowedCategories.EndsWith(","))
+                if (_strAllowedCategories.EndsWith(','))
                     _strAllowedCategories = _strAllowedCategories.Substring(0, _strAllowedCategories.Length - 1);
 
                 string[] strAllowed = _strAllowedCategories.Split(',');

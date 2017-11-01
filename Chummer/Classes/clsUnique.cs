@@ -1416,7 +1416,7 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
 
-            if (_blnLimited && _strDV.StartsWith("F"))
+            if (_blnLimited && _strDV.StartsWith('F'))
             {
                 string strDV = _strDV;
                 int intPos = 0;
@@ -1979,7 +1979,7 @@ namespace Chummer
             get
             {
                 string strReturn = _strDV;
-                bool force = _strDV.StartsWith("F");
+                bool force = _strDV.StartsWith('F');
                 if (_objCharacter.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.DrainValue))
                 {
                     XmlDocument objXmlDocument = new XmlDocument();

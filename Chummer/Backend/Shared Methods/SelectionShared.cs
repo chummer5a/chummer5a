@@ -445,7 +445,7 @@ namespace Chummer.Backend.Shared_Methods
                                     objCyberware =>
                                         objCyberware.Grade.Name.Contains(objEssNodeGradeAttributeText))
                                 .Sum(objCyberware => objCyberware.CalculatedESS());
-                        if (strNodeInnerText.StartsWith("-"))
+                        if (strNodeInnerText.StartsWith('-'))
                         {
                             // Essence must be less than the value.
                             name = "\n\t" +
@@ -467,7 +467,7 @@ namespace Chummer.Backend.Shared_Methods
                         return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                     // Check Essence requirement.
-                    if (strNodeInnerText.StartsWith("-"))
+                    if (strNodeInnerText.StartsWith('-'))
                     {
                         // Essence must be less than the value.
                         name = "\n\t" +
