@@ -7571,7 +7571,7 @@
       </gears>
       <seats>3</seats>
     </vehicle>
-    <vehicle>
+  <vehicle>
       <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
       <name>Dodge Hurricane Crew Modell</name>
       <page>57</page>
@@ -7591,7 +7591,7 @@
       </gears>
       <seats>6</seats>
     </vehicle>
-    <vehicle>
+  <vehicle>
       <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
       <name>Dodge Hurricane Security Modell</name>
       <page>57</page>
@@ -7610,6 +7610,26 @@
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
       <seats>5</seats>
+    </vehicle>
+  <vehicle>
+      <id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
+      <name>BMW X Infinity</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>13</armor>
+      <avail>10</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>72000</cost>
+      <handling>5/5</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="4" maxrating="4">Sensor Array</gear>
+      </gears>
+      <seats>6</seats>
     </vehicle>
   <!-- End Region -->
       <!--Region Shadows in Focus: Metropole-->
