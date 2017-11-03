@@ -197,6 +197,7 @@ Application Changes:
 - Matrix attributes will now automatically fill in the Data Processing value of the character's active commlink.
 - Fixed a bug where removing Black Market Pipeline would not reset the discounted cost of nested gear.
 - Fixed a bug where loading in certain gear would not properly color their entries based on the presence of notes and whether or not they can be removed.
+- Character sheet language can now be selected in a dropdown menu instead of it being forced to just English sheets and sheets for the currently set language. Fixes #2018.
 
 Data Changes:
 
@@ -331,6 +332,7 @@ Data Changes:
 - Gecko Tips and Gliding System vehicle mods now only have one entry that automatically scale their stats appropriately depending on the vehicle's body range.
 - Fake and Standard Credsticks from 2050 now allow you to enter the name of the SIN that the credstick holds.
 - Fixed the requirements on Flesh Sculpter. Fixes #2014.
+- Added a set of new sheets based on the Shadowrun 5 Set that allow for the display of skill categories in addition to some other filtering option (e.g. Rating > 0, Sort by Rating, Sort by Name, etc.). Fixes #2021.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

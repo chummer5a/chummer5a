@@ -268,6 +268,7 @@
   <xsl:variable name="lang.ResistFading"    select="'Schwundwiderstand mit'"/>
   <xsl:variable name="lang.RiggerInitiative"  select="'Rigger AR Initiative'"/>
   <xsl:variable name="lang.SkillGroup"    select="'Fertigkeitsgruppe'"/>
+  <xsl:variable name="lang.SkillGroups"    select="'Fertigkeitsgruppen'"/>
   <xsl:variable name="lang.StreetCred"    select="'Straßenruf'"/>
   <xsl:variable name="lang.StreetName"    select="'Straßenname'"/>
   <xsl:variable name="lang.StunTrack"    select="'Geistige Schadensleiste'"/>

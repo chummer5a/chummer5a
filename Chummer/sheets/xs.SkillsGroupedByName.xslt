@@ -8,31 +8,43 @@
   <xsl:template name="skills1">
     <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]) + count(skills/skillgroup)) div 2)"/>
     <xsl:variable name="sortedskills">
-      <xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]">
-        <xsl:sort select="skillcategory"/>
-        <xsl:sort select="name" order="ascending"/>
-        <xsl:if test="position() &lt;= $skillcut">
-          <xsl:copy-of select="current()"/>
-        </xsl:if>
-      </xsl:for-each>
+      <xsl:choose>
+        <xsl:when test="$PrintSkillCategoryNames">
+          <xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]">
+            <xsl:sort select="skillcategory"/>
+            <xsl:sort select="name" order="ascending" />
+            <xsl:if test="position() &lt;= $skillcut">
+              <xsl:copy-of select="current()"/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]">
+            <xsl:sort select="name" order="ascending" />
+            <xsl:if test="position() &lt;= $skillcut">
+              <xsl:copy-of select="current()"/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:for-each select="msxsl:node-set($sortedskills)/skill">
-      <xsl:if test="$PrintSkillCategoryNames = 'True'">
+      <xsl:if test="$PrintSkillCategoryNames">
         <xsl:choose>
           <xsl:when test="position() = 1">
             <tr>
               <td colspan="6" style="border-bottom:solid black 1px;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
+                  <xsl:value-of select="skillcategory" />
                 </strong>
               </td>
             </tr>
           </xsl:when>
           <xsl:when test="skillcategory != preceding-sibling::skill[1]/skillcategory">
             <tr>
-              <td colspan="6" style="border-bottom:solid black 1px;">
+              <td colspan="6" style="border-bottom:solid black 1px; padding-top: 1em;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
+                  <xsl:value-of select="skillcategory" />
                 </strong>
               </td>
             </tr>
@@ -47,31 +59,43 @@
   <xsl:template name="skills2">
     <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]) + count(skills/skillgroup)) div 2)"/>
     <xsl:variable name="sortedskills">
-      <xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]">
-        <xsl:sort select="skillcategory"/>
-        <xsl:sort select="name" order="ascending"/>
-        <xsl:if test="position() &gt; $skillcut">
-          <xsl:copy-of select="current()"/>
-        </xsl:if>
-      </xsl:for-each>
+      <xsl:choose>
+        <xsl:when test="$PrintSkillCategoryNames">
+          <xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]">
+            <xsl:sort select="skillcategory"/>
+            <xsl:sort select="name" order="ascending" />
+            <xsl:if test="position() &gt; $skillcut">
+              <xsl:copy-of select="current()"/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="skills/skill[knowledge = 'False' and (rating &gt; 0 or total &gt; 0)]">
+            <xsl:sort select="name" order="ascending" />
+            <xsl:if test="position() &gt; $skillcut">
+              <xsl:copy-of select="current()"/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:for-each select="msxsl:node-set($sortedskills)/skill">
-      <xsl:if test="$PrintSkillCategoryNames = 'True'">
+      <xsl:if test="$PrintSkillCategoryNames">
         <xsl:choose>
           <xsl:when test="position() = 1">
             <tr>
               <td colspan="6" style="border-bottom:solid black 1px;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
+                  <xsl:value-of select="skillcategory" />
                 </strong>
               </td>
             </tr>
           </xsl:when>
           <xsl:when test="skillcategory != preceding-sibling::skill[1]/skillcategory">
             <tr>
-              <td colspan="6" style="border-bottom:solid black 1px;">
+              <td colspan="6" style="border-bottom:solid black 1px; padding-top: 1em;">
                 <strong>
-                  <xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills"/>
+                  <xsl:value-of select="skillcategory" />
                 </strong>
               </td>
             </tr>
@@ -82,27 +106,105 @@
       <xsl:call-template name="skills"/>
     </xsl:for-each>
     <xsl:if test="count(skills/skillgroup) &gt; 0">
-      <xsl:if test="$PrintSkillCategoryNames = 'True'">
+      <xsl:if test="$PrintSkillCategoryNames">
         <tr>
-          <td colspan="6" style="border-bottom:solid black 1px;">
-            <strong><xsl:text> </xsl:text><xsl:value-of select="$lang.SkillGroups"/></strong>
+          <td colspan="6" style="border-bottom:solid black 1px; padding-top: 1em;">
+            <strong><xsl:value-of select="$lang.SkillGroups"/></strong>
           </td>
         </tr>
       </xsl:if>
     <xsl:for-each select="skills/skillgroup">
-      <xsl:sort select="name"/>
+      <xsl:sort select="name" order="ascending" />
       <xsl:call-template name="skillgroups"/>
     </xsl:for-each>
     </xsl:if>
   </xsl:template>
 
   <xsl:template name="skills3">
-    <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True']">
-      <xsl:sort select="name" />
+    <xsl:variable name="sortedlanguageskills">
+      <xsl:choose>
+        <xsl:when test="$PrintSkillCategoryNames">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True']">
+            <xsl:sort select="skillcategory"/>
+            <xsl:sort select="name" order="ascending" />
+            <xsl:copy-of select="current()"/>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True']">
+            <xsl:sort select="name" order="ascending" />
+            <xsl:copy-of select="current()"/>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="sortedknowledgeskills">
+      <xsl:choose>
+        <xsl:when test="$PrintSkillCategoryNames">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True']">
+            <xsl:sort select="skillcategory"/>
+            <xsl:sort select="name" order="ascending" />
+            <xsl:copy-of select="current()"/>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True']">
+            <xsl:sort select="name" order="ascending" />
+            <xsl:copy-of select="current()"/>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:for-each select="msxsl:node-set($sortedlanguageskills)/skill">
+      <xsl:if test="$PrintSkillCategoryNames">
+        <xsl:choose>
+          <xsl:when test="position() = 1">
+            <tr>
+              <td colspan="6" style="border-bottom:solid black 1px;">
+                <strong>
+                  <xsl:value-of select="skillcategory" />
+                </strong>
+              </td>
+            </tr>
+          </xsl:when>
+          <xsl:when test="skillcategory != preceding-sibling::skill[1]/skillcategory">
+            <tr>
+              <td colspan="6" style="border-bottom:solid black 1px; padding-top: 1em;">
+                <strong>
+                  <xsl:value-of select="skillcategory" />
+                </strong>
+              </td>
+            </tr>
+          </xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:if>
       <xsl:call-template name="skills"/>
     </xsl:for-each>
-    <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True']">
-      <xsl:sort select="name" />
+    <xsl:for-each select="msxsl:node-set($sortedknowledgeskills)/skill">
+      <xsl:if test="$PrintSkillCategoryNames">
+        <xsl:choose>
+          <xsl:when test="position() = 1">
+            <tr>
+              <td colspan="6" style="border-bottom:solid black 1px; padding-top: 1em;">
+                <strong>
+                  <xsl:value-of select="skillcategory" />
+                </strong>
+              </td>
+            </tr>
+          </xsl:when>
+          <xsl:when test="skillcategory != preceding-sibling::skill[1]/skillcategory">
+            <tr>
+              <td colspan="6" style="border-bottom:solid black 1px; padding-top: 1em;">
+                <strong>
+                  <xsl:value-of select="skillcategory" />
+                </strong>
+              </td>
+            </tr>
+          </xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:if>
       <xsl:call-template name="skills"/>
     </xsl:for-each>
   </xsl:template>

@@ -268,6 +268,7 @@
   <xsl:variable name="lang.ResistFading"    select="'Resist Fading with'"/>
   <xsl:variable name="lang.RiggerInitiative"  select="'Rigger Initiative'"/>
   <xsl:variable name="lang.SkillGroup"    select="'Skill Group'"/>
+  <xsl:variable name="lang.SkillGroups"    select="'Skill Groups'"/>
   <xsl:variable name="lang.StreetCred"    select="'Street Cred'"/>
   <xsl:variable name="lang.StreetName"    select="'Street Name'"/>
   <xsl:variable name="lang.StunTrack"    select="'Stun Damage Track'"/>
