@@ -1645,6 +1645,9 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
+      <bonus>
+        <throwrange>Rating*2</throwrange>
+      </bonus>
       <maxlevels>3</maxlevels>
     </power>
     <!-- End Region -->
