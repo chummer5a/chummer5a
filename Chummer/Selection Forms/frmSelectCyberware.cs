@@ -1134,7 +1134,7 @@ namespace Chummer
                 SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(_strSelectedGrade);
             }
 
-            _strSelectedGrade = SelectedGrade.ToString();
+            _strSelectedGrade = SelectedGrade.Name.ToString();
             SelectedRating = Convert.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
