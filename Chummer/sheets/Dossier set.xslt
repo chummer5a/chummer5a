@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Dossier character summary sheet -->
 <!-- Created by Jeff Halket, modified by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
@@ -37,7 +37,6 @@
           width: 15%;
           }
           .mugshot {
-          height: auto;
           width: auto;
           max-width: 100%;
           object-fit: scale-down;
@@ -45,8 +44,8 @@
           }
           @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
           .mugshot {
-          height: auto;
-          width: inherit;
+          width: 100%;
+          max-width: inherit;
           max-width: 100%;
           object-fit: scale-down;
           }
@@ -55,8 +54,8 @@
         <!--[if IE]
         <style type="text/css">
         .mugshot {
-          height: auto;
-          width: inherit;
+          width: 100%;
+          max-width: inherit;
           max-width: 100%;
           object-fit: scale-down;
           }
@@ -68,7 +67,7 @@
             margin-top: 0.5in;
             margin-left: 0.5in;
             margin-right: 0.5in;
-            margin-bottom: 0.75in;
+            margin-bottom: 0.5in;
           }
         </style>
       </head>
@@ -79,7 +78,7 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Name"/>:</td>
               <td><xsl:value-of select="name"/></td>
-              <td rowspan="11" width="40%" align="center" style="text-align:center; width: 100%;">
+              <td rowspan="11" width="40%" align="center" style="text-align:center; vertical-align: middle; width: 40%; max-width: 40%; max-height: 100%;">
                 <xsl:if test="mainmugshotbase64 != ''">
                   <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
                 </xsl:if>
