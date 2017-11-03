@@ -13014,17 +13014,8 @@
       <required>
         <allof>
           <skill>
-            <name>Spellcasting</name>
-            <val>4</val>
-            <spec>Manipulation</spec>
-          </skill>
-          <skill>
-            <name>Spellcasting</name>
-            <val>6</val>
-          </skill>
-          <skill>
-            <name>Spellcasting</name>
-            <val>6</val>
+            <name>Zoology</name>
+            <val>5</val>
             <type>Knowledge</type>
           </skill>
 		  <attribute>
@@ -13035,6 +13026,36 @@
         <oneof>
           <spell>Shapechange</spell>
           <spell>[Critter] Form</spell>
+		  <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>4</val>
+              <spec>Manipulation</spec>
+			</skill>
+            <spell>Shapechange</spell>
+          </group>
+		  <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>4</val>
+              <spec>Manipulation</spec>
+			</skill>
+            <spell>[Critter] Form</spell>
+          </group>
+		  <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>6</val>
+			</skill>
+            <spell>Shapechange</spell>
+          </group>
+		  <group>
+            <skill>
+              <name>Spellcasting</name>
+              <val>6</val>
+			</skill>
+            <spell>[Critter] Form</spell>
+          </group>
         </oneof>
       </required>
       <source>FA</source>

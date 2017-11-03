@@ -323,6 +323,8 @@ Data Changes:
 - Fixed Explorer and Aware not properly unlocking Assensing and Astral Combat. Fixes #1991.
 - Added Dodge Hurricane from german Rigger 5.0 and its variants.
 - Gecko Tips and Gliding System vehicle mods now only have one entry that automatically scale their stats appropriately depending on the vehicle's body range.
+- Fake and Standard Credsticks from 2050 now allow you to enter the name of the SIN that the credstick holds.
+- Fixed the requirements on Flesh Sculpter. Fixes #2014.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
