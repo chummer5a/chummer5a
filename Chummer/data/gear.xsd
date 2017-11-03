@@ -48,6 +48,7 @@
                                         <xs:element name="childcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="cost" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="costfor" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="disablequantity" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />

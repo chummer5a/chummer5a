@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -14,6 +15,8 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class Gear : INamedParentWithGuidAndNode<Gear>
     {
+        public static string[] MatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating" };
+
         private Guid _guiID;
         private string _SourceGuid;
         private string _strName = string.Empty;
@@ -50,10 +53,11 @@ namespace Chummer.Backend.Equipment
         private Gear _objParent = null;
         private bool _blnDiscountCost = false;
         private string _strGearName = string.Empty;
-        private bool _blnIncludedInParent = false;
+        private string _strParentID = string.Empty;
         private int _intMatrixCMBonus = 0;
         private int _intMatrixCMFilled = 0;
         private string _strForcedValue = string.Empty;
+        private bool _blnDisableQuantity = false;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -100,6 +104,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlGear.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlGear.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
 
@@ -508,7 +513,7 @@ namespace Chummer.Backend.Equipment
             objChild.MinRating = intChildRating;
             objChild.MaxRating = intChildRating;
             objChild.Parent = objParent;
-            objChild.IncludedInParent = true;
+            objChild.ParentID = objParent.InternalId;
             if (!string.IsNullOrEmpty(strChildForceSource))
                 objChild.Source = strChildForceSource;
             if (!string.IsNullOrEmpty(strChildForcePage))
@@ -555,6 +560,7 @@ namespace Chummer.Backend.Equipment
             _strCost = objGear.Cost;
             _strSource = objGear.Source;
             _strPage = objGear.Page;
+            _blnDisableQuantity = objGear.DisableQuantity;
             _strExtra = objGear.Extra;
             _blnBonded = objGear.Bonded;
             _blnEquipped = objGear.Equipped;
@@ -639,12 +645,13 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("disablequantity", _blnDisableQuantity.ToString());
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
             objWriter.WriteElementString("forcedvalue", _strForcedValue);
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("matrixcmbonus", _intMatrixCMBonus.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
+            objWriter.WriteElementString("parentid", _strParentID);
             if (_intChildCostMultiplier != 1)
                 objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString(CultureInfo.InvariantCulture));
             if (_intChildAvailModifier != 0)
@@ -733,6 +740,7 @@ namespace Chummer.Backend.Equipment
             _nodWeaponBonus = objNode["weaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
             objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             string strWeaponID = string.Empty;
             if (objNode.TryGetStringFieldQuickly("weaponguid", ref strWeaponID))
@@ -745,7 +753,17 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("gearname", ref _strGearName);
             objNode.TryGetStringFieldQuickly("forcedvalue", ref _strForcedValue);
 
-            objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
+            if (!objNode.TryGetStringFieldQuickly("parentid", ref _strParentID))
+            {
+                // Legacy Shim
+                bool blnIncludedInParent = false;
+                if (objNode.TryGetBoolFieldQuickly("includedinparent", ref blnIncludedInParent))
+                {
+                    // ParentIDs were only added when improvements were added that could allow for the adding of gear by something that would not become the gear's parent...
+                    // ... so all we care about is that this string is not empty and does not match the internal IDs of any sources for adding gear via improvements.
+                    _strParentID = Guid.NewGuid().ToString();
+                }
+            }
 
             if (objNode.InnerXml.Contains("<gear>"))
             {
@@ -854,7 +872,7 @@ namespace Chummer.Backend.Equipment
         /// Core code to Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = false, bool blnIsPersona = false)
+        public virtual void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = false)
         {
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
             {
@@ -866,7 +884,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
             objWriter.WriteElementString("iscommlink", blnIsCommlink.ToString());
-            objWriter.WriteElementString("ispersona", blnIsPersona.ToString());
+            objWriter.WriteElementString("ispersona", (Name == "Living Persona").ToString());
             //objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
             objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
             objWriter.WriteElementString("isprogram", IsProgram.ToString());
@@ -1351,6 +1369,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether to disable the ability to get more of a particular gear.
+        /// </summary>
+        public bool DisableQuantity
+        {
+            get
+            {
+                return _blnDisableQuantity;
+            }
+            set
+            {
+                _blnDisableQuantity = value;
+            }
+        }
+
+        /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
         public List<Gear> Children
@@ -1391,65 +1424,118 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Total Device Rating of the gear.
-        /// </summary>
-        public int TotalDeviceRating
+        public string GetMatrixAttributeString(string strAttributeName)
         {
-            get
+            Commlink objThis = this as Commlink;
+            if (objThis != null)
             {
-                if (string.IsNullOrEmpty(_strDeviceRating))
-                    return 2;
-                int intReturn = 0;
-
-                string strExpression = _strDeviceRating;
-
-                if (strExpression.StartsWith("FixedValues"))
+                switch (strAttributeName)
                 {
-                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (_intRating > 0)
-                        strExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Trim("[]".ToCharArray());
+                    case "Attack":
+                        return objThis.Attack;
+                    case "Sleaze":
+                        return objThis.Sleaze;
+                    case "Data Processing":
+                        return objThis.DataProcessing;
+                    case "Firewall":
+                        return objThis.Firewall;
                 }
+            }
+            if (strAttributeName == "Device Rating")
+                return DeviceRating;
+            return string.Empty;
+        }
 
-                int intGearValue = 0;
-                string strParentValue = string.Empty;
-                if (_objParent != null)
+        /// <summary>
+        /// Get the base value of a Matrix attribute of this gear (without children or Overclocker)
+        /// </summary>
+        /// <param name="strAttributeName">Matrix attribute name.</param>
+        /// <returns></returns>
+        public int GetBaseMatrixAttribute(string strAttributeName)
+        {
+            string strExpression = GetMatrixAttributeString(strAttributeName);
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
+
+            if (strExpression.StartsWith("FixedValues"))
+            {
+                string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                if (Rating > 0)
+                    strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
+            }
+            if (strExpression.Contains('{'))
+            {
+                Commlink objParent = Parent as Commlink;
+
+                XmlDocument objXmlDocument = new XmlDocument();
+                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                StringBuilder objValue = new StringBuilder(strExpression);
+                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                foreach (string strMatrixAttribute in MatrixAttributeStrings)
                 {
-                    if (strExpression.Contains("Gear DR"))
-                        intGearValue = _objParent.TotalDeviceRating;
-                    if (strExpression.Contains("Parent DR"))
-                        strParentValue = _objParent.DeviceRating;
-                }
-                int intTotalChildrenValue = 0;
-                if (_objChildren.Count > 0 && strExpression.Contains("Children DR"))
-                {
-                    foreach (Gear loopGear in _objChildren.Where(x => x.Equipped))
+                    objValue.Replace("{Gear " + strMatrixAttribute + "}", (objParent != null ? objParent.GetBaseMatrixAttribute(strMatrixAttribute) : 0).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.Replace("{Parent " + strMatrixAttribute + "}", (objParent != null ? objParent.GetMatrixAttributeString(strMatrixAttribute) : "0"));
+                    if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                     {
-                        intTotalChildrenValue += loopGear.TotalDeviceRating;
+                        int intTotalChildrenValue = 0;
+                        foreach (Gear loopGear in Children)
+                        {
+                            if (loopGear.Equipped)
+                            {
+                                Commlink objLoopCommlink = loopGear as Commlink;
+                                if (objLoopCommlink != null)
+                                    intTotalChildrenValue += objLoopCommlink.GetBaseMatrixAttribute(strMatrixAttribute);
+                            }
+                        }
+                        objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
-
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains("Rating"))
+                foreach (string strCharAttributeName in Attributes.AttributeSection.AttributeStrings)
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strValue = strExpression.Replace("Gear DR", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Children DR", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Parent DR", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
-                    XPathExpression xprCost = nav.Compile(strValue);
-                    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    double dblValue = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblValue);
+                    objValue.Replace("{" + strCharAttributeName + "}", CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.Replace("{" + strCharAttributeName + "Base}", CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    intReturn = Convert.ToInt32(strExpression);
-                }
-
-                return intReturn;
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                decimal decValue = Math.Ceiling(Convert.ToDecimal(nav.Evaluate(objValue.ToString()), GlobalOptions.InvariantCultureInfo));
+                return Convert.ToInt32(decValue);
             }
+            int intReturn = 0;
+            int.TryParse(strExpression, out intReturn);
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Get the bonus value of a Matrix attribute of this gear from children and Overclocker
+        /// </summary>
+        public int GetBonusMatrixAttribute(string strAttributeName)
+        {
+            int intReturn = 0;
+
+            foreach (Gear loopGear in Children)
+            {
+                if (loopGear.Equipped)
+                {
+                    Commlink objCommlink = loopGear as Commlink;
+                    if (objCommlink != null)
+                        intReturn += objCommlink.GetTotalMatrixAttribute(strAttributeName);
+                }
+            }
+
+            Commlink objThis = this as Commlink;
+            if (objThis != null && CharacterObject.Overclocker && objThis.Overclocked == strAttributeName)
+            {
+                intReturn += 1;
+            }
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Get the total value of a Matrix attribute of this gear after children and Overclocker
+        /// </summary>
+        public int GetTotalMatrixAttribute(string strAttributeName)
+        {
+            return GetBaseMatrixAttribute(strAttributeName) + GetBonusMatrixAttribute(strAttributeName);
         }
 
         /// <summary>
@@ -1564,11 +1650,22 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnIncludedInParent;
+                return !string.IsNullOrEmpty(_strParentID);
+            }
+        }
+
+        /// <summary>
+        /// ID of the object that added this cyberware (if any).
+        /// </summary>
+        public string ParentID
+        {
+            get
+            {
+                return _strParentID;
             }
             set
             {
-                _blnIncludedInParent = value;
+                _strParentID = value;
             }
         }
 
@@ -2207,7 +2304,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return BaseMatrixBoxes + (TotalDeviceRating + 1) / 2 + TotalBonusMatrixBoxes;
+                return BaseMatrixBoxes + (GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
             }
         }
 

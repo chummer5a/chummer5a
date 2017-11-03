@@ -910,6 +910,10 @@
           <name>technomancer</name>
         </enabletab>
         <unlockskills>Technomancer</unlockskills>
+		<addgear>
+		  <name>Living Persona</name>
+		  <category>Commlinks</category>
+		</addgear>
       </bonus>
       <forbidden>
         <oneof>

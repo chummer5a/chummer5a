@@ -1678,6 +1678,23 @@
         </usegear>
       </gears>
     </gear>
+	<gear>
+      <id>73b55822-dfb8-48f5-8ff8-37ef498ab9ef</id>
+      <name>Living Persona</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>251</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <devicerating>{RES}</devicerating>
+	  <attack>{CHA}</attack>
+      <sleaze>{INT}</sleaze>
+      <dataprocessing>{LOG}</dataprocessing>
+      <firewall>{WIL}</firewall>
+	  <addoncategory>Custom</addoncategory>
+	  <hide />
+    </gear>
     <gear>
       <id>d63eb841-7b15-4539-9026-b90a4924aeeb</id>
       <name>Custom Commlink</name>

@@ -1596,10 +1596,10 @@
     <None Include="icons\emoticon_waii.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Backend\Improvements\ImprovementMethods.tt">
+    <Content Include="Backend\Improvements\ImprovementMethods.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ImprovementMethods.cs</LastGenOutput>
-    </None>
+    </Content>
     <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

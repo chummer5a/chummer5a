@@ -320,7 +320,7 @@ namespace Chummer.Backend.Equipment
                     objGear.Cost = "0";
                     objGear.MaxRating = objGear.Rating;
                     objGear.MinRating = objGear.Rating;
-                    objGear.IncludedInParent = true;
+                    objGear.ParentID = InternalId;
                     _lstGear.Add(objGear);
 
                     objGearNode.ForeColor = SystemColors.GrayText;

@@ -30,6 +30,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Classes;
 using Chummer.Skills;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Extensions;
 
 namespace Chummer
 {
@@ -217,6 +218,7 @@ namespace Chummer
             FreeSpells,
             DrainValue,
             Spell,
+            Gear,
             MentorSpirit,
             Paragon,
             FreeSpellsSkill,
@@ -1287,11 +1289,15 @@ namespace Chummer
                                         foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
                                         {
                                             objWeaponAccessory.DiscountCost = false;
+                                            foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                            {
+                                                objLoopGear.DiscountCost = false;
+                                            }
                                         }
                                     }
-                                    foreach (Gear objGear in objVehicle.Gear)
+                                    foreach (Gear objLoopGear in objVehicle.Gear.GetAllDescendants(x => x.Children))
                                     {
-                                        objGear.DiscountCost = false;
+                                        objLoopGear.DiscountCost = false;
                                     }
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
@@ -1304,16 +1310,15 @@ namespace Chummer
                                     foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
                                     {
                                         objWeaponAccessory.DiscountCost = false;
+                                        foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                        {
+                                            objLoopGear.DiscountCost = false;
+                                        }
                                     }
                                 }
-                                foreach (Gear objGear in objCharacter.Gear)
+                                foreach (Gear objLoopGear in objCharacter.Gear.GetAllDescendants(x => x.Children))
                                 {
-                                    objGear.DiscountCost = false;
-
-                                    foreach (Gear objChild in objGear.Children)
-                                    {
-                                        objChild.DiscountCost = false;
-                                    }
+                                    objLoopGear.DiscountCost = false;
                                 }
                             }
                         }
@@ -1441,6 +1446,15 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                             objCharacter.CritterPowers.Remove(objCritterPower);
+                        }
+                        break;
+                    case Improvement.ImprovementType.Gear:
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objGear != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            CommonFunctions.DeleteGear(objCharacter, objGear, null);
+                            objCharacter.Gear.Remove(objGear);
                         }
                         break;
                     case Improvement.ImprovementType.Spell:

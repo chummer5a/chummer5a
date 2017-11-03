@@ -1210,6 +1210,80 @@ namespace Chummer.Classes
                 _strUnique);
         }
 
+        // Add a specific Gear to the Character.
+        public void addgear(XmlNode bonusNode)
+        {
+            Log.Info("addgear");
+
+            Log.Info("addgear = " + bonusNode.OuterXml.ToString());
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Adding Gear");
+            string strName = bonusNode["name"]?.InnerText ?? string.Empty;
+            string strCategory = bonusNode["category"]?.InnerText ?? string.Empty;
+            XmlNode node = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[name = \"" + strName + "\" and category = \"" + strCategory + "\"]");
+
+            if (node == null)
+                return;
+            int intRating = 1;
+            if (bonusNode["rating"] != null)
+                intRating = Convert.ToInt32(bonusNode["rating"].InnerText);
+            decimal decQty = 1.0m;
+            if (bonusNode["quantity"] != null)
+                decQty = Convert.ToDecimal(bonusNode["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
+
+            // Create the new piece of Gear.
+            List<Weapon> objWeapons = new List<Weapon>();
+            Gear objNewGear = null;
+
+            if (!string.IsNullOrEmpty(node["devicerating"]?.InnerText))
+            {
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(node, new TreeNode(), intRating, true, true, ForcedValue);
+                objCommlink.Quantity = decQty;
+
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (_objCharacter.ActiveCommlink == null)
+                {
+                    objCommlink.IsActive = true;
+                }
+
+                objNewGear = objCommlink;
+            }
+            else
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.Create(node, new TreeNode(), intRating, objWeapons, new List<TreeNode>(), ForcedValue);
+                objGear.Quantity = decQty;
+
+                objNewGear = objGear;
+            }
+
+            if (objNewGear.InternalId == Guid.Empty.ToString())
+                return;
+
+            objNewGear.Cost = "0";
+            // Create any Weapons that came with this Gear.
+            foreach (Weapon objWeapon in objWeapons)
+                _objCharacter.Weapons.Add(objWeapon);
+
+            objNewGear.ParentID = SourceName;
+            objNewGear.DisableQuantity = true;
+
+            _objCharacter.Gear.Add(objNewGear);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objNewGear.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Gear,
+                _strUnique);
+        }
+
         // Select an AI program.
         public void selectaiprogram(XmlNode bonusNode)
         {
