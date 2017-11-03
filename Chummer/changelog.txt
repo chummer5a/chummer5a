@@ -1565,6 +1565,7 @@ Data Changes:
 - Fixed incorrect weapon category limitations for the weapon mounts from Rigger 5.0. Fixes #1048.
 - Fixed the Improved Potential powers to properly increase their associated Limits. Fixes #1047.
 - Fixed an incorect source setting for the Periscope gear item. Fixes #1050.
+- Applied a bonus for Precision Throwing for throwing weapons.
 
 New Strings:
 - Warning_NoLimitFound

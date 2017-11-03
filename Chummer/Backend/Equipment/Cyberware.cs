@@ -1519,6 +1519,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (!string.IsNullOrWhiteSpace(_strForceGrade) && _strForceGrade != _objGrade.Name)
+                {
+                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, Improvement.ImprovementSource.Bioware, _objCharacter.Options);
+                }
                 return _objGrade;
             }
             set

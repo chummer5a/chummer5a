@@ -13914,7 +13914,7 @@ namespace Chummer
 
                 // Cyberware Grade is not available for Genetech items.
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
-                if (objCyberware.Parent == null && !objCyberware.Suite && !blnIgnoreSecondHand)
+                if (objCyberware.Parent == null && !objCyberware.Suite && !blnIgnoreSecondHand && string.IsNullOrWhiteSpace(objCyberware.ForceGrade))
                     cboCyberwareGrade.Enabled = true;
                 else
                     cboCyberwareGrade.Enabled = false;
