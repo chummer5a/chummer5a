@@ -757,7 +757,7 @@ namespace Chummer.Backend.Equipment
             {
                 // Legacy Shim
                 bool blnIncludedInParent = false;
-                if (objNode.TryGetBoolFieldQuickly("includedinparent", ref blnIncludedInParent))
+                if (objNode.TryGetBoolFieldQuickly("includedinparent", ref blnIncludedInParent) && blnIncludedInParent)
                 {
                     // ParentIDs were only added when improvements were added that could allow for the adding of gear by something that would not become the gear's parent...
                     // ... so all we care about is that this string is not empty and does not match the internal IDs of any sources for adding gear via improvements.

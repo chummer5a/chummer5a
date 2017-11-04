@@ -198,7 +198,7 @@ Application Changes:
 - Fixed a bug where removing Black Market Pipeline would not reset the discounted cost of nested gear.
 - Fixed a bug where loading in certain gear would not properly color their entries based on the presence of notes and whether or not they can be removed.
 - Character sheet language can now be selected in a dropdown menu instead of it being forced to just English sheets and sheets for the currently set language. Fixes #2018.
-- Fixed a bug where the character validity checker would erroneously read maximum special attribute points as unspent special attribute points when deciding to show a warning about unspent special attribute points to the user.
+- Fixed a bug where the character validity checker would erroneously read maximum special attribute points as unspent special attribute points when deciding to show a warning about unspent special attribute points to the user. Fixes #2019.
 
 Data Changes:
 
