@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Chummer
 {
@@ -42,6 +42,7 @@ namespace Chummer
             this.cboXSLT = new System.Windows.Forms.ComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.cboLanguage = new System.Windows.Forms.ComboBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.SuspendLayout();
@@ -120,9 +121,9 @@ namespace Chummer
             this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(540, 14);
+            this.cboXSLT.Location = new System.Drawing.Point(518, 14);
             this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(216, 21);
+            this.cboXSLT.Size = new System.Drawing.Size(254, 21);
             this.cboXSLT.TabIndex = 4;
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
@@ -130,12 +131,13 @@ namespace Chummer
             // 
             this.lblCharacterSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCharacterSheet.AutoSize = true;
-            this.lblCharacterSheet.Location = new System.Drawing.Point(447, 17);
+            this.lblCharacterSheet.Location = new System.Drawing.Point(257, 17);
             this.lblCharacterSheet.Name = "lblCharacterSheet";
             this.lblCharacterSheet.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterSheet.TabIndex = 3;
             this.lblCharacterSheet.Tag = "Label_Viewer_CharacterSheet";
             this.lblCharacterSheet.Text = "Character Sheet:";
+            this.lblCharacterSheet.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // webBrowser1
             // 
@@ -150,11 +152,23 @@ namespace Chummer
             this.webBrowser1.TabIndex = 5;
             this.webBrowser1.WebBrowserShortcutsEnabled = false;
             // 
+            // cboLanguage
+            // 
+            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLanguage.FormattingEnabled = true;
+            this.cboLanguage.Location = new System.Drawing.Point(350, 14);
+            this.cboLanguage.Name = "cboLanguage";
+            this.cboLanguage.Size = new System.Drawing.Size(162, 21);
+            this.cboLanguage.TabIndex = 104;
+            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+            // 
             // frmViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 637);
+            this.Controls.Add(this.cboLanguage);
             this.Controls.Add(this.lblCharacterSheet);
             this.Controls.Add(this.cboXSLT);
             this.Controls.Add(this.cmdSaveHTML);
@@ -186,6 +200,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.ComboBox cboLanguage;
     }
 
 }

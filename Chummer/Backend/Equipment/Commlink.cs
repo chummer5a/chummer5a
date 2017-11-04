@@ -13,8 +13,6 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class Commlink : Gear
     {
-        private bool _blnIsLivingPersona = false;
-        private bool _blnActiveCommlink = false;
         private string _strAttack = string.Empty;
         private string _strSleaze = string.Empty;
         private string _strDataProcessing = string.Empty;
@@ -22,7 +20,6 @@ namespace Chummer.Backend.Equipment
         private int _intPrograms = 0;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes = false;
-        private bool _blnHomeNode = false;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Commlink(Character objCharacter) : base(objCharacter)
@@ -74,9 +71,8 @@ namespace Chummer.Backend.Equipment
             _strDataProcessing = objGear.DataProcessing;
             _strFirewall = objGear.Firewall;
             _strSleaze = objGear.Sleaze;
-            _blnIsLivingPersona = objGear.IsLivingPersona;
-            _blnActiveCommlink = objGear.IsActive;
-            _blnHomeNode = objGear.HomeNode;
+            IsActive = objGear.IsActive;
+            HomeNode = objGear.HomeNode;
         }
 
         /// <summary>
@@ -92,10 +88,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sleaze", _strSleaze);
             objWriter.WriteElementString("dataprocessing", _strDataProcessing);
             objWriter.WriteElementString("firewall", _strFirewall);
-            objWriter.WriteElementString("livingpersona", _blnIsLivingPersona.ToString());
-            objWriter.WriteElementString("active", _blnActiveCommlink.ToString());
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
-            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+            objWriter.WriteElementString("active", IsActive.ToString());
+            objWriter.WriteElementString("homenode", HomeNode.ToString());
         }
 
         /// <summary>
@@ -110,19 +105,19 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
             objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
             objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall);
-            objNode.TryGetBoolFieldQuickly("livingpersona", ref _blnIsLivingPersona);
-            objNode.TryGetBoolFieldQuickly("active", ref _blnActiveCommlink);
+            bool blnIsActive = false;
+            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                IsActive = true;
             if (blnCopy)
             {
-                _blnHomeNode = false;
+                HomeNode = false;
             }
             else
             {
-                objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
-                if (_blnHomeNode)
+                bool blnIsHomeNode = false;
+                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                 {
-                    CharacterObject.HomeNodeCommlink = this;
-                    CharacterObject.HomeNodeVehicle = null;
+                    HomeNode = true;
                 }
             }
             if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
@@ -144,18 +139,18 @@ namespace Chummer.Backend.Equipment
         /// Core code to Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public override void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = true, bool blnIsPersona = false)
+        public override void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = true)
         {
-            base.PrintInner(objWriter, true, IsLivingPersona);
+            base.PrintInner(objWriter, true);
 
-            objWriter.WriteElementString("attack", TotalAttack.ToString());
-            objWriter.WriteElementString("sleaze", TotalSleaze.ToString());
-            objWriter.WriteElementString("dataprocessing", TotalDataProcessing.ToString());
-            objWriter.WriteElementString("firewall", TotalFirewall.ToString());
-            objWriter.WriteElementString("devicerating", TotalDeviceRating.ToString());
+            objWriter.WriteElementString("attack", GetTotalMatrixAttribute("Attack").ToString());
+            objWriter.WriteElementString("sleaze", GetTotalMatrixAttribute("Sleaze").ToString());
+            objWriter.WriteElementString("dataprocessing", GetTotalMatrixAttribute("Data Processing").ToString());
+            objWriter.WriteElementString("firewall", GetTotalMatrixAttribute("Firewall").ToString());
+            objWriter.WriteElementString("devicerating", GetTotalMatrixAttribute("Device Rating").ToString());
             objWriter.WriteElementString("processorlimit", ProcessorLimit.ToString());
-            objWriter.WriteElementString("active", _blnActiveCommlink.ToString());
-            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+            objWriter.WriteElementString("active", IsActive.ToString());
+            objWriter.WriteElementString("homenode", HomeNode.ToString());
         }
         #endregion
 
@@ -167,11 +162,17 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnHomeNode;
+                return CharacterObject.HomeNodeCommlink == this;
             }
             set
             {
-                _blnHomeNode = value;
+                if (value)
+                {
+                    CharacterObject.HomeNodeCommlink = this;
+                    CharacterObject.HomeNodeVehicle = null;
+                }
+                else if (CharacterObject.HomeNodeCommlink == this)
+                    CharacterObject.HomeNodeCommlink = null;
             }
         }
 
@@ -236,433 +237,29 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Commlink is a Living Persona. This should only be set by the character when printing.
-        /// </summary>
-        public bool IsLivingPersona
-        {
-            get
-            {
-                return _blnIsLivingPersona;
-            }
-            set
-            {
-                _blnIsLivingPersona = value;
-            }
-        }
-
-        /// <summary>
         /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
         /// </summary>
         public bool IsActive
         {
             get
             {
-                return _blnActiveCommlink;
+                return CharacterObject.ActiveCommlink == this;
             }
             set
             {
-                _blnActiveCommlink = value;
+                if (value)
+                {
+                    CharacterObject.ActiveCommlink = this;
+                }
+                else if (CharacterObject.ActiveCommlink == this)
+                {
+                    CharacterObject.ActiveCommlink = null;
+                }
             }
         }
         #endregion
 
         #region Complex Properties
-        /// <summary>
-        /// Get the total DP of this gear without counting children or Overclocker
-        /// </summary>
-        public int BaseDataProcessing
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_strDataProcessing))
-                    return 0;
-                int intReturn = 0;
-
-                string strExpression = _strDataProcessing;
-
-                if (strExpression.StartsWith("FixedValues"))
-                {
-                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
-                }
-
-                int intGearValue = 0;
-                string strParentValue = string.Empty;
-                Commlink objParent = Parent as Commlink;
-                if (objParent != null)
-                {
-                    if (strExpression.Contains("Gear Data Processing"))
-                        intGearValue = objParent.BaseDataProcessing;
-                    if (strExpression.Contains("Parent Data Processing"))
-                        strParentValue = objParent.DataProcessing;
-                }
-                int intTotalChildrenValue = 0;
-                if (Children.Count > 0 && strExpression.Contains("Children Data Processing"))
-                {
-                    foreach (Gear loopGear in Children)
-                    {
-                        Commlink objLoopCommlink = loopGear as Commlink;
-                        if (objLoopCommlink != null && loopGear.Equipped)
-                            intTotalChildrenValue += objLoopCommlink.BaseDataProcessing;
-                    }
-                }
-
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strValue = strExpression.Replace("Gear Data Processing", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Children Data Processing", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Parent Data Processing", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
-                    XPathExpression xprCost = nav.Compile(strValue);
-                    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    double dblValue = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblValue);
-                }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    intReturn = Convert.ToInt32(strExpression);
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the total Attack of this gear without counting children or Overclocker
-        /// </summary>
-        public int BaseAttack
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_strAttack))
-                    return 0;
-                int intReturn = 0;
-
-                string strExpression = _strAttack;
-
-                if (strExpression.StartsWith("FixedValues"))
-                {
-                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
-                }
-
-                int intGearValue = 0;
-                string strParentValue = string.Empty;
-                Commlink objParent = Parent as Commlink;
-                if (objParent != null)
-                {
-                    if (strExpression.Contains("Gear Attack"))
-                        intGearValue = objParent.BaseAttack;
-                    if (strExpression.Contains("Parent Attack"))
-                        strParentValue = objParent.Attack;
-                }
-                int intTotalChildrenValue = 0;
-                if (Children.Count > 0 && strExpression.Contains("Children Attack"))
-                {
-                    foreach (Gear loopGear in Children)
-                    {
-                        Commlink objLoopCommlink = loopGear as Commlink;
-                        if (objLoopCommlink != null && loopGear.Equipped)
-                            intTotalChildrenValue += objLoopCommlink.BaseAttack;
-                    }
-                }
-
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strValue = strExpression.Replace("Gear Attack", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Children Attack", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Parent Attack", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
-                    XPathExpression xprValue = nav.Compile(strValue);
-                    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    double dblValue = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprValue), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblValue);
-                }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    intReturn = Convert.ToInt32(strExpression);
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the total Sleaze of this gear without counting children or Overclocker
-        /// </summary>
-        public int BaseSleaze
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_strSleaze))
-                    return 0;
-                int intReturn = 0;
-
-                string strExpression = _strSleaze;
-
-                if (strExpression.StartsWith("FixedValues"))
-                {
-                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
-                }
-
-                int intGearValue = 0;
-                string strParentValue = string.Empty;
-                Commlink objParent = Parent as Commlink;
-                if (objParent != null)
-                {
-                    if (strExpression.Contains("Gear Sleaze"))
-                        intGearValue = objParent.BaseSleaze;
-                    if (strExpression.Contains("Parent Sleaze"))
-                        strParentValue = objParent.Sleaze;
-                }
-                int intTotalChildrenValue = 0;
-                if (Children.Count > 0 && strExpression.Contains("Children Sleaze"))
-                {
-                    foreach (Gear loopGear in Children)
-                    {
-                        Commlink objLoopCommlink = loopGear as Commlink;
-                        if (objLoopCommlink != null && loopGear.Equipped)
-                            intTotalChildrenValue += objLoopCommlink.BaseSleaze;
-                    }
-                }
-
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strValue = strExpression.Replace("Gear Sleaze", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Children Sleaze", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Parent Sleaze", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
-                    XPathExpression xprValue = nav.Compile(strValue);
-                    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    double dblValue = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprValue), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblValue);
-                }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    intReturn = Convert.ToInt32(strExpression);
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the total Firewall of this gear without counting children or Overclocker
-        /// </summary>
-        public int BaseFirewall
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_strFirewall))
-                    return 0;
-                int intReturn = 0;
-
-                string strExpression = _strFirewall;
-
-                if (strExpression.StartsWith("FixedValues"))
-                {
-                    string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Rating > 0)
-                        strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
-                }
-
-                int intGearValue = 0;
-                string strParentValue = string.Empty;
-                Commlink objParent = Parent as Commlink;
-                if (objParent != null)
-                {
-                    if (strExpression.Contains("Gear Firewall"))
-                        intGearValue = objParent.BaseFirewall;
-                    if (strExpression.Contains("Parent Firewall"))
-                        strParentValue = objParent.Firewall;
-                }
-                int intTotalChildrenValue = 0;
-                if (Children.Count > 0 && strExpression.Contains("Children Firewall"))
-                {
-                    foreach (Gear loopGear in Children)
-                    {
-                        Commlink objLoopCommlink = loopGear as Commlink;
-                        if (objLoopCommlink != null && loopGear.Equipped)
-                            intTotalChildrenValue += objLoopCommlink.BaseFirewall;
-                    }
-                }
-
-                if (intGearValue != 0 || intTotalChildrenValue != 0 || !string.IsNullOrEmpty(strParentValue) || strExpression.Contains('+') || strExpression.Contains("Rating"))
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    string strValue = strExpression.Replace("Gear Firewall", intGearValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Children Firewall", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    strValue = strValue.Replace("Parent Firewall", string.IsNullOrEmpty(strParentValue) ? "0" : strParentValue);
-                    XPathExpression xprValue = nav.Compile(strValue);
-                    // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    double dblValue = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprValue), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblValue);
-                }
-                else
-                {
-                    // Just a straight cost, so return the value.
-                    intReturn = Convert.ToInt32(strExpression);
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the bonus DP of this gear from children and Overclocker
-        /// </summary>
-        public int BonusDataProcessing
-        {
-            get
-            {
-                int intReturn = 0;
-
-                foreach (Gear loopGear in Children)
-                {
-                    if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                        intReturn += (loopGear as Commlink).TotalDataProcessing;
-                }
-
-                if (CharacterObject.Overclocker && Overclocked == "DataProc")
-                {
-                    intReturn += 1;
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the bonus Attack of this gear from children and Overclocker
-        /// </summary>
-        public int BonusAttack
-        {
-            get
-            {
-                int intReturn = 0;
-
-                foreach (Gear loopGear in Children)
-                {
-                    if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                        intReturn += (loopGear as Commlink).TotalAttack;
-                }
-
-                if (CharacterObject.Overclocker && Overclocked == "Attack")
-                {
-                    intReturn += 1;
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the bonus Sleaze of this gear from children and Overclocker
-        /// </summary>
-        public int BonusSleaze
-        {
-            get
-            {
-                int intReturn = 0;
-
-                foreach (Gear loopGear in Children)
-                {
-                    if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                        intReturn += (loopGear as Commlink).TotalSleaze;
-                }
-
-                if (CharacterObject.Overclocker && Overclocked == "Sleaze")
-                {
-                    intReturn += 1;
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the bonus Firewall of this gear from children and Overclocker
-        /// </summary>
-        public int BonusFirewall
-        {
-            get
-            {
-                int intReturn = 0;
-
-                foreach (Gear loopGear in Children)
-                {
-                    if (loopGear.GetType() == typeof(Commlink) && loopGear.Equipped)
-                        intReturn += (loopGear as Commlink).TotalFirewall;
-                }
-
-                if (CharacterObject.Overclocker && Overclocked == "Firewall")
-                {
-                    intReturn += 1;
-                }
-
-                return intReturn;
-            }
-        }
-
-        /// <summary>
-        /// Get the total DP of this gear after children and Overclocker
-        /// </summary>
-        public int TotalDataProcessing
-        {
-            get
-            {
-                return BaseDataProcessing + BonusDataProcessing;
-            }
-        }
-
-        /// <summary>
-        /// Get the total Attack of this gear after children and Overclocker
-        /// </summary>
-        public int TotalAttack
-        {
-            get
-            {
-                return BaseAttack + BonusAttack;
-            }
-        }
-
-        /// <summary>
-        /// Get the total Sleaze of this gear after children and Overclocker
-        /// </summary>
-        public int TotalSleaze
-        {
-            get
-            {
-                return BaseSleaze + BonusSleaze;
-            }
-        }
-
-        /// <summary>
-        /// Get the total Firewall of this gear after children and Overclocker
-        /// </summary>
-        public int TotalFirewall
-        {
-            get
-            {
-                return BaseFirewall + BonusFirewall;
-            }
-        }
-
         /// <summary>
         /// Commlink's Processor Limit.
         /// </summary>
@@ -670,7 +267,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return TotalDeviceRating;
+                return GetTotalMatrixAttribute("Device Rating");
             }
         }
 
@@ -707,14 +304,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void RefreshCommlinkCBOs(ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
         {
-            int intBaseAttack = BaseAttack;
-            int intBaseSleaze = BaseSleaze;
-            int intBaseDP = BaseDataProcessing;
-            int intBaseFirewall = BaseFirewall;
-            int intBonusAttack = BonusAttack;
-            int intBonusSleaze = BonusSleaze;
-            int intBonusDP = BonusDataProcessing;
-            int intBonusFirewall = BonusFirewall;
+            int intBaseAttack = GetBaseMatrixAttribute("Attack");
+            int intBaseSleaze = GetBaseMatrixAttribute("Sleaze");
+            int intBaseDP = GetBaseMatrixAttribute("Data Processing");
+            int intBaseFirewall = GetBaseMatrixAttribute("Firewall");
+            int intBonusAttack = GetBonusMatrixAttribute("Attack");
+            int intBonusSleaze = GetBonusMatrixAttribute("Sleaze");
+            int intBonusDP = GetBonusMatrixAttribute("Data Processing");
+            int intBonusFirewall = GetBonusMatrixAttribute("Firewall");
 
             cboAttack.BeginUpdate();
             cboSleaze.BeginUpdate();
@@ -767,10 +364,10 @@ namespace Chummer.Backend.Equipment
         {
             if (!CanSwapAttributes)
                 return;
-            int intBaseAttack = BaseAttack;
-            int intBaseSleaze = BaseSleaze;
-            int intBaseDP = BaseDataProcessing;
-            int intBaseFirewall = BaseFirewall;
+            int intBaseAttack = GetBaseMatrixAttribute("Attack");
+            int intBaseSleaze = GetBaseMatrixAttribute("Sleaze");
+            int intBaseDP = GetBaseMatrixAttribute("Data Processing");
+            int intBaseFirewall = GetBaseMatrixAttribute("Firewall");
             List<int> lstStatsArray = new List<int>(4);
             lstStatsArray.Add(intBaseAttack);
             lstStatsArray.Add(intBaseSleaze);

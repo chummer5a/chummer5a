@@ -268,6 +268,7 @@
   <xsl:variable name="lang.ResistFading"    select="'抵抗衰褪'"/>
   <xsl:variable name="lang.RiggerInitiative"  select="'机师主动性'"/>
   <xsl:variable name="lang.SkillGroup"    select="'技能组'"/>
+  <xsl:variable name="lang.SkillGroups"    select="'技能组'"/>
   <xsl:variable name="lang.StreetCred"    select="'信誉'"/>
   <xsl:variable name="lang.StreetName"    select="'Street Name'"/>
   <xsl:variable name="lang.StunTrack"    select="'&#160;&#160;晕眩伤害'"/>

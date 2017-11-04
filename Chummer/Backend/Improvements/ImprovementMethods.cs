@@ -83,6 +83,8 @@ namespace Chummer
                     return objImprovementAdder.selectspell;
                 case "ADDSPELL":
                     return objImprovementAdder.addspell;
+                case "ADDGEAR":
+                    return objImprovementAdder.addgear;
                 case "SELECTAIPROGRAM":
                     return objImprovementAdder.selectaiprogram;
                 case "SELECTINHERENTAIPROGRAM":

@@ -567,7 +567,7 @@ namespace Chummer.Backend.Equipment
                         objChild = objGear;
                     }
                     objChild.Cost = "0";
-                    objChild.IncludedInParent = true;
+                    objChild.ParentID = InternalId;
                     if (!string.IsNullOrEmpty(strChildForceSource))
                         objChild.Source = strChildForceSource;
                     if (!string.IsNullOrEmpty(strChildForcePage))

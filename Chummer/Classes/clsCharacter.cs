@@ -107,6 +107,9 @@ namespace Chummer
         private Commlink _objHomeNodeCommlink = null;
         private Vehicle _objHomeNodeVehicle = null;
 
+        // Active Commlink
+        private Commlink _objActiveCommlink = null;
+
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated = false;
 
@@ -1218,22 +1221,26 @@ namespace Chummer
             XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/character/improvements/improvement");
             foreach (XmlNode objXmlImprovement in objXmlNodeList)
             {
-                Improvement objImprovement = new Improvement();
-                try
+                string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
+                // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present.
+                if (objXmlCharacter.InnerXml.IndexOf(strLoopSourceName) != objXmlCharacter.InnerXml.LastIndexOf(strLoopSourceName))
                 {
-                    objImprovement.Load(objXmlImprovement);
-                    _lstImprovements.Add(objImprovement);
-                }
-                catch (ArgumentException)
-                {
-                    blnImprovementError = true;
+                    Improvement objImprovement = new Improvement();
+                    try
+                    {
+                        objImprovement.Load(objXmlImprovement);
+                        _lstImprovements.Add(objImprovement);
+                    }
+                    catch (ArgumentException)
+                    {
+                        blnImprovementError = true;
+                    }
                 }
             }
             Timekeeper.Finish("load_char_imp");
-            if (blnImprovementError)
-                MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"), LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             Timekeeper.Start("load_char_quality");
             // Qualities
+            Quality objLivingPersonaQuality = null;
             objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");
             bool blnHasOldQualities = false;
             foreach (XmlNode objXmlQuality in objXmlNodeList)
@@ -1245,6 +1252,8 @@ namespace Chummer
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
                         _lstQualities.Add(objQuality);
+                        if (objQuality.MyXmlNode?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
+                            objLivingPersonaQuality = objQuality;
                     }
                 }
                 else
@@ -1517,6 +1526,8 @@ namespace Chummer
                     Commlink objCommlink = new Commlink(this);
                     objCommlink.Load(objXmlGear);
                     _lstGear.Add(objCommlink);
+                    if (objCommlink.Name == "Living Persona")
+                        objLivingPersonaQuality = null;
                 }
                 else
                 {
@@ -1525,6 +1536,9 @@ namespace Chummer
                     _lstGear.Add(objGear);
                 }
             }
+            // If we have a technomancer quality but no Living Persona commlink, we want the user to re-apply improvements
+            if (objLivingPersonaQuality != null)
+                blnImprovementError = true;
 
             Timekeeper.Finish("load_char_gear");
             Timekeeper.Start("load_char_car");
@@ -1772,6 +1786,9 @@ namespace Chummer
                 }
             }
             Timekeeper.Finish("load_char_mentorspiritfix");
+
+            if (blnImprovementError)
+                MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"), LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
             //      if (blnHasOldQualities)
@@ -2541,23 +2558,6 @@ namespace Chummer
                 {
                     objGear.Print(objWriter);
                 }
-            }
-            // If the character is a Technomancer, write out the Living Persona "Commlink".
-            if (_blnTechnomancerEnabled)
-            {
-                Commlink objLivingPersona = new Commlink(this);
-                objLivingPersona.Name = LanguageManager.GetString("String_LivingPersona");
-                objLivingPersona.Category = LanguageManager.GetString("String_Commlink");
-                objLivingPersona.DeviceRating = RES.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
-                objLivingPersona.Attack = CHA.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
-                objLivingPersona.Sleaze = INT.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
-                objLivingPersona.DataProcessing = LOG.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
-                objLivingPersona.Firewall = WIL.TotalValue.ToString(GlobalOptions.InvariantCultureInfo);
-                objLivingPersona.Source = _objOptions.LanguageBookShort("SR5");
-                objLivingPersona.Page = "251";
-                objLivingPersona.IsLivingPersona = true;
-
-                objLivingPersona.Print(objWriter);
             }
             // </gears>
             objWriter.WriteEndElement();
@@ -4676,7 +4676,7 @@ namespace Chummer
                     if (HomeNodeVehicle != null || HomeNodeCommlink != null)
                     {
                         int intHomeNodePilot = HomeNodeVehicle?.Pilot ?? 0;
-                        int intHomeNodeDP = Math.Max(HomeNodeCommlink?.TotalDataProcessing ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                        int intHomeNodeDP = Math.Max(HomeNodeCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
                         if (intHomeNodeDP > intHomeNodePilot)
                         {
                             intINI += intHomeNodeDP;
@@ -4725,8 +4725,7 @@ namespace Chummer
                 {
                     return MatrixInitiative;
                 }
-                return
-                    LanguageManager.GetString("String_MatrixInitiative")
+                return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
                         .Replace("{0}", MatrixInitiativeColdValue.ToString())
                         .Replace("{1}", MatrixInitiativeColdDice.ToString());
             }
@@ -4743,7 +4742,8 @@ namespace Chummer
                 {
                     return MatrixInitiativeValue;
                 }
-                return INT.TotalValue + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
+                int intCommlinkDP = ActiveCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0;
+                return INT.TotalValue + intCommlinkDP + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative);
             }
         }
 
@@ -4775,7 +4775,7 @@ namespace Chummer
                     return MatrixInitiative;
                 }
                 return
-                    LanguageManager.GetString("String_MatrixInitiative")
+                    LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
                         .Replace("{0}", MatrixInitiativeHotValue.ToString())
                         .Replace("{1}", MatrixInitiativeHotDice.ToString());
             }
@@ -4791,8 +4791,9 @@ namespace Chummer
                 if (_strMetatype == "A.I.")
                 {
                     return MatrixInitiativeValue;
-            }
-                return INT.TotalValue + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
+                }
+                int intCommlinkDP = ActiveCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0;
+                return INT.TotalValue + intCommlinkDP + WoundModifiers + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative); ;
             }
         }
 
@@ -6093,9 +6094,10 @@ namespace Chummer
                     }
                     else if (HomeNodeCommlink != null)
                     {
-                        if (HomeNodeCommlink.TotalDataProcessing > intLimit)
+                        int intHomeNodeDP = HomeNodeCommlink.GetTotalMatrixAttribute("Data Processing");
+                        if (intHomeNodeDP > intLimit)
                         {
-                            intLimit = HomeNodeCommlink.TotalDataProcessing;
+                            intLimit = intHomeNodeDP;
                         }
                     }
                 }
@@ -6114,7 +6116,7 @@ namespace Chummer
                 if (_strMetatype == "A.I." && (HomeNodeVehicle != null || HomeNodeCommlink != null))
                 {
                     int intHomeNodePilot = _objHomeNodeVehicle?.Pilot ?? 0;
-                    int intHomeNodeDP = Math.Max(_objHomeNodeCommlink?.TotalDataProcessing ?? 0, _objHomeNodeVehicle?.DeviceRating ?? 0);
+                    int intHomeNodeDP = Math.Max(_objHomeNodeCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0, _objHomeNodeVehicle?.DeviceRating ?? 0);
                     if (intHomeNodeDP >= intHomeNodePilot)
                     {
                         intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
@@ -7805,6 +7807,21 @@ namespace Chummer
             get
             {
                 return _pushtext.Value;
+            }
+        }
+
+        /// <summary>
+        /// The Active Commlink of the character. Returns null if home node is not a commlink.
+        /// </summary>
+        public Commlink ActiveCommlink
+        {
+            get
+            {
+                return _objActiveCommlink;
+            }
+            set
+            {
+                _objActiveCommlink = value;
             }
         }
 

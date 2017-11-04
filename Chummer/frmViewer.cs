@@ -34,14 +34,18 @@ namespace Chummer
     {
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXML = new XmlDocument();
-        private string _strSelectedSheet = "Shadowrun 5";
+        private string _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
         private bool _blnLoading = false;
         #region Control Events
         public frmViewer()
         {
             _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
             if (_strSelectedSheet.StartsWith("Shadowrun 4"))
+            {
                 _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
+                if (GlobalOptions.Language != "en-us")
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, "Shadowrun 5 (Rating greater 0)");
+            }
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
@@ -57,13 +61,20 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
+            PopulateLanguageList();
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-            if (string.IsNullOrEmpty(cboXSLT.Text))
-                cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
-            cboXSLT.EndUpdate();
+            if (cboXSLT.SelectedIndex == -1)
+            {
+                if (cboLanguage.SelectedValue.ToString() == "en-us")
+                    cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
+                else
+                    _strSelectedSheet = Path.Combine(cboLanguage.SelectedValue.ToString(), "Shadowrun 5 (Rating greater 0)");
+                if (cboXSLT.SelectedIndex == -1)
+                    cboXSLT.SelectedIndex = 0;
+            }
             GenerateOutput();
             _blnLoading = false;
         }
@@ -73,7 +84,7 @@ namespace Chummer
             // Re-generate the output when a new sheet is selected.
             if (!_blnLoading)
             {
-                _strSelectedSheet = cboXSLT.SelectedValue.ToString();
+                _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
                 GenerateOutput();
             }
         }
@@ -352,48 +363,25 @@ namespace Chummer
                 Process.Start(objProgress);
             }
         }
-        private List<ListItem> GetXslFilesFromSheetsDirectory()
+
+        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            var items = new List<ListItem>();
+            List<ListItem> lstSheets = new List<ListItem>();
 
+            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+            XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
             XmlDocument manifest = XmlManager.Load("sheets.xml");
-            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='en-us']/sheet");
-
+            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
             {
                 ListItem objItem = new ListItem();
-                objItem.Value = sheet["filename"].InnerText;
+                objItem.Value = strLanguage != "en-us" ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
                 objItem.Name = sheet["name"].InnerText;
 
-                items.Add(objItem);
+                lstSheets.Add(objItem);
             }
 
-            return items;
-        }
-
-        private List<ListItem> GetXslFilesFromLanguageDirectory()
-        {
-            var items = new List<ListItem>();
-
-            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            if (GlobalOptions.Language != "en-us")
-            {
-                XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
-                XmlDocument manifest = XmlManager.Load("sheets.xml");
-                XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{GlobalOptions.Language}']/sheet");
-                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-
-                foreach (XmlNode sheet in sheets)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = Path.Combine(GlobalOptions.Language, sheet["filename"].InnerText);
-                    objItem.Name = strLanguage + ": " + sheet["name"].InnerText;
-
-                    items.Add(objItem);
-                }
-            }
-
-            return items;
+            return lstSheets;
         }
 
         private List<ListItem> GetXslFilesFromOmaeDirectory()
@@ -437,8 +425,7 @@ namespace Chummer
         {
             List<ListItem> lstFiles = new List<ListItem>();
 
-            lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
-            lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
+            lstFiles.AddRange(GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue.ToString()));
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
@@ -450,9 +437,55 @@ namespace Chummer
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
-#endregion
 
-#region Properties
+        private void PopulateLanguageList()
+        {
+            List<ListItem> lstLanguages = new List<ListItem>();
+            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+            foreach (string filePath in languageFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+
+                try
+                {
+                    xmlDocument.Load(filePath);
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                if (node == null)
+                    continue;
+
+                string languageName = node.InnerText;
+
+                ListItem objItem = new ListItem();
+                objItem.Value = Path.GetFileNameWithoutExtension(filePath);
+                objItem.Name = languageName;
+
+                lstLanguages.Add(objItem);
+            }
+
+            SortListItem objSort = new SortListItem();
+            lstLanguages.Sort(objSort.Compare);
+
+            cboLanguage.BeginUpdate();
+            cboLanguage.ValueMember = "Value";
+            cboLanguage.DisplayMember = "Name";
+            cboLanguage.DataSource = lstLanguages;
+            cboLanguage.SelectedValue = GlobalOptions.Language;
+            if (cboLanguage.SelectedIndex == -1)
+                cboLanguage.SelectedValue = "en-us";
+            cboLanguage.EndUpdate();
+        }
+        #endregion
+
+        #region Properties
         /// <summary>
         /// Character's XmlDocument.
         /// </summary>
@@ -503,6 +536,40 @@ namespace Chummer
                 if (objItem.Tag != null)
                     objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
+        }
+
+        private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+            string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+            // Strip away the language prefix
+            if (strOldSelected.Contains(Path.PathSeparator))
+                strOldSelected = strOldSelected.Split(Path.PathSeparator)[1];
+            _blnLoading = true;
+            PopulateXsltList();
+            string strNewLanguage = cboLanguage.SelectedValue.ToString();
+            cboXSLT.SelectedValue = strOldSelected;
+            if (strNewLanguage == "en-us")
+                cboXSLT.SelectedValue = strOldSelected;
+            else
+                _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
+            if (cboXSLT.SelectedIndex == -1)
+            {
+                cboXSLT.SelectedValue = _strSelectedSheet;
+                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+                if (cboXSLT.SelectedIndex == -1)
+                {
+                    if (strNewLanguage == "en-us")
+                        cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
+                    else
+                        _strSelectedSheet = Path.Combine(strNewLanguage, "Shadowrun 5 (Rating greater 0)");
+                    if (cboXSLT.SelectedIndex == -1)
+                        cboXSLT.SelectedIndex = 0;
+                }
+            }
+            _blnLoading = false;
+            GenerateOutput();
         }
     }
 }

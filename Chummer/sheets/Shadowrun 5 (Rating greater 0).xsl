@@ -8,5 +8,5 @@
 
   <!-- Set global control variables -->
   <xsl:variable name="MinimumRating" select="1"/>
-  <xsl:variable name="PrintSkillCategoryNames" select="False"/>
+  <xsl:variable name="PrintSkillCategoryNames" select="false()"/>
 </xsl:stylesheet>

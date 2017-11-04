@@ -8,5 +8,5 @@
 
   <!-- Set global control variables -->
   <xsl:variable name="CorePrint" select="true()"/>
-  <xsl:variable name="PrintSkillCategoryNames" select="false()"/>
+  <xsl:variable name="PrintSkillCategoryNames" select="true()"/>
 </xsl:stylesheet>

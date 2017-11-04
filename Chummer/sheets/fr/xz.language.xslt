@@ -268,6 +268,7 @@
   <xsl:variable name="lang.ResistFading"    select="'Résister au technodrain avec'"/>
   <xsl:variable name="lang.RiggerInitiative"  select="'Init. interfacé'"/>
   <xsl:variable name="lang.SkillGroup"    select="'Groupe de compétence'"/>
+  <xsl:variable name="lang.SkillGroups"    select="'Groupes de compétences'"/>
   <xsl:variable name="lang.StreetCred"    select="'Crédibilité'"/>
   <xsl:variable name="lang.StreetName"    select="'Nom de rue'"/>
   <xsl:variable name="lang.StunTrack"    select="'Moniteur de Condition Étourdissant'"/>

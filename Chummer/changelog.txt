@@ -191,6 +191,16 @@ Application Changes:
 - Re-apply improvements will now collect the names of outdated items and warn the user at the end to manually re-add them and/or to make sure they have all custom data files that they were previously using still present.
 - Fixed a bug where bonuses that let you select an attribute would not record the choice in their parent item.
 - Added code to properly fetch the data GUIDs of qualities in old save files made before quality GUIDs were saved, and added code to make sure qualities without data GUIDs would return an empty string when the data GUID is fetched instead of a GUID that corresponds to the empty GUID.
+- Unhardcoded the entry for Technomancer Living Personas. It can now be modified via a gear entry that corresponds to it, and it can be set to be the active the same way a commlink can.
+- Added the ability for bonuses to add gear.
+- Added support for gear entries where altering quantities is not allowed.
+- Matrix attributes will now automatically fill in the Data Processing value of the character's active commlink.
+- Fixed a bug where removing Black Market Pipeline would not reset the discounted cost of nested gear.
+- Fixed a bug where loading in certain gear would not properly color their entries based on the presence of notes and whether or not they can be removed.
+- Character sheet language can now be selected in a dropdown menu instead of it being forced to just English sheets and sheets for the currently set language. Fixes #2018.
+- Fixed a bug where the character validity checker would erroneously read maximum special attribute points as unspent special attribute points when deciding to show a warning about unspent special attribute points to the user. Fixes #2019.
+- Fixed a bug where Re-Apply Improvements would not properly show newly populated items added by re-applied improvements.
+- Fixed a bug where browsing weapons that came with accessories that came with gear that added bonuses would create a large list of "orphaned" improvements that would also show up when printing to a character sheet. Fixes #2013.
 
 Data Changes:
 
@@ -325,6 +335,8 @@ Data Changes:
 - Gecko Tips and Gliding System vehicle mods now only have one entry that automatically scale their stats appropriately depending on the vehicle's body range.
 - Fake and Standard Credsticks from 2050 now allow you to enter the name of the SIN that the credstick holds.
 - Fixed the requirements on Flesh Sculpter. Fixes #2014.
+- Added a set of new sheets based on the Shadowrun 5 Set that allow for the display of skill categories in addition to some other filtering option (e.g. Rating > 0, Sort by Rating, Sort by Name, etc.). Fixes #2021.
+- Fixed incorrect references to some French character sheet names. Fixes #2020.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

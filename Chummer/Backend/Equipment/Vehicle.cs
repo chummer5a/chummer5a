@@ -41,7 +41,6 @@ namespace Chummer.Backend.Equipment
         private int _intAddBodyModSlots = 0;
         private int _intAddElectromagneticModSlots = 0;
         private int _intAddCosmeticModSlots = 0;
-        private bool _blnHomeNode = false;
         private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
         private List<Gear> _lstGear = new List<Gear>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
@@ -271,7 +270,7 @@ namespace Chummer.Backend.Equipment
                         objGear.Cost = "0";
                         objGear.Quantity = decQty;
                         objGear.MaxRating = intMaxRating;
-                        objGear.IncludedInParent = true;
+                        objGear.ParentID = InternalId;
                         objGearNode.Text = objGear.DisplayName;
                         objGearNode.ContextMenuStrip = cmsVehicleGear;
 
@@ -417,7 +416,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
-            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+            objWriter.WriteElementString("homenode", HomeNode.ToString());
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
                 objMod.Save(objWriter);
@@ -468,16 +467,15 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _blnHomeNode = false;
+                HomeNode = false;
             }
             else
             {
                 _guiID = Guid.Parse(objNode["guid"].InnerText);
-                objNode.TryGetBoolFieldQuickly("homenode", ref _blnHomeNode);
-                if (_blnHomeNode)
+                bool blnIsHomeNode = false;
+                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                 {
-                    _objCharacter.HomeNodeCommlink = null;
-                    _objCharacter.HomeNodeVehicle = this;
+                    HomeNode = true;
                 }
             }
 
@@ -665,7 +663,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("vehiclename", _strVehicleName);
             objWriter.WriteElementString("devicerating", Pilot.ToString());
             objWriter.WriteElementString("maneuver", Maneuver.ToString());
-            objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+            objWriter.WriteElementString("homenode", HomeNode.ToString());
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
                 objMod.Print(objWriter);
@@ -1323,11 +1321,17 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnHomeNode;
+                return _objCharacter.HomeNodeVehicle == this;
             }
             set
             {
-                _blnHomeNode = value;
+                if (value)
+                {
+                    _objCharacter.HomeNodeCommlink = null;
+                    _objCharacter.HomeNodeVehicle = this;
+                }
+                else if (_objCharacter.HomeNodeVehicle == this)
+                    _objCharacter.HomeNodeVehicle = null;
             }
         }
 
