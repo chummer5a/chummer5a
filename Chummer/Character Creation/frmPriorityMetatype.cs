@@ -1170,8 +1170,15 @@ namespace Chummer
                         intMaxModifier = 3;
                     }
                 }*/
-
-                XmlNode charNode = objXmlMetavariant ?? objXmlMetatype;
+                XmlNode charNode;
+                if (cboCategory.SelectedValue.ToString() == "Shapeshifter")
+                {
+                    charNode = objXmlMetatype;
+                }
+                else
+                {
+                    charNode = objXmlMetavariant ?? objXmlMetatype;
+                }
                 // Set Metatype information.
                 _objCharacter.BOD.AssignLimits(ExpressionToString(charNode["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["bodmax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["bodaug"]?.InnerText, intForce, intMaxModifier));
                 _objCharacter.AGI.AssignLimits(ExpressionToString(charNode["agimin"]?.InnerText, intForce, intMinModifier), ExpressionToString(charNode["agimax"]?.InnerText, intForce, intMaxModifier), ExpressionToString(charNode["agiaug"]?.InnerText, intForce, intMaxModifier));
