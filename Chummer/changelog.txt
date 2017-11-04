@@ -200,6 +200,7 @@ Application Changes:
 - Character sheet language can now be selected in a dropdown menu instead of it being forced to just English sheets and sheets for the currently set language. Fixes #2018.
 - Fixed a bug where the character validity checker would erroneously read maximum special attribute points as unspent special attribute points when deciding to show a warning about unspent special attribute points to the user. Fixes #2019.
 - Fixed a bug where Re-Apply Improvements would not properly show newly populated items added by re-applied improvements.
+- Fixed a bug where browsing weapons that came with accessories that came with gear that added bonuses would create a large list of "orphaned" improvements that would also show up when printing to a character sheet. Fixes #2013.
 
 Data Changes:
 

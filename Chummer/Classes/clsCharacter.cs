@@ -1221,15 +1221,20 @@ namespace Chummer
             XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/character/improvements/improvement");
             foreach (XmlNode objXmlImprovement in objXmlNodeList)
             {
-                Improvement objImprovement = new Improvement();
-                try
+                string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
+                // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present.
+                if (objXmlCharacter.InnerXml.IndexOf(strLoopSourceName) != objXmlCharacter.InnerXml.LastIndexOf(strLoopSourceName))
                 {
-                    objImprovement.Load(objXmlImprovement);
-                    _lstImprovements.Add(objImprovement);
-                }
-                catch (ArgumentException)
-                {
-                    blnImprovementError = true;
+                    Improvement objImprovement = new Improvement();
+                    try
+                    {
+                        objImprovement.Load(objXmlImprovement);
+                        _lstImprovements.Add(objImprovement);
+                    }
+                    catch (ArgumentException)
+                    {
+                        blnImprovementError = true;
+                    }
                 }
             }
             Timekeeper.Finish("load_char_imp");

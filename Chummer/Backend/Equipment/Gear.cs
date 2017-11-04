@@ -269,7 +269,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (_nodBonus != null)
+            if (Bonus != null && blnAddImprovements)
             {
                 // Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
@@ -278,7 +278,7 @@ namespace Chummer.Backend.Equipment
                 if (blnApply)
                 {
                     ImprovementManager.ForcedValue = _strForcedValue;
-                    if (!ImprovementManager.CreateImprovements(blnAddImprovements ? _objCharacter : null, Improvement.ImprovementSource.Gear, strSource, _nodBonus, false, intRating, DisplayNameShort))
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, strSource, Bonus, false, intRating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
