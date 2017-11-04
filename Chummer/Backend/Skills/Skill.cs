@@ -33,7 +33,7 @@ namespace Chummer.Skills
         private readonly Character _character; //The Character (parent) to this skill
         protected readonly string Category; //Name of the skill category it belongs to
         private readonly string _group; //Name of the skill group this skill belongs to (remove?)
-        private string _name; //English name of this skill
+        private string _name = string.Empty; //English name of this skill
         private string _strNotes; //Text of any notes that were entered by the user
         protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
         private readonly string _translatedName = null;
