@@ -17764,7 +17764,7 @@ namespace Chummer
 
             i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
-            if (blnValid && _objCharacter.Special > 0)
+            if (blnValid && i > 0)
             {
                 if (
                     MessageBox.Show(
