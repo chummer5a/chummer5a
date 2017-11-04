@@ -15413,7 +15413,9 @@ namespace Chummer
 
             treCyberware.SortCustom();
             treCyberware.SelectedNode = objNode;
+            _blnSkipRefresh = true;
             PopulateCyberwareGradeList();
+            _blnSkipRefresh = false;
             ScheduleCharacterUpdate();
             RefreshSelectedCyberware();
             RefreshQualities(treQualities,cmsQuality);

@@ -201,6 +201,7 @@ Application Changes:
 - Fixed a bug where the character validity checker would erroneously read maximum special attribute points as unspent special attribute points when deciding to show a warning about unspent special attribute points to the user. Fixes #2019.
 - Fixed a bug where Re-Apply Improvements would not properly show newly populated items added by re-applied improvements.
 - Fixed a bug where browsing weapons that came with accessories that came with gear that added bonuses would create a large list of "orphaned" improvements that would also show up when printing to a character sheet. Fixes #2013.
+- Restored the ability to delete characters from the Character Roster by pressing Delete.
 - Fixed a crash when adding stacking gear in career mode that occured if a stack already exists. Fixes #2026.
 - Fixed a bug where manipulating stacking gear in career mode would not properly search through all children of an existing gear to make sure everything matches up before combining the two stacks.
 - Fixed a bug where manipulating stacking gear that combines with an existing stack in career mode would not update the gear list entry of the existing stack if it was in a location other than the default one.
