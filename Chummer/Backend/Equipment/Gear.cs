@@ -291,15 +291,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            // Check to see if there are any child elements.
-            if (objXmlGear.InnerXml.Contains("<gears>") && blnCreateChildren)
-            {
-                CreateChildren(objXmlDocument, objXmlGear, this, objNode, blnHacked, blnAddImprovements);
-            }
-
             // Add the Copy Protection and Registration plugins to the Matrix program. This does not apply if Unwired is not enabled, Hacked is selected, or this is a Suite being added (individual programs will add it to themselves).
             if (blnCreateChildren)
             {
+                // Check to see if there are any child elements.
+                CreateChildren(objXmlDocument, objXmlGear, this, objNode, blnHacked, blnAddImprovements);
                 if ((_strCategory == "Matrix Programs" || _strCategory == "Skillsofts" || _strCategory == "Autosofts" || _strCategory == "Autosofts, Agent" || _strCategory == "Autosofts, Drone") && _objCharacter.Options.BookEnabled("UN") && !blnHacked && !_strName.StartsWith("Suite:"))
                 {
                     if (_objCharacter.Options.AutomaticCopyProtection && !blnInherent)
@@ -366,116 +362,120 @@ namespace Chummer.Backend.Equipment
 
         public void CreateChildren(XmlDocument objXmlGearDocument, XmlNode objXmlGear, Gear objParent, TreeNode objNode, bool blnHacked, bool blnAddImprovements)
         {
-            bool blnStartCollapsed = objXmlGear["gears"]?.Attributes?["startcollapsed"]?.InnerText == "yes";
-            // Create Gear by looking up the name of the item we're provided with.
-            if (objXmlGear.SelectNodes("gears/usegear").Count > 0)
+            XmlNode objGearsNode = objXmlGear["gears"];
+            if (objGearsNode != null)
             {
-                foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/usegear"))
+                bool blnStartCollapsed = objGearsNode.Attributes?["startcollapsed"]?.InnerText == "yes";
+                // Create Gear by looking up the name of the item we're provided with.
+                if (objGearsNode.SelectNodes("usegear").Count > 0)
                 {
-                    CreateChild(objXmlGearDocument, objXmlChild, objParent, objNode, blnHacked, blnAddImprovements);
-                }
-            }
-            // Create Gear by choosing from pre-determined lists.
-            if (objXmlGear.SelectNodes("gears/choosegear").Count > 0)
-            {
-                bool blnCancelledDialog = false;
-                List<XmlNode> lstChildrenToCreate = new List<XmlNode>();
-                foreach (XmlNode objXmlChooseGearNode in objXmlGear.SelectNodes("gears/choosegear"))
-                {
-                    // Each list is processed on its own and has usegear members
-                    XmlNodeList objXmlNodeList = objXmlChooseGearNode.SelectNodes("usegear");
-
-                    List<ListItem> lstGears = new List<ListItem>();
-                    foreach (XmlNode objChoiceNode in objXmlNodeList)
-                    {
-                        XmlNode objXmlLoopGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objChoiceNode["name"].InnerText + "\" and category = \"" + objChoiceNode["category"].InnerText + "\"]");
-                        if (objXmlLoopGear == null)
-                            continue;
-                        if (objXmlLoopGear["forbidden"]?["geardetails"] != null)
-                        {
-                            // Assumes topmost parent is an AND node
-                            if (objXmlGear.ProcessFilterOperationNode(objXmlLoopGear["forbidden"]["geardetails"], false))
-                            {
-                                continue;
-                            }
-                        }
-                        if (objXmlLoopGear["required"]?["geardetails"] != null)
-                        {
-                            // Assumes topmost parent is an AND node
-                            if (!objXmlGear.ProcessFilterOperationNode(objXmlLoopGear["required"]["geardetails"], false))
-                            {
-                                continue;
-                            }
-                        }
-
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objChoiceNode["name"]?.InnerText ?? string.Empty;
-                        string strName = LanguageManager.GetString(objItem.Value, false);
-                        if (string.IsNullOrEmpty(strName))
-                            strName = LanguageManager.TranslateExtra(objItem.Value);
-                        objItem.Name = strName;
-                        lstGears.Add(objItem);
-                    }
-
-                    if (lstGears.Count <= 0)
-                    {
-                        if (objXmlChooseGearNode["required"]?.InnerText == "yes")
-                        {
-                            blnCancelledDialog = true;
-                            break;
-                        }
-                        else
-                            continue;
-                    }
-
-                    string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
-                    string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
-                    if (string.IsNullOrEmpty(strFriendlyName))
-                        strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName);
-                    frmSelectItem frmPickItem = new frmSelectItem();
-                    frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
-                    frmPickItem.GeneralItems = lstGears;
-
-                    frmPickItem.ShowDialog();
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    {
-                        if (objXmlChooseGearNode["required"]?.InnerText == "yes")
-                        {
-                            blnCancelledDialog = true;
-                            break;
-                        }
-                        else
-                            continue;
-                    }
-
-                    XmlNode objXmlChosenGear = objXmlChooseGearNode.SelectSingleNode("usegear[name = \"" + frmPickItem.SelectedItem + "\"]");
-
-                    if (objXmlChosenGear == null)
-                    {
-                        if (objXmlChooseGearNode["required"]?.InnerText == "yes")
-                        {
-                            blnCancelledDialog = true;
-                            break;
-                        }
-                        else
-                            continue;
-                    }
-                    else
-                        lstChildrenToCreate.Add(objXmlChosenGear);
-                }
-                if (!blnCancelledDialog)
-                {
-                    foreach (XmlNode objXmlChild in lstChildrenToCreate)
+                    foreach (XmlNode objXmlChild in objGearsNode.SelectNodes("usegear"))
                     {
                         CreateChild(objXmlGearDocument, objXmlChild, objParent, objNode, blnHacked, blnAddImprovements);
                     }
                 }
-            }
+                // Create Gear by choosing from pre-determined lists.
+                if (objGearsNode.SelectNodes("choosegear").Count > 0)
+                {
+                    bool blnCancelledDialog = false;
+                    List<XmlNode> lstChildrenToCreate = new List<XmlNode>();
+                    foreach (XmlNode objXmlChooseGearNode in objGearsNode.SelectNodes("choosegear"))
+                    {
+                        // Each list is processed on its own and has usegear members
+                        XmlNodeList objXmlNodeList = objXmlChooseGearNode.SelectNodes("usegear");
 
-            if (!blnStartCollapsed && objNode.GetNodeCount(false) > 0)
-                objNode.Expand();
+                        List<ListItem> lstGears = new List<ListItem>();
+                        foreach (XmlNode objChoiceNode in objXmlNodeList)
+                        {
+                            XmlNode objXmlLoopGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objChoiceNode["name"].InnerText + "\" and category = \"" + objChoiceNode["category"].InnerText + "\"]");
+                            if (objXmlLoopGear == null)
+                                continue;
+                            if (objXmlLoopGear["forbidden"]?["geardetails"] != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (objXmlGear.ProcessFilterOperationNode(objXmlLoopGear["forbidden"]["geardetails"], false))
+                                {
+                                    continue;
+                                }
+                            }
+                            if (objXmlLoopGear["required"]?["geardetails"] != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!objXmlGear.ProcessFilterOperationNode(objXmlLoopGear["required"]["geardetails"], false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objChoiceNode["name"]?.InnerText ?? string.Empty;
+                            string strName = LanguageManager.GetString(objItem.Value, false);
+                            if (string.IsNullOrEmpty(strName))
+                                strName = LanguageManager.TranslateExtra(objItem.Value);
+                            objItem.Name = strName;
+                            lstGears.Add(objItem);
+                        }
+
+                        if (lstGears.Count <= 0)
+                        {
+                            if (objXmlChooseGearNode["required"]?.InnerText == "yes")
+                            {
+                                blnCancelledDialog = true;
+                                break;
+                            }
+                            else
+                                continue;
+                        }
+
+                        string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
+                        string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
+                        if (string.IsNullOrEmpty(strFriendlyName))
+                            strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName);
+                        frmSelectItem frmPickItem = new frmSelectItem();
+                        frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
+                        frmPickItem.GeneralItems = lstGears;
+
+                        frmPickItem.ShowDialog();
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        {
+                            if (objXmlChooseGearNode["required"]?.InnerText == "yes")
+                            {
+                                blnCancelledDialog = true;
+                                break;
+                            }
+                            else
+                                continue;
+                        }
+
+                        XmlNode objXmlChosenGear = objXmlChooseGearNode.SelectSingleNode("usegear[name = \"" + frmPickItem.SelectedItem + "\"]");
+
+                        if (objXmlChosenGear == null)
+                        {
+                            if (objXmlChooseGearNode["required"]?.InnerText == "yes")
+                            {
+                                blnCancelledDialog = true;
+                                break;
+                            }
+                            else
+                                continue;
+                        }
+                        else
+                            lstChildrenToCreate.Add(objXmlChosenGear);
+                    }
+                    if (!blnCancelledDialog)
+                    {
+                        foreach (XmlNode objXmlChild in lstChildrenToCreate)
+                        {
+                            CreateChild(objXmlGearDocument, objXmlChild, objParent, objNode, blnHacked, blnAddImprovements);
+                        }
+                    }
+                }
+
+                if (!blnStartCollapsed && objNode.GetNodeCount(false) > 0)
+                    objNode.Expand();
+            }
         }
 
         protected void CreateChild(XmlDocument objXmlGearDocument, XmlNode objXmlChild, Gear objParent, TreeNode objNode, bool blnHacked, bool blnAddImprovements)

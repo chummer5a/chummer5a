@@ -1116,6 +1116,7 @@ namespace Chummer
         /// <param name="objMenu">ContextMenuStrip that the new TreeNodes should use.</param>
         public static void BuildGearTree(Gear objGear, TreeNode objNode, ContextMenuStrip objMenu)
         {
+            bool blnExpandNode = false;
             foreach (Gear objChild in objGear.Children)
             {
                 TreeNode objChildNode = new TreeNode();
@@ -1129,10 +1130,13 @@ namespace Chummer
                 objChildNode.ToolTipText = objChild.Notes;
 
                 objNode.Nodes.Add(objChildNode);
-                objNode.Expand();
+                if (objChild.ParentID != objGear.InternalId || (objGear.MyXmlNode?["gears"]?.Attributes?["startcollapsed"]?.InnerText != "yes"))
+                    blnExpandNode = true;
 
                 BuildGearTree(objChild, objChildNode, objMenu);
             }
+            if (blnExpandNode)
+                objNode.Expand();
         }
 
         /// <summary>
