@@ -299,7 +299,7 @@ namespace Chummer
         }
         private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode?.Level > 0 && treCharacterList.SelectedNode.Parent?.Tag.ToString() != "Recent")
+            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode?.Level > 0)
             {
                 RemoveSelected(treCharacterList.SelectedNode);
             }
