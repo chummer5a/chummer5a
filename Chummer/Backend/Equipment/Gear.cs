@@ -1,3 +1,4 @@
+using Chummer.Backend.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -2343,20 +2344,9 @@ namespace Chummer.Backend.Equipment
         {
             if (Name == objOtherGear.Name && Category == objOtherGear.Category && Rating == objOtherGear.Rating && Extra == objOtherGear.Extra && GearName == objOtherGear.GearName && Notes == objOtherGear.Notes)
             {
-                if (Children.Count == objOtherGear.Children.Count)
+                if (Children.DeepMatch(objOtherGear.Children, x => x.Children, (x, y) => x.IsIdenticalToOtherGear(y)))
                 {
-                    bool blnMatch = true;
-                    for (int i = 0; i <= Children.Count - 1; i++)
-                    {
-                        Gear objLoopChild = Children[i];
-                        if (!objLoopChild.IsIdenticalToOtherGear(objOtherGear.Children[i]))
-                        {
-                            blnMatch = false;
-                            break;
-                        }
-                    }
-                    if (blnMatch)
-                        return true;
+                    return true;
                 }
             }
             return false;

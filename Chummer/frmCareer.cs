@@ -6469,15 +6469,7 @@ namespace Chummer
                 }
 
                 // See if the character already has a matching piece of Gear.
-                Gear objFoundGear = null;
-                foreach (Gear objCharacterGear in _objCharacter.Gear.GetAllDescendants(x => x.Children))
-                {
-                    if (objCharacterGear.IsIdenticalToOtherGear(objSelectedGear))
-                    {
-                        objFoundGear = objCharacterGear;
-                        break;
-                    }
-                }
+                Gear objFoundGear = _objCharacter.Gear.FirstOrDefault(x => objSelectedGear.IsIdenticalToOtherGear(x));
 
                 if (objFoundGear == null)
                 {
@@ -6521,10 +6513,11 @@ namespace Chummer
                 {
                     // Everything matches up, so just increase the quantity.
                     objFoundGear.Quantity += decMove;
-                    foreach (TreeNode nodGear in treGear.Nodes[0].Nodes)
+                    TreeNode nodGear = CommonFunctions.FindNode(objFoundGear.InternalId, treGear);
+                    if (nodGear != null)
                     {
-                        if (nodGear.Tag.ToString() == objFoundGear.InternalId)
-                            nodGear.Text = objFoundGear.DisplayName;
+                        nodGear.Text = objFoundGear.DisplayName;
+                        treGear.SelectedNode = nodGear;
                     }
                 }
 
@@ -14466,172 +14459,96 @@ namespace Chummer
             List<Gear> lstAmmo = new List<Gear>();
             List<string> lstCount = new List<string>();
             bool blnExternalSource = false;
-
             Gear objExternalSource = new Gear(_objCharacter);
             objExternalSource.Name = "External Source";
 
             // Locate the selected Weapon.
             Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-
-            string ammoString = objWeapon.CalculatedAmmo(true);
-            // Determine which loading methods are available to the Weapon.
-            if (ammoString.Contains(" or ") || ammoString.Contains('x') || ammoString.Contains("Special") || ammoString.Contains('+'))
-            {
-                string strWeaponAmmo = ammoString.ToLower();
-                if (strWeaponAmmo.Contains("external source"))
-                    blnExternalSource = true;
-                // Get rid of external source, special, or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100");
-                strWeaponAmmo = strWeaponAmmo.Replace("special", "100");
-                strWeaponAmmo = strWeaponAmmo.Replace(" + energy", string.Empty);
-                strWeaponAmmo = strWeaponAmmo.Replace(" or belt", " or 250(belt)");
-
-                
-                string[] strAmmos = strWeaponAmmo.Split( new []{" or "}, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string strAmmo in strAmmos)
-                {
-                    string strThisAmmo = strAmmo;
-                    if (strThisAmmo.StartsWith("2x") || strThisAmmo.StartsWith("3x") || strThisAmmo.StartsWith("4x"))
-                        strThisAmmo = strThisAmmo.Substring(2, strThisAmmo.Length - 2);
-                    if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
-                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
-
-                    if (strThisAmmo.Contains('('))
-                        strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
-
-                    lstCount.Add(strThisAmmo);
-                }
-            }
-            else
-            {
-                // Nothing weird in the ammo string, so just use the number given.
-                string strAmmo = ammoString;
-                if (strAmmo.Contains('('))
-                    strAmmo = strAmmo.Substring(0, strAmmo.IndexOf('('));
-                lstCount.Add(strAmmo);
-            }
-
-            //#1544 Ammunition not loading or available.
-            if (objWeapon.Spec == "Flare Launcher"
-                && objWeapon.Name == "Micro Flare Launcher")
-            {
-                // we are assuming that this is the only eligible gear
-                lstAmmo.Add(_objCharacter.Gear
-                    .Single(g => g.Quantity > 0 
-                        && g.Category == "Survival Gear" 
-                        && g.Name == "Micro Flares"));
-            }
-            
-            // Find all of the Ammo for the current Weapon that the character is carrying.
-            if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
-            {
-                // This is a standard Weapon, so consume traditional Ammunition.
-                foreach (Gear objAmmo in _objCharacter.Gear)
-                {
-                    if (objAmmo.Quantity > 0)
-                    {
-                        if (objAmmo.Category == "Ammunition" && objAmmo.Extra == objWeapon.AmmoCategory)
-                            lstAmmo.Add(objAmmo);
-                    }
-                    foreach (Gear objChild in objAmmo.Children)
-                    {
-                        if (objChild.Quantity > 0)
-                        {
-                            if (objChild.Category == "Ammunition" && objChild.Extra == objWeapon.AmmoCategory)
-                                lstAmmo.Add(objChild);
-                        }
-                    }
-                    //#1544 Ammunition not loading or available.
-                    if (objWeapon.UseSkill == "Throwing Weapons"
-                        && objWeapon.Name == objAmmo.Name
-                        && objAmmo.Category == "Ammunition"
-                        && objAmmo.Quantity > 0)
-                    {
-                        lstAmmo.Add(objAmmo);
-                    }
-                }
-            }
-            else
-            {
-                if (objWeapon.AmmoCategory == "Grenade Launchers")
-                {
-                    // Grenade Launchers can only use Grenades.
-                    foreach (Gear objAmmo in _objCharacter.Gear)
-                    {
-                        if (objAmmo.Quantity > 0)
-                        {
-                            if (objAmmo.Category == "Ammunition" && objAmmo.Name.StartsWith("Minigrenade:"))
-                                lstAmmo.Add(objAmmo);
-                        }
-                        foreach (Gear objChild in objAmmo.Children)
-                        {
-                            if (objChild.Quantity > 0)
-                            {
-                                if (objChild.Category == "Ammunition" && objChild.Name.StartsWith("Minigrenade:"))
-                                    lstAmmo.Add(objChild);
-                            }
-                        }
-                    }
-                }
-                if (objWeapon.AmmoCategory == "Missile Launchers")
-                {
-                    // Missile Launchers can only use Missiles and Rockets.
-                    foreach (Gear objAmmo in _objCharacter.Gear)
-                    {
-                        if (objAmmo.Quantity > 0)
-                        {
-                            if (objAmmo.Category == "Ammunition" && (objAmmo.Name.StartsWith("Missile:") || objAmmo.Name.StartsWith("Rocket:")))
-                                lstAmmo.Add(objAmmo);
-                        }
-                        foreach (Gear objChild in objAmmo.Children)
-                        {
-                            if (objChild.Quantity > 0)
-                            {
-                                if (objChild.Category == "Ammunition" && (objChild.Name.StartsWith("Missile:") || objChild.Name.StartsWith("Rocket:")))
-                                    lstAmmo.Add(objChild);
-                            }
-                        }
-                    }
-                }
-                if (objWeapon.AmmoCategory == "Mortar Launchers")
-                {
-                    // Mortar Launchers can only use Mortars.
-                    foreach (Gear objAmmo in _objCharacter.Gear)
-                    {
-                        if (objAmmo.Quantity > 0)
-                        {
-                            if (objAmmo.Category == "Ammunition" && objAmmo.Name.StartsWith("Mortar Round:"))
-                                lstAmmo.Add(objAmmo);
-                        }
-                        foreach (Gear objChild in objAmmo.Children)
-                        {
-                            if (objChild.Quantity > 0)
-                            {
-                                if (objChild.Category == "Ammunition" && objChild.Name.StartsWith("Mortar Round:"))
-                                    lstAmmo.Add(objChild);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // If the Weapon is allowed to use an External Source, put in an External Source item.
-            if (blnExternalSource)
-                lstAmmo.Add(objExternalSource);
-
-            // Make sure the character has some form of Ammunition for this Weapon.
-            if (lstAmmo.Count == 0 && objWeapon.RequireAmmo)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmoType").Replace("{0}", objWeapon.DisplayAmmoCategory), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
             if (!objWeapon.RequireAmmo)
             {
-                // If the Weapon does not require Ammo, clear the Ammo list and just use External Source.
-                lstAmmo.Clear();
+                // If the Weapon does not require Ammo, just use External Source.
                 lstAmmo.Add(objExternalSource);
+            }
+            else
+            {
+                string ammoString = objWeapon.CalculatedAmmo(true);
+                // Determine which loading methods are available to the Weapon.
+                if (ammoString.Contains(" or ") || ammoString.Contains('x') || ammoString.Contains("Special") || ammoString.Contains('+'))
+                {
+                    string strWeaponAmmo = ammoString.ToLower();
+                    if (strWeaponAmmo.Contains("external source"))
+                        blnExternalSource = true;
+                    // Get rid of external source, special, or belt, and + energy.
+                    strWeaponAmmo = strWeaponAmmo.Replace("external source", "100");
+                    strWeaponAmmo = strWeaponAmmo.Replace("special", "100");
+                    strWeaponAmmo = strWeaponAmmo.Replace(" + energy", string.Empty);
+                    strWeaponAmmo = strWeaponAmmo.Replace(" or belt", " or 250(belt)");
+
+
+                    string[] strAmmos = strWeaponAmmo.Split(new[] { " or " }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string strAmmo in strAmmos)
+                    {
+                        string strThisAmmo = strAmmo;
+                        if (strThisAmmo.StartsWith("2x") || strThisAmmo.StartsWith("3x") || strThisAmmo.StartsWith("4x"))
+                            strThisAmmo = strThisAmmo.Substring(2, strThisAmmo.Length - 2);
+                        if (strThisAmmo.EndsWith("x2") || strThisAmmo.EndsWith("x3") || strThisAmmo.EndsWith("x4"))
+                            strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.Length - 2);
+
+                        if (strThisAmmo.Contains('('))
+                            strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf('('));
+
+                        lstCount.Add(strThisAmmo);
+                    }
+                }
+                else
+                {
+                    // Nothing weird in the ammo string, so just use the number given.
+                    string strAmmo = ammoString;
+                    if (strAmmo.Contains('('))
+                        strAmmo = strAmmo.Substring(0, strAmmo.IndexOf('('));
+                    lstCount.Add(strAmmo);
+                }
+
+                // Load ammo for flare guns
+                if (objWeapon.Spec == "Flare Launcher" && objWeapon.Name == "Micro Flare Launcher")
+                {
+                    lstAmmo.AddRange(_objCharacter.Gear.DeepWhere(x => x.Children, x => x.Name == "Micro Flares" && x.Category == "Survival Gear" && x.Quantity > 0));
+                }
+                // Find all of the Ammo for the current Weapon that the character is carrying.
+                if (objWeapon.AmmoCategory != "Grenade Launchers" && objWeapon.AmmoCategory != "Missile Launchers" && objWeapon.AmmoCategory != "Mortar Launchers")
+                {
+                    // This is a standard Weapon, so consume traditional Ammunition.
+                    lstAmmo.AddRange(_objCharacter.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && (x.Extra == objWeapon.AmmoCategory || (objWeapon.UseSkill == "Throwing Weapons" && objWeapon.Name == x.Name))));
+                }
+                else if (objWeapon.AmmoCategory == "Grenade Launchers")
+                {
+                    // Grenade Launchers can only use Grenades.
+                    lstAmmo.AddRange(_objCharacter.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && x.Name.StartsWith("Minigrenade:")));
+                }
+                else if (objWeapon.AmmoCategory == "Missile Launchers")
+                {
+                    // Missile Launchers can only use Missiles and Rockets.
+                    lstAmmo.AddRange(_objCharacter.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && (x.Name.StartsWith("Missile:") || x.Name.StartsWith("Rocket:"))));
+                }
+                else if (objWeapon.AmmoCategory == "Mortar Launchers")
+                {
+                    // Mortar Launchers can only use Mortars.
+                    lstAmmo.AddRange(_objCharacter.Gear.DeepWhere(x => x.Children, x => x.Category == "Ammunition" && x.Quantity > 0 && x.Name.StartsWith("Mortar Round:")));
+                }
+
+                // If the Weapon is allowed to use an External Source, put in an External Source item.
+                if (blnExternalSource)
+                {
+                    lstAmmo.Add(objExternalSource);
+                }
+
+                // Make sure the character has some form of Ammunition for this Weapon.
+                if (lstAmmo.Count == 0)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_OutOfAmmoType").Replace("{0}", objWeapon.DisplayAmmoCategory), LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
             }
 
             // Show the Ammunition Selection window.
@@ -14646,7 +14563,6 @@ namespace Chummer
             // Return any unspent rounds to the Ammo.
             if (objWeapon.AmmoRemaining > 0)
             {
-                bool blnBreak = false;
                 foreach (Gear objAmmo in _objCharacter.Gear)
                 {
                     if (objAmmo.InternalId == objWeapon.AmmoLoaded)
@@ -14654,18 +14570,15 @@ namespace Chummer
                         objAmmo.Quantity += objWeapon.AmmoRemaining;
 
                         // Refresh the Gear tree.
-                        foreach (TreeNode objNode in treGear.Nodes[0].Nodes)
+                        TreeNode objNode = CommonFunctions.FindNode(objAmmo.InternalId, treGear);
+                        if (objNode != null)
                         {
-                            if (objAmmo.InternalId == objNode.Tag.ToString())
-                            {
-                                objNode.Text = objAmmo.DisplayName;
-                                break;
-                            }
+                            objNode.Text = objAmmo.DisplayName;
                         }
 
                         break;
                     }
-                    foreach (Gear objChild in objAmmo.Children)
+                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
                     {
                         if (objChild.InternalId == objWeapon.AmmoLoaded)
                         {
@@ -14681,30 +14594,22 @@ namespace Chummer
                                 objNewNode.Text = objNewGear.DisplayName;
                                 _objCharacter.Gear.Add(objNewGear);
                                 treGear.Nodes[0].Nodes.Add(objNewNode);
-                                blnBreak = true;
-                                break;
+                                goto EndLoop;
                             }
                             else
                                 objChild.Quantity += objWeapon.AmmoRemaining;
 
                             // Refresh the Gear tree.
-                            foreach (TreeNode objNode in treGear.Nodes[0].Nodes)
+                            TreeNode objNode = CommonFunctions.FindNode(objChild.InternalId, treGear);
+                            if (objNode != null)
                             {
-                                foreach (TreeNode objChildNode in objNode.Nodes)
-                                {
-                                    if (objChild.InternalId == objChildNode.Tag.ToString())
-                                    {
-                                        objChildNode.Text = objChild.DisplayName;
-                                        break;
-                                    }
-                                }
+                                objNode.Text = objAmmo.DisplayName;
                             }
                             break;
                         }
                     }
-                    if (blnBreak)
-                        break;
                 }
+                EndLoop:;
             }
 
             Gear objSelectedAmmo = null;
@@ -20829,17 +20734,7 @@ namespace Chummer
                 }
                 else
                 {
-                    foreach (Gear objCharacterGear in _objCharacter.Gear)
-                    {
-                        if (objCharacterGear.Name == objNewGear.Name && objCharacterGear.Category == objNewGear.Category && objCharacterGear.Rating == objNewGear.Rating && objCharacterGear.Extra == objNewGear.Extra)
-                        {
-                            if (objCharacterGear.Children.All(objStackWith.Children.Contains))
-                            {
-                                objStackWith = objCharacterGear;
-                            }
-                            break;
-                        }
-                    }
+                    objStackWith = _objCharacter.Gear.FirstOrDefault(x => objNewGear.IsIdenticalToOtherGear(x));
                 }
             }
             
@@ -20912,14 +20807,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objUndo.ObjectId))
                     objUndo.ObjectId = objStackWith.InternalId;
 
-                foreach (TreeNode objGearNode in treGear.Nodes[0].Nodes)
+                TreeNode objGearNode = CommonFunctions.FindNode(objStackWith.InternalId, treGear);
+                if (objGearNode != null)
                 {
-                    if (objStackWith.InternalId == objGearNode.Tag.ToString())
-                    {
-                        objGearNode.Text = objStackWith.DisplayName;
-                        treGear.SelectedNode = objGearNode;
-                        break;
-                    }
+                    objGearNode.Text = objStackWith.DisplayName;
+                    treGear.SelectedNode = objGearNode;
                 }
             }
             // Add the Gear.
@@ -21171,38 +21063,31 @@ namespace Chummer
                 treWeapons.Nodes[0].Expand();
             }
 
-            bool blnMatchFound = false;
+            Gear objMatchingGear = null;
             // If this is Ammunition, see if the character already has it on them.
             if (objNewGear.Category == "Ammunition")
             {
-                foreach (Gear objCharacterGear in _objCharacter.Gear)
-                {
-                    if (objCharacterGear.Name == objNewGear.Name && objCharacterGear.Category == objNewGear.Category && objCharacterGear.Rating == objNewGear.Rating && objCharacterGear.Extra == objNewGear.Extra)
-                    {
-                        // A match was found, so increase the quantity instead.
-                        objCharacterGear.Quantity += objNewGear.Quantity;
-                        blnMatchFound = true;
-
-                        if (!string.IsNullOrEmpty(objUndo.ObjectId))
-                            objUndo.ObjectId = objCharacterGear.InternalId;
-
-                        foreach (TreeNode objGearNode in treGear.Nodes[0].Nodes)
-                        {
-                            if (objCharacterGear.InternalId == objGearNode.Tag.ToString())
-                            {
-                                objGearNode.Text = objCharacterGear.DisplayName;
-                                treArmor.SelectedNode = objGearNode;
-                                break;
-                            }
-                        }
-
-                        break;
-                    }
-                }
+                List<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
+                objMatchingGear = lstToSearch.FirstOrDefault(x => objNewGear.IsIdenticalToOtherGear(x));
             }
 
+            if (objMatchingGear != null)
+            {
+                // A match was found, so increase the quantity instead.
+                objMatchingGear.Quantity += objNewGear.Quantity;
+
+                if (!string.IsNullOrEmpty(objUndo.ObjectId))
+                    objUndo.ObjectId = objMatchingGear.InternalId;
+
+                TreeNode objGearNode = CommonFunctions.FindNode(objMatchingGear.InternalId, treArmor);
+                if (objGearNode != null)
+                {
+                    objGearNode.Text = objMatchingGear.DisplayName;
+                    treArmor.SelectedNode = objGearNode;
+                }
+            }
             // Add the Gear.
-            if (!blnMatchFound)
+            else
             {
                 objNode.ContextMenuStrip = cmsArmorGear;
                 treArmor.SelectedNode.Nodes.Add(objNode);

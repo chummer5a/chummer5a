@@ -41,6 +41,35 @@ namespace Chummer.Backend.Extensions
         }
 
         /// <summary>
+        /// Deep searches two collections to make sure matching elements between the two fulfill some predicate. Each item in the target list can only be matched once.
+        /// </summary>
+        /// <param name="objParentList">Base list to check.</param>
+        /// <param name="objTargetList">Target list against which we're checking</param>
+        /// <param name="funcGetChildrenMethod">Method used to get children of both the base list and the target list against which we're checking.</param>
+        /// <param name="predicate">Two-argument function that takes its first argument from the base list and the second from the target list. If it does not return true on any available pair, the method returns false.</param>
+        public static bool DeepMatch<T>(this ICollection<T> objParentList, ICollection<T> objTargetList, Func<T, ICollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
+        {
+            if (objParentList.Count != objTargetList.Count)
+                return false;
+            List<T> lstExclude = new List<T>(objTargetList.Count);
+            foreach (T objLoopChild in objParentList)
+            {
+                foreach (T objTargetChild in objTargetList)
+                {
+                    if (!lstExclude.Contains(objTargetChild) && predicate(objLoopChild, objTargetChild) && funcGetChildrenMethod(objLoopChild).DeepMatch(funcGetChildrenMethod(objTargetChild), funcGetChildrenMethod, predicate))
+                    {
+                        lstExclude.Add(objTargetChild);
+                        goto NextItem;
+                    }
+                }
+                // No matching item was found, return false
+                return false;
+                NextItem:;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Similar to Linq's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static bool DeepAll<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
