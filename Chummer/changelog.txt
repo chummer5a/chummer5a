@@ -333,6 +333,7 @@ Data Changes:
 - Fake and Standard Credsticks from 2050 now allow you to enter the name of the SIN that the credstick holds.
 - Fixed the requirements on Flesh Sculpter. Fixes #2014.
 - Added a set of new sheets based on the Shadowrun 5 Set that allow for the display of skill categories in addition to some other filtering option (e.g. Rating > 0, Sort by Rating, Sort by Name, etc.). Fixes #2021.
+- Fixed incorrect references to some French character sheet names. Fixes #2020.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
