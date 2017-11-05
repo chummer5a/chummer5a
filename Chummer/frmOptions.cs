@@ -238,9 +238,36 @@ namespace Chummer
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool isEnabled = cboLanguage.SelectedValue.ToString() != "en-us";
+            bool isEnabled = cboLanguage.SelectedValue.ToString() != GlobalOptions.DefaultLanguage;
             cmdVerify.Enabled = isEnabled;
             cmdVerifyData.Enabled = isEnabled;
+
+            if (!blnLoading)
+            {
+                string strOldSelected = cboXSLT.SelectedValue.ToString();
+                // Strip away the language prefix
+                if (strOldSelected.Contains('\\'))
+                    strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf('\\') + 1, strOldSelected.Length - 1 - strOldSelected.LastIndexOf('\\'));
+                PopulateXsltList();
+                string strNewLanguage = cboLanguage.SelectedValue.ToString();
+                if (strNewLanguage == GlobalOptions.DefaultLanguage)
+                    cboXSLT.SelectedValue = strOldSelected;
+                else
+                    cboXSLT.SelectedValue = Path.Combine(strNewLanguage, strOldSelected);
+                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+                if (cboXSLT.SelectedIndex == -1)
+                {
+                    if (strNewLanguage == GlobalOptions.DefaultLanguage)
+                        cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    else
+                        cboXSLT.SelectedValue = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    if (cboXSLT.SelectedIndex == -1)
+                    {
+                        cboXSLT.SelectedIndex = 0;
+                    }
+                }
+            }
+
             OptionsChanged(sender,e);
         }
 
@@ -757,7 +784,7 @@ namespace Chummer
             GlobalOptions.SingleDiceRoller = chkSingleDiceRoller.Checked;
             if (cboXSLT.SelectedValue == null || string.IsNullOrEmpty(cboXSLT.SelectedValue.ToString()))
             {
-                cboXSLT.SelectedValue = "Shadowrun 5";
+                cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
             }
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue.ToString();
             GlobalOptions.DatesIncludeTime = chkDatesIncludeTime.Checked;
@@ -1158,48 +1185,24 @@ namespace Chummer
             return names;
         }
 
-        private List<ListItem> GetXslFilesFromSheetsDirectory()
+        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            var items = new List<ListItem>();
-            
-            XmlDocument manifest = XmlManager.Load("sheets.xml");
-            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='en-us']/sheet");
+            List<ListItem> lstSheets = new List<ListItem>();
 
+            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+            XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
+            XmlDocument manifest = XmlManager.Load("sheets.xml");
+            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
             {
                 ListItem objItem = new ListItem();
-                objItem.Value = sheet["filename"].InnerText;
+                objItem.Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
                 objItem.Name = sheet["name"].InnerText;
 
-                items.Add(objItem);
+                lstSheets.Add(objItem);
             }
 
-            return items;
-        }
-
-        private List<ListItem> GetXslFilesFromLanguageDirectory()
-        {
-            var items = new List<ListItem>();
-
-            // Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
-            if (GlobalOptions.Language != "en-us")
-            {
-                XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
-                XmlDocument manifest = XmlManager.Load("sheets.xml");
-                XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{GlobalOptions.Language}']/sheet");
-                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-
-                foreach (XmlNode sheet in sheets)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = Path.Combine(GlobalOptions.Language, sheet["filename"].InnerText);
-                    objItem.Name = strLanguage + ": " + sheet["name"].InnerText;
-
-                    items.Add(objItem);
-                }
-            }
-
-            return items;
+            return lstSheets;
         }
 
         private List<ListItem> GetXslFilesFromOmaeDirectory()
@@ -1230,8 +1233,7 @@ namespace Chummer
         {
             List<ListItem> lstFiles = new List<ListItem>();
 
-            lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
-            lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
+            lstFiles.AddRange(GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue.ToString()));
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
@@ -1258,13 +1260,13 @@ namespace Chummer
             cboLanguage.SelectedValue = GlobalOptions.Language;
 
             if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = "en-us";
+                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
         }
 
         private void SetDefaultValueForXsltList()
         {
             if (string.IsNullOrEmpty(GlobalOptions.DefaultCharacterSheet))
-                GlobalOptions.DefaultCharacterSheet = "Shadowrun 5 (Rating greater 0)";
+                GlobalOptions.DefaultCharacterSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
 
             cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheet;
         }

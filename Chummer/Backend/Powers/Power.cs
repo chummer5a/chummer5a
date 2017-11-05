@@ -304,7 +304,7 @@ namespace Chummer
                     strReturn = _strDisplayName;
                 }
                 // Get the translated name if applicable.
-                else if (GlobalOptions.Language != "en-us")
+                else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     _strDisplayName = MyXmlNode?["translate"]?.InnerText ?? strReturn;
                     strReturn = _strDisplayName;
@@ -534,7 +534,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us")
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
                     return _strPage;
                 return MyXmlNode?["altpage"]?.InnerText ?? _strPage;
             }

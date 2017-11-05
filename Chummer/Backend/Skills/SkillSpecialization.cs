@@ -21,7 +21,7 @@ namespace Chummer
 
         static SkillSpecialization()
         {
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument document = XmlManager.Load("skills.xml");
                 XmlNodeList specList = document.SelectNodes("/chummer/*/skill/specs/spec");

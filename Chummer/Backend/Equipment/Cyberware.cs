@@ -192,7 +192,7 @@ namespace Chummer.Backend.Equipment
 
             objXmlCyberware.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 
                 XmlNode objCyberwareNode = MyXmlNode;
@@ -764,7 +764,7 @@ namespace Chummer.Backend.Equipment
                 _guiVehicleID = Guid.Parse(objNode["vehicleguid"].InnerText);
             }
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objCyberwareNode = MyXmlNode;
                 if (objCyberwareNode != null)

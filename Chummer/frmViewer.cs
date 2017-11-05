@@ -34,18 +34,19 @@ namespace Chummer
     {
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXML = new XmlDocument();
-        private string _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
+        private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading = false;
         #region Control Events
         public frmViewer()
         {
-            _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
             if (_strSelectedSheet.StartsWith("Shadowrun 4"))
             {
-                _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
-                if (GlobalOptions.Language != "en-us")
-                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, "Shadowrun 5 (Rating greater 0)");
+                _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
             }
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage && !_strSelectedSheet.Contains('\\'))
+                _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
+            else if (GlobalOptions.Language == GlobalOptions.DefaultLanguage && _strSelectedSheet.Contains('\\'))
+                _strSelectedSheet = _strSelectedSheet.Substring(_strSelectedSheet.LastIndexOf('\\') + 1, _strSelectedSheet.Length - 1 - _strSelectedSheet.LastIndexOf('\\'));
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
@@ -68,10 +69,10 @@ namespace Chummer
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                if (cboLanguage.SelectedValue.ToString() == "en-us")
-                    cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
+                if (cboLanguage.SelectedValue.ToString() == GlobalOptions.DefaultLanguage)
+                    cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
                 else
-                    _strSelectedSheet = Path.Combine(cboLanguage.SelectedValue.ToString(), "Shadowrun 5 (Rating greater 0)");
+                    _strSelectedSheet = Path.Combine(cboLanguage.SelectedValue.ToString(), GlobalOptions.DefaultCharacterSheetDefaultValue);
                 if (cboXSLT.SelectedIndex == -1)
                     cboXSLT.SelectedIndex = 0;
             }
@@ -375,7 +376,7 @@ namespace Chummer
             foreach (XmlNode sheet in sheets)
             {
                 ListItem objItem = new ListItem();
-                objItem.Value = strLanguage != "en-us" ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
+                objItem.Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
                 objItem.Name = sheet["name"].InnerText;
 
                 lstSheets.Add(objItem);
@@ -480,7 +481,7 @@ namespace Chummer
             cboLanguage.DataSource = lstLanguages;
             cboLanguage.SelectedValue = GlobalOptions.Language;
             if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = "en-us";
+                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
         #endregion
@@ -549,7 +550,7 @@ namespace Chummer
             _blnLoading = true;
             PopulateXsltList();
             string strNewLanguage = cboLanguage.SelectedValue.ToString();
-            if (strNewLanguage == "en-us")
+            if (strNewLanguage == GlobalOptions.DefaultLanguage)
                 _strSelectedSheet = strOldSelected;
             else
                 _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
@@ -557,10 +558,10 @@ namespace Chummer
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                if (strNewLanguage == "en-us")
-                    _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
+                if (strNewLanguage == GlobalOptions.DefaultLanguage)
+                    _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
                 else
-                    _strSelectedSheet = Path.Combine(strNewLanguage, "Shadowrun 5 (Rating greater 0)");
+                    _strSelectedSheet = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
                 cboXSLT.SelectedValue = _strSelectedSheet;
                 if (cboXSLT.SelectedIndex == -1)
                 {

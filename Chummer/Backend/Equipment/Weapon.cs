@@ -165,7 +165,7 @@ namespace Chummer.Backend.Equipment
 
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
                 if (objWeaponNode != null)
@@ -541,7 +541,7 @@ namespace Chummer.Backend.Equipment
                 _strAmmo = "1";
             }
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
@@ -882,7 +882,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = AmmoCategory;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                     XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
@@ -2630,7 +2630,7 @@ namespace Chummer.Backend.Equipment
                 string strRange = _strRange;
                 if (string.IsNullOrWhiteSpace(strRange))
                     strRange = _strCategory;
-                if (!string.IsNullOrWhiteSpace(strRange) && GlobalOptions.Language != "en-us")
+                if (!string.IsNullOrWhiteSpace(strRange) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                     XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
@@ -2650,7 +2650,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strRange = _strAlternateRange.Trim();
-                if (!string.IsNullOrEmpty(strRange) && GlobalOptions.Language != "en-us")
+                if (!string.IsNullOrEmpty(strRange) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                     XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");

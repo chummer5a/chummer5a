@@ -728,7 +728,7 @@ namespace Chummer
                     if (objXmlMod["category"].InnerText == "Weapon Mod")
                         lblCategory.Text = LanguageManager.GetString("String_WeaponModification");
                     // Translate the Category if possible.
-                    else if (GlobalOptions.Language != "en-us")
+                    else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XmlNode objXmlCategory = _objXmlDocument.SelectSingleNode("/chummer/modcategories/category[. = \"" + objXmlMod["category"].InnerText + "\"]");
                         if (objXmlCategory?.Attributes["translate"] != null)
@@ -741,7 +741,7 @@ namespace Chummer
                 if (objXmlMod["limit"] != null)
                 {
                     // Translate the Limit if possible.
-                    if (GlobalOptions.Language != "en-us")
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XmlNode objXmlLimit = _objXmlDocument.SelectSingleNode("/chummer/limits/limit[. = \"" + objXmlMod["limit"].InnerText + "\"]");
                         lblLimit.Text = objXmlLimit.Attributes["translate"] != null

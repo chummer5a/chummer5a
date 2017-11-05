@@ -202,7 +202,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objAccessoryNode = MyXmlNode;
                 if (objAccessoryNode != null)
@@ -342,7 +342,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objAccessoryNode = MyXmlNode;
                 if (objAccessoryNode != null)

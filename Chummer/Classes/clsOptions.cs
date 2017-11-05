@@ -146,14 +146,16 @@ namespace Chummer
 
         private static frmMain _frmMainForm;
         private static readonly RegistryKey _objBaseChummerKey;
+        public static readonly string DefaultLanguage = "en-us";
+        public static readonly string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
 
         private static bool _blnAutomaticUpdate = false;
         private static bool _blnLiveCustomData = false;
         private static bool _blnLocalisedUpdatesOnly = false;
         private static bool _blnStartupFullscreen = false;
         private static bool _blnSingleDiceRoller = true;
-        private static string _strLanguage = "en-us";
-        private static string _strDefaultCharacterSheet = "Shadowrun 5 (Rating greater 0)";
+        private static string _strLanguage = DefaultLanguage;
+        private static string _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst = false;
         private static bool _lifeModuleEnabled;
@@ -274,7 +276,7 @@ namespace Chummer
             LoadStringFromRegistry(ref _strLanguage, "language");
             if (_strLanguage == "en-us2")
             {
-                _strLanguage = "en-us";
+                _strLanguage = GlobalOptions.DefaultLanguage;
             }
             // Startup in Fullscreen mode.
             LoadBoolFromRegistry(ref _blnStartupFullscreen, "startupfullscreen");

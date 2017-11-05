@@ -337,7 +337,7 @@ namespace Chummer
                     // Build a list of the Metavariant's Positive Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                     {
-                            if (GlobalOptions.Language != "en-us")
+                            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                             {
                                 XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
@@ -356,7 +356,7 @@ namespace Chummer
                     // Build a list of the Metavariant's Negative Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                     {
-                            if (GlobalOptions.Language != "en-us")
+                            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                             {
                                 XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
@@ -467,7 +467,7 @@ namespace Chummer
                 // Build a list of the Metavariant's Positive Qualities.
                 foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/positive/quality"))
                 {
-                        if (GlobalOptions.Language != "en-us")
+                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
@@ -486,7 +486,7 @@ namespace Chummer
                 // Build a list of the Metavariant's Negative Qualities.
                 foreach (XmlNode objXmlQuality in objXmlMetavariant.SelectNodes("qualities/negative/quality"))
                 {
-                        if (GlobalOptions.Language != "en-us")
+                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
@@ -511,7 +511,7 @@ namespace Chummer
                 // Build a list of the Metavariant's Positive Qualities.
                 foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                 {
-                        if (GlobalOptions.Language != "en-us")
+                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                             strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
@@ -530,7 +530,7 @@ namespace Chummer
                 // Build a list of the Metavariant's Negative Qualities.
                 foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                 {
-                        if (GlobalOptions.Language != "en-us")
+                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         {
                             XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
                         strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;

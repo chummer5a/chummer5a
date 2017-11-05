@@ -79,7 +79,7 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)
@@ -503,7 +503,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objArmorNode = MyXmlNode;
                 if (objArmorNode != null)

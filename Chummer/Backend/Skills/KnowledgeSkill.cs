@@ -36,7 +36,7 @@ namespace Chummer.Skills
                     continue;
                 string display = objXmlSkill["translate"]?.InnerText ?? strSkillName;
 
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     _translator.Add(strSkillName, display);
                 }

@@ -349,7 +349,7 @@ namespace Chummer.Skills
                 if(_cachedDisplayName != null)
                     return _cachedDisplayName;
 
-                if (GlobalOptions.Language == "en-us") return _cachedDisplayName = Name;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return _cachedDisplayName = Name;
                 XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
                 return _cachedDisplayName = objNode?.Attributes?["translate"]?.InnerText;

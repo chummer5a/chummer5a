@@ -115,7 +115,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strExtra = objNode.Text.Split('(')[1].TrimEnd(')');
             }
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objLifestyleQualityNode = MyXmlNode;
                 if (objLifestyleQualityNode != null)
@@ -221,7 +221,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objLifestyleQualityNode = MyXmlNode;
                 if (objLifestyleQualityNode != null)
@@ -306,7 +306,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lp", _intLP.ToString());
             objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.CultureInfo));
             string strLifestyleQualityType = _objLifestyleQualityType.ToString();
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
 

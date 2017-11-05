@@ -436,7 +436,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     return LanguageManager.GetString($"String_Attribute{AttributeObject.Abbrev}Short");
                 }

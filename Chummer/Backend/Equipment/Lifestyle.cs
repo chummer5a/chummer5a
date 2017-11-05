@@ -327,7 +327,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us")
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
                     return _strBaseLifestyle;
                 return MyXmlNode?["translate"]?.InnerText ?? _strBaseLifestyle;
             }
@@ -373,7 +373,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)

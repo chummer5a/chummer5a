@@ -163,7 +163,7 @@ namespace Chummer
         public static void Load(string strLanguage, object objObject)
         {
             // _strLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
-            if (strLanguage != "en-us" && string.IsNullOrEmpty(_strLanguage))
+            if (strLanguage != GlobalOptions.DefaultLanguage && string.IsNullOrEmpty(_strLanguage))
             {
                 _strLanguage = strLanguage;
                 XmlDocument objLanguageDocument = new XmlDocument();
@@ -465,7 +465,7 @@ namespace Chummer
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (_strLanguage != "en-us" && !string.IsNullOrWhiteSpace(strExtra))
+            if (_strLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)

@@ -233,7 +233,7 @@ namespace Chummer
             if(objXmlQuality["id"] != null)
                 _qualiyGuid = Guid.Parse(objXmlQuality["id"].InnerText);
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objQualityNode = MyXmlNode;
                 if (objQualityNode != null)
@@ -439,7 +439,7 @@ namespace Chummer
                     objNewNode.TryGetField("id", Guid.TryParse, out _qualiyGuid);
             }
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objQualityNode = MyXmlNode;
                 if (objQualityNode != null)
@@ -470,7 +470,7 @@ namespace Chummer
                 objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", _intBP.ToString());
                 string strQualityType = _objQualityType.ToString();
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
 
@@ -1091,7 +1091,7 @@ namespace Chummer
             // Translate the Critter name if applicable.
             string strName = _strName;
             XmlNode objXmlCritterNode = MyXmlNode;
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText;
             }
@@ -1380,7 +1380,7 @@ namespace Chummer
         {
             objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
             _blnExtended = blnExtended;
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
                 XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
@@ -1525,7 +1525,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
                 XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
@@ -2735,7 +2735,7 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us") return strReturn;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return strReturn;
 
                 return MyXmlNode?["translate"]?.InnerText ?? strReturn;
             }
@@ -2781,7 +2781,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -2981,7 +2981,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us") return _strName;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return _strName;
                 return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3026,7 +3026,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -3213,7 +3213,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us") return _strName;;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return _strName;;
                 return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
         }
@@ -3258,7 +3258,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -3340,7 +3340,7 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
             _strExtra = strExtra;
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objComplexFormNode = MyXmlNode;
                 if (objComplexFormNode != null)
@@ -3446,13 +3446,13 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     string strExtra = _strExtra;
-                    if (GlobalOptions.Language != "en-us")
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         strExtra = LanguageManager.TranslateExtra(_strExtra);
                     strReturn += " (" + strExtra + ")";
                 }
@@ -3517,7 +3517,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -3591,7 +3591,7 @@ namespace Chummer
             _strExtra = strExtra;
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
 
-            if (GlobalOptions.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objProgramNode = MyXmlNode;
                 if (objProgramNode != null)
@@ -3699,13 +3699,13 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     string strExtra = _strExtra;
-                    if (GlobalOptions.Language != "en-us")
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         strExtra = LanguageManager.TranslateExtra(_strExtra);
                     strReturn += " (" + strExtra + ")";
                 }
@@ -3750,7 +3750,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strExtra))
                     strReturn += " (" + _strExtra + ")";
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us") return strReturn;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return strReturn;
                 XmlNode objNode = XmlManager.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
                 return objNode?["translate"]?.InnerText ?? _strName;
             }
@@ -3783,7 +3783,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -3959,7 +3959,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us")
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
                     return _strName;
                 return MyXmlNode?["translate"]?.InnerText ?? _strName;
             }
@@ -3996,7 +3996,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode != null)
@@ -4168,7 +4168,7 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us") return strReturn;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return strReturn;
                 return MyXmlNode?.Attributes?["translate"]?.InnerText ?? strReturn;
             }
         }
@@ -4314,7 +4314,7 @@ namespace Chummer
             {
                 string strReturn = _strName;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["translate"] != null)
@@ -4358,7 +4358,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -5156,13 +5156,13 @@ namespace Chummer
             get
             {
                 string strReturn = _strName;
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
                 if (!string.IsNullOrEmpty(_strExtra))
                 {
                     string strExtra = _strExtra;
-                    if (GlobalOptions.Language != "en-us")
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         strExtra = LanguageManager.TranslateExtra(_strExtra);
                     strReturn += " (" + strExtra + ")";
                 }
@@ -5217,7 +5217,7 @@ namespace Chummer
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -5248,7 +5248,7 @@ namespace Chummer
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us") return _strCategory;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return _strCategory;
                 XmlNode objNode = XmlManager.Load("critterpowers.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 return objNode.Attributes?["translate"]?.InnerText ?? _strCategory;
             }
