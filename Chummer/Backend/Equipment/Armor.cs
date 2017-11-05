@@ -948,7 +948,7 @@ namespace Chummer.Backend.Equipment
                     if (a.Name == _strName)
                     {
                         //Check for Custom Fitted armour
-                        foreach (ArmorMod objMod in a.ArmorMods.Where(objMod => objMod.Name == "Custom Fit (Stack)" && (objMod.Extra.Length > 0)).Where(objMod => _objCharacter.Armor.Any(objArmor => objArmor.Equipped && objMod.Extra == objArmor.Name)))
+                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra.Length > 0 && _objCharacter.Armor.Any(objArmor => objArmor.Equipped && objMod.Extra == objArmor.Name)))
                         {
                             blnCustomFitted = true;
                         }

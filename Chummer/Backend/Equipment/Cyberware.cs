@@ -2186,7 +2186,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
                 decReturn = Math.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-            decReturn += _objChildren.Where(objChild => objChild.AddToParentESS).Sum(objChild => objChild.CalculatedESS());
+            decReturn += _objChildren.Where(objChild => objChild.AddToParentESS).AsParallel().Sum(objChild => objChild.CalculatedESS());
             return decReturn;
         }
 

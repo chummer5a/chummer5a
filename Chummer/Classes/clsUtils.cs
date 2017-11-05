@@ -91,13 +91,13 @@ namespace Chummer
             string[] stringSeparators = { "," };
             string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string line in result.Where(line => line.Contains("tag_name")))
+            string line = result.FirstOrDefault(x => x.Contains("tag_name"));
+            if (!string.IsNullOrEmpty(line))
             {
                 string strVersion = line.Split(':')[1];
                 strVersion = strVersion.Split('}')[0].FastEscape('\"');
                 strVersion = strVersion + ".0";
                 Version.TryParse(strVersion, out verLatestVersion);
-                break;
             }
             // Cleanup the streams and the response.
             reader.Close();

@@ -460,15 +460,14 @@ namespace Chummer
                             objForbiddenAccessory.Add(node.InnerText);
                         }
 
-                        foreach (VehicleMod objAccessory in _lstMods.Where(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                        if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
 
                     if (objXmlMod["required"]?["oneof"] != null)
                     {
-                        bool boolCanAdd = false;
                         XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
                         //Add to set for O(N log M) runtime instead of O(N * M)
 
@@ -478,13 +477,10 @@ namespace Chummer
                             objRequiredAccessory.Add(node.InnerText);
                         }
 
-                        foreach (VehicleMod objAccessory in _lstMods.Where(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                        if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
                         {
-                            boolCanAdd = true;
-                            break;
-                        }
-                        if (!boolCanAdd)
                             continue;
+                        }
                     }
 
                     XmlNode objXmlRequirements = objXmlMod.SelectSingleNode("requires");
@@ -503,7 +499,6 @@ namespace Chummer
                         objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
                         lstMods.Add(objItem);
                     }
-                NextItem:;
                 }
             SortListItem objSort = new SortListItem();
             lstMods.Sort(objSort.Compare);

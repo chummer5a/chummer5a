@@ -302,7 +302,7 @@ namespace Chummer
                 string[] astrCustomDataDirectoryNames = objCustomDataDirectoryKey.GetSubKeyNames();
                 int intMinLoadOrderValue = int.MaxValue;
                 int intMaxLoadOrderValue = int.MinValue;
-                for (int i = 0; i < astrCustomDataDirectoryNames.Count(); ++i)
+                for (int i = 0; i < astrCustomDataDirectoryNames.Length; ++i)
                 {
                     RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(astrCustomDataDirectoryNames[i]);
                     string strPath = string.Empty;

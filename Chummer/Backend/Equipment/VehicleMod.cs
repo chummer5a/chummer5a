@@ -1061,7 +1061,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return OwnCost + _lstVehicleWeapons.Sum(objWeapon => objWeapon.TotalCost) + _lstCyberware.Sum(objCyberware => objCyberware.TotalCost);
+                return OwnCost + _lstVehicleWeapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + _lstCyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
             }
         }
 

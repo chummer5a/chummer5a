@@ -13036,10 +13036,10 @@ namespace Chummer
                                                                      objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                int spells = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category != "Rituals" && !spell.FreeBonus).Count();
-                int intTouchOnlySpells = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category != "Rituals" && spell.Range == "T" && !spell.FreeBonus).Count();
-                int rituals = _objCharacter.Spells.Where(spell => (!spell.Alchemical) && spell.Category == "Rituals" && !spell.FreeBonus).Count();
-                int preps = _objCharacter.Spells.Where(spell => spell.Alchemical && !spell.FreeBonus).Count();
+                int spells = _objCharacter.Spells.Count(spell => (!spell.Alchemical) && spell.Category != "Rituals" && !spell.FreeBonus);
+                int intTouchOnlySpells = _objCharacter.Spells.Count(spell => (!spell.Alchemical) && spell.Category != "Rituals" && spell.Range == "T" && !spell.FreeBonus);
+                int rituals = _objCharacter.Spells.Count(spell => (!spell.Alchemical) && spell.Category == "Rituals" && !spell.FreeBonus);
+                int preps = _objCharacter.Spells.Count(spell => spell.Alchemical && !spell.FreeBonus);
 
                 // Each spell costs KarmaSpell.
                 int spellCost = _objOptions.KarmaSpell +
@@ -21522,7 +21522,7 @@ namespace Chummer
                             intTemp += _objCharacter.Options.KarmaNewActiveSkill;
                             intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * _objCharacter.Options.KarmaImproveActiveSkill;
                             if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-                                intTemp += objLoopActiveSkill.Specializations.Where(x => x.Free).Count() * _objCharacter.Options.KarmaSpecialization;
+                                intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) * _objCharacter.Options.KarmaSpecialization;
                             else if (!objLoopActiveSkill.BuyWithKarma)
                                 intTemp += objLoopActiveSkill.Specializations.Count * _objCharacter.Options.KarmaSpecialization;
                         }
@@ -21577,7 +21577,7 @@ namespace Chummer
                     intKnowledgePointsValue += _objCharacter.Options.KarmaNewKnowledgeSkill;
                     intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) * _objCharacter.Options.KarmaImproveKnowledgeSkill;
                     if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Where(x => x.Free).Count() * _objCharacter.Options.KarmaKnowledgeSpecialization;
+                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) * _objCharacter.Options.KarmaKnowledgeSpecialization;
                     else if (!objLoopKnowledgeSkill.BuyWithKarma)
                         intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count * _objCharacter.Options.KarmaKnowledgeSpecialization;
                 }

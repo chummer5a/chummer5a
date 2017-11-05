@@ -39,7 +39,7 @@ namespace Chummer
             nudDice.Value = intDice;
             if (lstQualities != null)
             {
-                int intGremlinsRating = lstQualities.Where(x => x.Name == "Gremlins").Count();
+                int intGremlinsRating = lstQualities.Count(x => x.Name == "Gremlins");
                 if (intGremlinsRating > 0)
                     nudGremlins.Value = intGremlinsRating;
             }

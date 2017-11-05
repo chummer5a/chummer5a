@@ -163,7 +163,8 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeMin;
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ReplaceAttribute).Where(objImprovement => objImprovement.ImprovedName == Abbrev))
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev);
+                if (objImprovement != null)
                 {
                     intReturn = objImprovement.Minimum;
                 }
@@ -186,7 +187,8 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeMax;
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ReplaceAttribute).Where(objImprovement => objImprovement.ImprovedName == Abbrev))
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev);
+                if (objImprovement != null)
                 {
                     intReturn = objImprovement.Maximum;
                 }
@@ -1271,14 +1273,14 @@ namespace Chummer.Backend.Attributes
             new ReverseTree<string>(nameof(ToolTip),
                 new ReverseTree<string>(nameof(DisplayValue),
                     new ReverseTree<string>(nameof(Augmented),
-                    new ReverseTree<string>(nameof(TotalValue),
-                        new ReverseTree<string>(nameof(AttributeModifiers)),
-                                    new ReverseTree<string>(nameof(Karma)),
-                                    new ReverseTree<string>(nameof(Base)),
-                                        new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
-                                            new ReverseTree<string>(nameof(TotalMinimum)),
-                                            new ReverseTree<string>(nameof(TotalMaximum)),
-                                            new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
+                        new ReverseTree<string>(nameof(TotalValue),
+                            new ReverseTree<string>(nameof(AttributeModifiers)),
+                                        new ReverseTree<string>(nameof(Karma)),
+                                        new ReverseTree<string>(nameof(Base)),
+                                            new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
+                                                new ReverseTree<string>(nameof(TotalMinimum)),
+                                                new ReverseTree<string>(nameof(TotalMaximum)),
+                                                new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
 
         public string UpgradeKarmaCostString
         {
@@ -1344,40 +1346,31 @@ namespace Chummer.Backend.Attributes
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
         private void OnImprovementEvent(List<Improvement> improvements)
         {
-            if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled && imp.Augmented != 0))
+            if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && imp.AugmentedMaximum != 0 || imp.Maximum != 0 || imp.Minimum != 0))
             {
-                OnPropertyChanged(nameof(Augmented));
+                OnPropertyChanged(nameof(TotalAugmentedMaximum));
+                OnPropertyChanged(nameof(TotalMaximum));
+                OnPropertyChanged(nameof(TotalMinimum));
             }
             else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReplaceAttribute && imp.ImprovedName == Abbrev))
             {
                 OnPropertyChanged(nameof(AugmentedMetatypeLimits));
             }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled && imp.AugmentedMaximum != 0 || imp.Maximum != 0))
+            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
             {
-                foreach (Improvement i in improvements.Where(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Enabled))
-                {
-                    if (i.Maximum != 0 || i.AugmentedMaximum != 0)
-                    {
-                        OnPropertyChanged(nameof(TotalAugmentedMaximum));
-                    }
-                    if (i.Minimum != 0)
-                    {
-                        OnPropertyChanged(nameof(TotalMinimum));
-                    }
-                    if (i.Value != 0)
-                    {
-                        OnPropertyChanged(nameof(TotalValue));
-                    }
-                }
-                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
+                OnPropertyChanged(nameof(Base));
             }
             else if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
             {
                 OnPropertyChanged(nameof(AttributeModifiers));
             }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attributelevel))
+            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Value != 0))
             {
-                OnPropertyChanged(nameof(Base));
+                OnPropertyChanged(nameof(TotalValue));
+            }
+            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Augmented != 0))
+            {
+                OnPropertyChanged(nameof(Augmented));
             }
         }
 

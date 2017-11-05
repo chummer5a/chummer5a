@@ -271,7 +271,7 @@ namespace Chummer.UI.Powers
         {
             get
             {
-                return PowerPointsTotal - ObjCharacter.Powers.Sum(objPower => objPower.PowerPoints);
+                return PowerPointsTotal - ObjCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
             }
         }
 

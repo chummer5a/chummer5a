@@ -415,7 +415,7 @@ namespace Chummer
             {
                 decimal decExtraCost = FreePoints;
                 // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                int intReturn = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
+                int intReturn = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
                 // The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
                 if (Rating + intReturn == 0 && ExtraPointCost > 0)
                 {
@@ -505,7 +505,7 @@ namespace Chummer
         {
             get
             {
-                int intRating = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
+                int intRating = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
                 decimal decReturn = (decimal) (intRating * 0.25);
                 return decReturn;
             }
@@ -782,8 +782,8 @@ namespace Chummer
         public string ToolTip()
         {
             string strReturn = $"Rating ({Rating} x {PointsPerLevel})";
-            string strModifier = CharacterObject.Improvements.Where(objImprovement => objImprovement.Enabled)
-                .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra)
+            string strModifier = CharacterObject.Improvements
+                .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled)
                 .Aggregate("", (current, objImprovement) => current + $" + {CharacterObject.GetObjectName(objImprovement)} ({objImprovement.Rating})");
 
             return strReturn + strModifier;

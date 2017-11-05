@@ -2340,7 +2340,7 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifiersphys");
             foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Physical"))
             {
-                    objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter);
             }
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
@@ -2366,7 +2366,7 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifiersment");
             foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Mental"))
             {
-                    objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter);
             }
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
@@ -2392,7 +2392,7 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifierssoc");
             foreach (LimitModifier objLimitModifier in _lstLimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Social"))
             {
-                    objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter);
             }
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
@@ -4507,7 +4507,7 @@ namespace Chummer
             get
             {
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
-                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).Sum(objCyberware => objCyberware.CalculatedESS());
+                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware).AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -4519,7 +4519,7 @@ namespace Chummer
             get
             {
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
-                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).Sum(objCyberware => objCyberware.CalculatedESS());
+                return _lstCyberware.Where(objCyberware => objCyberware.Name != "Essence Hole" && objCyberware.SourceType == Improvement.ImprovementSource.Bioware).AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -4531,7 +4531,7 @@ namespace Chummer
             get
             {
                 // Find the total Essence Cost of all Essence Hole objects.
-                return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").Sum(objCyberware => objCyberware.CalculatedESS());
+                return _lstCyberware.Where(objCyberware => objCyberware.Name == "Essence Hole").AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
         }
 
@@ -5639,7 +5639,7 @@ namespace Chummer
                 }
 
                 // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
-                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith('+') && objArmor.Category == "Clothing" && objArmor.Equipped).Sum(objArmor => objArmor.TotalArmor);
+                int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith('+') && objArmor.Category == "Clothing" && objArmor.Equipped).AsParallel().Sum(objArmor => objArmor.TotalArmor);
 
                 if (intClothing > intArmor)
                     intArmor = intClothing;

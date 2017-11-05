@@ -833,7 +833,7 @@ namespace Chummer
                         if (CyberwareParent != null)
                         {
                             strCost = strCost.Replace("Parent Cost", CyberwareParent.Cost);
-                            strCost = strCost.Replace("Parent Gear Cost", CyberwareParent.Gear.Sum(x => x.TotalCost).ToString(GlobalOptions.InvariantCultureInfo));
+                            strCost = strCost.Replace("Parent Gear Cost", CyberwareParent.Gear.AsParallel().Sum(x => x.TotalCost).ToString(GlobalOptions.InvariantCultureInfo));
                         }
                         else
                         {

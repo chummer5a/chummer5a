@@ -2052,12 +2052,12 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += _lstAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon).Sum(objAccessory => objAccessory.TotalCost);
+                decReturn += _lstAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon).AsParallel().Sum(objAccessory => objAccessory.TotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
                 if (_lstUnderbarrel.Count > 0)
                 {
-                    decReturn += _lstUnderbarrel.Sum(objUnderbarrel => objUnderbarrel.TotalCost);
+                    decReturn += _lstUnderbarrel.AsParallel().Sum(objUnderbarrel => objUnderbarrel.TotalCost);
                 }
 
                 return decReturn;
@@ -2449,11 +2449,11 @@ namespace Chummer.Backend.Equipment
                 if (_strType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
-                    intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled).Sum(objImprovement => Convert.ToInt32(objImprovement.Value));
+                    intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
                 if (_strName == "Unarmed Attack")
                 {
-                    intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach && objImprovement.Enabled).Sum(objImprovement => Convert.ToInt32(objImprovement.Value));
+                    intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach && objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
 
                 return intReach;

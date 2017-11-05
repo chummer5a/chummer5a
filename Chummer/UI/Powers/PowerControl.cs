@@ -101,14 +101,12 @@ namespace Chummer
             Form frmParent = ParentForm;
             if (PowerObject.FreeLevels > 0)
             {
-
-                foreach (Gear objGear in PowerObject.CharacterObject.Gear
-                    .Where(objGear => objGear.Bonded && objGear.InternalId == PowerObject.CharacterObject.Improvements
-                    .First(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == PowerObject.Name && objImprovement.UniqueName == PowerObject.Extra).SourceName))
+                string strImprovementSourceName = PowerObject.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == PowerObject.Name && x.UniqueName == PowerObject.Extra)?.SourceName;
+                Gear objGear = PowerObject.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
+                if (objGear != null)
                 {
                     objGear.Equipped = false;
                     objGear.Extra = string.Empty;
-                    break;
                 }
             }
             PowerObject.Deleting = true;

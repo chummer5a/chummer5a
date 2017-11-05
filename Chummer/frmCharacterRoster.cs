@@ -76,24 +76,23 @@ namespace Chummer
                     foreach (string strFile in objFiles.Where(strFile => strFile.EndsWith(".chum5")))
                     {
                         var cache = lstCharacterCache.FirstOrDefault(objCache => objCache.FilePath == strFile);
-                        var loaded = false;
                         if (cache != null)
                         {
                             foreach (TreeNode rootNode in treCharacterList.Nodes)
                             {
                                 if (rootNode.Nodes.Cast<TreeNode>().Any(childNode => Convert.ToInt32(childNode.Tag) == lstCharacterCache.IndexOf(cache)))
                                 {
-                                    loaded = true;
+                                    goto Loaded;
                                 }
                             }
                         }
-                        if (loaded) continue;
                         if (blnAddWatch)
-                            {
-                                treCharacterList.Nodes.Add(objWatchNode);
-                                blnAddWatch = false;
-                            }
+                        {
+                            treCharacterList.Nodes.Add(objWatchNode);
+                            blnAddWatch = false;
+                        }
                         CacheCharacter(strFile, objWatchNode);
+                        Loaded:;
                     }
                 }
             }

@@ -96,7 +96,6 @@ namespace Chummer
             if (objXmlAccessoryList != null)
                 foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
                 {
-                    bool boolCanAdd = true;
                     if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                     {
                         if (strAllowed.Length > 1)
@@ -105,10 +104,8 @@ namespace Chummer
                             {
                                 if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
                                 {
-                                    boolCanAdd = false;
+                                    goto NextItem;
                                 }
-                                if (boolCanAdd)
-                                    break;
                             }
                         }
                     }
@@ -118,7 +115,7 @@ namespace Chummer
                         // Assumes topmost parent is an AND node
                         if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
                     if (objXmlAccessory["required"]?["weapondetails"] != null)
@@ -126,7 +123,7 @@ namespace Chummer
                         // Assumes topmost parent is an AND node
                         if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
 
@@ -143,7 +140,7 @@ namespace Chummer
 
                         if (_lstAccessories.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
 
@@ -158,17 +155,19 @@ namespace Chummer
                             objRequiredAccessory.Add(node.InnerText);
                         }
 
-                        boolCanAdd = _lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name));
+                        if (!_lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                        {
+                            continue;
+                        }
                     }
 
-                    boolCanAdd = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), 0, boolCanAdd);
-
-                    if (!boolCanAdd)
-                        continue;
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlAccessory["name"]?.InnerText;
-                    objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
-                    lstAccessories.Add(objItem);
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), 0))
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlAccessory["name"]?.InnerText;
+                        objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
+                        lstAccessories.Add(objItem);
+                    }
                     NextItem:;
                 }
 

@@ -444,7 +444,7 @@ namespace Chummer.Backend.Shared_Methods
                             character.Cyberware.Where(
                                     objCyberware =>
                                         objCyberware.Grade.Name.Contains(objEssNodeGradeAttributeText))
-                                .Sum(objCyberware => objCyberware.CalculatedESS());
+                                .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
                         if (strNodeInnerText.StartsWith('-'))
                         {
                             // Essence must be less than the value.
@@ -629,10 +629,10 @@ namespace Chummer.Backend.Shared_Methods
                     if (node["type"] != null)
                     {
                         KnowledgeSkill s = character.SkillsSection.KnowledgeSkills
-                            .Where(objSkill => objSkill.Name == strNodeName &&
+                            .FirstOrDefault(objSkill => objSkill.Name == strNodeName &&
                                                (node["spec"] == null ||
-                                                objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)))
-                            .FirstOrDefault(objSkill => objSkill.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText));
+                                                objSkill.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)) &&
+                                                objSkill.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText));
 
                         if (s != null)
                         {
