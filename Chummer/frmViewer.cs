@@ -542,30 +542,30 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+            string strOldSelected = _strSelectedSheet;
             // Strip away the language prefix
-            if (strOldSelected.Contains(Path.PathSeparator))
-                strOldSelected = strOldSelected.Split(Path.PathSeparator)[1];
+            if (strOldSelected.Contains('\\'))
+                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf('\\') + 1, strOldSelected.Length - 1 - strOldSelected.LastIndexOf('\\'));
             _blnLoading = true;
             PopulateXsltList();
             string strNewLanguage = cboLanguage.SelectedValue.ToString();
-            cboXSLT.SelectedValue = strOldSelected;
             if (strNewLanguage == "en-us")
-                cboXSLT.SelectedValue = strOldSelected;
+                _strSelectedSheet = strOldSelected;
             else
                 _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
+            cboXSLT.SelectedValue = _strSelectedSheet;
+            // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
+                if (strNewLanguage == "en-us")
+                    _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
+                else
+                    _strSelectedSheet = Path.Combine(strNewLanguage, "Shadowrun 5 (Rating greater 0)");
                 cboXSLT.SelectedValue = _strSelectedSheet;
-                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
                 if (cboXSLT.SelectedIndex == -1)
                 {
-                    if (strNewLanguage == "en-us")
-                        cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
-                    else
-                        _strSelectedSheet = Path.Combine(strNewLanguage, "Shadowrun 5 (Rating greater 0)");
-                    if (cboXSLT.SelectedIndex == -1)
-                        cboXSLT.SelectedIndex = 0;
+                    cboXSLT.SelectedIndex = 0;
+                    _strSelectedSheet = cboXSLT.SelectedValue.ToString();
                 }
             }
             _blnLoading = false;
