@@ -236,24 +236,32 @@ namespace Chummer
                     }
                     if (!_objCharacter.IgnoreRules)
                     {
-                        int intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
-                        if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
+                        if (!_objCharacter.Created)
                         {
+                            int intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
+                            if (chkAlchemical.Checked)
+                            {
+                                if (intAlchPrepCount >= intSpellLimit)
+                                {
+                                    MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    return;
+                                }
+                            }
+                            else if (objXmlSpell["category"].InnerText == "Rituals")
+                            {
+                                if (intRitualCount >= intSpellLimit)
+                                {
+                                    MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    return;
+                                }
+                            }
+                            else if (intSpellCount >= intSpellLimit)
+                            {
+                                MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"),
+                                    LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return;
 
-                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"),
-                                LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-
+                            }
                         }
                         if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, null, null, _objXmlDocument, string.Empty, LanguageManager.GetString("String_DescSpell")))
                         {
@@ -617,6 +625,14 @@ namespace Chummer
                             break;
                     }
                 }
+
+                if (objXmlSpell["category"].InnerText == "Rituals")
+                {
+                    chkAlchemical.Enabled = false;
+                    chkAlchemical.Checked = false;
+                }
+                else
+                    chkAlchemical.Enabled = true;
 
                 // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
                 if (chkExtended.Checked && !blnExtendedFound)

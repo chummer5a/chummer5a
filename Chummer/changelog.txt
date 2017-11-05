@@ -209,6 +209,8 @@ Application Changes:
 - Changing languages in the Options menu now automatically re-populates the list of character sheets selectable as the default. If a non-English language is selected, only sheets for that language will show up.
 - Fixed a bug where Chummer5 would only look at its first command line argument when seeing if it load characters at startup. Also fixes a bug where restarting Chummer5 after changing options with more than one character loaded would only load the first character after the restart.
 - Fixed a bug where selecting to save changes to options but not to restart Chummer5 would not actually save changes to options.
+- Fixed a bug where Chummer5 would not allow adding of alchemical preparations or ritual spells in create mode if the character was already at their character generation limit for regular skills. Fixes #2030.
+- Fixed a bug where ritual spells could be taken as alchemical preparation recipes.
 
 Data Changes:
 
