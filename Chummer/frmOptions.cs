@@ -76,14 +76,8 @@ namespace Chummer
                 string text = LanguageManager.GetString("Message_Options_SaveForms");
                 string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
 
-                switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                {
-                    case DialogResult.Yes:
-                        break;
-                    default:
-                        return;
-                }
-                Utils.RestartApplication("Message_Options_CloseForms");
+                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
             }
 
             DialogResult = DialogResult.OK;
@@ -213,6 +207,9 @@ namespace Chummer
 
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
+
+            if (blnDirty)
+                Utils.RestartApplication("Message_Options_CloseForms");
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)

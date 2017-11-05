@@ -113,17 +113,28 @@ namespace Chummer
             int intResult = GitVersion().CompareTo(verCurrentversion);
             return intResult;
         }
-        
+
+        /// <summary>
+        /// Restarts Chummer5a.
+        /// </summary>
+        /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         public static void RestartApplication(string strText = "Message_Options_Restart")
         {
-            string text = LanguageManager.GetString(strText);
-            string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
+            if (!string.IsNullOrEmpty(strText))
+            {
+                string text = LanguageManager.GetString(strText);
+                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
 
-            if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
+                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+            }
+            GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            arguments += GlobalOptions.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
+            foreach (Character objOpenCharacter in GlobalOptions.MainForm.OpenCharacters)
+            {
+                arguments += "\"" + objOpenCharacter.FileName + "\" ";
+            }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
             foreach (Form objForm in GlobalOptions.MainForm.MdiChildren)

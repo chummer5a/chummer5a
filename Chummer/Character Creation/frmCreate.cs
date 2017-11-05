@@ -75,7 +75,7 @@ namespace Chummer
         public frmCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
-            GlobalOptions.MainForm.OpenCharacters.Add(objCharacter);
+            GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             _objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;

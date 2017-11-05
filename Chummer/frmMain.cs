@@ -159,17 +159,18 @@ namespace Chummer
 
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
-            if (strArgs.GetUpperBound(0) > 0)
+            string strLoop = string.Empty;
+            for (int i = 1; i < strArgs.Length; ++i)
             {
-                if (strArgs[1] != "/debug")
-                    LoadCharacter(strArgs[1]);
-                if (strArgs.Length > 2)
+                strLoop = strArgs[i];
+                if (strLoop == "/test")
                 {
-                    if (strArgs[2] == "/test")
-                    {
-                        frmTest frmTestData = new frmTest();
-                        frmTestData.Show();
-                    }
+                    frmTest frmTestData = new frmTest();
+                    frmTestData.Show();
+                }
+                else if (!strLoop.StartsWith('/'))
+                {
+                    LoadCharacter(strLoop);
                 }
             }
 
@@ -652,7 +653,6 @@ namespace Chummer
             frmNewCharacter.WindowState = FormWindowState.Maximized;
             frmNewCharacter.Show();
 
-            OpenCharacters.Add(objCharacter);
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
             Cursor.Current = Cursors.Default;
         }
