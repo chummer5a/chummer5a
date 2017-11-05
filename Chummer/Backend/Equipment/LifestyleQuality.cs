@@ -311,7 +311,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
 
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
-                strLifestyleQualityType = objNode?.Attributes?["translate"].InnerText ?? strLifestyleQualityType;
+                strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
             objWriter.WriteElementString("lifestylequalitytype_english", _objLifestyleQualityType.ToString());
