@@ -354,6 +354,7 @@ Data Changes:
 - Fixed being able to get Harmonious Defense and Harmonious Reflection without the Way of Unified Mana (Hapsum-Do) Martial Art. Fixed being able to get Harmonious Reflection without already having Harmonious Defense.
 - Fixed being able to get Way of Unified Mana (Hapsum-Do), Mana Choke, and Mana Strike without a MAG rating.
 - Fixed Grenade Launchers and Missile Launchers not having their ranges properly displayed.
+- Added a set of custom rules that follows the house rules for ShadowNET, courtesy of /u/Malibi.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
