@@ -81,7 +81,7 @@ namespace Chummer.Backend.Shared_Methods
                 // Default case is each quality can only be taken once
                 if (string.IsNullOrWhiteSpace(strLimitString))
                 {
-                    if (objXmlNode.Name == "quality" || objXmlNode.Name == "cyberware" || objXmlNode.Name == "bioware")
+                    if (objXmlNode.Name == "quality" || objXmlNode.Name == "martialart" || objXmlNode.Name == "technique" || objXmlNode.Name == "cyberware" || objXmlNode.Name == "bioware")
                         strLimitString = "1";
                     else
                         strLimitString = "no";
@@ -502,6 +502,15 @@ namespace Chummer.Backend.Shared_Methods
                     // Character's initiate grade must be higher than or equal to the required value.
                     name = "\n\t" + LanguageManager.GetString("String_InitiateGrade") + " >= " + strNodeInnerText;
                     return character.InitiateGrade >= Convert.ToInt32(strNodeInnerText);
+                case "martialart":
+                    // Character needs a specific Martial Art.
+                    XmlNode martialArtDoc = XmlManager.Load("martialarts.xml");
+                    nameNode = martialArtDoc.SelectSingleNode($"/chummer/martialarts/martialart[name = \"{strNodeInnerText}\"]");
+                    name = nameNode["translate"] != null
+                        ? "\n\t" + nameNode["translate"].InnerText
+                        : "\n\t" + strNodeInnerText;
+                    name += $" ({LanguageManager.GetString("String_MartialArt")})";
+                    return character.MartialArts.Any(martialart => martialart.Name == strNodeInnerText);
                 case "martialtechnique":
                     // Character needs a specific Martial Arts technique.
                     XmlNode martialDoc = XmlManager.Load("martialarts.xml");

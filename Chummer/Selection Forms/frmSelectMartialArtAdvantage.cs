@@ -70,10 +70,13 @@ namespace Chummer
                     }
                 }
 
-                ListItem objItem = new ListItem();
-                objItem.Value = strAdvantageName;
-                objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
-                lstAdvantage.Add(objItem);
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = strAdvantageName;
+                    objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
+                    lstAdvantage.Add(objItem);
+                }
                 NotNewAdvantage:;
             }
             SortListItem objSort = new SortListItem();

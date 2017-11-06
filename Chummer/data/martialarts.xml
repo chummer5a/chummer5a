@@ -1638,6 +1638,14 @@
           <name>Neijia</name>
         </technique>
       </techniques>
+	  <required>
+		<allof>
+		  <attribute>
+			<name>MAG</name>
+			<total>1</total>
+		  </attribute>
+		</allof>
+	  </required>
       <source>FA</source>
       <page>101</page>
     </martialart>
@@ -2264,12 +2272,28 @@
       <name>Mana Choke</name>
       <source>FA</source>
       <page>102</page>
+	  <required>
+		<allof>
+		  <attribute>
+			<name>MAG</name>
+			<total>1</total>
+		  </attribute>
+		</allof>
+	  </required>
     </technique>
     <technique>
       <id>18400527-4b06-47fb-88fc-5d31100ae8d4</id>
       <name>Mana Strike</name>
       <source>FA</source>
       <page>102</page>
+	  <required>
+		<allof>
+		  <attribute>
+			<name>MAG</name>
+			<total>1</total>
+		  </attribute>
+		</allof>
+	  </required>
     </technique>
     <!-- End Region -->
   </techniques>

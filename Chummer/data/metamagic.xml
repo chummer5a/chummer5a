@@ -635,6 +635,11 @@
     <name>Harmonious Defense</name>
     <adept>yes</adept>
     <magician>yes</magician>
+	<required>
+	  <allof>
+	    <martialart>Way of Unified Mana (Hapsum-Do)</martialart>
+	  </allof>
+	</required>
     <source>FA</source>
     <page>46</page>
   </metamagic>
@@ -643,6 +648,12 @@
     <name>Harmonious Reflection</name>
     <adept>yes</adept>
     <magician>yes</magician>
+	<required>
+	  <allof>
+	    <martialart>Way of Unified Mana (Hapsum-Do)</martialart>
+		<metamagic>Harmonious Defense</metamagic>
+	  </allof>
+	</required>
     <source>FA</source>
     <page>46</page>
   </metamagic>

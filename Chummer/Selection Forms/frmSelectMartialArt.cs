@@ -65,7 +65,9 @@ namespace Chummer
             foreach (XmlNode objXmlArt in objArtList)
             {
                 XmlNode objXmlQuality = objXmlArt["quality"];
-                if ((_blnShowQualities && objXmlQuality != null) || (!_blnShowQualities && objXmlQuality == null))
+                if (_blnShowQualities != (objXmlQuality != null))
+                    continue;
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlArt["name"].InnerText;
