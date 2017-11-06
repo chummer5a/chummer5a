@@ -475,35 +475,40 @@ namespace Chummer
         /// <param name="blnHasIdentifier">Whether or not the amending node or any of its children have an identifier element ("id" and/or "name" element). Can safely use a dummy boolean if this is the first call in a recursion.</param>
         private static bool AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath, out bool blnHasIdentifier)
         {
-            XmlNode objAmendingNodeId = objAmendingNode["id"];
-            XmlNode objAmendingNodeName = objAmendingNode["name"];
-            XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
-            blnHasIdentifier = (objAmendingNodeId != null || objAmendingNodeName != null);
-            XmlNode objNodeToEdit = null;
-            string strNewXPath = strXPath;
-
             // Fetch the old node based on identifiers present in the amending node (id and/or name)
             string strFilter = string.Empty;
+            XmlNode objAmendingNodeId = objAmendingNode["id"];
             if (objAmendingNodeId != null)
                 strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + "\"";
+            XmlNode objAmendingNodeName = objAmendingNode["name"];
             if (objAmendingNodeName != null)
             {
                 if (!string.IsNullOrEmpty(strFilter))
                     strFilter += " and ";
                 strFilter += "name = \"" + objAmendingNode["name"].InnerText.Replace("&amp;", "&") + "\"";
             }
+            // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+            XmlNodeList objAmendingNodeExtraIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"yes\"]");
+            foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+            {
+                if (!string.IsNullOrEmpty(strFilter))
+                    strFilter += " and ";
+                strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + "\"";
+            }
             if (!string.IsNullOrEmpty(strFilter))
                 strFilter = "[" + strFilter + "]";
 
-            strNewXPath += "/" + objAmendingNode.Name + strFilter;
+            string strNewXPath = strXPath + "/" + objAmendingNode.Name + strFilter;
+            XmlNode objNodeToEdit = objDoc.SelectSingleNode(strNewXPath);
 
-            objNodeToEdit = objDoc.SelectSingleNode(strNewXPath);
+            blnHasIdentifier = (objAmendingNodeId != null || objAmendingNodeName != null || objAmendingNodeExtraIds.Count > 0);
+            XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
             // We don't want to edit a random element if we don't have an identifier, so select the one whose text matches our own if it exists.
             if (!blnHasIdentifier && objAmendingNodeAttribs?["requireinnertextmatch"]?.InnerText == "yes")
             {
                 blnHasIdentifier = true;
                 objNodeToEdit = null;
-                foreach (XmlNode objLoopNode in objDoc.SelectNodes(strNewXPath))
+                foreach (XmlNode objLoopNode in objDoc.SelectNodes(strXPath))
                 {
                     if (objLoopNode.Name == objAmendingNode.Name && objLoopNode.InnerText == objAmendingNode.InnerText)
                     {
@@ -540,7 +545,7 @@ namespace Chummer
                         objNodeToEditAttribs.RemoveAll();
                         foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
                         {
-                            if (objNewAttribute.Name != "requireinnertextmatch" && objNewAttribute.Name != "remove" && objNewAttribute.Name != "addifnotfound")
+                            if (objNewAttribute.Name != "requireinnertextmatch" && objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "remove" && objNewAttribute.Name != "addifnotfound")
                                 objNodeToEditAttribs.Append(objNewAttribute);
                         }
                     }
