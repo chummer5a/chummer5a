@@ -158,6 +158,21 @@ namespace Chummer.Backend.Shared_Methods
                             objListToCheck = objCharacter.CritterPowers;
                             break;
                         }
+                    case "martialart":
+                        {
+                            objListToCheck = objCharacter.MartialArts;
+                            break;
+                        }
+                    case "technique":
+                        {
+                            List <MartialArtAdvantage> objTempList = new List<MartialArtAdvantage>(objCharacter.MartialArts.Count);
+                            foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                            {
+                                objTempList.AddRange(objMartialArt.Advantages);
+                            }
+                            objListToCheck = objTempList;
+                            break;
+                        }
                     case "cyberware":
                     case "bioware":
                         {
