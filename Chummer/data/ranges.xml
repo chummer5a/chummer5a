@@ -141,7 +141,7 @@
       <extreme>1500</extreme>
     </range>
     <range>
-      <category>Grenade Launcher</category>
+      <category>Grenade Launchers</category>
       <min>5</min>
       <short>50</short>
       <medium>100</medium>
@@ -149,7 +149,7 @@
       <extreme>500</extreme>
     </range>
     <range>
-      <category>Missile Launcher</category>
+      <category>Missile Launchers</category>
       <min>20</min>
       <short>70</short>
       <medium>150</medium>

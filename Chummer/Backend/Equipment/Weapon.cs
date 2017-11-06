@@ -9,6 +9,7 @@ using Chummer.Skills;
 using Chummer.Backend.Extensions;
 using System.Drawing;
 using Chummer.Backend.Attributes;
+using System.Text;
 
 namespace Chummer.Backend.Equipment
 {
@@ -2686,24 +2687,22 @@ namespace Chummer.Backend.Equipment
                 return -1;
             }
             string strRange = objXmlCategoryNode[strFindRange].InnerText;
+            StringBuilder objRange = new StringBuilder(strRange);
+
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
+            {
+                int intLoopTotal = _objCharacter.GetAttribute(strAttribute).TotalValue;
+                if (strAttribute == "STR" && (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons"))
+                {
+                    intLoopTotal += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
+                }
+                objRange.Replace(strAttribute, intLoopTotal.ToString());
+            }
+            // Replace the division sign with "div" since we're using XPath.
+            objRange.Replace("/", " div ");
 
             XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-            int intSTR = _objCharacter.STR.TotalValue;
-            int intBOD = _objCharacter.BOD.TotalValue;
-
-            // If this is a Throwing Weapon, include the ThrowRange bonuses in the character's STR.
-            if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
-            {
-                intSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
-            }
-
-            strRange = strRange.Replace("STR", intSTR.ToString());
-            strRange = strRange.Replace("BOD", intBOD.ToString());
-
-            XPathExpression xprRange = nav.Compile(strRange);
-
-            double dblReturn = Convert.ToDouble(nav.Evaluate(xprRange).ToString(), GlobalOptions.InvariantCultureInfo) * _dblRangeMultiplier;
+            double dblReturn = Convert.ToDouble(nav.Evaluate(objRange.ToString()).ToString(), GlobalOptions.InvariantCultureInfo) * _dblRangeMultiplier;
             int intReturn = Convert.ToInt32(Math.Ceiling(dblReturn));
 
             return intReturn;
@@ -2785,11 +2784,11 @@ namespace Chummer.Backend.Equipment
 
                 Dictionary<string, string> retDictionary = new Dictionary<string, string>(8)
                 {
-                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin + 1).ToString() + "-" + intShort.ToString() },
+                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin).ToString() + "-" + intShort.ToString() },
                     { "medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString() + "-" + intMedium.ToString() },
                     { "long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString() + "-" + intLong.ToString() },
                     { "extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString() + "-" + intExtreme.ToString() },
-                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin + 1).ToString() + "-" + intAlternateShort.ToString() },
+                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin).ToString() + "-" + intAlternateShort.ToString() },
                     { "alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString() + "-" + intAlternateMedium.ToString() },
                     { "alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString() + "-" + intAlternateLong.ToString() },
                     { "alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString() + "-" + intAlternateExtreme.ToString() }
@@ -3174,7 +3173,7 @@ namespace Chummer.Backend.Equipment
                         else if (objLoopAvail.Item2.EndsWith('R') && strAvail != "F")
                             strAvail = "R";
                     }
-                    strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
+                    strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
                 }
                 XmlDocument objDummyDoc = new XmlDocument();
                 XPathNavigator objNav = objDummyDoc.CreateNavigator();

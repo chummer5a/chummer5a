@@ -213,6 +213,8 @@ Application Changes:
 - Fixed a bug where ritual spells could be taken as alchemical preparation recipes.
 - Added the ability to check for the presence of a Martial Art in a required/forbidden node.
 - Added the ability for Martial Arts and Martial Art Techniques to use required/forbidden nodes.
+- Chummer5 no longer adds 1 to the minimum entry of ranges.
+- Weapon range entries are now able to handle all attributes, and they are now able to process the "/" character as a division sign.
 
 Data Changes:
 
@@ -351,6 +353,7 @@ Data Changes:
 - Fixed incorrect references to some French character sheet names. Fixes #2020.
 - Fixed being able to get Harmonious Defense and Harmonious Reflection without the Way of Unified Mana (Hapsum-Do) Martial Art. Fixed being able to get Harmonious Reflection without already having Harmonious Defense.
 - Fixed being able to get Way of Unified Mana (Hapsum-Do), Mana Choke, and Mana Strike without a MAG rating.
+- Fixed Grenade Launchers and Missile Launchers not having their ranges properly displayed.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
