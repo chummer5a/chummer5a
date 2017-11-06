@@ -1687,7 +1687,6 @@
 			<name>Centaur Rear Leg</name>
 			<name operation="contains">Full Leg</name>
 			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Foot</name>
 			<name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
