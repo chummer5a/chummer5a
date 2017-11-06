@@ -215,6 +215,7 @@ Application Changes:
 - Added the ability for Martial Arts and Martial Art Techniques to use required/forbidden nodes.
 - Chummer5 no longer adds 1 to the minimum entry of ranges.
 - Weapon range entries are now able to handle all attributes, and they are now able to process the "/" character as a division sign.
+- Fixed the weapon select screen displaying a tooltip with placeholder text over all items except the source label. Fixes #2034.
 
 Data Changes:
 

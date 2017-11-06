@@ -422,7 +422,6 @@ namespace Chummer
             this.tabListView.Size = new System.Drawing.Size(538, 372);
             this.tabListView.TabIndex = 1;
             this.tabListView.Text = "List View";
-            this.tipTooltip.SetToolTip(this.tabListView, "Title_ListView");
             this.tabListView.UseVisualStyleBackColor = true;
             // 
             // chkHideOverAvailLimit
