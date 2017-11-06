@@ -46,7 +46,6 @@
           .mugshot {
           width: 100%;
           max-width: inherit;
-          max-width: 100%;
           object-fit: scale-down;
           }
           }
@@ -56,7 +55,6 @@
         .mugshot {
           width: 100%;
           max-width: inherit;
-          max-width: 100%;
           object-fit: scale-down;
           }
         </style>
@@ -78,11 +76,22 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Name"/>:</td>
               <td><xsl:value-of select="name"/></td>
-              <td rowspan="11" width="40%" align="center" style="text-align:center; vertical-align: middle; width: 40%; max-width: 40%; max-height: 100%;">
-                <xsl:if test="mainmugshotbase64 != ''">
-                  <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" />
-                </xsl:if>
-              </td>
+              <xsl:choose>
+                <xsl:when test="mainmugshotbase64 != ''">
+                  <td rowspan="11" width="40%" align="center" style="text-align:center; vertical-align: middle; width: 40%;">
+                    <table width="100%" style="cellpadding: 0; width: 100%;">
+                      <tr>
+                        <td style = "text-align: center; vertical-align: middle;">
+                          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" style="width: auto; max-height: 14em;" />
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </xsl:when>
+                <xsl:otherwise>
+                  <td rowspan="11"/>
+                </xsl:otherwise>
+                </xsl:choose>
             </tr>
             <tr>
               <td class="label"><xsl:value-of select="$lang.Alias"/>:</td>
