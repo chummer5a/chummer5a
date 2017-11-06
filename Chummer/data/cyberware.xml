@@ -1678,6 +1678,7 @@
           <condition>Only for Gymnastics (Jumping) and Running (Sprinting)</condition>
         </limitmodifier>
       </bonus>
+      <limit>no</limit>
       <rating>6</rating>
 	  <required>
         <parentdetails>
