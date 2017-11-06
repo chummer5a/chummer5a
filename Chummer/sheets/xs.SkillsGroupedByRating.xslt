@@ -98,16 +98,20 @@
 
   <xsl:template name="skills3">
     <xsl:variable name="sortedlanguageskills">
+      <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and rating = 0]">
+        <xsl:sort select="name" order="ascending" />
+        <xsl:copy-of select="current()"/>
+      </xsl:for-each>
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
-          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True']">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and rating != 0 and rating &gt;= $MinimumRating]">
             <xsl:sort select="skillcategory"/>
             <xsl:sort select="rating" order="descending" />
             <xsl:copy-of select="current()"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True']">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and rating != 0 and rating &gt;= $MinimumRating]">
             <xsl:sort select="rating" order="descending" />
             <xsl:copy-of select="current()"/>
           </xsl:for-each>
@@ -117,14 +121,14 @@
     <xsl:variable name="sortedknowledgeskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
-          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True']">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True' and rating &gt;= $MinimumRating]">
             <xsl:sort select="skillcategory"/>
             <xsl:sort select="rating" order="descending" />
             <xsl:copy-of select="current()"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True']">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True' and rating &gt;= $MinimumRating]">
             <xsl:sort select="rating" order="descending" />
             <xsl:copy-of select="current()"/>
           </xsl:for-each>

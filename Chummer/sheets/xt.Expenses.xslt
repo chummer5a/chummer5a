@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Karma and Nuyen expenses list-->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -14,7 +14,7 @@
         </xsl:if>
         <td><xsl:value-of select="date"/></td>
         <td/>
-        <td style="text-align:right">
+        <td style="text-align:right;white-space: nowrap;">
           <xsl:call-template name="fnx-fmt-nmbr">
             <xsl:with-param name="nmbr" select="amount"/>
           </xsl:call-template>

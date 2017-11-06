@@ -208,7 +208,7 @@
                 <td width="10%" class="upper">
                   <xsl:value-of select="$lang.Nuyen"/>:
                 </td>
-                <td width="10%">
+                <td width="10%" style="white-space: nowrap;">
                   <xsl:call-template name="fnx-fmt-nmbr">
                     <xsl:with-param name="nmbr" select="nuyen"/>
                   </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
@@ -2628,7 +2628,7 @@
             </tr>
             <xsl:call-template name="Expenses">
               <xsl:with-param name="type" select="'Nuyen'" />
-              <xsl:with-param name="sfx" select="' '" />
+              <xsl:with-param name="sfx" select="$lang.NuyenSymbol" />
             </xsl:call-template>
           </table>
           <xsl:call-template name="RowSummary">

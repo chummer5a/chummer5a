@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Character contacts -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -31,7 +31,7 @@
         <td style="text-align: center">
           <xsl:value-of select="baselifestyle"/>
         </td>
-        <td style="text-align: center">
+        <td style="text-align: center;white-space: nowrap;">
           <xsl:call-template name="fnx-fmt-nmbr">
             <xsl:with-param name="nmbr" select="totalmonthlycost"/>        
           </xsl:call-template>
