@@ -620,6 +620,7 @@ namespace Chummer
                 }
                 else
                 {
+                    decItemCost = Convert.ToDecimal(xmlCostElement.InnerText, GlobalOptions.InvariantCultureInfo);
                     decItemCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {
