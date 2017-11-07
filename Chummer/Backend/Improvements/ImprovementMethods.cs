@@ -297,6 +297,14 @@ namespace Chummer
                     return objImprovementAdder.initiation;
                 case "SUBMERSION":
                     return objImprovementAdder.submersion;
+                case "ADDMETAMAGIC":
+                    return objImprovementAdder.addmetamagic;
+                case "SELECTMETAMAGIC":
+                    return objImprovementAdder.selectmetamagic;
+                case "ADDECHO":
+                    return objImprovementAdder.addecho;
+                case "SELECTECHO":
+                    return objImprovementAdder.selectecho;
                 case "SKILLWIRE":
                     return objImprovementAdder.skillwire;
                 case "HARDWIRES":

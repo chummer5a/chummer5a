@@ -2755,7 +2755,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Grade.
+        /// Grade to which the Metamagic is tied. Negative if the Metamagic was added by an Improvement and not by an Initiation/Submersion.
         /// </summary>
         public Int32 Grade
         {

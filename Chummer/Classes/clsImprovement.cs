@@ -106,6 +106,8 @@ namespace Chummer
             Uncouth,
             Initiation,
             Submersion,
+            Metamagic,
+            Echo,
             Infirm,
             Skillwire,
             DamageResistance,
@@ -1439,6 +1441,15 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Submersion:
                         objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Metamagic:
+                    case Improvement.ImprovementType.Echo:
+                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
+                        if (objMetamagic != null)
+                        {
+                            RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
+                            objCharacter.Metamagics.Remove(objMetamagic);
+                        }
                         break;
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName);

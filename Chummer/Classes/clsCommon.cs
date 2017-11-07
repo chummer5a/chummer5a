@@ -2163,20 +2163,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clera all Initiation tab elements from the character.
+        /// Clear all Initiation tab elements from the character that were not added by improvements.
         /// </summary>
-        public static void ClearInitiationTab(Character objCharacter, TreeView treMetamagic)
+        public static void ClearInitiations(Character objCharacter)
         {
-            // Remove any Metamagic/Echo Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Echo);
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Metamagic);
-
             objCharacter.InitiateGrade = 0;
             objCharacter.SubmersionGrade = 0;
-            objCharacter.Metamagics.Clear();
             objCharacter.InitiationGrades.Clear();
-
-            treMetamagic.Nodes.Clear();
+            // Metamagics/Echoes can add addition bonus metamagics/echoes, so we cannot use foreach or RemoveAll()
+            for (int j = objCharacter.Metamagics.Count - 1; j >= 0; j--)
+            {
+                if (j < objCharacter.Metamagics.Count)
+                {
+                    Metamagic objToRemove = objCharacter.Metamagics[j];
+                    if (objToRemove.Grade >= 0)
+                    {
+                        // Remove the Improvements created by the Metamagic.
+                        ImprovementManager.RemoveImprovements(objCharacter, objToRemove.SourceType, objToRemove.InternalId);
+                        objCharacter.Metamagics.Remove(objToRemove);
+                    }
+                }
+            }
         }
         #endregion
 

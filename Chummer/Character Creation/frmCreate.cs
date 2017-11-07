@@ -259,8 +259,11 @@ namespace Chummer
             // Remove the Improvements Tab.
             tabCharacterTabs.TabPages.Remove(tabImprovements);
 
-            if ((!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled) || !_objOptions.AllowInitiationInCreateMode)
+            if (!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled)
+            {
+                CommonFunctions.ClearInitiations(_objCharacter);
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
+            }
             else
             {
                 if (_objCharacter.MAGEnabled)
@@ -284,6 +287,9 @@ namespace Chummer
                     treMetamagic.Top = cmdAddMetamagic.Top + cmdAddMetamagic.Height + 6;
                     cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
                 }
+                cmdAddMetamagic.Enabled = _objOptions.AllowInitiationInCreateMode;
+                if (!_objOptions.AllowInitiationInCreateMode)
+                    CommonFunctions.ClearInitiations(_objCharacter);
             }
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -1149,16 +1155,15 @@ namespace Chummer
                 */
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
-                {
                     UpdateInitiationCost();
-                    if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                    {
-                        tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                        tabInitiation.Text = LanguageManager.GetString("Tab_Initiation");
-                        cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade");
-                        chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation");
-                        chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal");
-                    }
+                if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
+                {
+                    tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+                    tabInitiation.Text = LanguageManager.GetString("Tab_Initiation");
+                    cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade");
+                    chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation");
+                    chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal");
+                    cmdAddMetamagic.Enabled = _objOptions.AllowInitiationInCreateMode;
                 }
 
                 if (!lstSpecialAttributes.Contains(_objCharacter.MAG))
@@ -1192,19 +1197,18 @@ namespace Chummer
                 // If the character options permit submersion in create mode, show the Initiation page.
                 */
                 if (_objOptions.AllowInitiationInCreateMode)
-                {
                     UpdateInitiationCost();
-                    if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                    {
-                        tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                        tabInitiation.Text = LanguageManager.GetString("Tab_Submersion");
-                        cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade");
-                        chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask");
-                        //TODO: Re-enable if Technomancers ever get the ability for Group and Schooling initiation bonuses.
-                        //chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion");
-                        chkInitiationGroup.Visible = false;
-                        chkInitiationSchooling.Visible = false;
-                    }
+                if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
+                {
+                    tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+                    tabInitiation.Text = LanguageManager.GetString("Tab_Submersion");
+                    cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade");
+                    chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask");
+                    //TODO: Re-enable if Technomancers ever get the ability for Group and Schooling initiation bonuses.
+                    //chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion");
+                    chkInitiationGroup.Visible = false;
+                    chkInitiationSchooling.Visible = false;
+                    cmdAddMetamagic.Enabled = _objOptions.AllowInitiationInCreateMode;
                 }
                 if (!lstSpecialAttributes.Contains(_objCharacter.RES))
                 {
@@ -2141,8 +2145,12 @@ namespace Chummer
             }
 
             // Refresh Metamagics and Echoes.
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+            // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+            for (int j = 0; j < _objCharacter.Metamagics.Count; j++)
             {
+                Metamagic objMetamagic = _objCharacter.Metamagics[j];
+                if (objMetamagic.Grade < 0)
+                    continue;
                 XmlNode objNode = objMetamagic.MyXmlNode;
                 if (objNode != null)
                 {
@@ -12597,7 +12605,7 @@ namespace Chummer
         /// </summary>
         private void ClearInitiationTab()
         {
-            CommonFunctions.ClearInitiationTab(_objCharacter, treMetamagic);
+            CommonFunctions.ClearInitiations(_objCharacter);
             UpdateInitiationGradeTree();
 
             _blnIsDirty = true;
@@ -13369,7 +13377,7 @@ namespace Chummer
 
             }
             // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+            foreach (Metamagic objMetamagic in _objCharacter.Metamagics.Where(x => x.Grade >= 0))
             {
                 if (objMetamagic.PaidWithKarma)
                     intInitiationPoints += _objOptions.KarmaMetamagic;
@@ -17296,14 +17304,14 @@ namespace Chummer
             }
 
             // If the character has Magician enabled, make sure a Tradition has been selected.
-            if (_objCharacter.MagicianEnabled && string.IsNullOrEmpty(_objCharacter.MagicTradition))
+            if (_objCharacter.MagicianEnabled && (string.IsNullOrEmpty(_objCharacter.MagicTradition) || _objCharacter.MagicTradition == "None"))
             {
                 blnValid = false;
                 strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidNoTradition");
             }
 
             // If the character has RES enabled, make sure a Stream has been selected.
-            if (_objCharacter.RESEnabled && string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
+            if (_objCharacter.RESEnabled && (string.IsNullOrEmpty(_objCharacter.TechnomancerStream) || _objCharacter.TechnomancerStream == "None"))
             {
                 blnValid = false;
                 strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidNoStream");
@@ -19207,6 +19215,22 @@ namespace Chummer
                     }
                 }
             }
+            foreach (Metamagic objMetamagic in _objCharacter.Metamagics.Where(x => x.Grade < 0))
+            {
+                string strName = string.Empty;
+                if (_objCharacter.MAGEnabled)
+                    strName = LanguageManager.GetString("Label_Metamagic") + " " + objMetamagic.DisplayName;
+                else
+                    strName = LanguageManager.GetString("Label_Echo") + " " + objMetamagic.DisplayName;
+                TreeNode nodMetamagic = treMetamagic.Nodes.Add(objMetamagic.InternalId, strName);
+                nodMetamagic.Tag = objMetamagic.InternalId;
+                nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
+                if (!string.IsNullOrEmpty(objMetamagic.Notes))
+                    nodMetamagic.ForeColor = Color.SaddleBrown;
+                else
+                    nodMetamagic.ForeColor = SystemColors.GrayText;
+                nodMetamagic.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
+            }
             treMetamagic.ExpandAll();
         }
 
@@ -21034,6 +21058,8 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(objMetamagic.Notes))
                     treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
+                else if (objMetamagic.Grade < 0)
+                    treMetamagic.SelectedNode.ForeColor = SystemColors.GrayText;
                 else
                     treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
                 treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);

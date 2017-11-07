@@ -2061,8 +2061,12 @@ namespace Chummer
             }
 
             // Refresh Metamagics and Echoes.
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+            // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+            for (int j = 0; j < _objCharacter.Metamagics.Count; j++)
             {
+                Metamagic objMetamagic = _objCharacter.Metamagics[j];
+                if (objMetamagic.Grade < 0)
+                    continue;
                 XmlNode objNode = objMetamagic.MyXmlNode;
                 if (objNode != null)
                 {
@@ -5556,6 +5560,11 @@ namespace Chummer
             {
                 if (treMetamagic.SelectedNode.Level == 0)
                 {
+                    // Locate the selected Metamagic.
+                    Metamagic objMetamagic = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Metamagics);
+                    if (objMetamagic.Grade < 0)
+                        return;
+
                     string strMessage = string.Empty;
                     if (_objCharacter.MAGEnabled)
                         strMessage = LanguageManager.GetString("Message_DeleteMetamagic");
@@ -5563,9 +5572,6 @@ namespace Chummer
                         strMessage = LanguageManager.GetString("Message_DeleteEcho");
                     if (!CommonFunctions.ConfirmDelete(_objCharacter, strMessage))
                         return;
-
-                    // Locate the selected Metamagic.
-                    Metamagic objMetamagic = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.Metamagics);
 
                     // Remove the Improvements created by the Metamagic.
                     ImprovementManager.RemoveImprovements(_objCharacter, objMetamagic.SourceType, objMetamagic.InternalId);
@@ -5581,7 +5587,7 @@ namespace Chummer
                     UpdateWindowTitle();
                 }
             }
-            }
+        }
 
         private void cmdKarmaGained_Click(object sender, EventArgs e)
         {
@@ -11029,7 +11035,7 @@ namespace Chummer
 
                                 // Remove the Grade from the character.
                                 _objCharacter.InitiationGrades.Remove(objGrade);
-                                _objCharacter.InitiateGrade--;
+                                _objCharacter.InitiateGrade -= 1;
 
                                 // Update any Metamagic Improvements the character might have.
                                 foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
@@ -11052,7 +11058,7 @@ namespace Chummer
 
                                 // Remove the Grade from the character.
                                 _objCharacter.InitiationGrades.Remove(objGrade);
-                                _objCharacter.SubmersionGrade--;
+                                _objCharacter.SubmersionGrade -= 1;
 
                                 List<Metamagic> lstMetamagic = new List<Metamagic>();
                                 foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
@@ -17954,7 +17960,7 @@ namespace Chummer
         /// </summary>
         private void ClearInitiationTab()
         {
-            CommonFunctions.ClearInitiationTab(_objCharacter, treMetamagic);
+            CommonFunctions.ClearInitiations(_objCharacter);
             UpdateInitiationGradeTree();
 
             _blnIsDirty = true;
@@ -22703,6 +22709,22 @@ namespace Chummer
                     }
                 }
             }
+            foreach (Metamagic objMetamagic in _objCharacter.Metamagics.Where(x => x.Grade < 0))
+            {
+                string strName = string.Empty;
+                if (_objCharacter.MAGEnabled)
+                    strName = LanguageManager.GetString("Label_Metamagic") + " " + objMetamagic.DisplayName;
+                else
+                    strName = LanguageManager.GetString("Label_Echo") + " " + objMetamagic.DisplayName;
+                TreeNode nodMetamagic = treMetamagic.Nodes.Add(objMetamagic.InternalId, strName);
+                nodMetamagic.Tag = objMetamagic.InternalId;
+                nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
+                if (!string.IsNullOrEmpty(objMetamagic.Notes))
+                    nodMetamagic.ForeColor = Color.SaddleBrown;
+                else
+                    nodMetamagic.ForeColor = SystemColors.GrayText;
+                nodMetamagic.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
+            }
             treMetamagic.ExpandAll();
             UpdateInitiationCost();
         }
@@ -24655,6 +24677,8 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(objMetamagic.Notes))
                         treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
+                    else if (objMetamagic.Grade < 0)
+                        treMetamagic.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
                     treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
