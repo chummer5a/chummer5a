@@ -18413,7 +18413,8 @@ namespace Chummer
             SuspendLayout();
             string strTip = string.Empty;
 
-            RedlinerCheck();
+            if (!_objCharacter.RefreshRedliner())
+                RefreshSelectedCyberware();
 
             decimal decESS = Math.Round(_objCharacter.Essence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             lblESSMax.Text = decESS.ToString(GlobalOptions.CultureInfo);

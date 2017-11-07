@@ -13501,7 +13501,8 @@ namespace Chummer
             string strTip = string.Empty;
 
             //Redliner/Cyber Singularity Seeker(hackish)
-            RedlinerCheck();
+            if (!_objCharacter.RefreshRedliner())
+                RefreshSelectedCyberware();
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
             //if (_objCharacter.IgnoreRules == true)
             //    nudNuyen.Maximum = _objCharacter.NuyenMaximumBP;

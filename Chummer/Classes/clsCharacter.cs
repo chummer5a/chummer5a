@@ -1787,6 +1787,7 @@ namespace Chummer
             }
             Timekeeper.Finish("load_char_mentorspiritfix");
 
+            RefreshRedliner();
             if (blnImprovementError)
                 MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"), LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -2711,6 +2712,7 @@ namespace Chummer
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
+            _intRedlinerBonus = 0;
             _intContactPoints = 0;
             _intContactPointsUsed = 0;
             _intKarma = 0;
@@ -2782,7 +2784,6 @@ namespace Chummer
             _lstQualities = new List<Quality>();
             _lstOldQualities = new List<string>();
             _lstCalendar = new List<CalendarWeek>();
-
 
             SkillsSection.Reset();
         }
@@ -7862,6 +7863,98 @@ namespace Chummer
         {
             get { return _intRedlinerBonus; }
             set { _intRedlinerBonus = value; }
+        }
+
+        /// <summary>
+        /// Refreshes Redliner and Cyber-Singularity Seeker. Returns false if RedlinerBonus has changed, otherwise returns true.
+        /// </summary>
+        /// <returns>False if RedlinerBonus has changed, True otherwise</returns>
+        public bool RefreshRedliner()
+        {
+            int intOldRedlinerBonus = RedlinerBonus;
+            string strSeekerImprovPrefix = "SEEKER";
+            var lstSeekerAttributes = new List<string>();
+            var lstSeekerImprovements = new List<Improvement>();
+            //Get attributes affected by redliner/cyber singularity seeker
+            foreach (Improvement objLoopImprovement in Improvements)
+            {
+                if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Seeker)
+                {
+                    lstSeekerAttributes.Add(objLoopImprovement.ImprovedName);
+                }
+                else if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
+                       objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
+                      objLoopImprovement.SourceName.Contains(strSeekerImprovPrefix))
+                {
+                    lstSeekerImprovements.Add(objLoopImprovement);
+                }
+            }
+
+            //if neither contains anything, it is safe to exit
+            if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+            {
+                RedlinerBonus = 0;
+                return intOldRedlinerBonus == 0;
+            }
+
+            //Calculate bonus from cyberlimbs
+            int count = 0;
+            foreach (Cyberware objCyberware in Cyberware)
+            {
+                count += objCyberware.CyberlimbCount;
+            }
+            count = Math.Min(count / 2, 2);
+            if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
+            {
+                RedlinerBonus = count;
+            }
+            else
+            {
+                RedlinerBonus = 0;
+            }
+
+            for (int i = 0; i < lstSeekerAttributes.Count; i++)
+            {
+                Improvement objImprove =
+                    lstSeekerImprovements.FirstOrDefault(
+                        x =>
+                            x.SourceName == strSeekerImprovPrefix + "_" + lstSeekerAttributes[i] &&
+                            x.Value == (lstSeekerAttributes[i] == "BOX" ? count * -3 : count));
+                if (objImprove != null)
+                {
+                    lstSeekerAttributes.RemoveAt(i);
+                    lstSeekerImprovements.Remove(objImprove);
+                    i--;
+                }
+            }
+            //Improvement manager defines the functions we need to manipulate improvements
+            //When the locals (someday) gets moved to this class, this can be removed and use
+            //the local
+
+            // Remove which qualites have been removed or which values have changed
+            foreach (Improvement improvement in lstSeekerImprovements)
+            {
+                ImprovementManager.RemoveImprovements(this, improvement.ImproveSource, improvement.SourceName);
+            }
+
+            // Add new improvements or old improvements with new values
+            foreach (string attribute in lstSeekerAttributes)
+            {
+                if (attribute == "BOX")
+                {
+                    ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
+                        strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.PhysicalCM,
+                        Guid.NewGuid().ToString(), count * -3);
+                }
+                else
+                {
+                    ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
+                        strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.Attribute,
+                        Guid.NewGuid().ToString(), count, 1, 0, 0, count);
+                }
+            }
+            ImprovementManager.Commit(this);
+            return intOldRedlinerBonus == RedlinerBonus;
         }
 
         public Version LastSavedVersion
