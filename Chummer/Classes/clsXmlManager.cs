@@ -481,11 +481,9 @@ namespace Chummer
             if (objAmendingNodeId != null)
                 strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + "\"";
             XmlNode objAmendingNodeName = objAmendingNode["name"];
-            if (objAmendingNodeName != null)
+            if (objAmendingNodeName != null && string.IsNullOrEmpty(strFilter))
             {
-                if (!string.IsNullOrEmpty(strFilter))
-                    strFilter += " and ";
-                strFilter += "name = \"" + objAmendingNode["name"].InnerText.Replace("&amp;", "&") + "\"";
+                strFilter = "name = \"" + objAmendingNodeName.InnerText.Replace("&amp;", "&") + "\"";
             }
             // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
             XmlNodeList objAmendingNodeExtraIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"yes\"]");
