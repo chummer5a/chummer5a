@@ -14116,9 +14116,6 @@ namespace Chummer
                 ctrl.FamilyChanged += objContact_OtherCostChanged;
                 ctrl.BlackmailChanged += objContact_OtherCostChanged;
 
-
-                ctrl.LoyaltyRating = ctrl.LoyaltyRating;
-                ctrl.ConnectionRating = ctrl.ConnectionRating;
                 panContacts.Controls.Add(ctrl);
             }
 

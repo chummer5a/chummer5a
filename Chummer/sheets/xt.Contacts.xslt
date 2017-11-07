@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Character contacts -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -66,6 +66,87 @@
         <td style="text-align: center"><xsl:value-of select="connection"/></td>
         <td style="text-align: center"><xsl:value-of select="loyalty"/></td>
       </tr>
+      <xsl:if test="metatype != '' or sex != '' or age != '' or preferredpayment != '' or hobbiesvice != '' or personallife != '' or contacttype != ''">
+      <tr>
+        <xsl:if test="position() mod 2 != 1">
+          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+        </xsl:if>
+        <td colspan="5" style="text-align: center; padding-left: 5em;">
+          <table>
+            <xsl:if test="metatype != ''">
+              <tr>
+                <td style="text-align: right; padding-right: 1em; width: 9em;">
+                  <xsl:value-of select="$lang.Metatype"/>: 
+                </td>
+                <td>
+                  <xsl:value-of select="metatype"/>
+                </td>
+              </tr>
+            </xsl:if>
+            <xsl:if test="sex != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 9em;">
+                <xsl:value-of select="$lang.Sex"/>: 
+              </td>
+              <td>
+                <xsl:value-of select="sex"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="age != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 9em;">
+                <xsl:value-of select="$lang.Age"/>: 
+              </td>
+              <td>
+                <xsl:value-of select="age"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="preferredpayment != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 9em;">
+                <xsl:value-of select="$lang.PreferredPayment"/>: 
+              </td>
+              <td>
+                <xsl:value-of select="preferredpayment"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="hobbiesvice != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 9em;">
+                <xsl:value-of select="$lang.HobbiesVice"/>: 
+              </td>
+              <td>
+                <xsl:value-of select="hobbiesvice"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="personallife != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 9em;">
+                <xsl:value-of select="$lang.PersonalLife"/>: 
+              </td>
+              <td>
+                <xsl:value-of select="personallife"/>
+              </td>
+            </tr>
+            </xsl:if>
+            <xsl:if test="contacttype != ''">
+            <tr>
+              <td style="text-align: right; padding-right: 1em; width: 9em;">
+                <xsl:value-of select="$lang.Type"/>: 
+              </td>
+              <td>
+                <xsl:value-of select="contacttype"/>
+              </td>
+            </tr>
+            </xsl:if>
+          </table>
+        </td>
+      </tr>
+      </xsl:if>
 
       <xsl:if test="notes != '' and $ProduceNotes">
         <tr>

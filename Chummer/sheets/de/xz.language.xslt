@@ -241,6 +241,7 @@
   <xsl:variable name="lang.DerivedAttributes"  select="'Abgeleitete Attribute'"/>
   <xsl:variable name="lang.DeviceRating"    select="'Gerätestufe'"/>
   <xsl:variable name="lang.FadingValue"    select="'Schwund'"/>
+  <xsl:variable name="lang.HobbiesVice"    select="'Hobbys/Untugend'"/>
   <xsl:variable name="lang.InitiateGrade"    select="'Initiationsgrad'"/>
   <xsl:variable name="lang.JudgeIntentions"  select="'Menschenkenntnis'"/>
   <xsl:variable name="lang.KnowledgeSkills"  select="'Wissensfertigkeiten'"/>
@@ -258,8 +259,10 @@
   <xsl:variable name="lang.OtherMugshots"    select="'Andere Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Seitenumbruch: '"/>
   <xsl:variable name="lang.PersonalData"    select="'Charakterdaten'"/>
+  <xsl:variable name="lang.PersonalLife"    select="'Privatleben'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'Körperliche Schadensleiste'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
+  <xsl:variable name="lang.PreferredPayment"    select="'Bevorzugte Zahlungsmethode'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'Primärer Arm'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Prominenz'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'Fernkampfwaffen'"/>

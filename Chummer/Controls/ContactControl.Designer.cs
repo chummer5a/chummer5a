@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class ContactControl
     {
@@ -50,6 +50,20 @@
             this.chkFamily = new System.Windows.Forms.CheckBox();
             this.lblConnection = new System.Windows.Forms.Label();
             this.lblLoyalty = new System.Windows.Forms.Label();
+            this.cboMetatype = new System.Windows.Forms.ComboBox();
+            this.cboSex = new System.Windows.Forms.ComboBox();
+            this.cboType = new System.Windows.Forms.ComboBox();
+            this.cboPreferredPayment = new System.Windows.Forms.ComboBox();
+            this.cboAge = new System.Windows.Forms.ComboBox();
+            this.cboHobbiesVice = new System.Windows.Forms.ComboBox();
+            this.cboPersonalLife = new System.Windows.Forms.ComboBox();
+            this.lblMetatype = new System.Windows.Forms.Label();
+            this.lblSex = new System.Windows.Forms.Label();
+            this.lblAge = new System.Windows.Forms.Label();
+            this.lblPersonalLife = new System.Windows.Forms.Label();
+            this.lblType = new System.Windows.Forms.Label();
+            this.lblPreferredPayment = new System.Windows.Forms.Label();
+            this.lblHobbiesVice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
             this.cmsContact.SuspendLayout();
@@ -59,7 +73,7 @@
             // 
             // nudConnection
             // 
-            this.nudConnection.Location = new System.Drawing.Point(75, 22);
+            this.nudConnection.Location = new System.Drawing.Point(70, 24);
             this.nudConnection.Maximum = new decimal(new int[] {
             12,
             0,
@@ -83,7 +97,7 @@
             // 
             // nudLoyalty
             // 
-            this.nudLoyalty.Location = new System.Drawing.Point(161, 22);
+            this.nudLoyalty.Location = new System.Drawing.Point(161, 24);
             this.nudLoyalty.Maximum = new decimal(new int[] {
             6,
             0,
@@ -107,7 +121,7 @@
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(416, -1);
+            this.cmdDelete.Location = new System.Drawing.Point(416, 0);
             this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(49, 23);
@@ -156,10 +170,15 @@
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
@@ -195,7 +214,7 @@
             // 
             this.cmdExpand.FlatAppearance.BorderSize = 0;
             this.cmdExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmdExpand.Image = global::Chummer.Properties.Resources.Expand;
+            this.cmdExpand.Image = global::Chummer.Properties.Resources.Collapse;
             this.cmdExpand.Location = new System.Drawing.Point(468, 1);
             this.cmdExpand.Margin = new System.Windows.Forms.Padding(0);
             this.cmdExpand.Name = "cmdExpand";
@@ -207,7 +226,7 @@
             // imgNotes
             // 
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(233, 24);
+            this.imgNotes.Location = new System.Drawing.Point(233, 25);
             this.imgNotes.Name = "imgNotes";
             this.imgNotes.Size = new System.Drawing.Size(16, 16);
             this.imgNotes.TabIndex = 10;
@@ -217,7 +236,7 @@
             // imgLink
             // 
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(207, 24);
+            this.imgLink.Location = new System.Drawing.Point(207, 25);
             this.imgLink.Name = "imgLink";
             this.imgLink.Size = new System.Drawing.Size(16, 16);
             this.imgLink.TabIndex = 6;
@@ -227,7 +246,7 @@
             // chkGroup
             // 
             this.chkGroup.AutoSize = true;
-            this.chkGroup.Location = new System.Drawing.Point(256, 24);
+            this.chkGroup.Location = new System.Drawing.Point(256, 25);
             this.chkGroup.Name = "chkGroup";
             this.chkGroup.Size = new System.Drawing.Size(55, 17);
             this.chkGroup.TabIndex = 12;
@@ -238,7 +257,7 @@
             // chkFree
             // 
             this.chkFree.AutoSize = true;
-            this.chkFree.Location = new System.Drawing.Point(311, 24);
+            this.chkFree.Location = new System.Drawing.Point(311, 25);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(47, 17);
             this.chkFree.TabIndex = 13;
@@ -258,7 +277,7 @@
             // lblLine
             // 
             this.lblLine.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblLine.Location = new System.Drawing.Point(0, 40);
+            this.lblLine.Location = new System.Drawing.Point(0, 145);
             this.lblLine.Name = "lblLine";
             this.lblLine.Size = new System.Drawing.Size(490, 2);
             this.lblLine.TabIndex = 15;
@@ -267,7 +286,7 @@
             // chkBlackmail
             // 
             this.chkBlackmail.AutoSize = true;
-            this.chkBlackmail.Location = new System.Drawing.Point(360, 24);
+            this.chkBlackmail.Location = new System.Drawing.Point(360, 25);
             this.chkBlackmail.Name = "chkBlackmail";
             this.chkBlackmail.Size = new System.Drawing.Size(71, 17);
             this.chkBlackmail.TabIndex = 16;
@@ -278,7 +297,7 @@
             // chkFamily
             // 
             this.chkFamily.AutoSize = true;
-            this.chkFamily.Location = new System.Drawing.Point(439, 24);
+            this.chkFamily.Location = new System.Drawing.Point(439, 25);
             this.chkFamily.Name = "chkFamily";
             this.chkFamily.Size = new System.Drawing.Size(55, 17);
             this.chkFamily.TabIndex = 17;
@@ -289,7 +308,7 @@
             // lblConnection
             // 
             this.lblConnection.AutoSize = true;
-            this.lblConnection.Location = new System.Drawing.Point(3, 24);
+            this.lblConnection.Location = new System.Drawing.Point(0, 26);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(64, 13);
             this.lblConnection.TabIndex = 18;
@@ -299,18 +318,179 @@
             // lblLoyalty
             // 
             this.lblLoyalty.AutoSize = true;
-            this.lblLoyalty.Location = new System.Drawing.Point(115, 26);
+            this.lblLoyalty.Location = new System.Drawing.Point(112, 26);
             this.lblLoyalty.Name = "lblLoyalty";
             this.lblLoyalty.Size = new System.Drawing.Size(43, 13);
             this.lblLoyalty.TabIndex = 19;
             this.lblLoyalty.Tag = "Label_Contact_Loyalty";
             this.lblLoyalty.Text = "Loyalty:";
             // 
+            // cboMetatype
+            // 
+            this.cboMetatype.FormattingEnabled = true;
+            this.cboMetatype.Location = new System.Drawing.Point(128, 47);
+            this.cboMetatype.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboMetatype.Name = "cboMetatype";
+            this.cboMetatype.Size = new System.Drawing.Size(120, 21);
+            this.cboMetatype.TabIndex = 20;
+            this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
+            // 
+            // cboSex
+            // 
+            this.cboSex.FormattingEnabled = true;
+            this.cboSex.Location = new System.Drawing.Point(128, 72);
+            this.cboSex.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboSex.Name = "cboSex";
+            this.cboSex.Size = new System.Drawing.Size(120, 21);
+            this.cboSex.TabIndex = 21;
+            this.cboSex.TextChanged += new System.EventHandler(this.cboSex_TextChanged);
+            // 
+            // cboType
+            // 
+            this.cboType.FormattingEnabled = true;
+            this.cboType.Location = new System.Drawing.Point(360, 47);
+            this.cboType.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboType.Name = "cboType";
+            this.cboType.Size = new System.Drawing.Size(120, 21);
+            this.cboType.TabIndex = 22;
+            this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
+            // 
+            // cboPreferredPayment
+            // 
+            this.cboPreferredPayment.FormattingEnabled = true;
+            this.cboPreferredPayment.Location = new System.Drawing.Point(360, 72);
+            this.cboPreferredPayment.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboPreferredPayment.Name = "cboPreferredPayment";
+            this.cboPreferredPayment.Size = new System.Drawing.Size(120, 21);
+            this.cboPreferredPayment.TabIndex = 23;
+            this.cboPreferredPayment.TextChanged += new System.EventHandler(this.cboPreferredPayment_TextChanged);
+            // 
+            // cboAge
+            // 
+            this.cboAge.FormattingEnabled = true;
+            this.cboAge.Location = new System.Drawing.Point(128, 97);
+            this.cboAge.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboAge.Name = "cboAge";
+            this.cboAge.Size = new System.Drawing.Size(120, 21);
+            this.cboAge.TabIndex = 24;
+            this.cboAge.TextChanged += new System.EventHandler(this.cboAge_TextChanged);
+            // 
+            // cboHobbiesVice
+            // 
+            this.cboHobbiesVice.FormattingEnabled = true;
+            this.cboHobbiesVice.Location = new System.Drawing.Point(360, 97);
+            this.cboHobbiesVice.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboHobbiesVice.Name = "cboHobbiesVice";
+            this.cboHobbiesVice.Size = new System.Drawing.Size(120, 21);
+            this.cboHobbiesVice.TabIndex = 25;
+            this.cboHobbiesVice.TextChanged += new System.EventHandler(this.cboHobbiesVice_TextChanged);
+            // 
+            // cboPersonalLife
+            // 
+            this.cboPersonalLife.FormattingEnabled = true;
+            this.cboPersonalLife.Location = new System.Drawing.Point(128, 122);
+            this.cboPersonalLife.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboPersonalLife.Name = "cboPersonalLife";
+            this.cboPersonalLife.Size = new System.Drawing.Size(120, 21);
+            this.cboPersonalLife.TabIndex = 26;
+            this.cboPersonalLife.TextChanged += new System.EventHandler(this.cboPersonalLife_TextChanged);
+            // 
+            // lblMetatype
+            // 
+            this.lblMetatype.AutoSize = true;
+            this.lblMetatype.Location = new System.Drawing.Point(67, 50);
+            this.lblMetatype.Name = "lblMetatype";
+            this.lblMetatype.Size = new System.Drawing.Size(54, 13);
+            this.lblMetatype.TabIndex = 27;
+            this.lblMetatype.Tag = "Label_Metatype";
+            this.lblMetatype.Text = "Metatype:";
+            this.lblMetatype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblSex
+            // 
+            this.lblSex.AutoSize = true;
+            this.lblSex.Location = new System.Drawing.Point(93, 75);
+            this.lblSex.Name = "lblSex";
+            this.lblSex.Size = new System.Drawing.Size(28, 13);
+            this.lblSex.TabIndex = 28;
+            this.lblSex.Tag = "Label_Sex";
+            this.lblSex.Text = "Sex:";
+            this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblAge
+            // 
+            this.lblAge.AutoSize = true;
+            this.lblAge.Location = new System.Drawing.Point(92, 100);
+            this.lblAge.Name = "lblAge";
+            this.lblAge.Size = new System.Drawing.Size(29, 13);
+            this.lblAge.TabIndex = 29;
+            this.lblAge.Tag = "Label_Age";
+            this.lblAge.Text = "Age:";
+            this.lblAge.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblPersonalLife
+            // 
+            this.lblPersonalLife.AutoSize = true;
+            this.lblPersonalLife.Location = new System.Drawing.Point(50, 125);
+            this.lblPersonalLife.Name = "lblPersonalLife";
+            this.lblPersonalLife.Size = new System.Drawing.Size(71, 13);
+            this.lblPersonalLife.TabIndex = 30;
+            this.lblPersonalLife.Tag = "Label_Contact_PersonalLife";
+            this.lblPersonalLife.Text = "Personal Life:";
+            this.lblPersonalLife.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblType
+            // 
+            this.lblType.AutoSize = true;
+            this.lblType.Location = new System.Drawing.Point(320, 50);
+            this.lblType.Name = "lblType";
+            this.lblType.Size = new System.Drawing.Size(34, 13);
+            this.lblType.TabIndex = 31;
+            this.lblType.Tag = "Label_Type";
+            this.lblType.Text = "Type:";
+            this.lblType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblPreferredPayment
+            // 
+            this.lblPreferredPayment.AutoSize = true;
+            this.lblPreferredPayment.Location = new System.Drawing.Point(257, 75);
+            this.lblPreferredPayment.Name = "lblPreferredPayment";
+            this.lblPreferredPayment.Size = new System.Drawing.Size(97, 13);
+            this.lblPreferredPayment.TabIndex = 32;
+            this.lblPreferredPayment.Tag = "Label_Contact_PreferredPayment";
+            this.lblPreferredPayment.Text = "Preferred Payment:";
+            this.lblPreferredPayment.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblHobbiesVice
+            // 
+            this.lblHobbiesVice.AutoSize = true;
+            this.lblHobbiesVice.Location = new System.Drawing.Point(279, 100);
+            this.lblHobbiesVice.Name = "lblHobbiesVice";
+            this.lblHobbiesVice.Size = new System.Drawing.Size(75, 13);
+            this.lblHobbiesVice.TabIndex = 33;
+            this.lblHobbiesVice.Tag = "Label_Contact_HobbiesVice";
+            this.lblHobbiesVice.Text = "Hobbies/Vice:";
+            this.lblHobbiesVice.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // ContactControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.lblHobbiesVice);
+            this.Controls.Add(this.lblPreferredPayment);
+            this.Controls.Add(this.lblType);
+            this.Controls.Add(this.lblPersonalLife);
+            this.Controls.Add(this.lblAge);
+            this.Controls.Add(this.lblSex);
+            this.Controls.Add(this.lblMetatype);
+            this.Controls.Add(this.cboPersonalLife);
+            this.Controls.Add(this.cboHobbiesVice);
+            this.Controls.Add(this.cboAge);
+            this.Controls.Add(this.cboPreferredPayment);
+            this.Controls.Add(this.cboType);
+            this.Controls.Add(this.cboSex);
+            this.Controls.Add(this.cboMetatype);
             this.Controls.Add(this.lblLoyalty);
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.chkFamily);
@@ -330,7 +510,7 @@
             this.Controls.Add(this.cboContactRole);
             this.MinimumSize = new System.Drawing.Size(490, 22);
             this.Name = "ContactControl";
-            this.Size = new System.Drawing.Size(492, 44);
+            this.Size = new System.Drawing.Size(492, 147);
             this.Load += new System.EventHandler(this.ContactControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).EndInit();
@@ -366,5 +546,19 @@
         private System.Windows.Forms.CheckBox chkFamily;
         private System.Windows.Forms.Label lblConnection;
         private System.Windows.Forms.Label lblLoyalty;
+        private System.Windows.Forms.ComboBox cboMetatype;
+        private System.Windows.Forms.ComboBox cboSex;
+        private System.Windows.Forms.ComboBox cboType;
+        private System.Windows.Forms.ComboBox cboPreferredPayment;
+        private System.Windows.Forms.ComboBox cboAge;
+        private System.Windows.Forms.ComboBox cboHobbiesVice;
+        private System.Windows.Forms.ComboBox cboPersonalLife;
+        private System.Windows.Forms.Label lblMetatype;
+        private System.Windows.Forms.Label lblSex;
+        private System.Windows.Forms.Label lblAge;
+        private System.Windows.Forms.Label lblPersonalLife;
+        private System.Windows.Forms.Label lblType;
+        private System.Windows.Forms.Label lblPreferredPayment;
+        private System.Windows.Forms.Label lblHobbiesVice;
     }
 }

@@ -220,6 +220,7 @@ Application Changes:
 - Fixed a problem with specialisations not being able to be purchased if you didn't have the exact amount of Karma required.
 - If a name and an id element are both specified inside an override node, then the name element is only used as an addition identifier if it has the "isidnode" attribute set to "yes". Also added support for using any elements as identifiers in override nodes, again using the "isidnode" attribute and setting it to "yes". Fixes #2038.
 - Cyber-singularity Seeker and Redliner will now properly update when the character is loaded, and adding or removing Redliner will automatically update labels for the currently selected cyberlimb. Fixes #2036.
+- Added the ability to specify metatype, age, sex, personal life, service type, hobbies/vice, and preferred payment method to contacts. Any non-blank fields out of those seven will get printed in any character sheet using a template from the Shadowrun 5 collection.
 
 Data Changes:
 
@@ -417,6 +418,9 @@ New Strings:
 - String_Nightly
 - String_Update_Available
 - Button_ChangeMountedLocation
+- Label_Contact_PersonalLife
+- Label_Contact_PreferredPayment
+- Label_Contact_HobbiesVice
 
 Changes Strings:
 - Message_PositiveQualityLimit

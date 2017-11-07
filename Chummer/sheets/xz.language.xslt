@@ -241,6 +241,7 @@
   <xsl:variable name="lang.DerivedAttributes"  select="'Derived Attributes'"/>
   <xsl:variable name="lang.DeviceRating"    select="'Rating'"/>
   <xsl:variable name="lang.FadingValue"    select="'Fading Value'"/>
+  <xsl:variable name="lang.HobbiesVice"    select="'Hobbies/Vice'"/>
   <xsl:variable name="lang.InitiateGrade"    select="'Initiate Grade'"/>
   <xsl:variable name="lang.JudgeIntentions"  select="'Judge Intentions'"/>
   <xsl:variable name="lang.KnowledgeSkills"  select="'Knowledge Skills'"/>
@@ -258,8 +259,10 @@
   <xsl:variable name="lang.OtherMugshots"    select="'Other Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.PersonalData"    select="'Personal Data'"/>
+  <xsl:variable name="lang.PersonalLife"    select="'Personal Life'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'Physical Damage Track'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
+  <xsl:variable name="lang.PreferredPayment"    select="'Preferred Payment Method'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'Primary Arm'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Public Awareness'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'Ranged Weapons'"/>

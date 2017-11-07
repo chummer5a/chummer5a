@@ -5305,6 +5305,18 @@ Do you want to continue?</text>
       <key>Label_Contact_Loyalty</key>
       <text>Loyalty:</text>
     </string>
+	<string>
+      <key>Label_Contact_PersonalLife</key>
+      <text>Personal Life:</text>
+    </string>
+	<string>
+      <key>Label_Contact_PreferredPayment</key>
+      <text>Preferred Payment:</text>
+    </string>
+	<string>
+      <key>Label_Contact_HobbiesVice</key>
+      <text>Hobbies/Vice:</text>
+    </string>
     <string>
       <key>Label_Contact_Group</key>
       <text>Group:</text>

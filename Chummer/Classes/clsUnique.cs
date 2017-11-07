@@ -4622,6 +4622,13 @@ namespace Chummer
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
+        private string _strMetatype = string.Empty;
+        private string _strSex = string.Empty;
+        private string _strAge = string.Empty;
+        private string _strType = string.Empty;
+        private string _strPreferredPayment = string.Empty;
+        private string _strHobbiesVice = string.Empty;
+        private string _strPersonalLife = string.Empty;
 
         private string _strGroupName = string.Empty;
         private ContactType _objContactType = ContactType.Contact;
@@ -4674,6 +4681,13 @@ namespace Chummer
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("connection", _intConnection.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("loyalty", _intLoyalty.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("metatype", _strMetatype);
+            objWriter.WriteElementString("sex", _strSex);
+            objWriter.WriteElementString("age", _strAge);
+            objWriter.WriteElementString("contacttype", _strType);
+            objWriter.WriteElementString("preferredpayment", _strPreferredPayment);
+            objWriter.WriteElementString("hobbiesvice", _strHobbiesVice);
+            objWriter.WriteElementString("personallife", _strPersonalLife);
             objWriter.WriteElementString("type", _objContactType.ToString());
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
@@ -4706,8 +4720,15 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             objNode.TryGetInt32FieldQuickly("connection", ref _intConnection);
             objNode.TryGetInt32FieldQuickly("loyalty", ref _intLoyalty);
+            objNode.TryGetStringFieldQuickly("metatype", ref _strMetatype);
+            objNode.TryGetStringFieldQuickly("sex", ref _strSex);
+            objNode.TryGetStringFieldQuickly("age", ref _strAge);
+            objNode.TryGetStringFieldQuickly("contacttype", ref _strType);
+            objNode.TryGetStringFieldQuickly("preferredpayment", ref _strPreferredPayment);
+            objNode.TryGetStringFieldQuickly("hobbiesvice", ref _strHobbiesVice);
+            objNode.TryGetStringFieldQuickly("personallife", ref _strPersonalLife);
             if (objNode["type"] != null)
-            _objContactType = ConvertToContactType(objNode["type"].InnerText);
+                _objContactType = ConvertToContactType(objNode["type"].InnerText);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
@@ -4742,6 +4763,13 @@ namespace Chummer
             else
                 objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
             objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
+            objWriter.WriteElementString("metatype", _strMetatype);
+            objWriter.WriteElementString("sex", _strSex);
+            objWriter.WriteElementString("age", _strAge);
+            objWriter.WriteElementString("contacttype", _strType);
+            objWriter.WriteElementString("preferredpayment", _strPreferredPayment);
+            objWriter.WriteElementString("hobbiesvice", _strHobbiesVice);
+            objWriter.WriteElementString("personallife", _strPersonalLife);
             objWriter.WriteElementString("type", LanguageManager.GetString("String_" + _objContactType.ToString()));
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
@@ -4820,6 +4848,111 @@ namespace Chummer
         {
             get => _intLoyalty;
             set => _intLoyalty = value;
+        }
+
+        /// <summary>
+        /// Metatype of this Contact.
+        /// </summary>
+        public string Metatype
+        {
+            get
+            {
+                return _strMetatype;
+            }
+            set
+            {
+                _strMetatype = value;
+            }
+        }
+
+        /// <summary>
+        /// Gender of this Contact.
+        /// </summary>
+        public string Sex
+        {
+            get
+            {
+                return _strSex;
+            }
+            set
+            {
+                _strSex = value;
+            }
+        }
+
+        /// <summary>
+        /// How old is this Contact.
+        /// </summary>
+        public string Age
+        {
+            get
+            {
+                return _strAge;
+            }
+            set
+            {
+                _strAge = value;
+            }
+        }
+
+        /// <summary>
+        /// What type of Contact is this.
+        /// </summary>
+        public string Type
+        {
+            get
+            {
+                return _strType;
+            }
+            set
+            {
+                _strType = value;
+            }
+        }
+
+        /// <summary>
+        /// Preferred payment method of this Contact.
+        /// </summary>
+        public string PreferredPayment
+        {
+            get
+            {
+                return _strPreferredPayment;
+            }
+            set
+            {
+                _strPreferredPayment = value;
+            }
+        }
+
+        /// <summary>
+        /// Hobbies/Vice of this Contact.
+        /// </summary>
+        public string HobbiesVice
+        {
+            get
+            {
+                return _strHobbiesVice;
+            }
+            set
+            {
+                _strHobbiesVice = value;
+            }
+        }
+
+        /// <summary>
+        /// Personal Life of this Contact.
+        /// </summary>
+        public string PersonalLife
+        {
+            get
+            {
+                return _strPersonalLife;
+            }
+            set
+            {
+                _strPersonalLife = value;
+            }
         }
 
         /// <summary>

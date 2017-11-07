@@ -500,20 +500,6 @@ namespace Chummer
                     objContactControl.BlackmailChanged += objContact_OtherCostChanged;
                     
                     objContactControl.ContactObject = objContact;
-                    objContactControl.ContactName = objContact.Name;
-                    objContactControl.ContactLocation = objContact.Location;
-                    objContactControl.ContactRole = objContact.Role;
-                    objContactControl.ConnectionRating = objContact.Connection;
-                    objContactControl.LoyaltyRating = objContact.Loyalty;
-                    objContactControl.EntityType = objContact.EntityType;
-                    objContactControl.BackColor = objContact.Colour;
-                    objContactControl.IsGroup = objContact.IsGroup;
-                    objContactControl.Blackmail = objContact.Blackmail;
-                    objContactControl.Family = objContact.Family;
-                    if (objContact.MadeMan)
-                    {
-                        objContactControl.IsGroup = objContact.MadeMan;
-                    }
 
                     objContactControl.Top = intContact * objContactControl.Height;
                     panContacts.Controls.Add(objContactControl);
@@ -18378,9 +18364,6 @@ namespace Chummer
                 ctrl.BlackmailChanged += objContact_OtherCostChanged;
                 ctrl.FamilyChanged += objContact_OtherCostChanged;
 
-
-                ctrl.LoyaltyRating = ctrl.LoyaltyRating;
-                ctrl.ConnectionRating = ctrl.ConnectionRating;
                 panContacts.Controls.Add(ctrl);
             }
             foreach (Control contact in panContacts.Controls)

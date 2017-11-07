@@ -241,6 +241,7 @@
   <xsl:variable name="lang.DerivedAttributes"  select="'Derived Attributes'"/>
   <xsl:variable name="lang.DeviceRating"    select="'DR'"/>
   <xsl:variable name="lang.FadingValue"    select="'衰褪值'"/>
+  <xsl:variable name="lang.HobbiesVice"    select="'Hobbies/Vice'"/>
   <xsl:variable name="lang.InitiateGrade"    select="'启蒙阶层'"/>
   <xsl:variable name="lang.JudgeIntentions"  select="'察言观色'"/>
   <xsl:variable name="lang.KnowledgeSkills"  select="'知识技能'"/>
@@ -258,8 +259,10 @@
   <xsl:variable name="lang.OtherMugshots"    select="'其他肖像'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.PersonalData"    select="'个人信息'"/>
+  <xsl:variable name="lang.PersonalLife"    select="'Personal Life'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'物理伤害'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
+  <xsl:variable name="lang.PreferredPayment"    select="'Preferred Payment Method'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'利手'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'名气'"/>
   <xsl:variable name="lang.RangedWeapons"    select="'远程武器'"/>
