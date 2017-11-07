@@ -150,11 +150,15 @@ namespace Chummer
                                     string strFilter = string.Empty;
                                     if (objType["id"] != null)
                                         strFilter = "id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\"";
-                                    if (objType["name"] != null)
+                                    else if (objType["name"] != null)
+                                        strFilter = "name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"";
+                                    // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
+                                    XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"yes\"]");
+                                    foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
                                             strFilter += " and ";
-                                        strFilter += "name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"";
+                                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + "\"";
                                     }
                                     if (!string.IsNullOrEmpty(strFilter))
                                     {
