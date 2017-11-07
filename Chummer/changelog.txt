@@ -216,6 +216,7 @@ Application Changes:
 - Chummer5 no longer adds 1 to the minimum entry of ranges.
 - Weapon range entries are now able to handle all attributes, and they are now able to process the "/" character as a division sign.
 - Fixed the weapon select screen displaying a tooltip with placeholder text over all items except the source label. Fixes #2034.
+- Fixed a crash when removing cyberware that doesn't exist in data XMLs.
 
 Data Changes:
 

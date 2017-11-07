@@ -4193,7 +4193,7 @@ namespace Chummer
                     }
 
                     // Fix for legacy characters with old addqualities improvements.
-                    if (objXmlCyberware["addqualities"] != null)
+                    if (objXmlCyberware?["addqualities"] != null)
                     {
                         RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities);
                     }
@@ -6206,7 +6206,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            if (objXmlDeleteQuality["addqualities"] != null)
+            if (objXmlDeleteQuality?["addqualities"] != null)
             {
                 RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"), treQualities);
             }
