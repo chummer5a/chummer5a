@@ -512,7 +512,7 @@ namespace Chummer.Skills
             if (IsKnowledgeSkill)
                 price = CharacterObject.Options.KarmaKnowledgeSpecialization;
 
-            if (price < CharacterObject.Karma)
+            if (price > CharacterObject.Karma)
                 return;
 
             //If data file contains {4} this crashes but...

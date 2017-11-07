@@ -217,6 +217,7 @@ Application Changes:
 - Weapon range entries are now able to handle all attributes, and they are now able to process the "/" character as a division sign.
 - Fixed the weapon select screen displaying a tooltip with placeholder text over all items except the source label. Fixes #2034.
 - Fixed a crash when removing cyberware that doesn't exist in data XMLs.
+- Fixed a problem with specialisations not being able to be purchased if you didn't have the exact amount of Karma required.
 
 Data Changes:
 
