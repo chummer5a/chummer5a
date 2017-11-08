@@ -1963,11 +1963,12 @@ namespace Chummer.Backend.Equipment
 
                 XmlDocument objXmlDocument = new XmlDocument();
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strCost = strCostExpression.Replace("Gear Cost", decGearCost.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Parent Cost", string.IsNullOrEmpty(strParentCost) ? "0" : strParentCost);
-                XPathExpression xprCost = nav.Compile(strCost);
+                StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
+                objCost.Replace("Gear Cost", decGearCost.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.Replace("Parent Cost", string.IsNullOrEmpty(strParentCost) ? "0" : strParentCost);
+                XPathExpression xprCost = nav.Compile(objCost.ToString());
                 // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 decReturn = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
                 return decReturn;
