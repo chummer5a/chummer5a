@@ -103,7 +103,19 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
             WeaponMount mount = new WeaponMount(_character, _vehicle);
-		}
+            WeaponMountOption option = new WeaponMountOption();
+            option.Create(cboControl.SelectedValue.ToString());
+            mount.WeaponMountOptions.Add(option);
+            option = new WeaponMountOption();
+            option.Create(cboFlexibility.SelectedValue.ToString());
+            mount.WeaponMountOptions.Add(option);
+            option = new WeaponMountOption();
+            option.Create(cboSize.SelectedValue.ToString());
+            mount.WeaponMountOptions.Add(option);
+            option = new WeaponMountOption();
+            option.Create(cboVisibility.SelectedValue.ToString());
+            mount.WeaponMountOptions.Add(option);
+        }
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{

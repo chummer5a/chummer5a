@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
@@ -490,13 +491,18 @@ namespace Chummer.Backend.Equipment
 		/// Vehicle that the Mod is attached to. 
 		/// </summary>
 		public Vehicle Parent { internal get; set; }
-		#endregion
 
-		#region Complex Properties
-		/// <summary>
-		/// Total Availablility of the VehicleMod.
-		/// </summary>
-		public string TotalAvail
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<WeaponMountOption> WeaponMountOptions { get; set; }
+        #endregion
+
+        #region Complex Properties
+        /// <summary>
+        /// Total Availablility of the VehicleMod.
+        /// </summary>
+        public string TotalAvail
 		{
 			get
 			{
@@ -596,8 +602,8 @@ namespace Chummer.Backend.Equipment
 				return strReturn;
 			}
 		}
-		#endregion
-	}
+        #endregion
+    }
 
     public class WeaponMountOption
     {
