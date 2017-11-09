@@ -221,7 +221,7 @@ Application Changes:
 - If a name and an id element are both specified inside an override node, then the name element is only used as an addition identifier if it has the "isidnode" attribute set to "yes". Also added support for using any elements as identifiers in override nodes, again using the "isidnode" attribute and setting it to "yes". Fixes #2038.
 - Cyber-singularity Seeker and Redliner will now properly update when the character is loaded, and adding or removing Redliner will automatically update labels for the currently selected cyberlimb. Fixes #2036.
 - Added the ability to specify metatype, age, sex, personal life, service type, hobbies/vice, and preferred payment method to contacts. Any non-blank fields out of those seven will get printed in any character sheet using a template from the Shadowrun 5 collection.
-- Added the ability to add gear to armor mods. For now, this is only used by Full Body Armor helmet.
+- Added the ability to add gear to armor mods. For now, this is only used by Full Body Armor helmet. Fixes #2043.
 
 Data Changes:
 
