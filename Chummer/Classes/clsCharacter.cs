@@ -6202,30 +6202,26 @@ namespace Chummer
         {
             get
             {
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                {
-                    return "Special";
-                }
                 if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
                 {
                     string strReturn = string.Empty;
                     XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
-                    XmlNode variant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]/metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
                     XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+                    XmlNode variant = meta?.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
 
-                    strReturn = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
+                    _strMovement = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
                     _strRun = variant?["run"]?.InnerText ?? meta?["run"]?.InnerText ?? string.Empty;
                     _strWalk = variant?["walk"]?.InnerText ?? meta?["walk"]?.InnerText ?? string.Empty;
                     _strSprint = variant?["sprint"]?.InnerText ?? meta?["sprint"]?.InnerText ?? string.Empty;
 
-                    _strRunAlt = variant?["run"]?.Attributes["alt"]?.InnerText ?? meta?["run"].Attributes["alt"]?.InnerText ?? string.Empty;
-                    _strWalkAlt = variant?["walk"]?.Attributes["alt"]?.InnerText ?? meta?["walk"].Attributes["alt"]?.InnerText ?? string.Empty;
-                    _strSprintAlt = variant?["sprint"]?.Attributes["alt"]?.InnerText ?? meta?["sprint"].Attributes["alt"]?.InnerText ?? string.Empty;
-                    if (strReturn == "Special")
-                    {
-                        return "Special";
-                    }
+                    _strRunAlt = variant?["run"]?.Attributes?["alt"]?.InnerText ?? meta?["run"]?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                    _strWalkAlt = variant?["walk"]?.Attributes?["alt"]?.InnerText ?? meta?["walk"]?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                    _strSprintAlt = variant?["sprint"]?.Attributes?["alt"]?.InnerText ?? meta?["sprint"]?.Attributes?["alt"]?.InnerText ?? string.Empty;
+                }
+                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+                if (_strMovement == "Special")
+                {
+                    return "Special";
                 }
 
                 return CalculatedMovement("Ground", true);
