@@ -2274,6 +2274,10 @@ namespace Chummer
                     {
                         strOutdatedItems += objMod.DisplayName + "\n";
                     }
+                    foreach (Gear objGear in objMod.Gear)
+                    {
+                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor, ref strOutdatedItems);
+                    }
                 }
 
                 foreach (Gear objGear in objArmor.Gear)
@@ -4420,7 +4424,16 @@ namespace Chummer
                         TreeNode nodChildNode = new TreeNode();
                         nodChildNode.Text = objChild.DisplayName;
                         nodChildNode.Tag = objChild.InternalId;
-                        nodChildNode.ContextMenuStrip = cmsArmorMod;
+                        nodChildNode.ContextMenuStrip = string.IsNullOrEmpty(objChild.GearCapacity) ? cmsArmorMod : cmsArmorGear;
+                        foreach (Gear objChildGear in objChild.Gear)
+                        {
+                            TreeNode nodChildGearNode = new TreeNode();
+                            nodChildGearNode.Text = objChildGear.DisplayName;
+                            nodChildGearNode.Tag = objChildGear.InternalId;
+                            nodChildGearNode.ContextMenuStrip = cmsArmorGear;
+                            nodChildNode.Nodes.Add(nodChildGearNode);
+                            nodChildNode.Expand();
+                        }
                         nodNewNode.Nodes.Add(nodChildNode);
                         nodNewNode.Expand();
                     }
@@ -6496,7 +6509,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Armor objArmor = new Armor(_objCharacter);
 
-            objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating, objWeapons);
+            objArmor.Create(objXmlArmor, objNode, cmsArmorMod, cmsArmorGear, frmPickArmor.Rating, objWeapons);
             objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
             if (objArmor.InternalId == Guid.Empty.ToString())
                 return;
@@ -6571,6 +6584,17 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
                             if (objMod.WirelessOn && objMod.WirelessBonus != null)
                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, false, objMod.Rating, objMod.DisplayNameShort);
+                            // Add the Improvements from any Gear in the Armor.
+                            foreach (Gear objGear in objMod.Gear)
+                            {
+                                if (objGear.Equipped)
+                                {
+                                    if (objGear.Bonus != null)
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                }
+                            }
                         }
                     }
                     // Add the Improvements from any Gear in the Armor.
@@ -6609,6 +6633,12 @@ namespace Chummer
                     {
                         if (objMod.Bonus != null || (objMod.WirelessOn && objMod.WirelessBonus != null))
                             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                        // Remove any Improvements from any Gear in the Armor.
+                        foreach (Gear objGear in objMod.Gear)
+                        {
+                            if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
+                                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                        }
                     }
                     // Remove any Improvements from any Gear in the Armor.
                     foreach (Gear objGear in objArmor.Gear)
@@ -6895,9 +6925,9 @@ namespace Chummer
             if (Convert.ToInt32(objXmlArmor["maxrating"].InnerText) > 1)
                 intRating = frmPickArmorMod.SelectedRating;
 
-            objMod.Create(objXmlArmor, objNode, intRating, lstWeapons, lstWeaponNodes);
+            objMod.Create(objXmlArmor, objNode, cmsArmorGear, intRating, lstWeapons, lstWeaponNodes);
             objMod.Parent = objArmor;
-            objNode.ContextMenuStrip = cmsArmorMod;
+            objNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
             if (objMod.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -7868,7 +7898,7 @@ namespace Chummer
         private void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level != 1)
+            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7890,14 +7920,19 @@ namespace Chummer
             }
 
             // Make sure the selected item is another piece of Gear.
+            ArmorMod objMod = null;
             Gear objGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
             if (objGear == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                objMod = CommonFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+                if (objMod == null || string.IsNullOrEmpty(objMod.GearCapacity))
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
 
-            bool blnAddAgain = PickArmorGear();
+            bool blnAddAgain = PickArmorGear(objMod != null);
             if (blnAddAgain)
                 tsArmorGearAddAsPlugin_Click(sender, e);
         }
@@ -10736,6 +10771,17 @@ namespace Chummer
                                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
                                 if (objMod.WirelessOn && objMod.WirelessBonus != null)
                                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, false, objMod.Rating, objMod.DisplayNameShort);
+                                // Add the Improvements from any Gear in the Armor.
+                                foreach (Gear objGear in objMod.Gear)
+                                {
+                                    if (objGear.Equipped)
+                                    {
+                                        if (objGear.Bonus != null)
+                                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                        if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                    }
+                                }
                             }
                         }
                         // Add the Improvements from any Gear in the Armor.
@@ -10760,6 +10806,12 @@ namespace Chummer
                         {
                             if (objMod.Bonus != null || (objMod.WirelessOn && objMod.WirelessBonus != null))
                                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                            // Remove any Improvements from any Gear in the Armor.
+                            foreach (Gear objGear in objMod.Gear)
+                            {
+                                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
+                                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            }
                         }
                         // Remove any Improvements from any Gear in the Armor.
                         foreach (Gear objGear in objArmor.Gear)
@@ -10798,14 +10850,15 @@ namespace Chummer
                 }
 
                 Armor objFoundArmor = null;
-                Gear objGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor);
+                ArmorMod objFoundArmorMod = null;
+                Gear objGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objFoundArmor, out objFoundArmorMod);
                 if (objGear != null)
                 {
                     objGear.Equipped = chkArmorEquipped.Checked;
                     if (chkArmorEquipped.Checked)
                     {
                         // Add the Gear's Improevments to the character.
-                        if (objFoundArmor.Equipped)
+                        if (objFoundArmor.Equipped && (objFoundArmorMod == null || objFoundArmorMod.Equipped))
                         {
                             if (objGear.Bonus != null)
                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
@@ -14556,6 +14609,8 @@ namespace Chummer
                         else
                             lblArmorCapacity.Text = "[1]";
                     }
+                    if (!string.IsNullOrEmpty(objSelectedMod.GearCapacity))
+                        lblArmorCapacity.Text = objSelectedMod.GearCapacity + "/" + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("N2", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                     lblArmorCost.Text = $"{objSelectedMod.TotalCost:###,###,##0.##¥}";
 
                     string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
@@ -14582,22 +14637,29 @@ namespace Chummer
                 }
                 else
                 {
-                    Gear objSelectedGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+                    Gear objSelectedGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor, out objSelectedMod);
 
                     if (objSelectedGear.IncludedInParent)
                         cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = string.Empty;
                     lblArmorAvail.Text = objSelectedGear.TotalAvail(true);
-                    if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
-                        lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                    else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
-                        lblArmorCapacity.Text = "[0]";
-                    else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)
+                    if (objSelectedMod != null)
                     {
-                        if (objSelectedGear.Rating > 0)
-                            lblArmorCapacity.Text = "[" + objSelectedGear.Rating.ToString() + "]";
-                        else
-                            lblArmorCapacity.Text = "[1]";
+                        lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
+                    }
+                    else
+                    {
+                        if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
+                            lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
+                        else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                            lblArmorCapacity.Text = "[0]";
+                        else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)
+                        {
+                            if (objSelectedGear.Rating > 0)
+                                lblArmorCapacity.Text = "[" + objSelectedGear.Rating.ToString() + "]";
+                            else
+                                lblArmorCapacity.Text = "[1]";
+                        }
                     }
                     try
                     {
@@ -15593,21 +15655,15 @@ namespace Chummer
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         private bool PickArmorGear(bool blnShowArmorCapacityOnly = false)
         {
-            bool blnNullParent = true;
             Gear objSelectedGear = null;
-            Armor objSelectedArmor = null;
-
-            foreach (Armor objArmor in _objCharacter.Armor)
-            {
-                if (objArmor.InternalId == treArmor.SelectedNode.Tag.ToString())
-                    objSelectedArmor = objArmor;
-            }
+            Armor objSelectedArmor = CommonFunctions.FindById(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+            ArmorMod objSelectedMod = null;
 
             if (treArmor.SelectedNode.Level > 1)
             {
-                objSelectedGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
-                if (objSelectedGear != null)
-                    blnNullParent = false;
+                objSelectedGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor, out objSelectedMod);
+                if (objSelectedGear == null)
+                    objSelectedMod = CommonFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
             }
 
             // Open the Gear XML file and locate the selected Gear.
@@ -15616,44 +15672,35 @@ namespace Chummer
             bool blnFakeCareerMode = false;
             if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
                 blnFakeCareerMode = true;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlGear ?? objSelectedArmor.MyXmlNode);
+            XmlNode objXmlParentNode = objXmlGear;
+            if (objXmlParentNode == null && objSelectedMod != null)
+                objXmlParentNode = objSelectedMod.MyXmlNode;
+            if (objXmlParentNode == null)
+                objXmlParentNode = objSelectedArmor.MyXmlNode;
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlParentNode);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
-            frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
+            if (objSelectedMod != null)
+                frmPickGear.CapacityDisplayStyle = CapacityStyle.Standard;
+            else
+                frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
             if (treArmor.SelectedNode != null)
             {
-                if (treArmor.SelectedNode.Level > 1)
+                if (objXmlParentNode?.InnerXml.Contains("<addoncategory>") == true)
                 {
-                    if (objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
-                    {
-                        string strCategories = string.Empty;
-                        foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
-                            strCategories += objXmlCategory.InnerText + ",";
-                        // Remove the trailing comma.
-                        if (strCategories.Length > 0)
-                            strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                        frmPickGear.AllowedCategories = strCategories;
-                    }
-
-                    // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                    if (!objSelectedGear.Capacity.Contains('['))
-                        frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+                    string strCategories = string.Empty;
+                    foreach (XmlNode objXmlCategory in objXmlParentNode.SelectNodes("addoncategory"))
+                        strCategories += objXmlCategory.InnerText + ",";
+                    // Remove the trailing comma.
+                    if (strCategories.Length > 0)
+                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
+                    frmPickGear.AllowedCategories = strCategories;
                 }
-                else if (treArmor.SelectedNode.Level == 1)
-                {
-                    // Open the Armor XML file and locate the selected Gear.
-                    objXmlGear = objSelectedArmor.MyXmlNode;
 
-                    if (objXmlGear?.InnerXml.Contains("<addoncategory>") == true)
-                    {
-                        string strCategories = string.Empty;
-                        foreach (XmlNode objXmlCategory in objXmlGear.SelectNodes("addoncategory"))
-                            strCategories += objXmlCategory.InnerText + ",";
-                        // Remove the trailing comma.
-                        if (strCategories.Length > 0)
-                            strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                        frmPickGear.AllowedCategories = strCategories;
-                    }
-                }
+                // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
+                if (objSelectedGear?.Capacity.Contains('[') == false)
+                    frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+                else if (objSelectedMod != null)
+                    frmPickGear.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
             }
             frmPickGear.ShowDialog(this);
 
@@ -15691,7 +15738,7 @@ namespace Chummer
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return false;
 
-            if (!blnNullParent)
+            if (objSelectedGear != null)
                 objNewGear.Parent = objSelectedGear;
 
             // Reduce the cost for Do It Yourself components.
@@ -15720,7 +15767,7 @@ namespace Chummer
             {
                 foreach (Gear objCharacterGear in _objCharacter.Gear)
                 {
-                    if (objCharacterGear.Name == objNewGear.Name && objCharacterGear.Category == objNewGear.Category && objCharacterGear.Rating == objNewGear.Rating && objCharacterGear.Extra == objNewGear.Extra)
+                    if (objNewGear.IsIdenticalToOtherGear(objCharacterGear))
                     {
                         // A match was found, so increase the quantity instead.
                         objCharacterGear.Quantity += objNewGear.Quantity;
@@ -15747,11 +15794,7 @@ namespace Chummer
                 objNode.ContextMenuStrip = cmsArmorGear;
                 treArmor.SelectedNode.Nodes.Add(objNode);
                 treArmor.SelectedNode.Expand();
-                if (string.IsNullOrEmpty(objSelectedGear?.Name))
-                {
-                    objSelectedArmor.Gear.Add(objNewGear);
-                }
-                else
+                if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                 {
                     objSelectedGear.Children.Add(objNewGear);
                     Commlink objCommlink = objSelectedGear as Commlink;
@@ -15759,6 +15802,14 @@ namespace Chummer
                     {
                         objCommlink.RefreshCyberdeckArray();
                     }
+                }
+                else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
+                {
+                    objSelectedMod.Gear.Add(objNewGear);
+                }
+                else
+                {
+                    objSelectedArmor.Gear.Add(objNewGear);
                 }
 
                 // Select the node that was just added.
@@ -17462,6 +17513,10 @@ namespace Chummer
                         intRestrictedCount++;
                         strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
                     }
+                    foreach (Gear objGear in objMod.Gear.Where(objGear => !objGear.IncludedInParent))
+                    {
+                        CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                    }
                 }
 
                 foreach (Gear objGear in objArmor.Gear.Where(objGear => !objGear.IncludedInParent))
@@ -18606,7 +18661,7 @@ namespace Chummer
                     {
                         intArmorRating = Convert.ToInt32(objXmlArmor["rating"].InnerText);
                     }
-                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, intArmorRating, objWeapons, false, blnCreateChildren);
+                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, cmsArmorGear, intArmorRating, objWeapons, false, blnCreateChildren);
                     _objCharacter.Armor.Add(objArmor);
 
                     // Look for Armor Mods.
@@ -18622,8 +18677,8 @@ namespace Chummer
                             int intRating = 0;
                             if (objXmlMod["rating"] != null)
                                 intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
-                            objMod.Create(objXmlModNode, objModNode, intRating, lstWeapons, lstWeaponNodes);
-                            objModNode.ContextMenuStrip = cmsArmorMod;
+                            objMod.Create(objXmlModNode, objModNode, cmsArmorGear, intRating, lstWeapons, lstWeaponNodes);
+                            objModNode.ContextMenuStrip = cmsArmorGear;
                             objMod.Parent = objArmor;
 
                             objArmor.ArmorMods.Add(objMod);

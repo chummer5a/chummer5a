@@ -62,7 +62,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Rating of the item.</param>
         /// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
-        public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
+        public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
             objXmlArmorNode.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
@@ -184,7 +184,7 @@ namespace Chummer.Backend.Equipment
 
                         TreeNode objModNode = new TreeNode();
 
-                        objMod.Create(objXmlMod, objModNode, intRating, lstWeapons, lstWeaponNodes, blnSkipCost);
+                        objMod.Create(objXmlMod, objModNode, cmsArmorGear, intRating, lstWeapons, lstWeaponNodes, blnSkipCost);
                         objMod.Parent = this;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
@@ -192,7 +192,7 @@ namespace Chummer.Backend.Equipment
                         objMod.MaximumRating = objMod.Rating;
                         _lstArmorMods.Add(objMod);
 
-                        objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
                         objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
@@ -218,7 +218,7 @@ namespace Chummer.Backend.Equipment
                         objMod.MaximumRating = objMod.Rating;
                         _lstArmorMods.Add(objMod);
 
-                        objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
                         objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
@@ -247,7 +247,7 @@ namespace Chummer.Backend.Equipment
 
                         TreeNode objModNode = new TreeNode();
 
-                        objMod.Create(objXmlMod, objModNode, intRating, lstWeapons, lstWeaponNodes, blnSkipCost, blnSkipSelectForms);
+                        objMod.Create(objXmlMod, objModNode, cmsArmorGear, intRating, lstWeapons, lstWeaponNodes, blnSkipCost, blnSkipSelectForms);
                         objMod.Parent = this;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
@@ -255,7 +255,7 @@ namespace Chummer.Backend.Equipment
                         objMod.MaximumRating = objMod.Rating;
                         _lstArmorMods.Add(objMod);
 
-                        objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
                         objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();
@@ -281,7 +281,7 @@ namespace Chummer.Backend.Equipment
                         objMod.MaximumRating = objMod.Rating;
                         _lstArmorMods.Add(objMod);
 
-                        objModNode.ContextMenuStrip = cmsArmorMod;
+                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
                         objModNode.ForeColor = SystemColors.GrayText;
                         objNode.Nodes.Add(objModNode);
                         objNode.Expand();

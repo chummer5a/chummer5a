@@ -132,7 +132,7 @@ namespace Chummer
             Armor objArmor = new Armor(_objCharacter);
             TreeNode objNode = new TreeNode();
             List<Weapon> lstWeapons = new List<Weapon>();
-            objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
+            objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
 
             lblArmor.Text = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
             lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
@@ -440,7 +440,7 @@ namespace Chummer
                             TreeNode objNode = new TreeNode();
                             Armor objArmor = new Armor(_objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();
-                            objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
+                            objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
 
                             string strArmorGuid = objArmor.SourceID.ToString();
                             string strArmorName = objArmor.DisplayName;
@@ -569,7 +569,7 @@ namespace Chummer
             Armor objArmor = new Armor(_objCharacter);
             TreeNode objNode = new TreeNode();
             List<Weapon> lstWeapons = new List<Weapon>();
-            objArmor.Create(objXmlArmor, objNode, null, 0, lstWeapons, true, true, true);
+            objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
 
             // Check for a Variable Cost.
             XmlElement xmlCostElement = objXmlArmor["cost"];

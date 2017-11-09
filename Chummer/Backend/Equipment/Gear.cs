@@ -1841,12 +1841,12 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }
-                else if (string.IsNullOrEmpty(_strCapacity))
+                else if (string.IsNullOrEmpty(strReturn))
                     return "0";
                 if (!string.IsNullOrEmpty(strSecondHalf))
                     strReturn += "/" + strSecondHalf;
                 decimal decReturn;
-                if (decimal.TryParse(_strCapacity, out decReturn))
+                if (decimal.TryParse(strReturn, out decReturn))
                     return decReturn.ToString("N2", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
                 return strReturn;

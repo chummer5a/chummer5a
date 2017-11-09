@@ -3088,7 +3088,8 @@
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
 	  <maxrating>1</maxrating>
-      <armorcapacity>[0]/6</armorcapacity>
+      <armorcapacity>[0]</armorcapacity>
+	  <gearcapacity>6</gearcapacity>
       <avail>0</avail>
       <cost>500</cost>
       <source>SR5</source>

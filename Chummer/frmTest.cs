@@ -340,7 +340,7 @@ namespace Chummer
                     TreeNode objTempNode = new TreeNode();
                     Armor objTemp = new Armor(objCharacter);
                     List<Weapon> objWeapons = new List<Weapon>();
-                    objTemp.Create(objXmlGear, objTempNode, null, 0, objWeapons);
+                    objTemp.Create(objXmlGear, objTempNode, null, null, 0, objWeapons);
                     try
                     {
                         decimal objValue = objTemp.TotalCost;
@@ -391,7 +391,7 @@ namespace Chummer
                     ArmorMod objTemp = new ArmorMod(objCharacter);
                     List<Weapon> lstWeaopns = new List<Weapon>();
                     List<TreeNode> lstNodes = new List<TreeNode>();
-                    objTemp.Create(objXmlGear, objTempNode, 1, lstWeaopns, lstNodes);
+                    objTemp.Create(objXmlGear, objTempNode, null, 1, lstWeaopns, lstNodes);
                     try
                     {
                         string objValue = objTemp.TotalAvail;

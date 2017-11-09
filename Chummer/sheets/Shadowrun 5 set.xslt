@@ -1696,6 +1696,29 @@
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="rating"/>
               </xsl:if>
+              <xsl:if test="gears/gear">
+                (
+                <xsl:for-each select="gears/gear">
+                  <xsl:sort select="name"/>
+                  <xsl:value-of select="name"/>
+                  <xsl:if test="rating != 0">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.Rating"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="rating"/>
+                  </xsl:if>
+                  <xsl:if test="children/gear">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.with"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="gearplugin">
+                      <xsl:with-param name="gear" select="."/>
+                    </xsl:call-template>
+                  </xsl:if>
+                  <xsl:if test="last() &gt; 1">; </xsl:if>
+                </xsl:for-each>
+                )
+              </xsl:if>
               <xsl:if test="last() &gt; 1">; </xsl:if>
             </xsl:for-each>
           </td>
