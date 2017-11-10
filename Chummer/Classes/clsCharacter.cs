@@ -1081,16 +1081,20 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
                 {
-                    Mugshots.Add(objXmlMugshot.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    if (!string.IsNullOrWhiteSpace(objXmlMugshot.InnerText))
+                    {
+                        Mugshots.Add(objXmlMugshot.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    }
                 }
             }
             if (Mugshots.Count == 0)
             {
                 XmlNode objOldMugshotNode = objXmlDocument.SelectSingleNode("/character/mugshot");
                 if (objOldMugshotNode != null)
-                {
-                    Mugshots.Add(objOldMugshotNode.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
-                }
+                    if (!string.IsNullOrWhiteSpace(objOldMugshotNode.InnerText))
+                    {
+                        Mugshots.Add(objOldMugshotNode.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    }
             }
             objXmlCharacter.TryGetStringFieldQuickly("sex", ref _strSex);
             objXmlCharacter.TryGetStringFieldQuickly("age", ref _strAge);
