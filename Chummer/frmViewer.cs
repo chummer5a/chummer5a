@@ -465,11 +465,14 @@ namespace Chummer
 
                 string languageName = node.InnerText;
 
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.GetFileNameWithoutExtension(filePath);
-                objItem.Name = languageName;
+                if (GetXslFilesFromLocalDirectory(Path.GetFileNameWithoutExtension(filePath).ToString()).Count > 0)
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = Path.GetFileNameWithoutExtension(filePath);
+                    objItem.Name = languageName;
 
-                lstLanguages.Add(objItem);
+                    lstLanguages.Add(objItem);
+                }
             }
 
             SortListItem objSort = new SortListItem();
