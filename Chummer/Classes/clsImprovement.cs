@@ -510,10 +510,11 @@ namespace Chummer
             set
             {
                 if (Enabled)
+                {
                     ImprovementManager.ClearCachedValue(_objImprovementType);
+                    ImprovementManager.ClearCachedValue(value);
+                }
                 _objImprovementType = value;
-                if (Enabled)
-                    ImprovementManager.ClearCachedValue(_objImprovementType);
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using TheArtOfDev.HtmlRenderer.WinForms;
@@ -12,7 +13,8 @@ namespace Chummer
 {
     public partial class frmCharacterRoster : Form
     {
-        List<CharacterCache> lstCharacterCache = new List<CharacterCache>();
+        List<CharacterCache> _lstCharacterCache = new List<CharacterCache>();
+        private object _lstCharacterCacheLock = new object();
         HtmlToolTip tipTooltip = new HtmlToolTip();
 
         public frmCharacterRoster()
@@ -37,36 +39,24 @@ namespace Chummer
             MoveControls();
         }
 
-
         private void LoadCharacters()
         {
-            TreeNode objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) {Tag = "Favourite"};
-            TreeNode objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) {Tag = "Recent"};
-            TreeNode objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) {Tag = "Watch"};
-            bool blnAddRecent = true;
-            bool blnAddFavourite = true;
-            bool blnAddWatch = true;
-            foreach (string strFile in GlobalOptions.ReadMRUList("stickymru").Where(File.Exists) )
+            List<string> lstFavorites = GlobalOptions.ReadMRUList("stickymru");
+            TreeNode objFavouriteNode = null;
+            if (lstFavorites.Count > 0)
             {
-                if (blnAddFavourite)
-                {
-                    treCharacterList.Nodes.Add(objFavouriteNode);
-
-                    blnAddFavourite = false;
-                }
-                CacheCharacter(strFile, objFavouriteNode);
+                objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) { Tag = "Favourite" };
             }
 
-            foreach (string strFile in GlobalOptions.ReadMRUList().Where(File.Exists))
+            List<string> lstRecents = GlobalOptions.ReadMRUList();
+            TreeNode objRecentNode = null;
+            if (lstRecents.Count > 0)
             {
-                if (blnAddRecent)
-                {
-                    treCharacterList.Nodes.Add(objRecentNode);
-                    blnAddRecent = false;
-                }
-                CacheCharacter(strFile, objRecentNode);
+                objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) { Tag = "Recent" };
             }
 
+            List<string> lstWatch = new List<string>();
+            TreeNode objWatchNode = null;
             if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
                 string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath);
@@ -75,27 +65,38 @@ namespace Chummer
                 {
                     foreach (string strFile in objFiles.Where(strFile => strFile.EndsWith(".chum5")))
                     {
-                        var cache = lstCharacterCache.FirstOrDefault(objCache => objCache.FilePath == strFile);
-                        if (cache != null)
+                        CharacterCache objCachedCharacter = _lstCharacterCache.FirstOrDefault(x => x.FilePath == strFile);
+                        if (objCachedCharacter != null)
                         {
                             foreach (TreeNode rootNode in treCharacterList.Nodes)
                             {
-                                if (rootNode.Nodes.Cast<TreeNode>().Any(childNode => Convert.ToInt32(childNode.Tag) == lstCharacterCache.IndexOf(cache)))
+                                if (rootNode.Nodes.Cast<TreeNode>().Any(childNode => Convert.ToInt32(childNode.Tag) == _lstCharacterCache.IndexOf(objCachedCharacter)))
                                 {
-                                    goto Loaded;
+                                    goto CharacterAlreadyLoaded;
                                 }
                             }
                         }
-                        if (blnAddWatch)
-                        {
-                            treCharacterList.Nodes.Add(objWatchNode);
-                            blnAddWatch = false;
-                        }
-                        CacheCharacter(strFile, objWatchNode);
-                        Loaded:;
+                        lstWatch.Add(strFile);
+                        CharacterAlreadyLoaded:;
                     }
                 }
             }
+            if (lstWatch.Count > 0)
+            {
+                objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
+            }
+
+            Parallel.Invoke(
+                () => { if (objFavouriteNode != null) Parallel.ForEach(lstFavorites, strFile => CacheCharacter(strFile, objFavouriteNode)); },
+                () => { if (objRecentNode != null) Parallel.ForEach(lstRecents, strFile => CacheCharacter(strFile, objRecentNode)); },
+                () => { if (objWatchNode != null) Parallel.ForEach(lstWatch, strFile => CacheCharacter(strFile, objWatchNode)); }
+                );
+            if (objFavouriteNode != null)
+                treCharacterList.Nodes.Add(objFavouriteNode);
+            if (objRecentNode != null)
+                treCharacterList.Nodes.Add(objRecentNode);
+            if (objWatchNode != null)
+                treCharacterList.Nodes.Add(objWatchNode);
             treCharacterList.ExpandAll();
         }
         /// <summary>
@@ -151,27 +152,30 @@ namespace Chummer
                     int intMainMugshotIndex = 0;
                     objXmlSourceNode.TryGetInt32FieldQuickly("mainmugshotindex", ref intMainMugshotIndex);
                     XmlNodeList objXmlMugshotsList = objXmlSourceNode.SelectNodes("mugshots/mugshot");
-                    List<string> lstMugshots = (from XmlNode objXmlMugshot in objXmlMugshotsList where !string.IsNullOrWhiteSpace(objXmlMugshot.InnerText) select objXmlMugshot.InnerText).ToList();
-                    if (intMainMugshotIndex >= lstMugshots.Count)
+                    int intMugshotCount = objXmlMugshotsList.Count;
+                    if (intMainMugshotIndex >= intMugshotCount)
                         intMainMugshotIndex = 0;
                     else if (intMainMugshotIndex < 0)
-                        intMainMugshotIndex = lstMugshots.Count - 1;
+                        intMainMugshotIndex = intMugshotCount - 1;
 
-                    if (lstMugshots.Count > 0)
-                        objCache.Mugshot = lstMugshots.ElementAt(intMainMugshotIndex).ToImage();
+                    if (intMugshotCount > 0 && intMainMugshotIndex < intMugshotCount)
+                        objCache.Mugshot = objXmlMugshotsList[intMainMugshotIndex].InnerText?.ToImage();
                     else
                         objCache.Mugshot = null;
                 }
             }
             objCache.FilePath = strFile;
-            objCache.FileName = strFile.Split('\\').ToArray().Last();
-            lstCharacterCache.Add(objCache);
+            objCache.FileName = strFile.Substring(strFile.LastIndexOf('\\') + 1);
             TreeNode objNode = new TreeNode();
-            objNode.Tag = lstCharacterCache.IndexOf(objCache);
 
             objNode.Text = CalculatedName(objCache);
             objNode.ToolTipText = objCache.FilePath;
-            objParentNode.Nodes.Add(objNode);
+            lock (_lstCharacterCacheLock)
+            {
+                _lstCharacterCache.Add(objCache);
+                objNode.Tag = _lstCharacterCache.IndexOf(objCache);
+                objParentNode.Nodes.Add(objNode);
+            }
         }
 
         /// <summary>
@@ -199,20 +203,40 @@ namespace Chummer
         /// <param name="objCache"></param>
         private void UpdateCharacter(CharacterCache objCache)
         {
-            txtCharacterBio.Text = objCache.Description;
-            txtCharacterBackground.Text = objCache.Background;
-            txtCharacterNotes.Text = objCache.CharacterNotes;
-            txtGameNotes.Text = objCache.GameNotes;
-            txtCharacterConcept.Text = objCache.Concept;
-            lblCareerKarma.Text = objCache.Karma;
-            lblMetatype.Text = objCache.Metatype;
-            lblPlayerName.Text = objCache.PlayerName;
-            lblCharacterName.Text = objCache.CharacterName;
-            lblCharacterAlias.Text = objCache.CharacterAlias;
-            lblEssence.Text = objCache.Essence;
-            lblFilePath.Text = objCache.FileName;
-            tipTooltip.SetToolTip(lblFilePath,objCache.FilePath);
-            picMugshot.Image = objCache.Mugshot;
+            if (objCache != null)
+            {
+                txtCharacterBio.Text = objCache.Description;
+                txtCharacterBackground.Text = objCache.Background;
+                txtCharacterNotes.Text = objCache.CharacterNotes;
+                txtGameNotes.Text = objCache.GameNotes;
+                txtCharacterConcept.Text = objCache.Concept;
+                lblCareerKarma.Text = objCache.Karma;
+                lblMetatype.Text = objCache.Metatype;
+                lblPlayerName.Text = objCache.PlayerName;
+                lblCharacterName.Text = objCache.CharacterName;
+                lblCharacterAlias.Text = objCache.CharacterAlias;
+                lblEssence.Text = objCache.Essence;
+                lblFilePath.Text = objCache.FileName;
+                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath);
+                picMugshot.Image = objCache.Mugshot;
+            }
+            else
+            {
+                txtCharacterBio.Text = string.Empty;
+                txtCharacterBackground.Text = string.Empty;
+                txtCharacterNotes.Text = string.Empty;
+                txtGameNotes.Text = string.Empty;
+                txtCharacterConcept.Text = string.Empty;
+                lblCareerKarma.Text = string.Empty;
+                lblMetatype.Text = string.Empty;
+                lblPlayerName.Text = string.Empty;
+                lblCharacterName.Text = string.Empty;
+                lblCharacterAlias.Text = string.Empty;
+                lblEssence.Text = string.Empty;
+                lblFilePath.Text = string.Empty;
+                tipTooltip.SetToolTip(lblFilePath, string.Empty);
+                picMugshot.Image = null;
+            }
             picMugshot_SizeChanged(null, EventArgs.Empty);
         }
 
@@ -280,11 +304,12 @@ namespace Chummer
 
         private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            CharacterCache objCache = null;
             if (treCharacterList.SelectedNode.Level > 0)
             {
-                CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-                UpdateCharacter(objCache);
+                objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
             }
+            UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
 
@@ -292,7 +317,7 @@ namespace Chummer
         {
             if (treCharacterList.SelectedNode.Level > 0)
             {
-                CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
+                CharacterCache objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
                 GlobalOptions.MainForm.LoadCharacter(objCache.FilePath);
             }
         }
@@ -346,8 +371,8 @@ namespace Chummer
                     CharacterCache objCache = null;
                     if (nodNewNode == null)
                         return;
-                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < lstCharacterCache.Count)
-                        objCache = lstCharacterCache[intCharacterIndex];
+                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
+                        objCache = _lstCharacterCache[intCharacterIndex];
 
                     if (objCache == null)
                         return;
@@ -382,7 +407,7 @@ namespace Chummer
 
         private void RemoveSelected(TreeNode sender)
         {
-            CharacterCache objCache = lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
+            CharacterCache objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
             GlobalOptions.RemoveFromMRUList(objCache.FilePath);
             GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru");
             sender.Remove();

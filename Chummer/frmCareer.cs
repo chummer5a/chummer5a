@@ -18901,37 +18901,6 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblFadingAttributesValue, strTip);
             }
 
-            // Update Living Persona values.
-            if (_objCharacter.RESEnabled || _objCharacter.DEPEnabled)
-            {
-                int intMainAttribute = dicAttributeTotalValues["RES"];
-                if (_objCharacter.DEPEnabled)
-                    intMainAttribute = dicAttributeTotalValues["DEP"];
-                string strPersonaTip = string.Empty;
-
-                lblLivingPersonaDeviceRating.Text = intMainAttribute.ToString();
-                strPersonaTip = "RES (" + intMainAttribute.ToString() + ")";
-                if (_objCharacter.DEPEnabled)
-                    strPersonaTip = "DEP (" + intMainAttribute.ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaDeviceRating, strPersonaTip);
-
-                lblLivingPersonaAttack.Text = dicAttributeTotalValues["CHA"].ToString();
-                strPersonaTip = "CHA (" + dicAttributeTotalValues["CHA"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaAttack, strPersonaTip);
-
-                lblLivingPersonaSleaze.Text = dicAttributeTotalValues["INT"].ToString();
-                strPersonaTip = "INT (" + dicAttributeTotalValues["INT"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaSleaze, strPersonaTip);
-
-                lblLivingPersonaDataProcessing.Text = dicAttributeTotalValues["LOG"].ToString();
-                strPersonaTip = "LOG (" + dicAttributeTotalValues["LOG"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaDataProcessing, strPersonaTip);
-
-                lblLivingPersonaFirewall.Text = dicAttributeTotalValues["WIL"].ToString();
-                strPersonaTip = "WIL (" + dicAttributeTotalValues["WIL"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaFirewall, strPersonaTip);
-            }
-
             // Skill Limits
             RefreshLimits(lblPhysical, lblMental, lblSocial, lblAstral, tipTooltip);
 
@@ -22862,7 +22831,6 @@ namespace Chummer
             tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.GetString("Tip_DiceRoller"));
             tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.GetString("Tip_DiceRoller"));
             // Complex Forms Tab.
-            tipTooltip.SetToolTip(lblLivingPersonaFirewallLabel, LanguageManager.GetString("Tip_TechnomancerFirewall"));
             tipTooltip.SetToolTip(cmdRollFading, LanguageManager.GetString("Tip_DiceRoller"));
             // Lifestyle Tab.
             tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths"));
@@ -23118,17 +23086,6 @@ namespace Chummer
             intWidth = lblFadingAttributesLabel.Width;
             lblFadingAttributes.Left = lblFadingAttributesLabel.Left + intWidth + 6;
             lblFadingAttributesValue.Left = lblFadingAttributes.Left + 91;
-
-            intWidth = lblLivingPersonaDeviceRatingLabel.Width;
-            intWidth = Math.Max(intWidth, lblLivingPersonaAttackLabel.Width);
-            intWidth = Math.Max(intWidth, lblLivingPersonaDataProcessingLabel.Width);
-            intWidth = Math.Max(intWidth, lblLivingPersonaFirewallLabel.Width);
-            intWidth = Math.Max(intWidth, lblLivingPersonaSleazeLabel.Width);
-            lblLivingPersonaDeviceRating.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaAttack.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaDataProcessing.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaFirewall.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaSleaze.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
 
             cmdRollFading.Left = lblFadingAttributesValue.Left + lblFadingAttributesValue.Width + 6;
             cmdRollFading.Visible = _objOptions.AllowSkillDiceRolling;
