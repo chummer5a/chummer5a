@@ -291,29 +291,7 @@ namespace Chummer.Backend.Equipment
                     {
                         Cyberware objCyberware = new Cyberware(_objCharacter);
                         objCyberware.Load(nodChild, blnCopy);
-                        //TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents.
-                        if (objCyberware.Category == "Cyberlimb Enhancement")
-                        {
-                            switch (objCyberware.Name)
-                            {
-                                case "Customized Agility":
-                                    int intPilot = Parent.Pilot;
-                                    objCyberware.MinRating = intPilot + 1;
-                                    if (intPilot <= 0)
-                                        objCyberware.MaxRating = 1;
-                                    else
-                                        objCyberware.MaxRating = intPilot * 2;
-                                    break;
-                                case "Customized Strength":
-                                    int intTotalBody = Parent.TotalBody;
-                                    objCyberware.MinRating = intTotalBody + 1;
-                                    if (intTotalBody <= 0)
-                                        objCyberware.MaxRating = 1;
-                                    else
-                                        objCyberware.MaxRating = intTotalBody * 2;
-                                    break;
-                            }
-                        }
+                        objCyberware.ParentVehicle = Parent;
                         _lstCyberware.Add(objCyberware);
                     }
             }
@@ -941,7 +919,7 @@ namespace Chummer.Backend.Equipment
                                 string strChildAvailExpr = strChildAvail;
 
                                 // Remove the "+" since the expression can't be evaluated if it starts with this.
-                                XPathExpression xprAvail = nav.Compile(strChildAvailExpr.FastEscape('+'));
+                                XPathExpression xprAvail = nav.Compile(strChildAvailExpr.TrimStart('+'));
                                 strChildAvail = "+" + nav.Evaluate(xprAvail);
                                 if (!string.IsNullOrEmpty(strChildAvailText))
                                     strChildAvail += strChildAvailText;

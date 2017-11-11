@@ -226,6 +226,8 @@ Application Changes:
 - Fixed a bug with trying to add Customized Strength and Customized Agility to drone limbs equipped on drones with Body 0 and Pilot 0 respectively.
 - Fixed a bug where Customized Strength and Customized Agility could be set to ratings when added to a drone limb that would cause no net attribute change.
 - Fixed a bug where cyberware subsystems that increase their parent's availability would not do so when installed in a drone limb.
+- Fixed a bug where cyberlimb stats and cyberlimb customizations would not automatically update with changes to vehicle attributes in both career and create mode and with changes to character attribute maxima in create mode.
+- In case the maximum rating for a piece of 'ware is less than the minimum rating for it, it will automatically be hidden from the menu of 'ware available for purchase. Removed the outright forbidding of Customized Strength for Pixies, as it is no longer necessary. This should now also enable Pixies with a maximum STR of 4 or higher (e.g. via Exceptional Attribute + Genetic Optimization) to purchase cyberlimbs with customized STR, and will automatically catch cases where someone's maximum STR/AGI dips to 3 or below (e.g. Aged, Infirm, Impaired Attribute).
 
 Data Changes:
 

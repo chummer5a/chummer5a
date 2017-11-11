@@ -12707,7 +12707,7 @@ namespace Chummer
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
-            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, false, true, string.Empty, null, true);
+            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, false, true, string.Empty, null, objVehicle);
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -12749,30 +12749,6 @@ namespace Chummer
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
                     objExpense.Undo = objUndo;
-                }
-            }
-            
-            //TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents until after creation and expects parents to be other cyberware.
-            if (objCyberware.Category == "Cyberlimb Enhancement")
-            {
-                switch (objCyberware.Name)
-                {
-                    case "Customized Agility":
-                        int intPilot = objVehicle.Pilot;
-                        objCyberware.MinRating = intPilot + 1;
-                        if (intPilot <= 0)
-                            objCyberware.MaxRating = 1;
-                        else
-                            objCyberware.MaxRating = intPilot * 2;
-                        break;
-                    case "Customized Strength":
-                        int intTotalBody = objVehicle.TotalBody;
-                        objCyberware.MinRating = intTotalBody + 1;
-                        if (intTotalBody <= 0)
-                            objCyberware.MaxRating = 1;
-                        else
-                            objCyberware.MaxRating = intTotalBody * 2;
-                        break;
                 }
             }
 
