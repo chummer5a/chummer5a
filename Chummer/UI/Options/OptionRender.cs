@@ -80,16 +80,18 @@ namespace Chummer.UI.Options
             for (var index = 0; index < _renderData.Count; index++)
             {
                 RenderedLayoutGroup renderGroup = _renderData[index];
-                float fltRenderGroupX = renderGroup.Offset.X + AutoScrollPosition.X;
-                float fltRenderGroupY = renderGroup.Offset.Y + AutoScrollPosition.Y;
-                e.Graphics.DrawString(
-                    _preRenderData[index].Header,
-                    _headerFont,
-                    objBrush,
-                    new PointF(
-                        fltRenderGroupX,
-                        fltRenderGroupY
-                    ));
+                int fltRenderGroupX = renderGroup.Offset.X + AutoScrollPosition.X;
+                int fltRenderGroupY = renderGroup.Offset.Y + AutoScrollPosition.Y;
+
+                TextRenderer.DrawText(
+                    e.Graphics, 
+                    _preRenderData[index].Header, 
+                    _headerFont, 
+                    new Point(
+                        fltRenderGroupX, 
+                        fltRenderGroupY), 
+                    ForeColor );
+
                 foreach (RenderedLayoutGroup.TextRenderInfo renderInfo in renderGroup.TextLocations)
                 {
                     ////Draw a rectangle under text to show what render is doing
@@ -100,14 +102,14 @@ namespace Chummer.UI.Options
                     //    renderInfo.Size.Width, 
                     //    renderInfo.Size.Height);
 
-                    e.Graphics.DrawString(
-                        renderInfo.Text,
-                        GetCachedFont(renderInfo.Style),
-                        objBrush,
-                        new PointF(
-                            renderInfo.Location.X + fltRenderGroupX,
-                            renderInfo.Location.Y + fltRenderGroupY + FIXED_SPACING),
-                        StringFormat.GenericTypographic);
+                    TextRenderer.DrawText(
+                        e.Graphics, 
+                        renderInfo.Text, 
+                        GetCachedFont(renderInfo.Style), 
+                        new Point(
+                            renderInfo.Location.X + fltRenderGroupX, 
+                            renderInfo.Location.Y + fltRenderGroupY + FIXED_SPACING), 
+                        ForeColor);
                 }
             }
         }
