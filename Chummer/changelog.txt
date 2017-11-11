@@ -222,6 +222,10 @@ Application Changes:
 - Cyber-singularity Seeker and Redliner will now properly update when the character is loaded, and adding or removing Redliner will automatically update labels for the currently selected cyberlimb. Fixes #2036.
 - Added the ability to specify metatype, age, sex, personal life, service type, hobbies/vice, and preferred payment method to contacts. Any non-blank fields out of those seven will get printed in any character sheet using a template from the Shadowrun 5 collection.
 - Added the ability to add gear to armor mods. For now, this is only used by Full Body Armor helmet. Fixes #2043.
+- Fixed a bug where adding a new vehicle mod to a vehicle would not automatically update the character's stats (most noticeable with the nuyen display).
+- Fixed a bug with trying to add Customized Strength and Customized Agility to drone limbs equipped on drones with Body 0 and Pilot 0 respectively.
+- Fixed a bug where Customized Strength and Customized Agility could be set to ratings when added to a drone limb that would cause no net attribute change.
+- Fixed a bug where cyberware subsystems that increase their parent's availability would not do so when installed in a drone limb.
 
 Data Changes:
 

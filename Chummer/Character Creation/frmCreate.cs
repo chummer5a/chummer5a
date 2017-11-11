@@ -7080,7 +7080,6 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsVehicle;
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
-            RefreshSelectedVehicle();
 
             // Check for Improved Sensor bonus.
             if (objMod.Bonus != null)
@@ -7098,6 +7097,9 @@ namespace Chummer
                     ChangeVehicleSensor(objSelectedVehicle, true);
                 }
             }
+
+            ScheduleCharacterUpdate();
+            RefreshSelectedVehicle();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -8831,12 +8833,20 @@ namespace Chummer
                 switch (objCyberware.Name)
                 {
                     case "Customized Agility":
-                        objCyberware.MinRating = objVehicle.Pilot;
-                        objCyberware.MaxRating = objVehicle.Pilot * 2;
+                        int intPilot = objVehicle.Pilot;
+                        objCyberware.MinRating = intPilot + 1;
+                        if (intPilot <= 0)
+                            objCyberware.MaxRating = 1;
+                        else
+                            objCyberware.MaxRating = intPilot * 2;
                         break;
                     case "Customized Strength":
-                        objCyberware.MinRating = objVehicle.TotalBody;
-                        objCyberware.MaxRating = objVehicle.TotalBody * 2;
+                        int intTotalBody = objVehicle.TotalBody;
+                        objCyberware.MinRating = intTotalBody + 1;
+                        if (intTotalBody <= 0)
+                            objCyberware.MaxRating = 1;
+                        else
+                            objCyberware.MaxRating = intTotalBody * 2;
                         break;
                 }
             }

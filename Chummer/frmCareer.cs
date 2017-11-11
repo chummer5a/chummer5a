@@ -4647,7 +4647,7 @@ namespace Chummer
                 _blnIsDirty = true;
                 UpdateWindowTitle();
             }
-            }
+        }
 
         private void cmdAddLifestyle_Click(object sender, EventArgs e)
         {
@@ -8640,7 +8640,6 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsVehicle;
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
-            RefreshSelectedVehicle();
 
             // Check for Improved Sensor bonus.
             if (objMod.Bonus != null)
@@ -8658,6 +8657,9 @@ namespace Chummer
                     ChangeVehicleSensor(objSelectedVehicle, true);
                 }
             }
+
+            ScheduleCharacterUpdate();
+            RefreshSelectedVehicle();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -12756,12 +12758,20 @@ namespace Chummer
                 switch (objCyberware.Name)
                 {
                     case "Customized Agility":
-                        objCyberware.MinRating = objVehicle.Pilot;
-                        objCyberware.MaxRating = objVehicle.Pilot * 2;
+                        int intPilot = objVehicle.Pilot;
+                        objCyberware.MinRating = intPilot + 1;
+                        if (intPilot <= 0)
+                            objCyberware.MaxRating = 1;
+                        else
+                            objCyberware.MaxRating = intPilot * 2;
                         break;
                     case "Customized Strength":
-                        objCyberware.MinRating = objVehicle.TotalBody;
-                        objCyberware.MaxRating = objVehicle.TotalBody * 2;
+                        int intTotalBody = objVehicle.TotalBody;
+                        objCyberware.MinRating = intTotalBody + 1;
+                        if (intTotalBody <= 0)
+                            objCyberware.MaxRating = 1;
+                        else
+                            objCyberware.MaxRating = intTotalBody * 2;
                         break;
                 }
             }
@@ -14725,6 +14735,7 @@ namespace Chummer
             objWeapon.AmmoLoaded = objSelectedAmmo.InternalId;
             lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
+            ScheduleCharacterUpdate();
             RefreshSelectedWeapon();
 
             _blnIsDirty = true;
@@ -14904,6 +14915,7 @@ namespace Chummer
             Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
 
             objWeapon.ActiveAmmoSlot = Convert.ToInt32(cboWeaponAmmo.SelectedValue.ToString());
+            ScheduleCharacterUpdate();
             RefreshSelectedWeapon();
 
             _blnIsDirty = true;
@@ -16129,7 +16141,8 @@ namespace Chummer
             objWeapon.AmmoRemaining = Convert.ToInt32(decQty);
             objWeapon.AmmoLoaded = objSelectedAmmo.InternalId;
             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-            
+
+            ScheduleCharacterUpdate();
             RefreshSelectedVehicle();
 
             _blnIsDirty = true;
@@ -16173,6 +16186,7 @@ namespace Chummer
             Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             objWeapon.ActiveAmmoSlot = Convert.ToInt32(cboVehicleWeaponAmmo.SelectedValue.ToString());
+            ScheduleCharacterUpdate();
             RefreshSelectedVehicle();
 
             _blnIsDirty = true;

@@ -256,8 +256,11 @@ namespace Chummer
                     case "MaximumSTR":
                         if (ParentVehicle != null)
                         {
-                            nudRating.Maximum = ParentVehicle.TotalBody * 2;
-                            nudRating.Minimum = ParentVehicle.TotalBody;
+                            int intTotalBody = ParentVehicle.TotalBody;
+                            if (intTotalBody <= 0)
+                                nudRating.Maximum = 1; // 0.5 * 2
+                            else
+                                nudRating.Maximum = intTotalBody * 2;
                         }
                         else
                         {
@@ -267,7 +270,11 @@ namespace Chummer
                     case "MaximumAGI":
                         if (ParentVehicle != null)
                         {
-                            nudRating.Maximum = ParentVehicle.Pilot * 2;
+                            int intPilot = ParentVehicle.Pilot;
+                            if (intPilot <= 0)
+                                nudRating.Maximum = 1; // 0.5 * 2
+                            else
+                                nudRating.Maximum = intPilot * 2;
                         }
                         else
                         {
@@ -283,10 +290,16 @@ namespace Chummer
                     switch (objXmlCyberware["minrating"].InnerText)
                     {
                         case "MinimumAGI":
-                            nudRating.Minimum = ParentVehicle?.Pilot ?? 4;
+                            if (ParentVehicle != null)
+                                nudRating.Minimum = ParentVehicle.Pilot + 1;
+                            else
+                                nudRating.Minimum = 4;
                             break;
                         case "MinimumSTR":
-                            nudRating.Minimum = ParentVehicle?.TotalBody ?? 4;
+                            if (ParentVehicle != null)
+                                nudRating.Minimum = ParentVehicle.TotalBody + 1;
+                            else
+                                nudRating.Minimum = 4;
                             break;
                         default:
                             nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
