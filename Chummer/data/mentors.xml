@@ -1119,6 +1119,44 @@
       <source>HT</source>
       <page>137</page>
     </mentor>
+	<mentor>
+      <id>a9f0231a-2354-44a9-864b-630bf3d58ddb</id>
+      <name>Coyote</name>
+      <advantage>All: +2 dice pool to all Con tests.</advantage>
+      <disadvantage>Coyote has a hard time with head-on attacks or brute force methods, unless it’s part of a larger con or misdirection. Anytime he is forced into such actions, he must make a Willpower + Charisma [Mental] (4) Test. If he fails, then he decides to do things another way, which means he may exit a combat instead of participating in it.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Con</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +1 to all Manipulation and Illusion spell tests, preparations, and rituals.</name>
+          <bonus>
+            <spellcategory>
+              <name>Manipulation</name>
+              <val>1</val>
+            </spellcategory>
+			<spellcategory>
+              <name>Illusion</name>
+              <val>1</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Danger Sense level 2.</name>
+          <bonus>
+            <specificpower>
+              <name>Danger Sense</name>
+              <val>2</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SFCC</source>
+      <page>24</page>
+    </mentor>
     <mentor>
       <id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
       <name>Oak (SHB)</name>
