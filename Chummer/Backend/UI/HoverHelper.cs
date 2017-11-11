@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Chummer.Backend.Extensions;
 
 namespace Chummer.Backend.UI
 {
@@ -18,7 +19,10 @@ namespace Chummer.Backend.UI
 
         public void MouseEventHandler(object sender, MouseEventArgs args)
         {
-            if (_hovering)
+            //_mousePos is initialized to null, but can never be as _hovering 
+            //is only set after time has run for 500ms which only happens after
+            //_mousePos is sat
+            if (_hovering && _mousePos.Location.ManhatanDistanceFrom(args.Location) != 0)
             {
                 _hovering = false;
                 StopHover?.Invoke(this, args);
@@ -37,11 +41,12 @@ namespace Chummer.Backend.UI
 
         public HoverHelper()
         {
-            _timer.Tick += HoverLimitReached;
+            _timer.Tick += HoverLimitReachedBeforeDisplayingToolTip;
         }
 
-        private void HoverLimitReached(object sender, EventArgs eventArgs)
+        private void HoverLimitReachedBeforeDisplayingToolTip(object sender, EventArgs eventArgs)
         {
+            _hovering = true;
             Hover?.Invoke(this, _mousePos);
         }
     }

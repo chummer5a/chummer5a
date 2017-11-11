@@ -57,8 +57,10 @@ namespace Chummer.UI.Options
         private void OnHover(object sender, MouseEventArgs eventArgs)
         {
             string tt = _toolTipTree.Find(eventArgs.Location);
-            if(tt != null)
-            {_toolTip.Show(tt, this, eventArgs.Location);}
+            if (tt != null)
+            {
+                _toolTip.Show(tt, this, eventArgs.Location);
+            }
         }
 
         private void OnResize(object sender, EventArgs eventArgs)

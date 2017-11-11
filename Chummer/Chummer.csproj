@@ -158,6 +158,7 @@
     <Compile Include="Backend\Extensions\HashSetExtensions.cs" />
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
+    <Compile Include="Backend\Extensions\PointExtensions.cs" />
     <Compile Include="Backend\OptionsManager.cs" />
     <Compile Include="Backend\Options\HeaderAttribute.cs" />
     <Compile Include="Backend\Options\IGroupLayoutProvider.cs" />
