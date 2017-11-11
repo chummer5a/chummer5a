@@ -116,16 +116,43 @@ namespace Chummer.UI.Options.ControlGenerators
                 uiElement.SelectedIndexChanged += UiElementOnSelectedIndexChanged;
             }
 
+            private bool _updating = false;
             private void UiElementOnSelectedIndexChanged(object sender, EventArgs eventArgs)
             {
-                //TODO: This crashes with dropdowns and (scroll?)
-                _backingField.Value = _items[_uiElement.SelectedIndex].Value;
+                if (_updating) return;
+                try
+                {
+                    _updating = true;
+                    //TODO: This crashes with dropdowns and (scroll?)
+                    if (_uiElement.SelectedIndex < 0)
+                        _uiElement.SelectedIndex = 0;
+                    if (_uiElement.SelectedIndex >= _items.Count)
+                        _uiElement.SelectedIndex = _items.Count - 1;
+                    _backingField.Value = _items[_uiElement.SelectedIndex].Value;
+                }
+                finally
+                {
+                    _updating = false;
+                }
+                
             }
 
             private void BackingFieldOnValueChanged()
             {
-                int index = _items.FindIndex(x => x.Equals(_backingField.Value));
-                _uiElement.SelectedIndex = index;
+                if (_updating) return;
+                try
+                {
+                    _updating = true;
+                    int index = _items.FindIndex(x => x.Equals(_backingField.Value));
+                    if (index != -1)
+                        _uiElement.SelectedIndex = index;
+                    else
+                        _uiElement.SelectedItem = null;
+                }
+                finally
+                {
+                    _updating = false;
+                }
             }
         }
     }
