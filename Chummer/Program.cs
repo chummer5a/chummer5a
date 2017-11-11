@@ -83,6 +83,7 @@ namespace Chummer
 	        sw.TaskEnd("infoprnt");
 
             GlobalOptions.Load();
+		    ThreadPool.QueueUserWorkItem(PreLoadOptionImages);
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -119,6 +120,20 @@ namespace Chummer
 			string ExceptionMap = heatmap.GenerateInfo();
 			Log.Info(ExceptionMap);
 		}
+
+        //This function is here because there is no other place for it
+	    private static void PreLoadOptionImages(object state)
+	    {
+            //This is iterrated in reverse. In the rare case that options is 
+            //opened before this is finished, options would quickly catch up
+            //as getting the cached image is much less work than creating it
+            //This way, both keep working until they pass each other and 
+            //everything needed is in cache
+            foreach (SourcebookInfo book in Enumerable.Reverse(GlobalOptions.Instance.SourcebookInfo))
+            {
+                BookImageManager.GetImage(book.Code, GlobalOptions.Default.Books[book.Code], false, UI.Options.BookControl.SCALE);
+            }
+        }
 
 	    public static bool Debugging { get; private set; } = false;
         public static BookImageManager BookImageManager { get; private set; } = new BookImageManager();

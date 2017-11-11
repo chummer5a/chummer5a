@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,7 +11,7 @@ namespace Chummer.UI.Options
     public class BookControl : UserControl
     {
         //Behavour state
-        private int _scale = 2;
+        internal const int SCALE = 2;
         private int _layoutedForWidth = 0;
         private string _selectedBook = null;
 
@@ -68,12 +69,13 @@ namespace Chummer.UI.Options
                 Factories = _options.ControlFactories
             };
 
+            System.Diagnostics.Stopwatch sw = Stopwatch.StartNew();
             foreach (SourcebookInfo book in GlobalOptions.Instance.SourcebookInfo)
             {
                 PictureBox bookBox = new PictureBox { Tag = book.Code };
                 _bookPanel.Controls.Add(bookBox);
                 bookBox.SizeMode = PictureBoxSizeMode.AutoSize;
-                bookBox.Image = Program.BookImageManager.GetImage(book.Code, _options.BookEnabled[book.Code].Value, false, _scale);
+                bookBox.Image = Program.BookImageManager.GetImage(book.Code, _options.BookEnabled[book.Code].Value, false, SCALE);
 
                 bookBox.MouseEnter += Picture_MouseEnter;
                 bookBox.MouseLeave += Picture_MouseLeave;
@@ -82,6 +84,7 @@ namespace Chummer.UI.Options
 
                 _pictures.Add(book.Code, bookBox);
             }
+            Console.WriteLine("Created books in {0} ms", sw.ElapsedMilliseconds);
 
             Resize += OnResize;
             _bookPanel.MouseEnter += BookPanel_OnMouseEnter;
@@ -90,22 +93,22 @@ namespace Chummer.UI.Options
             {
                 thing.ValueChanged += () =>
                 {
-                    _pictures[thing.Key].Image = Program.BookImageManager.GetImage(thing.Key, _options.BookEnabled[thing.Key].Value, false, _scale);
+                    _pictures[thing.Key].Image = Program.BookImageManager.GetImage(thing.Key, _options.BookEnabled[thing.Key].Value, false, SCALE);
                 };
             }
         }
 
-        //API reacting on other things than events
-        public int Scale
-        {
-            get { return _scale; }
-            set
-            {
-                _scale = value;
-                ResetAllImages();
-                PerformBookLayout();
-            }
-        }
+        ////API reacting on other things than events
+        //public int Scale
+        //{
+        //    get { return _scale; }
+        //    set
+        //    {
+        //        _scale = value;
+        //        ResetAllImages();
+        //        PerformBookLayout();
+        //    }
+        //}
 
         public void Save()
         {
@@ -134,7 +137,7 @@ namespace Chummer.UI.Options
             string bookCode = box.Tag as string;
             _options.BookEnabled[bookCode].Value = !_options.BookEnabled[bookCode].Value;
 
-            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, true, _scale);
+            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, true, SCALE);
         }
 
         //Display update
@@ -143,7 +146,7 @@ namespace Chummer.UI.Options
             foreach (PictureBox picture in _bookPanel.Controls)
             {
                 string tag = (string) picture.Tag;
-                picture.Image = Program.BookImageManager.GetImage(tag, _options.BookEnabled[tag].Value, false, _scale);
+                picture.Image = Program.BookImageManager.GetImage(tag, _options.BookEnabled[tag].Value, false, SCALE);
             }
         }
 
@@ -174,12 +177,12 @@ namespace Chummer.UI.Options
 
         private void PerformBookLayout()
         {
-            int xw = (IMAGE_WIDTH + IMAGE_BORDER ) / _scale;
-            int yw = (IMAGE_HEIGHT + IMAGE_BORDER) / _scale;
+            int xw = (IMAGE_WIDTH + IMAGE_BORDER ) / SCALE;
+            int yw = (IMAGE_HEIGHT + IMAGE_BORDER) / SCALE;
             
-            int booksPerRow = Math.Max((_bookPanel.Width - (IMAGE_BORDER / _scale)) / xw, 1);
+            int booksPerRow = Math.Max((_bookPanel.Width - (IMAGE_BORDER / SCALE)) / xw, 1);
 
-            if (booksPerRow != Math.Max((_layoutedForWidth - (IMAGE_BORDER / _scale)) / xw, 1))
+            if (booksPerRow != Math.Max((_layoutedForWidth - (IMAGE_BORDER / SCALE)) / xw, 1))
             {
                 for (int i = 0; i < _bookPanel.Controls.Count; i++)
                 {
@@ -187,7 +190,7 @@ namespace Chummer.UI.Options
                     int row = i / booksPerRow;
 
                     _bookPanel.Controls[i].Location = new Point(column * xw, row * yw);
-                    _bookPanel.Controls[i].Size = new Size(xw + (IMAGE_BORDER / _scale), yw + (IMAGE_BORDER / _scale));
+                    _bookPanel.Controls[i].Size = new Size(xw + (IMAGE_BORDER / SCALE), yw + (IMAGE_BORDER / SCALE));
                 }
             }
 
@@ -262,7 +265,7 @@ namespace Chummer.UI.Options
 
             string bookCode = box.Tag as string;
 
-            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, false, _scale);
+            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, false, SCALE);
         }
 
         private void Picture_MouseEnter(object sender, EventArgs e)
@@ -273,7 +276,7 @@ namespace Chummer.UI.Options
             string bookCode = box.Tag as string;
 
             _bookPanel.Controls.SetChildIndex(box, 0);
-            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, true, _scale);
+            box.Image = Program.BookImageManager.GetImage(bookCode, _options.BookEnabled[bookCode].Value, true, SCALE);
         }
 
         private void BookPanel_OnMouseEnter(object sender, EventArgs eventArgs)
@@ -305,8 +308,8 @@ namespace Chummer.UI.Options
         //Event handler helper methods
         private bool IsInCheckboxArear(MouseEventArgs me, PictureBox pictuture)
         {
-            bool xinside = (IMAGE_BORDER + _checkboxWidth) / _scale > me.X && me.X > IMAGE_BORDER / _scale;
-            bool yinside = pictuture.Image.Height - (IMAGE_BORDER / _scale) > me.Y && me.Y > pictuture.Image.Height - ((IMAGE_BORDER + _checkboxHeight) / _scale);
+            bool xinside = (IMAGE_BORDER + _checkboxWidth) / SCALE > me.X && me.X > IMAGE_BORDER / SCALE;
+            bool yinside = pictuture.Image.Height - (IMAGE_BORDER / SCALE) > me.Y && me.Y > pictuture.Image.Height - ((IMAGE_BORDER + _checkboxHeight) / SCALE);
             return xinside && yinside;
         }
 

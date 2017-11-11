@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Xml;
-using Chummer.UI.Options;
 
 namespace Chummer.Backend.UI
 {
@@ -39,7 +35,7 @@ namespace Chummer.Backend.UI
             }
         }
 
-        Dictionary<int, Image> _cache = new Dictionary<int, Image>();
+        private readonly ConcurrentDictionary<int, Image> _cache = new ConcurrentDictionary<int, Image>();
         private int _glowBorder = 20;
 
         public static Func<float, float> Scale = d => d;
@@ -48,20 +44,27 @@ namespace Chummer.Backend.UI
 
         public Image GetImage(string bookCode, bool selected, bool aura, int scale)
         {
+            //Optimistic concurrency. If image is not found, start generating it.
             int hash = Hash(bookCode , selected , aura, scale);
             Image image;
+
             if (!_cache.TryGetValue(hash, out image))
             {
                 image = GenerateImage(bookCode, selected, aura, scale);
-                _cache.Add(hash, image);
+                if (!_cache.TryAdd(hash, image))
+                {
+                    //if we was outpaced, too bad. Dispose and get the winner
+                    image.Dispose();
+                    image = _cache[hash];
+                }
             }
 
             return image;
         }
 
-        private Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"));
-        private Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_unchecked"));
-        private static Lazy<Bitmap> MissingImage = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("book/missing"));
+        private readonly Lazy<Bitmap> CheckboxChecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_checked"), true);
+        private readonly Lazy<Bitmap> CheckboxUnchecked = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("checkbox_unchecked"), true);
+        private static readonly Lazy<Bitmap> MissingImage = new Lazy<Bitmap>(() => (Bitmap)Properties.Resources.ResourceManager.GetObject("book/missing"), true);
 
         private Image GenerateImage(string bookCode, bool enabled, bool aura, int scale)
         {
@@ -297,27 +300,16 @@ namespace Chummer.Backend.UI
             return hash;
         }
 
-        private static Dictionary<string, Bitmap> imageCache = new Dictionary<string, Bitmap>();
+        private static ConcurrentDictionary<string, Bitmap> imageCache = new ConcurrentDictionary<string, Bitmap>();
         private static Bitmap GetBaseImage(string bookCode)
         {
-            Bitmap objReturn;
-            if (imageCache.TryGetValue(bookCode, out objReturn))
-                return objReturn;
+            return imageCache.GetOrAdd(bookCode, LoadBookImage);
+        }
 
-			string filePath = Path.Combine(Application.StartupPath, "images", $"{bookCode}.png");
-			
-			
-			if (File.Exists(filePath))
-			{
-                objReturn = new Bitmap(filePath);
-                Console.WriteLine($"w{objReturn.Width} h{objReturn.Height}");
-	        }
-	        else
-			{
-                objReturn = MissingImage.Value;
-	        }
-            imageCache[bookCode] = objReturn;
-            return objReturn;
+        private static Bitmap LoadBookImage(string bookCode)
+        {
+            string filePath = Path.Combine(Application.StartupPath, "images", $"{bookCode}.png");
+            return File.Exists(filePath) ? new Bitmap(filePath) : MissingImage.Value;
         }
 
         private static int ColorToInt(Color color)
