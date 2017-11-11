@@ -116,7 +116,7 @@ namespace Chummer.helpers
 
             if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
-            else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable)
+            else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable || input.OriginSource == QualitySource.Improvement)
                 newNode.ForeColor = SystemColors.GrayText;
             if (!input.Implemented)
                 newNode.ForeColor = Color.Red;
@@ -162,11 +162,8 @@ namespace Chummer.helpers
                     Nodes[4].Expand();
                     break;
                 case "Rituals":
-                    int intNode = 5;
-                    if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                        intNode = 0;
-                    Nodes[intNode].Nodes.Add(objNode);
-                    Nodes[intNode].Expand();
+                    Nodes[5].Nodes.Add(objNode);
+                    Nodes[5].Expand();
                     break;
             }
         }
@@ -177,19 +174,18 @@ namespace Chummer.helpers
         /// <param name="treTree">TreeView to sort.</param>
         public void SortCustom()
         {
-            for (int i = 0; i <= Nodes.Count - 1; i++)
+            SortByName objSort = new SortByName();
+            for (int i = 0; i < Nodes.Count; ++i)
             {
-                List<TreeNode> lstNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in Nodes[i].Nodes)
-                    lstNodes.Add(objNode);
-                Nodes[i].Nodes.Clear();
-                SortByName objSort = new SortByName();
-                lstNodes.Sort(objSort.Compare);
+                TreeNode objLoopNode = Nodes[i];
+                TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
+                TreeNode[] lstNodes = new TreeNode[objLoopNodeChildren.Count];
+                objLoopNodeChildren.CopyTo(lstNodes, 0);
+                objLoopNodeChildren.Clear();
+                Array.Sort(lstNodes, objSort.Compare);
+                objLoopNodeChildren.AddRange(lstNodes);
 
-                foreach (TreeNode objNode in lstNodes)
-                    Nodes[i].Nodes.Add(objNode);
-
-                Nodes[i].Expand();
+                objLoopNode.Expand();
             }
         }
 
@@ -200,31 +196,7 @@ namespace Chummer.helpers
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
         public void ClearNodeBackground(TreeNode objHighlighted)
         {
-            foreach (TreeNode objNode in Nodes)
-            {
-                if (objHighlighted != null)
-                {
-                    if (objNode != objHighlighted)
-                        objNode.BackColor = SystemColors.Window;
-                    ClearNodeBackground(objNode, objHighlighted);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Recursive method to clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
-        /// </summary>
-        /// <param name="objNode">Parent TreeNode to check.</param>
-        /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
-        private void ClearNodeBackground(TreeNode objNode, TreeNode objHighlighted)
-        {
-            foreach (TreeNode objChild in objNode.Nodes)
-            {
-                if (objChild != objHighlighted)
-                    objChild.BackColor = SystemColors.Window;
-                if (objChild.Nodes.Count > 0)
-                    ClearNodeBackground(objChild, objHighlighted);
-            }
+            Nodes.ClearNodeBackground(objHighlighted);
         }
     }
 }
