@@ -4647,7 +4647,7 @@ namespace Chummer
                 _blnIsDirty = true;
                 UpdateWindowTitle();
             }
-            }
+        }
 
         private void cmdAddLifestyle_Click(object sender, EventArgs e)
         {
@@ -8640,7 +8640,6 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsVehicle;
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
-            RefreshSelectedVehicle();
 
             // Check for Improved Sensor bonus.
             if (objMod.Bonus != null)
@@ -8658,6 +8657,9 @@ namespace Chummer
                     ChangeVehicleSensor(objSelectedVehicle, true);
                 }
             }
+
+            ScheduleCharacterUpdate();
+            RefreshSelectedVehicle();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -10965,14 +10967,14 @@ namespace Chummer
                     break;
                 case KarmaExpenseType.SkillSpec:  //I am resonable sure those 2 are the same. Was written looking at old AddSpecialization code
                 case KarmaExpenseType.AddSpecialization:
-                {
-                    Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.SkillsSection.KnowledgeSkills, _objCharacter.SkillsSection.Skills)
-                            .FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
+                    {
+                        Skill ContainingSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
+                        if (ContainingSkill == null)
+                            ContainingSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
 
-                    if (ContainingSkill != null)
-                        ContainingSkill.Specializations.Remove(
-                            ContainingSkill.Specializations.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId));
-                }
+                        if (ContainingSkill != null)
+                            ContainingSkill.Specializations.Remove(ContainingSkill.Specializations.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId));
+                    }
                     break;
                 case KarmaExpenseType.ImproveSkillGroup:
                     // Locate the Skill Group that was affected.
@@ -12705,7 +12707,7 @@ namespace Chummer
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
-            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, false, true, string.Empty, null, true);
+            objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, false, true, string.Empty, null, objVehicle);
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -12747,22 +12749,6 @@ namespace Chummer
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
                     objExpense.Undo = objUndo;
-                }
-            }
-            
-            //TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents until after creation and expects parents to be other cyberware.
-            if (objCyberware.Category == "Cyberlimb Enhancement")
-            {
-                switch (objCyberware.Name)
-                {
-                    case "Customized Agility":
-                        objCyberware.MinRating = objVehicle.Pilot;
-                        objCyberware.MaxRating = objVehicle.Pilot * 2;
-                        break;
-                    case "Customized Strength":
-                        objCyberware.MinRating = objVehicle.TotalBody;
-                        objCyberware.MaxRating = objVehicle.TotalBody * 2;
-                        break;
                 }
             }
 
@@ -14725,6 +14711,7 @@ namespace Chummer
             objWeapon.AmmoLoaded = objSelectedAmmo.InternalId;
             lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
+            ScheduleCharacterUpdate();
             RefreshSelectedWeapon();
 
             _blnIsDirty = true;
@@ -14904,6 +14891,7 @@ namespace Chummer
             Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
 
             objWeapon.ActiveAmmoSlot = Convert.ToInt32(cboWeaponAmmo.SelectedValue.ToString());
+            ScheduleCharacterUpdate();
             RefreshSelectedWeapon();
 
             _blnIsDirty = true;
@@ -16129,7 +16117,8 @@ namespace Chummer
             objWeapon.AmmoRemaining = Convert.ToInt32(decQty);
             objWeapon.AmmoLoaded = objSelectedAmmo.InternalId;
             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-            
+
+            ScheduleCharacterUpdate();
             RefreshSelectedVehicle();
 
             _blnIsDirty = true;
@@ -16173,6 +16162,7 @@ namespace Chummer
             Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             objWeapon.ActiveAmmoSlot = Convert.ToInt32(cboVehicleWeaponAmmo.SelectedValue.ToString());
+            ScheduleCharacterUpdate();
             RefreshSelectedVehicle();
 
             _blnIsDirty = true;
@@ -18909,37 +18899,6 @@ namespace Chummer
                 lblFadingAttributesValue.Text = intFading.ToString();
 
                 tipTooltip.SetToolTip(lblFadingAttributesValue, strTip);
-            }
-
-            // Update Living Persona values.
-            if (_objCharacter.RESEnabled || _objCharacter.DEPEnabled)
-            {
-                int intMainAttribute = dicAttributeTotalValues["RES"];
-                if (_objCharacter.DEPEnabled)
-                    intMainAttribute = dicAttributeTotalValues["DEP"];
-                string strPersonaTip = string.Empty;
-
-                lblLivingPersonaDeviceRating.Text = intMainAttribute.ToString();
-                strPersonaTip = "RES (" + intMainAttribute.ToString() + ")";
-                if (_objCharacter.DEPEnabled)
-                    strPersonaTip = "DEP (" + intMainAttribute.ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaDeviceRating, strPersonaTip);
-
-                lblLivingPersonaAttack.Text = dicAttributeTotalValues["CHA"].ToString();
-                strPersonaTip = "CHA (" + dicAttributeTotalValues["CHA"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaAttack, strPersonaTip);
-
-                lblLivingPersonaSleaze.Text = dicAttributeTotalValues["INT"].ToString();
-                strPersonaTip = "INT (" + dicAttributeTotalValues["INT"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaSleaze, strPersonaTip);
-
-                lblLivingPersonaDataProcessing.Text = dicAttributeTotalValues["LOG"].ToString();
-                strPersonaTip = "LOG (" + dicAttributeTotalValues["LOG"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaDataProcessing, strPersonaTip);
-
-                lblLivingPersonaFirewall.Text = dicAttributeTotalValues["WIL"].ToString();
-                strPersonaTip = "WIL (" + dicAttributeTotalValues["WIL"].ToString() + ")";
-                tipTooltip.SetToolTip(lblLivingPersonaFirewall, strPersonaTip);
             }
 
             // Skill Limits
@@ -22872,7 +22831,6 @@ namespace Chummer
             tipTooltip.SetToolTip(cmdRollSpell, LanguageManager.GetString("Tip_DiceRoller"));
             tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.GetString("Tip_DiceRoller"));
             // Complex Forms Tab.
-            tipTooltip.SetToolTip(lblLivingPersonaFirewallLabel, LanguageManager.GetString("Tip_TechnomancerFirewall"));
             tipTooltip.SetToolTip(cmdRollFading, LanguageManager.GetString("Tip_DiceRoller"));
             // Lifestyle Tab.
             tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths"));
@@ -23128,17 +23086,6 @@ namespace Chummer
             intWidth = lblFadingAttributesLabel.Width;
             lblFadingAttributes.Left = lblFadingAttributesLabel.Left + intWidth + 6;
             lblFadingAttributesValue.Left = lblFadingAttributes.Left + 91;
-
-            intWidth = lblLivingPersonaDeviceRatingLabel.Width;
-            intWidth = Math.Max(intWidth, lblLivingPersonaAttackLabel.Width);
-            intWidth = Math.Max(intWidth, lblLivingPersonaDataProcessingLabel.Width);
-            intWidth = Math.Max(intWidth, lblLivingPersonaFirewallLabel.Width);
-            intWidth = Math.Max(intWidth, lblLivingPersonaSleazeLabel.Width);
-            lblLivingPersonaDeviceRating.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaAttack.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaDataProcessing.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaFirewall.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
-            lblLivingPersonaSleaze.Left = lblLivingPersonaDeviceRatingLabel.Left + intWidth + 6;
 
             cmdRollFading.Left = lblFadingAttributesValue.Left + lblFadingAttributesValue.Width + 6;
             cmdRollFading.Visible = _objOptions.AllowSkillDiceRolling;

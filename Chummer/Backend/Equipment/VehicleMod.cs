@@ -291,6 +291,7 @@ namespace Chummer.Backend.Equipment
                     {
                         Cyberware objCyberware = new Cyberware(_objCharacter);
                         objCyberware.Load(nodChild, blnCopy);
+                        objCyberware.ParentVehicle = Parent;
                         _lstCyberware.Add(objCyberware);
                     }
             }
@@ -868,11 +869,6 @@ namespace Chummer.Backend.Equipment
                 if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
                 {
                     strAvailText = strCalculated.Substring(strCalculated.Length - 1, 1);
-                    // Translate the Avail string.
-                    if (strAvailText == "F")
-                        strAvailText = LanguageManager.GetString("String_AvailForbidden");
-                    else if (strAvailText == "R")
-                        strAvailText = LanguageManager.GetString("String_AvailRestricted");
                     strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);
                 }
 
@@ -887,16 +883,65 @@ namespace Chummer.Backend.Equipment
                 strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
                 strAvailExpr = strAvailExpr.Replace("Acceleration", Parent.Accel.ToString());
                 strAvailExpr = strAvailExpr.Replace("Handling", Parent.Handling.ToString());
+                int intAvail = 0;
                 string strReturn = string.Empty;
                 try
                 {
                     XPathExpression xprAvail = nav.Compile(strAvailExpr);
-                    strReturn = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString();
+                    intAvail = Convert.ToInt32(nav.Evaluate(xprAvail));
                 }
                 catch (XPathException)
                 {
                     strReturn = strCalculated;
                 }
+
+                // strReturn is not null or empty, then it has been set to a non-empty strCalculated, and there's no way we could process +Avail from cyberware
+                if (string.IsNullOrEmpty(strReturn))
+                {
+                    // Run through the child cyberware and increase the Avail by any Mod whose Avail contains "+".
+                    foreach (Cyberware objChild in Cyberware)
+                    {
+                        if (objChild.Avail.Contains('+'))
+                        {
+                            string strChildAvail = objChild.Avail;
+                            if (objChild.Avail.Contains("Rating") || objChild.Avail.Contains("MinRating"))
+                            {
+                                strChildAvail = strChildAvail.Replace("MinRating", objChild.MinRating.ToString());
+                                strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
+                                string strChildAvailText = string.Empty;
+                                if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
+                                {
+                                    strChildAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
+                                    strChildAvail = strChildAvail.Substring(0, strChildAvail.Length - 1);
+                                }
+
+                                // If the availability is determined by the Rating, evaluate the expression.
+                                string strChildAvailExpr = strChildAvail;
+
+                                // Remove the "+" since the expression can't be evaluated if it starts with this.
+                                XPathExpression xprAvail = nav.Compile(strChildAvailExpr.TrimStart('+'));
+                                strChildAvail = "+" + nav.Evaluate(xprAvail);
+                                if (!string.IsNullOrEmpty(strChildAvailText))
+                                    strChildAvail += strChildAvailText;
+                            }
+
+                            if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
+                            {
+                                if (strAvailText != "F")
+                                    strAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
+                                intAvail += Convert.ToInt32(strChildAvail.Substring(0, strChildAvail.Length - 1));
+                            }
+                            else
+                                intAvail += Convert.ToInt32(strChildAvail);
+                        }
+                    }
+                    strReturn = intAvail.ToString();
+                }
+                // Translate the Avail string.
+                if (strAvailText == "F")
+                    strAvailText = LanguageManager.GetString("String_AvailForbidden");
+                else if (strAvailText == "R")
+                    strAvailText = LanguageManager.GetString("String_AvailRestricted");
 
                 return strReturn + strAvailText;
             }

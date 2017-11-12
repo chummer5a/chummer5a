@@ -57,6 +57,7 @@ namespace Chummer
         }
 
         private static readonly HashSet<XmlReference> _lstXmlDocuments = new HashSet<XmlReference>();
+        private static object _lstXmlDocumentsLock = new object();
         private static readonly List<string> _lstDataDirectories = new List<string>();
 
         #region Constructor
@@ -99,19 +100,23 @@ namespace Chummer
             DateTime datDate = File.GetLastWriteTime(strPath);
 
             // Look to see if this XmlDocument is already loaded.
-            XmlReference objReference = _lstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
-            if (objReference == null || blnLoadFile)
+            XmlReference objReference = null;
+            lock (_lstXmlDocumentsLock)
             {
-                // The file was not found in the reference list, so it must be loaded.
-                objReference = new XmlReference();
-                blnLoadFile = true;
-                _lstXmlDocuments.Add(objReference);
-            }
-            // The file was found in the List, so check the last write time.
-            else if (datDate != objReference.FileDate)
-            {
-                // The last write time does not match, so it must be reloaded.
-                blnLoadFile = true;
+                objReference = _lstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
+                if (objReference == null || blnLoadFile)
+                {
+                    // The file was not found in the reference list, so it must be loaded.
+                    objReference = new XmlReference();
+                    blnLoadFile = true;
+                    _lstXmlDocuments.Add(objReference);
+                }
+                // The file was found in the List, so check the last write time.
+                else if (datDate != objReference.FileDate)
+                {
+                    // The last write time does not match, so it must be reloaded.
+                    blnLoadFile = true;
+                }
             }
 
             // Create a new document that everything will be merged into.

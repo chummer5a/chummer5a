@@ -439,7 +439,8 @@
       <id>03a18308-f4db-4695-a3c7-f06b5232ff6e</id>
       <name>Vehicles</name>
       <filename>Vehicles</filename>
-    </sheet>  
+    </sheet>
+	</sheets>	
     <sheets lang="zh">
     <sheet>
       <id>8b16e238-18c6-40e0-85ca-a3a6c1854bd9</id>
@@ -546,6 +547,5 @@
       <name>载具和无人机</name>
       <filename>载具和无人机</filename>
     </sheet>
-  </sheets>
   </sheets>
 </chummer>

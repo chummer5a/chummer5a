@@ -1556,16 +1556,11 @@
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
-      <avail>+Rating - MinRating</avail>
-      <cost>(Rating - MinRating) * 5000</cost>
+      <avail>+Rating - MinRating + 1</avail>
+      <cost>(Rating - MinRating + 1) * 5000</cost>
       <source>SR5</source>
       <page>456</page>
-      <forbidden>
-        <oneof>
-          <metatype>Pixie</metatype>
-        </oneof>
-      </forbidden>
-      <minrating>MinimumSTR</minrating>
+      <minrating>MinimumSTR+1</minrating>
       <rating>MaximumSTR</rating>
 	  <requireparent />
     </cyberware>
@@ -1576,11 +1571,11 @@
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
-      <avail>+Rating - MinRating</avail>
-      <cost>(Rating - MinRating) * 5000</cost>
+      <avail>+Rating - MinRating + 1</avail>
+      <cost>(Rating - MinRating + 1) * 5000</cost>
       <source>SR5</source>
       <page>456</page>
-      <minrating>MinimumAGI</minrating>
+      <minrating>MinimumAGI+1</minrating>
       <rating>MaximumAGI</rating>
 	  <requireparent />
     </cyberware>
@@ -7086,16 +7081,11 @@
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
-      <avail>+Rating - MinRating</avail>
-      <cost>(Rating - MinRating) * 2000</cost>
+      <avail>+Rating - MinRating + 1</avail>
+      <cost>(Rating - MinRating + 1) * 2000</cost>
       <source>2050</source>
       <page>203</page>
-      <forbidden>
-        <oneof>
-          <metatype>Pixie</metatype>
-        </oneof>
-      </forbidden>
-      <minrating>MinimumSTR</minrating>
+      <minrating>MinimumSTR+1</minrating>
       <rating>MaximumSTR</rating>
 	  <requireparent />
     </cyberware>
@@ -7106,11 +7096,11 @@
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
-      <avail>+Rating - MinRating</avail>
-      <cost>(Rating - MinRating) * 2000</cost>
+      <avail>+Rating - MinRating + 1</avail>
+      <cost>(Rating - MinRating + 1) * 2000</cost>
       <source>2050</source>
       <page>203</page>
-      <minrating>MinimumAGI</minrating>
+      <minrating>MinimumAGI+1</minrating>
       <rating>MaximumAGI</rating>
 	  <requireparent />
     </cyberware>

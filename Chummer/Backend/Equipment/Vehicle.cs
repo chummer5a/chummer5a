@@ -577,8 +577,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     VehicleMod objMod = new VehicleMod(_objCharacter);
-                    objMod.Load(nodChild, blnCopy);
                     objMod.Parent = this;
+                    objMod.Load(nodChild, blnCopy);
                     _lstVehicleMods.Add(objMod);
                 }
             }

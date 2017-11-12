@@ -35,6 +35,7 @@ using System.Reflection;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Extensions;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -1079,11 +1080,28 @@ namespace Chummer
             XmlNodeList objXmlMugshotsList = objXmlDocument.SelectNodes("/character/mugshots/mugshot");
             if (objXmlMugshotsList != null)
             {
+                List<string> lstMugshotsBase64 = new List<string>(objXmlMugshotsList.Count);
                 foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
                 {
                     if (!string.IsNullOrWhiteSpace(objXmlMugshot.InnerText))
                     {
-                        Mugshots.Add(objXmlMugshot.InnerText.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                        lstMugshotsBase64.Add(objXmlMugshot.InnerText);
+                    }
+                }
+                if (lstMugshotsBase64.Count > 1)
+                {
+                    Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
+                    Parallel.For(0, lstMugshotsBase64.Count, i =>
+                    {
+                        objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    });
+                    Mugshots.AddRange(objMugshotImages);
+                }
+                else
+                {
+                    foreach (string strBase64 in lstMugshotsBase64)
+                    {
+                        Mugshots.Add(strBase64.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
                     }
                 }
             }

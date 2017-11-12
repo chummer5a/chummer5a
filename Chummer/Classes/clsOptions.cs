@@ -860,18 +860,19 @@ namespace Chummer
         /// </summary>
         public static List<string> ReadMRUList(string strMRUType = "mru")
         {
-            List<string> lstFiles = new List<string>();
+            List<string> lstFiles = new List<string>(10);
 
             for (int i = 1; i <= 10; i++)
             {
                 object objLoopValue = _objBaseChummerKey.GetValue(strMRUType + i.ToString());
                 if (objLoopValue != null)
                 {
-                    lstFiles.Add(objLoopValue.ToString());
+                    string strFileName = objLoopValue.ToString();
+                    if (File.Exists(strFileName))
+                        lstFiles.Add(strFileName);
                 }
             }
-            lstFiles = lstFiles.Distinct().ToList();
-            return lstFiles;
+            return lstFiles.Distinct().ToList();
         }
         #endregion
 

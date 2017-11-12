@@ -210,5 +210,10 @@
         <name>The Complete Trog</name>
         <code>TCT</code>
       </book>
+	  <book>
+        <id>e894804c-2e11-489e-acc8-f9691a79b261</id>
+        <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
+        <code>SFCC</code>
+      </book>
     </books>
 </chummer>

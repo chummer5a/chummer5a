@@ -37,6 +37,7 @@ using System.Reflection;
  using Point = System.Drawing.Point;
  using Rectangle = System.Drawing.Rectangle;
  using Size = System.Drawing.Size;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -119,39 +120,42 @@ namespace Chummer
 
             // Attempt to cache all XML files that are used the most.
             Timekeeper.Start("cache_load");
-            XmlManager.Load("armor.xml");
-            XmlManager.Load("bioware.xml");
-            XmlManager.Load("books.xml");
-            XmlManager.Load("complexforms.xml");
-            XmlManager.Load("contacts.xml");
-            XmlManager.Load("critters.xml");
-            XmlManager.Load("critterpowers.xml");
-            XmlManager.Load("cyberware.xml");
-            // XmlManager.Load("drugcomponents.xml"); TODO: Re-enable when Custom Drugs branch is merged
-            XmlManager.Load("echoes.xml");
-            XmlManager.Load("gameplayoptions.xml");
-            XmlManager.Load("gear.xml");
-            XmlManager.Load("improvements.xml");
-            XmlManager.Load("licenses.xml");
-            XmlManager.Load("lifemodules.xml");
-            XmlManager.Load("lifestyles.xml");
-            XmlManager.Load("martialarts.xml");
-            XmlManager.Load("mentors.xml");
-            XmlManager.Load("metamagic.xml");
-            XmlManager.Load("metatypes.xml");
-            XmlManager.Load("options.xml");
-            XmlManager.Load("packs.xml");
-            XmlManager.Load("powers.xml");
-            XmlManager.Load("priorities.xml");
-            XmlManager.Load("programs.xml");
-            XmlManager.Load("qualities.xml");
-            XmlManager.Load("ranges.xml");
-            XmlManager.Load("skills.xml");
-            XmlManager.Load("spells.xml");
-            XmlManager.Load("spiritpowers.xml");
-            XmlManager.Load("traditions.xml");
-            XmlManager.Load("vehicles.xml");
-            XmlManager.Load("weapons.xml");
+            Parallel.Invoke(
+                () => XmlManager.Load("armor.xml"),
+                () => XmlManager.Load("bioware.xml"),
+                () => XmlManager.Load("books.xml"),
+                () => XmlManager.Load("complexforms.xml"),
+                () => XmlManager.Load("contacts.xml"),
+                () => XmlManager.Load("critters.xml"),
+                () => XmlManager.Load("critterpowers.xml"),
+                () => XmlManager.Load("cyberware.xml"),
+                //() => XmlManager.Load("drugcomponents.xml"), TODO: Re-enable when Custom Drugs branch is merged
+                () => XmlManager.Load("echoes.xml"),
+                () => XmlManager.Load("gameplayoptions.xml"),
+                () => XmlManager.Load("gear.xml"),
+                () => XmlManager.Load("improvements.xml"),
+                () => XmlManager.Load("licenses.xml"),
+                () => XmlManager.Load("lifemodules.xml"),
+                () => XmlManager.Load("lifestyles.xml"),
+                () => XmlManager.Load("martialarts.xml"),
+                () => XmlManager.Load("mentors.xml"),
+                () => XmlManager.Load("metamagic.xml"),
+                () => XmlManager.Load("metatypes.xml"),
+                () => XmlManager.Load("options.xml"),
+                () => XmlManager.Load("packs.xml"),
+                () => XmlManager.Load("powers.xml"),
+                () => XmlManager.Load("priorities.xml"),
+                () => XmlManager.Load("programs.xml"),
+                () => XmlManager.Load("qualities.xml"),
+                () => XmlManager.Load("ranges.xml"),
+                () => XmlManager.Load("sheets.xml"),
+                () => XmlManager.Load("skills.xml"),
+                () => XmlManager.Load("spells.xml"),
+                () => XmlManager.Load("spiritpowers.xml"),
+                () => XmlManager.Load("traditions.xml"),
+                () => XmlManager.Load("vehicles.xml"),
+                () => XmlManager.Load("weapons.xml")
+            );
             Timekeeper.Finish("cache_load");
 
             frmCharacterRoster frmCharacter = new frmCharacterRoster();

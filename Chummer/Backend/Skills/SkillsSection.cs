@@ -408,7 +408,12 @@ namespace Chummer.Skills
             {
                 if (_skills.Count == 0)
                 {
-                    GetSkillList(_character, FilterOptions.NonSpecial).ForEach(x => { _skills.Add(x); _dicSkills.Add(x.IsExoticSkill ? x.Name + " (" + x.DisplaySpecialization + ")" : x.Name, x); });
+                    List<Skill> lstSkillList = GetSkillList(_character, FilterOptions.NonSpecial);
+                    foreach (Skill objLoopSkill in lstSkillList)
+                    {
+                        _skills.Add(objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecialization + ")" : objLoopSkill.Name, objLoopSkill);
+                    }
                 }
                 return _skills;
             }
@@ -688,7 +693,7 @@ namespace Chummer.Skills
             return string.Compare(rhs.DisplayName, lhs.DisplayName, StringComparison.Ordinal);
         }
 
-        public static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
+        public static List<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
         {
             //TODO less retarded way please
             List<Skill> b = new List<Skill>();

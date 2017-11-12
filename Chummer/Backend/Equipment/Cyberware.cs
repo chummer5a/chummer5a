@@ -32,8 +32,8 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private int _intMatrixCMFilled = 0;
         private int _intRating = 0;
-        private int _intMinRating = 0;
-        private int _intMaxRating = 0;
+        private string _strMinRating = string.Empty;
+        private string _strMaxRating = string.Empty;
         private string _strAllowSubsystems = string.Empty;
         private bool _blnSuite = false;
         private string _strLocation = string.Empty;
@@ -56,7 +56,7 @@ namespace Chummer.Backend.Equipment
         private string _strAltPage = string.Empty;
         private string _strForceGrade = string.Empty;
         private bool _blnDiscountCost = false;
-        private bool _blnVehicleMounted = false;
+        private Vehicle _objParentVehicle = null;
         private bool _blnPrototypeTranshuman;
         private Cyberware _objParent;
         private bool _blnAddToParentESS = false;
@@ -120,11 +120,11 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
-        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, bool blnVehicleMounted = false)
+        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, List<Vehicle> objVehicles, List<TreeNode> objVehicleNodes, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, Vehicle objParentVehicle = null)
         {
             Parent = objParent;
             _strForced = strForced;
-            _blnVehicleMounted = blnVehicleMounted;
+            _objParentVehicle = objParentVehicle;
             objXmlCyberware.TryGetStringFieldQuickly("name", ref _strName);
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
@@ -148,47 +148,10 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
 
             _objImprovementSource = objSource;
-            if (objXmlCyberware["rating"] != null)
-            {
-                if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
-                {
-                    _intMaxRating = _objCharacter.STR.TotalMaximum;
-                }
-                else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
-                {
-                    _intMaxRating = _objCharacter.AGI.TotalMaximum;
-                }
-                else
-                {
-                    int.TryParse(objXmlCyberware["rating"].InnerText, out _intMaxRating);
-                }
-            }
+            objXmlCyberware.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            objXmlCyberware.TryGetStringFieldQuickly("minrating", ref _strMinRating);
 
-            if (objXmlCyberware["minrating"] != null)
-            {
-                if (objXmlCyberware["minrating"].InnerText == "MinimumSTR")
-                {
-                    _intMinRating = 3;
-                }
-                else if (objXmlCyberware["minrating"].InnerText == "MinimumAGI")
-                {
-                    _intMinRating = 3;
-                }
-                else
-                {
-                    try
-                    {
-                        _intMinRating = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
-                    }
-                    catch (FormatException)
-                    {
-                        if (_intMaxRating > 0)
-                            _intMinRating = 1;
-                    }
-                }
-            }
-
-            _intRating = Math.Min(Math.Max(intRating, _intMinRating), _intMaxRating);
+            _intRating = Math.Min(Math.Max(intRating, MinRating), MaxRating);
 
             objXmlCyberware.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
 
@@ -335,7 +298,7 @@ namespace Chummer.Backend.Equipment
                     if (_strForced == "Right" || _strForced == "Left")
                         strForcedSide = _strForced;
                     // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
-                    if (string.IsNullOrEmpty(strForcedSide) && !VehicleMounted)
+                    if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                     {
                         List<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
                         if (!Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Left") ||
@@ -618,8 +581,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("blocksmounts", _strBlocksMounts);
             objWriter.WriteElementString("forced", _strForced);
             objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("minrating", _intMinRating.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("minrating", _strMinRating);
+            objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("subsystems", _strAllowSubsystems);
             objWriter.WriteElementString("grade", _objGrade.Name);
             objWriter.WriteElementString("location", _strLocation);
@@ -630,7 +593,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extraessmultiplicativemultiplier", _decExtraESSMultiplicativeMultiplier.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("forcegrade", _strForceGrade);
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("vehiclemounted", _blnVehicleMounted.ToString());
             objWriter.WriteElementString("prototypetranshuman", _blnPrototypeTranshuman.ToString());
             if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
@@ -722,8 +684,22 @@ namespace Chummer.Backend.Equipment
                 _strBlocksMounts = MyXmlNode?["blocksmounts"]?. InnerText ?? string.Empty;
             objNode.TryGetStringFieldQuickly("forced", ref _strForced);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-            objNode.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
-            objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
+            objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
+            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
+            // Legacy shim for old-form customized attribute
+            int intDummy;
+            if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
+                int.TryParse(MaxRatingString, out intDummy))
+            {
+                XmlNode objMyXmlNode = MyXmlNode;
+                if (objMyXmlNode != null)
+                {
+                    objMyXmlNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
+                    objMyXmlNode.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+                    objMyXmlNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+                    objMyXmlNode.TryGetStringFieldQuickly("cost", ref _strCost);
+                }
+            }
             objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
             if (objNode["grade"] != null)
                 _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter.Options);
@@ -738,7 +714,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
             objNode.TryGetDecFieldQuickly("extraessmultiplicativemultiplier", ref _decExtraESSMultiplicativeMultiplier);
             objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
-            objNode.TryGetBoolFieldQuickly("vehiclemounted", ref _blnVehicleMounted);
             objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
             _nodPairBonus = objNode["pairbonus"];
@@ -855,14 +830,14 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             }
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("rating", _intRating.ToString());
-            objWriter.WriteElementString("minrating", _intMinRating.ToString());
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
+            objWriter.WriteElementString("rating", Rating.ToString());
+            objWriter.WriteElementString("minrating", MinRating.ToString());
+            objWriter.WriteElementString("maxrating", MaxRating.ToString());
             objWriter.WriteElementString("allowsubsystems", _strAllowSubsystems);
-            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
-            objWriter.WriteElementString("grade", _objGrade.DisplayName);
-            objWriter.WriteElementString("location", _strLocation);
-            objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
+            objWriter.WriteElementString("grade", Grade.DisplayName);
+            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_lstGear.Count > 0)
             {
@@ -1483,32 +1458,128 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Minimum Rating.
+        /// Total Minimum Rating.
         /// </summary>
         public int MinRating
         {
             get
             {
-                return _intMinRating;
-            }
-            set
-            {
-                _intMinRating = value;
+                int intReturn = 0;
+                string strRating = _strMinRating;
+
+                // Not a simple integer, so we need to start mucking around with strings
+                if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
+                {
+                    if (strRating.Contains("MaximumSTR"))
+                    {
+                        int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
+                        strRating = strRating.Replace("MaximumSTR", intMaxSTR.ToString());
+                    }
+                    if (strRating.Contains("MaximumAGI"))
+                    {
+                        int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
+                        strRating = strRating.Replace("MaximumAGI", intMaxAGI.ToString());
+                    }
+                    if (strRating.Contains("MinimumSTR"))
+                    {
+                        int intMinSTR = Parent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
+                        strRating = strRating.Replace("MinimumSTR", intMinSTR.ToString());
+                    }
+                    if (strRating.Contains("MinimumAGI"))
+                    {
+                        int intMinAGI = Parent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
+                        strRating = strRating.Replace("MinimumAGI", intMinAGI.ToString());
+                    }
+                    XmlDocument objDummyDoc = new XmlDocument();
+                    XPathNavigator objNav = objDummyDoc.CreateNavigator();
+                    try
+                    {
+                        intReturn = Convert.ToInt32(objNav.Evaluate(strRating));
+                    }
+                    catch (XPathException)
+                    {
+                    }
+                }
+
+                return intReturn;
             }
         }
 
         /// <summary>
-        /// Maximum Rating.
+        /// String representing minimum rating before it would be computed.
+        /// </summary>
+        public string MinRatingString
+        {
+            get
+            {
+                return _strMinRating;
+            }
+            set
+            {
+                _strMinRating = value;
+            }
+        }
+
+        /// <summary>
+        /// Total Maximum Rating.
         /// </summary>
         public int MaxRating
         {
             get
             {
-                return _intMaxRating;
+                int intReturn = 0;
+                string strRating = _strMaxRating;
+
+                // Not a simple integer, so we need to start mucking around with strings
+                if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
+                {
+                    if (strRating.Contains("MaximumSTR"))
+                    {
+                        int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
+                        strRating = strRating.Replace("MaximumSTR", intMaxSTR.ToString());
+                    }
+                    if (strRating.Contains("MaximumAGI"))
+                    {
+                        int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
+                        strRating = strRating.Replace("MaximumAGI", intMaxAGI.ToString());
+                    }
+                    if (strRating.Contains("MinimumSTR"))
+                    {
+                        int intMinSTR = Parent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
+                        strRating = strRating.Replace("MinimumSTR", intMinSTR.ToString());
+                    }
+                    if (strRating.Contains("MinimumAGI"))
+                    {
+                        int intMinAGI = Parent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
+                        strRating = strRating.Replace("MinimumAGI", intMinAGI.ToString());
+                    }
+                    XmlDocument objDummyDoc = new XmlDocument();
+                    XPathNavigator objNav = objDummyDoc.CreateNavigator();
+                    try
+                    {
+                        intReturn = Convert.ToInt32(objNav.Evaluate(strRating));
+                    }
+                    catch (XPathException)
+                    {
+                    }
+                }
+
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// String representing maximum rating before it would be computed.
+        /// </summary>
+        public string MaxRatingString
+        {
+            get
+            {
+                return _strMaxRating;
             }
             set
             {
-                _intMaxRating = value;
+                _strMaxRating = value;
             }
         }
 
@@ -1764,6 +1835,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Vehicle to which this cyberware is attached (if any)
+        /// </summary>
+        public Vehicle ParentVehicle
+        {
+            get
+            {
+                return _objParentVehicle ?? Parent?.ParentVehicle;
+            }
+            set
+            {
+                _objParentVehicle = value;
+            }
+        }
+
+        /// <summary>
         /// Grade that the Cyberware should be forced to use, if applicable.
         /// </summary>
         public string ForceGrade
@@ -1771,18 +1857,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _strForceGrade;
-            }
-        }
-
-        public bool VehicleMounted
-        {
-            get
-            {
-                return _blnVehicleMounted;
-            }
-            set
-            {
-                _blnVehicleMounted = value;
             }
         }
 
@@ -1863,7 +1937,7 @@ namespace Chummer.Backend.Equipment
                             // Remove the trailing character if it is "F" or "R".
                             strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                         }
-                        strAvailExpr = strAvailExpr.Replace("MinRating", _intMinRating.ToString());
+                        strAvailExpr = strAvailExpr.Replace("MinRating", MinRating.ToString());
                         strAvailExpr = strAvailExpr.Replace("Rating", _intRating.ToString());
                         XPathExpression xprAvail = nav.Compile(strAvailExpr);
                         return "+" + nav.Evaluate(xprAvail).ToString() + strAvail;
@@ -1944,7 +2018,7 @@ namespace Chummer.Backend.Equipment
                             string strChildAvailExpr = strChildAvail;
 
                             // Remove the "+" since the expression can't be evaluated if it starts with this.
-                            XPathExpression xprAvail = nav.Compile(strChildAvailExpr.FastEscape('+'));
+                            XPathExpression xprAvail = nav.Compile(strChildAvailExpr.TrimStart('+'));
                             strChildAvail = "+" + nav.Evaluate(xprAvail);
                             if (!string.IsNullOrEmpty(strChildAvailText))
                                 strChildAvail += strChildAvailText;
@@ -2250,7 +2324,7 @@ namespace Chummer.Backend.Equipment
                     strCostExpression = strCostExpression.Replace("Parent Gear Cost", decTotalParentGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.Replace("Gear Cost", decTotalGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    strCostExpression = strCostExpression.Replace("MinRating", _intMinRating.ToString());
+                    strCostExpression = strCostExpression.Replace("MinRating", MinRating.ToString());
                     strCostExpression = strCostExpression.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strCostExpression);
                     decCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
@@ -2339,7 +2413,7 @@ namespace Chummer.Backend.Equipment
                         {
                             decimal decPluginCost = 0;
                             string strMultiplier = objChild.Cost;
-                            strMultiplier = strMultiplier.FastEscape('*');
+                            strMultiplier = strMultiplier.TrimStart('*');
                             decPluginCost = decCost * (Convert.ToDecimal(strMultiplier, GlobalOptions.InvariantCultureInfo) - 1);
 
                             if (objChild.DiscountCost)
@@ -2505,6 +2579,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Base Cyberlimb Strength (before modifiers and customization).
+        /// </summary>
+        public int BaseStrength
+        {
+            get
+            {
+                if (_strCategory != "Cyberlimb")
+                    return 0;
+                if (ParentVehicle != null)
+                    return Math.Max(ParentVehicle.TotalBody, 0);
+                // Base Strength for any limb is 3.
+                return 3;
+            }
+        }
+
+        /// <summary>
         /// Cyberlimb Strength.
         /// </summary>
         public int TotalStrength
@@ -2532,8 +2622,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 }
 
-                // Base Strength for any limb is 3.
-                int intAttribute = 3;
+                int intAttribute = BaseStrength;
                 int intBonus = 0;
 
                 foreach (Cyberware objChild in _objChildren)
@@ -2545,12 +2634,14 @@ namespace Chummer.Backend.Equipment
                     if (objChild.Name == "Enhanced Strength")
                         intBonus = objChild.Rating;
                 }
-                if (!VehicleMounted)
+                if (ParentVehicle == null)
                 {
                     return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
                 }
-                Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
-                return Math.Min(intAttribute + intBonus, objParentVehicle.TotalBody * 2);
+                else
+                {
+                    return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.TotalBody * 2, 1));
+                }
             }
         }
 
@@ -2601,6 +2692,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Base Cyberlimb Agility (before modifiers and customization).
+        /// </summary>
+        public int BaseAgility
+        {
+            get
+            {
+                if (_strCategory != "Cyberlimb")
+                    return 0;
+                if (ParentVehicle != null)
+                    return Math.Max(ParentVehicle.Pilot, 0);
+                // Base Agility for any limb is 3.
+                return 3;
+            }
+        }
+
+        /// <summary>
         /// Cyberlimb Agility.
         /// </summary>
         public int TotalAgility
@@ -2628,8 +2735,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 }
 
-                // Base Strength for any limb is 3.
-                int intAttribute = 3;
+                int intAttribute = BaseAgility;
                 int intBonus = 0;
 
                 foreach (Cyberware objChild in _objChildren)
@@ -2642,12 +2748,14 @@ namespace Chummer.Backend.Equipment
                         intBonus = objChild.Rating;
                 }
 
-                if (!VehicleMounted)
+                if (ParentVehicle == null)
                 {
                     return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
                 }
-                Vehicle objParentVehicle = CommonFunctions.FindByIdWithNameCheck(_objParent.InternalId, _objCharacter.Vehicles);
-                return Math.Min(intAttribute + intBonus, objParentVehicle.Pilot*2);
+                else
+                {
+                    return Math.Min(intAttribute + intBonus, Math.Max(ParentVehicle.Pilot * 2, 1));
+                }
             }
         }
 

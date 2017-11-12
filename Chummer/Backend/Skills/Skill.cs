@@ -500,7 +500,7 @@ namespace Chummer.Skills
         {
             get
             {
-                return RelevantImprovements().All(objImprovement => objImprovement.ImproveType != Improvement.ImprovementType.BlockSkillDefault) && _blnDefault;
+                return _blnDefault && RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault)?.Count == 0;
             }
             set
             {
@@ -620,7 +620,7 @@ namespace Chummer.Skills
                     //TODO translate (could not find it in lang file, did not check old source)
                 }
 
-                IEnumerable<Improvement> lstRelevantImprovements = RelevantImprovements();
+                List<Improvement> lstRelevantImprovements = RelevantImprovements() ?? new List<Improvement>();
 
                 StringBuilder s;
                 if (CyberwareRating() > TotalBaseRating)
