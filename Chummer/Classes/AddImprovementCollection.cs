@@ -4030,6 +4030,26 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // Check for Street Cred bonuses.
+        public void streetcred(XmlNode bonusNode)
+        {
+            Log.Info("streetcred");
+            Log.Info("streetcred = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StreetCred, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Street Cred Multiplier bonuses.
+        public void streetcredmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("streetcredmultiplier");
+            Log.Info("streetcredmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StreetCredMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Complex Form Limit.
         public void complexformlimit(XmlNode bonusNode)
         {

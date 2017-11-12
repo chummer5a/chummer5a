@@ -699,5 +699,19 @@
       <xml />
       <page>Reduces the characters Physical Condition Monitor Penalty to 0 while the Improvement is active.</page>
     </improvement>
+    <improvement>
+      <name>Ignore Condition Monitor Penalty, Physical</name>
+      <id>streetcredmultiplier</id>
+      <internal>streetcredmultiplier</internal>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases or reduces the multiplier used to calculate Street Cred.</page>
+    </improvement>
+    <improvement>
+      <name>Ignore Condition Monitor Penalty, Physical</name>
+      <id>streetcred</id>
+      <internal>streetcred</internal>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases the character's Street Cred by the listed value.</page>
+    </improvement>
   </improvements>
 </chummer>

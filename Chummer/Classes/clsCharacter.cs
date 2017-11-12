@@ -5109,7 +5109,7 @@ namespace Chummer
             get
             {
                 // Street Cred = Career Karma / 10, rounded down
-                int intReturn = CareerKarma / 10;
+                int intReturn = CareerKarma / (10 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCredMultiplier));
 
                 // Deduct burnt Street Cred.
                 intReturn -= _intBurntStreetCred;
@@ -5125,7 +5125,7 @@ namespace Chummer
         {
             get
             {
-                return Math.Max(CalculatedStreetCred + StreetCred, 0);
+                return Math.Max(CalculatedStreetCred + StreetCred + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred), 0);
             }
         }
 
@@ -5136,9 +5136,9 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "(" + LanguageManager.GetString("String_CareerKarma") + " ÷ 10)";
+                string strReturn = $"({LanguageManager.GetString("String_CareerKarma")} ÷ {10 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCredMultiplier)})";
                 if (BurntStreetCred != 0)
-                    strReturn += " - " + LanguageManager.GetString("String_BurntStreetCred");
+                    strReturn += $" - {LanguageManager.GetString("String_BurntStreetCred")}";
 
                 return strReturn;
             }
@@ -5152,7 +5152,7 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety) + _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
+                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety);// + _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
 
                 return intReturn;
             }

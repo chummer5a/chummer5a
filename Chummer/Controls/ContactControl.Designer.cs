@@ -328,77 +328,77 @@ namespace Chummer
             // cboMetatype
             // 
             this.cboMetatype.FormattingEnabled = true;
-            this.cboMetatype.Location = new System.Drawing.Point(128, 47);
+            this.cboMetatype.Location = new System.Drawing.Point(70, 47);
             this.cboMetatype.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboMetatype.Name = "cboMetatype";
-            this.cboMetatype.Size = new System.Drawing.Size(120, 21);
+            this.cboMetatype.Size = new System.Drawing.Size(153, 21);
             this.cboMetatype.TabIndex = 20;
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // cboSex
             // 
             this.cboSex.FormattingEnabled = true;
-            this.cboSex.Location = new System.Drawing.Point(128, 72);
+            this.cboSex.Location = new System.Drawing.Point(70, 72);
             this.cboSex.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboSex.Name = "cboSex";
-            this.cboSex.Size = new System.Drawing.Size(120, 21);
+            this.cboSex.Size = new System.Drawing.Size(153, 21);
             this.cboSex.TabIndex = 21;
             this.cboSex.TextChanged += new System.EventHandler(this.cboSex_TextChanged);
             // 
             // cboType
             // 
             this.cboType.FormattingEnabled = true;
-            this.cboType.Location = new System.Drawing.Point(360, 47);
+            this.cboType.Location = new System.Drawing.Point(70, 122);
             this.cboType.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(120, 21);
+            this.cboType.Size = new System.Drawing.Size(153, 21);
             this.cboType.TabIndex = 22;
             this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
             // 
             // cboPreferredPayment
             // 
             this.cboPreferredPayment.FormattingEnabled = true;
-            this.cboPreferredPayment.Location = new System.Drawing.Point(360, 72);
+            this.cboPreferredPayment.Location = new System.Drawing.Point(333, 72);
             this.cboPreferredPayment.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboPreferredPayment.Name = "cboPreferredPayment";
-            this.cboPreferredPayment.Size = new System.Drawing.Size(120, 21);
+            this.cboPreferredPayment.Size = new System.Drawing.Size(144, 21);
             this.cboPreferredPayment.TabIndex = 23;
             this.cboPreferredPayment.TextChanged += new System.EventHandler(this.cboPreferredPayment_TextChanged);
             // 
             // cboAge
             // 
             this.cboAge.FormattingEnabled = true;
-            this.cboAge.Location = new System.Drawing.Point(128, 97);
+            this.cboAge.Location = new System.Drawing.Point(70, 97);
             this.cboAge.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboAge.Name = "cboAge";
-            this.cboAge.Size = new System.Drawing.Size(120, 21);
+            this.cboAge.Size = new System.Drawing.Size(153, 21);
             this.cboAge.TabIndex = 24;
             this.cboAge.TextChanged += new System.EventHandler(this.cboAge_TextChanged);
             // 
             // cboHobbiesVice
             // 
             this.cboHobbiesVice.FormattingEnabled = true;
-            this.cboHobbiesVice.Location = new System.Drawing.Point(360, 97);
+            this.cboHobbiesVice.Location = new System.Drawing.Point(333, 97);
             this.cboHobbiesVice.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboHobbiesVice.Name = "cboHobbiesVice";
-            this.cboHobbiesVice.Size = new System.Drawing.Size(120, 21);
+            this.cboHobbiesVice.Size = new System.Drawing.Size(144, 21);
             this.cboHobbiesVice.TabIndex = 25;
             this.cboHobbiesVice.TextChanged += new System.EventHandler(this.cboHobbiesVice_TextChanged);
             // 
             // cboPersonalLife
             // 
             this.cboPersonalLife.FormattingEnabled = true;
-            this.cboPersonalLife.Location = new System.Drawing.Point(128, 122);
+            this.cboPersonalLife.Location = new System.Drawing.Point(333, 47);
             this.cboPersonalLife.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboPersonalLife.Name = "cboPersonalLife";
-            this.cboPersonalLife.Size = new System.Drawing.Size(120, 21);
+            this.cboPersonalLife.Size = new System.Drawing.Size(144, 21);
             this.cboPersonalLife.TabIndex = 26;
             this.cboPersonalLife.TextChanged += new System.EventHandler(this.cboPersonalLife_TextChanged);
             // 
             // lblMetatype
             // 
             this.lblMetatype.AutoSize = true;
-            this.lblMetatype.Location = new System.Drawing.Point(67, 50);
+            this.lblMetatype.Location = new System.Drawing.Point(8, 50);
             this.lblMetatype.Name = "lblMetatype";
             this.lblMetatype.Size = new System.Drawing.Size(54, 13);
             this.lblMetatype.TabIndex = 27;
@@ -409,7 +409,7 @@ namespace Chummer
             // lblSex
             // 
             this.lblSex.AutoSize = true;
-            this.lblSex.Location = new System.Drawing.Point(93, 75);
+            this.lblSex.Location = new System.Drawing.Point(34, 75);
             this.lblSex.Name = "lblSex";
             this.lblSex.Size = new System.Drawing.Size(28, 13);
             this.lblSex.TabIndex = 28;
@@ -420,7 +420,7 @@ namespace Chummer
             // lblAge
             // 
             this.lblAge.AutoSize = true;
-            this.lblAge.Location = new System.Drawing.Point(92, 100);
+            this.lblAge.Location = new System.Drawing.Point(33, 100);
             this.lblAge.Name = "lblAge";
             this.lblAge.Size = new System.Drawing.Size(29, 13);
             this.lblAge.TabIndex = 29;
@@ -431,7 +431,7 @@ namespace Chummer
             // lblPersonalLife
             // 
             this.lblPersonalLife.AutoSize = true;
-            this.lblPersonalLife.Location = new System.Drawing.Point(50, 125);
+            this.lblPersonalLife.Location = new System.Drawing.Point(256, 50);
             this.lblPersonalLife.Name = "lblPersonalLife";
             this.lblPersonalLife.Size = new System.Drawing.Size(71, 13);
             this.lblPersonalLife.TabIndex = 30;
@@ -442,7 +442,7 @@ namespace Chummer
             // lblType
             // 
             this.lblType.AutoSize = true;
-            this.lblType.Location = new System.Drawing.Point(320, 50);
+            this.lblType.Location = new System.Drawing.Point(30, 125);
             this.lblType.Name = "lblType";
             this.lblType.Size = new System.Drawing.Size(34, 13);
             this.lblType.TabIndex = 31;
@@ -453,7 +453,7 @@ namespace Chummer
             // lblPreferredPayment
             // 
             this.lblPreferredPayment.AutoSize = true;
-            this.lblPreferredPayment.Location = new System.Drawing.Point(257, 75);
+            this.lblPreferredPayment.Location = new System.Drawing.Point(230, 75);
             this.lblPreferredPayment.Name = "lblPreferredPayment";
             this.lblPreferredPayment.Size = new System.Drawing.Size(97, 13);
             this.lblPreferredPayment.TabIndex = 32;
@@ -464,7 +464,7 @@ namespace Chummer
             // lblHobbiesVice
             // 
             this.lblHobbiesVice.AutoSize = true;
-            this.lblHobbiesVice.Location = new System.Drawing.Point(279, 100);
+            this.lblHobbiesVice.Location = new System.Drawing.Point(252, 100);
             this.lblHobbiesVice.Name = "lblHobbiesVice";
             this.lblHobbiesVice.Size = new System.Drawing.Size(75, 13);
             this.lblHobbiesVice.TabIndex = 33;

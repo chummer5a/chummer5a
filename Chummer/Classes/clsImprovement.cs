@@ -258,6 +258,8 @@ namespace Chummer
             PhysicalIllusionResist,
             DetectionSpellResist,
             AddLimb,
+            StreetCredMultiplier,
+            StreetCred,
             // V This one should always be the last defined enum
             NumImprovementTypes
         }

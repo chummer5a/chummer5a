@@ -222,6 +222,9 @@ Application Changes:
 - Cyber-singularity Seeker and Redliner will now properly update when the character is loaded, and adding or removing Redliner will automatically update labels for the currently selected cyberlimb. Fixes #2036.
 - Added the ability to specify metatype, age, sex, personal life, service type, hobbies/vice, and preferred payment method to contacts. Any non-blank fields out of those seven will get printed in any character sheet using a template from the Shadowrun 5 collection.
 - Added the ability to add gear to armor mods. For now, this is only used by Full Body Armor helmet. Fixes #2043.
+- Implemented a new bonus type for Street Cred Multiplier, to be used by the Consumnate Professional quality. Fixes #2048
+- Implemented a new bonus type for Street Cred, allowing Improvements to provide bonuses to Street Cred directly. Currently unused by anything. 
+- Removed the increase to Notoriety that Enemies provide, as it's not a relevant rule in SR5.
 
 Data Changes:
 
