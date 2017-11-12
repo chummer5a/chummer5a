@@ -32,6 +32,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using Chummer.Backend.Extensions;
 
 namespace Chummer
 {
@@ -244,9 +245,7 @@ namespace Chummer
         {
             int pilotRating = vehicle.Pilot;
 
-            Gear maybeAutoSoft =
-                vehicle.Gear.SelectMany(x => x.ThisAndAllChildren())
-                    .FirstOrDefault(x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
+            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
 
             if (maybeAutoSoft != null)
             {

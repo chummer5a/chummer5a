@@ -284,49 +284,52 @@ namespace Chummer.Skills
         protected int Bonus(bool AddToRating)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements().Where(x => x.AddToRating == AddToRating).Sum(x => x.Value);
+            return RelevantImprovements(x => x.AddToRating == AddToRating)?.Sum(x => x.Value) ?? 0;
         }
 
-        private IEnumerable<Improvement> RelevantImprovements()
+        private List<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
         {
-            if (string.IsNullOrWhiteSpace(Name)) yield break;
+            if (string.IsNullOrWhiteSpace(Name))
+                return null;
+            List<Improvement> lstReturn = new List<Improvement>();
             foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
-                if(!objImprovement.Enabled) continue;
-
+                if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
+                    continue;
                 switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.Skill:
                         if (objImprovement.ImprovedName == Name)
-                            yield return objImprovement;
+                            lstReturn.Add(objImprovement);
                         break;
                     case Improvement.ImprovementType.SkillGroup:
-                        if(objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
-                            yield return objImprovement;
+                        if (objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+                            lstReturn.Add(objImprovement);
                         break;
                     case Improvement.ImprovementType.SkillCategory:
                         if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
-                            yield return objImprovement;
+                            lstReturn.Add(objImprovement);
                         break;
                     case Improvement.ImprovementType.SkillAttribute:
                         if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
-                            yield return objImprovement;
+                            lstReturn.Add(objImprovement);
                         break;
                     case Improvement.ImprovementType.BlockSkillDefault:
                         if (objImprovement.ImprovedName == SkillGroup)
-                            yield return objImprovement;
+                            lstReturn.Add(objImprovement);
                         break;
                     case Improvement.ImprovementType.SwapSkillAttribute:
                     case Improvement.ImprovementType.SwapSkillSpecAttribute:
                         if (objImprovement.Target == Name)
-                            yield return objImprovement;
+                            lstReturn.Add(objImprovement);
                         break;
                     case Improvement.ImprovementType.EnhancedArticulation:
                         if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
-                            yield return objImprovement;
+                            lstReturn.Add(objImprovement);
                         break;
                 }
             }
+            return lstReturn;
         }
 
         public int WoundModifier

@@ -2327,20 +2327,6 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Methods
-
-        public IEnumerable<Gear> ThisAndAllChildren()
-        {
-            yield return this;
-
-            foreach (Gear objChild in _objChildren)
-            {
-                foreach (Gear child in objChild.ThisAndAllChildren())
-                {
-                    yield return child;
-                }
-            }
-        }
-
         public bool IsIdenticalToOtherGear(Gear objOtherGear)
         {
             if (Name == objOtherGear.Name && Category == objOtherGear.Category && Rating == objOtherGear.Rating && Extra == objOtherGear.Extra && GearName == objOtherGear.GearName && Notes == objOtherGear.Notes)

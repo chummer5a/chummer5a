@@ -10967,14 +10967,14 @@ namespace Chummer
                     break;
                 case KarmaExpenseType.SkillSpec:  //I am resonable sure those 2 are the same. Was written looking at old AddSpecialization code
                 case KarmaExpenseType.AddSpecialization:
-                {
-                    Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.SkillsSection.KnowledgeSkills, _objCharacter.SkillsSection.Skills)
-                            .FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
+                    {
+                        Skill ContainingSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
+                        if (ContainingSkill == null)
+                            ContainingSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
 
-                    if (ContainingSkill != null)
-                        ContainingSkill.Specializations.Remove(
-                            ContainingSkill.Specializations.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId));
-                }
+                        if (ContainingSkill != null)
+                            ContainingSkill.Specializations.Remove(ContainingSkill.Specializations.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId));
+                    }
                     break;
                 case KarmaExpenseType.ImproveSkillGroup:
                     // Locate the Skill Group that was affected.
