@@ -221,6 +221,10 @@ namespace Chummer
         /// <summary>
         /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
         /// </summary>
+        /// <param name="boolIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
+        /// <param name="objXmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
+        /// <param name="objXmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode objXmlParentNode, XmlNode objXmlOperationNode, bool boolIsOrNode = false)
         {
             if (objXmlOperationNode == null)
