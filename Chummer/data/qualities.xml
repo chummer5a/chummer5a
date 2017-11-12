@@ -1654,7 +1654,9 @@
       <name>Consummate Professional</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <streetcredmultiplier>10</streetcredmultiplier>
+      </bonus>
       <source>AP</source>
       <page>17</page>
     </quality>
