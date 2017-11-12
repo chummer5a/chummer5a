@@ -377,6 +377,7 @@ Data Changes:
 - Added a set of custom rules that follows the house rules for ShadowNET, courtesy of /u/Malibi.
 - Added the Coyote mentor spirit from Shadows in Focus: Sioux Nation: Counting Coup. Fixes #2046.
 - Fixed the cost and availability of the Ruhrmetal Wolf II to the correct values.
+- Added the previously missing Strike the Darkness technique to Way of Unified Mana (Hapsum-Do).
 
 New Strings:
 - Message_Improvement_EmptySelectionList
