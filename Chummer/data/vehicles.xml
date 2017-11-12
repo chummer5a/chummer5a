@@ -1884,10 +1884,10 @@
       <source>R5</source>
       <accel>2</accel>
       <armor>12</armor>
-      <avail>18R</avail>
+      <avail>20F</avail>
       <body>24</body>
       <category>Corpsec/Police/Military</category>
-      <cost>225000</cost>
+      <cost>330000</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>

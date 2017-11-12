@@ -375,6 +375,7 @@ Data Changes:
 - Fixed Grenade Launchers and Missile Launchers not having their ranges properly displayed.
 - Added a set of custom rules that follows the house rules for ShadowNET, courtesy of /u/Malibi.
 - Added the Coyote mentor spirit from Shadows in Focus: Sioux Nation: Counting Coup. Fixes #2046.
+- Fixed the cost and availability of the Ruhrmetal Wolf II to the correct values.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
