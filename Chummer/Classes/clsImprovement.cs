@@ -1124,24 +1124,15 @@ namespace Chummer
         /// <summary>
         /// Remove all of the Improvements for an XML Node.
         /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements. If empty, deletes all improvements that match objImprovementSource</param>
         /// <param name="blnReapplyImprovements">Remove all improvements from the improvements list that would be reapplied by Reapply Improvements.</param>
         public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "", bool blnReapplyImprovements = false)
         {
-            Log.Enter("RemoveImprovements");
-            if (blnReapplyImprovements)
-                Log.Info("Wiping all improvements that would be refreshed by Re-Apply Improvements.");
-            else
-            {
-                Log.Info("objImprovementSource = " + objImprovementSource.ToString());
-                Log.Info("strSourceName = " + strSourceName);
-            }
-
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
             {
-                Log.Exit("RemoveImprovements");
                 return;
             }
 
@@ -1149,6 +1140,7 @@ namespace Chummer
             List<Improvement> objImprovementList = null;
             if (blnReapplyImprovements)
             {
+                Log.Info("Wiping all improvements that would be refreshed by Re-Apply Improvements.");
                 objImprovementList = objCharacter.Improvements.Where(objImprovement =>
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.AIProgram ||
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Armor ||
@@ -1166,7 +1158,31 @@ namespace Chummer
                                                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Spell).ToList();
             }
             else
+            {
+                Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+                Log.Info("strSourceName = " + strSourceName);
                 objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && (string.IsNullOrEmpty(strSourceName) || objImprovement.SourceName == strSourceName)).ToList();
+            }
+            RemoveImprovements(objCharacter, objImprovementList);
+        }
+
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementList">List of improvements to delete.</param>
+        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList)
+        {
+            Log.Enter("RemoveImprovements");
+
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                Log.Exit("RemoveImprovements");
+                return;
+            }
+
+            // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
             // Now that we have all of the applicable Improvements, remove them from the character.
             foreach (Improvement objImprovement in objImprovementList)

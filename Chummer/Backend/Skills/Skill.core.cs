@@ -56,7 +56,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode)
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
                 {
                     return (SkillGroupObject == null || SkillGroupObject.Rating <= 0);
                 }
@@ -107,7 +107,7 @@ namespace Chummer.Skills
                 _base = Math.Max(0, value - FreeBase());
 
                 //if old != base, base changed
-                if (old != _base) OnPropertyChanged();
+                if (old != _base) OnPropertyChanged(nameof(Base));
 
                 //if max is changed, karma was too
                 if(max != 0) OnPropertyChanged(nameof(Karma));
@@ -123,7 +123,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0))
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && ((SkillGroupObject?.Karma ?? 0) > 0))
                 {
                     _karma = 0;
                     Specializations.RemoveAll(x => !x.Free);
@@ -144,7 +144,7 @@ namespace Chummer.Skills
                 //Handle free levels, don,t go below 0
                 _karma = Math.Max(0, value - (FreeKarma() + (SkillGroupObject?.Karma ?? 0))); 
 
-                if(old != _karma) OnPropertyChanged();
+                if(old != _karma) OnPropertyChanged(nameof(Karma));
 
                 KarmaSpecForcedMightChange();
             }
@@ -200,8 +200,8 @@ namespace Chummer.Skills
             }
             set
             {
-                _buyWithKarma = (value ||  ForceBuyWithKarma()) && !UnForceBuyWithKarma();
-                OnPropertyChanged();
+                _buyWithKarma = (value || ForceBuyWithKarma()) && !UnForceBuyWithKarma();
+                OnPropertyChanged(nameof(BuyWithKarma));
             }
         }
 

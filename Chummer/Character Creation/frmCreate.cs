@@ -19417,10 +19417,7 @@ namespace Chummer
             }
 
             // Remove any Improvements the character received from their Metatype.
-            foreach (Improvement objImprovement in lstImprovement)
-            {
-                _objCharacter.Improvements.Remove(objImprovement);
-            }
+            ImprovementManager.RemoveImprovements(_objCharacter, lstImprovement);
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
             foreach (Quality objQuality in lstRemoveQualities)

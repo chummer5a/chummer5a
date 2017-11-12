@@ -235,6 +235,11 @@ Application Changes:
 - Fixed crashes related to the user's connection to GitHub getting severed mid-update.
 - Fixed the few-second delay encountered when launching the updater form.
 - The optional rule for karma costs to increase special attributes not being decreased by essence loss now works and saves its value properly. It is implemented by having essence loss affect the attribute's augmented value instead of its maxima and minima, and characters burn out if their augmented reduction from essence loss becomes greater than their current maximum. Fixes #1808.
+- Fixed a bug where tooltips for skill groups would not be updated properly.
+- Fixed a bug where removing sources for special skills would not also remove skill groups.
+- Fixed a bug where current priority settings would not get properly saved for if you wish to change priorities in create mode.
+- Fixed a bug where removing/altering sources for free skill levels would not properly update the skill section with altered ratings. Fixes #1340.
+- Fixed bugs where enabling the house rule for strict interpretation of skill group breaking in create mode would also affect characters in career mode.
 
 Data Changes:
 

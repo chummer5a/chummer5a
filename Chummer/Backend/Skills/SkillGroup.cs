@@ -220,12 +220,10 @@ namespace Chummer.Skills
             return newGroup;
         }
 
-
-
         private void Add(Skill skill)
         {
             _affectedSkills.Add(skill);
-            _toolTip = null;
+            _toolTip = string.Empty;
             OnPropertyChanged(nameof(ToolTip));
             skill.PropertyChanged += SkillOnPropertyChanged;
         }
@@ -369,17 +367,13 @@ namespace Chummer.Skills
             }
         }
 
-        private string _toolTip = null;
+        private string _toolTip = string.Empty;
         public string ToolTip
         {
             get
             {
-                if (_toolTip != null) return _toolTip;
-
-                _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills");
-                _toolTip += " ";
-                _toolTip += string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
-
+                if (string.IsNullOrEmpty(_toolTip))
+                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
                 return _toolTip;
             }
         }
@@ -443,13 +437,21 @@ namespace Chummer.Skills
             _cachedFreeBase = int.MinValue;
             _cachedFreeLevels = int.MinValue;
 
-            if (improvements.Any(imp => imp.ImprovedName == _groupName && imp.ImproveType == Improvement.ImprovementType.SkillGroupLevel))
+            bool blnHasSkillGroupLevel = improvements.Any(imp => imp.ImprovedName == Name && imp.ImproveType == Improvement.ImprovementType.SkillGroupLevel);
+            bool blnHasSkillGroupBase = improvements.Any(imp => imp.ImprovedName == Name && imp.ImproveType == Improvement.ImprovementType.SkillGroupBase);
+            if (blnHasSkillGroupLevel)
             {
                 OnPropertyChanged(nameof(FreeLevels));
-                OnPropertyChanged(nameof(Base));
-                //OnPropertyChanged(nameof(Base));
             }
-
+            if (blnHasSkillGroupBase)
+            {
+                OnPropertyChanged(nameof(FreeBase));
+            }
+            if (blnHasSkillGroupLevel || blnHasSkillGroupBase)
+            {
+                OnPropertyChanged(nameof(Karma));
+                OnPropertyChanged(nameof(Base));
+            }
         }
         private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {

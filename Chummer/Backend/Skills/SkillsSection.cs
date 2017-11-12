@@ -27,7 +27,7 @@ namespace Chummer.Skills
         private bool _blnSchoolOfHardKnocks;
         private bool _blnTechSchool;
         private bool _blnLinguist;
-        private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>(); 
+        private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
 
         public SkillsSection(Character character)
         {
@@ -123,6 +123,15 @@ namespace Chummer.Skills
                         kno.Specializations.AddRange(skill.Specializations);
                         KnowledgeSkills.Add(kno);
                     }
+                }
+            }
+            //remove skillgroups whose skills did not make the final cut
+            for (var i = SkillGroups.Count - 1; i >= 0; i--)
+            {
+                if (!SkillGroups[i].GetEnumerable().Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                {
+                    SkillGroups.RemoveAt(i);
+                    i--;
                 }
             }
         }

@@ -173,9 +173,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intMetatypeMin = value;
-                OnPropertyChanged(nameof(FreeBase));
-                OnPropertyChanged(nameof(TotalBase));
-                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
+                OnPropertyChanged(nameof(TotalMinimum));
             }
         }
 
@@ -197,7 +195,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intMetatypeMax = value;
-                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
+                OnPropertyChanged(nameof(TotalMaximum));
             }
         }
 
@@ -213,7 +211,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intMetatypeAugMax = value;
-                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
+                OnPropertyChanged(nameof(TotalAugmentedMaximum));
             }
         }
 
@@ -229,7 +227,6 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intBase = value;
-                OnPropertyChanged(nameof(Value));
             }
         }
 
@@ -266,7 +263,6 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intKarma = value;
-                OnPropertyChanged(nameof(Value));
             }
         }
 
@@ -305,7 +301,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intAugModifier = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Augmented));
             }
         }
 
@@ -1213,7 +1209,6 @@ namespace Chummer.Backend.Attributes
                 var v = new PropertyChangedEventArgs(s);
                 PropertyChanged?.Invoke(this, v);
             }
-
         }
 
 		/// <summary>

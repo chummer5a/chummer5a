@@ -353,17 +353,11 @@ namespace Chummer.Skills
             return s;
         }
 
-        protected Skill(Character character, string group)
+        protected Skill(Character character)
         {
             _character = character;
-            _group = group;
 
             _character.PropertyChanged += OnCharacterChanged;
-            SkillGroupObject = Skills.SkillGroup.Get(this);
-            if (SkillGroupObject != null)
-            {
-                SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
-            }
 
             character.SkillImprovementEvent += OnImprovementEvent;
             Specializations.ListChanged += SpecializationsOnListChanged;
@@ -371,7 +365,7 @@ namespace Chummer.Skills
 
 
         //load from data
-        protected Skill(Character character, XmlNode n) : this(character, n?["skillgroup"]?.InnerText)
+        protected Skill(Character character, XmlNode n) : this(character)
         //Ugly hack, needs by then
         {
             if (n == null)
@@ -393,6 +387,18 @@ namespace Chummer.Skills
             foreach (XmlNode node in n["specs"]?.ChildNodes)
             {
                 SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
+            }
+
+            string strGroup = n?["skillgroup"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strGroup))
+            {
+                _group = strGroup;
+                SkillGroupObject = Skills.SkillGroup.Get(this);
+                if (SkillGroupObject != null)
+                {
+                    SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
+                }
             }
         }
 
@@ -1128,10 +1134,10 @@ namespace Chummer.Skills
             _cachedFreeKarma = int.MinValue;
             _cachedWareRating = int.MinValue;
             if (improvements.Any(imp =>
-                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects) &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.SkillBase || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects) &&
                 imp.ImprovedName == _name))
             {
-                OnPropertyChanged(nameof(PoolModifiers));
+                OnPropertyChanged(nameof(Base));
             }
             else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization))
             {
@@ -1145,11 +1151,10 @@ namespace Chummer.Skills
             else if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
             {
                 OnPropertyChanged(nameof(AttributeModifiers));
+                OnPropertyChanged(nameof(PoolModifiers));
             }
             //TODO: Doesn't work
-            else if (
-                improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault))
+            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault))
             {
                 OnPropertyChanged(nameof(PoolToolTip));
             }

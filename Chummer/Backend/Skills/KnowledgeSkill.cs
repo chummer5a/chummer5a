@@ -71,7 +71,7 @@ namespace Chummer.Skills
         private string _type;
         public bool ForcedName { get; }
 
-        public KnowledgeSkill(Character character) : base(character, (string)null)
+        public KnowledgeSkill(Character character) : base(character)
         {
             AttributeObject = character.LOG;
             AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
