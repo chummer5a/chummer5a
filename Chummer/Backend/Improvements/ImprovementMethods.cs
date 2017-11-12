@@ -387,6 +387,10 @@ namespace Chummer
                     return objImprovementAdder.fadingresist;
                 case "NOTORIETY":
                     return objImprovementAdder.notoriety;
+                case "STREETCRED":
+                    return objImprovementAdder.streetcred;
+                case "STREETCREDMULTIPLIER":
+                    return objImprovementAdder.streetcredmultiplier;
                 case "COMPLEXFORMLIMIT":
                     return objImprovementAdder.complexformlimit;
                 case "SPELLLIMIT":
