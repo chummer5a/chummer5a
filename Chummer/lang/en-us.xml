@@ -8144,6 +8144,10 @@ Do you want to continue?</text>
 	  <key>String_Update_Available</key>
 	  <text>Update available to version ({0})! Currently installed version is ({1}).</text>
 	</string>
+  <string>
+	  <key>String_Checking_For_Update</key>
+	  <text>Checking for Updates...</text>
+	</string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
     <string>

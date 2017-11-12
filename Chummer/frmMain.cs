@@ -221,11 +221,17 @@ namespace Chummer
             {
                 _frmUpdate = new frmUpdate();
                 _frmUpdate.Show();
+                _frmUpdate.FormClosed += ResetFrmUpdate;
             }
             else
             {
                 _frmUpdate.Focus();
             }
+        }
+
+        private void ResetFrmUpdate(object sender, EventArgs e)
+        {
+            _frmUpdate = null;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

@@ -44,6 +44,8 @@ namespace Chummer
         private string _strTempPath = string.Empty;
         private readonly string _strAppPath = Application.StartupPath;
         private bool _blnPreferNightly = false;
+        private BackgroundWorker _workerConnectionLoader = new BackgroundWorker();
+
         public frmUpdate()
         {
             Log.Info("frmUpdate");
@@ -57,6 +59,45 @@ namespace Chummer
         private void frmUpdate_Load(object sender, EventArgs e)
         {
             Log.Info("frmUpdate_Load");
+            Log.Info("Check Global Mutex for duplicate");
+            bool blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
+            // If there is more than 1 instance running, do not let the application be updated.
+            if (blnHasDuplicate)
+            {
+                Log.Info("More than one instance, exiting");
+                if (!_blnSilentMode && !_blnSilentCheck)
+                    MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances"), LanguageManager.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Log.Info("frmUpdate_Load");
+                Close();
+            }
+
+            _workerConnectionLoader.WorkerReportsProgress = false;
+            _workerConnectionLoader.WorkerSupportsCancellation = false;
+            _workerConnectionLoader.DoWork += LoadConnection;
+            _workerConnectionLoader.RunWorkerCompleted += PopulateChangelog;
+            _workerConnectionLoader.RunWorkerAsync();
+
+            Log.Exit("frmUpdate_Load");
+        }
+
+        private void PopulateChangelog(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Action<string> objAction = new Action<string>(x => webNotes.DocumentText = x);
+            webNotes.Invoke(objAction, new object[] {
+                "<font size=\"-1\" face=\"Courier New,Serif\">" +
+                                                File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"))
+                                                    .Replace("&", "&amp;")
+                                                    .Replace("<", "&lt;")
+                                                    .Replace(">", "&gt;")
+                                                    .Replace("\n", "<br />") + "</font>"
+            });
+            DoVersionTextUpdate();
+            cmdUpdate.Enabled = true;
+        }
+
+        private void LoadConnection(object sender, DoWorkEventArgs e)
+        {
             _blnUnBlocked = CheckConnection("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt");
 
             if (_blnUnBlocked)
@@ -70,38 +111,25 @@ namespace Chummer
                     wc.Proxy = wp;
                     wc.Encoding = Encoding.UTF8;
                     Log.Info("Download the changelog");
-                    wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt",
-                        Path.Combine(Application.StartupPath, "changelog.txt"));
-                    webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" +
-                                            File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"))
-                                                .Replace("&", "&amp;")
-                                                .Replace("<", "&lt;")
-                                                .Replace(">", "&gt;")
-                                                .Replace("\n", "<br />") + "</font>";
-                }
-
-                Log.Info("Check Global Mutex for duplicate");
-                bool blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
-                Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
-                // If there is more than 1 instance running, do not let the application be updated.
-                if (blnHasDuplicate)
-                {
-                    Log.Info("More than one instance, exiting");
-                    if (!_blnSilentMode && !_blnSilentCheck)
-                        MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances"),
-                            LanguageManager.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    Log.Info("frmUpdate_Load");
-                    Close();
+                    try
+                    {
+                        wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt",
+                            Path.Combine(Application.StartupPath, "changelog.txt"));
+                    }
+                    catch (WebException)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Log.Exit("frmUpdate_Load");
+                        Close();
+                    }
                 }
             }
             else
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log.Exit("frmUpdate_Load");
                 Close();
             }
-            Log.Exit("frmUpdate_Load");
         }
 
         private bool CheckConnection(string strURL)
@@ -109,7 +137,16 @@ namespace Chummer
             Uri uriConnectionAddress;
             if (Uri.TryCreate(strURL, UriKind.Absolute, out uriConnectionAddress))
             {
-                HttpWebRequest request = WebRequest.Create(uriConnectionAddress) as HttpWebRequest;
+                HttpWebRequest request = null;
+                try
+                {
+                    WebRequest objTemp = WebRequest.Create(uriConnectionAddress);
+                    request = objTemp as HttpWebRequest;
+                }
+                catch (System.Security.SecurityException)
+                {
+                    return false;
+                }
 
                 if (request != null)
                 {
@@ -135,7 +172,16 @@ namespace Chummer
                 {
                     strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
                 }
-                HttpWebRequest request = WebRequest.Create(strUpdateLocation) as HttpWebRequest;
+                HttpWebRequest request = null;
+                try
+                {
+                    WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                    request = objTemp as HttpWebRequest;
+                }
+                catch (System.Security.SecurityException)
+                {
+                    return;
+                }
                 if (request == null)
                     return;
                 request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
@@ -188,7 +234,6 @@ namespace Chummer
             {
                 LatestVersion = LanguageManager.GetString("String_No_Update_Found");
             }
-            DoVersionTextUpdate();
         }
 
         /// <summary>
@@ -399,7 +444,15 @@ namespace Chummer
             WebClient client = new WebClient();
             client.DownloadProgressChanged += wc_DownloadProgressChanged;
             client.DownloadFileCompleted += wc_DownloadCompleted;
-            client.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
+            try
+            {
+                client.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
+            }
+            catch (WebException)
+            {
+                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmdUpdate.Enabled = true;
+            }
         }
 
         #region AsyncDownload Events

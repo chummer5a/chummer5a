@@ -231,6 +231,9 @@ Application Changes:
 - Implemented a new bonus type for Street Cred Multiplier, to be used by the Consumnate Professional quality. Fixes #2048
 - Implemented a new bonus type for Street Cred, allowing Improvements to provide bonuses to Street Cred directly. Currently unused by anything. 
 - Removed the increase to Notoriety that Enemies provide, as it's not a relevant rule in SR5.
+- Fixed a bug where the updater form could not be re-opened after it has been closed once.
+- Fixed crashes related to the user's connection to GitHub getting severed mid-update.
+- Fixed the few-second delay encountered when launching the updater form.
 
 Data Changes:
 
@@ -432,6 +435,7 @@ New Strings:
 - Label_Contact_PersonalLife
 - Label_Contact_PreferredPayment
 - Label_Contact_HobbiesVice
+- String_Checking_For_Update
 
 Changes Strings:
 - Message_PositiveQualityLimit
