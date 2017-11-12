@@ -872,6 +872,10 @@ namespace Chummer
 
             _blnLoading = false;
 
+            ScheduleCharacterUpdate();
+            // Directly calling here so that we can properly unset the dirty flag after the update
+            UpdateCharacterInfo();
+
             // Select the Magician's Tradition.
             if (!string.IsNullOrEmpty(_objCharacter.MagicTradition))
                 cboTradition.SelectedValue = _objCharacter.MagicTradition;
@@ -898,19 +902,14 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objCharacter.SpiritManipulation))
                 cboSpiritManipulation.SelectedValue = _objCharacter.SpiritManipulation;
 
-
-
             // Update the Fading CharacterAttribute Value.
             if (_objCharacter.RESEnabled)
             {
-            // Select the Technomancer's Stream.
-            if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
-                cboStream.SelectedValue = _objCharacter.TechnomancerStream;
+                // Select the Technomancer's Stream.
+                if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
+                    cboStream.SelectedValue = _objCharacter.TechnomancerStream;
                 CalculateTraditionDrain(_objCharacter.TechnomancerFading, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
             }
-            // Clear the Dirty flag which gets set when creating a new Character.
-            _blnIsDirty = false;
-            UpdateWindowTitle();
 
             treGear.ItemDrag += treGear_ItemDrag;
             treGear.DragEnter += treGear_DragEnter;
@@ -979,9 +978,6 @@ namespace Chummer
             PopulateCalendar();
             RefreshImprovements();
 
-            ScheduleCharacterUpdate();
-            // Directly calling here so that we can properly unset the dirty flag after the update
-            UpdateCharacterInfo();
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
 
@@ -1061,6 +1057,8 @@ namespace Chummer
             // Reset the ToolStrip so the Save button is removed for the currently closing window.
             if (!e.Cancel)
             {
+                _blnLoading = true;
+                Application.Idle -= UpdateCharacterInfo;
                 GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
@@ -2244,6 +2242,10 @@ namespace Chummer
             if (treWeapons.SelectedNode != null)
                 RefreshSelectedWeapon();
 
+            ScheduleCharacterUpdate();
+            // Immediately call character update because it re-applies essence loss improvements
+            UpdateCharacterInfo();
+
             UseWaitCursor = false;
 
             if (!string.IsNullOrEmpty(strOutdatedItems))
@@ -2254,7 +2256,6 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
-            ScheduleCharacterUpdate();
         }
 
         private void mnuSpecialPossess_Click(object sender, EventArgs e)
@@ -18456,11 +18457,10 @@ namespace Chummer
         /// </summary>
         public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
-            if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate || _objCharacter == null)
+            if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate)
                 return;
             
             _blnSkipUpdate = true;
-            SuspendLayout();
             string strTip = string.Empty;
 
             if (!_objCharacter.RefreshRedliner())
@@ -18491,35 +18491,31 @@ namespace Chummer
             // Create the Essence Loss Improvements.
             if (intReduction > 0)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
-                ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intReduction * -1);
+                }
+                else
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                }
             }
             if (intMagReduction > 0)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
-            }
-
-            /*
-            int intEssenceLoss = 0;
-            if (!_objOptions.ESSLossReducesMaximumOnly)
-                intEssenceLoss = _objCharacter.EssencePenalty;
-            else
-            {
-                if (_objCharacter.MAGEnabled)
+                if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                 {
-                    if (_objCharacter.MAG.Value > _objCharacter.MAG.TotalMaximum)
-                        intEssenceLoss = _objCharacter.MAG.Value - _objCharacter.MAG.TotalMaximum;
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intMagReduction * -1);
                 }
-                else if (_objCharacter.RESEnabled)
+                else
                 {
-                    if (_objCharacter.RES.Value > _objCharacter.RES.TotalMaximum)
-                        intEssenceLoss = _objCharacter.RES.Value - _objCharacter.RES.TotalMaximum;
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
                 }
             }
-            */
 
             // If the CharacterAttribute reaches 0, the character has burned out.
-            if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
+            if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled && (!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue || intMagReduction >= _objCharacter.MAG.TotalMaximum))
             {
                 _objCharacter.MAG.Base = 0;
                 _objCharacter.MAG.Karma = 0;
@@ -18572,7 +18568,7 @@ namespace Chummer
                 _objCharacter.MagicianEnabled = false;
                 _objCharacter.AdeptEnabled = false;
             }
-            if (_objCharacter.RES.TotalMaximum < 1 && _objCharacter.RESEnabled)
+            if (_objCharacter.RES.TotalMaximum < 1 && _objCharacter.RESEnabled && (!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue || intReduction >= _objCharacter.RES.TotalMaximum))
             {
                 _objCharacter.RES.Base = 0;
                 _objCharacter.RES.Karma = 0;
@@ -19067,7 +19063,6 @@ namespace Chummer
             }
             _blnSkipUpdate = false;
             _blnRequestCharacterUpdate = false;
-            ResumeLayout(true);
         }
 
         /// <summary>

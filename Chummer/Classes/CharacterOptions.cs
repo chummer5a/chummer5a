@@ -1909,7 +1909,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma cost for increasing Special Attributes is based on the shown value instead of actual value.
+        /// If true, karma costs will not decrease from reductions due to essence loss. Effectively, essence loss becomes an augmented modifier, not one that alters minima and maxima.
         /// </summary>
         public bool SpecialKarmaCostBasedOnShownValue
         {

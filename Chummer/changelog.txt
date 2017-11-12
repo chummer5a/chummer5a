@@ -234,6 +234,7 @@ Application Changes:
 - Fixed a bug where the updater form could not be re-opened after it has been closed once.
 - Fixed crashes related to the user's connection to GitHub getting severed mid-update.
 - Fixed the few-second delay encountered when launching the updater form.
+- The optional rule for karma costs to increase special attributes not being decreased by essence loss now works and saves its value properly. It is implemented by having essence loss affect the attribute's augmented value instead of its maxima and minima, and characters burn out if their augmented reduction from essence loss becomes greater than their current maximum. Fixes #1808.
 
 Data Changes:
 

@@ -345,9 +345,7 @@ namespace Chummer.Backend.Attributes
                             // Add the values to the UniquePair List so we can check them later.
                             lstUniquePair.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
                         }
-                        else if (!((Abbrev == "MAG" || Abbrev == "DEP" || Abbrev == "RES") &&
-                                     objImprovement.SourceName == "Essence Loss" &&
-                                    _objCharacter.Options.ESSLossReducesMaximumOnly && _objCharacter.EssencePenalty > 0))
+                        else
                         {
                             intModifier += objImprovement.Augmented * objImprovement.Rating;
                         }
@@ -567,7 +565,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if ((_objCharacter.MAGEnabled && Abbrev == "MAG" || _objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0)
+                if ((_objCharacter.MAGEnabled && Abbrev == "MAG" && _objCharacter.EssencePenaltyMAG > 0) || ((_objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0))
                 {
                     return true;
                 }
@@ -671,7 +669,7 @@ namespace Chummer.Backend.Attributes
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
             if (intReturn < 1)
             {
-                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
+                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_strAbbrev == "RES" && _objCharacter.EssencePenalty != 0) || (_strAbbrev == "MAG" && _objCharacter.EssencePenaltyMAG != 0) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
                     return 0;
                 else
                     return 1;
@@ -707,7 +705,7 @@ namespace Chummer.Backend.Attributes
                         intReturn = 1;
                 }
 
-                if (_strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
+                if ((_strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                     return intReturn;
 
                 int intEssencePenalty = _objCharacter.EssencePenalty;
@@ -1078,7 +1076,7 @@ namespace Chummer.Backend.Attributes
         {
             int intBP = 0;
 
-            if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "RES")
+            if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
             {
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 {
@@ -1096,13 +1094,14 @@ namespace Chummer.Backend.Attributes
             }
             else
             {
-                // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
+                // Find the character's Essence Loss. This applies unless the house rules to have ESS Loss only affect the Maximum of the CharacterAttribute and/or have ESS Loss not decrease karma costs are turned on.
                 int intEssenceLoss = 0;
-                if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
+                if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                 {
-                    intEssenceLoss = _objCharacter.EssencePenalty;
                     if (_strAbbrev == "MAG")
                         intEssenceLoss = _objCharacter.EssencePenaltyMAG;
+                    else
+                        intEssenceLoss = _objCharacter.EssencePenalty;
                 }
 
                 // Don't apply the ESS loss penalty to EDG.
