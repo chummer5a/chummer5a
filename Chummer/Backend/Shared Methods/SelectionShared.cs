@@ -97,17 +97,12 @@ namespace Chummer.Backend.Shared_Methods
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objLoopAttribute = objCharacter.GetAttribute(strAttribute);
-                    if (strLimitString.Contains("{" + strAttribute + "}"))
-                        objLimitString.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
-                    if (strLimitString.Contains("{" + strAttribute + "Base}"))
-                        objLimitString.Replace("{" + strAttribute + "Base}", objLoopAttribute.TotalBase.ToString());
+                    objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
+                    objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
                 }
                 foreach (string strLimb in Character.LimbStrings)
                 {
-                    int objLoopLimbCount = objCharacter.LimbCount(strLimb);
-                    if (!string.IsNullOrEmpty(strLocation))
-                        objLoopLimbCount /= 2;
-                    objLimitString.Replace("{" + strLimb + "}", objLoopLimbCount.ToString());
+                    objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString());
                 }
                 try
                 {
@@ -399,8 +394,8 @@ namespace Chummer.Backend.Shared_Methods
                         CharacterAttrib objLoopAttrib = character.GetAttribute(strAttribute);
                         if (strNodeAttributes.Contains(objLoopAttrib.Abbrev))
                         {
-                            strAttributes.Replace(strAttribute, objLoopAttrib.DisplayAbbrev);
-                            strValue.Replace(strAttribute, objLoopAttrib.Value.ToString());
+                            strAttributes = strAttributes.Replace(strAttribute, objLoopAttrib.DisplayAbbrev);
+                            strValue = strValue.Replace(strAttribute, objLoopAttrib.Value.ToString());
                         }
                     }
                     name = $"\n\t{strAttributes} {intNodeVal}";

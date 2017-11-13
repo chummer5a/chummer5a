@@ -76,23 +76,26 @@ namespace Chummer
             int intFreeTouchOnlySpells = 0;
             foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT))
             {
-                int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
-                if (imp.UniqueName.Contains("half"))
-                    intAttValue = (intAttValue + 1) / 2;
-                if (imp.UniqueName.Contains("touchonly"))
-                    intFreeTouchOnlySpells += intAttValue;
-                else
-                    intFreeGenericSpells += intAttValue;
-            }
-            foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill))
-            {
-                int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
-                if (imp.UniqueName.Contains("half"))
-                    intSkillValue = (intSkillValue + 1) / 2;
-                if (imp.UniqueName.Contains("touchonly"))
-                    intFreeTouchOnlySpells += intSkillValue;
-                else
-                    intFreeGenericSpells += intSkillValue;
+                if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsATT)
+                {
+                    int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
+                    if (imp.UniqueName.Contains("half"))
+                        intAttValue = (intAttValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intAttValue;
+                    else
+                        intFreeGenericSpells += intAttValue;
+                }
+                else if (imp.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                {
+                    int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
+                    if (imp.UniqueName.Contains("half"))
+                        intSkillValue = (intSkillValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intSkillValue;
+                    else
+                        intFreeGenericSpells += intSkillValue;
+                }
             }
             int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range != "T");
             int intTotalFreeTouchOnlySpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range == "T");
@@ -127,15 +130,13 @@ namespace Chummer
             chkExtended.Visible = _objCharacter.Options.ExtendAnyDetectionSpell;
             string strAdditionalFilter = string.Empty;
             if (_objCharacter.Options.ExtendAnyDetectionSpell)
-                strAdditionalFilter = "not(contains(name, \", Extended\"))";
+                strAdditionalFilter = " and not(contains(name, \", Extended\"))";
 
             // Populate the Spell list.
             if (!string.IsNullOrEmpty(_strLimitCategory))
-                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[category = \"" + _strLimitCategory + "\" and " + strAdditionalFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
-            else if (string.IsNullOrEmpty(strAdditionalFilter))
-                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[" + _objCharacter.Options.BookXPath() + "]");
+                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[category = \"" + _strLimitCategory + "\"" + strAdditionalFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
             else
-                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[" + strAdditionalFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/spells/spell[(" + _objCharacter.Options.BookXPath() + ")" + strAdditionalFilter + "]");
 
             treSpells.TreeViewNodeSorter = new SortByName();
             treSpells.SelectedNode = treSpells.Nodes[0];
@@ -193,8 +194,6 @@ namespace Chummer
             }
 
             txtSearch.Enabled = string.IsNullOrEmpty(_strLimitCategory);
-
-            if (!_objCharacter.Created) return;
         }
 
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
@@ -260,7 +259,6 @@ namespace Chummer
                                 MessageBox.Show(LanguageManager.GetString("Message_SpellLimit"),
                                     LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 return;
-
                             }
                         }
                         if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, null, null, _objXmlDocument, string.Empty, LanguageManager.GetString("String_DescSpell")))
@@ -680,14 +678,12 @@ namespace Chummer
                 }
 
                 string strRange = objXmlSpell["range"].InnerText;
-                strRange = strRange.Replace("Self", LanguageManager.GetString("String_SpellRangeSelf"));
-                strRange = strRange.Replace("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"));
-                strRange = strRange.Replace("LOI",
-                    LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
-                strRange = strRange.Replace("T", LanguageManager.GetString("String_SpellRangeTouch"));
-                strRange = strRange.Replace("(A)",
-                    "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
-                strRange = strRange.Replace("MAG", LanguageManager.GetString("String_AttributeMAGShort"));
+                strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"));
+                strRange = strRange.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"));
+                strRange = strRange.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
+                strRange = strRange.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"));
+                strRange = strRange.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
+                strRange = strRange.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
                 lblRange.Text = strRange;
 
                 switch (objXmlSpell["damage"].InnerText)
@@ -706,15 +702,12 @@ namespace Chummer
                         break;
                 }
 
-                string strDV = objXmlSpell["dv"].InnerText.Replace('/', '÷')
-                    .Replace("F", LanguageManager.GetString("String_SpellForce"));
-                strDV = strDV.Replace("Overflow damage",
-                    LanguageManager.GetString("String_SpellOverflowDamage"));
-                strDV = strDV.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
-                strDV = strDV.Replace("Toxin DV", LanguageManager.GetString("String_SpellToxinDV"));
-                strDV = strDV.Replace("Disease DV", LanguageManager.GetString("String_SpellDiseaseDV"));
-                strDV = strDV.Replace("Radiation Power",
-                    LanguageManager.GetString("String_SpellRadiationPower"));
+                string strDV = objXmlSpell["dv"].InnerText.Replace('/', '÷').CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"));
+                strDV = strDV.CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"));
+                strDV = strDV.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
+                strDV = strDV.CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"));
+                strDV = strDV.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"));
+                strDV = strDV.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
 
                 if (chkExtended.Checked)
                 {

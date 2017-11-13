@@ -1454,16 +1454,16 @@ namespace Chummer.Backend.Equipment
                     if (intUseSTR > 0)
                         strDamage = strDamageExpression.Replace("STR", (intUseSTR + intThrowDV).ToString());
                     else
-                        strDamage = strDamageExpression.Replace("STR", (_objCharacter.STR.TotalValue + intThrowDV).ToString());
+                        strDamage = strDamageExpression.CheapReplace("STR", () => (_objCharacter.STR.TotalValue + intThrowDV).ToString());
                 }
 
-                foreach(Attributes.CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                foreach(CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
-                    strDamage = strDamage.Replace(objLoopAttribute.Abbrev, objLoopAttribute.TotalValue.ToString());
+                    strDamage = strDamage.CheapReplace(objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                 }
-                foreach (Attributes.CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
                 {
-                    strDamage = strDamage.Replace(objLoopAttribute.Abbrev, objLoopAttribute.TotalValue.ToString());
+                    strDamage = strDamage.CheapReplace(objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
                 }
             }
             else
@@ -1720,22 +1720,22 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (!blnForceEnglish)
             {
-                strReturn = strReturn.Replace("S", LanguageManager.GetString("String_DamageStun"));
-                strReturn = strReturn.Replace("P", LanguageManager.GetString("String_DamagePhysical"));
+                strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun"));
+                strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical"));
 
-                strReturn = strReturn.Replace("Chemical", LanguageManager.GetString("String_DamageChemical"));
-                strReturn = strReturn.Replace("Special", LanguageManager.GetString("String_DamageSpecial"));
-                strReturn = strReturn.Replace("(e)", LanguageManager.GetString("String_DamageElectric"));
-                strReturn = strReturn.Replace("(f)", LanguageManager.GetString("String_DamageFlechette"));
-                strReturn = strReturn.Replace("P or S", LanguageManager.GetString("String_DamagePOrS"));
-                strReturn = strReturn.Replace("Grenade", LanguageManager.GetString("String_DamageGrenade"));
-                strReturn = strReturn.Replace("Missile", LanguageManager.GetString("String_DamageMissile"));
-                strReturn = strReturn.Replace("Mortar", LanguageManager.GetString("String_DamageMortar"));
-                strReturn = strReturn.Replace("Rocket", LanguageManager.GetString("String_DamageRocket"));
-                strReturn = strReturn.Replace("Radius", LanguageManager.GetString("String_DamageRadius"));
-                strReturn = strReturn.Replace("As Drug/Toxin", LanguageManager.GetString("String_DamageAsDrugToxin"));
-                strReturn = strReturn.Replace("as round", LanguageManager.GetString("String_DamageAsRound"));
-                strReturn = strReturn.Replace("/m", "/" + LanguageManager.GetString("String_DamageMeter"));
+                strReturn = strReturn.CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical"));
+                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial"));
+                strReturn = strReturn.CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric"));
+                strReturn = strReturn.CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette"));
+                strReturn = strReturn.CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS"));
+                strReturn = strReturn.CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade"));
+                strReturn = strReturn.CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile"));
+                strReturn = strReturn.CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar"));
+                strReturn = strReturn.CheapReplace("Rocket", () => LanguageManager.GetString("String_DamageRocket"));
+                strReturn = strReturn.CheapReplace("Radius", () => LanguageManager.GetString("String_DamageRadius"));
+                strReturn = strReturn.CheapReplace("As Drug/Toxin", () => LanguageManager.GetString("String_DamageAsDrugToxin"));
+                strReturn = strReturn.CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound"));
+                strReturn = strReturn.CheapReplace("/m", () => "/" + LanguageManager.GetString("String_DamageMeter"));
             }
 
             return strReturn;
@@ -1810,20 +1810,20 @@ namespace Chummer.Backend.Equipment
             if (!blnForceEnglish)
             {
                 // Translate the Ammo string.
-                strReturn = strReturn.Replace(" or ", " " + LanguageManager.GetString("String_Or") + " ");
-                strReturn = strReturn.Replace(" belt", LanguageManager.GetString("String_AmmoBelt"));
-                strReturn = strReturn.Replace(" Energy", LanguageManager.GetString("String_AmmoEnergy"));
-                strReturn = strReturn.Replace(" external source", LanguageManager.GetString("String_AmmoExternalSource"));
-                strReturn = strReturn.Replace(" Special", LanguageManager.GetString("String_AmmoSpecial"));
+                strReturn = strReturn.CheapReplace(" or ", () => " " + LanguageManager.GetString("String_Or") + " ");
+                strReturn = strReturn.CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt"));
+                strReturn = strReturn.CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy"));
+                strReturn = strReturn.CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource"));
+                strReturn = strReturn.CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial"));
 
-                strReturn = strReturn.Replace("(b)", "(" + LanguageManager.GetString("String_AmmoBreakAction") + ")");
-                strReturn = strReturn.Replace("(belt)", "(" + LanguageManager.GetString("String_AmmoBelt") + ")");
-                strReturn = strReturn.Replace("(box)", "(" + LanguageManager.GetString("String_AmmoBox") + ")");
-                strReturn = strReturn.Replace("(c)", "(" + LanguageManager.GetString("String_AmmoClip") + ")");
-                strReturn = strReturn.Replace("(cy)", "(" + LanguageManager.GetString("String_AmmoCylinder") + ")");
-                strReturn = strReturn.Replace("(d)", "(" + LanguageManager.GetString("String_AmmoDrum") + ")");
-                strReturn = strReturn.Replace("(m)", "(" + LanguageManager.GetString("String_AmmoMagazine") + ")");
-                strReturn = strReturn.Replace("(ml)", "(" + LanguageManager.GetString("String_AmmoMuzzleLoad") + ")");
+                strReturn = strReturn.CheapReplace("(b)", () => "(" + LanguageManager.GetString("String_AmmoBreakAction") + ")");
+                strReturn = strReturn.CheapReplace("(belt)", () => "(" + LanguageManager.GetString("String_AmmoBelt") + ")");
+                strReturn = strReturn.CheapReplace("(box)", () => "(" + LanguageManager.GetString("String_AmmoBox") + ")");
+                strReturn = strReturn.CheapReplace("(c)", () => "(" + LanguageManager.GetString("String_AmmoClip") + ")");
+                strReturn = strReturn.CheapReplace("(cy)", () => "(" + LanguageManager.GetString("String_AmmoCylinder") + ")");
+                strReturn = strReturn.CheapReplace("(d)", () => "(" + LanguageManager.GetString("String_AmmoDrum") + ")");
+                strReturn = strReturn.CheapReplace("(m)", () => "(" + LanguageManager.GetString("String_AmmoMagazine") + ")");
+                strReturn = strReturn.CheapReplace("(ml)", () => "(" + LanguageManager.GetString("String_AmmoMuzzleLoad") + ")");
             }
 
             return strReturn;
@@ -2103,7 +2103,7 @@ namespace Chummer.Backend.Equipment
                 catch (FormatException)
                 {
                     // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                    return _strAP.Replace("-half", LanguageManager.GetString("String_APHalf"));
+                    return _strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf"));
                 }
 
                 bool blnAPReplaced = false;
@@ -2693,12 +2693,16 @@ namespace Chummer.Backend.Equipment
 
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
-                int intLoopTotal = _objCharacter.GetAttribute(strAttribute).TotalValue;
-                if (strAttribute == "STR" && (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons"))
+                objRange.CheapReplace(strRange, strAttribute, () =>
                 {
-                    intLoopTotal += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
+                    int intLoopTotal = _objCharacter.GetAttribute(strAttribute).TotalValue;
+                    if (strAttribute == "STR" && (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons"))
+                    {
+                        intLoopTotal += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange);
+                    }
+                    return intLoopTotal.ToString();
                 }
-                objRange.Replace(strAttribute, intLoopTotal.ToString());
+                );
             }
             // Replace the division sign with "div" since we're using XPath.
             objRange.Replace("/", " div ");

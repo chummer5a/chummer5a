@@ -272,6 +272,10 @@ namespace Chummer
             if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
             {
                 strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                if (strAvail == "R")
+                    strAvail = LanguageManager.GetString("String_AvailRestricted");
+                else if (strAvail == "F")
+                    strAvail = LanguageManager.GetString("String_AvailForbidden");
                 // Remove the trailing character if it is "F" or "R".
                 strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
             }
@@ -282,9 +286,8 @@ namespace Chummer
             }
             catch (XPathException)
             {
-                lblAvail.Text = objXmlMod["avail"].InnerText;
+                lblAvail.Text = strAvailExpr + strAvail;
             }
-            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
             // Cost.
             if (objXmlMod["cost"].InnerText.StartsWith("Variable"))

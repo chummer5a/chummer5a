@@ -222,9 +222,9 @@ namespace Chummer
                 decCost = 0;
 
             // Update the labels.
-            lblResponseAvail.Text = strResponseAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-            lblSystemAvail.Text = strSystemAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
-            lblFirewallAvail.Text = strFirewallAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+            lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
             lblCost.Text = String.Format("{0:###,###,##0.##¥}", decCost);
 
             Gear objNexus = new Gear(_objCharacter);

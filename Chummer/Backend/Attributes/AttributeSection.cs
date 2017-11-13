@@ -127,17 +127,17 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                xprEvaluateMinResult = nav.Evaluate(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace("F", "0").Replace("1D6", "0").Replace("2D6", "0"));
+                xprEvaluateMinResult = nav.Evaluate(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
             }
             catch (XPathException) { }
             try
             {
-                xprEvaluateMaxResult = nav.Evaluate(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace("F", "0").Replace("1D6", "0").Replace("2D6", "0"));
+                xprEvaluateMaxResult = nav.Evaluate(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
             }
             catch (XPathException) { }
             try
             {
-                xprEvaluateAugResult = nav.Evaluate(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace("F", "0").Replace("1D6", "0").Replace("2D6", "0"));
+                xprEvaluateAugResult = nav.Evaluate(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
             }
             catch (XPathException) { }
             if (xprEvaluateMinResult != null)

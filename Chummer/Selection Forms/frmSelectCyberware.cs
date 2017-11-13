@@ -259,26 +259,10 @@ namespace Chummer
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                 {
-                    if (strMinRating.Contains("MaximumSTR"))
-                    {
-                        int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
-                        strMinRating = strMinRating.Replace("MaximumSTR", intMaxSTR.ToString());
-                    }
-                    if (strMinRating.Contains("MaximumAGI"))
-                    {
-                        int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
-                        strMinRating = strMinRating.Replace("MaximumAGI", intMaxAGI.ToString());
-                    }
-                    if (strMinRating.Contains("MinimumSTR"))
-                    {
-                        int intMinSTR = CyberwareParent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
-                        strMinRating = strMinRating.Replace("MinimumSTR", intMinSTR.ToString());
-                    }
-                    if (strMinRating.Contains("MinimumAGI"))
-                    {
-                        int intMinAGI = CyberwareParent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
-                        strMinRating = strMinRating.Replace("MinimumAGI", intMinAGI.ToString());
-                    }
+                    strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
+                    strMinRating = strMinRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
+                    strMinRating = strMinRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
+                    strMinRating = strMinRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
                     XmlDocument objDummyDoc = new XmlDocument();
                     XPathNavigator objNav = objDummyDoc.CreateNavigator();
                     try
@@ -297,26 +281,10 @@ namespace Chummer
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                 {
-                    if (strMaxRating.Contains("MaximumSTR"))
-                    {
-                        int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
-                        strMaxRating = strMaxRating.Replace("MaximumSTR", intMaxSTR.ToString());
-                    }
-                    if (strMaxRating.Contains("MaximumAGI"))
-                    {
-                        int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
-                        strMaxRating = strMaxRating.Replace("MaximumAGI", intMaxAGI.ToString());
-                    }
-                    if (strMaxRating.Contains("MinimumSTR"))
-                    {
-                        int intMinSTR = CyberwareParent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
-                        strMaxRating = strMaxRating.Replace("MinimumSTR", intMinSTR.ToString());
-                    }
-                    if (strMaxRating.Contains("MinimumAGI"))
-                    {
-                        int intMinAGI = CyberwareParent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
-                        strMaxRating = strMaxRating.Replace("MinimumAGI", intMinAGI.ToString());
-                    }
+                    strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
                     XmlDocument objDummyDoc = new XmlDocument();
                     XPathNavigator objNav = objDummyDoc.CreateNavigator();
                     try
@@ -788,11 +756,8 @@ namespace Chummer
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
 
-                if (strAvailExpr.Contains("MinRating"))
-                {
-                    strAvailExpr = strAvailExpr.Replace("MinRating", nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo));
-                }
-                strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo));
+                strAvailExpr = strAvailExpr.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
 
                 try
                 {
@@ -849,8 +814,8 @@ namespace Chummer
                     {
                         if (CyberwareParent != null)
                         {
-                            strCost = strCost.Replace("Parent Cost", CyberwareParent.Cost);
-                            strCost = strCost.Replace("Parent Gear Cost", CyberwareParent.Gear.AsParallel().Sum(x => x.TotalCost).ToString(GlobalOptions.InvariantCultureInfo));
+                            strCost = strCost.CheapReplace("Parent Cost", () => CyberwareParent.Cost);
+                            strCost = strCost.CheapReplace("Parent Gear Cost", () => CyberwareParent.Gear.AsParallel().Sum(x => x.TotalCost).ToString(GlobalOptions.InvariantCultureInfo));
                         }
                         else
                         {
@@ -858,11 +823,8 @@ namespace Chummer
                             strCost = strCost.Replace("Parent Gear Cost", "0");
                         }
                     }
-                    if (strCost.Contains("MinRating"))
-                    {
-                        strCost = strCost.Replace("MinRating", nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-                    strCost = strCost.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    strCost = strCost.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo));
+                    strCost = strCost.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     try
                     {
                         XPathExpression xprCost = _nav.Compile(strCost);
@@ -1094,26 +1056,10 @@ namespace Chummer
                     // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
                     if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating)) || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
                     {
-                        if (strMinRating.Contains("MaximumSTR"))
-                        {
-                            int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
-                            strMinRating = strMinRating.Replace("MaximumSTR", intMaxSTR.ToString());
-                        }
-                        if (strMinRating.Contains("MaximumAGI"))
-                        {
-                            int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
-                            strMinRating = strMinRating.Replace("MaximumAGI", intMaxAGI.ToString());
-                        }
-                        if (strMinRating.Contains("MinimumSTR"))
-                        {
-                            int intMinSTR = CyberwareParent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
-                            strMinRating = strMinRating.Replace("MinimumSTR", intMinSTR.ToString());
-                        }
-                        if (strMinRating.Contains("MinimumAGI"))
-                        {
-                            int intMinAGI = CyberwareParent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
-                            strMinRating = strMinRating.Replace("MinimumAGI", intMinAGI.ToString());
-                        }
+                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
+                        strMinRating = strMinRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
+                        strMinRating = strMinRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
+                        strMinRating = strMinRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
                         try
                         {
                             intMinRating = Convert.ToInt32(objNav.Evaluate(strMinRating));
@@ -1123,26 +1069,10 @@ namespace Chummer
                             intMinRating = 1;
                         }
 
-                        if (strMaxRating.Contains("MaximumSTR"))
-                        {
-                            int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
-                            strMaxRating = strMaxRating.Replace("MaximumSTR", intMaxSTR.ToString());
-                        }
-                        if (strMaxRating.Contains("MaximumAGI"))
-                        {
-                            int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
-                            strMaxRating = strMaxRating.Replace("MaximumAGI", intMaxAGI.ToString());
-                        }
-                        if (strMaxRating.Contains("MinimumSTR"))
-                        {
-                            int intMinSTR = CyberwareParent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
-                            strMaxRating = strMaxRating.Replace("MinimumSTR", intMinSTR.ToString());
-                        }
-                        if (strMaxRating.Contains("MinimumAGI"))
-                        {
-                            int intMinAGI = CyberwareParent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
-                            strMaxRating = strMaxRating.Replace("MinimumAGI", intMinAGI.ToString());
-                        }
+                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
+                        strMaxRating = strMaxRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
+                        strMaxRating = strMaxRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
+                        strMaxRating = strMaxRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
                         try
                         {
                             intMaxRating = Convert.ToInt32(objNav.Evaluate(strMaxRating));

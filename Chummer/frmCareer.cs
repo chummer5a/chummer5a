@@ -832,10 +832,7 @@ namespace Chummer
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    if (strDrainAtt.Contains(objAttrib.Abbrev))
-                    {
-                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
-                    }
+                    objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
                 }
                 string strDrain = objDrain.ToString();
                 if (string.IsNullOrEmpty(strDrain))
@@ -863,10 +860,7 @@ namespace Chummer
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    if (strDrainAtt.Contains(objAttrib.Abbrev))
-                    {
-                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
-                    }
+                    objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
                 }
                 string strFading = objDrain.ToString();
                 if (string.IsNullOrEmpty(strFading))
@@ -16253,8 +16247,7 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        if (strDrain.Contains(objAttrib.DisplayAbbrev))
-                            strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
+                        strDrain = strDrain.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.TotalValue.ToString());
                     }
                     int intDrain = 0;
                     try
@@ -16272,8 +16265,7 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        if (strTip.Contains(objAttrib.DisplayAbbrev))
-                            strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
                     }
 
                     if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance) != 0)

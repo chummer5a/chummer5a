@@ -639,9 +639,9 @@ namespace Chummer
                 strDV = "+" + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
-            lblDV.Text = (strBase + strDV).Replace("/", "÷");
-            lblDV.Text = lblDV.Text.Replace("F", LanguageManager.GetString("String_SpellForce"));
-            lblDV.Text = lblDV.Text.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
+            lblDV.Text = (strBase + strDV).Replace('/', '÷');
+            lblDV.Text = lblDV.Text.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"));
+            lblDV.Text = lblDV.Text.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
 
             return strBase + strDV;
         }

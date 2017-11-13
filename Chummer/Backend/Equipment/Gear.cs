@@ -1475,8 +1475,8 @@ namespace Chummer.Backend.Equipment
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 foreach (string strMatrixAttribute in MatrixAttributeStrings)
                 {
-                    objValue.Replace("{Gear " + strMatrixAttribute + "}", (objParent != null ? objParent.GetBaseMatrixAttribute(strMatrixAttribute) : 0).ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.Replace("{Parent " + strMatrixAttribute + "}", (objParent != null ? objParent.GetMatrixAttributeString(strMatrixAttribute) : "0"));
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => (objParent != null ? objParent.GetBaseMatrixAttribute(strMatrixAttribute) : 0).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => (objParent != null ? objParent.GetMatrixAttributeString(strMatrixAttribute) : "0"));
                     if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                     {
                         int intTotalChildrenValue = 0;
@@ -1494,10 +1494,8 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (string strCharAttributeName in Attributes.AttributeSection.AttributeStrings)
                 {
-                    if (strExpression.Contains("{" + strCharAttributeName + "}"))
-                        objValue.Replace("{" + strCharAttributeName + "}", CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                    if (strExpression.Contains("{" + strCharAttributeName + "Base}"))
-                        objValue.Replace("{" + strCharAttributeName + "Base}", CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 decimal decValue = Math.Ceiling(Convert.ToDecimal(nav.Evaluate(objValue.ToString()), GlobalOptions.InvariantCultureInfo));
@@ -2221,8 +2219,8 @@ namespace Chummer.Backend.Equipment
                 // Translate the Avail string.
                 if (!blnForceEnglish)
                 {
-                    strReturn = strReturn.Replace("P", LanguageManager.GetString("String_DamagePhysical"));
-                    strReturn = strReturn.Replace("S", LanguageManager.GetString("String_DamageStun"));
+                    strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical"));
+                    strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun"));
                 }
 
                 return strReturn;

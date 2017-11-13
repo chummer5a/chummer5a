@@ -2104,10 +2104,7 @@ namespace Chummer
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = GetAttribute(strAttribute);
-                    if (strDrainAtt.Contains(objAttrib.Abbrev))
-                    {
-                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
-                    }
+                    objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
                 }
                 string strDrain = objDrain.ToString();
                 if (string.IsNullOrEmpty(strDrain))
@@ -2184,10 +2181,7 @@ namespace Chummer
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objAttrib = GetAttribute(strAttribute);
-                    if (strDrainAtt.Contains(objAttrib.Abbrev))
-                    {
-                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
-                    }
+                    objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
                 }
                 string strDrain = objDrain.ToString();
                 if (string.IsNullOrEmpty(strDrain))

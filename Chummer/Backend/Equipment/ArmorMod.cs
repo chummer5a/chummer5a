@@ -930,7 +930,7 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     strCapacity = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
-                strCapacity = strCapacity.Replace("Capacity", Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
+                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
                 strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
                 XPathExpression xprCapacity = nav.Compile(strCapacity);
 
@@ -1003,7 +1003,7 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     strCapacity = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
-                strCapacity = strCapacity.Replace("Capacity", Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
+                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
                 strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
                 bool blnSquareBrackets = strCapacity.Contains('[');
                 if (blnSquareBrackets)

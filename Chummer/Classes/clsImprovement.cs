@@ -883,8 +883,7 @@ namespace Chummer
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    if (strReturn.Contains(strAttribute))
-                        strReturn = strReturn.Replace(strAttribute, objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
+                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
 
                 XmlDocument objXmlDocument = new XmlDocument();
