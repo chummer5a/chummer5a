@@ -38,7 +38,7 @@ namespace Chummer
 
     public interface IHasChildren<T>
     {
-        List<T> Children { get; }
+        IList<T> Children { get; }
     }
 
     public interface INamedItemWithNode : INamedItem, IItemWithNode

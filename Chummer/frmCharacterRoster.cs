@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -70,9 +71,10 @@ namespace Chummer
                         {
                             foreach (TreeNode rootNode in treCharacterList.Nodes)
                             {
-                                if (rootNode.Nodes.Cast<TreeNode>().Any(childNode => Convert.ToInt32(childNode.Tag) == _lstCharacterCache.IndexOf(objCachedCharacter)))
+                                foreach (TreeNode objChildNode in rootNode.Nodes)
                                 {
-                                    goto CharacterAlreadyLoaded;
+                                    if (Convert.ToInt32(objChildNode.Tag) == _lstCharacterCache.IndexOf(objCachedCharacter))
+                                        goto CharacterAlreadyLoaded;
                                 }
                             }
                         }

@@ -14,7 +14,6 @@ using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 using Chummer.Backend.Attributes;
-using Chummer.Backend.Extensions;
 
 namespace Chummer.Skills
 {
@@ -384,9 +383,14 @@ namespace Chummer.Skills
             AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 
             SuggestedSpecializations = new List<ListItem>();
-            foreach (XmlNode node in n["specs"]?.ChildNodes)
+            XmlNodeList lstSuggestedSpecializationsXml = n["specs"]?.ChildNodes;
+            if (lstSuggestedSpecializationsXml != null)
             {
-                SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
+                SuggestedSpecializations.Capacity = lstSuggestedSpecializationsXml.Count;
+                foreach (XmlNode node in lstSuggestedSpecializationsXml)
+                {
+                    SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
+                }
             }
 
             string strGroup = n?["skillgroup"]?.InnerText;
@@ -591,14 +595,16 @@ namespace Chummer.Skills
                     int index = -1;
                     for (int i = 0; i < Specializations.Count; i++)
                     {
-                        if (Specializations[i].Free) continue;
-                        index = i;
-                        break;
+                        if (!Specializations[i].Free)
+                        {
+                            index = i;
+                            break;
+                        }
                     }
 
                     if (index >= 0) Specializations.RemoveAt(index);
                 }
-                else if (Specializations.Count == 0 && !string.IsNullOrWhiteSpace(value))
+                else if (Specializations.Count == 0)
                 {
                     Specializations.Add(new SkillSpecialization(value, false));
                 }
@@ -987,44 +993,30 @@ namespace Chummer.Skills
         /// <returns>Artificial skill attributeValue</returns>
         public virtual int CyberwareRating()
         {
-
             if (CachedWareRating != int.MinValue)
                 return CachedWareRating;
 
             //TODO: method is here, but not used in any form, needs testing (worried about child items...)
             //this might do hardwires if i understand how they works correctly
-            var hardwire = CharacterObject.Improvements.Where(
-                improvement =>
-                    improvement.ImproveType == Improvement.ImprovementType.Hardwire && improvement.ImprovedName == Name &&
-                    improvement.Enabled).ToList();
-
-            if (hardwire.Count > 0)
+            int intMaxHardwire = -1;
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
-                return CachedWareRating = hardwire.Max(x => x.Value);
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == Name && objImprovement.Enabled && objImprovement.Value > intMaxHardwire)
+                {
+                    intMaxHardwire = objImprovement.Value;
+                }
             }
-
+            if (intMaxHardwire >= 0)
+            {
+                return CachedWareRating = intMaxHardwire;
+            }
 
             int skillWireRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire);
             if ((skillWireRating > 0 || IsKnowledgeSkill) && CharacterObject.SkillsoftAccess)
             {
-                Func<Gear, int> recusivestuff = null;
-                recusivestuff = (gear) =>
-                {
-                    //TODO this works with translate?
-                    if (gear.Equipped && gear.Category == "Skillsofts" &&
-                        (gear.Extra == Name ||
-                         gear.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked")))
-                    {
-                        return gear.Name == "Activesoft"
-                            ? Math.Min(gear.Rating, skillWireRating)
-                            : gear.Rating;
-
-                    }
-                    return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
-                };
-
-                return CachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
-
+                //TODO this works with translate?
+                return CachedWareRating = Math.Min(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
+                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))).Max(x => x.Rating), skillWireRating);
             }
 
             return CachedWareRating = 0;
@@ -1133,9 +1125,9 @@ namespace Chummer.Skills
             _cachedFreeBase = int.MinValue;
             _cachedFreeKarma = int.MinValue;
             _cachedWareRating = int.MinValue;
-            if (improvements.Any(imp =>
-                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.SkillBase || imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects) &&
-                imp.ImprovedName == _name))
+            if (improvements.Any(imp => imp.ImprovedName == Name &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.SkillBase ||
+                imp.ImproveType == Improvement.ImprovementType.Skill || imp.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects)))
             {
                 OnPropertyChanged(nameof(Base));
             }
@@ -1144,7 +1136,7 @@ namespace Chummer.Skills
                 OnPropertyChanged(nameof(PoolModifiers));
             }
 
-            if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute && imp.Enabled))
+            if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute))
             {
                 OnPropertyChanged(nameof(AttributeModifiers));
             }
@@ -1159,6 +1151,5 @@ namespace Chummer.Skills
                 OnPropertyChanged(nameof(PoolToolTip));
             }
         }
-
     }
 }

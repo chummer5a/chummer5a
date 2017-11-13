@@ -155,6 +155,8 @@ namespace Chummer
             else
                 chkTransgenic.Visible = false;
             _blnLoading = false;
+
+            txtSearch_TextChanged(sender, e);
         }
 
         private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -989,6 +991,8 @@ namespace Chummer
 
         private void BuildCyberwareList(XmlNodeList objXmlCyberwareList = null)
         {
+            if (_blnLoading)
+                return;
             if (!string.IsNullOrEmpty(txtSearch.Text) && objXmlCyberwareList == null)
             {
                 txtSearch_TextChanged(null, EventArgs.Empty);
@@ -1058,7 +1062,7 @@ namespace Chummer
                     // TODO: Fix if someone has an amount of limbs different from the default amount
                     if (!string.IsNullOrEmpty(_strHasModularMounts) && objXmlCyberware["blocksmounts"] != null)
                     {
-                        List<Cyberware> lstWareListToCheck = CyberwareParent == null ? (ParentVehicle == null ? _objCharacter.Cyberware : null) : CyberwareParent.Children;
+                        IList<Cyberware> lstWareListToCheck = CyberwareParent == null ? (ParentVehicle == null ? _objCharacter.Cyberware : null) : CyberwareParent.Children;
                         if (objXmlCyberware["selectside"] == null || !string.IsNullOrEmpty(CyberwareParent?.Location) || (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                         {
                             string[] astrBlockedMounts = objXmlCyberware["blocksmounts"].InnerText.Split(',');

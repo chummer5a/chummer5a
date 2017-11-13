@@ -415,16 +415,18 @@ namespace Chummer
                             if (!blnPhysicalPresence){
                                 if (objXmlPower["name"].InnerText == "Materialization")
                                 {
-                                    bool blnFound = false;
+                                    bool blnFoundPossession = false;
+                                    bool blnFoundInhabitation = false;
                                     foreach (TreeNode objCheckNode in trePowers.Nodes)
                                     {
                                         if (objCheckNode.Tag.ToString() == "Possession")
-                                        {
-                                            blnFound = true;
+                                            blnFoundPossession = true;
+                                        if (objCheckNode.Tag.ToString() == "Inhabitation")
+                                            blnFoundInhabitation = true;
+                                        if (blnFoundInhabitation && blnFoundPossession)
                                             break;
-                                        }
                                     }
-                                    if (!blnFound)
+                                    if (!blnFoundPossession)
                                     {
                                         XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\" and (" + _objCharacter.Options.BookXPath() + ")]");
                                         TreeNode objPossessionNode = new TreeNode();
@@ -432,16 +434,13 @@ namespace Chummer
                                         objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
                                         trePowers.Nodes.Add(objPossessionNode);
                                     }
-
-                                    blnFound = trePowers.Nodes.Cast<TreeNode>().Any(objCheckNode => objCheckNode.Tag.ToString() == "Inhabitation");
-
-                                    if (!blnFound)
+                                    if (!blnFoundInhabitation)
                                     {
-                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                                        TreeNode objPossessionNode = new TreeNode();
-                                        objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
-                                        objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
-                                        trePowers.Nodes.Add(objPossessionNode);
+                                        XmlNode objXmlInhabitationPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                                        TreeNode objInhabitationNode = new TreeNode();
+                                        objInhabitationNode.Tag = objXmlInhabitationPower["name"].InnerText;
+                                        objInhabitationNode.Text = objXmlInhabitationPower["translate"]?.InnerText ?? objXmlInhabitationPower["name"].InnerText;
+                                        trePowers.Nodes.Add(objInhabitationNode);
                                     }
                                 }
                             }

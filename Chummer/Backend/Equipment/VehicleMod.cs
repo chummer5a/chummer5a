@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -92,11 +93,15 @@ namespace Chummer.Backend.Equipment
             // Add Subsytem information if applicable.
             if (objXmlMod.InnerXml.Contains("subsystems"))
             {
-                string strSubsystem = string.Empty;
-                XmlNodeList objXmlSubsystems = objXmlMod.SelectNodes("subsystems/subsystem");
-                if (objXmlSubsystems != null)
-                    strSubsystem = objXmlSubsystems.Cast<XmlNode>().Aggregate(strSubsystem, (current, objXmlSubsystem) => current + (objXmlSubsystem.InnerText + ","));
-                _strSubsystems = strSubsystem;
+                StringBuilder objSubsystem = new StringBuilder();
+                foreach (XmlNode objXmlSubsystem in objXmlMod.SelectNodes("subsystems/subsystem"))
+                {
+                    objSubsystem.Append(objXmlSubsystem.InnerText + ",");
+                }
+                // Remove last ","
+                if (objSubsystem.Length > 0)
+                    objSubsystem.Length -= 1;
+                _strSubsystems = objSubsystem.ToString();
             }
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
             
@@ -364,7 +369,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public List<Cyberware> Cyberware
+        public IList<Cyberware> Cyberware
         {
             get
             {

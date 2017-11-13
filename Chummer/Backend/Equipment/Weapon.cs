@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Skills;
-using Chummer.Backend.Extensions;
 using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
@@ -768,7 +767,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Children as Underbarrel Weapon.
         /// </summary>
-        public List<Weapon> Children => UnderbarrelWeapons;
+        public IList<Weapon> Children => UnderbarrelWeapons;
 
         /// <summary>
         /// Whether or not this Weapon is an Underbarrel Weapon.
@@ -2482,10 +2481,13 @@ namespace Chummer.Backend.Equipment
                 string[] atts = AttributeSection.AttributeStrings;
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    Attributes.CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
-                    strAccuracy = strAccuracy.Replace("{" + strAttribute + "Augmented}", objLoopAttribute.Augmented.ToString());
-                    strAccuracy = strAccuracy.Replace("{" + strAttribute + "Base}", objLoopAttribute.TotalBase.ToString());
-                    strAccuracy = strAccuracy.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
+                    CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
+                    if (strAccuracy.Contains("{" + strAttribute + "Augmented}"))
+                        strAccuracy = strAccuracy.Replace("{" + strAttribute + "Augmented}", objLoopAttribute.Augmented.ToString());
+                    if (strAccuracy.Contains("{" + strAttribute + "Base}"))
+                        strAccuracy = strAccuracy.Replace("{" + strAttribute + "Base}", objLoopAttribute.TotalBase.ToString());
+                    if (strAccuracy.Contains("{" + strAttribute + "}"))
+                        strAccuracy = strAccuracy.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
                 }
 
                 XmlDocument objXmlDocument = new XmlDocument();

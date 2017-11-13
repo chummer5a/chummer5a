@@ -317,6 +317,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        private int _intCachedAttributeModifiers = int.MinValue;
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
         /// </summary>
@@ -324,6 +325,8 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                if (_intCachedAttributeModifiers != int.MinValue)
+                    return _intCachedAttributeModifiers;
                 HashSet<string> lstUniqueName = new HashSet<string>();
                 HashSet<Tuple<string, int>> lstUniquePair = new HashSet<Tuple<string, int>>();
                 int intModifier = 0;
@@ -444,10 +447,11 @@ namespace Chummer.Backend.Attributes
                         intCustomModifier += intHighest;
                 }
 
-                return intModifier + intCustomModifier;
+                return _intCachedAttributeModifiers = intModifier + intCustomModifier;
             }
         }
 
+        private int _intCachedAttributeValueModifiers = int.MinValue;
         /// <summary>
         /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
         /// </summary>
@@ -455,6 +459,8 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                if (_intCachedAttributeValueModifiers != int.MinValue)
+                    return _intCachedAttributeValueModifiers;
                 HashSet<string> lstUniqueName = new HashSet<string>();
                 HashSet<Tuple<string, int>> lstUniquePair = new HashSet<Tuple<string, int>>();
                 int intModifier = 0;
@@ -534,7 +540,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                return intModifier;
+                return _intCachedAttributeValueModifiers = intModifier;
             }
         }
 
@@ -634,8 +640,7 @@ namespace Chummer.Backend.Attributes
             {
                 int intLimbTotal = 0;
                 int intLimbCount = 0;
-                foreach (Cyberware objCyberware in _objCharacter.Cyberware
-                    .Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                 {
                     intLimbCount += objCyberware.LimbSlotCount;
                     switch (_strAbbrev)
@@ -886,8 +891,6 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                string strReturn = string.Empty;
-                strReturn += _strAbbrev + " (" + Value.ToString() + ")";
                 string strModifier = string.Empty;
 
                 HashSet<string> lstUniqueName = new HashSet<string>();
@@ -1059,7 +1062,7 @@ namespace Chummer.Backend.Attributes
                 }
                 */
 
-                return strReturn + strModifier;
+                return _strAbbrev + " (" + Value.ToString() + ")" + strModifier;
             }
         }
 
@@ -1154,8 +1157,7 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 upgrade -= (_objCharacter.STR.MetatypeMinimum - 1) * _objCharacter.Options.KarmaAttribute;
 
-            if (_strAbbrev == "STR" && _objCharacter.Cyberware.Find(x =>
-                        x.Name == "Myostatin Inhibitor") != null)
+            if (_strAbbrev == "STR" && _objCharacter.Cyberware.FirstOrDefault(x => x.Name == "Myostatin Inhibitor") != null)
             {
                 upgrade -= 2;
             }
@@ -1178,7 +1180,7 @@ namespace Chummer.Backend.Attributes
             int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
 
             // Since Myostatin Inhibitor just gives a flat -2 per karma level, its effect can be calculated by simple multiplication
-            if (Abbrev == "STR" && _objCharacter.Cyberware.Find(x => x.Name == "Myostatin Inhibitor") != null)
+            if (Abbrev == "STR" && _objCharacter.Cyberware.FirstOrDefault(x => x.Name == "Myostatin Inhibitor") != null)
             {
                 intCost -= 2 * Karma;
             }
@@ -1340,6 +1342,13 @@ namespace Chummer.Backend.Attributes
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
         private void OnImprovementEvent(List<Improvement> improvements)
         {
+            bool blnHasAugmented = false;
+            if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && imp.Augmented != 0))
+            {
+                blnHasAugmented = true;
+                _intCachedAttributeModifiers = int.MinValue;
+                _intCachedAttributeValueModifiers = int.MinValue;
+            }
             if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && imp.AugmentedMaximum != 0 || imp.Maximum != 0 || imp.Minimum != 0))
             {
                 OnPropertyChanged(nameof(TotalAugmentedMaximum));
@@ -1362,7 +1371,7 @@ namespace Chummer.Backend.Attributes
             {
                 OnPropertyChanged(nameof(TotalValue));
             }
-            else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Abbrev && imp.Augmented != 0))
+            else if (blnHasAugmented)
             {
                 OnPropertyChanged(nameof(Augmented));
             }

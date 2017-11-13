@@ -1,10 +1,11 @@
-using Chummer.Backend.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1387,7 +1388,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
-        public List<Gear> Children
+        public IList<Gear> Children
         {
             get
             {
@@ -1493,8 +1494,10 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (string strCharAttributeName in Attributes.AttributeSection.AttributeStrings)
                 {
-                    objValue.Replace("{" + strCharAttributeName + "}", CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                    objValue.Replace("{" + strCharAttributeName + "Base}", CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                    if (strExpression.Contains("{" + strCharAttributeName + "}"))
+                        objValue.Replace("{" + strCharAttributeName + "}", CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    if (strExpression.Contains("{" + strCharAttributeName + "Base}"))
+                        objValue.Replace("{" + strCharAttributeName + "Base}", CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 decimal decValue = Math.Ceiling(Convert.ToDecimal(nav.Evaluate(objValue.ToString()), GlobalOptions.InvariantCultureInfo));
@@ -1952,10 +1955,13 @@ namespace Chummer.Backend.Equipment
                 decimal decTotalChildrenCost = 0;
                 if (_objChildren.Count > 0 && strCostExpression.Contains("Children Cost"))
                 {
-                    foreach (Gear loopGear in _objChildren)
+                    object decTotalChildrenCostLock = new object();
+                    Parallel.ForEach(_objChildren, loopGear =>
                     {
-                        decTotalChildrenCost += loopGear.CalculatedCost;
-                    }
+                        decimal decLoop = loopGear.CalculatedCost;
+                        lock (decTotalChildrenCostLock)
+                            decTotalChildrenCost += decLoop;
+                    });
                 }
 
                 if (string.IsNullOrEmpty(strCostExpression))
@@ -1999,10 +2005,18 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
 
-                // Add in the cost of all child components.
                 decimal decPlugin = 0;
-                foreach (Gear objChild in _objChildren)
-                    decPlugin += objChild.TotalCost;
+                if (_objChildren.Count > 0)
+                {
+                    // Add in the cost of all child components.
+                    object decPluginLock = new object();
+                    Parallel.ForEach(_objChildren, objChild =>
+                    {
+                        decimal decLoop = objChild.TotalCost;
+                        lock (decPluginLock)
+                            decPlugin += decLoop;
+                    });
+                }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
                 int intParentMultiplier = 1;
@@ -2110,23 +2124,29 @@ namespace Chummer.Backend.Equipment
                     else
                         decCapacity = Convert.ToDecimal(strMyCapacity, GlobalOptions.CultureInfo);
 
-                    // Run through its Children and deduct the Capacity costs.
-                    foreach (Gear objChildGear in Children)
+                    if (Children.Count > 0)
                     {
-                        string strCapacity = objChildGear.CalculatedCapacity;
-                        if (strCapacity.Contains("/["))
+                        object decCapacityLock = new object();
+                        // Run through its Children and deduct the Capacity costs.
+                        Parallel.ForEach(Children, objChildGear =>
                         {
-                            // If this is a multiple-capacity item, use only the second half.
-                            int intPos = strCapacity.IndexOf("/[");
-                            strCapacity = strCapacity.Substring(intPos + 1);
-                        }
+                            string strCapacity = objChildGear.CalculatedCapacity;
+                            if (strCapacity.Contains("/["))
+                            {
+                                // If this is a multiple-capacity item, use only the second half.
+                                int intPos = strCapacity.IndexOf("/[");
+                                strCapacity = strCapacity.Substring(intPos + 1);
+                            }
 
-                        // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                        if (strCapacity.Contains('['))
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        else
-                            strCapacity = "0";
-                        decCapacity -= (Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo) * objChildGear.Quantity);
+                            // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
+                            if (strCapacity.Contains('['))
+                                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                            else
+                                strCapacity = "0";
+                            decimal decLoop = (Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo) * objChildGear.Quantity);
+                            lock (decCapacityLock)
+                                decCapacity -= decLoop;
+                        });
                     }
                 }
 

@@ -25,9 +25,13 @@ namespace Chummer
             {
                 XmlDocument document = XmlManager.Load("skills.xml");
                 XmlNodeList specList = document.SelectNodes("/chummer/*/skill/specs/spec");
-                foreach (XmlNode node in specList.Cast<XmlNode>().Where(node => node.Attributes?["translate"] != null))
+                foreach (XmlNode node in specList)
                 {
-                    _translator.Add(node.InnerText, node.Attributes?["translate"]?.InnerText);
+                    string strTranslate = node.Attributes?["translate"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTranslate))
+                    {
+                        _translator.Add(node.InnerText, strTranslate);
+                    }
                 }
             }
         }

@@ -178,17 +178,23 @@ namespace Chummer
                 }
             }
 
+            // populate the text box
+            StringBuilder sb = new StringBuilder();
             // show the number of hits
             int hits = 0;
-            results.ForEach(x => { if (x == 5 || x == 6) hits++; });
-
             // calculate the 1 (and 2's)
             int glitches = 0;
-            if (chkRushJob.Checked)
-                results.ForEach(x => { if (x == 1 || x == 2) glitches++; });
-            else
-                results.ForEach(x => { if (x == 1) glitches++; });
-            string strBubbleDiceResult = string.Empty;
+            foreach (int intResult in results)
+            {
+                if (intResult == 5 || intResult == 6)
+                    hits += 1;
+                else if (intResult == 1 || (chkRushJob.Checked && intResult == 2))
+                    glitches += 1;
+                sb.Append(intResult.ToString());
+                sb.Append(", ");
+            }
+            if (sb.Length > 0)
+                sb.Length -= 2; // remove trailing comma
             if (chkBubbleDie.Checked && results.Count % 2 == 0 && results.Count / 2 == glitches + Gremlins)
             {
                 do
@@ -197,12 +203,14 @@ namespace Chummer
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                strBubbleDiceResult = ", " + LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")";
+                sb.Append(", " + LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
                 if (intBubbleDieResult == 1 || (chkRushJob.Checked && intBubbleDieResult == 2))
                 {
                     glitches++;
                 }
             }
+            txtResults.Text = sb.ToString();
+
             // calculate if we glitched or critically glitched (using gremlins)
             bool glitch = false, criticalGlitch = false;
             glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
@@ -215,7 +223,7 @@ namespace Chummer
             
             // show the results
             // we have not gone over our limit
-            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
             if (hits > 0 && limitAppliedHits == hits)
                 sb.Append("Results: " + hits + " Hits!");
             if (limitAppliedHits < hits)
@@ -231,17 +239,7 @@ namespace Chummer
                 if (hits >= Threshold || limitAppliedHits >= Threshold)
                     lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
 
-
             lblResults.Text = sb.ToString();
-
-            // now populate the text box
-            sb = new StringBuilder();
-            // apply limit modifiers
-            results.ForEach(x => { sb.Append(x.ToString()); sb.Append(", "); });
-            sb.Length -= 2; // remove trailing comma
-            if (!string.IsNullOrEmpty(strBubbleDiceResult))
-                sb.Append(strBubbleDiceResult);
-            txtResults.Text = sb.ToString();
         }
 
         private void nudDice_ValueChanged(object sender, EventArgs e)

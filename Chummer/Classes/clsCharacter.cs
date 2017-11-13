@@ -33,9 +33,9 @@ using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using System.Reflection;
 using Chummer.Backend.Attributes;
-using Chummer.Backend.Extensions;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Chummer
 {
@@ -219,7 +219,7 @@ namespace Chummer
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
         private List<Armor> _lstArmor = new List<Armor>();
-        private List<Cyberware> _lstCyberware = new List<Cyberware>();
+        private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private List<Quality> _lstQualities = new List<Quality>();
         private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
@@ -283,6 +283,7 @@ namespace Chummer
 			AttributeSection.Reset();
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
+            _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
         }
 
 	    public AttributeSection AttributeSection { get; set; }
@@ -2099,8 +2100,17 @@ namespace Chummer
                 }
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeSection.AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
-				if (string.IsNullOrEmpty(strDrain))
+                StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    CharacterAttrib objAttrib = GetAttribute(strAttribute);
+                    if (strDrainAtt.Contains(objAttrib.Abbrev))
+                    {
+                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
+                    }
+                }
+                string strDrain = objDrain.ToString();
+                if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
                 }
@@ -2167,10 +2177,19 @@ namespace Chummer
             objWriter.WriteElementString("stream", TechnomancerStream);
             if (!string.IsNullOrEmpty(TechnomancerStream))
             {
-                string strDrainAtt = string.Empty;
+                string strDrainAtt = TechnomancerFading;
                 objXmlDocument = new XmlDocument();
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeSection.AttributeStrings.Select(GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    CharacterAttrib objAttrib = GetAttribute(strAttribute);
+                    if (strDrainAtt.Contains(objAttrib.Abbrev))
+                    {
+                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
+                    }
+                }
+                string strDrain = objDrain.ToString();
                 if (string.IsNullOrEmpty(strDrain))
                     strDrain = "0";
                 XPathExpression xprDrain = nav.Compile(strDrain);
@@ -2792,7 +2811,7 @@ namespace Chummer
             _lstMartialArtManeuvers = new List<MartialArtManeuver>();
             _lstLimitModifiers = new List<LimitModifier>();
             _lstArmor = new List<Armor>();
-            _lstCyberware = new List<Cyberware>();
+            _lstCyberware = new BindingList<Cyberware>();
             _lstMetamagics = new List<Metamagic>();
             _lstArts = new List<Art>();
             _lstEnhancements = new List<Enhancement>();
@@ -2808,6 +2827,7 @@ namespace Chummer
             _lstCalendar = new List<CalendarWeek>();
 
             SkillsSection.Reset();
+            _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
         }
 #endregion
 
@@ -4478,6 +4498,7 @@ namespace Chummer
             }
         }
 
+        private decimal _decCachedEssence = decimal.MinValue;
         /// <summary>
         /// Character's Essence.
         /// </summary>
@@ -4485,10 +4506,12 @@ namespace Chummer
         {
             get
             {
+                if (_decCachedEssence != decimal.MinValue)
+                    return _decCachedEssence;
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                 if (_lstImprovements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled))
                 {
-                    return 0.1m;
+                    return _decCachedEssence = 0.1m;
                 }
                 decimal decESS = EssenceMaximum;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately. The higher value removes its full cost from the
@@ -4505,9 +4528,9 @@ namespace Chummer
                         if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                             decCyberware += objCyberware.CalculatedESS();
                         else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                decBioware += objCyberware.CalculatedESS();
-                        }
+                            decBioware += objCyberware.CalculatedESS();
                     }
+                }
                 decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty));
                 decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
 
@@ -4518,7 +4541,7 @@ namespace Chummer
                 //1781 Essence is not printing
                 //ESS.Base = Convert.ToInt32(decESS); -- Disabled becauses this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
 
-                return decESS;
+                return _decCachedEssence = decESS;
             }
         }
 
@@ -5410,7 +5433,7 @@ namespace Chummer
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
-        public List<Cyberware> Cyberware
+        public BindingList<Cyberware> Cyberware
         {
             get
             {
@@ -8058,9 +8081,16 @@ namespace Chummer
             Improvement.ImprovementType.EssencePenalty,
             Improvement.ImprovementType.EssencePenaltyT100,
             Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
+            Improvement.ImprovementType.CyborgEssence,
             Improvement.ImprovementType.FreeSpellsATT,
             Improvement.ImprovementType.AddLimb,
+            Improvement.ImprovementType.CyberwareEssCost,
+            Improvement.ImprovementType.CyberwareTotalEssMultiplier,
+            Improvement.ImprovementType.BiowareEssCost,
+            Improvement.ImprovementType.BiowareTotalEssMultiplier,
+            Improvement.ImprovementType.BasicBiowareEssCost,
         };
+
         //To get when things change in improvementmanager
         //Ugly, ugly done, but we cannot get events out of it today
         // FUTURE REFACTOR HERE
@@ -8070,6 +8100,7 @@ namespace Chummer
             if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
                 AttributeImprovementEvent?.Invoke(_lstTransaction);
+                _decCachedEssence = decimal.MinValue;
             }
             else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
             {

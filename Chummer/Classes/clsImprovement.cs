@@ -30,7 +30,6 @@ using Chummer.Backend.Equipment;
 using Chummer.Classes;
 using Chummer.Skills;
 using Chummer.Backend.Attributes;
-using Chummer.Backend.Extensions;
 
 namespace Chummer
 {
@@ -884,7 +883,8 @@ namespace Chummer
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    strReturn = strReturn.Replace(strAttribute, objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
+                    if (strReturn.Contains(strAttribute))
+                        strReturn = strReturn.Replace(strAttribute, objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
 
                 XmlDocument objXmlDocument = new XmlDocument();

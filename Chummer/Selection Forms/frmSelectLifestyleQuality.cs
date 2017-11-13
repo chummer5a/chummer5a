@@ -677,7 +677,8 @@ namespace Chummer
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                                 {
-                                    strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                    if (strAttributes.Contains(strAttribute))
+                                        strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
 
                                 XmlDocument objXmlDocument = new XmlDocument();
@@ -940,7 +941,8 @@ namespace Chummer
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                                 {
-                                    strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
+                                    if (strAttributes.Contains(strAttribute))
+                                        strAttributes = strAttributes.Replace(strAttribute, _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
 
                                 XmlDocument objXmlDocument = new XmlDocument();

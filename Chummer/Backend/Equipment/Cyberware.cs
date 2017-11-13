@@ -1,6 +1,6 @@
-using Chummer.Backend.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = new Guid();
         private Guid _guiVehicleID = new Guid();
         private Grade _objGrade = new Grade();
-        private List<Cyberware> _objChildren = new List<Cyberware>();
+        private BindingList<Cyberware> _objChildren = new BindingList<Cyberware>();
         private List<Gear> _lstGear = new List<Gear>();
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
@@ -300,7 +300,7 @@ namespace Chummer.Backend.Equipment
                     // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
                     if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                     {
-                        List<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
+                        IList<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
                         if (!Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Left") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
@@ -1741,7 +1741,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Cyberware.
         /// </summary>
-        public List<Cyberware> Children
+        public IList<Cyberware> Children
         {
             get
             {

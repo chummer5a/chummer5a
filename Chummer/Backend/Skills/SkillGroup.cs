@@ -198,7 +198,7 @@ namespace Chummer.Skills
         {
             if(skill.SkillGroupObject != null) return skill.SkillGroupObject;
 
-            if (skill.SkillGroup == null) return null;
+            if (string.IsNullOrWhiteSpace(skill.SkillGroup)) return null;
 
             foreach (SkillGroup skillGroup in skill.CharacterObject.SkillsSection.SkillGroups)
             {
@@ -207,11 +207,8 @@ namespace Chummer.Skills
                     if(!skillGroup._affectedSkills.Contains(skill))
                         skillGroup.Add(skill);
                     return skillGroup;
-
                 }
             }
-
-            if (string.IsNullOrWhiteSpace(skill.SkillGroup)) return null;
 
             SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
             newGroup.Add(skill);

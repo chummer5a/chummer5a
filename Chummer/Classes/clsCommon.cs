@@ -24,7 +24,6 @@ using System.Diagnostics;
  using System.Drawing;
  using System.Linq;
  using Chummer.Backend.Equipment;
-using Chummer.Backend.Extensions;
 using System.Xml;
 
 namespace Chummer
@@ -1876,7 +1875,7 @@ namespace Chummer
         /// <param name="lstNewList">New list to which the Cyberware is being moved.</param>
         /// <param name="objDestination">New parent node.</param>
         /// <param name="treOldTreeView">Old tree view from which we are moving the Cyberware.</param>
-        public static void MoveCyberwareNode(Character objCharacter, int intNewIndex, List<Cyberware> lstNewList, TreeNode objDestination, TreeView treOldTreeView)
+        public static void MoveCyberwareNode(Character objCharacter, int intNewIndex, IList<Cyberware> lstNewList, TreeNode objDestination, TreeView treOldTreeView)
         {
             TreeNode objCyberwareNode = treOldTreeView.SelectedNode;
             Cyberware objCyberware = DeepFindById(objCyberwareNode.Tag.ToString(), objCharacter.Cyberware);
@@ -2556,7 +2555,7 @@ namespace Chummer
         /// </summary>
         /// <param name="lstGear">List of child Gear to change.</param>
         /// <param name="blnEquipped">Whether or not the children should be marked as Equipped.</param>
-        public static void ChangeGearEquippedStatus(Character objCharacter, List<Gear> lstGear, bool blnEquipped)
+        public static void ChangeGearEquippedStatus(Character objCharacter, IEnumerable<Gear> lstGear, bool blnEquipped)
         {
             foreach (Gear objGear in lstGear)
             {

@@ -2558,7 +2558,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strName">Name of the Gear to find.</param>
         /// <param name="lstGear">List of Gear to search.</param>
         /// <param name="strExtra">Extra conditions for Gear to find.</param>
-        private Gear FindGearByName(string strName, List<Gear> lstGear, string strExtra = "")
+        private Gear FindGearByName(string strName, IEnumerable<Gear> lstGear, string strExtra = "")
         {
             Gear objReturn = new Gear(_objCharacter);
             foreach (Gear objGear in lstGear)

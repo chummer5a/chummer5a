@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Chummer.Backend.Extensions
+namespace Chummer
 {
     static class LinqExtensions
     {

@@ -37,7 +37,6 @@ using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
 using Chummer.Backend.Attributes;
 using System.Collections.Specialized;
-using Chummer.Backend.Extensions;
 
 namespace Chummer
 {
@@ -826,10 +825,19 @@ namespace Chummer
                 objXmlDocument = XmlManager.Load("traditions.xml");
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.MagicTradition + "\"]");
                 lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
-                string strDrainAtt = string.Empty;
+                string strDrainAtt = _objCharacter.TraditionDrain;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = AttributeSection.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                    if (strDrainAtt.Contains(objAttrib.Abbrev))
+                    {
+                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
+                    }
+                }
+                string strDrain = objDrain.ToString();
                 if (string.IsNullOrEmpty(strDrain))
                 {
                     strDrain = "0";
@@ -848,10 +856,19 @@ namespace Chummer
                 lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
 
                 // Update the Fading CharacterAttribute Value.
-                string strDrainAtt = string.Empty;
+                string strDrainAtt = _objCharacter.TechnomancerFading;
 
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strFading = AttributeSection.AttributeStrings.Select(_objCharacter.GetAttribute).Aggregate(strDrainAtt, (current, objAttrib) => current.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString()));
+                StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                    if (strDrainAtt.Contains(objAttrib.Abbrev))
+                    {
+                        objDrain.Replace(objAttrib.Abbrev, objAttrib.TotalValue.ToString());
+                    }
+                }
+                string strFading = objDrain.ToString();
                 if (string.IsNullOrEmpty(strFading))
                 {
                     strFading = "0";
@@ -864,22 +881,17 @@ namespace Chummer
                     intFading = Convert.ToInt32(nav.Evaluate(xprFading).ToString());
                 }
                 catch (XPathException) { }
-                    intFading += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
-                    lblFadingAttributesValue.Text = intFading.ToString();
-                }
+                intFading += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
+                lblFadingAttributesValue.Text = intFading.ToString();
+            }
 
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
 
             _blnLoading = false;
 
-            ScheduleCharacterUpdate();
-            // Directly calling here so that we can properly unset the dirty flag after the update
-            UpdateCharacterInfo();
-
             // Select the Magician's Tradition.
             if (!string.IsNullOrEmpty(_objCharacter.MagicTradition))
                 cboTradition.SelectedValue = _objCharacter.MagicTradition;
-                CalculateTraditionDrain(_objCharacter.TraditionDrain, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
 
             if (!string.IsNullOrEmpty(_objCharacter.TraditionName))
                 txtTraditionName.Text = _objCharacter.TraditionName;
@@ -908,7 +920,6 @@ namespace Chummer
                 // Select the Technomancer's Stream.
                 if (!string.IsNullOrEmpty(_objCharacter.TechnomancerStream))
                     cboStream.SelectedValue = _objCharacter.TechnomancerStream;
-                CalculateTraditionDrain(_objCharacter.TechnomancerFading, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
             }
 
             treGear.ItemDrag += treGear_ItemDrag;
@@ -958,10 +969,6 @@ namespace Chummer
 
             tabSkillsUc.ObjCharacter = _objCharacter;
 
-            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            BuildAttributePanel();
-
             // Set the visibility of the Armor Degradation buttons.
             cmdArmorDecrease.Visible = _objOptions.ArmorDegradation;
             cmdArmorIncrease.Visible = _objOptions.ArmorDegradation;
@@ -977,6 +984,19 @@ namespace Chummer
             UpdateInitiationGradeTree();
             PopulateCalendar();
             RefreshImprovements();
+
+            ScheduleCharacterUpdate();
+            // Directly calling here so that we can properly unset the dirty flag after the update
+            UpdateCharacterInfo();
+
+            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            BuildAttributePanel();
+
+            // Hacky, but necessary
+            // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
+            // ...but BuildAttributePanel() ends up requesting a character update when it sets up the values of attribute NumericalUpDowns
+            _blnRequestCharacterUpdate = false;
 
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
@@ -1019,14 +1039,14 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        foreach (
-                            AttributeControl objControl in
-                                pnlAttributes.Controls.Cast<AttributeControl>()
-                                    .Where(objControl => objControl.AttributeName == objAttrib.Abbrev))
+                        foreach (AttributeControl objControl in pnlAttributes.Controls)
                         {
-                            objControl.ValueChanged -= objAttribute_ValueChanged;
-                            pnlAttributes.Controls.Remove(objControl);
-                            objControl.Dispose();
+                            if (objControl.AttributeName == objAttrib.Abbrev)
+                            {
+                                objControl.ValueChanged -= objAttribute_ValueChanged;
+                                pnlAttributes.Controls.Remove(objControl);
+                                objControl.Dispose();
+                            }
                         }
                     }
                     break;
@@ -4136,7 +4156,7 @@ namespace Chummer
         {
             //id of essence hole, get by id to avoid name confusions
             Guid essenceHoldID = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
-            Cyberware objHole = _objCharacter.Cyberware.Find(x => x.SourceID == essenceHoldID);
+            Cyberware objHole = _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == essenceHoldID);
 
             if (objHole == null)
             {
@@ -4160,7 +4180,7 @@ namespace Chummer
         {
             //id of essence hole, get by id to avoid name confusions
             Guid essenceHoldID = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
-            Cyberware objHole = _objCharacter.Cyberware.Find(x => x.SourceID == essenceHoldID);
+            Cyberware objHole = _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == essenceHoldID);
 
             if (objHole != null)
             {
@@ -14699,7 +14719,7 @@ namespace Chummer
                 }
 
                 // Refresh the Gear tree.
-                TreeNode objSelectedNode = treGear.Nodes.Cast<TreeNode>().DeepFirstOrDefault(x => x.Nodes.Cast<TreeNode>(), x => objSelectedAmmo.InternalId == x.Tag.ToString());
+                TreeNode objSelectedNode = CommonFunctions.FindNode(objSelectedAmmo.InternalId, treGear);
                 if (objSelectedNode != null)
                     objSelectedNode.Text = objSelectedAmmo.DisplayName;
             }
@@ -16074,7 +16094,7 @@ namespace Chummer
                     {
                         objAmmo.Quantity += objWeapon.AmmoRemaining;
 
-                        TreeNode objSelectedNode = treVehicles.Nodes.Cast<TreeNode>().DeepFirstOrDefault(x => x.Nodes.Cast<TreeNode>(), x => objAmmo.InternalId == x.Tag.ToString());
+                        TreeNode objSelectedNode = CommonFunctions.FindNode(objAmmo.InternalId, treVehicles);
                         if (objSelectedNode != null)
                             objSelectedNode.Text = objAmmo.DisplayName;
                         break;
@@ -16106,7 +16126,7 @@ namespace Chummer
                 }
 
                 // Refresh the Vehicle tree.
-                TreeNode objSelectedNode = treVehicles.Nodes.Cast<TreeNode>().DeepFirstOrDefault(x => x.Nodes.Cast<TreeNode>(), x => objSelectedAmmo.InternalId == x.Tag.ToString());
+                TreeNode objSelectedNode = CommonFunctions.FindNode(objSelectedAmmo.InternalId, treVehicles);
                 if (objSelectedNode != null)
                     objSelectedNode.Text = objSelectedAmmo.DisplayName;
             }
@@ -16233,7 +16253,8 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
+                        if (strDrain.Contains(objAttrib.DisplayAbbrev))
+                            strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.TotalValue.ToString());
                     }
                     int intDrain = 0;
                     try
@@ -16251,7 +16272,8 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+                        if (strTip.Contains(objAttrib.DisplayAbbrev))
+                            strTip = strTip.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
                     }
 
                     if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance) != 0)
@@ -16939,7 +16961,8 @@ namespace Chummer
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+                if (strDrain.Contains(objAttrib.DisplayAbbrev))
+                    strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
             }
             lblFadingAttributes.Text = strDrain;
             _objCharacter.TechnomancerStream = cboStream.SelectedValue.ToString();
@@ -18838,26 +18861,7 @@ namespace Chummer
             // Update the Drain CharacterAttribute Value.
             if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
             {
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strDrain = lblDrainAttributes.Text;
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    strDrain = strDrain.Replace(LanguageManager.GetString("String_Attribute" + strAttribute + "Short"),
-                        dicAttributeTotalValues[strAttribute].ToString());
-                }
-                int intDrain = 0;
-                try
-                {
-                    XPathExpression xprDrain = nav.Compile(strDrain);
-                    intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
-                }
-                catch (XPathException)
-                {
-                }
-
-                intDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
-                lblDrainAttributesValue.Text = intDrain.ToString();
+                CalculateTraditionDrain(_objCharacter.TraditionDrain, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
             }
 
             // Update the maximum Force for all Sprites.
@@ -18870,31 +18874,7 @@ namespace Chummer
             // Update the Fading CharacterAttribute Value.
             if (_objCharacter.RESEnabled && !string.IsNullOrEmpty(lblFadingAttributes.Text))
             {
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                string strFading = lblFadingAttributes.Text;
-                strTip = lblFadingAttributes.Text;
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    string strShortAttribute = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
-                    string strAttributeValue = dicAttributeTotalValues[strAttribute].ToString();
-                    strFading = strFading.Replace(strShortAttribute, strAttributeValue);
-                    strTip = strTip.Replace(strShortAttribute, strShortAttribute + " (" + strAttributeValue + ")");
-                }
-                int intFading = 0;
-                try
-                {
-                    XPathExpression xprFading = nav.Compile(strFading);
-                    intFading = Convert.ToInt32(nav.Evaluate(xprFading).ToString());
-                }
-                catch (XPathException)
-                {
-                }
-
-                intFading += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
-                lblFadingAttributesValue.Text = intFading.ToString();
-
-                tipTooltip.SetToolTip(lblFadingAttributesValue, strTip);
+                CalculateTraditionDrain(_objCharacter.TechnomancerFading, Improvement.ImprovementType.FadingResistance, lblFadingAttributes, lblFadingAttributesValue, tipTooltip);
             }
 
             // Skill Limits
@@ -18912,7 +18892,7 @@ namespace Chummer
                 $"{_objCharacter.REA.DisplayAbbrev} ({dicAttributeValues["REA"]}) + {_objCharacter.INT.DisplayAbbrev} ({dicAttributeValues["INT"]})";
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Initiative) > 0 ||
                 intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                strInit += " + " + strModifiers + " (" +
                            (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Initiative) +
                             intINTAttributeModifiers + intREAAttributeModifiers).ToString() + ")";
             tipTooltip.SetToolTip(lblINI,
@@ -21093,7 +21073,7 @@ namespace Chummer
             // If this is Ammunition, see if the character already has it on them.
             if (objNewGear.Category == "Ammunition")
             {
-                List<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
+                IList<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
                 objMatchingGear = lstToSearch.FirstOrDefault(x => objNewGear.IsIdenticalToOtherGear(x));
             }
 

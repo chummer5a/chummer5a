@@ -10,7 +10,6 @@ using Chummer.Backend;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
-using Chummer.Backend.Extensions;
 // ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes

@@ -35,7 +35,6 @@ using Chummer.Backend.Equipment;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Chummer.UI.Attributes;
-using Chummer.Backend.Extensions;
 using System.Reflection;
 
 namespace Chummer
@@ -808,10 +807,6 @@ namespace Chummer
 
             _blnLoading = false;
 
-            ScheduleCharacterUpdate();
-            // Directly calling here so that we can properly unset the dirty flag after the update
-            UpdateCharacterInfo();
-
             // Select the Magician's Tradition.
             if (!string.IsNullOrEmpty(_objCharacter.MagicTradition))
                 cboTradition.SelectedValue = _objCharacter.MagicTradition;
@@ -837,9 +832,6 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objCharacter.SpiritManipulation))
                 cboSpiritManipulation.SelectedValue = _objCharacter.SpiritManipulation;
-            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            BuildAttributePanel();
 
             treGear.ItemDrag += treGear_ItemDrag;
             treGear.DragEnter += treGear_DragEnter;
@@ -879,6 +871,19 @@ namespace Chummer
             treMartialArts.SortCustom();
             UpdateMentorSpirits();
             UpdateInitiationGradeTree();
+
+            ScheduleCharacterUpdate();
+            // Directly calling here so that we can properly unset the dirty flag after the update
+            UpdateCharacterInfo();
+
+            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            BuildAttributePanel();
+
+            // Hacky, but necessary
+            // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
+            // ...but BuildAttributePanel() ends up requesting a character update when it sets up the values of attribute NumericalUpDowns
+            _blnRequestCharacterUpdate = false;
 
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
@@ -21421,14 +21426,14 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        foreach (
-                            AttributeControl objControl in
-                                pnlAttributes.Controls.Cast<AttributeControl>()
-                                    .Where(objControl => objControl.AttributeName == objAttrib.Abbrev))
+                        foreach (AttributeControl objControl in pnlAttributes.Controls)
                         {
-                            objControl.ValueChanged -= objAttribute_ValueChanged;
-                            pnlAttributes.Controls.Remove(objControl);
-                            objControl.Dispose();
+                            if (objControl.AttributeName == objAttrib.Abbrev)
+                            {
+                                objControl.ValueChanged -= objAttribute_ValueChanged;
+                                pnlAttributes.Controls.Remove(objControl);
+                                objControl.Dispose();
+                            }
                         }
                     }
                     break;
