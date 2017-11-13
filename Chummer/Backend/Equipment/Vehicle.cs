@@ -45,6 +45,7 @@ namespace Chummer.Backend.Equipment
 		private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
 		private List<Gear> _lstGear = new List<Gear>();
 		private List<Weapon> _lstWeapons = new List<Weapon>();
+        private List<WeaponMount> _lstWeaponMounts = new List<WeaponMount>();
 		private string _strNotes = string.Empty;
 		private string _strAltName = string.Empty;
 		private string _strAltCategory = string.Empty;
@@ -76,7 +77,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="cmsVehicleWeapon">ContextMenuStrip to attach to Vehicle Weapons.</param>
 		/// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip to attach to Weapon Accessories.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, ContextMenuStrip cmsVehicleWeaponMount = null, bool blnCreateChildren = true)
 		{
 			objXmlVehicle.TryGetField("id", Guid.TryParse, out _sourceID);
 			objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
@@ -227,10 +228,49 @@ namespace Chummer.Backend.Equipment
 			    XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
                 if (objAddSlotsNode != null)
                     int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
-			}
+            }
 
-			// If there is any Gear that comes with the Vehicle, add them.
-			if (objXmlVehicle.InnerXml.Contains("<gears>") && blnCreateChildren)
+            // If there are any Weapon Mounts that come with the Vehicle, add them.
+            if (objXmlVehicle.InnerXml.Contains("<weaponmounts>") && blnCreateChildren)
+            {
+                XmlDocument objXmlDocument = new XmlDocument();
+                objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
+
+                XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("weaponmounts/weaponmount");
+                foreach (XmlNode objXmlVehicleMod in objXmlModList)
+                {
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + objXmlVehicleMod["name"].InnerText + "\"]");
+                    if (objXmlMod != null)
+                    {
+                        //Do witchcraft here to build the weapon mount. I reaaaaally don't like creating things from names...
+                        /*TreeNode tree = new TreeNode();
+                        WeaponMount mount = new WeaponMount(null, this);
+                        mount.Create(node, tree, _vehicle);
+                        WeaponMountOption option = new WeaponMountOption();
+                        option.Create(cboControl.SelectedValue.ToString());
+                        mount.WeaponMountOptions.Add(option);
+                        option = new WeaponMountOption();
+                        option.Create(cboFlexibility.SelectedValue.ToString());
+                        mount.WeaponMountOptions.Add(option);
+                        option = new WeaponMountOption();
+                        option.Create(cboVisibility.SelectedValue.ToString());
+                        mount.WeaponMountOptions.Add(option);
+
+                        _lstWeaponMounts.Add(objMod);
+                        objModNode.ForeColor = SystemColors.GrayText;
+                        objModNode.ContextMenuStrip = cmsVehicle;
+
+                        objNode.Nodes.Add(objModNode);
+                        objNode.Expand();*/
+                    }
+                }
+                XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
+                if (objAddSlotsNode != null)
+                    int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
+            }
+
+            // If there is any Gear that comes with the Vehicle, add them.
+            if (objXmlVehicle.InnerXml.Contains("<gears>") && blnCreateChildren)
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("gear.xml");
 
@@ -1129,16 +1169,18 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Weapons applied to the Vehicle through Gear.
-		/// </summary>
-		public List<Weapon> Weapons
-		{
-			get
-			{
-				return _lstWeapons;
-			}
-		}
+        /// <summary>
+        /// Weapons applied to the Vehicle through Gear.
+        /// </summary>
+        public List<Weapon> Weapons => _lstWeapons;
+
+        public List<WeaponMount> WeaponMounts
+        {
+            get
+            {
+                return _lstWeaponMounts;
+            }
+        }
 
 		/// <summary>
 		/// Calculated Availablility of the Vehicle.
@@ -2222,14 +2264,14 @@ namespace Chummer.Backend.Equipment
 				return intReturn;
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Calculate remaining slots by provided Category
-		/// </summary>
-		public int CalcCategoryUsed(string strCategory)
+        /// <summary>
+        /// Calculate remaining slots by provided Category
+        /// </summary>
+        public int CalcCategoryUsed(string strCategory)
 		{
 			int intBase = 0;
 

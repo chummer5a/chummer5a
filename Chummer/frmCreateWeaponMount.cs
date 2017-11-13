@@ -24,7 +24,9 @@ namespace Chummer
 	    private Character _character;
 		private XmlDocument _xmlDoc;
 
-		public frmCreateWeaponMount(Vehicle vehicle, Character character)
+        public WeaponMount WeaponMount { get; internal set; }
+
+        public frmCreateWeaponMount(Vehicle vehicle, Character character)
 		{
 			_lstControl = new List<object>();
 			_lstFlexibility = new List<object>();
@@ -102,7 +104,10 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
+            TreeNode tree = new TreeNode();
+            XmlNode node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue.ToString() + "\"]");
             WeaponMount mount = new WeaponMount(_character, _vehicle);
+            mount.Create(node, tree, _vehicle);
             WeaponMountOption option = new WeaponMountOption();
             option.Create(cboControl.SelectedValue.ToString());
             mount.WeaponMountOptions.Add(option);
@@ -110,11 +115,10 @@ namespace Chummer
             option.Create(cboFlexibility.SelectedValue.ToString());
             mount.WeaponMountOptions.Add(option);
             option = new WeaponMountOption();
-            option.Create(cboSize.SelectedValue.ToString());
-            mount.WeaponMountOptions.Add(option);
-            option = new WeaponMountOption();
             option.Create(cboVisibility.SelectedValue.ToString());
             mount.WeaponMountOptions.Add(option);
+            WeaponMount = mount;
+            DialogResult = DialogResult.OK;
         }
 
 		private void cmdCancel_Click(object sender, EventArgs e)

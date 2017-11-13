@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -18,7 +19,7 @@ namespace Chummer.Backend.Equipment
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
 		private bool _blnInstalled = true;
-		private readonly Weapon _objWeapon = new Weapon(null);
+		private List<Weapon> _weapons = new List<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strAltName = string.Empty;
 		private string _strAltCategory = string.Empty;
@@ -42,7 +43,7 @@ namespace Chummer.Backend.Equipment
 			_guiID = Guid.NewGuid();
 		    _character = character;
 			_vehicle = vehicle;
-		}
+        }
 
 		/// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
 		/// <param name="objXmlMod">XmlNode to create the object from.</param>
@@ -51,8 +52,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="intMarkup">Discount or markup that applies to the base cost of the mod.</param>
 		public void Create(XmlNode objXmlMod, TreeNode objNode, Vehicle objParent, int intMarkup = 0)
 		{
-			if (objParent == null) throw new ArgumentNullException(nameof(objParent));
-			Parent = objParent;
+            Parent = objParent ?? _vehicle ?? throw new ArgumentNullException(nameof(objParent));
 			if (objXmlMod == null) Utils.BreakIfDebug();
 			objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
 			objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -140,7 +140,11 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
 			objWriter.WriteStartElement("weapons");
-			_objWeapon.Save(objWriter);
+            foreach (Weapon w in _weapons)
+            {
+                w.Save(objWriter);
+            }
+            objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
 			objWriter.WriteEndElement();
@@ -175,9 +179,15 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetStringFieldQuickly("source", ref _strSource);
 			objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
-			if (objNode["weapon"] != null)
+			if (objNode["weapons"] != null)
 			{
-				_objWeapon.Load(objNode["weapon"], blnCopy);
+                Weapon w = new Weapon(null);
+                foreach (XmlNode n in objNode.SelectNodes("weapons/weapon"))
+                {
+                    w = new Weapon(null);
+                    w.Load(objNode["weapon"], blnCopy);
+                    _weapons.Add(w);
+                }
 			}
 			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -215,7 +225,12 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("source", _character.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
-			_objWeapon.Print(objWriter);
+            objWriter.WriteStartElement("weapons");
+            foreach (Weapon w in _weapons)
+            {
+                w.Print(objWriter);
+            }
+            objWriter.WriteEndElement();
 			if (_character.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
@@ -226,11 +241,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Weapons.
 		/// </summary>
-		public Weapon Weapon
+		public List<Weapon> Weapons
 		{
 			get
 			{
-				return _objWeapon;
+				return _weapons;
 			}
 		}
 
@@ -495,7 +510,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// 
         /// </summary>
-        public List<WeaponMountOption> WeaponMountOptions { get; set; }
+        public List<WeaponMountOption> WeaponMountOptions { get; set; } = new List<WeaponMountOption>();
         #endregion
 
         #region Complex Properties
@@ -547,7 +562,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				return OwnCost + _objWeapon.TotalCost;
+				return OwnCost + Weapons.Sum(w => w.TotalCost);
 			}
 		}
 

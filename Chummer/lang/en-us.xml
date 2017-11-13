@@ -1270,6 +1270,10 @@
 			<key>Menu_AddAccessory</key>
 			<text>&amp;Add Accessory</text>
 		</string>
+    <string>
+      <key>Menu_AddWeaponMount</key>
+      <text>Add &amp;Weapon Mount</text>
+    </string>
 		<string>
 			<key>Menu_AddModification</key>
 			<text>A&amp;dd Modification</text>

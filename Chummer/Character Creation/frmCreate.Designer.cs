@@ -177,8 +177,9 @@ namespace Chummer
 			this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearButtonAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsGearAddNexus = new System.Windows.Forms.ToolStripMenuItem();
-			this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsVehicleAddMod = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components); 
+            this.cmsWeaponMount = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsVehicleAddMod = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddWeaponMount = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddCyberware = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleAddSensor = new System.Windows.Forms.ToolStripMenuItem();
@@ -870,7 +871,8 @@ namespace Chummer
 			this.cmsWeapon.SuspendLayout();
 			this.cmsGearButton.SuspendLayout();
 			this.cmsVehicle.SuspendLayout();
-			this.mnuCreateMenu.SuspendLayout();
+            this.cmsWeaponMount.SuspendLayout();
+            this.mnuCreateMenu.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.cmsGear.SuspendLayout();
 			this.cmsVehicleWeapon.SuspendLayout();
@@ -2160,20 +2162,29 @@ namespace Chummer
 			this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
-            this.tsVehicleAddWeapon,
             this.tsVehicleName,
             this.tsVehicleNotes});
 			this.cmsVehicle.Name = "cmsWeapon";
 			this.cmsVehicle.Size = new System.Drawing.Size(193, 136);
 			this.cmsVehicle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+            //
+            // cmsWeaponMount
+            //
+            this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleAddWeapon,
+            this.tsVehicleNotes});
+            this.cmsWeaponMount.Name = "cmsWeapon";
+            this.cmsWeaponMount.Size = new System.Drawing.Size(193, 136);
+            this.cmsWeaponMount.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
 			// 
 			// tsVehicleAddWeaponMount
 			// 
 			this.tsVehicleAddWeaponMount.Image = global::Chummer.Properties.Resources.car_add;
-			this.tsVehicleAddWeaponMount.Name = "tsVehicleAddMod";
+			this.tsVehicleAddWeaponMount.Name = "tsVehicleAddWeaponMount";
 			this.tsVehicleAddWeaponMount.Size = new System.Drawing.Size(192, 22);
-			this.tsVehicleAddWeaponMount.Text = "Add Weapon Mount";
-	        this.tsVehicleAddWeaponMount.Visible = false;
+            this.tsVehicleAddWeaponMount.Tag = "Menu_AddWeaponMount";
+            this.tsVehicleAddWeaponMount.Text = "Add Weapon Mount";
+	        this.tsVehicleAddWeaponMount.Visible = true;
 			this.tsVehicleAddWeaponMount.Click += new System.EventHandler(this.tsVehicleAddWeaponMount_Click);
 			// 
 			// tsVehicleAddMod
@@ -10119,7 +10130,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleHandling;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
         private System.Windows.Forms.ToolStripButton tsbPrint;
-        private System.Windows.Forms.ContextMenuStrip cmsVehicle;
+        private System.Windows.Forms.ContextMenuStrip cmsWeaponMount;
+        private System.Windows.Forms.ContextMenuStrip cmsVehicle; 
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddMod;
 		private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponMount;
 		private System.Windows.Forms.NumericUpDown nudVehicleRating;
