@@ -8152,6 +8152,10 @@ Do you want to continue?</text>
 	  <key>String_Checking_For_Update</key>
 	  <text>Checking for Updates...</text>
 	</string>
+  <string>
+      <key>Message_Update_CloseForms</key>
+      <text>A newer version of Chummer5a has been automatically downloaded. Should we apply it and restart the application?</text>
+    </string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
     <string>

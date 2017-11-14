@@ -1308,12 +1308,24 @@ namespace Chummer
             Data["api_option"] = "paste";
 
             WebClient wb = new WebClient();
-                byte[] bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+            byte[] bytes = null;
+            try
+            {
+                bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+            }
+            catch (WebException)
+            {
+                return;
+            }
 
-                string response;
-                using (MemoryStream ms = new MemoryStream(bytes))
+            string response;
+            using (MemoryStream ms = new MemoryStream(bytes))
+            {
                 using (StreamReader reader = new StreamReader(ms))
+                {
                     response = reader.ReadToEnd();
+                }
+            }
             Clipboard.SetText(response);
             #endif
         }

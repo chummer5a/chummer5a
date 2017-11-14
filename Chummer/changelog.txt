@@ -243,6 +243,8 @@ Application Changes:
 - Fixed bugs where enabling the house rule for strict interpretation of skill group breaking in create mode would also affect characters in career mode.
 - Fixed a bug where certain selectable bonuses and extras would not get translated when using a localization different from the default English (US) one.
 - Fixed a bug where adding karma to an adept in career mode would sometimes cause sometimes Chummer5 to crash. Fixes #2050.
+- Fixed the Automatic Updates option not working properly. The automatic updater has been updated as well to run silently in the background until an update is ready to be applied instead of forcing the user to click through an updater window. It also checks for updates every hour as well instead of just at startup. Manually checking for updates while the automatic updater is running in the background will make the visible updater window take over the automatic updater instead of trying to launch its own, separate instance of the updater.
+- Fixed the warning for using an older version of Chummer5a to open a character made in a newer version.
 
 Data Changes:
 
@@ -448,6 +450,7 @@ New Strings:
 - Label_Contact_HobbiesVice
 - String_Checking_For_Update
 - Checkbox_Options_SearchInCategoryOnly
+- Message_Update_CloseForms
 
 Changes Strings:
 - Message_PositiveQualityLimit

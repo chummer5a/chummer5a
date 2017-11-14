@@ -972,7 +972,7 @@ namespace Chummer
                 }
                 Version.TryParse(strVersion, out _verSavedVersion);
             }
-#if RELEASE
+#if !DEBUG
                 Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)

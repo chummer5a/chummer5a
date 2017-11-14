@@ -34,7 +34,7 @@ namespace Chummer
     {
         //someday this should parse into an abstract syntax tree, but this hack
         //have worked for a few years, and will work a few years more
-        public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords )
+        public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords)
         {
             //parse to base math string
             Regex regex = new Regex(string.Join("|", keywords.Keys));
@@ -71,46 +71,97 @@ namespace Chummer
             return Process.GetCurrentProcess().ProcessName == "devenv";
         }
 
-        public static Version GitVersion()
+        private static Version _objCachedGitVersion = null;
+        public static Version CachedGitVersion
         {
-            Version verLatestVersion = new Version();
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
+            get
+            {
+                return _objCachedGitVersion;
+            }
+            set
+            {
+                _objCachedGitVersion = value;
+            }
+        }
+        public static void DoCacheGitVersion(object sender, EventArgs e)
+        {
+            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+            if (GlobalOptions.PreferNightlyBuilds)
+            {
+                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
+            }
+            HttpWebRequest request = null;
+            try
+            {
+                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                request = objTemp as HttpWebRequest;
+            }
+            catch (System.Security.SecurityException)
+            {
+                CachedGitVersion = null;
+                return;
+            }
+            if (request == null)
+            {
+                CachedGitVersion = null;
+                return;
+            }
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             request.Accept = "application/json";
             // Get the response.
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response = null;
+            try
+            {
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (WebException)
+            {
+            }
 
             // Get the stream containing content returned by the server.
-            Stream dataStream = response.GetResponseStream();
+            Stream dataStream = response?.GetResponseStream();
+            if (dataStream == null)
+            {
+                CachedGitVersion = null;
+                return;
+            }
+            Version verLatestVersion = null;
             // Open the stream using a StreamReader for easy access.
             StreamReader reader = new StreamReader(dataStream);
             // Read the content.
 
             string responseFromServer = reader.ReadToEnd();
-            string[] stringSeparators = { "," };
+            string[] stringSeparators = new string[] { "," };
             string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             string line = result.FirstOrDefault(x => x.Contains("tag_name"));
             if (!string.IsNullOrEmpty(line))
             {
-                string strVersion = line.Split(':')[1];
-                strVersion = strVersion.Split('}')[0].FastEscape('\"');
-                strVersion = strVersion + ".0";
-                Version.TryParse(strVersion, out verLatestVersion);
+                string strVersion = line.Substring(line.IndexOf(':') + 1);
+                if (strVersion.Contains('}'))
+                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
+                strVersion = strVersion.FastEscape('\"');
+                // Adds zeroes if minor and/or build version are missing
+                while (strVersion.Count(x => x == '.') < 2)
+                {
+                    strVersion = strVersion + ".0";
+                }
+                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
             }
             // Cleanup the streams and the response.
             reader.Close();
             dataStream.Close();
             response.Close();
 
-            return verLatestVersion;
+            CachedGitVersion = verLatestVersion;
+            return;
         }
 
         public static int GitUpdateAvailable()
         {
             Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
-            int intResult = GitVersion().CompareTo(verCurrentversion);
+            int intResult = CachedGitVersion?.CompareTo(verCurrentversion) ?? 0;
             return intResult;
         }
 
