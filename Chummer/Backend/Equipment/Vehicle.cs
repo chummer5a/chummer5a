@@ -233,40 +233,13 @@ namespace Chummer.Backend.Equipment
             // If there are any Weapon Mounts that come with the Vehicle, add them.
             if (objXmlVehicle.InnerXml.Contains("<weaponmounts>") && blnCreateChildren)
             {
-                XmlDocument objXmlDocument = new XmlDocument();
-                objXmlDocument = XmlManager.Instance.Load("vehicles.xml");
-
                 XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode objXmlVehicleMod in objXmlModList)
                 {
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + objXmlVehicleMod["name"].InnerText + "\"]");
-                    if (objXmlMod != null)
-                    {
-                        //Do witchcraft here to build the weapon mount. I reaaaaally don't like creating things from names...
-                        /*TreeNode tree = new TreeNode();
-                        WeaponMount mount = new WeaponMount(null, this);
-                        mount.Create(node, tree, _vehicle);
-                        WeaponMountOption option = new WeaponMountOption();
-                        option.Create(cboControl.SelectedValue.ToString());
-                        mount.WeaponMountOptions.Add(option);
-                        option = new WeaponMountOption();
-                        option.Create(cboFlexibility.SelectedValue.ToString());
-                        mount.WeaponMountOptions.Add(option);
-                        option = new WeaponMountOption();
-                        option.Create(cboVisibility.SelectedValue.ToString());
-                        mount.WeaponMountOptions.Add(option);
-
-                        _lstWeaponMounts.Add(objMod);
-                        objModNode.ForeColor = SystemColors.GrayText;
-                        objModNode.ContextMenuStrip = cmsVehicle;
-
-                        objNode.Nodes.Add(objModNode);
-                        objNode.Expand();*/
-                    }
+                    WeaponMount w = new WeaponMount(_objCharacter, this);
+                    w.CreateByName(objXmlVehicleMod);
+                    WeaponMounts.Add(w);
                 }
-                XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
-                if (objAddSlotsNode != null)
-                    int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
             }
 
             // If there is any Gear that comes with the Vehicle, add them.

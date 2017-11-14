@@ -235,13 +235,38 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 		}
-		#endregion
+        /// <summary>
+        /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy. 
+        /// </summary>
+        /// <param name="objXmlVehicleMod"></param>
+        internal void CreateByName(XmlNode objXmlVehicleMod)
+        {
+            XmlDocument doc = XmlManager.Instance.Load("vehicles.xml");
+            //I'm not super pleased with this,
+            TreeNode tree = new TreeNode();
+            WeaponMount mount = this;
+            XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["size"].InnerText}\" and category = \"Size\"]");
+            mount.Create(node, tree, _vehicle);
+            WeaponMountOption option = new WeaponMountOption();
+            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["flexibility"].InnerText}\" and category = \"Flexibility\"]");
+            option.Create(node["id"].InnerText);
+            mount.WeaponMountOptions.Add(option);
+            option = new WeaponMountOption();
+            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["control"].InnerText}\" and category = \"Control\"]");
+            option.Create(node["id"].InnerText);
+            mount.WeaponMountOptions.Add(option);
+            option = new WeaponMountOption();
+            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["visibility"].InnerText}\" and category = \"Visibility\"]");
+            option.Create(node["id"].InnerText);
+            mount.WeaponMountOptions.Add(option);
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Weapons.
-		/// </summary>
-		public List<Weapon> Weapons
+        #region Properties
+        /// <summary>
+        /// Weapons.
+        /// </summary>
+        public List<Weapon> Weapons
 		{
 			get
 			{
@@ -349,10 +374,10 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 
-		/// <summary>
-		/// Cost.
-		/// </summary>
-		public string Cost
+        /// <summary>
+        /// Cost.
+        /// </summary>
+        public string Cost
 		{
 			get
 			{
