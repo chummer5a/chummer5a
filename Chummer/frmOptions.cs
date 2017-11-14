@@ -151,6 +151,8 @@ namespace Chummer
             _characterOptions.EducationQualitiesApplyOnChargenKarma = chkEducationQualitiesApplyOnChargenKarma.Checked;
             _characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
             _characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
+            _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
+            _characterOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
 
             // Karma options.
             _characterOptions.KarmaAttribute = Convert.ToInt32(nudKarmaAttribute.Value);
@@ -181,7 +183,6 @@ namespace Chummer
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
             _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
             _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
-            _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
 
             // Focus costs
             _characterOptions.KarmaAlchemicalFocus = Convert.ToInt32(nudKarmaAlchemicalFocus.Value);
@@ -709,6 +710,7 @@ namespace Chummer
             chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
             chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
             chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
+            chkSearchInCategoryOnly.Checked = _characterOptions.SearchInCategoryOnly;
             nudBP.Value = _characterOptions.BuildPoints;
             nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
             nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;

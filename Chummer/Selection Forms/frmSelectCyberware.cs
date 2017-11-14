@@ -426,7 +426,7 @@ namespace Chummer
             }
 
             string strCategoryFilter = "(";
-            if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All")
+            if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All" || !_objCharacter.Options.SearchInCategoryOnly)
                 strCategoryFilter += _lstCategory.Where(objAllowedCategory => !string.IsNullOrEmpty(objAllowedCategory.Value)).Aggregate(string.Empty, (current, objAllowedCategory) => current + ("category = \"" + objAllowedCategory.Value + "\" or "));
             else
                 strCategoryFilter += "category = \"" + cboCategory.SelectedValue + "\" or ";

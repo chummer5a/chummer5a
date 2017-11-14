@@ -7120,6 +7120,10 @@ Do you want to continue?</text>
       <text>Use Unix-Style Parameters when opening PDFs</text>
     </string>
     <string>
+      <key>Checkbox_Options_SearchInCategoryOnly</key>
+      <text>Searching in selection forms is restricted to the current Category</text>
+    </string>
+    <string>
       <key>Button_ToggleSourcebooks</key>
       <text>Toggle all Sourcebooks On/Off</text>
     </string>

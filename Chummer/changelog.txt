@@ -79,6 +79,7 @@ Application Changes:
 - Fixed detection of Burnout's Way when combined with Adapsin.
 - Added an option in the Select Gear dialog to only show items that the character can currently afford.
 - Select Armor, Select Cyberware, Select Bioware, Select Gear, Select Vehicle, and Select Weapon screens now all have a category that shows all items, and searching for items on those screens will now only search within the selected category. In the case of Select Cyberware and Select Bioware screens, the current selection will be saved when switching between grades and selecting a particular grade will automatically hide all items that cannot be taken in that grade. Selecting the Cultured Bioware category when the Used grade is selected will switch the selected grade back to Standard.
+- An Optional Rule has been provided (Search In Category Only) that will disable the whitelisting based on category, which is enabled by default. It can be disabled in General Options under Miscellaneous. 
 - The Select Cyberware screen will now only display Cyberlimb Customizations and Cyberlimb Enhancements when adding a subsystem to a cyberlimb.
 - Fixed a bug where cost modifiers were not properly applied to gear with FixedValue costs.
 - Removed references to <cost3>, <cost6>, <cost10>, <avail3>, <avail6>, and <avail10> nodes, as they are obsolete. Added a legacy shim to handle these entry types from savefiles and convert them to just using <cost> and <avail> respectively.
@@ -445,6 +446,7 @@ New Strings:
 - Label_Contact_PreferredPayment
 - Label_Contact_HobbiesVice
 - String_Checking_For_Update
+- Checkbox_Options_SearchInCategoryOnly
 
 Changes Strings:
 - Message_PositiveQualityLimit
