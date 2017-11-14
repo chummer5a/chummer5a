@@ -83,7 +83,7 @@ namespace Chummer
             {
                 nudRating.Maximum = PowerObject.TotalMaximumLevels;
             }
-            else if (strPropertyName == "Karma" || PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue))
+            else if (PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue))
             {
                 PowerObject.ForceEvent(nameof(PowerObject.TotalMaximumLevels));
             }

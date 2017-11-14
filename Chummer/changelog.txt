@@ -242,6 +242,7 @@ Application Changes:
 - Fixed a bug where removing/altering sources for free skill levels would not properly update the skill section with altered ratings. Fixes #1340.
 - Fixed bugs where enabling the house rule for strict interpretation of skill group breaking in create mode would also affect characters in career mode.
 - Fixed a bug where certain selectable bonuses and extras would not get translated when using a localization different from the default English (US) one.
+- Fixed a bug where adding karma to an adept in career mode would sometimes cause sometimes Chummer5 to crash. Fixes #2050.
 
 Data Changes:
 
