@@ -1246,7 +1246,7 @@ namespace Chummer
             {
                 string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                 // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present.
-                if (objXmlCharacter.InnerXml.IndexOf(strLoopSourceName) != objXmlCharacter.InnerXml.LastIndexOf(strLoopSourceName))
+                if ((objXmlCharacter.InnerXml.IndexOf(strLoopSourceName) != objXmlCharacter.InnerXml.LastIndexOf(strLoopSourceName)) || Convert.ToBoolean(objXmlImprovement["custom"].InnerText))
                 {
                     Improvement objImprovement = new Improvement();
                     try
