@@ -7326,6 +7326,28 @@ namespace Chummer
             if (frmPickVehicleMod.DialogResult != DialogResult.Cancel)
             {
                 v.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
+                TreeNode node = new TreeNode();
+                foreach (TreeNode t in treVehicles.SelectedNode.Nodes)
+                {
+                    if (t.Tag.ToString() == "String_WeaponMounts")
+                    {
+                        node = t;
+                        break;
+                    }
+                }
+                if (node != null)
+                {
+                    node.Tag = "String_WeaponMounts";
+                    node.Text = LanguageManager.Instance.GetString("String_WeaponMounts");
+                    treVehicles.SelectedNode.Nodes.Add(node);
+                }
+                TreeNode tn = new TreeNode
+                {
+                    Tag = frmPickVehicleMod.WeaponMount.InternalId.ToString(),
+                    Text = frmPickVehicleMod.WeaponMount.DisplayName
+                };
+                node.Nodes.Add(tn);
+                treVehicles.SelectedNode.ExpandAll();
             }
 		}
 

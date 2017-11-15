@@ -233,11 +233,14 @@ namespace Chummer.Backend.Equipment
             // If there are any Weapon Mounts that come with the Vehicle, add them.
             if (objXmlVehicle.InnerXml.Contains("<weaponmounts>") && blnCreateChildren)
             {
+                TreeNode mountsNode = new TreeNode();
+                mountsNode.Tag = "String_WeaponMounts";
                 XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode objXmlVehicleMod in objXmlModList)
                 {
+                    TreeNode t = new TreeNode();
                     WeaponMount w = new WeaponMount(_objCharacter, this);
-                    w.CreateByName(objXmlVehicleMod);
+                    w.CreateByName(objXmlVehicleMod, t);
                     WeaponMounts.Add(w);
                 }
             }
@@ -309,50 +312,72 @@ namespace Chummer.Backend.Equipment
 					objWeapon.Cost = 0;
 					objWeapon.VehicleMounted = true;
 
-					// Find the first free Weapon Mount in the Vehicle.
-					foreach (VehicleMod objMod in _lstVehicleMods)
-					{
-						if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
-						{
-							objMod.Weapons.Add(objWeapon);
-							foreach (TreeNode objModNode in objNode.Nodes)
-							{
-								if (objModNode.Tag.ToString() == objMod.InternalId)
-								{
-									objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-									objModNode.Nodes.Add(objWeaponNode);
-									objModNode.Expand();
-									blnAttached = true;
-									break;
-								}
-							}
-							break;
-						}
-					}
+                    // Find the first free Weapon Mount in the Vehicle.
+                    foreach (WeaponMount w in _lstWeaponMounts)
+                    {
+                        if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
+                        {
+                            w.Weapons.Add(objWeapon);
+                            foreach (TreeNode objModNode in objNode.Nodes)
+                            {
+                                if (objModNode.Tag.ToString() == w.InternalId)
+                                {
+                                    objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                    objModNode.Nodes.Add(objWeaponNode);
+                                    objModNode.Expand();
+                                    blnAttached = true;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
 
 					// If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
 					if (!blnAttached)
 					{
-						foreach (VehicleMod objMod in _lstVehicleMods)
-						{
-							if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
-							{
-								objMod.Weapons.Add(objWeapon);
-								foreach (TreeNode objModNode in objNode.Nodes)
-								{
-									if (objModNode.Tag.ToString() == objMod.InternalId)
-									{
-										objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-										objModNode.Nodes.Add(objWeaponNode);
-										objModNode.Expand();
-										blnAttached = true;
-										break;
-									}
-								}
-								break;
-							}
-						}
-					}
+                        foreach (VehicleMod objMod in _lstVehicleMods)
+                        {
+                            if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
+                            {
+                                objMod.Weapons.Add(objWeapon);
+                                foreach (TreeNode objModNode in objNode.Nodes)
+                                {
+                                    if (objModNode.Tag.ToString() == objMod.InternalId)
+                                    {
+                                        objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                        objModNode.Nodes.Add(objWeaponNode);
+                                        objModNode.Expand();
+                                        blnAttached = true;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        if (!blnAttached)
+                        {
+                            foreach (VehicleMod objMod in _lstVehicleMods)
+                            {
+                                if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                {
+                                    objMod.Weapons.Add(objWeapon);
+                                    foreach (TreeNode objModNode in objNode.Nodes)
+                                    {
+                                        if (objModNode.Tag.ToString() == objMod.InternalId)
+                                        {
+                                            objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                            objModNode.Nodes.Add(objWeaponNode);
+                                            objModNode.Expand();
+                                            blnAttached = true;
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
 					// Look for Weapon Accessories.
 					if (objXmlWeapon["accessories"] != null)

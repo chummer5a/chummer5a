@@ -4442,6 +4442,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Vehicles Tab -->
+    <string>
+      <key>String_WeaponMounts</key>
+      <text>Weapon Mounts</text>
+    </string>
 		<string>
 			<key>Label_GearRating</key>
 			<text>Gear Rating:</text>

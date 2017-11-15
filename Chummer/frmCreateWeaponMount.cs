@@ -118,6 +118,7 @@ namespace Chummer
             option.Create(cboVisibility.SelectedValue.ToString());
             mount.WeaponMountOptions.Add(option);
             WeaponMount = mount;
+            tree.Text = mount.DisplayName;
             DialogResult = DialogResult.OK;
         }
 

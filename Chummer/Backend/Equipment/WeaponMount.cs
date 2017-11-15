@@ -238,27 +238,29 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy. 
         /// </summary>
-        /// <param name="objXmlVehicleMod"></param>
-        internal void CreateByName(XmlNode objXmlVehicleMod)
+        /// <param name="n"></param>
+        internal void CreateByName(XmlNode n, TreeNode t)
         {
             XmlDocument doc = XmlManager.Instance.Load("vehicles.xml");
             //I'm not super pleased with this,
             TreeNode tree = new TreeNode();
             WeaponMount mount = this;
-            XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["size"].InnerText}\" and category = \"Size\"]");
+            XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["size"].InnerText}\" and category = \"Size\"]");
             mount.Create(node, tree, _vehicle);
             WeaponMountOption option = new WeaponMountOption();
-            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["flexibility"].InnerText}\" and category = \"Flexibility\"]");
+            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["flexibility"].InnerText}\" and category = \"Flexibility\"]");
             option.Create(node["id"].InnerText);
             mount.WeaponMountOptions.Add(option);
             option = new WeaponMountOption();
-            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["control"].InnerText}\" and category = \"Control\"]");
+            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["control"].InnerText}\" and category = \"Control\"]");
             option.Create(node["id"].InnerText);
             mount.WeaponMountOptions.Add(option);
             option = new WeaponMountOption();
-            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{objXmlVehicleMod["visibility"].InnerText}\" and category = \"Visibility\"]");
+            node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["visibility"].InnerText}\" and category = \"Visibility\"]");
             option.Create(node["id"].InnerText);
             mount.WeaponMountOptions.Add(option);
+            t.Text = DisplayName;
+            t.Tag = _guiID.ToString();
         }
         #endregion
 
@@ -637,9 +639,9 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				string strReturn = DisplayNameShort;
-
-				return strReturn;
+                string strReturn = $"{DisplayNameShort} ({string.Join(", ", WeaponMountOptions.Select(wm => wm.DisplayName).ToArray())})";
+                
+                return strReturn;
 			}
 		}
         #endregion
@@ -726,7 +728,13 @@ namespace Chummer.Backend.Equipment
             _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
         }
 
-        public string DisplayName { get; set; }
+        public string DisplayName
+        {
+            get
+            {
+                return _strAltName ?? _strName;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
