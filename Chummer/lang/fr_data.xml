@@ -15113,16 +15113,17 @@
   </chummer>
   <chummer file="skills.xml">
     <skillgroups>
-      <name translate="Elevage">Animal Husbandry</name>
+      <name translate="Comédie">Acting</name>
       <name translate="Athlétisme">Athletics</name>
       <name translate="Biotech">Biotech</name>
       <name translate="Combat rapproché">Close Combat</name>
       <name translate="Conjuration">Conjuring</name>
       <name translate="Piratage">Cracking</name>
       <name translate="Electronique">Electronics</name>
+      <name translate="Enchantement">Enchanting</name>
       <name translate="Armes à feu">Firearms</name>
       <name translate="Influence">Influence</name>
-      <name translate="Mécanique">Mechanic</name>
+      <name translate="Ingénierie">Engineering</name>
       <name translate="Plein air">Outdoors</name>
       <name translate="Sorcellerie">Sorcery</name>
       <name translate="Furtivité">Stealth</name>
