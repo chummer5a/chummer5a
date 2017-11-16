@@ -455,11 +455,11 @@ namespace Chummer
                 if (objCharacter != null)
                 {
                     string strTitle = objCharacter.Name;
-                    if (!string.IsNullOrEmpty(objCharacter.Alias.Trim()))
+                    if (!string.IsNullOrWhiteSpace(objCharacter.Alias))
                     {
                         strTitle = objCharacter.Alias.Trim();
                     }
-                    else if (string.IsNullOrEmpty(strTitle))
+                    else if (string.IsNullOrWhiteSpace(strTitle))
                     {
                         strTitle = LanguageManager.GetString("String_UnnamedCharacter");
                     }

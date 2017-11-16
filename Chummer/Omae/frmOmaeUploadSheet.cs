@@ -97,14 +97,14 @@ namespace Chummer
         private void cmdUpload_Click(object sender, EventArgs e)
         {
             // Make sure a name has been entered.
-            if (string.IsNullOrEmpty(txtName.Text))
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SheetName"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
-            if (string.IsNullOrEmpty(txtDescription.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OameUpload_SheetDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_SheetDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

@@ -323,7 +323,7 @@ namespace Chummer
         private void BuildQualityList()
         {
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
-            if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
+            if (!string.IsNullOrWhiteSpace(txtSearch.Text))
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
                 string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";

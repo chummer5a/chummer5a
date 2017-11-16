@@ -64,7 +64,7 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the current Setting has a name.
-            if (string.IsNullOrEmpty(txtSettingName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtSettingName.Text))
             {
                 MessageBox.Show("You must give your Settings a name.", "Chummer Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
