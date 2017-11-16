@@ -1303,7 +1303,7 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in objCharacter.Vehicles)
                                 {
                                     objVehicle.BlackMarketDiscount = false;
-                                    foreach (Weapon objWeapon in objVehicle.Weapons)
+                                    foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
                                     {
                                         objWeapon.DiscountCost = false;
                                         foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
@@ -1324,7 +1324,7 @@ namespace Chummer
                                         objMod.DiscountCost = false;
                                     }
                                 }
-                                foreach (Weapon objWeapon in objCharacter.Weapons)
+                                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                                 {
                                     objWeapon.DiscountCost = false;
                                     foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
@@ -1422,25 +1422,22 @@ namespace Chummer
                     case Improvement.ImprovementType.Adapsin:
                         if (!objCharacter.AdapsinEnabled)
                         {
-                            foreach (Cyberware objCyberware in objCharacter.Cyberware)
+                            foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
                             {
-                                if (objCyberware.Grade.Adapsin)
+                                // Determine which GradeList to use for the Cyberware.
+                                GradeList objGradeList;
+                                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                                 {
-                                    // Determine which GradeList to use for the Cyberware.
-                                    GradeList objGradeList;
-                                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                        {
-                                            GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
-                                            objGradeList = GlobalOptions.BiowareGrades;
-                                        }
-                                        else
-                                        {
-                                            GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
-                                            objGradeList = GlobalOptions.CyberwareGrades;
-                                        }
-
-                                    objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
+                                    GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
+                                    objGradeList = GlobalOptions.BiowareGrades;
                                 }
+                                else
+                                {
+                                    GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
+                                    objGradeList = GlobalOptions.CyberwareGrades;
+                                }
+
+                                objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
                             }
                         }
                         break;
