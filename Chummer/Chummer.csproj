@@ -215,6 +215,7 @@
     <Compile Include="Classes\GlobalOptions.cs" />
     <Compile Include="Classes\Options.cs" />
     <Compile Include="Classes\OptionTree.cs" />
+    <Compile Include="Classes\PDFParametersHelper.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>

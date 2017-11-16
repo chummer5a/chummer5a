@@ -573,8 +573,7 @@ namespace Chummer
 
         private void lblCritterPowerSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblCritterPowerSource.Text);
+            CommonFunctions.OpenPDF(lblCritterPowerSource.Text, _objCharacter);
         }
 	}
 }

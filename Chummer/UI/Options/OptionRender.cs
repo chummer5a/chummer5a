@@ -267,6 +267,7 @@ namespace Chummer.UI.Options
                 RenderedLayoutGroup renderGroup = _renderData[index];
                 int intRenderGroupX = renderGroup.Offset.X + (int)offset.X;
                 int intRenderGroupY = renderGroup.Offset.Y + (int)offset.Y;
+                //If you get a crash at this point, make sure any new options you've added have a Display_{name} entry in en-us.xml. Check casing!
                 for (int i = 0; i < preRenderGroup.Controls.Count; i++)
                 {
                     Point objLoopPoint = renderGroup.ControlLocations[i];

@@ -158,7 +158,8 @@ namespace Chummer
         /// <summary>
         /// How to open pdfs
         /// </summary>
-        public PdfMode PdfMode { get; set; } = PdfMode.Parameter;
+        [DropDown(" Chummer.Classes.PDFParametersHelper.GetListOfPDFParameters")]
+        public string PDFParameters { get; set; }
 
         /// <summary>
         /// List of SourcebookInfo.
@@ -241,6 +242,8 @@ namespace Chummer
         [SavePropertyAs("autobackstory")]
         public bool AutomaticBackstory { get; internal set; } = true;
 
+        #endregion
+
         #region Printing
         /// <summary>
         /// Whether or not all Active Skills with a total score higher than 0 should be printed.
@@ -260,9 +263,6 @@ namespace Chummer
         /// </summary>
         [SavePropertyAs("printnotes")]
         public bool PrintNotes { get; set; }
-
-        #endregion
-
         #endregion
 
     }

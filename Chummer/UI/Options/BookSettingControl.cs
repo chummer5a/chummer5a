@@ -67,7 +67,7 @@ namespace Chummer.UI.Options
                 page += 5;
                 string val = _childFields["Code"].Value + " " + page;
 
-                new CommonFunctions().OpenPDF(val);
+                CommonFunctions.OpenPDF(val);
 
             }
         }

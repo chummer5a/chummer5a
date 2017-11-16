@@ -784,8 +784,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
@@ -818,8 +817,7 @@ namespace Chummer
 
         private void lblQualitySource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblQualitySource.Text);
+            CommonFunctions.OpenPDF(lblQualitySource.Text, _objCharacter);
         }
     }
 }

@@ -28,6 +28,7 @@ using Microsoft.Win32;
 using System.Drawing;
 using System.Web;
  using Chummer.Backend.Equipment;
+using System.Linq;
 
 namespace Chummer
 {
@@ -1327,111 +1328,68 @@ namespace Chummer
 			objWeaponsNode.Nodes.Add(objNode);
 			objWeaponsNode.Expand();
 		}
-		#endregion
+        #endregion
 
-		#region PDF Functions
-		/// <summary>
-		/// Open a PDF file using the provided source information.
-		/// </summary>
-		/// <param name="strSource">Book coode and page number to open.</param>
-		public void OpenPDF(string strSource)
-		{
-            //TODO: Chummer5a Fix pls
-            throw new NotImplementedException("Missing implementation for opening PDF");
+        #region PDF Functions
+        /// <summary>
+        /// Opens a PDF file using the provided source information.
+        /// </summary>
+        /// <param name="strSource">Book coode and page number to open.</param>
+        /// <param name="objCharacter">Character from which alternate sources should be fetched.</param>
+        public static void OpenPDF(string strSource, Character objCharacter = null)
+        {
+            // The user must have specified the arguments of their PDF application in order to use this functionality.
+            if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters))
+                return;
 
-			//string[] strTemp = strSource.Split(' ');
-			//string strBook = "";
-			//string strPage = "";
-			//string strPath = "";
-			//int intPage = 0;
+            // The user must have specified the arguments of their PDF application in order to use this functionality.
+            if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFAppPath))
+                return;
 
-			//try
-			//{
-			//	strBook = strTemp[0];
-			//	strPage = strTemp[1];
+            string[] strTemp = strSource.Split(' ');
+            if (strTemp.Length < 2)
+                return;
+            int intPage;
+            if (!int.TryParse(strTemp[1], out intPage))
+                return;
 
-			//	// Make sure the page is actually a number that we can use as well as being 1 or higher.
-			//	if (Convert.ToInt32(strPage) < 1)
-			//		return;
-			//	intPage = Convert.ToInt32(strPage);
-			//}
-			//catch
-			//{
-			//	return;
-			//}
+            // Make sure the page is actually a number that we can use as well as being 1 or higher.
+            if (intPage < 1)
+                return;
 
-			//// Revert the sourcebook code to the one from the XML file if necessary.
-			//if (_objCharacter != null)
-			//	strBook = _objCharacter.Options.BookFromAltCode(strBook);
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = strTemp[0];
+            if (objCharacter != null)
+                strBook = objCharacter.Options.LanguageBookShort(strBook);
 
-   //         XmlDocument objXmlBookDoc = XmlManager.Instance.Load("books.xml");
-   //         XmlNode objXmlBook = objXmlBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
-   //         string strURL = "";
-   //         try
-   //         {
-   //             strURL = objXmlBook["url"].InnerText;
-   //         }
-   //         catch
-   //         {
-   //         }
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            Uri uriPath;
+            SourcebookInfo objBookInfo = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(
+                objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            if (objBookInfo != null)
+            {
+                uriPath = new Uri(objBookInfo.Path);
+                intPage += objBookInfo.Offset;
+            }
+            // If the sourcebook was not found, we can't open anything.
+            else
+                return;
 
-			//// Retrieve the sourcebook information including page offset and PDF application name.
-			//bool blnFound = false;
-			//foreach (SourcebookInfo objInfo in GlobalOptions.Instance.SourcebookInfo)
-			//{
-			//	if (objInfo.Code == strBook)
-			//	{
-			//		if (objInfo.Path != string.Empty)
-			//		{
-			//			blnFound = true;
-			//			strPath = objInfo.Path;
-			//			intPage += objInfo.Offset;
-			//		}
-			//	}
-			//}
-
-   //         if (strURL.Length > 0)
-   //         {
-   //             Process.Start(strURL);
-   //         }
-   //         else
-   //         {
-   //             // The user must have specified the path of their PDF application in order to use this functionality.
-   //             if (GlobalOptions.Instance.PDFAppPath == string.Empty)
-   //                 return;
-
-   //             // If the sourcebook was not found, we can't open anything.
-   //             if (!blnFound)
-   //                 return;
-
-   //             // Open the PDF.
-   //             // acrord32 /A "page=123" "D:\foo\bar.pdf"
-   //             //string strFilePath = "C:\\Gaming\\Shadowrun\\Books\\Shadowrun 4th ed Anniverary.pdf";
-   //             if (GlobalOptions.Instance.OpenPDFsAsURLs)
-   //             {
-   //                 var uri = new System.Uri(strPath, UriKind.Absolute);
-   //                 string strParams = "\"" + uri + "#page=" + intPage.ToString() + "\"";
-   //                 Process.Start(GlobalOptions.Instance.URLAppPath, strParams);
-   //             }
-   //             else
-   //             {
-   //                 string strParams;
-   //                 if (GlobalOptions.Instance.OpenPDFsAsAsUnix)
-   //                 {
-   //                     strParams = "-p " + intPage + " \"" + strPath + "\"";
-   //                 }
-   //                 else
-   //                 {
-   //                     strParams = " /n /A \"page=" + intPage + "\" \"" + strPath + "\"";
-   //                 }
-   //                 Process.Start(GlobalOptions.Instance.PDFAppPath, strParams);
-   //             }
-   //         }
-		}
-		#endregion
+            string strParams = GlobalOptions.Instance.PDFParameters;
+            strParams = strParams.Replace("{page}", intPage.ToString());
+            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+            ProcessStartInfo objProgress = new ProcessStartInfo
+            {
+                FileName = GlobalOptions.Instance.PDFAppPath,
+                Arguments = strParams
+            };
+            Process.Start(objProgress);
+        }
+        #endregion
 
         #region Logging Functions
-		[Obsolete("Use Log.Info()")]
+        [Obsolete("Use Log.Info()")]
         public void LogWrite(LogType logType, string strClass, string strLine)
         {
 	        Log.Info(new object[] {logType, strLine}, "LEGACY_LOG_CALL", strClass);

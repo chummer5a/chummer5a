@@ -8518,8 +8518,8 @@ Do you want to continue?</text>
     <text>\tPDF Application path: {}\</text>
   </string>
   <string>
-    <key>Display_PdfMode</key>
-    <text>\tMode: {}</text>
+    <key>Display_PDFParameters</key>
+    <text>\tParameters: {}</text>
   </string>
   <string>
     <key>Display_OmaeEnabled</key>

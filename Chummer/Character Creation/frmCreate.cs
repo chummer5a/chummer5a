@@ -13905,85 +13905,73 @@ namespace Chummer
         #endregion
 
         #region Sourcebook Label Events
-        private void lblWeaponSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblWeaponSource.Text);
-        }
-
         private void lblMetatypeSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblMetatypeSource.Text);
+            CommonFunctions.OpenPDF(lblMetatypeSource.Text, _objCharacter);
         }
 
         private void lblQualitySource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblQualitySource.Text);
+            CommonFunctions.OpenPDF(lblQualitySource.Text, _objCharacter);
         }
 
         private void lblMartialArtSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblMartialArtSource.Text);
+            CommonFunctions.OpenPDF(lblMartialArtSource.Text, _objCharacter);
         }
 
         private void lblSpellSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblSpellSource.Text);
+            CommonFunctions.OpenPDF(lblSpellSource.Text, _objCharacter);
         }
 
         private void lblComplexFormSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblComplexFormSource.Text);
+            CommonFunctions.OpenPDF(lblComplexFormSource.Text, _objCharacter);
         }
 
         private void lblCritterPowerSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblCritterPowerSource.Text);
+            CommonFunctions.OpenPDF(lblCritterPowerSource.Text, _objCharacter);
         }
 
         private void lblMetamagicSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblMetamagicSource.Text);
+            CommonFunctions.OpenPDF(lblMetamagicSource.Text, _objCharacter);
         }
 
         private void lblCyberwareSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblCyberwareSource.Text);
+            CommonFunctions.OpenPDF(lblCyberwareSource.Text, _objCharacter);
         }
 
         private void lblLifestyleSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblLifestyleSource.Text);
+            CommonFunctions.OpenPDF(lblLifestyleSource.Text, _objCharacter);
         }
 
         private void lblArmorSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblArmorSource.Text);
+            CommonFunctions.OpenPDF(lblArmorSource.Text, _objCharacter);
+        }
+
+        private void lblWeaponSource_Click(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDF(lblWeaponSource.Text, _objCharacter);
         }
 
         private void lblGearSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblGearSource.Text);
+            CommonFunctions.OpenPDF(lblGearSource.Text, _objCharacter);
         }
 
         private void lblVehicleSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            _objFunctions.OpenPDF(lblVehicleSource.Text);
+            CommonFunctions.OpenPDF(lblVehicleSource.Text, _objCharacter);
         }
+        #endregion
 
-		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && e.KeyCode == Keys.A)
 			{
@@ -13992,7 +13980,6 @@ namespace Chummer
 					((TextBox)sender).SelectAll();
 			}
 		}
-		#endregion
 
 		#region Custom Methods
 		/// <summary>

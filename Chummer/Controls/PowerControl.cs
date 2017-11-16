@@ -436,8 +436,7 @@ namespace Chummer
         private void lblPowerName_Click(object sender, EventArgs e)
         {
             string strBook = _objPower.Source + " " + _objPower.Page;
-            CommonFunctions objCommon = new CommonFunctions();
-            objCommon.OpenPDF(strBook);
+            CommonFunctions.OpenPDF(strBook, _objPower.CharacterObject);
         }
     }
 }
