@@ -508,7 +508,7 @@ namespace Chummer
             this.Controls.Add(this.nudConnection);
             this.Controls.Add(this.nudLoyalty);
             this.Controls.Add(this.cboContactRole);
-            this.MinimumSize = new System.Drawing.Size(490, 22);
+            this.MinimumSize = new System.Drawing.Size(492, 22);
             this.Name = "ContactControl";
             this.Size = new System.Drawing.Size(492, 147);
             this.Load += new System.EventHandler(this.ContactControl_Load);
