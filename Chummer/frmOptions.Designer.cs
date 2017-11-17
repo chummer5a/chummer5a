@@ -133,7 +133,7 @@ namespace Chummer
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
             this.chkDontUseCyberlimbCalculation = new System.Windows.Forms.CheckBox();
             this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
-            this.cboEssenceDecimals = new System.Windows.Forms.ComboBox();
+            this.nudEssenceDecimals = new System.Windows.Forms.NumericUpDown();
             this.lblEssenceDecimals = new System.Windows.Forms.Label();
             this.chkPrintNotes = new System.Windows.Forms.CheckBox();
             this.lblLimbCount = new System.Windows.Forms.Label();
@@ -305,6 +305,7 @@ namespace Chummer
             this.grpSelectedSourcebook.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEssenceDecimals)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
             this.tabPage1.SuspendLayout();
@@ -1393,7 +1394,7 @@ namespace Chummer
             this.tabPage2.Controls.Add(this.lblCharacterRosterLabel);
             this.tabPage2.Controls.Add(this.chkDontUseCyberlimbCalculation);
             this.tabPage2.Controls.Add(this.chkPrintToFileFirst);
-            this.tabPage2.Controls.Add(this.cboEssenceDecimals);
+            this.tabPage2.Controls.Add(this.nudEssenceDecimals);
             this.tabPage2.Controls.Add(this.lblEssenceDecimals);
             this.tabPage2.Controls.Add(this.chkPrintNotes);
             this.tabPage2.Controls.Add(this.lblLimbCount);
@@ -1468,15 +1469,23 @@ namespace Chummer
             this.chkPrintToFileFirst.UseVisualStyleBackColor = true;
             this.chkPrintToFileFirst.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // cboEssenceDecimals
+            // nudEssenceDecimals
             // 
-            this.cboEssenceDecimals.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboEssenceDecimals.FormattingEnabled = true;
-            this.cboEssenceDecimals.Location = new System.Drawing.Point(241, 341);
-            this.cboEssenceDecimals.Name = "cboEssenceDecimals";
-            this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
-            this.cboEssenceDecimals.TabIndex = 17;
-            this.cboEssenceDecimals.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudEssenceDecimals.Location = new System.Drawing.Point(241, 342);
+            this.nudEssenceDecimals.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEssenceDecimals.Name = "nudEssenceDecimals";
+            this.nudEssenceDecimals.Size = new System.Drawing.Size(61, 20);
+            this.nudEssenceDecimals.TabIndex = 17;
+            this.nudEssenceDecimals.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.nudEssenceDecimals.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblEssenceDecimals
             // 
@@ -3290,6 +3299,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEssenceDecimals)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBP)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
             this.tabPage1.ResumeLayout(false);
@@ -3493,7 +3503,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.CheckBox chkPrintNotes;
         private System.Windows.Forms.CheckBox chkErgonomicProgramLimit;
-        private System.Windows.Forms.ComboBox cboEssenceDecimals;
+        private System.Windows.Forms.NumericUpDown nudEssenceDecimals;
         private System.Windows.Forms.Label lblEssenceDecimals;
         private System.Windows.Forms.Label lblXSLT;
         private System.Windows.Forms.ComboBox cboXSLT;

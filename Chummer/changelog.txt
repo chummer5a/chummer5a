@@ -248,6 +248,7 @@ Application Changes:
 - Fixed rare crashes for when certain strings had a null value instead of being empty. Possible fix for #2054.
 - Fixed a bug where not having drone modding rules enabled caused the max armor for drones to be calculated as twice the drone's armor instead of the drone's armor + the drone's body.
 - Fixed a bug where if Chummer5 encountered an error while saving a character, it would still assume that the character was saved properly.
+- Added the ability to select a value other than 2 or 4 for the amount of decimal places to consider for essence costs.
 
 Data Changes:
 
