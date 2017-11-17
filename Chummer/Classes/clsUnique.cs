@@ -2793,10 +2793,10 @@ namespace Chummer
             {
                 if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
                 {
-                    return XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                    return XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
                 }
                 else
-                    return XmlManager.Load("echoes.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
+                    return XmlManager.Load("echoes.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
             }
         }
         #endregion
