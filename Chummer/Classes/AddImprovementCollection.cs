@@ -4483,15 +4483,14 @@ namespace Chummer.Classes
                 SelectedValue = frmPickItem.SelectedName;
                 if (_blnConcatSelectedValue)
                     SourceName += " (" + frmPickItem.SelectedName + ")";
-
-                strSelectedValue = frmPickItem.SelectedItem;
+                
                 Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("SelectedValue = " + strSelectedValue);
+                Log.Info("SelectedValue = " + SelectedValue);
             }
 
             // Create the Improvement.
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(strSelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Text, _strUnique);
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Text, _strUnique);
         }
 
         // Select an Optional Power.
