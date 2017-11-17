@@ -3535,7 +3535,7 @@ namespace Chummer
             {
                 if (disposing)
                 {
-                    _objBaseChummerKey.Dispose();
+                    _objBaseChummerKey?.Dispose();
                 }
                 
                 disposedValue = true;

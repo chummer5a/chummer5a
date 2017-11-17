@@ -8126,8 +8126,8 @@ namespace Chummer
             {
                 if (disposing)
                 {
-                    _frmPrintView.Dispose();
-                    _objOptions.Dispose();
+                    _frmPrintView?.Dispose();
+                    _objOptions?.Dispose();
                 }
                 disposedValue = true;
             }
