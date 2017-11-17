@@ -142,7 +142,7 @@ namespace Chummer
 
             // Make sure the character is named.
             _strCharacterName = _objCharacter.Alias;
-            if (string.IsNullOrEmpty(_strCharacterName.Trim()) || _strCharacterName == "Unnamed Character")
+            if (string.IsNullOrWhiteSpace(_strCharacterName) || _strCharacterName == "Unnamed Character")
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UnnamedCharacter"), LanguageManager.GetString("MessageTitle_OmaeUpload_UnnamedCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -180,14 +180,14 @@ namespace Chummer
             bool blnSuccess = false;
 
             // Make sure a file has been selected.
-            if (string.IsNullOrEmpty(txtFilePath.Text))
+            if (string.IsNullOrWhiteSpace(txtFilePath.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_SelectFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
-            if (string.IsNullOrEmpty(txtDescription.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_CharacterDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_CharacterDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

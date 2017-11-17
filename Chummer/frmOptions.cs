@@ -64,7 +64,7 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the current Setting has a name.
-            if (string.IsNullOrEmpty(txtSettingName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtSettingName.Text))
             {
                 MessageBox.Show("You must give your Settings a name.", "Chummer Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
@@ -140,6 +140,7 @@ namespace Chummer
             _characterOptions.PrintNotes = chkPrintNotes.Checked;
             _characterOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
             _characterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
+            _characterOptions.SpecialKarmaCostBasedOnShownValue = chkSpecialKarmaCost.Checked;
             _characterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
             _characterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
             _characterOptions.AllowPointBuySpecializationsOnKarmaSkills = chkAllowPointBuySpecializationsOnKarmaSkills.Checked;
@@ -150,6 +151,8 @@ namespace Chummer
             _characterOptions.EducationQualitiesApplyOnChargenKarma = chkEducationQualitiesApplyOnChargenKarma.Checked;
             _characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
             _characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
+            _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
+            _characterOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
 
             // Karma options.
             _characterOptions.KarmaAttribute = Convert.ToInt32(nudKarmaAttribute.Value);
@@ -180,7 +183,6 @@ namespace Chummer
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
             _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
             _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
-            _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
 
             // Focus costs
             _characterOptions.KarmaAlchemicalFocus = Convert.ToInt32(nudKarmaAlchemicalFocus.Value);
@@ -708,6 +710,7 @@ namespace Chummer
             chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
             chkReverseAttributePriorityOrder.Checked = _characterOptions.ReverseAttributePriorityOrder;
             chkAllowHoverIncrement.Checked = _characterOptions.AllowHoverIncrement;
+            chkSearchInCategoryOnly.Checked = _characterOptions.SearchInCategoryOnly;
             nudBP.Value = _characterOptions.BuildPoints;
             nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
             nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
@@ -1305,12 +1308,24 @@ namespace Chummer
             Data["api_option"] = "paste";
 
             WebClient wb = new WebClient();
-                byte[] bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+            byte[] bytes = null;
+            try
+            {
+                bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+            }
+            catch (WebException)
+            {
+                return;
+            }
 
-                string response;
-                using (MemoryStream ms = new MemoryStream(bytes))
+            string response;
+            using (MemoryStream ms = new MemoryStream(bytes))
+            {
                 using (StreamReader reader = new StreamReader(ms))
+                {
                     response = reader.ReadToEnd();
+                }
+            }
             Clipboard.SetText(response);
             #endif
         }

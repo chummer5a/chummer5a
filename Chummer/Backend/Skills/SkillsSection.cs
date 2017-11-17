@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Backend;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Chummer.Skills
 {
@@ -27,7 +29,7 @@ namespace Chummer.Skills
         private bool _blnSchoolOfHardKnocks;
         private bool _blnTechSchool;
         private bool _blnLinguist;
-        private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>(); 
+        private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
 
         public SkillsSection(Character character)
         {
@@ -125,6 +127,15 @@ namespace Chummer.Skills
                     }
                 }
             }
+            //remove skillgroups whose skills did not make the final cut
+            for (var i = SkillGroups.Count - 1; i >= 0; i--)
+            {
+                if (!SkillGroups[i].GetEnumerable().Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                {
+                    SkillGroups.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         internal void Load(XmlNode skillNode, bool legacy = false)
@@ -198,45 +209,52 @@ namespace Chummer.Skills
                         tempSkillList.Add(skill);
                 }
 
-                List<Skill> unsoredSkills = new List<Skill>();
-
-                //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
-                Predicate<Skill> oldSkillFilter = skill =>
+                if (tempSkillList.Count > 0)
                 {
-                    if (skill.Rating > 0) return true;
+                    List<Skill> unsoredSkills = new List<Skill>();
 
-                    if (skill.SkillCategory == "Resonance Active" && !_character.RESEnabled)
+                    //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+                    Predicate<Skill> oldSkillFilter = skill =>
                     {
-                        return false;
-                    }
+                        if (skill.Rating > 0) return true;
+
+                        if (skill.SkillCategory == "Resonance Active" && !_character.RESEnabled)
+                        {
+                            return false;
+                        }
 
                     //This could be more fine grained, but frankly i don't care
                     if (skill.SkillCategory == "Magical Active" && !_character.MAGEnabled)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    };
+
+                    foreach (Skill skill in tempSkillList)
                     {
-                        return false;
+                        KnowledgeSkill knoSkill = skill as KnowledgeSkill;
+                        if (knoSkill != null)
+                        {
+                            KnowledgeSkills.Add(knoSkill);
+                        }
+                        else if (oldSkillFilter(skill))
+                        {
+                            unsoredSkills.Add(skill);
+                        }
                     }
 
-                    return true;
-                };
+                    unsoredSkills.Sort(CompareSkills);
 
-                foreach (Skill skill in tempSkillList)
-                {
-                    KnowledgeSkill knoSkill = skill as KnowledgeSkill;
-                    if (knoSkill != null)
+                    foreach (Skill objSkill in unsoredSkills)
                     {
-                        KnowledgeSkills.Add(knoSkill);
+                        _skills.Add(objSkill);
+                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecialization + ")" : objSkill.Name, objSkill);
                     }
-                    else if(oldSkillFilter(skill))
-                    {
-                        unsoredSkills.Add(skill);
-                    }
+
+                    UpdateUndoList(skillNode);
                 }
-
-                unsoredSkills.Sort(CompareSkills);
-
-                unsoredSkills.ForEach(x => { _skills.Add(x); _dicSkills.Add(x.IsExoticSkill ? x.Name + " (" + x.DisplaySpecialization + ")" : x.Name, x); });
-
-                UpdateUndoList(skillNode);
             }
 
             //This might give subtle bugs in the future, 
@@ -283,35 +301,42 @@ namespace Chummer.Skills
             //specs allready did?
             //First create dictionary mapping name=>guid
             Dictionary<string, Guid> dicGroups = new Dictionary<string, Guid>();
-            foreach (SkillGroup objLoopSkillGroup in SkillGroups)
-            {
-                if (objLoopSkillGroup.Rating > 0 && !dicGroups.ContainsKey(objLoopSkillGroup.Name))
+            ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
+            Parallel.Invoke(
+                () =>
                 {
-                    dicGroups.Add(objLoopSkillGroup.Name, objLoopSkillGroup.Id);
-                }
-            }
-
-            Dictionary<string, Guid> dicSkills = new Dictionary<string, Guid>();
-            foreach (Skill objLoopSkill in Skills)
-            {
-                if (objLoopSkill.TotalBaseRating > 0 && !dicSkills.ContainsKey(objLoopSkill.Name))
+                    foreach (SkillGroup objLoopSkillGroup in SkillGroups)
+                    {
+                        if (objLoopSkillGroup.Rating > 0 && !dicGroups.ContainsKey(objLoopSkillGroup.Name))
+                        {
+                            dicGroups.Add(objLoopSkillGroup.Name, objLoopSkillGroup.Id);
+                        }
+                    }
+                },
+                () =>
                 {
-                    dicSkills.Add(objLoopSkill.Name, objLoopSkill.Id);
-                }
-            }
-            foreach (KnowledgeSkill objLoopSkill in KnowledgeSkills)
-            {
-                if (!dicGroups.ContainsKey(objLoopSkill.Name))
+                    foreach (Skill objLoopSkill in Skills)
+                    {
+                        if (objLoopSkill.TotalBaseRating > 0)
+                        {
+                            dicSkills.TryAdd(objLoopSkill.Name, objLoopSkill.Id);
+                        }
+                    }
+                },
+                () =>
                 {
-                    dicSkills.Add(objLoopSkill.Name, objLoopSkill.Id);
+                    foreach (Skill objLoopSkill in KnowledgeSkills)
+                    {
+                        dicSkills.TryAdd(objLoopSkill.Name, objLoopSkill.Id);
+                    }
                 }
-            }
+            );
 
             UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill });
             UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, new[] { KarmaExpenseType.ImproveSkillGroup });
         }
 
-        private static void UpdateUndoSpecific(XmlDocument doc, Dictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
+        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
         {
             //Build a crazy xpath to get everything we want to convert
 

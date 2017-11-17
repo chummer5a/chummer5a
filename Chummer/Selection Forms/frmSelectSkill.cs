@@ -23,6 +23,7 @@ using System.Xml;
 using Chummer.Skills;
 using System.Linq;
 using Chummer.Classes;
+using System.Text;
 
 namespace Chummer
 {
@@ -317,11 +318,17 @@ namespace Chummer
         {
             set
             {
-                IEnumerable<string> lstCategories = value?.SelectNodes("category")?
-                    .Cast<XmlNode>()
-                    .Select(n => "\"" + n.InnerText + "\"");
-                if (lstCategories != null)
-                    _strLimitToCategories = string.Join(" or category = ", lstCategories);
+                StringBuilder objLimitToCategories = new StringBuilder();
+                foreach (XmlNode objNode in value?.SelectNodes("category"))
+                {
+                    objLimitToCategories.Append("category = ");
+                    objLimitToCategories.Append("\"" + objNode.InnerText + "\"");
+                    objLimitToCategories.Append(" or ");
+                }
+                // Remove the last " or "
+                if (objLimitToCategories.Length > 0)
+                    objLimitToCategories.Length -= 4;
+                _strLimitToCategories = objLimitToCategories.ToString();
             }
         }
 

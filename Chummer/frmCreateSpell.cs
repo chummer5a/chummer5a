@@ -639,9 +639,9 @@ namespace Chummer
                 strDV = "+" + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
-            lblDV.Text = (strBase + strDV).Replace("/", "÷");
-            lblDV.Text = lblDV.Text.Replace("F", LanguageManager.GetString("String_SpellForce"));
-            lblDV.Text = lblDV.Text.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
+            lblDV.Text = (strBase + strDV).Replace('/', '÷');
+            lblDV.Text = lblDV.Text.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"));
+            lblDV.Text = lblDV.Text.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
 
             return strBase + strDV;
         }
@@ -653,7 +653,7 @@ namespace Chummer
         {
             string strMessage = string.Empty;
             // Make sure a name has been provided.
-            if (string.IsNullOrEmpty(txtName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += '\n';
@@ -661,7 +661,7 @@ namespace Chummer
             }
 
             // Make sure a Restricted value if the field is enabled.
-            if (txtRestriction.Enabled && string.IsNullOrEmpty(txtRestriction.Text.Trim()))
+            if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(txtRestriction.Text))
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += '\n';

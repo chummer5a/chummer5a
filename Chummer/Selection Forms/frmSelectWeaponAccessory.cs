@@ -528,6 +528,10 @@ namespace Chummer
                     strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                    if (strAvail == "R")
+                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                    else if (strAvail == "F")
+                        strAvail = LanguageManager.GetString("String_AvailForbidden");
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -540,11 +544,11 @@ namespace Chummer
                 }
                 catch (XPathException)
                 {
+                    lblAvail.Text = strAvailExpr + strAvail;
                 }
             }
             else
                 lblAvail.Text = string.Empty;
-            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             if (!chkFreeItem.Checked)
             {
                 string strCost = "0";

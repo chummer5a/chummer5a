@@ -71,7 +71,7 @@ namespace Chummer.Skills
         private string _type;
         public bool ForcedName { get; }
 
-        public KnowledgeSkill(Character character) : base(character, (string)null)
+        public KnowledgeSkill(Character character) : base(character)
         {
             AttributeObject = character.LOG;
             AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
@@ -126,8 +126,7 @@ namespace Chummer.Skills
             {
                 SuggestedSpecializations.Clear();
 
-                XmlNodeList list =
-                    XmlManager.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{name}\"]/specs/spec");
+                XmlNodeList list = XmlManager.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{name}\"]/specs/spec");
                 foreach (XmlNode node in list)
                 {
                     SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
@@ -178,26 +177,14 @@ namespace Chummer.Skills
         /// <returns>Artificial skill attributeValue</returns>
         public override int CyberwareRating()
         {
-
             if (CachedWareRating != int.MinValue)
                 return CachedWareRating;
 
             if (IsKnowledgeSkill && CharacterObject.SkillsoftAccess)
             {
-                Func<Gear, int> recusivestuff = null;
-                recusivestuff = (gear) =>
-                {
-                    //TODO this works with translate?
-                    if (gear.Equipped && gear.Category == "Skillsofts" &&
-                        (gear.Extra == Name ||
-                         gear.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked")))
-                    {
-                        return gear.Rating;
-                    }
-                    return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
-                };
-
-                return CachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+                //TODO this works with translate?
+                return CachedWareRating = CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
+                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))).Max(x => x.Rating);
             }
 
             return CachedWareRating = 0;

@@ -1,6 +1,6 @@
-using Chummer.Backend.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = new Guid();
         private Guid _guiVehicleID = new Guid();
         private Grade _objGrade = new Grade();
-        private List<Cyberware> _objChildren = new List<Cyberware>();
+        private BindingList<Cyberware> _objChildren = new BindingList<Cyberware>();
         private List<Gear> _lstGear = new List<Gear>();
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
@@ -300,7 +300,7 @@ namespace Chummer.Backend.Equipment
                     // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
                     if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                     {
-                        List<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
+                        IList<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
                         if (!Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Left") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
@@ -1470,26 +1470,10 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
                 {
-                    if (strRating.Contains("MaximumSTR"))
-                    {
-                        int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
-                        strRating = strRating.Replace("MaximumSTR", intMaxSTR.ToString());
-                    }
-                    if (strRating.Contains("MaximumAGI"))
-                    {
-                        int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
-                        strRating = strRating.Replace("MaximumAGI", intMaxAGI.ToString());
-                    }
-                    if (strRating.Contains("MinimumSTR"))
-                    {
-                        int intMinSTR = Parent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
-                        strRating = strRating.Replace("MinimumSTR", intMinSTR.ToString());
-                    }
-                    if (strRating.Contains("MinimumAGI"))
-                    {
-                        int intMinAGI = Parent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
-                        strRating = strRating.Replace("MinimumAGI", intMinAGI.ToString());
-                    }
+                    strRating = strRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
+                    strRating = strRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
+                    strRating = strRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
+                    strRating = strRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
                     XmlDocument objDummyDoc = new XmlDocument();
                     XPathNavigator objNav = objDummyDoc.CreateNavigator();
                     try
@@ -1533,26 +1517,10 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (!string.IsNullOrEmpty(strRating) && !int.TryParse(strRating, out intReturn))
                 {
-                    if (strRating.Contains("MaximumSTR"))
-                    {
-                        int intMaxSTR = ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum;
-                        strRating = strRating.Replace("MaximumSTR", intMaxSTR.ToString());
-                    }
-                    if (strRating.Contains("MaximumAGI"))
-                    {
-                        int intMaxAGI = ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum;
-                        strRating = strRating.Replace("MaximumAGI", intMaxAGI.ToString());
-                    }
-                    if (strRating.Contains("MinimumSTR"))
-                    {
-                        int intMinSTR = Parent?.BaseStrength ?? ParentVehicle?.TotalBody ?? 3;
-                        strRating = strRating.Replace("MinimumSTR", intMinSTR.ToString());
-                    }
-                    if (strRating.Contains("MinimumAGI"))
-                    {
-                        int intMinAGI = Parent?.BaseAgility ?? ParentVehicle?.Pilot ?? 3;
-                        strRating = strRating.Replace("MinimumAGI", intMinAGI.ToString());
-                    }
+                    strRating = strRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
+                    strRating = strRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
+                    strRating = strRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
+                    strRating = strRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
                     XmlDocument objDummyDoc = new XmlDocument();
                     XPathNavigator objNav = objDummyDoc.CreateNavigator();
                     try
@@ -1741,7 +1709,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Cyberware.
         /// </summary>
-        public List<Cyberware> Children
+        public IList<Cyberware> Children
         {
             get
             {
@@ -1937,7 +1905,7 @@ namespace Chummer.Backend.Equipment
                             // Remove the trailing character if it is "F" or "R".
                             strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                         }
-                        strAvailExpr = strAvailExpr.Replace("MinRating", MinRating.ToString());
+                        strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => MinRating.ToString());
                         strAvailExpr = strAvailExpr.Replace("Rating", _intRating.ToString());
                         XPathExpression xprAvail = nav.Compile(strAvailExpr);
                         return "+" + nav.Evaluate(xprAvail).ToString() + strAvail;
@@ -2005,7 +1973,7 @@ namespace Chummer.Backend.Equipment
                         string strChildAvail = objChild.Avail;
                         if (objChild.Avail.Contains("Rating") || objChild.Avail.Contains("MinRating"))
                         {
-                            strChildAvail = strChildAvail.Replace("MinRating", objChild.MinRating.ToString());
+                            strChildAvail = strChildAvail.CheapReplace("MinRating", () => objChild.MinRating.ToString());
                             strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
                             string strChildAvailText = string.Empty;
                             if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
@@ -2324,7 +2292,7 @@ namespace Chummer.Backend.Equipment
                     strCostExpression = strCostExpression.Replace("Parent Gear Cost", decTotalParentGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.Replace("Gear Cost", decTotalGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    strCostExpression = strCostExpression.Replace("MinRating", MinRating.ToString());
+                    strCostExpression = strCostExpression.CheapReplace("MinRating", () => MinRating.ToString());
                     strCostExpression = strCostExpression.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strCostExpression);
                     decCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);

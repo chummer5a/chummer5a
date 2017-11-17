@@ -123,6 +123,7 @@ namespace Chummer
             this.Controls.Add(this.webNotes);
             this.Name = "frmUpdate";
             this.Text = "Chummer Updater";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmUpdate_FormClosing);
             this.Load += new System.EventHandler(this.frmUpdate_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

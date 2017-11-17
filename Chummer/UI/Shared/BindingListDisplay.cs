@@ -221,8 +221,19 @@ namespace Chummer.UI.Shared
             {
                 case ListChangedType.ItemChanged:
                     break;
-                //case ListChangedType.Reset:
-                //    break;
+                case ListChangedType.Reset:
+                    foreach (ControlWithMetaData objLoopControl in _contentList)
+                    {
+                        objLoopControl.Cleanup();
+                    }
+                    _contentList.Clear();
+                    foreach (TType objLoopTType in _contents)
+                    {
+                        _contentList.Add(new ControlWithMetaData(objLoopTType, this));
+                    }
+                    _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList;
+                    break;
                 case ListChangedType.ItemAdded:
                     _contentList.Insert(intNewIndex, new ControlWithMetaData(_contents[intNewIndex], this));
                     _indexComparer.Reset(_contents);

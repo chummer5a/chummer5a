@@ -709,7 +709,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
-        private void WriteGear(XmlWriter objWriter, List<Gear> lstGear)
+        private void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
         {
             // <gears>
             objWriter.WriteStartElement("gears");

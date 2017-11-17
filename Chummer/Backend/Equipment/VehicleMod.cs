@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -92,11 +93,15 @@ namespace Chummer.Backend.Equipment
             // Add Subsytem information if applicable.
             if (objXmlMod.InnerXml.Contains("subsystems"))
             {
-                string strSubsystem = string.Empty;
-                XmlNodeList objXmlSubsystems = objXmlMod.SelectNodes("subsystems/subsystem");
-                if (objXmlSubsystems != null)
-                    strSubsystem = objXmlSubsystems.Cast<XmlNode>().Aggregate(strSubsystem, (current, objXmlSubsystem) => current + (objXmlSubsystem.InnerText + ","));
-                _strSubsystems = strSubsystem;
+                StringBuilder objSubsystem = new StringBuilder();
+                foreach (XmlNode objXmlSubsystem in objXmlMod.SelectNodes("subsystems/subsystem"))
+                {
+                    objSubsystem.Append(objXmlSubsystem.InnerText + ",");
+                }
+                // Remove last ","
+                if (objSubsystem.Length > 0)
+                    objSubsystem.Length -= 1;
+                _strSubsystems = objSubsystem.ToString();
             }
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
             
@@ -364,7 +369,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public List<Cyberware> Cyberware
+        public IList<Cyberware> Cyberware
         {
             get
             {
@@ -877,7 +882,7 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator nav = objXmlDocument.CreateNavigator();
 
                 string strAvailExpr = strCalculated.Replace("Rating", _intRating.ToString());
-                strAvailExpr = strAvailExpr.Replace("Vehicle Cost", Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                strAvailExpr = strAvailExpr.CheapReplace("Vehicle Cost", () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 strAvailExpr = strAvailExpr.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
@@ -906,7 +911,7 @@ namespace Chummer.Backend.Equipment
                             string strChildAvail = objChild.Avail;
                             if (objChild.Avail.Contains("Rating") || objChild.Avail.Contains("MinRating"))
                             {
-                                strChildAvail = strChildAvail.Replace("MinRating", objChild.MinRating.ToString());
+                                strChildAvail = strChildAvail.CheapReplace("MinRating", () => objChild.MinRating.ToString());
                                 strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
                                 string strChildAvailText = string.Empty;
                                 if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
@@ -1129,7 +1134,7 @@ namespace Chummer.Backend.Equipment
                         strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-                strCost = strCost.Replace("Vehicle Cost", Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                strCost = strCost.CheapReplace("Vehicle Cost", () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strCost = strCost.Replace("Speed", Parent.Speed.ToString());
@@ -1170,7 +1175,7 @@ namespace Chummer.Backend.Equipment
                         strSlotsExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 string strSlots = strSlotsExpression.Replace("Rating", _intRating.ToString());
-                strSlots = strSlots.Replace("Vehicle Cost", Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                strSlots = strSlots.CheapReplace("Vehicle Cost", () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 strSlots = strSlots.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strSlots = strSlots.Replace("Speed", Parent.Speed.ToString());

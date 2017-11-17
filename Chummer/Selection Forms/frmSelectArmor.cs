@@ -191,7 +191,7 @@ namespace Chummer
 
             string strCategoryFilter = string.Empty;
 
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            if (cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString() != "Show All" && _objCharacter.Options.SearchInCategoryOnly))
                 strCategoryFilter = "category = \"" + cboCategory.SelectedValue + "\"";
             else
             {

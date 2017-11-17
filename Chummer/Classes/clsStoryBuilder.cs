@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer
@@ -83,16 +84,17 @@ namespace Chummer
                 }
 
                 StringBuilder story = new StringBuilder();
-                //Acctualy "write" the story
-                foreach (XmlNode module in modules)
+                object storyLock = new object();
+                //Actually "write" the story
+                Parallel.ForEach(modules, objStoryModule =>
                 {
-                    if (module["story"] != null)
-                    {
-                        Write(story, module["story"].InnerText, 5);
-                        story.Append(Environment.NewLine);
-                        story.Append(Environment.NewLine);
-                    }
-                }
+                    StringBuilder objModuleString = new StringBuilder();
+                    Write(objModuleString, objStoryModule.InnerText, 5);
+                    objModuleString.Append(Environment.NewLine);
+                    objModuleString.Append(Environment.NewLine);
+                    lock (storyLock)
+                        story.Append(objModuleString.ToString());
+                });
 
                 return story.ToString();
             }

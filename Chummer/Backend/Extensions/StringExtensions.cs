@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Chummer
@@ -66,6 +67,7 @@ namespace Chummer
         /// <param name="strStringToTrim">Substring to trim</param>
         /// <param name="blnOmitCheck">If we already know that the string begins with the substring</param>
         /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStart(this string strBase, string strStringToTrim, bool blnOmitCheck = false)
         {
             // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
@@ -84,6 +86,7 @@ namespace Chummer
         /// <param name="strStringToTrim">Substring to trim</param>
         /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
         /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEnd(this string strBase, string strStringToTrim, bool blnOmitCheck = false)
         {
             // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
@@ -101,6 +104,7 @@ namespace Chummer
         /// <param name="strBase">String to check.</param>
         /// <param name="chrCharToCheck">Char to check.</param>
         /// <returns>True if string has a non-zero length and begins with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StartsWith(this string strBase, char chrCharToCheck)
         {
             return (strBase.Length > 0 && strBase[0] == chrCharToCheck);
@@ -112,10 +116,54 @@ namespace Chummer
         /// <param name="strBase">String to check.</param>
         /// <param name="chrCharToCheck">Char to check.</param>
         /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool EndsWith(this string strBase, char chrCharToCheck)
         {
             int intLength = strBase.Length;
             return (intLength > 0 && strBase[intLength - 1] == chrCharToCheck);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strBase">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string CheapReplace(this string strBase, string strOldValue, Func<string> funcNewValueFactory)
+        {
+            if (strBase.Contains(strOldValue))
+                return strBase.Replace(strOldValue, funcNewValueFactory.Invoke());
+            return strBase;
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strBase">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CheapReplace(this StringBuilder strBase, string strOldValue, Func<string> funcNewValueFactory)
+        {
+            strBase.CheapReplace(strBase.ToString(), strOldValue, funcNewValueFactory);
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strBase">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CheapReplace(this StringBuilder strBase, string strOriginal, string strOldValue, Func<string> funcNewValueFactory)
+        {
+            if (strOriginal.Contains(strOldValue))
+                strBase.Replace(strOldValue, funcNewValueFactory.Invoke());
         }
     }
 }

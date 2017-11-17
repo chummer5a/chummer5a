@@ -628,7 +628,6 @@
 	  <limit>no</limit>
       <category>Basic</category>
       <ess>0.2</ess>
-	  <addtoparentess />
       <capacity>0</capacity>
       <avail>12F or Gear</avail>
       <cost>24000 + (99 * Gear Cost)</cost>
@@ -649,6 +648,7 @@
 	  <limit>no</limit>
       <category>Chemical Gland Modifications</category>
       <ess>0.1</ess>
+      <addtoparentess />
       <capacity>0</capacity>
       <avail>12</avail>
       <cost>2000 + (4 * Parent Gear Cost)</cost>

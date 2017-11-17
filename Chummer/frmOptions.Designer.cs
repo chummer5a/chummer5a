@@ -145,6 +145,7 @@ namespace Chummer
             this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
             this.cboLimbCount = new System.Windows.Forms.ComboBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
             this.chkAllowHoverIncrement = new System.Windows.Forms.CheckBox();
             this.chkHideItemsOverAvail = new System.Windows.Forms.CheckBox();
             this.chkLicenseEachRestrictedItem = new System.Windows.Forms.CheckBox();
@@ -1594,6 +1595,7 @@ namespace Chummer
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.chkSearchInCategoryOnly);
             this.tabPage1.Controls.Add(this.chkAllowHoverIncrement);
             this.tabPage1.Controls.Add(this.chkHideItemsOverAvail);
             this.tabPage1.Controls.Add(this.chkLicenseEachRestrictedItem);
@@ -1614,6 +1616,20 @@ namespace Chummer
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Tag = "Tab_Options_Miscellaneous";
             this.tabPage1.Text = "Miscellaneous";
+            // 
+            // chkSearchInCategoryOnly
+            // 
+            this.chkSearchInCategoryOnly.AutoSize = true;
+            this.chkSearchInCategoryOnly.Checked = true;
+            this.chkSearchInCategoryOnly.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(6, 357);
+            this.chkSearchInCategoryOnly.Name = "chkSearchInCategoryOnly";
+            this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(325, 17);
+            this.chkSearchInCategoryOnly.TabIndex = 21;
+            this.chkSearchInCategoryOnly.Tag = "Checkbox_Options_SearchInCategoryOnly";
+            this.chkSearchInCategoryOnly.Text = "Searching in selection forms is restricted to the current Category";
+            this.chkSearchInCategoryOnly.UseVisualStyleBackColor = true;
+            this.chkSearchInCategoryOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAllowHoverIncrement
             // 
@@ -3564,5 +3580,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdIncreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.Button cmdDecreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.CheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
+        private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
     }
 }

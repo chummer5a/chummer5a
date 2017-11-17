@@ -143,9 +143,7 @@ namespace Chummer
         /// <param name="strValue">File name to parse.</param>
         private string FileSafe(string strValue)
         {
-            string strReturn = strValue.FastEscape(" _/:*?<>|".ToCharArray());
-            strReturn = strReturn.Replace("\\", string.Empty);
-            return strReturn;
+            return strValue.FastEscape(" _/:*?<>|\\".ToCharArray());
         }
 
         private void MoveControls()
@@ -510,12 +508,12 @@ namespace Chummer
         private void cmdRegister_Click(object sender, EventArgs e)
         {
             // Make sure User Name and Password are provided.
-            if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtUserName.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_ChooseUsername"), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (string.IsNullOrEmpty(txtPassword.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtPassword.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_ChoosePassword"), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -549,12 +547,12 @@ namespace Chummer
         private void cmdLogin_Click(object sender, EventArgs e)
         {
             // Make sure User Name and Password are provided.
-            if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtUserName.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterUsername"), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (string.IsNullOrEmpty(txtPassword.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtPassword.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterPassword"), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;

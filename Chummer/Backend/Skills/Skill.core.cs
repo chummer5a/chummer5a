@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
+using System.Threading.Tasks;
 
 namespace Chummer.Skills
 {
@@ -56,7 +57,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode)
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
                 {
                     return (SkillGroupObject == null || SkillGroupObject.Rating <= 0);
                 }
@@ -107,7 +108,7 @@ namespace Chummer.Skills
                 _base = Math.Max(0, value - FreeBase());
 
                 //if old != base, base changed
-                if (old != _base) OnPropertyChanged();
+                if (old != _base) OnPropertyChanged(nameof(Base));
 
                 //if max is changed, karma was too
                 if(max != 0) OnPropertyChanged(nameof(Karma));
@@ -123,7 +124,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0))
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && ((SkillGroupObject?.Karma ?? 0) > 0))
                 {
                     _karma = 0;
                     Specializations.RemoveAll(x => !x.Free);
@@ -144,7 +145,7 @@ namespace Chummer.Skills
                 //Handle free levels, don,t go below 0
                 _karma = Math.Max(0, value - (FreeKarma() + (SkillGroupObject?.Karma ?? 0))); 
 
-                if(old != _karma) OnPropertyChanged();
+                if(old != _karma) OnPropertyChanged(nameof(Karma));
 
                 KarmaSpecForcedMightChange();
             }
@@ -200,8 +201,8 @@ namespace Chummer.Skills
             }
             set
             {
-                _buyWithKarma = (value ||  ForceBuyWithKarma()) && !UnForceBuyWithKarma();
-                OnPropertyChanged();
+                _buyWithKarma = (value || ForceBuyWithKarma()) && !UnForceBuyWithKarma();
+                OnPropertyChanged(nameof(BuyWithKarma));
             }
         }
 
@@ -294,39 +295,40 @@ namespace Chummer.Skills
             List<Improvement> lstReturn = new List<Improvement>();
             foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
-                if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
-                    continue;
-                switch (objImprovement.ImproveType)
+                if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
                 {
-                    case Improvement.ImprovementType.Skill:
-                        if (objImprovement.ImprovedName == Name)
-                            lstReturn.Add(objImprovement);
-                        break;
-                    case Improvement.ImprovementType.SkillGroup:
-                        if (objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
-                            lstReturn.Add(objImprovement);
-                        break;
-                    case Improvement.ImprovementType.SkillCategory:
-                        if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
-                            lstReturn.Add(objImprovement);
-                        break;
-                    case Improvement.ImprovementType.SkillAttribute:
-                        if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
-                            lstReturn.Add(objImprovement);
-                        break;
-                    case Improvement.ImprovementType.BlockSkillDefault:
-                        if (objImprovement.ImprovedName == SkillGroup)
-                            lstReturn.Add(objImprovement);
-                        break;
-                    case Improvement.ImprovementType.SwapSkillAttribute:
-                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                        if (objImprovement.Target == Name)
-                            lstReturn.Add(objImprovement);
-                        break;
-                    case Improvement.ImprovementType.EnhancedArticulation:
-                        if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
-                            lstReturn.Add(objImprovement);
-                        break;
+                    switch (objImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.Skill:
+                            if (objImprovement.ImprovedName == Name)
+                                lstReturn.Add(objImprovement);
+                            break;
+                        case Improvement.ImprovementType.SkillGroup:
+                            if (objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+                                lstReturn.Add(objImprovement);
+                            break;
+                        case Improvement.ImprovementType.SkillCategory:
+                            if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
+                                lstReturn.Add(objImprovement);
+                            break;
+                        case Improvement.ImprovementType.SkillAttribute:
+                            if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
+                                lstReturn.Add(objImprovement);
+                            break;
+                        case Improvement.ImprovementType.BlockSkillDefault:
+                            if (objImprovement.ImprovedName == SkillGroup)
+                                lstReturn.Add(objImprovement);
+                            break;
+                        case Improvement.ImprovementType.SwapSkillAttribute:
+                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                            if (objImprovement.Target == Name)
+                                lstReturn.Add(objImprovement);
+                            break;
+                        case Improvement.ImprovementType.EnhancedArticulation:
+                            if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
+                                lstReturn.Add(objImprovement);
+                            break;
+                    }
                 }
             }
             return lstReturn;
@@ -347,8 +349,7 @@ namespace Chummer.Skills
         public virtual int CurrentSpCost()
         {
 
-            int cost = _base +
-                       ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+            int cost = _base + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
 
             if (Unaware()) cost *= 2;
 
@@ -391,12 +392,8 @@ namespace Chummer.Skills
 
             foreach (SkillSpecialization objSpec in Specializations)
             {
-                if (!objSpec.Free)
-                    cost += //Spec
-                    (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma ||
-                      _character.BuildMethod == CharacterBuildMethod.LifeModule)
-                        ? _character.Options.KarmaSpecialization
-                        : 0;
+                if (!objSpec.Free && (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma || _character.BuildMethod == CharacterBuildMethod.LifeModule))
+                    cost += _character.Options.KarmaSpecialization;
             }
 
             if (Unaware() || Uneducated()) cost *= 2;

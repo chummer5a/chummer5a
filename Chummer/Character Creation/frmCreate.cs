@@ -35,7 +35,6 @@ using Chummer.Backend.Equipment;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Chummer.UI.Attributes;
-using Chummer.Backend.Extensions;
 using System.Reflection;
 
 namespace Chummer
@@ -833,9 +832,6 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objCharacter.SpiritManipulation))
                 cboSpiritManipulation.SelectedValue = _objCharacter.SpiritManipulation;
-            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
-            BuildAttributePanel();
 
             treGear.ItemDrag += treGear_ItemDrag;
             treGear.DragEnter += treGear_DragEnter;
@@ -879,6 +875,16 @@ namespace Chummer
             ScheduleCharacterUpdate();
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
+
+            lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
+            lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            BuildAttributePanel();
+
+            // Hacky, but necessary
+            // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
+            // ...but BuildAttributePanel() ends up requesting a character update when it sets up the values of attribute NumericalUpDowns
+            _blnRequestCharacterUpdate = false;
+
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
 
@@ -906,7 +912,7 @@ namespace Chummer
             if (_blnIsDirty)
             {
                 string strCharacterName = _objCharacter.Alias;
-                if (string.IsNullOrEmpty(_objCharacter.Alias.Trim()))
+                if (string.IsNullOrWhiteSpace(strCharacterName))
                     strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
                 DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (objResult == DialogResult.Yes)
@@ -924,6 +930,8 @@ namespace Chummer
             // Reset the ToolStrip so the Save button is removed for the currently closing window.
             if (!e.Cancel)
             {
+                _blnLoading = true;
+                Application.Idle -= UpdateCharacterInfo;
                 GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
@@ -2345,6 +2353,10 @@ namespace Chummer
             if (treWeapons.SelectedNode != null)
                 RefreshSelectedWeapon();
 
+            ScheduleCharacterUpdate();
+            // Immediately call character update because it re-applies essence loss improvements
+            UpdateCharacterInfo();
+
             UseWaitCursor = false;
 
             if (!string.IsNullOrEmpty(strOutdatedItems))
@@ -2355,7 +2367,6 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
-            ScheduleCharacterUpdate();
         }
 
         private void mnuEditCopy_Click(object sender, EventArgs e)
@@ -13532,12 +13543,10 @@ namespace Chummer
         public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
             // TODO: Databind as much of this as possible
-            // Due to the indirect execution of UpdateCharacterInfo, it is occasionally possible for this method to run after a character has been closed. Fail out early in that case.
-            if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate || _objCharacter == null)
+            if (_blnLoading || _blnSkipUpdate || !_blnRequestCharacterUpdate)
                 return;
 
             _blnSkipUpdate = true;
-            SuspendLayout();
             string strTip = string.Empty;
 
             //Redliner/Cyber Singularity Seeker(hackish)
@@ -13571,23 +13580,30 @@ namespace Chummer
             // Remove any Improvements from MAG and RES from Essence Loss.
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
 
-            // Create the Essence Loss Improvements which reduce the Maximum of MAG/RES.
+            // Create the Essence Loss Improvements.
             if (intReduction > 0)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
-                ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
-                /*
-                 ImprovementManager.CreateImprovement("MAGBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
-                ImprovementManager.CreateImprovement("RESBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
-                ImprovementManager.CreateImprovement("DEPBase", Improvement.ImprovementSource.EssenceLoss, "Essence Loss",
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, intReduction * -1, 0, 1, 1, 0);
-                */
+                if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intReduction * -1);
+                }
+                else
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intReduction * -1);
+                }
             }
             if (intMagReduction > 0)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
+                if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intMagReduction * -1);
+                }
+                else
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
+                }
             }
 
             // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -13828,7 +13844,6 @@ namespace Chummer
             }
             _blnSkipUpdate = false;
             _blnRequestCharacterUpdate = false;
-            ResumeLayout(true);
         }
 
         /// <summary>
@@ -19407,10 +19422,7 @@ namespace Chummer
             }
 
             // Remove any Improvements the character received from their Metatype.
-            foreach (Improvement objImprovement in lstImprovement)
-            {
-                _objCharacter.Improvements.Remove(objImprovement);
-            }
+            ImprovementManager.RemoveImprovements(_objCharacter, lstImprovement);
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
             foreach (Quality objQuality in lstRemoveQualities)
@@ -21357,9 +21369,9 @@ namespace Chummer
         {
             get
             {
-                if (!string.IsNullOrEmpty(_objCharacter.Alias.Trim()))
+                if (!string.IsNullOrWhiteSpace(_objCharacter.Alias))
                     return _objCharacter.Alias;
-                if (!string.IsNullOrEmpty(_objCharacter.Name.Trim()))
+                if (!string.IsNullOrWhiteSpace(_objCharacter.Name))
                     return _objCharacter.Name;
                 return LanguageManager.GetString("String_UnnamedCharacter");
             }
@@ -21414,14 +21426,14 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        foreach (
-                            AttributeControl objControl in
-                                pnlAttributes.Controls.Cast<AttributeControl>()
-                                    .Where(objControl => objControl.AttributeName == objAttrib.Abbrev))
+                        foreach (AttributeControl objControl in pnlAttributes.Controls)
                         {
-                            objControl.ValueChanged -= objAttribute_ValueChanged;
-                            pnlAttributes.Controls.Remove(objControl);
-                            objControl.Dispose();
+                            if (objControl.AttributeName == objAttrib.Abbrev)
+                            {
+                                objControl.ValueChanged -= objAttribute_ValueChanged;
+                                pnlAttributes.Controls.Remove(objControl);
+                                objControl.Dispose();
+                            }
                         }
                     }
                     break;

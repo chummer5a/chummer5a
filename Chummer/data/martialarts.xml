@@ -1634,8 +1634,11 @@
         <technique>
           <name>Mana Strike</name>
         </technique>
-		<technique>
+        <technique>
           <name>Neijia</name>
+        </technique>
+        <technique>
+          <name>Strike the Darkness</name>
         </technique>
       </techniques>
 	  <required>

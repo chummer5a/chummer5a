@@ -879,13 +879,15 @@ namespace Chummer
 
                     if (objXmlQuality["required"]["oneof"]["metatype"] != null)
                     {
+                        reason |= QualityFailureReason.MetatypeRequired;
                         XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof/metatype");
-
-                        bool blnFound = objXmlRequiredList.Cast<XmlNode>().Any(node => node.InnerText == objCharacter.Metatype);
-
-                        if (!blnFound)
+                        foreach (XmlNode objNode in objXmlRequiredList)
                         {
-                            reason |= QualityFailureReason.MetatypeRequired;
+                            if (objNode.InnerText == objCharacter.Metatype)
+                            {
+                                reason &= ~QualityFailureReason.MetatypeRequired;
+                                break;
+                            }
                         }
                     }
                 }
@@ -1391,7 +1393,7 @@ namespace Chummer
                 }
 
                 objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                    _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
+                _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
 
             ImprovementManager.ForcedValue = strForcedValue;
@@ -1536,7 +1538,7 @@ namespace Chummer
                 }
 
                 objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                    _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
+                _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
         }
 
@@ -1786,12 +1788,12 @@ namespace Chummer
             get
             {
                 string strReturn = DV.Replace('/', '÷');
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_SpellForce"));
-                strReturn = strReturn.Replace("Overflow damage", LanguageManager.GetString("String_SpellOverflowDamage"));
-                strReturn = strReturn.Replace("Damage Value", LanguageManager.GetString("String_SpellDamageValue"));
-                strReturn = strReturn.Replace("Toxin DV", LanguageManager.GetString("String_SpellToxinDV"));
-                strReturn = strReturn.Replace("Disease DV", LanguageManager.GetString("String_SpellDiseaseDV"));
-                strReturn = strReturn.Replace("Radiation Power", LanguageManager.GetString("String_SpellRadiationPower"));
+                strReturn = strReturn.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"));
+                strReturn = strReturn.CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"));
+                strReturn = strReturn.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
+                strReturn = strReturn.CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"));
+                strReturn = strReturn.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"));
+                strReturn = strReturn.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
 
                 //if (_blnExtended)
                 //{
@@ -1895,12 +1897,12 @@ namespace Chummer
             get
             {
                 string strReturn = _strRange;
-                strReturn = strReturn.Replace("Self", LanguageManager.GetString("String_SpellRangeSelf"));
-                strReturn = strReturn.Replace("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"));
-                strReturn = strReturn.Replace("LOI", LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
-                strReturn = strReturn.Replace("T", LanguageManager.GetString("String_SpellRangeTouch"));
-                strReturn = strReturn.Replace("(A)", "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
-                strReturn = strReturn.Replace("MAG", LanguageManager.GetString("String_AttributeMAGShort"));
+                strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"));
+                strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"));
+                strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
+                strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"));
+                strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
+                strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
 
                 return strReturn;
             }
@@ -2009,7 +2011,7 @@ namespace Chummer
                         _objCharacter.Improvements.Where(
                             i =>
                                 i.ImproveType == Improvement.ImprovementType.DrainValue &&
-                                (i.UniqueName == string.Empty || i.UniqueName == Category)))
+                                (i.UniqueName == string.Empty || i.UniqueName == Category) && i.Enabled))
                     {
                         dv += $" + {imp.Value:+0;-0;0}";
                     }
@@ -2164,6 +2166,32 @@ namespace Chummer
 
         #region ComplexProperties
         /// <summary>
+        /// Skill used by this spell
+        /// </summary>
+        public Skill Skill
+        {
+            get
+            {
+                if (_blnAlchemical)
+                {
+                    return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
+                }
+                else if (_strCategory == "Enchantments")
+                {
+                    return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
+                }
+                else if (_strCategory == "Rituals")
+                {
+                    return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
+                }
+                else
+                {
+                    return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
+                }
+            }
+        }
+
+        /// <summary>
         /// The Dice Pool size for the Active Skill required to cast the Spell.
         /// </summary>
         public int DicePool
@@ -2171,52 +2199,16 @@ namespace Chummer
             get
             {
                 int intReturn = 0;
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                Skill objSkill = Skill;
+                if (objSkill != null)
                 {
-                    if (_blnAlchemical)
-                    {
-                        if (objSkill.Name == "Alchemy")
-                        {
-                            intReturn = objSkill.Pool;
-                            // Add any Specialization bonus if applicable.
-                            if (objSkill.HasSpecialization(_strCategory))
-                                intReturn += 2;
-                            break;
-                        }
-                    }
-                    else if (_strCategory == "Enchantments")
-                    {
-                        if (objSkill.Name == "Artificing")
-                        {
-                            intReturn = objSkill.Pool;
-                            // Add any Specialization bonus if applicable.
-                            if (objSkill.HasSpecialization(_strCategory))
-                                intReturn += 2;
-                            break;
-                        }
-                    }
-                    else if (_strCategory == "Rituals")
-                    {
-                        if (objSkill.Name == "Ritual Spellcasting")
-                        {
-                            intReturn = objSkill.Pool;
-                            // Add any Specialization bonus if applicable.
-                            if (objSkill.HasSpecialization(_strCategory))
-                                intReturn += 2;
-                            break;
-                        }
-                    }
-                    else if ((!UsesUnarmed && objSkill.Name == "Spellcasting") || (UsesUnarmed && objSkill.Name == "Unarmed Combat"))
-                    {
-                        if (UsesUnarmed)
-                            intReturn = objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue);
-                        else
-                            intReturn = objSkill.Pool;
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            intReturn += 2;
-                        break;
-                    }
+                    if (UsesUnarmed)
+                        intReturn = objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue);
+                    else
+                        intReturn = objSkill.Pool;
+                    // Add any Specialization bonus if applicable.
+                    if (objSkill.HasSpecialization(_strCategory))
+                        intReturn += 2;
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -2234,37 +2226,18 @@ namespace Chummer
             get
             {
                 string strReturn = string.Empty;
-
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                Skill objSkill = Skill;
+                if (objSkill != null)
                 {
-                    if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
-                    {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
-                    }
-                    if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
-                    {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
-                    }
-                    if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
-                    {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
-                    }
-                    if (objSkill.Name == "Alchemy" && _blnAlchemical)
-                    {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
-                        // Add any Specialization bonus if applicable.
-                        if (objSkill.HasSpecialization(_strCategory))
-                            strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
-                    }
+                    int intPool = 0;
+                    if (UsesUnarmed)
+                        intPool = objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue);
+                    else
+                        intPool = objSkill.Pool;
+                    strReturn = objSkill.GetDisplayName() + " (" + intPool.ToString() + ")";
+                    // Add any Specialization bonus if applicable.
+                    if (objSkill.HasSpecialization(_strCategory))
+                        strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -4033,7 +4006,7 @@ namespace Chummer
         /// Selected Martial Arts Advantages.
         /// </summary>
         public List<MartialArtAdvantage> Advantages => _lstAdvantages;
-        public List<MartialArtAdvantage> Children => Advantages;
+        public IList<MartialArtAdvantage> Children => Advantages;
 
         /// <summary>
         /// Notes.
@@ -5489,13 +5462,13 @@ namespace Chummer
             get
             {
                 string strReturn = _strRange;
-                strReturn = strReturn.Replace("Self", LanguageManager.GetString("String_SpellRangeSelf"));
-                strReturn = strReturn.Replace("Special", LanguageManager.GetString("String_SpellDurationSpecial"));
-                strReturn = strReturn.Replace("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"));
-                strReturn = strReturn.Replace("LOI", LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
-                strReturn = strReturn.Replace("T", LanguageManager.GetString("String_SpellRangeTouch"));
-                strReturn = strReturn.Replace("(A)", "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
-                strReturn = strReturn.Replace("MAG", LanguageManager.GetString("String_AttributeMAGShort"));
+                strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"));
+                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial"));
+                strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"));
+                strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
+                strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"));
+                strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
+                strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
 
                 return strReturn;
             }

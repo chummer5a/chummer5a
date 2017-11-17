@@ -275,46 +275,48 @@ namespace Chummer
             }
 
             List<ListItem> lstGears = new List<ListItem>();
-            object lstGearLock = new object();
-            Parallel.ForEach(objXmlGearList.Cast<XmlNode>(), (objXmlGear) =>
+            foreach (XmlNode objXmlGear in objXmlGearList)
             {
                 if (objXmlGear["requireparent"] == null || _objParentNode != null)
                 {
                     if (!_blnShowArmorCapacityOnly || objXmlGear["armorcapacity"] != null)
                     {
-                        if (objXmlGear["forbidden"]?["geardetails"] == null ||
-                            // Assumes topmost parent is an AND node
-                            !_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+                        if (objXmlGear["forbidden"]?["parentdetails"] != null)
                         {
-                            if (objXmlGear["required"]?["geardetails"] == null ||
-                                // Assumes topmost parent is an AND node
-                                _objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+                            // Assumes topmost parent is an AND node
+                            if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["parentdetails"], false))
                             {
-                                decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
-                                if (chkDoItYourself.Checked)
-                                    decCostMultiplier *= 0.5m;
-                                decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                                if (chkBlackMarketDiscount.Checked)
-                                    decCostMultiplier *= 0.9m;
-                                if (chkHacked.Checked)
-                                    decCostMultiplier *= 0.1m;
-                                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier) &&
-                                    (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                                    Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objXmlGear["name"].InnerText;
-                                    objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
-                                    lock (lstGearLock)
-                                    {
-                                        lstGears.Add(objItem);
-                                    }
-                                }
+                                continue;
                             }
+                        }
+                        if (objXmlGear["required"]?["parentdetails"] != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["parentdetails"], false))
+                            {
+                                continue;
+                            }
+                        }
+                        decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
+                        if (chkDoItYourself.Checked)
+                            decCostMultiplier *= 0.5m;
+                        decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
+                        if (chkBlackMarketDiscount.Checked)
+                            decCostMultiplier *= 0.9m;
+                        if (chkHacked.Checked)
+                            decCostMultiplier *= 0.1m;
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier) &&
+                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
+                            Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
+                        {
+                            ListItem objItem = new ListItem();
+                            objItem.Value = objXmlGear["name"].InnerText;
+                            objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
+                            lstGears.Add(objItem);
                         }
                     }
                 }
-            });
+            }
             SortListItem objSort = new SortListItem();
             lstGears.Sort(objSort.Compare);
             lstGear.BeginUpdate();
@@ -455,7 +457,7 @@ namespace Chummer
 
             string strCategoryFilter = string.Empty;
 
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            if (cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString() != "Show All" && _objCharacter.Options.SearchInCategoryOnly))
             {
                 strCategoryFilter = "and category = \"" + cboCategory.SelectedValue.ToString() + "\"";
             }
@@ -480,66 +482,68 @@ namespace Chummer
 
             XmlNodeList objXmlGearList = _objXmlDocument.SelectNodes(strSearch);
             List<ListItem> lstGears = new List<ListItem>();
-            object lstGearLock = new object();
-            Parallel.ForEach(objXmlGearList.Cast<XmlNode>(), (objXmlGear) =>
+            foreach (XmlNode objXmlGear in objXmlGearList)
             {
                 if (objXmlGear["requireparent"] == null || _objParentNode != null)
                 {
                     if (!_blnShowArmorCapacityOnly || objXmlGear["armorcapacity"] != null)
                     {
-                        if (objXmlGear["forbidden"]?["geardetails"] == null ||
-                            // Assumes topmost parent is an AND node
-                            !_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+                        if (objXmlGear["forbidden"]?["parentdetails"] != null)
                         {
-                            if (objXmlGear["required"]?["geardetails"] == null ||
-                                // Assumes topmost parent is an AND node
-                                _objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+                            // Assumes topmost parent is an AND node
+                            if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["parentdetails"], false))
                             {
-                                // Only add items that appear in the list of Categories.
-                                foreach (object objListItem in cboCategory.Items)
+                                continue;
+                            }
+                        }
+                        if (objXmlGear["required"]?["parentdetails"] != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["parentdetails"], false))
+                            {
+                                continue;
+                            }
+                        }
+                        // Only add items that appear in the list of Categories.
+                        foreach (object objListItem in cboCategory.Items)
+                        {
+                            ListItem objCategoryItem = (ListItem)objListItem;
+                            if (objCategoryItem.Value == objXmlGear["category"].InnerText)
+                            {
+                                decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
+                                if (chkDoItYourself.Checked)
+                                    decCostMultiplier *= 0.5m;
+                                decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
+                                if (chkBlackMarketDiscount.Checked)
+                                    decCostMultiplier *= 0.9m;
+                                if (chkHacked.Checked)
+                                    decCostMultiplier *= 0.1m;
+                                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier) &&
+                                    (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
+                                    Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
                                 {
-                                    ListItem objCategoryItem = (ListItem)objListItem;
-                                    if (objCategoryItem.Value == objXmlGear["category"].InnerText)
+                                    ListItem objItem = new ListItem();
+                                    // When searching, Category needs to be added to the Value so we can identify the English Category name.
+                                    objItem.Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText;
+                                    objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
+
+                                    if (objXmlGear["category"] != null)
                                     {
-                                        decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
-                                        if (chkDoItYourself.Checked)
-                                            decCostMultiplier *= 0.5m;
-                                        decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                                        if (chkBlackMarketDiscount.Checked)
-                                            decCostMultiplier *= 0.9m;
-                                        if (chkHacked.Checked)
-                                            decCostMultiplier *= 0.1m;
-                                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier) &&
-                                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                                            Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
+                                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlGear["category"].InnerText);
+
+                                        if (objFoundItem != null)
                                         {
-                                            ListItem objItem = new ListItem();
-                                            // When searching, Category needs to be added to the Value so we can identify the English Category name.
-                                            objItem.Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText;
-                                            objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
-
-                                            if (objXmlGear["category"] != null)
-                                            {
-                                                ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlGear["category"].InnerText);
-
-                                                if (objFoundItem != null)
-                                                {
-                                                    objItem.Name += " [" + objFoundItem.Name + "]";
-                                                }
-                                            }
-                                            lock (lstGearLock)
-                                            {
-                                                lstGears.Add(objItem);
-                                            }
+                                            objItem.Name += " [" + objFoundItem.Name + "]";
                                         }
-                                        break;
                                     }
+                                    lstGears.Add(objItem);
                                 }
+                                break;
                             }
                         }
                     }
                 }
-            });
+            }
             SortListItem objSort = new SortListItem();
             lstGears.Sort(objSort.Compare);
             lstGear.BeginUpdate();
@@ -912,7 +916,7 @@ namespace Chummer
                 {
                     string strSelectedCategoryPath = string.Empty;
                     // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
-                    if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+                   if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
                     {
                         strSelectedCategoryPath = " and category = \"" + cboCategory.SelectedValue + "\"";
                     }
@@ -1010,6 +1014,10 @@ namespace Chummer
                 if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                    if (strAvail == "R")
+                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                    else if (strAvail == "F")
+                        strAvail = LanguageManager.GetString("String_AvailForbidden");
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -1022,13 +1030,12 @@ namespace Chummer
                 try
                 {
                     xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                    lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier).ToString() + strAvail;
+                    lblAvail.Text = strPrefix + (Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier).ToString() + strAvail;
                 }
                 catch (XPathException)
                 {
-                    lblAvail.Text = objXmlGear["avail"].InnerText;
+                    lblAvail.Text = strPrefix + strAvailExpr + strAvail;
                 }
-                lblAvail.Text = strPrefix + lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
 
                 decimal decMultiplier = nudGearQty.Value / nudGearQty.Increment;
                 if (chkDoItYourself.Checked)

@@ -79,6 +79,7 @@ Application Changes:
 - Fixed detection of Burnout's Way when combined with Adapsin.
 - Added an option in the Select Gear dialog to only show items that the character can currently afford.
 - Select Armor, Select Cyberware, Select Bioware, Select Gear, Select Vehicle, and Select Weapon screens now all have a category that shows all items, and searching for items on those screens will now only search within the selected category. In the case of Select Cyberware and Select Bioware screens, the current selection will be saved when switching between grades and selecting a particular grade will automatically hide all items that cannot be taken in that grade. Selecting the Cultured Bioware category when the Used grade is selected will switch the selected grade back to Standard.
+- An Optional Rule has been provided (Search In Category Only) that will disable the whitelisting based on category, which is enabled by default. It can be disabled in General Options under Miscellaneous. 
 - The Select Cyberware screen will now only display Cyberlimb Customizations and Cyberlimb Enhancements when adding a subsystem to a cyberlimb.
 - Fixed a bug where cost modifiers were not properly applied to gear with FixedValue costs.
 - Removed references to <cost3>, <cost6>, <cost10>, <avail3>, <avail6>, and <avail10> nodes, as they are obsolete. Added a legacy shim to handle these entry types from savefiles and convert them to just using <cost> and <avail> respectively.
@@ -234,6 +235,17 @@ Application Changes:
 - Fixed a bug where the updater form could not be re-opened after it has been closed once.
 - Fixed crashes related to the user's connection to GitHub getting severed mid-update.
 - Fixed the few-second delay encountered when launching the updater form.
+- The optional rule for karma costs to increase special attributes not being decreased by essence loss now works and saves its value properly. It is implemented by having essence loss affect the attribute's augmented value instead of its maxima and minima, and characters burn out if their augmented reduction from essence loss becomes greater than their current maximum. Fixes #1808.
+- Fixed a bug where tooltips for skill groups would not be updated properly.
+- Fixed a bug where removing sources for special skills would not also remove skill groups.
+- Fixed a bug where current priority settings would not get properly saved for if you wish to change priorities in create mode.
+- Fixed a bug where removing/altering sources for free skill levels would not properly update the skill section with altered ratings. Fixes #1340.
+- Fixed bugs where enabling the house rule for strict interpretation of skill group breaking in create mode would also affect characters in career mode.
+- Fixed a bug where certain selectable bonuses and extras would not get translated when using a localization different from the default English (US) one.
+- Fixed a bug where adding karma to an adept in career mode would sometimes cause sometimes Chummer5 to crash. Fixes #2050.
+- Fixed the Automatic Updates option not working properly. The automatic updater has been updated as well to run silently in the background until an update is ready to be applied instead of forcing the user to click through an updater window. It also checks for updates every hour as well instead of just at startup. Manually checking for updates while the automatic updater is running in the background will make the visible updater window take over the automatic updater instead of trying to launch its own, separate instance of the updater.
+- Fixed the warning for using an older version of Chummer5a to open a character made in a newer version.
+- Fixed rare crashes for when certain strings had a null value instead of being empty. Possible fix for #2054.
 
 Data Changes:
 
@@ -376,6 +388,7 @@ Data Changes:
 - Added a set of custom rules that follows the house rules for ShadowNET, courtesy of /u/Malibi.
 - Added the Coyote mentor spirit from Shadows in Focus: Sioux Nation: Counting Coup. Fixes #2046.
 - Fixed the cost and availability of the Ruhrmetal Wolf II to the correct values.
+- Added the previously missing Strike the Darkness technique to Way of Unified Mana (Hapsum-Do).
 
 New Strings:
 - Message_Improvement_EmptySelectionList
@@ -437,6 +450,8 @@ New Strings:
 - Label_Contact_PreferredPayment
 - Label_Contact_HobbiesVice
 - String_Checking_For_Update
+- Checkbox_Options_SearchInCategoryOnly
+- Message_Update_CloseForms
 
 Changes Strings:
 - Message_PositiveQualityLimit

@@ -487,7 +487,7 @@
       <type>Simple</type>
 	  <test>
 		<dice>{REA} + {Weapon: Skill} v. {Threshold: {Weapon: Quick Draw Threshold}}</dice>
-		<limit>{Physical}</limt>
+		<limit>{Physical}</limit>
 		<bonusstring>Weapon must be properly holstered. On success, the weapon is readied and immediately make a Simple Action attack. On fail, the weapon is readied. On glitch, the weapon is not readied and your action phase ends. On a critical glitch, bad things happen.</bonusstring>
 	  </test>
       <source>SR5</source>
@@ -1179,7 +1179,7 @@
 		  <duration>One Attack</duration>
 		  <dicebonus>{Unarmed Combat}</dicebonus>
 		  <addlimit>{Physical}</addlimit>
-		<boost>
+		</boost>
 	  </boosts>
       <source>SR5</source>
       <page>168</page>
@@ -1196,7 +1196,7 @@
 		  <duration>One Attack</duration>
 		  <dicebonus>{Gymnastics}</dicebonus>
 		  <addlimit>{Physical}</addlimit>
-		<boost>
+		</boost>
 	  </boosts>
       <source>SR5</source>
       <page>168</page>
@@ -1237,7 +1237,7 @@
 		  <duration>One Attack</duration>
 		  <dicebonus>{Weapon: Skill}</dicebonus>
 		  <addlimit>{Weapon: Accuracy}</addlimit>
-		<boost>
+		</boost>
 	  </boosts>
       <source>SR5</source>
       <page>168</page>
@@ -1252,17 +1252,17 @@
 		  <name>Melee Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Ranged Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Suppressive Fire Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 	  </boosts>
       <source>SR5</source>
       <page>168</page>
@@ -1705,52 +1705,52 @@
 		  <name>LOG Attack Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>LOG Sleaze Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>LOG Data Processing Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>LOG Firewall Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>INT Data Processing Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>INT Firewall Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>WIL Attack Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>WIL Sleaze Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>WIL Data Processing Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>WIL Firewall Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{WIL}</dicebonus>
-		<boost>
+		</boost>
 	  </boosts>
       <source>SR5</source>
       <page>240</page>
@@ -2646,7 +2646,7 @@
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Unarmed Combat}</dicebonus>
 		  <addlimit>{Physical}</addlimit>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>122</page>
@@ -2663,7 +2663,7 @@
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Gymnastics}</dicebonus>
 		  <addlimit>{Physical}</addlimit>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>122</page>
@@ -2680,7 +2680,7 @@
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Weapon: Skill}</dicebonus>
 		  <addlimit>{Weapon: Accuracy}</addlimit>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>122</page>
@@ -2931,17 +2931,17 @@
 		  <name>Melee Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Gymnastics}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Ranged Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Gymnastics}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Suppressive Fire Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Gymnastics}</dicebonus>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>127</page>
@@ -2957,17 +2957,17 @@
 		  <name>Melee Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{AGI}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Ranged Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{AGI}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Suppressive Fire Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{AGI}</dicebonus>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>127</page>
@@ -2983,17 +2983,17 @@
 		  <name>Melee Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Perception}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Ranged Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Perception}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Suppressive Fire Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{Perception}</dicebonus>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>127</page>
@@ -3009,17 +3009,17 @@
 		  <name>Melee Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{CHA}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Ranged Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{CHA}</dicebonus>
-		<boost>
+		</boost>
 		<boost>
 		  <name>Suppressive Fire Defense</name>
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>{CHA}</dicebonus>
-		<boost>
+		</boost>
 	  </boosts>
       <source>RG</source>
       <page>127</page>
@@ -3037,7 +3037,7 @@
 		  <duration>Rest of Turn</duration>
 		  <dicebonus>WIL</dicebonus>
 		  <bonusstring></bonusstring>
-		<boost>
+		</boost>
 	  </boosts>
 	  <test>
 		<dice></dice>

@@ -403,7 +403,7 @@ namespace Chummer
             XmlNode objXmlVehicleNode = _objVehicle.MyXmlNode;
 
             string strCategoryFilter = string.Empty;
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All" && (!string.IsNullOrWhiteSpace(txtSearch.Text) && !_objCharacter.Options.SearchInCategoryOnly))
                 strCategoryFilter = " and category = \"" + cboCategory.SelectedValue + "\"";
             else
             {

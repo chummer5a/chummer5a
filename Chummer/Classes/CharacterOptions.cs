@@ -105,6 +105,11 @@ namespace Chummer
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
         private bool _blnEducationQualitiesApplyOnChargenKarma;
+        private bool _mysaddPpCareer;
+        private bool _blnReverseAttributePriorityOrder;
+        private bool _blnHhideItemsOverAvailLimit = true;
+        private bool _blnAllowHoverIncrement;
+        private bool _blnSearchInCategoryOnly = true;
 
         private readonly XmlDocument _objBookDoc = null;
         private string _strBookXPath = string.Empty;
@@ -184,10 +189,6 @@ namespace Chummer
 
         // Sourcebook list.
         private readonly HashSet<string> _lstBooks = new HashSet<string>();
-        private bool _mysaddPpCareer;
-        private bool _blnReverseAttributePriorityOrder;
-        private bool _blnHhideItemsOverAvailLimit = true;
-        private bool _blnAllowHoverIncrement;
 
         #region Initialization, Save, and Load Methods
         public CharacterOptions(Character character)
@@ -421,6 +422,8 @@ namespace Chummer
             objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
             // <allowhoverincrement />
             objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
+            // <searchincategoryonly />
+            objWriter.WriteElementString("searchincategoryonly", SearchInCategoryOnly.ToString());
             // <autobackstory />
             objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
             // <freemartialartspecialization />
@@ -811,6 +814,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("technomancerallowautosoft", ref _blnTechnomancerAllowAutosoft);
             // House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
             objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
+            // Optional Rule: Whether searching in a selection form will limit itself to the current Category that's selected.
+            objXmlNode.TryGetBoolFieldQuickly("searchincategoryonly", ref _blnSearchInCategoryOnly);
             // Optional Rule: Whether Life Modules should automatically create a character back story.
             objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
@@ -1909,7 +1914,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma cost for increasing Special Attributes is based on the shown value instead of actual value.
+        /// If true, karma costs will not decrease from reductions due to essence loss. Effectively, essence loss becomes an augmented modifier, not one that alters minima and maxima.
         /// </summary>
         public bool SpecialKarmaCostBasedOnShownValue
         {
@@ -3511,8 +3516,17 @@ namespace Chummer
             get { return _blnAllowHoverIncrement; }
             internal set { _blnAllowHoverIncrement = value; }
         }
+        /// <summary>
+        /// Whether searching in a selection form will limit itself to the current Category that's selected.
+        /// </summary>
+        public bool SearchInCategoryOnly
+        {
+            get { return _blnSearchInCategoryOnly; }
+            internal set { _blnSearchInCategoryOnly = value; }
+        }
 
         public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
 
         #endregion
 
