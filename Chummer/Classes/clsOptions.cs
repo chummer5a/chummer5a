@@ -146,8 +146,8 @@ namespace Chummer
 
         private static frmMain _frmMainForm;
         private static readonly RegistryKey _objBaseChummerKey;
-        public static readonly string DefaultLanguage = "en-us";
-        public static readonly string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
+        public const string DefaultLanguage = "en-us";
+        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
 
         private static bool _blnAutomaticUpdate = false;
         private static bool _blnLiveCustomData = false;

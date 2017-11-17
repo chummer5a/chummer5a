@@ -251,26 +251,29 @@ namespace Chummer
                                                                     objChild["name"].InnerXml.Replace("&amp;", "&") + "\"]");
                                         if (objItem != null)
                                         {
+                                            string strAppendInnerXml = string.Empty;
                                             if (objChild["translate"] != null)
                                             {
-                                                objItem.InnerXml += "<translate>" + objChild["translate"].OuterXml + "</translate>";
+                                                strAppendInnerXml += "<translate>" + objChild["translate"].OuterXml + "</translate>";
                                             }
                                             if (objChild["page"] != null)
                                             {
-                                                objItem.InnerXml += "<altpage>" + objChild["page"].InnerXml + "</altpage>";
+                                                strAppendInnerXml += "<altpage>" + objChild["page"].InnerXml + "</altpage>";
                                             }
                                             if (objChild["code"] != null)
                                             {
-                                                objItem.InnerXml += "<altcode>" + objChild["code"].InnerXml + "</altcode>";
+                                                strAppendInnerXml += "<altcode>" + objChild["code"].InnerXml + "</altcode>";
                                             }
                                             if (objChild["advantage"] != null)
                                             {
-                                                objItem.InnerXml += "<altadvantage>" + objChild["advantage"].InnerXml + "</altadvantage>";
+                                                strAppendInnerXml += "<altadvantage>" + objChild["advantage"].InnerXml + "</altadvantage>";
                                             }
                                             if (objChild["disadvantage"] != null)
                                             {
-                                                objItem.InnerXml += "<altdisadvantage>" + objChild["disadvantage"].InnerXml + "</altdisadvantage>";
+                                                strAppendInnerXml += "<altdisadvantage>" + objChild["disadvantage"].InnerXml + "</altdisadvantage>";
                                             }
+                                            if (!string.IsNullOrEmpty(strAppendInnerXml))
+                                                objItem.InnerXml += strAppendInnerXml;
                                             if (objChild.Attributes?["translate"] != null)
                                             {
                                                 // Handle Category name translations.
@@ -308,18 +311,21 @@ namespace Chummer
                                                                         objMetavariant["name"].InnerXml + "\"]");
                                                                 if (objMetavariantItem != null)
                                                                 {
+                                                                    strAppendInnerXml = string.Empty;
                                                                     if (objMetavariant["translate"] != null)
                                                                     {
-                                                                        objMetavariantItem.InnerXml += "<translate>" +
+                                                                        strAppendInnerXml += "<translate>" +
                                                                                                        objMetavariant["translate"].InnerXml +
                                                                                                        "</translate>";
                                                                     }
                                                                     if (objMetavariant["page"] != null)
                                                                     {
-                                                                        objMetavariantItem.InnerXml += "<altpage>" +
+                                                                        strAppendInnerXml += "<altpage>" +
                                                                                                        objMetavariant["page"].InnerXml +
                                                                                                        "</altpage>";
                                                                     }
+                                                                    if (!string.IsNullOrEmpty(strAppendInnerXml))
+                                                                        objMetavariantItem.InnerXml += strAppendInnerXml;
                                                                 }
                                                             }
                                                         }
@@ -651,14 +657,16 @@ namespace Chummer
                     {
                         foreach (XmlNode objType in objEnglishRoot.ChildNodes)
                         {
-                            objWriter.WriteStartElement(objType.Name);
+                            string strTypeName = objType.Name;
+                            objWriter.WriteStartElement(strTypeName);
                             foreach (XmlNode objChild in objType.ChildNodes)
                             {
                                 // If the Node has a source element, check it and see if it's in the list of books that were specified.
                                 // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-                                bool blnContinue = false;
+                                bool blnContinue = true;
                                 if (objChild["source"] != null)
                                 {
+                                    blnContinue = false;
                                     foreach (string strBook in lstBooks)
                                     {
                                         if (strBook == objChild["source"].InnerText)
@@ -668,17 +676,17 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else
-                                    blnContinue = true;
 
                                 if (blnContinue)
                                 {
-                                    if (objType.Name != "version" && !((objType.Name == "costs" || objType.Name == "safehousecosts") && strFile.EndsWith("lifestyles.xml")))
+                                    if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts") && strFile.EndsWith("lifestyles.xml")))
                                     {
+                                        string strChildName = objChild.Name;
                                         // Look for a matching entry in the Language file.
                                         if (objChild["name"] != null)
                                         {
-                                            XmlNode objNode = objLanguageRoot.SelectSingleNode(objType.Name + "/" + objChild.Name + "[name = \"" + objChild["name"].InnerText + "\"]");
+                                            string strChildNameElement = objChild["name"].InnerText;
+                                            XmlNode objNode = objLanguageRoot.SelectSingleNode(strTypeName + "/" + strChildName + "[name = \"" + strChildNameElement + "\"]");
                                             if (objNode != null)
                                             {
                                                 // A match was found, so see what elements, if any, are missing.
@@ -725,9 +733,9 @@ namespace Chummer
                                                 if (!blnTranslate || !blnAltPage || !blnAdvantage || !blnDisadvantage)
                                                 {
                                                     // <results>
-                                                    objWriter.WriteStartElement(objChild.Name);
+                                                    objWriter.WriteStartElement(strChildName);
                                                     objWriter.WriteAttributeString("exists", "True");
-                                                    objWriter.WriteElementString("name", objChild["name"].InnerText);
+                                                    objWriter.WriteElementString("name", strChildNameElement);
                                                     if (!blnTranslate)
                                                         objWriter.WriteElementString("missing", "translate");
                                                     if (!blnAltPage)
@@ -744,9 +752,9 @@ namespace Chummer
                                             {
                                                 // No match was found, so write out that the data item is missing.
                                                 // <result>
-                                                objWriter.WriteStartElement(objChild.Name);
+                                                objWriter.WriteStartElement(strChildName);
                                                 objWriter.WriteAttributeString("exists", "False");
-                                                objWriter.WriteElementString("name", objChild["name"].InnerText);
+                                                objWriter.WriteElementString("name", strChildNameElement);
                                                 // </result>
                                                 objWriter.WriteEndElement();
                                             }
@@ -757,7 +765,8 @@ namespace Chummer
                                                 {
                                                     foreach (XmlNode objMetavariant in objChild.SelectNodes("metavariants/metavariant"))
                                                     {
-                                                        XmlNode objTranslate = objLanguageRoot.SelectSingleNode("metatypes/metatype[name = \"" + objChild["name"].InnerText + "\"]/metavariants/metavariant[name = \"" + objMetavariant["name"].InnerText + "\"]");
+                                                        string strMetavariantName = objMetavariant["name"].InnerText;
+                                                        XmlNode objTranslate = objLanguageRoot.SelectSingleNode("metatypes/metatype[name = \"" + strChildNameElement + "\"]/metavariants/metavariant[name = \"" + strMetavariantName + "\"]");
                                                         if (objTranslate != null)
                                                         {
                                                             bool blnTranslate = false;
@@ -775,7 +784,7 @@ namespace Chummer
                                                                 objWriter.WriteStartElement("metavariants");
                                                                 objWriter.WriteStartElement("metavariant");
                                                                 objWriter.WriteAttributeString("exists", "True");
-                                                                objWriter.WriteElementString("name", objMetavariant["name"].InnerText);
+                                                                objWriter.WriteElementString("name", strMetavariantName);
                                                                 if (!blnTranslate)
                                                                     objWriter.WriteElementString("missing", "translate");
                                                                 if (!blnAltPage)
@@ -806,7 +815,7 @@ namespace Chummer
                                                 {
                                                     foreach (XmlNode objAdvantage in objChild.SelectNodes("techniques/technique"))
                                                     {
-                                                        XmlNode objTranslate = objLanguageRoot.SelectSingleNode("martialarts/martialart[name = \"" + objChild["name"].InnerText + "\"]/techniques/technique[. = \"" + objAdvantage.InnerText + "\"]");
+                                                        XmlNode objTranslate = objLanguageRoot.SelectSingleNode("martialarts/martialart[name = \"" + strChildNameElement + "\"]/techniques/technique[. = \"" + objAdvantage.InnerText + "\"]");
                                                         if (objTranslate != null)
                                                         {
                                                             // Item exists, so make sure it has its translate attribute populated.
@@ -838,24 +847,25 @@ namespace Chummer
                                                 }
                                             }
                                         }
-                                        else if (objChild.Name == "#comment")
+                                        else if (strChildName == "#comment")
                                         {
                                             //Ignore this node, as it's a comment node.
                                         }
                                         else if (!string.IsNullOrEmpty(objChild.InnerText))
                                         {
+                                            string strChildInnerText = objChild.InnerText;
                                             // The item does not have a name which means it should have a translate CharacterAttribute instead.
                                             XmlNode objNode =
-                                                objLanguageRoot.SelectSingleNode(objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerText + "\"]");
+                                                objLanguageRoot.SelectSingleNode(strTypeName + "/" + strChildName + "[. = \"" + strChildInnerText + "\"]");
                                             if (objNode != null)
                                             {
                                                 // Make sure the translate attribute is populated.
                                                 if (objNode.Attributes?["translate"] == null)
                                                 {
                                                     // <result>
-                                                    objWriter.WriteStartElement(objChild.Name);
+                                                    objWriter.WriteStartElement(strChildName);
                                                     objWriter.WriteAttributeString("exists", "True");
-                                                    objWriter.WriteElementString("name", objChild.InnerText);
+                                                    objWriter.WriteElementString("name", strChildInnerText);
                                                     objWriter.WriteElementString("missing", "translate");
                                                     // </result>
                                                     objWriter.WriteEndElement();
@@ -865,9 +875,9 @@ namespace Chummer
                                             {
                                                 // No match was found, so write out that the data item is missing.
                                                 // <result>
-                                                objWriter.WriteStartElement(objChild.Name);
+                                                objWriter.WriteStartElement(strChildName);
                                                 objWriter.WriteAttributeString("exists", "False");
-                                                objWriter.WriteElementString("name", objChild.InnerText);
+                                                objWriter.WriteElementString("name", strChildInnerText);
                                                 // </result>
                                                 objWriter.WriteEndElement();
                                             }
@@ -886,13 +896,15 @@ namespace Chummer
                                 // Look for a matching entry in the English file.
                                 if (objChild["name"] != null)
                                 {
-                                    XmlNode objNode = objEnglishRoot.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[name = \"" + objChild["name"].InnerText + "\"]");
+                                    string strChildName = objChild.Name;
+                                    string strChildNameElement = objChild["name"].InnerText;
+                                    XmlNode objNode = objEnglishRoot.SelectSingleNode("/chummer/" + objType.Name + "/" + strChildName + "[name = \"" + strChildNameElement + "\"]");
                                     if (objNode == null)
                                     {
                                         // <noentry>
                                         objWriter.WriteStartElement("noentry");
-                                        objWriter.WriteStartElement(objChild.Name);
-                                        objWriter.WriteElementString("name", objChild["name"].InnerText);
+                                        objWriter.WriteStartElement(strChildName);
+                                        objWriter.WriteElementString("name", strChildNameElement);
                                         objWriter.WriteEndElement();
                                         // </noentry>
                                         objWriter.WriteEndElement();
@@ -911,7 +923,6 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteEndDocument();
             objWriter.Close();
-            objStream.Close();
         }
         #endregion
     }

@@ -691,7 +691,6 @@ namespace Chummer
 
             objWriter.WriteEndDocument();
             objWriter.Close();
-            objStream.Close();
 
             MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;

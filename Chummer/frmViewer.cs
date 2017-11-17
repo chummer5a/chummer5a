@@ -265,7 +265,6 @@ namespace Chummer
             // Finish the document and flush the Writer and Stream.
             objWriter.WriteEndDocument();
             objWriter.Flush();
-            objStream.Flush();
 
             // Read the stream.
             StreamReader objReader = new StreamReader(objStream);
@@ -277,7 +276,6 @@ namespace Chummer
             objCharacterXML.LoadXml(strXML);
 
             objWriter.Close();
-            objStream.Close();
 
             _objCharacterXML = objCharacterXML;
             GenerateOutput();

@@ -173,13 +173,11 @@ namespace Chummer
                 objService.GetCharacterTypes().WriteTo(objWriter);
                 // Flush the output.
                 objWriter.Flush();
-                objStream.Flush();
 
                 XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                 // Close everything now that we're done.
                 objWriter.Close();
-                objStream.Close();
 
                 // Stuff all of the items into a ListItem List.
                 foreach (XmlNode objNode in objXmlDocument.SelectNodes("/types/type"))
@@ -683,13 +681,11 @@ namespace Chummer
                                                   cboFilterQuality3.Text).WriteTo(objWriter);
                     // Flush the output.
                     objWriter.Flush();
-                    objStream.Flush();
 
                     XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
-                    objStream.Close();
 
                     if (objXmlDocument.SelectNodes("/characters/character").Count == 0)
                     {
@@ -723,7 +719,7 @@ namespace Chummer
             }
 
             // Search for data.
-            if (_objMode == OmaeMode.Data)
+            else if (_objMode == OmaeMode.Data)
             {
                 try
                 {
@@ -733,13 +729,11 @@ namespace Chummer
                     objService.FetchDataFiles(Convert.ToInt32(cboSortOrder.SelectedValue), string.Empty, txtFilterUser.Text).WriteTo(objWriter);
                     // Flush the output.
                     objWriter.Flush();
-                    objStream.Flush();
 
                     XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
-                    objStream.Close();
 
                     if (objXmlDocument.SelectNodes("/datas/data").Count == 0)
                     {
@@ -773,7 +767,7 @@ namespace Chummer
             }
 
             // Search for character sheets.
-            if (_objMode == OmaeMode.Sheets)
+            else if (_objMode == OmaeMode.Sheets)
             {
                 try
                 {
@@ -783,13 +777,11 @@ namespace Chummer
                     objService.FetchSheets(Convert.ToInt32(cboSortOrder.SelectedValue), txtFilterUser.Text).WriteTo(objWriter);
                     // Flush the output.
                     objWriter.Flush();
-                    objStream.Flush();
 
                     XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
-                    objStream.Close();
 
                     if (objXmlDocument.SelectNodes("/sheets/sheet").Count == 0)
                     {

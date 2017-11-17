@@ -354,12 +354,12 @@ namespace Chummer.Backend.Equipment
                     if (PairBonus != null)
                     {
                         List<Cyberware> lstPairableCyberwares = objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
-                        bool blnAdd = lstPairableCyberwares.Count % 2 == 1;
+                        int intCount = lstPairableCyberwares.Count;
                         if (!string.IsNullOrEmpty(Location))
                         {
-                            blnAdd = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1) % 2 == 1;
+                            intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
                         }
-                        if (blnAdd && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, _intRating, DisplayNameShort))
+                        if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, _intRating, DisplayNameShort))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -1381,12 +1381,12 @@ namespace Chummer.Backend.Equipment
                     if (PairBonus != null)
                     {
                         List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
-                        bool blnAdd = lstPairableCyberwares.Count % 2 == 0;
+                        int intCount = lstPairableCyberwares.Count;
                         if (!string.IsNullOrEmpty(Location))
                         {
-                            blnAdd = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location)) % 2 == 0;
+                            intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
                         }
-                        if (blnAdd)
+                        if (intCount >= 0 && intCount % 2 == 0)
                         {
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, PairBonus, false, _intRating, DisplayNameShort);
                         }

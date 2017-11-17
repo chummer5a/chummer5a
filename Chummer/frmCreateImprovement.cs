@@ -358,7 +358,6 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteEndDocument();
             objWriter.Flush();
-            objStream.Flush();
 
             objStream.Position = 0;
 
@@ -369,7 +368,6 @@ namespace Chummer
             objBonusXml.LoadXml(strXml);
 
             objWriter.Close();
-            objStream.Close();
 
             // Pluck out the bonus information.
             XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");

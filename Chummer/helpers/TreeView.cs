@@ -139,33 +139,30 @@ namespace Chummer.helpers
                 objNode.ForeColor = Color.SaddleBrown;
             objNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
 
+            TreeNode objSpellTypeNode = null;
             switch (input.Category)
             {
                 case "Combat":
-                    Nodes[0].Nodes.Add(objNode);
-                    Nodes[0].Expand();
+                    objSpellTypeNode = Nodes[0];
                     break;
                 case "Detection":
-                    Nodes[1].Nodes.Add(objNode);
-                    Nodes[1].Expand();
+                    objSpellTypeNode = Nodes[1];
                     break;
                 case "Health":
-                    Nodes[2].Nodes.Add(objNode);
-                    Nodes[2].Expand();
+                    objSpellTypeNode = Nodes[2];
                     break;
                 case "Illusion":
-                    Nodes[3].Nodes.Add(objNode);
-                    Nodes[3].Expand();
+                    objSpellTypeNode = Nodes[3];
                     break;
                 case "Manipulation":
-                    Nodes[4].Nodes.Add(objNode);
-                    Nodes[4].Expand();
+                    objSpellTypeNode = Nodes[4];
                     break;
                 case "Rituals":
-                    Nodes[5].Nodes.Add(objNode);
-                    Nodes[5].Expand();
+                    objSpellTypeNode = Nodes[5];
                     break;
             }
+            objSpellTypeNode.Nodes.Add(objNode);
+            objSpellTypeNode.Expand();
         }
 
         /// <summary>

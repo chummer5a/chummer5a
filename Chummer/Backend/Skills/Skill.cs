@@ -393,7 +393,7 @@ namespace Chummer.Skills
                 }
             }
 
-            string strGroup = n?["skillgroup"]?.InnerText;
+            string strGroup = n["skillgroup"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strGroup))
             {
@@ -528,7 +528,7 @@ namespace Chummer.Skills
             get { return false; }
         }
 
-        public virtual string Name
+        public string Name
         {
             get { return _name; }
             set { _name = value; }

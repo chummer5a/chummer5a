@@ -77,7 +77,10 @@ namespace Chummer
         private void frmUpdate_Load(object sender, EventArgs e)
         {
             if (!_blnIsConnected)
+            {
                 Close();
+                return;
+            }
             Log.Info("frmUpdate_Load");
             Log.Info("Check Global Mutex for duplicate");
             bool blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);

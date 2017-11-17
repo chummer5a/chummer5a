@@ -28,7 +28,7 @@ namespace Chummer.Backend.Attributes
         private int _intBase;
         private int _intKarma;
         private string _strAbbrev = string.Empty;
-        public Character _objCharacter;
+        private readonly Character _objCharacter;
 		private string _strDisplayNameShort;
 		private string _strDisplayNameLong;
 		private string _strDisplayNameFormatted;
@@ -142,6 +142,11 @@ namespace Chummer.Backend.Attributes
         }
 
         #region Properties
+
+        public Character CharacterObject
+        {
+            get { return _objCharacter; }
+        }
 
 	    public AttributeCategory Category
 	    {
@@ -1065,8 +1070,6 @@ namespace Chummer.Backend.Attributes
                 return _strAbbrev + " (" + Value.ToString() + ")" + strModifier;
             }
         }
-
-        public Character CharacteObject => _objCharacter;
 
         /// <summary>
         /// Amount of BP/Karma spent on this CharacterAttribute.

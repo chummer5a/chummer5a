@@ -14,7 +14,7 @@ namespace Chummer.UI.Attributes
     public partial class AttributeControl : UserControl
     {
         // ConnectionRatingChanged Event Handler.
-        public delegate void ValueChangedHandler(Object sender);
+        public delegate void ValueChangedHandler(Object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
         private readonly CharacterAttrib attribute;
         private object sender;
@@ -26,9 +26,9 @@ namespace Chummer.UI.Attributes
         public AttributeControl(CharacterAttrib attribute)
         {
             this.attribute = attribute;
-            _objCharacter = attribute.CharacteObject;
+            _objCharacter = attribute.CharacterObject;
             InitializeComponent();
-            _dataSource = attribute._objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
+            _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
 
             //Display
             lblName.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -63,7 +63,6 @@ namespace Chummer.UI.Attributes
                 nudKarma.Visible = true;
                 cmdImproveATT.Visible = false;
                 cmdBurnEdge.Visible = false;
-                
             }
         }
 
@@ -96,7 +95,7 @@ namespace Chummer.UI.Attributes
                     return;
             }
             attribute.Upgrade();
-	        ValueChanged?.Invoke(this);
+	        ValueChanged?.Invoke(this, e);
         }
 
         private void nudBase_ValueChanged(object sender, EventArgs e)
@@ -107,7 +106,7 @@ namespace Chummer.UI.Attributes
                 nudBase.Value = _oldBase;
                 return;
             }
-            ValueChanged?.Invoke(this);
+            ValueChanged?.Invoke(this, e);
             _oldBase = d;
         }
 
@@ -119,7 +118,7 @@ namespace Chummer.UI.Attributes
                 nudKarma.Value = _oldKarma;
                 return;
             }
-            ValueChanged?.Invoke(this);
+            ValueChanged?.Invoke(this, e);
             _oldKarma = d;
         }
 
@@ -156,7 +155,7 @@ namespace Chummer.UI.Attributes
                 return;
 
 			attribute.Degrade(1);
-			ValueChanged?.Invoke(this);
+			ValueChanged?.Invoke(this, e);
 		}
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)

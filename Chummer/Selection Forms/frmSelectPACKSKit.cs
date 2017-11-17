@@ -793,7 +793,6 @@ namespace Chummer
 
                     objWriter.WriteEndDocument();
                     objWriter.Close();
-                    objStream.Close();
                 }
             }
 

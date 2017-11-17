@@ -246,6 +246,8 @@ Application Changes:
 - Fixed the Automatic Updates option not working properly. The automatic updater has been updated as well to run silently in the background until an update is ready to be applied instead of forcing the user to click through an updater window. It also checks for updates every hour as well instead of just at startup. Manually checking for updates while the automatic updater is running in the background will make the visible updater window take over the automatic updater instead of trying to launch its own, separate instance of the updater.
 - Fixed the warning for using an older version of Chummer5a to open a character made in a newer version.
 - Fixed rare crashes for when certain strings had a null value instead of being empty. Possible fix for #2054.
+- Fixed a bug where not having drone modding rules enabled caused the max armor for drones to be calculated as twice the drone's armor instead of the drone's armor + the drone's body.
+- Fixed a bug where if Chummer5 encountered an error while saving a character, it would still assume that the character was saved properly.
 
 Data Changes:
 
