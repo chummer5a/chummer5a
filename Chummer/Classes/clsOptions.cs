@@ -868,11 +868,11 @@ namespace Chummer
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName))
+                    if (File.Exists(strFileName) && !lstFiles.Contains(strFileName))
                         lstFiles.Add(strFileName);
                 }
             }
-            return lstFiles.Distinct().ToList();
+            return lstFiles;
         }
         #endregion
 
