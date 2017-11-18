@@ -22447,20 +22447,23 @@ namespace Chummer
             foreach (ExpenseLogEntry objExpense in _objCharacter.ExpenseEntries)
             {
                 bool blnAdd = true;
-                if (objExpense.Type == ExpenseType.Nuyen && objExpense.Amount == 0)
+                if (objExpense.Amount == 0)
                 {
-                    blnAdd = chkShowFreeNuyen.Checked;
-                }
-                if (objExpense.Type == ExpenseType.Karma && objExpense.Amount == 0)
-                {
-                    blnAdd = chkShowFreeKarma.Checked;
+                    if (objExpense.Type == ExpenseType.Nuyen)
+                    {
+                        blnAdd = chkShowFreeNuyen.Checked;
+                    }
+                    else if (objExpense.Type == ExpenseType.Karma)
+                    {
+                        blnAdd = chkShowFreeKarma.Checked;
+                    }
                 }
                 if (blnAdd)
                 {
                     ListViewItem objItem = new ListViewItem();
                     objItem.Text = objExpense.Date.ToShortDateString() + " " + objExpense.Date.ToShortTimeString();
                     ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem();
-                    objAmountItem.Text = objExpense.Amount.ToString(GlobalOptions.CultureInfo);
+                    objAmountItem.Text = objExpense.Amount.ToString(objExpense.Type == ExpenseType.Karma ? "N0" : "N2", GlobalOptions.CultureInfo);
                     ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem();
                     objReasonItem.Text = objExpense.Reason;
                     ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem();
