@@ -178,6 +178,7 @@ namespace Chummer
             this.tsGearButtonAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsGearAddNexus = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmsWeaponMount = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleAddWeaponMount = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddMod = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddCyberware = new System.Windows.Forms.ToolStripMenuItem();

@@ -16248,6 +16248,10 @@ namespace Chummer
                     lblVehicleSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objMod.Source) + " " + LanguageManager.GetString("String_Page") + " " + objMod.Page);
                 }
+                else if (treVehicles.SelectedNode.Tag.ToString() == "String_WeaponMounts")
+                {
+
+                }
                 else
                 {
                     // If it's not a Vehicle Mod then it must be a Sensor.
