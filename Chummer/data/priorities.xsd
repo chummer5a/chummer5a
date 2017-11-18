@@ -20,6 +20,7 @@
                     <xs:choice maxOccurs="unbounded">
                       <xs:element name="id" type="xs:string" />
                       <xs:element name="name" type="xs:string" />
+					  <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                       <xs:element name="value" type="xs:string" />
                       <xs:element name="category" type="xs:string" />
                       <xs:element name="gameplayoption" type="xs:string" />
@@ -35,7 +36,8 @@
                                   <xs:element name="name" type="xs:string" />
                                   <xs:element name="value" type="xs:string" />
                                   <xs:element minOccurs="0" name="depth" type="xs:unsignedByte" />
-                                  <xs:element minOccurs="0" name="qualities">
+								  <xs:element minOccurs="0" name="specialattribpoints" type="xs:unsignedByte" />
+								  <xs:element minOccurs="0" name="qualities">
                                     <xs:complexType>
                                       <xs:sequence>
                                         <xs:element name="quality" type="xs:string" />
@@ -46,6 +48,13 @@
                                     <xs:complexType>
                                       <xs:sequence>
                                         <xs:element maxOccurs="unbounded" name="skillgroup" type="xs:string" />
+                                      </xs:sequence>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="skillchoices">
+                                    <xs:complexType>
+                                      <xs:sequence>
+                                        <xs:element maxOccurs="unbounded" name="skill" type="xs:string" />
                                       </xs:sequence>
                                     </xs:complexType>
                                   </xs:element>

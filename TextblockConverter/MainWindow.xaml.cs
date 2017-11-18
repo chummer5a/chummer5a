@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -102,7 +102,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Movement"))
 		        {
-			        var rawMove = lines[i].Replace("Movement ","");
+			        var rawMove = lines[i].Replace("Movement ",string.Empty);
 			        if (rawMove.Contains('('))
 			        {
 				        rawMove = rawMove.Replace('(', ',').Replace(")",string.Empty);
@@ -113,7 +113,7 @@ namespace WpfApplication1
 			        var sprint = new[] { "0", "1", "0" };
 			        foreach (var movement in movements.Where(movement => movement != "Movement"))
 			        {
-				        var current = movement.Replace("x", "").Replace("+", "").TrimEnd();
+				        var current = movement.Replace("x", string.Empty).Replace("+", string.Empty).TrimEnd();
 				        var position = 0; 
 				        if (current.ToLower().Contains("swimming"))
 				        {
@@ -152,7 +152,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Physical Skills") || (lines[i].StartsWith("Matrix Skills")) || (lines[i].StartsWith("Skills")) || (lines[i].StartsWith("Magic Skills")))
 		        {
-			        var line = lines[i].Replace("Physical Skills ", "").Replace("Matrix Skills ", "").Replace("Magic Skills ", "").Replace("Skills ", "");
+			        var line = lines[i].Replace("Physical Skills ", string.Empty).Replace("Matrix Skills ", string.Empty).Replace("Magic Skills ", string.Empty).Replace("Skills ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("skills");
 			        foreach (var s in split.Where(s => s != string.Empty))
@@ -176,7 +176,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Complex Forms"))
 		        {
-			        var line = lines[i].Replace("Complex Forms ", "");
+			        var line = lines[i].Replace("Complex Forms ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("complexforms");
 					foreach (var s in split.Where(s => s != string.Empty))
@@ -196,7 +196,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Powers"))
 		        {
-			        var line = lines[i].Replace("Powers ", "");
+			        var line = lines[i].Replace("Powers ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("powers");
 					foreach (var s in split.Where(s => s != string.Empty))
@@ -227,7 +227,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Programs"))
 		        {
-			        var line = lines[i].Replace("Programs ", "");
+			        var line = lines[i].Replace("Programs ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("gears");
 					foreach (var s in split.Where(s => s != string.Empty))
@@ -247,7 +247,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Qualities"))
 		        {
-			        var line = lines[i].Replace("Qualities ", "");
+			        var line = lines[i].Replace("Qualities ", string.Empty);
 			        var split = line.Split(',');
 			        XmlNode xmlParentNode = doc.CreateElement("qualities");
 			        foreach (var s in split.Where(s => s != string.Empty))
@@ -267,7 +267,7 @@ namespace WpfApplication1
 		        }
 		        else if (lines[i].StartsWith("Armor"))
 				{
-					var line = lines[i].Replace("Armor ", "");
+					var line = lines[i].Replace("Armor ", string.Empty);
 					xmlNode = doc.CreateElement("armor");
 					xmlNode.InnerText = line.Trim();
 					objHeader.AppendChild(xmlNode);

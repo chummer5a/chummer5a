@@ -53,13 +53,13 @@ Modules
 The most basic module looks like this
 ```XML
 <module>
-	<id>GUID HERE</id>
-	<stage>The stage</stage>
-	<category>LifeModule</category>
-	<name>The name</name>
-	<karma>a number</karma>
-	<source>A 2 letter book acronym</source>
-	<page>A page</page>
+    <id>GUID HERE</id>
+    <stage>The stage</stage>
+    <category>LifeModule</category>
+    <name>The name</name>
+    <karma>a number</karma>
+    <source>A 2 letter book acronym</source>
+    <page>A page</page>
 </module>
 ```
 The `id` is an [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier)(Global Unique IDentifier), 
@@ -140,12 +140,12 @@ Macros can contain other macros, up to a depth of 5.
 In a macro, instead of including text, you can instead define a child named `random` and then define several children   
 ```XML
 <rmega>
-	<random>
-		<ares>Ares</ares>
-		<aztech>Aztechnology</aztech
-		<renraku>Renraku</renraku>
-		<sk>Saeder-Krupp</sk>
-	</random>
+    <random>
+        <ares>Ares</ares>
+        <aztech>Aztechnology</aztech
+        <renraku>Renraku</renraku>
+        <sk>Saeder-Krupp</sk>
+    </random>
 </rmega>
 ```
 Then, when typing $RMEGA, it will evaluate to of the 4 Megas defined above.
@@ -169,12 +169,12 @@ $RMEGA(!$OTHERMEGA)
 it is also possible to place a `persistent` node instead of a `random`
 ```XML
 <body>
-	<persistent>
-		<head>side of the head</head>
-		<shoulder>shoulder</shoulder>
-		<arm>upper arm</arm>
-		<hand>hand</hand>
-	</persistent>
+    <persistent>
+        <head>side of the head</head>
+        <shoulder>shoulder</shoulder>
+        <arm>upper arm</arm>
+        <hand>hand</hand>
+    </persistent>
 </body>
 ```
 This works the same way as `random` except for one small change. It is only random once.  
@@ -190,12 +190,12 @@ You can also use this feature to peek into the result of another persitent
 if you have the macro
 ```XML
 <hurt>
-	<persistent>
-		<head>headaches</head>
-		<shoulder>pain moving</shoulder>
-		<arm>pain moving</arm>
-		<hand>unsteady hands</hand>
-	</persistent>
+    <persistent>
+        <head>headaches</head>
+        <shoulder>pain moving</shoulder>
+        <arm>pain moving</arm>
+        <hand>unsteady hands</hand>
+    </persistent>
 </hurt>
 ```
 

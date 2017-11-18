@@ -66,6 +66,7 @@
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
+            this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -111,6 +112,7 @@
             this.cboGrade.Size = new System.Drawing.Size(182, 21);
             this.cboGrade.TabIndex = 25;
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
+            this.cboGrade.EnabledChanged += new System.EventHandler(this.cboGrade_EnabledChanged);
             // 
             // lstCyberware
             // 
@@ -366,7 +368,7 @@
             // chkTransgenic
             // 
             this.chkTransgenic.AutoSize = true;
-            this.chkTransgenic.Location = new System.Drawing.Point(382, 150);
+            this.chkTransgenic.Location = new System.Drawing.Point(382, 202);
             this.chkTransgenic.Name = "chkTransgenic";
             this.chkTransgenic.Size = new System.Drawing.Size(115, 17);
             this.chkTransgenic.TabIndex = 18;
@@ -413,7 +415,7 @@
             // chkBlackMarketDiscount
             // 
             this.chkBlackMarketDiscount.AutoSize = true;
-            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(338, 176);
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(382, 176);
             this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
             this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
             this.chkBlackMarketDiscount.TabIndex = 39;
@@ -472,6 +474,19 @@
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
+            // chkPrototypeTranshuman
+            // 
+            this.chkPrototypeTranshuman.AutoSize = true;
+            this.chkPrototypeTranshuman.Location = new System.Drawing.Point(382, 59);
+            this.chkPrototypeTranshuman.Name = "chkPrototypeTranshuman";
+            this.chkPrototypeTranshuman.Size = new System.Drawing.Size(133, 17);
+            this.chkPrototypeTranshuman.TabIndex = 66;
+            this.chkPrototypeTranshuman.Tag = "Checkbox_PrototypeTranshuman";
+            this.chkPrototypeTranshuman.Text = "Prototype Transhuman";
+            this.chkPrototypeTranshuman.UseVisualStyleBackColor = true;
+            this.chkPrototypeTranshuman.Visible = false;
+            this.chkPrototypeTranshuman.CheckedChanged += new System.EventHandler(this.chkPrototypeTranshuman_CheckedChanged);
+            // 
             // frmSelectCyberware
             // 
             this.AcceptButton = this.cmdOK;
@@ -479,6 +494,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(549, 417);
+            this.Controls.Add(this.chkPrototypeTranshuman);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.nudMarkup);
             this.Controls.Add(this.lblMarkupLabel);
@@ -549,29 +565,30 @@
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblRatingLabel;
-		private System.Windows.Forms.NumericUpDown nudRating;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Label lblMaximumCapacity;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.CheckBox chkFree;
-		private System.Windows.Forms.NumericUpDown nudESSDiscount;
-		private System.Windows.Forms.Label lblESSDiscountLabel;
-		private System.Windows.Forms.Label lblESSDiscountPercentLabel;
-		private System.Windows.Forms.Label lblTest;
-		private System.Windows.Forms.Label lblTestLabel;
-		private System.Windows.Forms.CheckBox chkTransgenic;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-		private System.Windows.Forms.Label lblCyberwareNotes;
-		private System.Windows.Forms.Label lblCyberwareNotesLabel;
-		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
-		private System.Windows.Forms.NumericUpDown nudMarkup;
-		private System.Windows.Forms.Label lblMarkupLabel;
-		private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.NumericUpDown nudRating;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Label lblMaximumCapacity;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.CheckBox chkFree;
+        private System.Windows.Forms.NumericUpDown nudESSDiscount;
+        private System.Windows.Forms.Label lblESSDiscountLabel;
+        private System.Windows.Forms.Label lblESSDiscountPercentLabel;
+        private System.Windows.Forms.Label lblTest;
+        private System.Windows.Forms.Label lblTestLabel;
+        private System.Windows.Forms.CheckBox chkTransgenic;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.Label lblCyberwareNotes;
+        private System.Windows.Forms.Label lblCyberwareNotesLabel;
+        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private System.Windows.Forms.Label lblMarkupLabel;
+        private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private System.Windows.Forms.CheckBox chkPrototypeTranshuman;
     }
 }

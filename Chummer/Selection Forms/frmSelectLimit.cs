@@ -31,38 +31,38 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-		private List<ListItem> _lstLimits = new List<ListItem>();
+        private List<ListItem> _lstLimits = new List<ListItem>();
 
         #region Control Events
         public frmSelectLimit()
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
-			// Build the list of Limits.
-			ListItem objPhysical = new ListItem();
-			ListItem objMental = new ListItem();
-			ListItem objSocial = new ListItem();
+            // Build the list of Limits.
+            ListItem objPhysical = new ListItem();
+            ListItem objMental = new ListItem();
+            ListItem objSocial = new ListItem();
             objPhysical.Value = "Physical";
-            objPhysical.Name = LanguageManager.Instance.GetString("Node_Physical");
+            objPhysical.Name = LanguageManager.GetString("Node_Physical");
             objMental.Value = "Mental";
-            objMental.Name = LanguageManager.Instance.GetString("Node_Mental");
+            objMental.Name = LanguageManager.GetString("Node_Mental");
             objSocial.Value = "Social";
-            objSocial.Name = LanguageManager.Instance.GetString("Node_Social");
+            objSocial.Name = LanguageManager.GetString("Node_Social");
             _lstLimits.Add(objPhysical);
             _lstLimits.Add(objMental);
             _lstLimits.Add(objSocial);
 
             cboLimit.BeginUpdate();
             cboLimit.ValueMember = "Value";
-			cboLimit.DisplayMember = "Name";
-			cboLimit.DataSource = _lstLimits;
+            cboLimit.DisplayMember = "Name";
+            cboLimit.DataSource = _lstLimits;
             cboLimit.EndUpdate();
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
-			_strReturnValue = cboLimit.SelectedValue.ToString();
+            _strReturnValue = cboLimit.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 
@@ -77,17 +77,17 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-		private void frmSelectLimit_Shown(object sender, EventArgs e)
-		{
-			// If only a single Limit is in the list when the form is shown,
-			// click the OK button since the user really doesn't have a choice.
-			if (cboLimit.Items.Count == 1)
-				cmdOK_Click(sender, e);
-		}
-		#endregion
+        private void frmSelectLimit_Shown(object sender, EventArgs e)
+        {
+            // If only a single Limit is in the list when the form is shown,
+            // click the OK button since the user really doesn't have a choice.
+            if (cboLimit.Items.Count == 1)
+                cmdOK_Click(sender, e);
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
+        #region Properties
+        /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
         public string SelectedLimit
@@ -108,74 +108,74 @@ namespace Chummer
                 lblDescription.Text = value;
             }
         }
-		#endregion
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Limit the list to a single Limit.
-		/// </summary>
-		/// <param name="strValue">Single Limit to display.</param>
-		public void SingleLimit(string strValue)
-		{
-			List<ListItem> lstItems = new List<ListItem>();
-			ListItem objItem = new ListItem();
-			objItem.Value = strValue;
-			objItem.Name = strValue;
-			lstItems.Add(objItem);
+        #region Methods
+        /// <summary>
+        /// Limit the list to a single Limit.
+        /// </summary>
+        /// <param name="strValue">Single Limit to display.</param>
+        public void SingleLimit(string strValue)
+        {
+            List<ListItem> lstItems = new List<ListItem>();
+            ListItem objItem = new ListItem();
+            objItem.Value = strValue;
+            objItem.Name = strValue;
+            lstItems.Add(objItem);
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
-			cboLimit.ValueMember = "Value";
-			cboLimit.DisplayMember = "Name";
-			cboLimit.DataSource = lstItems;
+            cboLimit.ValueMember = "Value";
+            cboLimit.DisplayMember = "Name";
+            cboLimit.DataSource = lstItems;
             cboLimit.EndUpdate();
         }
 
-		/// <summary>
-		/// Limit the list to a few Limits.
-		/// </summary>
-		/// <param name="strValue">List of Limits.</param>
-		public void LimitToList(List<string> strValue)
-		{
-			_lstLimits.Clear();
-			foreach (string strLimit in strValue)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = strLimit;
-				objItem.Name = LanguageManager.Instance.GetString("String_Limit" + strLimit + "Short");
-				_lstLimits.Add(objItem);
-			}
+        /// <summary>
+        /// Limit the list to a few Limits.
+        /// </summary>
+        /// <param name="strValue">List of Limits.</param>
+        public void LimitToList(List<string> strValue)
+        {
+            _lstLimits.Clear();
+            foreach (string strLimit in strValue)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = strLimit;
+                objItem.Name = LanguageManager.GetString("String_Limit" + strLimit + "Short");
+                _lstLimits.Add(objItem);
+            }
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
-			cboLimit.ValueMember = "Value";
-			cboLimit.DisplayMember = "Name";
+            cboLimit.ValueMember = "Value";
+            cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = _lstLimits;
             cboLimit.EndUpdate();
         }
 
-		/// <summary>
-		/// Exclude the list of Limits.
-		/// </summary>
-		/// <param name="strValue">List of Limits.</param>
-		public void RemoveFromList(List<string> strValue)
-		{
-			foreach (string strLimit in strValue)
-			{
-				foreach (ListItem objItem in _lstLimits)
-				{
-					if (objItem.Value == strLimit)
-					{
-						_lstLimits.Remove(objItem);
-						break;
-					}
-				}
-			}
+        /// <summary>
+        /// Exclude the list of Limits.
+        /// </summary>
+        /// <param name="strValue">List of Limits.</param>
+        public void RemoveFromList(List<string> strValue)
+        {
+            foreach (string strLimit in strValue)
+            {
+                foreach (ListItem objItem in _lstLimits)
+                {
+                    if (objItem.Value == strLimit)
+                    {
+                        _lstLimits.Remove(objItem);
+                        break;
+                    }
+                }
+            }
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
-			cboLimit.ValueMember = "Value";
-			cboLimit.DisplayMember = "Name";
+            cboLimit.ValueMember = "Value";
+            cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = _lstLimits;
             cboLimit.EndUpdate();
         }
-		#endregion
+        #endregion
     }
 }

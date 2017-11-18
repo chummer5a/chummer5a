@@ -40,7 +40,6 @@
     <category>Drones: Missile</category>
   </categories>
   <modcategories>
-    <category>All</category>
     <category>Body</category>
     <category>Cosmetic</category>
     <category>Electromagnetic</category>
@@ -472,7 +471,7 @@
     </vehicle>
     <vehicle>
       <id>6243f89d-710f-4cc7-b168-eed3723395a8</id>
-      <name>GMC Pheonix</name>
+      <name>GMC Phoenix</name>
       <page>51</page>
       <source>R5</source>
       <accel>3</accel>
@@ -1321,6 +1320,7 @@
       <mods>
         <name>GridLink</name>
         <name>GridLink Override</name>
+        <name>Special Equipment</name>
       </mods>
       <seats>2</seats>
     </vehicle>
@@ -1341,6 +1341,7 @@
       <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
+        <name>Special Equipment</name>
       </gears>
       <seats>2</seats>
     </vehicle>
@@ -1361,6 +1362,7 @@
       <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
+        <name>Special Equipment</name>
       </gears>
       <seats>2</seats>
     </vehicle>
@@ -1381,6 +1383,7 @@
       <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
+        <name>Special Equipment</name>
       </gears>
       <seats>2</seats>
     </vehicle>
@@ -1401,6 +1404,7 @@
       <speed>3</speed>
       <gears>
         <gear rating="3" maxrating="7">Sensor Array</gear>
+        <name>Special Equipment</name>
       </gears>
       <seats>2</seats>
     </vehicle>
@@ -1627,6 +1631,7 @@
         <name>Gun Port</name>
         <name>Extra Entry/Exit Points</name>
         <name>Ram Plate</name>
+        <name select="Extended Roof">Special Equipment</name>
       </mods>
       <seats>8</seats>
     </vehicle>
@@ -1688,14 +1693,6 @@
         <name>Weapon Mount Control (Remote)</name>
       </mods>
       <seats>4</seats>
-      <weaponmounts>
-        <weaponmount>
-          <size>Heavy</size>
-          <flexibility>Turret</flexibility>
-          <visibility>External</visibility>
-          <control>Manual</control>
-        </weaponmount>
-      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>7c804214-420e-48e4-8a44-f836b7fa4135</id>
@@ -1726,14 +1723,6 @@
         <name>Weapon Mount Control (Remote)</name>
       </mods>
       <seats>4</seats>
-      <weaponmounts>
-        <weaponmount>
-          <size>Heavy</size>
-          <flexibility>Turret</flexibility>
-          <visibility>External</visibility>
-          <control>Manual</control>
-        </weaponmount>
-      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>34d93e94-55af-463b-bec3-ed719dbd9d91</id>
@@ -1787,6 +1776,10 @@
       <mods>
         <name>Extra Entry/Exit Points</name>
         <name>Amenities (Middle)</name>
+        <name select="Bathroom">Special Equipment</name>
+        <name select="Holding Cell">Special Equipment</name>
+        <name select="Holding Cell">Special Equipment</name>
+        <name select="Sleeping Quarters">Special Equipment</name>
       </mods>
       <seats>10</seats>
     </vehicle>
@@ -1809,8 +1802,14 @@
         <gear rating="6" maxrating="7">Sensor Array</gear>
       </gears>
       <mods>
-        <name>Extra Entry/Exit Points</name>
-        <name>Amenities (Middle)</name>
+        <name select="Generator">Special Equipment</name>
+        <name>Rigger Adaptation</name>
+        <name>Rigger Cocoon</name>
+        <name select="Aircraft Repair">Workshop</name>
+        <name>Standard Drone Rack (Medium)</name>
+        <name>Standard Drone Rack (Medium)</name>
+        <name>Standard Drone Rack (Medium)</name>
+        <name>Standard Drone Rack (Medium)</name>
       </mods>
       <seats>1</seats>
     </vehicle>
@@ -1838,6 +1837,7 @@
         <name>Gun Port</name>
         <name>Gun Port</name>
         <name>Gun Port</name>
+        <name select="Advanced Lightbar">Special Equipment</name>
       </mods>
       <seats>10</seats>
     </vehicle>
@@ -1884,10 +1884,10 @@
       <source>R5</source>
       <accel>2</accel>
       <armor>12</armor>
-      <avail>18R</avail>
+      <avail>20F</avail>
       <body>24</body>
       <category>Corpsec/Police/Military</category>
-      <cost>225000</cost>
+      <cost>330000</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
@@ -3843,6 +3843,7 @@
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
+		<name>Retrans Unit</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -4016,7 +4017,7 @@
     </vehicle>
     <vehicle>
       <id>472a0869-4759-41cf-b529-a42b0f308f69</id>
-      <name>Criado Juan (Anthro)</name>
+      <name>Criado Juan</name>
       <page>146</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4041,7 +4042,7 @@
     </vehicle>
     <vehicle>
       <id>ad77dfa1-36ae-4e66-a319-24de903652aa</id>
-      <name>Horizon Little Buddy (Anthro)</name>
+      <name>Horizon Little Buddy</name>
       <page>146</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4067,7 +4068,7 @@
     </vehicle>
     <vehicle>
       <id>54f7d700-d407-49bf-a231-83777419cbe3</id>
-      <name>MCT Kenchiku-Kikai (Anthro)</name>
+      <name>MCT Kenchiku-Kikai</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4093,7 +4094,7 @@
     </vehicle>
     <vehicle>
       <id>b448855b-57e7-435a-b523-174adb276674</id>
-      <name>NeoNet Juggernaut (Anthro)</name>
+      <name>NeoNet Juggernaut</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4120,7 +4121,7 @@
     </vehicle>
     <vehicle>
       <id>ca18775c-3535-40e1-be69-a07905add421</id>
-      <name>Saeder-Krupp Direktionssekretar (Anthro)</name>
+      <name>Saeder-Krupp Direktionssekretar</name>
       <page>148</page>
       <source>R5</source>
       <accel>2</accel>
@@ -4145,7 +4146,7 @@
     </vehicle>
     <vehicle>
       <id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-      <name>Shiawase I-Doll (Anthro)</name>
+      <name>Shiawase I-Doll</name>
       <page>148</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4372,12 +4373,10 @@
       <pilot>1</pilot>
       <sensor>2</sensor>
       <speed>6</speed>
+      <bodymodslots>4</bodymodslots>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
       </gears>
-      <mods>
-        <addslots>4</addslots>
-      </mods>
       <seats>4</seats>
     </vehicle>
     <vehicle>
@@ -4544,6 +4543,7 @@
       </gears>
       <mods>
         <name>Off-Road Suspension</name>
+        <name select="Open Box Storage">Special Equipment</name>
       </mods>
       <seats>3</seats>
     </vehicle>
@@ -4562,12 +4562,10 @@
       <pilot>1</pilot>
       <sensor>2</sensor>
       <speed>3</speed>
+      <bodymodslots>4</bodymodslots>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
       </gears>
-      <mods>
-        <addslots>4</addslots>
-      </mods>
       <seats>6</seats>
     </vehicle>
     <vehicle>
@@ -4763,8 +4761,8 @@
     <vehicle>
       <id>fb002667-22de-4156-ad17-def60a1795c0</id>
       <name>Proteus Lamprey (Sea Sled)</name>
-      <page>112</page>
-      <source>AR</source>
+      <page>464</page>
+      <source>SR5</source>
       <accel>1</accel>
       <armor>6</armor>
       <avail>0</avail>
@@ -4779,9 +4777,7 @@
         <gear rating="3" maxrating="7">Sensor Array</gear>
       </gears>
       <mods>
-        <name>Standard drone rack (medium)</name>
-        <name>Ballast Tanks Level 1</name>
-        <name>Drone Rack, Small Landing</name>
+        <name>Landing Drone Rack (Medium)</name>
       </mods>
       <seats>4</seats>
     </vehicle>
@@ -5101,7 +5097,7 @@
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
-      <hidden />
+      <hide />
     </vehicle>
     <vehicle>
       <id>d187e9f7-b308-426f-ac35-957ba601c70c</id>
@@ -5586,7 +5582,7 @@
       <pilot>0</pilot>
       <sensor>0</sensor>
       <speed>0</speed>
-      <hidden />
+      <hide />
     </vehicle>
     <vehicle>
       <id>2013dff9-f313-441b-9207-3fdb8a44c8ba</id>
@@ -5844,14 +5840,14 @@
         <gear rating="2" maxrating="7">Sensor Array</gear>
       </gears>
       <seats>2</seats>
-    </vehicle>
+    </vehicle>    
     <vehicle>
       <id>6975423f-43c7-4960-98bb-7363b491856c</id>
       <name>Chrysler-Nissan Jackrabbit (2050)</name>
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>4</armor>
+      <armor>4</armor>            
       <avail>0</avail>
       <body>8</body>
       <category>Cars</category>
@@ -5871,7 +5867,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>6</armor>
+      <armor>6</armor>            
       <avail>0</avail>
       <body>11</body>
       <category>Cars</category>
@@ -5891,7 +5887,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>
+      <armor>8</armor>            
       <avail>0</avail>
       <body>10</body>
       <category>Cars</category>
@@ -5911,7 +5907,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>12</armor>
+      <armor>12</armor>            
       <avail>0</avail>
       <body>12</body>
       <category>Cars</category>
@@ -5931,7 +5927,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>15</armor>
+      <armor>15</armor>            
       <avail>0</avail>
       <body>15</body>
       <category>Cars</category>
@@ -5951,7 +5947,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>1</accel>
-      <armor>12</armor>
+      <armor>12</armor>            
       <avail>0</avail>
       <body>16</body>
       <category>Cars</category>
@@ -5973,7 +5969,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>6</armor>
+      <armor>6</armor>            
       <avail>0</avail>
       <body>12</body>
       <category>Boats</category>
@@ -5993,7 +5989,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>6</armor>
+      <armor>6</armor>            
       <avail>4R</avail>
       <body>12</body>
       <category>Boats</category>
@@ -6013,7 +6009,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>4</armor>
+      <armor>4</armor>            
       <avail>0</avail>
       <body>14</body>
       <category>Boats</category>
@@ -6035,7 +6031,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>4</armor>
+      <armor>4</armor>            
       <avail>4</avail>
       <body>18</body>
       <category>Fixed-Wing Aircraft</category>
@@ -6055,7 +6051,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>6</armor>
+      <armor>6</armor>            
       <avail>8</avail>
       <body>20</body>
       <category>Fixed-Wing Aircraft</category>
@@ -6075,7 +6071,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>
+      <armor>8</armor>            
       <avail>8R</avail>
       <body>16</body>
       <category>VTOL/VSTOL</category>
@@ -6095,7 +6091,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>10</armor>
+      <armor>10</armor>            
       <avail>6</avail>
       <body>16</body>
       <category>Rotorcraft</category>
@@ -6115,7 +6111,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>
+      <armor>8</armor>            
       <avail>6</avail>
       <body>22</body>
       <category>Rotorcraft</category>
@@ -6135,7 +6131,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>
+      <armor>8</armor>            
       <avail>7</avail>
       <body>16</body>
       <category>Rotorcraft</category>
@@ -6157,7 +6153,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>6</accel>
-      <armor>12</armor>
+      <armor>12</armor>            
       <avail>13F</avail>
       <body>18</body>
       <category>Fixed-Wing Aircraft</category>
@@ -6177,7 +6173,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>18</armor>
+      <armor>18</armor>            
       <avail>0</avail>
       <body>20</body>
       <category>VTOL/VSTOL</category>
@@ -6197,7 +6193,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>1</accel>
-      <armor>18</armor>
+      <armor>18</armor>            
       <avail>20R</avail>
       <body>18</body>
       <category>Trucks</category>
@@ -6217,7 +6213,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>12</armor>
+      <armor>12</armor>            
       <avail>12R</avail>
       <body>12</body>
       <category>Trucks</category>
@@ -6237,7 +6233,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>10</armor>
+      <armor>10</armor>            
       <avail>16R</avail>
       <body>20</body>
       <category>Municipal/Construction</category>
@@ -6257,7 +6253,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>10</armor>
+      <armor>10</armor>            
       <avail>16R</avail>
       <body>14</body>
       <category>Boats</category>
@@ -6277,7 +6273,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>
+      <armor>8</armor>            
       <avail>12R</avail>
       <body>10</body>
       <category>Rotorcraft</category>
@@ -6297,7 +6293,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>10</armor>
+      <armor>10</armor>            
       <avail>12R</avail>
       <body>10</body>
       <category>Rotorcraft</category>
@@ -6317,7 +6313,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>14</armor>
+      <armor>14</armor>            
       <avail>26F</avail>
       <body>16</body>
       <category>VTOL/VSTOL</category>
@@ -6418,22 +6414,25 @@
         <name>Standard Weapon Mount (Drone)</name>
         <name>Standard Weapon Mount (Drone)</name>
       </mods>
-    </vehicle>
-    <!-- End Region -->
-    <!-- End Region -->
+    </vehicle>        
+    <!-- End Region -->        
+    <!-- End Region -->    
     <!-- Region SotA ADL-->
     <vehicle>
       <id>8e1a5fe3-9f13-49f0-b74a-7de82fc40dc2</id>
       <name>BMW Sleipnir</name>
-      <category>Bikes</category>
-      <handling>3/5</handling>
+      <page>43</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>3</speed>
-      <pilot>2</pilot>
-      <body>8</body>
       <armor>8</armor>
-      <seats>3</seats>
+      <avail>0</avail>
+      <body>8</body>
+      <category>Bikes</category>
+      <cost>14000</cost>
+      <handling>3/5</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -6442,23 +6441,23 @@
         <name rating="2">Anti-Theft System</name>
         <name>Metahuman Adjustment</name>
       </mods>
-      <avail>0</avail>
-      <cost>14000</cost>
-      <source>SAG</source>
-      <page>43</page>
-    </vehicle>
+      <seats>3</seats>
+    </vehicle>    
     <vehicle>
       <id>bd3e79cc-4441-4bc3-977e-fcec22f4a9f7</id>
       <name>Shiawase Motors Shuriken</name>
-      <category>Bikes</category>
-      <handling>5/2</handling>
+      <page>44</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>6</speed>
-      <pilot>1</pilot>
-      <body>5</body>
       <armor>5</armor>
-      <seats>1</seats>
+      <avail>4</avail>
+      <body>5</body>
+      <category>Bikes</category>
+      <cost>32000</cost>
+      <handling>5/2</handling>
+      <pilot>1</pilot>
       <sensor>2</sensor>
+      <speed>6</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -6467,23 +6466,23 @@
         <name>Gyro-Stabilization</name>
         <name>GridLink</name>
       </mods>
-      <avail>4</avail>
-      <cost>32000</cost>
-      <source>SAG</source>
-      <page>44</page>
+      <seats>1</seats>
     </vehicle>
     <vehicle>
       <id>f76c285b-8c19-4e53-9aab-41174c4b5b30</id>
       <name>BMW Gaia</name>
-      <category>Cars</category>
-      <handling>4/3</handling>
+      <page>45</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>4</speed>
-      <pilot>2</pilot>
-      <body>11</body>
       <armor>8</armor>
-      <seats>4</seats>
+      <avail>0</avail>
+      <body>11</body>
+      <category>Cars</category>
+      <cost>35000</cost>
+      <handling>4/3</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
+      <speed>4</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -6494,23 +6493,23 @@
         <name>GridLink</name>
         <name>Amenities (Middle)</name>
       </mods>
-      <avail>0</avail>
-      <cost>35000</cost>
-      <source>SAG</source>
-      <page>45</page>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>2e111e8d-154c-469e-8836-dda20b9296b5</id>
       <name>EMC Celine</name>
-      <category>Cars</category>
-      <handling>3/2</handling>
+      <page>46</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>3</speed>
-      <pilot>2</pilot>
-      <body>14</body>
       <armor>10</armor>
-      <seats>6</seats>
+      <avail>0</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>45000</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -6525,23 +6524,23 @@
         <name>Satellite Link</name>
         <name rating="3">Armor (Concealed)</name>
       </mods>
-      <avail>0</avail>
-      <cost>45000</cost>
-      <source>SAG</source>
-      <page>46</page>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>f1cf0391-4a8a-497c-b9a4-5590d572b646</id>
       <name>Eurocar Escape</name>
-      <category>Trucks</category>
-      <handling>3/4</handling>
+      <page>47</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>3</speed>
-      <pilot>2</pilot>
-      <body>16</body>
       <armor>12</armor>
-      <seats>8</seats>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Trucks</category>
+      <cost>185000</cost>
+      <handling>3/4</handling>
+      <pilot>2</pilot>
       <sensor>3</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
@@ -6555,23 +6554,23 @@
         <name>Multifuel Engine</name>
         <name>SunCell</name>
       </mods>
-      <avail>0</avail>
-      <cost>185000</cost>
-      <source>SAG</source>
-      <page>47</page>
+      <seats>8</seats>
     </vehicle>
     <vehicle>
       <id>0c1bb1ca-9824-4730-9edf-3a3758b084dd</id>
       <name>Mercedes 250 Classic</name>
-      <category>Cars</category>
-      <handling>4/3</handling>
+      <page>48</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>3</speed>
-      <pilot>2</pilot>
-      <body>11</body>
       <armor>7</armor>
-      <seats>5</seats>
+      <avail>0</avail>
+      <body>11</body>
+      <category>Cars</category>
+      <cost>28000</cost>
+      <handling>4/3</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -6580,46 +6579,46 @@
         <name rating="1">Passenger Protection System</name>
         <name rating="1">Life Support</name>
       </mods>
-      <avail>0</avail>
-      <cost>28000</cost>
-      <source>SAG</source>
-      <page>48</page>
+      <seats>5</seats>
     </vehicle>
     <vehicle>
       <id>41ae9ef0-11b5-443b-a9fa-2617fafa2589</id>
       <name>Mercedes Click</name>
-      <category>Cars</category>
-      <handling>4/3</handling>
+      <page>49</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>5</speed>
-      <pilot>1</pilot>
-      <body>10</body>
       <armor>5</armor>
-      <seats>4</seats>
+      <avail>0</avail>
+      <body>10</body>
+      <category>Cars</category>
+      <cost>24000</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
       <sensor>2</sensor>
+      <speed>5</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
       <mods>
         <name>Metahuman Adjustment</name>
       </mods>
-      <avail>0</avail>
-      <cost>24000</cost>
-      <source>SAG</source>
-      <page>49</page>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>69b9c81b-2982-470e-a28c-ce01747ad9358</id>
       <name>Mercedes Paladin</name>
-      <category>Cars</category>
-      <handling>5/3</handling>
+      <page>50</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>4</speed>
-      <pilot>3</pilot>
-      <body>16</body>
       <armor>14</armor>
-      <seats>8</seats>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>24000</cost>
+      <handling>5/3</handling>
+      <pilot>3</pilot>
       <sensor>4</sensor>
+      <speed>4</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
@@ -6632,23 +6631,23 @@
         <name>Amenities (Luxury)</name>
         <name rating="4">Armor (Concealed)</name>
       </mods>
-      <avail>0</avail>
-      <cost>24000</cost>
-      <source>SAG</source>
-      <page>50</page>
+      <seats>8</seats>
     </vehicle>
     <vehicle>
       <id>da9d17e2-c725-4464-8c3e-6a91d2a5e8ad</id>
       <name>Nordseewerke Thetis</name>
-      <category>Hovercraft</category>
-      <handling>2/2</handling>
+      <page>51</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>3</speed>
-      <pilot>4</pilot>
-      <body>18</body>
       <armor>10</armor>
-      <seats>50</seats>
+      <avail>14</avail>
+      <body>18</body>
+      <category>Hovercraft</category>
+      <cost>80000</cost>
+      <handling>2/2</handling>
+      <pilot>4</pilot>
       <sensor>3</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
@@ -6658,23 +6657,23 @@
         <name>SunCell</name>
         <name>Metahuman Adjustment</name>
       </mods>
-      <avail>14</avail>
-      <cost>80000</cost>
-      <source>SAG</source>
-      <page>51</page>
+      <seats>50</seats>
     </vehicle>
     <vehicle>
       <id>7fb03fb2-ba96-453a-8110-155188d350c6</id>
       <name>Caterpillar Omniwinder</name>
-      <category>Municipal/Construction</category>
-      <handling>2/2</handling>
+      <page>52</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>3</speed>
-      <pilot>3</pilot>
-      <body>20</body>
       <armor>16</armor>
-      <seats>3</seats>
+      <avail>16</avail>
+      <body>20</body>
+      <category>Municipal/Construction</category>
+      <cost>235000</cost>
+      <handling>2/2</handling>
+      <pilot>3</pilot>
       <sensor>3</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
@@ -6684,23 +6683,23 @@
         <name>Off-Road Suspension</name>
         <name>Multifuel Engine</name>
       </mods>
-      <avail>16</avail>
-      <cost>235000</cost>
-      <source>SAG</source>
-      <page>52</page>
+      <seats>3</seats>
     </vehicle>
     <vehicle>
       <id>9f39cb01-3285-41b2-88a0-1745341ed406</id>
       <name>EMC 2073 Catcher</name>
-      <category>Corpsec/Police/Military</category>
-      <handling>5/4</handling>
+      <page>53</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>5</speed>
-      <pilot>4</pilot>
-      <body>12</body>
       <armor>8</armor>
-      <seats>4</seats>
+      <avail>12R</avail>
+      <body>12</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>56000</cost>
+      <handling>5/4</handling>
+      <pilot>4</pilot>
       <sensor>3</sensor>
+      <speed>5</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
@@ -6716,23 +6715,23 @@
         <name>Weapon Mount Flexibility (Flexible)</name>
         <name>Weapon Mount Control (Remote)</name>
       </mods>
-      <avail>12R</avail>
-      <cost>56000</cost>
-      <source>SAG</source>
-      <page>53</page>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>99322016-baba-470d-b6c4-c78b70228156</id>
       <name>VW Freya</name>
-      <category>Municipal/Construction</category>
-      <handling>3/3</handling>
+      <page>54</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>4</speed>
-      <pilot>3</pilot>
-      <body>14</body>
       <armor>8</armor>
-      <seats>3</seats>
+      <avail>10</avail>
+      <body>14</body>
+      <category>Municipal/Construction</category>
+      <cost>38000</cost>
+      <handling>3/3</handling>
+      <pilot>3</pilot>
       <sensor>2</sensor>
+      <speed>4</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -6740,23 +6739,23 @@
         <name rating="2">Passenger Protection System</name>
         <name>Valkyrie Module</name>
       </mods>
-      <avail>10</avail>
-      <cost>38000</cost>
-      <source>SAG</source>
-      <page>54</page>
+      <seats>3</seats>
     </vehicle>
     <vehicle>
       <id>bda96069-c91a-4724-aa5f-b101ea2ab9d5</id>
       <name>Kamow Ka-226 Sergej</name>
-      <category>Rotorcraft</category>
-      <handling>2</handling>
+      <page>55</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>3</speed>
-      <pilot>1</pilot>
-      <body>16</body>
       <armor>6</armor>
-      <seats>6</seats>
+      <avail>10</avail>
+      <body>16</body>
+      <category>Rotorcraft</category>
+      <cost>225000</cost>
+      <handling>2</handling>
+      <pilot>1</pilot>
       <sensor>1</sensor>
+      <speed>3</speed>
       <gears>
         <gear rating="1" maxrating="1">Sensor Array</gear>
       </gears>
@@ -6764,46 +6763,46 @@
         <name>Multifuel Engine</name>
         <name>Winch (Basic)</name>
       </mods>
-      <avail>10</avail>
-      <cost>225000</cost>
-      <source>SAG</source>
-      <page>55</page>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>54165cb2-522f-441f-9a3c-fc6d6e4b4aaf</id>
       <name>Kamow Ka-226 Kasatka</name>
-      <category>Rotorcraft</category>
-      <handling>3</handling>
+      <page>55</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>4</speed>
-      <pilot>2</pilot>
-      <body>14</body>
       <armor>6</armor>
-      <seats>6</seats>
+      <avail>10</avail>
+      <body>14</body>
+      <category>Rotorcraft</category>
+      <cost>300000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
+      <speed>4</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
       <mods>
         <name>Multifuel Engine</name>
       </mods>
-      <avail>10</avail>
-      <cost>300000</cost>
-      <source>SAG</source>
-      <page>55</page>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>67f23300-4623-4273-8387-ff0882ca197a</id>
       <name>Airbus A140</name>
-      <category>Rotorcraft</category>
-      <handling>4</handling>
+      <page>56</page>
+      <source>SAG</source>
       <accel>4</accel>
-      <speed>5</speed>
-      <pilot>4</pilot>
-      <body>18</body>
       <armor>12</armor>
-      <seats>8</seats>
+      <avail>12</avail>
+      <body>18</body>
+      <category>Rotorcraft</category>
+      <cost>420000</cost>
+      <handling>4</handling>
+      <pilot>4</pilot>
       <sensor>4</sensor>
+      <speed>5</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
@@ -6814,47 +6813,46 @@
         <name rating ="1">Life Support</name>
         <name>Extra Entry/Exit Points</name>
       </mods>
-      <avail>12</avail>
-      <cost>420000</cost>
-      <source>SAG</source>
-      <page>56</page>
+      <seats>8</seats>
     </vehicle>
     <vehicle>
       <id>c16468b6-a2f7-42a4-9f06-a8d94d8439e7</id>
       <name>Cargolifter Industries CL-180</name>
-      <category>Rotorcraft</category>
-      <handling>4</handling>
+      <page>57</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>2</speed>
-      <pilot>4</pilot>
-      <body>12</body>
       <armor>12</armor>
-      <seats>4</seats>
+      <avail>12</avail>
+      <body>12</body>
+      <category>Rotorcraft</category>
+      <cost>82000</cost>
+      <handling>4</handling>
+      <pilot>4</pilot>
       <sensor>4</sensor>
+      <speed>2</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
       <mods>
         <name>SunCell</name>
       </mods>
-      <avail>12</avail>
-      <cost>82000</cost>
-      <source>SAG</source>
-      <page>57</page>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>6240139c-cf8e-4f7f-be93-a2a87d1bb1d4</id>
-      <name>Jena Robotnik Pilalux (Mini)</name>
-      <category>Drones: Mini</category>
-      <handling>4</handling>
+      <name>Jena Robotnik Pilalux</name>
+      <page>58</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>2</speed>
-      <pilot>2</pilot>
-      <body>1</body>
       <armor>0</armor>
-      <seats>0</seats>
+      <avail>10</avail>
+      <body>1</body>
+      <category>Drones: Mini</category>
+      <cost>5500</cost>
+      <handling>4</handling>
+      <pilot>2</pilot>
       <sensor>3</sensor>
-      <modslots>0</modslots>
+      <speed>2</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
@@ -6863,24 +6861,24 @@
         <name>Gecko Grips (Drone)</name>
         <name>Spotlight (Drone)</name>
       </mods>
-      <avail>10</avail>
-      <cost>5500</cost>
-      <source>SAG</source>
-      <page>58</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>78071d83-1328-46d2-bfac-aece4ecc7dff</id>
-      <name>Jena Robotnik Tegenaria (Mini)</name>
-      <category>Drones: Mini</category>
-      <handling>4</handling>
+      <name>Jena Robotnik Tegenaria</name>
+      <page>59</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>1</speed>
-      <pilot>2</pilot>
-      <body>1</body>
       <armor>0</armor>
-      <seats>0</seats>
+      <avail>8</avail>
+      <body>1</body>
+      <category>Drones: Mini</category>
+      <cost>3000</cost>
+      <handling>4</handling>
+      <pilot>2</pilot>
       <sensor>3</sensor>
-      <modslots>0</modslots>
+      <speed>1</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
@@ -6888,93 +6886,93 @@
         <name>Gecko Grips (Drone)</name>
         <name rating="1">Realistic Features</name>
       </mods>
-      <avail>8</avail>
-      <cost>3000</cost>
-      <source>SAG</source>
-      <page>59</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>bc48ec25-84ce-435a-a418-ddbac5f7507c</id>
-      <name>Messerschmitt-Kawasaki Hugin (Small)</name>
-      <category>Drones: Small</category>
-      <handling>4</handling>
+      <name>Messerschmitt-Kawasaki Hugin</name>
+      <page>60</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>2</speed>
-      <pilot>2</pilot>
-      <body>2</body>
       <armor>0</armor>
-      <seats>0</seats>
+      <avail>8</avail>
+      <body>2</body>
+      <category>Drones: Small</category>
+      <cost>1500</cost>
+      <handling>4</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <modslots>2</modslots>
+      <speed>2</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
-      <avail>8</avail>
-      <cost>1500</cost>
-      <source>SAG</source>
-      <page>60</page>
+      <modslots>2</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>33487443-148e-4a25-b351-3a958aae5a90</id>
-      <name>Messerschmitt-Kawasaki Munin (Small)</name>
-      <category>Drones: Small</category>
-      <handling>4</handling>
+      <name>Messerschmitt-Kawasaki Munin</name>
+      <page>60</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>2</speed>
-      <pilot>2</pilot>
-      <body>2</body>
       <armor>0</armor>
-      <seats>0</seats>
+      <avail>8</avail>
+      <body>2</body>
+      <category>Drones: Small</category>
+      <cost>8500</cost>
+      <handling>4</handling>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <modslots>2</modslots>
+      <speed>2</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
       <mods>
         <name rating="4">Realistic Features</name>
       </mods>
-      <avail>8</avail>
-      <cost>8500</cost>
-      <source>SAG</source>
-      <page>60</page>
+      <modslots>2</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>c2073528-54a5-45e0-b5f8-9c1ab74647aa</id>
-      <name>Messerschmitt-Kawasaki Libelle (Small)</name>
-      <category>Drones: Small</category>
-      <handling>5</handling>
+      <name>Messerschmitt-Kawasaki Libelle</name>
+      <page>61</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>2</speed>
-      <pilot>3</pilot>
-      <body>2</body>
       <armor>1</armor>
-      <seats>0</seats>
+      <avail>8</avail>
+      <body>2</body>
+      <category>Drones: Small</category>
+      <cost>4500</cost>
+      <handling>5</handling>
+      <pilot>3</pilot>
       <sensor>4</sensor>
-      <modslots>1</modslots>
+      <speed>2</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
       <mods>
         <name>Assembly Time Improvement (Drone)</name>
       </mods>
-      <avail>8</avail>
-      <cost>4500</cost>
-      <source>SAG</source>
-      <page>61</page>
+      <modslots>1</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>581eeb8d-3b66-44c0-9e1e-b6d819135b3f</id>
-      <name>Ruhrmetall Skarabäus (Small)</name>
-      <category>Drones: Small</category>
-      <handling>4/2</handling>
+      <name>Ruhrmetall Skarabäus</name>
+      <page>62</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>4</speed>
-      <pilot>3</pilot>
-      <body>3</body>
       <armor>6</armor>
-      <seats>0</seats>
+      <avail>12R</avail>
+      <body>3</body>
+      <category>Drones: Small</category>
+      <cost>9500</cost>
+      <handling>4/2</handling>
+      <pilot>3</pilot>
       <sensor>2</sensor>
-      <modslots>1</modslots>
+      <speed>4</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
@@ -6983,24 +6981,24 @@
       <mods>
         <name>Small Weapon Mount (Drone)</name>
       </mods>
-      <avail>12R</avail>
-      <cost>9500</cost>
-      <source>SAG</source>
-      <page>62</page>
+      <modslots>1</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>41e04bbc-0987-45e8-84fe-f80441bc0ba3</id>
-      <name>Schiebel Robotic Crust Mark II (Small)</name>
-      <category>Drones: Small</category>
-      <handling>2</handling>
+      <name>Schiebel Robotic Crust Mark II</name>
+      <page>63</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>1</speed>
-      <pilot>2</pilot>
-      <body>2</body>
       <armor>2</armor>
-      <seats>0</seats>
+      <avail>10</avail>
+      <body>2</body>
+      <category>Drones: Small</category>
+      <cost>9500</cost>
+      <handling>2</handling>
+      <pilot>2</pilot>
       <sensor>4</sensor>
-      <modslots>0</modslots>
+      <speed>1</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
@@ -7008,48 +7006,48 @@
         <name>Gecko Grips (Drone)</name>
         <name>Spotlight (Drone)</name>
       </mods>
-      <avail>10</avail>
-      <cost>9500</cost>
-      <source>SAG</source>
-      <page>63</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>d15d0609-296d-4e47-a4c0-f41fefcf6f4e</id>
       <name>Krupp Minion (Medium)</name>
-      <category>Drones: Medium</category>
-      <handling>3</handling>
+      <page>64</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>2</speed>
-      <pilot>3</pilot>
-      <body>4</body>
       <armor>6</armor>
-      <seats>0</seats>
+      <avail>8</avail>
+      <body>4</body>
+      <category>Drones: Medium</category>
+      <cost>5000</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
       <sensor>3</sensor>
-      <modslots>4</modslots>
+      <speed>2</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
       </gears>
       <mods>
         <name>Spotlight (Drone)</name>
       </mods>
-      <avail>8</avail>
-      <cost>5000</cost>
-      <source>SAG</source>
-      <page>64</page>
+      <modslots>4</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>b7abae70-ed26-4f8d-9b73-01760009dc1e</id>
-      <name>Messerschmitt-Kawasaki Heuschrecke 2 (Medium)</name>
-      <category>Drones: Medium</category>
-      <handling>4</handling>
+      <name>Messerschmitt-Kawasaki Heuschrecke 2</name>
+      <page>65</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>3</speed>
-      <pilot>3</pilot>
-      <body>5</body>
       <armor>6</armor>
-      <seats>0</seats>
+      <avail>10R</avail>
+      <body>5</body>
+      <category>Drones: Medium</category>
+      <cost>12000</cost>
+      <handling>4</handling>
+      <pilot>3</pilot>
       <sensor>3</sensor>
-      <modslots>2</modslots>
+      <speed>3</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
         <gear>Smartsoft</gear>
@@ -7058,24 +7056,24 @@
       <mods>
         <name>Standard Weapon Mount (Drone)</name>
       </mods>
-      <avail>10R</avail>
-      <cost>12000</cost>
-      <source>SAG</source>
-      <page>65</page>
+      <modslots>2</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>02179e64-72e2-462c-9b53-dcbc9aceb9a4</id>
-      <name>Ruhrmetall Murmillo (Medium)</name>
-      <category>Drones: Medium</category>
-      <handling>3</handling>
+      <name>Ruhrmetall Murmillo</name>
+      <page>66</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>1</speed>
-      <pilot>2</pilot>
-      <body>5</body>
       <armor>12</armor>
-      <seats>0</seats>
+      <avail>10R</avail>
+      <body>5</body>
+      <category>Drones: Medium</category>
+      <cost>8000</cost>
+      <handling>3</handling>
+      <pilot>2</pilot>
       <sensor>1</sensor>
-      <modslots>0</modslots>
+      <speed>1</speed>
       <gears>
         <gear rating="1" maxrating="1">Sensor Array</gear>
       </gears>
@@ -7083,24 +7081,24 @@
         <name>Standard Weapon Mount (Drone)</name>
         <name>Flash-Pak</name>
       </mods>
-      <avail>10R</avail>
-      <cost>8000</cost>
-      <source>SAG</source>
-      <page>66</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>3524337b-03e3-4218-b721-d1df2cc4a8c7</id>
-      <name>Siemens FWD Screamer (Medium)</name>
-      <category>Drones: Medium</category>
-      <handling>4</handling>
+      <name>Siemens FWD Screamer</name>
+      <page>67</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>1</speed>
-      <pilot>3</pilot>
-      <body>3</body>
       <armor>6</armor>
-      <seats>0</seats>
+      <avail>10R</avail>
+      <body>3</body>
+      <category>Drones: Medium</category>
+      <cost>11000</cost>
+      <handling>4</handling>
+      <pilot>3</pilot>
       <sensor>4</sensor>
-      <modslots>0</modslots>
+      <speed>1</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
         <gear rating="3" select="Sonic Cannon">[Weapon] Targeting Autosoft</gear>
@@ -7108,24 +7106,24 @@
       <mods>
         <name>Spotlight (Drone)</name>
       </mods>
-      <avail>10R</avail>
-      <cost>11000</cost>
-      <source>SAG</source>
-      <page>67</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>47a4d3aa-f9bb-4f16-bbf1-5e8b73f61c0e</id>
-      <name>Messerschmitt-Kawasaki Jagdhund (Large)</name>
-      <category>Drones: Large</category>
-      <handling>5</handling>
+      <name>Messerschmitt-Kawasaki Jagdhund</name>
+      <page>68</page>
+      <source>SAG</source>
       <accel>3</accel>
-      <speed>4</speed>
-      <pilot>3</pilot>
-      <body>6</body>
       <armor>10</armor>
-      <seats>0</seats>
+      <avail>12R</avail>
+      <body>6</body>
+      <category>Drones: Large</category>
+      <cost>30000</cost>
+      <handling>5</handling>
+      <pilot>3</pilot>
       <sensor>3</sensor>
-      <modslots>0</modslots>
+      <speed>4</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
@@ -7136,24 +7134,24 @@
         <name>Large Weapon Mount (Drone)</name>
         <name>Small Weapon Mount (Drone)</name>
       </mods>
-      <avail>12R</avail>
-      <cost>30000</cost>
-      <source>SAG</source>
-      <page>68</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>e338dcf9-3149-4519-9228-589354be5667</id>
-      <name>Messerschmitt-Kawasaki Jagdschreccke (Large)</name>
-      <category>Drones: Large</category>
-      <handling>5</handling>
+      <name>Messerschmitt-Kawasaki Jagdschreccke</name>
+      <page>69</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>4</speed>
-      <pilot>3</pilot>
-      <body>6</body>
       <armor>8</armor>
-      <seats>0</seats>
+      <avail>10R</avail>
+      <body>6</body>
+      <category>Drones: Large</category>
+      <cost>32000</cost>
+      <handling>5</handling>
+      <pilot>3</pilot>
       <sensor>3</sensor>
-      <modslots>0</modslots>
+      <speed>4</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
         <gear rating="4">[Weapon] Targeting Autosoft</gear>
@@ -7164,24 +7162,24 @@
         <name rating="3">ECM</name>
         <name>Expanded Ammunition Bay</name>
       </mods>
-      <avail>10R</avail>
-      <cost>32000</cost>
-      <source>SAG</source>
-      <page>69</page>
+      <modslots>0</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>c4e56ddb-6369-4527-a537-9b8ade6d9ada</id>
-      <name>Mitsuhama FED-11 (Large)</name>
-      <category>Drones: Large</category>
-      <handling>2</handling>
+      <name>Mitsuhama FED-11</name>
+      <page>70</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>1</speed>
-      <pilot>2</pilot>
-      <body>4</body>
       <armor>4</armor>
-      <seats>0</seats>
+      <avail>8</avail>
+      <body>4</body>
+      <category>Drones: Large</category>
+      <cost>32000</cost>
+      <handling>2</handling>
+      <pilot>2</pilot>
       <sensor>4</sensor>
-      <modslots>3</modslots>
+      <speed>1</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
         <gear rating="5">Clearsight Autosoft</gear>
@@ -7191,24 +7189,24 @@
         <name>SunCell</name>
         <name>Spotlight (Drone)</name>
       </mods>
-      <avail>8</avail>
-      <cost>32000</cost>
-      <source>SAG</source>
-      <page>70</page>
+      <modslots>3</modslots>
+      <seats>0</seats>
     </vehicle>
     <vehicle>
       <id>7c921200-76a8-465f-8207-01a7c1785c67</id>
-      <name>Ruhrmetall Wolfspinne 8V2 (Large)</name>
-      <category>Drones: Large</category>
-      <handling>5</handling>
+      <name>Ruhrmetall Wolfspinne 8V2</name>
+      <page>71</page>
+      <source>SAG</source>
       <accel>1</accel>
-      <speed>1</speed>
-      <pilot>4</pilot>
-      <body>8</body>
       <armor>14</armor>
-      <seats>0</seats>
+      <avail>16F</avail>
+      <body>8</body>
+      <category>Drones: Large</category>
+      <cost>110000</cost>
+      <handling>5</handling>
+      <pilot>4</pilot>
       <sensor>4</sensor>
-      <modslots>0</modslots>
+      <speed>1</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
         <gear rating="5" select="GE Vindicator Mini-Gun">[Weapon] Targeting Autosoft</gear>
@@ -7219,6 +7217,8 @@
         <name>Large Weapon Mount (Drone)</name>
         <name>Large Weapon Mount (Drone)</name>
       </mods>
+      <modslots>0</modslots>
+      <seats>0</seats>
       <weapons>
         <weapon>
           <name>GE Vindicator Mini-Gun</name>
@@ -7227,24 +7227,22 @@
           <name>GE Vindicator Mini-Gun</name>
         </weapon>
       </weapons>
-      <avail>16F</avail>
-      <cost>110000</cost>
-      <source>SAG</source>
-      <page>71</page>
     </vehicle>
     <vehicle>
       <id>63a915a3-b71b-4ee4-8638-8a24df833c14</id>
-      <name>Mitsuhama Honson (Anthro)</name>
-      <category>Drones: Anthro</category>
-      <handling>3</handling>
+      <name>Mitsuhama Honson</name>
+      <page>72</page>
+      <source>SAG</source>
       <accel>2</accel>
-      <speed>2</speed>
-      <pilot>3</pilot>
-      <body>5</body>
       <armor>6</armor>
-      <seats>0</seats>
+      <avail>10R</avail>
+      <body>5</body>
+      <category>Drones: Anthro</category>
+      <cost>30000</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
       <sensor>3</sensor>
-      <modslots>0</modslots>
+      <speed>2</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
         <gear rating="3" select="First Aid">Skill Autosoft</gear>
@@ -7253,18 +7251,449 @@
       <mods>
         <name>Touch Sensors</name>
         <name>Mini Weapon Mount (Drone)</name>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
       </mods>
+      <modslots>0</modslots>
+      <seats>0</seats>
       <weapons>
         <weapon>
           <name>Yamaha Pulsar</name>
         </weapon>
       </weapons>
-      <avail>10R</avail>
-      <cost>30000</cost>
-      <source>SAG</source>
-      <page>72</page>
     </vehicle>
     <!-- End Region-->
+    <!-- Region The Complete Trog -->
+    <vehicle>
+      <id>139fb6cb-a4c5-4ba2-8cf2-f10b9e187093</id>
+      <name>BMW Trollhammer</name>
+      <page>184</page>
+      <source>TCT</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>0</avail>
+      <body>10</body>
+      <category>Bikes</category>
+      <cost>12500</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+      </gears>
+      <mods>
+        <name>Metahuman Adjustment</name>
+      </mods>
+      <seats>1</seats>
+    </vehicle>
+    <vehicle>
+      <id>d706917a-ae42-4134-a1bb-0dc276e02fbe</id>
+      <name>Ford Titan</name>
+      <page>184</page>
+      <source>TCT</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Bikes</category>
+      <cost>32500</cost>
+      <handling>3/2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+      </gears>
+      <mods>
+        <name>Metahuman Adjustment</name>
+      </mods>
+      <seats>8</seats>
+    </vehicle>
+    <!-- End Region -->
+  <!-- Region Asphaltkrieger-->
+  <vehicle>
+      <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
+      <name>Mercury Cruiser</name>
+    <handling>4/3</handling>
+    <speed>3</speed>
+      <accel>3</accel>
+      <body>14</body>
+    <armor>11</armor>
+      <pilot>1</pilot>	  
+      <sensor>2</sensor>
+      <seats>5</seats>  
+      <avail>0</avail>
+      <cost>21000</cost>  
+    <source>R5G</source>
+      <page>51</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
+      <name>Mercedes-Benz CityMog</name>
+    <handling>5/4</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+    <armor>10</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>3</seats>  
+      <avail>0</avail>
+      <cost>44000</cost>  
+    <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>122a3919-dc05-4d8d-89b3-fa0ac9e1d669</id>
+      <name>Mercedes-Benz CityMog CM-X (Pickup)</name>
+    <handling>5/4</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+    <armor>10</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>5</seats>  
+      <avail>0</avail>
+      <cost>42000</cost>  
+    <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
+      <name>Mercedes-Benz CityMog Traveller</name>
+    <handling>5/4</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+    <armor>10</armor>
+      <pilot>3</pilot>	  
+      <sensor>2</sensor>
+      <seats>20</seats>  
+      <avail>0</avail>
+      <cost>56000</cost>  
+    <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    <mods>
+      <name>Amenities (Middle)</name>
+    </mods>
+    </vehicle>
+  <vehicle>
+      <id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
+      <name>Mercedes-Benz CityMog Elite</name>
+    <handling>5/3</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>18</body>
+    <armor>12</armor>
+      <pilot>3</pilot>	  
+      <sensor>4</sensor>
+      <seats>12</seats>  
+      <avail>0</avail>
+      <cost>96000</cost>  
+    <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="4" maxrating="4">Sensor Array</gear>
+      </gears>
+    <mods>
+      <name>Amenities (High)</name>
+    </mods>
+    </vehicle>
+  <vehicle>
+      <id>b52811c6-03d4-4dee-8a2e-04ea043b79e8</id>
+      <name>Volkswagen Multicity</name>
+    <handling>3/2</handling>
+    <speed>4</speed>
+      <accel>1</accel>
+      <body>12</body>
+    <armor>4</armor>
+      <pilot>1</pilot>	  
+      <sensor>1</sensor>
+      <seats>3</seats>  
+      <avail>0</avail>
+      <cost>18000</cost>  
+    <source>R5G</source>
+      <page>64</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="1" maxrating="1">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>8abe349d-d687-45a0-a1c9-d6189e4eac39</id>
+      <name>Volkswagen Urban Explorer</name>
+    <handling>3/3</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>13</body>
+    <armor>6</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>4</seats>  
+      <avail>0</avail>
+      <cost>28000</cost>  
+    <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    <mods>
+      <name>Amenities (Middle)</name>
+    <name>SunCell</name>
+    </mods>
+    </vehicle>
+  <vehicle>
+      <id>9b5cf9b8-c3ce-4853-91c7-215a73ad4ed2</id>
+      <name>Volkswagen Urban Transporter</name>
+    <handling>3/3</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>13</body>
+    <armor>6</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>2</seats>  
+      <avail>0</avail>
+      <cost>19500</cost>  
+    <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>61c57dad-8683-464e-92e1-3ad57776365e</id>
+      <name>Volkswagen Urban Traveller</name>
+    <handling>3/3</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>13</body>
+    <armor>6</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>9</seats>  
+      <avail>0</avail>
+      <cost>29500</cost>  
+    <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>1581a0b7-d198-46ba-bf68-88871554fcf1</id>
+      <name>Volkswagen Urban Watcher</name>
+    <handling>3/3</handling>
+    <speed>3</speed>
+      <accel>1</accel>
+      <body>16</body>
+    <armor>10</armor>
+      <pilot>2</pilot>	  
+      <sensor>2</sensor>
+      <seats>4</seats>  
+      <avail>12R</avail>
+      <cost>65000</cost>  
+    <source>R5G</source>
+      <page>65</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+    <mods>
+    <name>Landing Drone Rack (Medium)</name>
+    <name>Landing Drone Rack (Medium)</name>
+    <name>Landing Drone Rack (Medium)</name>
+    <name>Landing Drone Rack (Medium)</name>
+    <name>Retrans Unit</name>
+    </mods>
+    </vehicle>
+  <vehicle>
+      <id>d0bdf891-9faa-4128-8439-ae4964a425f7</id>
+      <name>Ares Minotaurus</name>
+    <handling>4/5</handling>
+    <speed>5</speed>
+      <accel>2</accel>
+      <body>14</body>
+    <armor>8</armor>
+      <pilot>4</pilot>	  
+      <sensor>4</sensor>
+      <seats>4</seats>  
+      <avail>12F</avail>
+      <cost>45000</cost>  
+    <source>R5G</source>
+      <page>81</page>
+      <category>Cars</category>	  
+      <gears>
+        <gear rating="4" maxrating="4">Sensor Array</gear>
+      </gears>
+    </vehicle>
+  <vehicle>
+      <id>98dc1868-0c72-468a-bf82-a87dbbcd0002</id>
+      <name>Dodge Hurricane</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>37000</cost>
+      <handling>4/4</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+  <vehicle>
+      <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
+      <name>Dodge Hurricane Crew Modell</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>43000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="2" maxrating="2">Sensor Array</gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+  <vehicle>
+      <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
+      <name>Dodge Hurricane Security Modell</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>14</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>67000</cost>
+      <handling>4/3</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+      </gears>
+      <seats>5</seats>
+    </vehicle>
+  <vehicle>
+      <id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
+      <name>BMW X Infinity</name>
+      <page>57</page>
+      <source>R5G</source>
+      <accel>2</accel>
+      <armor>13</armor>
+      <avail>10</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>72000</cost>
+      <handling>5/5</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear rating="4" maxrating="4">Sensor Array</gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+  <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+          <id>c659ace5-1dfb-4eeb-b49d-5867b3153649</id>
+          <name>Avibras-Nissan AN 822</name>
+          <page>31</page>
+          <source>SFME</source>
+          <accel>0</accel>
+          <armor>10</armor>
+          <avail>10</avail>
+          <body>14</body>
+          <category>Rotorcraft</category>
+          <cost>221500</cost>
+          <handling>5</handling>
+          <pilot>3</pilot>
+          <sensor>3</sensor>
+		  <seats>5</seats>
+          <speed>6</speed>
+          <gears>
+              <gear rating="3" maxrating="3">Sensor Array</gear>
+              <gear rating="2" select="Evasion">Skill Autosoft</gear>
+              <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
+              <gear rating="2" select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
+          </gears>
+          <mods>
+              <name>Rigger Interface</name>
+			  <name>Manual Controls</name>
+			  <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+          </mods>
+      </vehicle>
+      <!-- End Region -->
+      <!--Region Shadows in Focus: Metropole-->
+      <vehicle>
+		<id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
+		<name>Ares Citymaster</name>
+		<handling>4/3</handling>
+		<speed>4/3</speed>
+		<accel>2</accel>
+		<body>18</body>
+		<armor>22</armor>
+		<pilot>5</pilot>	  
+		<sensor>5</sensor>
+		<seats>12</seats>  
+		<avail>0</avail>
+		<cost>0</cost>  
+		<source>SPS</source>
+		<page>40</page>
+		<category>Cars</category>	  
+		<gears>
+			<gear rating="5" maxrating="5">Sensor Array</gear>
+		</gears>
+		<mods>
+			<name>Rigger Interface</name>
+			<name select="Chemical Seal">Special Equipment</name>
+			<name>Heavy Weapon Mount</name>
+		</mods>
+		<weapons>
+        <weapon>
+          <name>Stoner-Ares M202</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+      <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
@@ -7467,6 +7896,25 @@
         </vehicledetails>
       </required>
     </mod>
+	<mod>
+      <id>d3f7ebdb-bdf9-4b62-9934-a12b132c6731</id>
+      <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+      <page>31</page>
+      <source>SFME</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+	  <bonus>
+        <devicerating>1</devicerating>
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name operation="contains">Avibras-Nissan AN 822</name>
+        </vehicledetails>
+      </required>
+    </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
     <mod>
@@ -7486,68 +7934,30 @@
     </mod>
     <mod>
       <id>06940788-ad0b-453c-bc8a-e54e6221c185</id>
-      <name>Gecko Tips (Bod 1-3)</name>
+      <name>Gecko Tips</name>
       <page>154</page>
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>1000</cost>
+      <cost>1000 + 4000*number(Body >= 4)</cost>
       <rating>0</rating>
-      <slots>1</slots>
+      <slots>1 + 3*number(Body >= 4)</slots>
       <required>
         <vehicledetails>
-          <body operation="lessthanequals">3</body>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>a11be6d9-109e-4662-a23a-2c8081c6c948</id>
-      <name>Gecko Tips (Bod 4-6)</name>
-      <page>154</page>
-      <source>R5</source>
-      <avail>6</avail>
-      <category>Powertrain</category>
-      <cost>5000</cost>
-      <rating>0</rating>
-      <slots>4</slots>
-      <required>
-        <vehicledetails>
-          <body operation="greaterthanequals">4</body>
           <body operation="lessthanequals">6</body>
         </vehicledetails>
       </required>
     </mod>
     <mod>
       <id>fd32b5eb-c791-4117-a9fe-5d5d86952827</id>
-      <name>Gliding System (Bod 1-12)</name>
+      <name>Gliding System</name>
       <page>154</page>
       <source>R5</source>
-      <avail>12R</avail>
+      <avail>(12 + 4*number(Body > 12))R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000</cost>
+      <cost>Body * 3000 + (Body * 1000)*number(Body > 12)</cost>
       <rating>0</rating>
-      <slots>5</slots>
-      <required>
-        <vehicledetails>
-          <body operation="lessthanequals">12</body>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>f9b96303-d8de-436f-94f3-b1793a7a809a</id>
-      <name>Gliding System (Bod 12+)</name>
-      <page>154</page>
-      <source>R5</source>
-      <avail>16R</avail>
-      <category>Powertrain</category>
-      <cost>Body * 4000</cost>
-      <rating>0</rating>
-      <slots>10</slots>
-      <required>
-        <vehicledetails>
-          <body operation="greaterthanequals">13</body>
-        </vehicledetails>
-      </required>
+      <slots>5 + 5*number(Body > 12)</slots>
     </mod>
     <mod>
       <id>956a20f7-64f3-4160-88a0-d6d6b29b0bd1</id>
@@ -7556,7 +7966,7 @@
       <source>R5</source>
       <avail>FixedValues(6,8,10)</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Rating*2000,Rating*5000,Rating*12000)</cost>
+      <cost>FixedValues(Handling*2000,Handling*5000,Handling*12000)</cost>
       <rating>3</rating>
       <slots>FixedValues(4,10,18)</slots>
       <bonus>
@@ -8330,6 +8740,20 @@
       <slots>3</slots>
     </mod>
     <mod>
+      <id>60481326-e91c-4ace-863e-93799ba96064</id>
+      <name>Special Equipment</name>
+      <page>165</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Body</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <bonus>
+        <selecttext />
+      </bonus>
+    </mod>
+    <mod>
       <id>de5bd5c7-53cd-4ffd-9e13-ec04636d50ce</id>
       <name>Smuggling Compartment Shielding</name>
       <page>165</page>
@@ -8528,6 +8952,9 @@
       <cost>100</cost>
       <rating>0</rating>
       <slots>0</slots>
+      <bonus>
+        <seats>+Seats * 0.5</seats>
+      </bonus>
     </mod>
     <mod>
       <id>8a90457a-ab4d-454e-ba9f-4e3aa5ba0a0b</id>
@@ -8609,7 +9036,7 @@
         <vehicledetails>
           <seats operation="greaterthanequals">1</seats>
         </vehicledetails>
-      </required>
+      </required>        
     </mod>
     <mod>
       <id>354bd92f-dafc-42a4-979c-e3631be6cf45</id>
@@ -8652,6 +9079,17 @@
       <avail>6R</avail>
       <category>Cosmetic</category>
       <cost>750</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
+      <id>140ade78-b25c-44fd-9775-a0ebf256d90c</id>
+      <name>Yerz Kit</name>
+      <page>187</page>
+      <source>TCT</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>500</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
@@ -8984,6 +9422,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9009,6 +9449,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9034,6 +9476,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9058,6 +9502,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9082,6 +9528,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
+		<subsystem>Headware</subsystem>
+		<subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9183,7 +9631,7 @@
       <name>Pilot Program (Drone)</name>
       <page>126</page>
       <source>R5</source>
-      <avail>FixedValues(4,0,8R,12R,16F,24F</avail>
+      <avail>FixedValues(4,0,8R,12R,16F,24F)</avail>
       <category>All</category>
       <cost>FixedValues(100,400,1800,3200,10000,20000)</cost>
       <rating>6</rating>
@@ -9466,6 +9914,10 @@
       <cost>Rating * 250</cost>
       <rating>50</rating>
       <slots>0</slots>
+      <bonus>
+        <handling>-1</handling>
+        <offroadhandling>+1</offroadhandling>
+      </bonus>
     </mod>
     <mod>
       <id>bac2fcca-1edd-4814-ba50-31d63f031d4e</id>
@@ -9477,6 +9929,10 @@
       <cost>Rating * 250</cost>
       <rating>50</rating>
       <slots>0</slots>
+      <bonus>
+        <handling>+1</handling>
+        <offroadhandling>-1</offroadhandling>
+      </bonus>        
     </mod>
     <mod>
       <id>aba3338c-0a54-4486-84a4-2e74524b63de</id>
@@ -9800,8 +10256,8 @@
             <category>VTOL/VSTOL</category>
             <category operation="contains">Drones</category>
           </OR>
-        </vehicledetails>
-      </required>
+        </vehicledetails>            
+      </required>            
     </mod>
     <!-- End Region -->
   </mods>
@@ -9809,8 +10265,10 @@
     <weaponmount>
       <id>1b44540c-b463-47ed-b288-cf4a8e130eab</id>
       <name>Light</name>
-      <category>Size</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>6F</avail>
+      <category>Size</category>
       <cost>750</cost>
       <slots>1</slots>
       <weaponcategories></weaponcategories>
@@ -9818,8 +10276,10 @@
     <weaponmount>
       <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
       <name>Standard</name>
-      <category>Size</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>8F</avail>
+      <category>Size</category>
       <cost>1500</cost>
       <slots>2</slots>
       <weaponcategories></weaponcategories>
@@ -9827,8 +10287,10 @@
     <weaponmount>
       <id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
       <name>Heavy</name>
-      <category>Size</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>12F</avail>
+      <category>Size</category>
       <cost>4000</cost>
       <slots>4</slots>
       <weaponcategories></weaponcategories>
@@ -9836,72 +10298,90 @@
     <weaponmount>
       <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
       <name>External</name>
-      <category>Visibility</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>0</avail>
+      <category>Visibility</category>
       <cost>0</cost>
       <slots>0</slots>
     </weaponmount>
     <weaponmount>
       <id>4d90a1e3-8602-488e-b837-f155b4549084</id>
       <name>Internal</name>
-      <category>Visibility</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>4</avail>
+      <category>Visibility</category>
       <cost>1500</cost>
       <slots>2</slots>
     </weaponmount>
     <weaponmount>
       <id>ad732625-c8bc-4e24-bc84-90c8449e82d5</id>
       <name>Concealed</name>
-      <category>Visibility</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>4</avail>
+      <category>Visibility</category>
       <cost>4000</cost>
       <slots>4</slots>
     </weaponmount>
     <weaponmount>
       <id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
       <name>Fixed</name>
-      <category>Flexibility</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>0</avail>
+      <category>Flexibility</category>
       <cost>0</cost>
       <slots>0</slots>
     </weaponmount>
     <weaponmount>
       <id>8a0be4c4-5717-4a82-a1cd-35cd0315d180</id>
       <name>Flexible</name>
-      <category>Flexibility</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>2</avail>
+      <category>Flexibility</category>
       <cost>2000</cost>
       <slots>1</slots>
     </weaponmount>
     <weaponmount>
       <id>12342330-446f-4e2f-ad9b-6ccdc4d89a9b</id>
       <name>Turret</name>
-      <category>Flexibility</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>6</avail>
+      <category>Flexibility</category>
       <cost>5000</cost>
       <slots>2</slots>
     </weaponmount>
     <weaponmount>
       <id>df720a43-31aa-4053-9f2e-30ec4923cfe8</id>
       <name>Remote</name>
-      <category>Control</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>0</avail>
+      <category>Control</category>
       <cost>0</cost>
       <slots>0</slots>
     </weaponmount>
     <weaponmount>
       <id>0c05f936-4826-418f-b798-848dafa4b4a0</id>
       <name>Manual</name>
-      <category>Control</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>1</avail>
+      <category>Control</category>
       <cost>500</cost>
       <slots>1</slots>
     </weaponmount>
     <weaponmount>
       <id>05995261-b645-48b5-9a54-9f26becc9d5d</id>
       <name>Armored Manual</name>
-      <category>Control</category>
+      <page>163</page>
+      <source>R5</source>
       <avail>4</avail>
+      <category>Control</category>
       <cost>1500</cost>
       <slots>2</slots>
     </weaponmount>

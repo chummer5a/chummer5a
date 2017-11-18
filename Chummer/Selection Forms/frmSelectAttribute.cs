@@ -26,62 +26,62 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-		private List<ListItem> _lstAttributes = new List<ListItem>();
+        private List<ListItem> _lstAttributes = new List<ListItem>();
 
-		#region Control Events
-		public frmSelectAttribute()
+        #region Control Events
+        public frmSelectAttribute()
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
 
-			// Build the list of Attributes.
-			ListItem objBOD = new ListItem();
-			ListItem objAGI = new ListItem();
-			ListItem objREA = new ListItem();
-			ListItem objSTR = new ListItem();
-			ListItem objCHA = new ListItem();
-			ListItem objINT = new ListItem();
-			ListItem objLOG = new ListItem();
-			ListItem objWIL = new ListItem();
-			ListItem objEDG = new ListItem();
-			objBOD.Value = "BOD";
-			objBOD.Name = LanguageManager.Instance.GetString("String_AttributeBODShort");
-			objAGI.Value = "AGI";
-			objAGI.Name = LanguageManager.Instance.GetString("String_AttributeAGIShort");
-			objREA.Value = "REA";
-			objREA.Name = LanguageManager.Instance.GetString("String_AttributeREAShort");
-			objSTR.Value = "STR";
-			objSTR.Name = LanguageManager.Instance.GetString("String_AttributeSTRShort");
-			objCHA.Value = "CHA";
-			objCHA.Name = LanguageManager.Instance.GetString("String_AttributeCHAShort");
-			objINT.Value = "INT";
-			objINT.Name = LanguageManager.Instance.GetString("String_AttributeINTShort");
-			objLOG.Value = "LOG";
-			objLOG.Name = LanguageManager.Instance.GetString("String_AttributeLOGShort");
-			objWIL.Value = "WIL";
-			objWIL.Name = LanguageManager.Instance.GetString("String_AttributeWILShort");
-			objEDG.Value = "EDG";
-			objEDG.Name = LanguageManager.Instance.GetString("String_AttributeEDGShort");
-			_lstAttributes.Add(objBOD);
-			_lstAttributes.Add(objAGI);
-			_lstAttributes.Add(objREA);
-			_lstAttributes.Add(objSTR);
-			_lstAttributes.Add(objCHA);
-			_lstAttributes.Add(objINT);
-			_lstAttributes.Add(objLOG);
-			_lstAttributes.Add(objWIL);
-			_lstAttributes.Add(objEDG);
+            // Build the list of Attributes.
+            ListItem objBOD = new ListItem();
+            ListItem objAGI = new ListItem();
+            ListItem objREA = new ListItem();
+            ListItem objSTR = new ListItem();
+            ListItem objCHA = new ListItem();
+            ListItem objINT = new ListItem();
+            ListItem objLOG = new ListItem();
+            ListItem objWIL = new ListItem();
+            ListItem objEDG = new ListItem();
+            objBOD.Value = "BOD";
+            objBOD.Name = LanguageManager.GetString("String_AttributeBODShort");
+            objAGI.Value = "AGI";
+            objAGI.Name = LanguageManager.GetString("String_AttributeAGIShort");
+            objREA.Value = "REA";
+            objREA.Name = LanguageManager.GetString("String_AttributeREAShort");
+            objSTR.Value = "STR";
+            objSTR.Name = LanguageManager.GetString("String_AttributeSTRShort");
+            objCHA.Value = "CHA";
+            objCHA.Name = LanguageManager.GetString("String_AttributeCHAShort");
+            objINT.Value = "INT";
+            objINT.Name = LanguageManager.GetString("String_AttributeINTShort");
+            objLOG.Value = "LOG";
+            objLOG.Name = LanguageManager.GetString("String_AttributeLOGShort");
+            objWIL.Value = "WIL";
+            objWIL.Name = LanguageManager.GetString("String_AttributeWILShort");
+            objEDG.Value = "EDG";
+            objEDG.Name = LanguageManager.GetString("String_AttributeEDGShort");
+            _lstAttributes.Add(objBOD);
+            _lstAttributes.Add(objAGI);
+            _lstAttributes.Add(objREA);
+            _lstAttributes.Add(objSTR);
+            _lstAttributes.Add(objCHA);
+            _lstAttributes.Add(objINT);
+            _lstAttributes.Add(objLOG);
+            _lstAttributes.Add(objWIL);
+            _lstAttributes.Add(objEDG);
 
             cboAttribute.BeginUpdate();
             cboAttribute.ValueMember = "Value";
-			cboAttribute.DisplayMember = "Name";
-			cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
             cboAttribute.EndUpdate();
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
-			_strReturnValue = cboAttribute.SelectedValue.ToString();
+            _strReturnValue = cboAttribute.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 
@@ -96,17 +96,17 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-		private void frmSelectAttribute_Shown(object sender, EventArgs e)
-		{
-			// If only a single Attribute is in the list when the form is shown,
-			// click the OK button since the user really doesn't have a choice.
-			if (cboAttribute.Items.Count == 1)
-				cmdOK_Click(sender, e);
-		}
-		#endregion
+        private void frmSelectAttribute_Shown(object sender, EventArgs e)
+        {
+            // If only a single Attribute is in the list when the form is shown,
+            // click the OK button since the user really doesn't have a choice.
+            if (cboAttribute.Items.Count == 1)
+                cmdOK_Click(sender, e);
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
+        #region Properties
+        /// <summary>
         /// Attribute that was selected in the dialogue.
         /// </summary>
         public string SelectedAttribute
@@ -128,43 +128,43 @@ namespace Chummer
             }
         }
 
-		/// <summary>
-		/// Whether or not the Do not affect Metatype Maximum checkbox should be shown on the form.
-		/// </summary>
-		public bool ShowMetatypeMaximum
-		{
-			set
-			{
-				chkDoNotAffectMetatypeMaximum.Visible = value;
-			}
-		}
+        /// <summary>
+        /// Whether or not the Do not affect Metatype Maximum checkbox should be shown on the form.
+        /// </summary>
+        public bool ShowMetatypeMaximum
+        {
+            set
+            {
+                chkDoNotAffectMetatypeMaximum.Visible = value;
+            }
+        }
 
-		/// <summary>
-		/// Whether or not the Metatype Maximum value should be affected as well.
-		/// </summary>
-		public bool DoNotAffectMetatypeMaximum
-		{
-			get
-			{
-				return chkDoNotAffectMetatypeMaximum.Checked;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Whether or not the Metatype Maximum value should be affected as well.
+        /// </summary>
+        public bool DoNotAffectMetatypeMaximum
+        {
+            get
+            {
+                return chkDoNotAffectMetatypeMaximum.Checked;
+            }
+        }
+        #endregion
 
-		#region Methods
-		/// <summary>
+        #region Methods
+        /// <summary>
         /// Add MAG to the list of selectable Attributes.
         /// </summary>
         public void AddMAG()
         {
-			ListItem objMAG = new ListItem();
-			objMAG.Value = "MAG";
-			objMAG.Name = LanguageManager.Instance.GetString("String_AttributeMAGShort");
-			_lstAttributes.Add(objMAG);
+            ListItem objMAG = new ListItem();
+            objMAG.Value = "MAG";
+            objMAG.Name = LanguageManager.GetString("String_AttributeMAGShort");
+            _lstAttributes.Add(objMAG);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
-			cboAttribute.ValueMember = "Value";
-			cboAttribute.DisplayMember = "Name";
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
             cboAttribute.DataSource = _lstAttributes;
             cboAttribute.EndUpdate();
         }
@@ -174,10 +174,10 @@ namespace Chummer
         /// </summary>
         public void AddRES()
         {
-			ListItem objRES = new ListItem();
-			objRES.Value = "RES";
-			objRES.Name = LanguageManager.Instance.GetString("String_AttributeRESShort");
-			_lstAttributes.Add(objRES);
+            ListItem objRES = new ListItem();
+            objRES.Value = "RES";
+            objRES.Name = LanguageManager.GetString("String_AttributeRESShort");
+            _lstAttributes.Add(objRES);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -193,7 +193,7 @@ namespace Chummer
         {
             ListItem objDEP = new ListItem();
             objDEP.Value = "DEP";
-            objDEP.Name = LanguageManager.Instance.GetString("String_AttributeDEPShort");
+            objDEP.Name = LanguageManager.GetString("String_AttributeDEPShort");
             _lstAttributes.Add(objDEP);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -208,34 +208,34 @@ namespace Chummer
         /// </summary>
         /// <param name="strValue">Single Attribute to display.</param>
         public void SingleAttribute(string strValue)
-		{
-			List<ListItem> lstItems = new List<ListItem>();
-			ListItem objItem = new ListItem();
-			objItem.Value = strValue;
-			objItem.Name = strValue;
-			lstItems.Add(objItem);
+        {
+            List<ListItem> lstItems = new List<ListItem>();
+            ListItem objItem = new ListItem();
+            objItem.Value = strValue;
+            objItem.Name = strValue;
+            lstItems.Add(objItem);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
-			cboAttribute.ValueMember = "Value";
-			cboAttribute.DisplayMember = "Name";
-			cboAttribute.DataSource = lstItems;
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = lstItems;
             cboAttribute.EndUpdate();
         }
 
-		/// <summary>
-		/// Limit the list to a few Attributes.
-		/// </summary>
-		/// <param name="strValue">List of Attributes.</param>
-		public void LimitToList(List<string> strValue)
-		{
-			_lstAttributes.Clear();
-			foreach (string strAttribute in strValue)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = strAttribute;
-				objItem.Name = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
-				_lstAttributes.Add(objItem);
-			}
+        /// <summary>
+        /// Limit the list to a few Attributes.
+        /// </summary>
+        /// <param name="strValue">List of Attributes.</param>
+        public void LimitToList(IEnumerable<string> strValue)
+        {
+            _lstAttributes.Clear();
+            foreach (string strAttribute in strValue)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = strAttribute;
+                objItem.Name = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
+                _lstAttributes.Add(objItem);
+            }
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -244,23 +244,23 @@ namespace Chummer
             cboAttribute.EndUpdate();
         }
 
-		/// <summary>
-		/// Exclude the list of Attributes.
-		/// </summary>
-		/// <param name="strValue">List of Attributes.</param>
-		public void RemoveFromList(List<string> strValue)
-		{
-			foreach (string strAttribute in strValue)
-			{
-				foreach (ListItem objItem in _lstAttributes)
-				{
-					if (objItem.Value == strAttribute)
-					{
-						_lstAttributes.Remove(objItem);
-						break;
-					}
-				}
-			}
+        /// <summary>
+        /// Exclude the list of Attributes.
+        /// </summary>
+        /// <param name="strValue">List of Attributes.</param>
+        public void RemoveFromList(IEnumerable<string> strValue)
+        {
+            foreach (string strAttribute in strValue)
+            {
+                foreach (ListItem objItem in _lstAttributes)
+                {
+                    if (objItem.Value == strAttribute)
+                    {
+                        _lstAttributes.Remove(objItem);
+                        break;
+                    }
+                }
+            }
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -268,6 +268,6 @@ namespace Chummer
             cboAttribute.DataSource = _lstAttributes;
             cboAttribute.EndUpdate();
         }
-		#endregion
+        #endregion
     }
 }

@@ -29,7 +29,8 @@ namespace Chummer
 {
     public partial class DiceRollerControl : UserControl
     {
-        private static Random _random = new Random();
+        private static Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp = 0;
 
         #region Properties
         public enum EdgeUses { None, PushTheLimit, SecondChance, SeizeTheInit, Blitz, CloseCall, DeadManTrigger }
@@ -100,7 +101,7 @@ namespace Chummer
                 {
                     case EdgeUses.CloseCall: break;
                     case EdgeUses.SeizeTheInit: break;
-                    default: cboEdgeUse.SelectedItem = value; break;
+                    default:cboEdgeUse.SelectedItem = value; break;
                 }
             }
         }
@@ -134,9 +135,9 @@ namespace Chummer
             List<EdgeUses> edge = new List<EdgeUses>() 
             { 
                 EdgeUses.None, 
-                EdgeUses.PushTheLimit, 
-                EdgeUses.SecondChance, 
-                EdgeUses.Blitz, 
+                EdgeUses.PushTheLimit,
+                EdgeUses.SecondChance,
+                EdgeUses.Blitz,
                 EdgeUses.DeadManTrigger
             };
             cboEdgeUse.BeginUpdate();
@@ -150,40 +151,65 @@ namespace Chummer
         {
             // TODO roll the dice
             List<int> results = new List<int>();
+            int val = 0;
             for (int i = 0; i < NumberOfDice; i++)
             {
-                int val = _random.Next(1, 7);
+                do
+                {
+                    _intModuloTemp = _objRandom.Next();
+                }
+                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                val = 1 + _intModuloTemp % 6;
                 results.Add(val);
 
                 // check for pushing the limit
-                if ((EdgeUse == EdgeUses.PushTheLimit || chkRuleOf6.Checked) && val == 6)
+                if (EdgeUse == EdgeUses.PushTheLimit || chkRuleOf6.Checked)
                 {
-                    int edgeRoll = _random.Next(1, 7);
-                    results.Add(edgeRoll);
-                    bool @continue = true;
-                    while (@continue)
+                    while (val == 6)
                     {
-                        if (edgeRoll != 6)
-                            @continue = false;
-                        else
+                        do
                         {
-                            edgeRoll = _random.Next(1, 7);
-                            results.Add(edgeRoll);
+                            _intModuloTemp = _objRandom.Next();
                         }
+                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                        val = 1 + _intModuloTemp % 6;
+                        results.Add(val);
                     }
                 }
             }
 
+            // populate the text box
+            StringBuilder sb = new StringBuilder();
             // show the number of hits
             int hits = 0;
-            results.ForEach(x => { if (x == 5 || x == 6) hits++; });
-
             // calculate the 1 (and 2's)
             int glitches = 0;
-            if (chkRushJob.Checked)
-                results.ForEach(x => { if (x == 1 || x == 2) glitches++;});
-            else
-                results.ForEach(x => { if (x == 1) glitches++;});
+            foreach (int intResult in results)
+            {
+                if (intResult == 5 || intResult == 6)
+                    hits += 1;
+                else if (intResult == 1 || (chkRushJob.Checked && intResult == 2))
+                    glitches += 1;
+                sb.Append(intResult.ToString());
+                sb.Append(", ");
+            }
+            if (sb.Length > 0)
+                sb.Length -= 2; // remove trailing comma
+            if (chkBubbleDie.Checked && results.Count % 2 == 0 && results.Count / 2 == glitches + Gremlins)
+            {
+                do
+                {
+                    _intModuloTemp = _objRandom.Next();
+                }
+                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                int intBubbleDieResult = 1 + _intModuloTemp % 6;
+                sb.Append(", " + LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
+                if (intBubbleDieResult == 1 || (chkRushJob.Checked && intBubbleDieResult == 2))
+                {
+                    glitches++;
+                }
+            }
+            txtResults.Text = sb.ToString();
 
             // calculate if we glitched or critically glitched (using gremlins)
             bool glitch = false, criticalGlitch = false;
@@ -192,12 +218,12 @@ namespace Chummer
             if (glitch && hits == 0)
                 criticalGlitch = true;
             int limitAppliedHits = hits;
-            if (Limit > 0 && !(EdgeUse == EdgeUses.PushTheLimit))
-                limitAppliedHits = hits > Limit ? Limit : hits;
+            if (limitAppliedHits > Limit && EdgeUse != EdgeUses.PushTheLimit)
+                limitAppliedHits = Limit;
             
             // show the results
             // we have not gone over our limit
-            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
             if (hits > 0 && limitAppliedHits == hits)
                 sb.Append("Results: " + hits + " Hits!");
             if (limitAppliedHits < hits)
@@ -213,15 +239,7 @@ namespace Chummer
                 if (hits >= Threshold || limitAppliedHits >= Threshold)
                     lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
 
-
             lblResults.Text = sb.ToString();
-
-            // now populate the text box
-            sb = new StringBuilder();
-            // apply limit modifiers
-            results.ForEach(x => { sb.Append(x.ToString()); sb.Append(", "); });
-            sb.Length -= 2; // remove trailing comma
-            txtResults.Text = sb.ToString();
         }
 
         private void nudDice_ValueChanged(object sender, EventArgs e)

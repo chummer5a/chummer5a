@@ -26,85 +26,77 @@ namespace Chummer
     public partial class frmSelectSkillGroup : Form
     {
         private string _strReturnValue = string.Empty;
-		private string _strForceValue = string.Empty;
-		private string _strExcludeCategory = string.Empty;
+        private string _strForceValue = string.Empty;
+        private string _strExcludeCategory = string.Empty;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
-		#region Control Events
-		public frmSelectSkillGroup()
+        #region Control Events
+        public frmSelectSkillGroup()
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
         private void frmSelectSkillGroup_Load(object sender, EventArgs e)
         {
-			List<ListItem> lstGroups = new List<ListItem>();
-			_objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            List<ListItem> lstGroups = new List<ListItem>();
 
-			if (string.IsNullOrEmpty(_strForceValue))
-			{
-				// Build the list of Skill Groups found in the Skills file.
-				XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name");
-				foreach (XmlNode objXmlSkill in objXmlSkillList)
-				{
-					bool blnAdd = true;
-					if (!string.IsNullOrEmpty(_strExcludeCategory))
-					{
-						blnAdd = false;
-						string[] strExcludes = _strExcludeCategory.Split(',');
-						string strExclude = string.Empty;
-						for (int i = 0; i <= strExcludes.Length - 1; i++)
-							strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
-						// Remove the trailing " and ";
-						strExclude = strExclude.Substring(0, strExclude.Length - 5);
+            if (string.IsNullOrEmpty(_strForceValue))
+            {
+                // Build the list of Skill Groups found in the Skills file.
+                XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name");
+                foreach (XmlNode objXmlSkill in objXmlSkillList)
+                {
+                    bool blnAdd = true;
+                    if (!string.IsNullOrEmpty(_strExcludeCategory))
+                    {
+                        blnAdd = false;
+                        string[] strExcludes = _strExcludeCategory.Split(',');
+                        string strExclude = string.Empty;
+                        for (int i = 0; i <= strExcludes.Length - 1; i++)
+                            strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
+                        // Remove the trailing " and ";
+                        strExclude = strExclude.Substring(0, strExclude.Length - 5);
 
-						XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
+                        XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
                         if (objXmlNodeList != null)
                             blnAdd = objXmlNodeList.Count > 0;
-					}
+                    }
 
-					if (blnAdd)
-					{
-						ListItem objItem = new ListItem();
-						objItem.Value = objXmlSkill.InnerText;
-						if (objXmlSkill.Attributes != null)
-						{
-							if (objXmlSkill.Attributes["translate"] != null)
-								objItem.Name = objXmlSkill.Attributes["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill.InnerText;
-						}
-						else
-							objItem.Name = objXmlSkill.InnerXml;
-						lstGroups.Add(objItem);
-					}
-				}
-			}
-			else
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = _strForceValue;
-				objItem.Name = _strForceValue;
-				lstGroups.Add(objItem);
-			}
-			SortListItem objSort = new SortListItem();
-			lstGroups.Sort(objSort.Compare);
+                    if (blnAdd)
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlSkill.InnerText;
+                        objItem.Name = objXmlSkill.Attributes["translate"]?.InnerText ?? objXmlSkill.InnerText;
+                        lstGroups.Add(objItem);
+                    }
+                }
+            }
+            else
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = _strForceValue;
+                objItem.Name = _strForceValue;
+                lstGroups.Add(objItem);
+            }
+            SortListItem objSort = new SortListItem();
+            lstGroups.Sort(objSort.Compare);
             cboSkillGroup.BeginUpdate();
             cboSkillGroup.ValueMember = "Value";
-			cboSkillGroup.DisplayMember = "Name";
-			cboSkillGroup.DataSource = lstGroups;
+            cboSkillGroup.DisplayMember = "Name";
+            cboSkillGroup.DataSource = lstGroups;
             cboSkillGroup.EndUpdate();
 
             // Select the first Skill in the list.
             cboSkillGroup.SelectedIndex = 0;
 
-			if (cboSkillGroup.Items.Count == 1)
-				cmdOK_Click(sender, e);
+            if (cboSkillGroup.Items.Count == 1)
+                cmdOK_Click(sender, e);
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboSkillGroup.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
@@ -114,10 +106,10 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-		#endregion
+        #endregion
 
-		#region Properties
-		// Skill Group that was selected in the dialogue.
+        #region Properties
+        // Skill Group that was selected in the dialogue.
         public string SelectedSkillGroup
         {
             get
@@ -135,27 +127,27 @@ namespace Chummer
             }
         }
 
-		/// <summary>
-		/// Force a specific SkillGroup to be selected.
-		/// </summary>
-		public string OnlyGroup
-		{
-			set
-			{
-				_strForceValue = value;
-			}
-		}
+        /// <summary>
+        /// Force a specific SkillGroup to be selected.
+        /// </summary>
+        public string OnlyGroup
+        {
+            set
+            {
+                _strForceValue = value;
+            }
+        }
 
-		/// <summary>
-		/// Only Skills not in the selected Category should be in the list.
-		/// </summary>
-		public string ExcludeCategory
-		{
-			set
-			{
-				_strExcludeCategory = value;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Only Skills not in the selected Category should be in the list.
+        /// </summary>
+        public string ExcludeCategory
+        {
+            set
+            {
+                _strExcludeCategory = value;
+            }
+        }
+        #endregion
     }
 }

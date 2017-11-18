@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!-- Skills grouped by Skill Category listed by Rating (descending) (Japanese) -->
-<!-- Version -500 -->
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Skills grouped by Skill Category listed by Rating (descending) -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="xz.jp.xslt"/>
+  <xsl:import href="xz.language.xslt"/>
 
-	<xsl:import href="../Shadowrun 5 includes.xslt"/>
-	<xsl:import href="../xs.SkillsGroupedByRating.xslt"/>
-
-	<!-- Set global control variables -->
-	<xsl:variable name="lang" select="'jp'"/>
+  <xsl:import href="../Shadowrun 5 set.xslt"/>
+  <xsl:import href="../xs.SkillsGroupedByRating.xslt"/>
+  
+  <xsl:variable name="PrintSkillCategoryNames" select="False"/>
 </xsl:stylesheet>

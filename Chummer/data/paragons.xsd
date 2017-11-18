@@ -27,25 +27,27 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="advantage" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="disadvantage" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-					<xs:element name="choices" minOccurs="0" maxOccurs="1">
-					  <xs:complexType>
-					    <xs:sequence>
-						  <xs:element name="choice" minOccurs="1" maxOccurs="unbounded">
-						    <xs:complexType>
-							  <xs:sequence>
-							    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-								<xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
-							  </xs:sequence>
-							  <xs:attribute name="set" type="xs:integer" use="optional" />
-							</xs:complexType>
-						  </xs:element>
-						</xs:sequence>
-					  </xs:complexType>
-					</xs:element>
+          <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+          <xs:element name="choices" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+              <xs:element name="choice" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+				  <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="set" type="xs:integer" use="optional" />
+              </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            </xs:complexType>
+          </xs:element>
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>

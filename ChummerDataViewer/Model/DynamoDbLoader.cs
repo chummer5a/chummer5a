@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
@@ -9,7 +9,7 @@ using Amazon.DynamoDBv2.Model;
 
 namespace ChummerDataViewer.Model
 {
-	class DynamoDbLoader : INotifyThreadStatus
+	class DynamoDbLoader : INotifyThreadStatus, IDisposable
 	{
 		const string DataTable = "ChummerDumpsList";
 		private AmazonDynamoDBClient _client;
@@ -189,7 +189,30 @@ namespace ChummerDataViewer.Model
 		{
 			StatusChanged?.Invoke(this, args);
 		}
-	}
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (_client != null)
+                        _client.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
 
 	internal class WaitDurationProvider
 	{
@@ -227,9 +250,7 @@ namespace ChummerDataViewer.Model
 	{
 		public StatusChangedEventArgs(string status, dynamic attachedData = null)
 		{
-			if(status == null) throw new ArgumentNullException(nameof(status));
-
-			Status = status;
+            Status = status ?? throw new ArgumentNullException(nameof(status));
 			AttachedData = attachedData;
 		}
 

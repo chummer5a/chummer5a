@@ -37,16 +37,16 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			if (objLimitModifier != null)
-			{
-				txtName.Text = objLimitModifier.Name;
-				_intBonus = objLimitModifier.Bonus;
-				txtCondition.Text = objLimitModifier.Condition;
-			}
-		}
+            LanguageManager.Load(GlobalOptions.Language, this);
+            if (objLimitModifier != null)
+            {
+                txtName.Text = objLimitModifier.Name;
+                _intBonus = objLimitModifier.Bonus;
+                txtCondition.Text = objLimitModifier.Condition;
+            }
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnName = txtName.Text;
             _intBonus = Convert.ToInt32(nudBonus.Value);
@@ -59,28 +59,28 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-		private void frmSelectText_Shown(object sender, EventArgs e)
-		{
-			// If the field is pre-populated, immediately click OK.
-			if (!string.IsNullOrEmpty(txtName.Text))
-				cmdOK_Click(sender, e);
-		}		
-		#endregion
+        private void frmSelectText_Shown(object sender, EventArgs e)
+        {
+            // If the field is pre-populated, immediately click OK.
+            if (!string.IsNullOrEmpty(txtName.Text))
+                cmdOK_Click(sender, e);
+        }        
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Modifier name that was entered in the dialogue.
-		/// </summary>
-		public string SelectedName
+        #region Properties
+        /// <summary>
+        /// Modifier name that was entered in the dialogue.
+        /// </summary>
+        public string SelectedName
         {
             get
             {
                 return _strReturnName;
             }
-			set
-			{
-				txtName.Text = value;
-			}
+            set
+            {
+                txtName.Text = value;
+            }
         }
 
         /// <summary>

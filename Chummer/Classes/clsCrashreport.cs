@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,99 +29,99 @@ using Microsoft.Win32;
 
 namespace Chummer
 {
-	class CrashReport
-	{
-		public static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
-		{
-			if (Debugger.IsAttached) return;
+    class CrashReport
+    {
+        public static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (Debugger.IsAttached) return;
 
-			CrashReport report = new CrashReport(Guid.NewGuid())
-					.AddDefaultData()
-					.AddData("exception.txt", e.ExceptionObject.ToString());
+            CrashReport report = new CrashReport(Guid.NewGuid())
+                    .AddDefaultData()
+                    .AddData("exception.txt", e.ExceptionObject.ToString());
 
-				Log.Kill(); //Make sure log object is not used
+                Log.Kill(); //Make sure log object is not used
 
-				try
-				{
-					string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
-					report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
-				}
-				catch(Exception ex)
-				{
-					report.AddData("chummerlog.txt", ex.ToString());
-				}
-
-
-				//Considering doing some magic with 
-				//Application.OpenForms
-				//And reflection to all savefiles
-				//here
-
-				//try to include default settings file
-				try
-				{
-					string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-					report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
-				}
-				catch (Exception ex)
-				{
-					report.AddData("default.xml", ex.ToString());
-				}
+                try
+                {
+                    string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
+                    report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
+                }
+                catch(Exception ex)
+                {
+                    report.AddData("chummerlog.txt", ex.ToString());
+                }
 
 
-				report.Send();
-				MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
-		}
+                //Considering doing some magic with 
+                //Application.OpenForms
+                //And reflection to all savefiles
+                //here
 
-		private List<KeyValuePair<String, Stream>> values; 
+                //try to include default settings file
+                try
+                {
+                    string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+                    report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
+                }
+                catch (Exception ex)
+                {
+                    report.AddData("default.xml", ex.ToString());
+                }
 
-		/// <summary>
-		/// Unique ID for the crash report, makes a user able to refer to a specific report
-		/// </summary>
-		public Guid Id { get; private set; }
 
-		private String _subject;
-		public String Subject
-		{
-			get
-			{
-				if (_subject == null)
-					return Id.ToString();
+                report.Send();
+                MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
+        }
 
-				return _subject;
-			}
-			set { _subject = value; }
-		}
+        private List<KeyValuePair<String, Stream>> values; 
 
-		public CrashReport(Guid repordGuid)
-		{
-			Id = repordGuid;
-			values = new List<KeyValuePair<String, Stream>>();
-		}
+        /// <summary>
+        /// Unique ID for the crash report, makes a user able to refer to a specific report
+        /// </summary>
+        public Guid Id { get; private set; }
 
-		public CrashReport AddDefaultData()
-		{
-			return AddData("info.txt", DefaultInfo());
-		}
+        private String _subject;
+        public String Subject
+        {
+            get
+            {
+                if (_subject == null)
+                    return Id.ToString();
 
-		private String DefaultInfo()
-		{
-			StringBuilder report = new StringBuilder();
+                return _subject;
+            }
+            set { _subject = value; }
+        }
 
-			try
-			{
-				//Keep this multiple places for good measure
-				report.AppendFormat("Crash ID = {0:B}", Id);
-				report.AppendLine();
-				//We want to know what crash happened on
+        public CrashReport(Guid repordGuid)
+        {
+            Id = repordGuid;
+            values = new List<KeyValuePair<String, Stream>>();
+        }
+
+        public CrashReport AddDefaultData()
+        {
+            return AddData("info.txt", DefaultInfo());
+        }
+
+        private String DefaultInfo()
+        {
+            StringBuilder report = new StringBuilder();
+
+            try
+            {
+                //Keep this multiple places for good measure
+                report.AppendFormat("Crash ID = {0:B}", Id);
+                report.AppendLine();
+                //We want to know what crash happened on
 #if LEGACY
-				report.AppendFormat("Legacy Build");
+                report.AppendFormat("Legacy Build");
 #elif DEBUG
-				report.AppendFormat("Debug Build");
+                report.AppendFormat("Debug Build");
 #else
-				report.AppendFormat("Release Build");
+                report.AppendFormat("Release Build");
 #endif
-				report.AppendLine();
+                report.AppendLine();
                 //Seconadary id for linux systems?
                 if (Registry.LocalMachine != null)
                 {
@@ -143,84 +143,84 @@ namespace Chummer
                     }
                 }
 
-				report.AppendFormat("CommandLine={0}", Environment.CommandLine);
-				report.AppendLine();
+                report.AppendFormat("CommandLine={0}", Environment.CommandLine);
+                report.AppendLine();
 
-				report.AppendFormat("Version={0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-			}
-			finally
-			{
-			}
-			return report.ToString();
-		}
+                report.AppendFormat("Version={0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+            }
+            finally
+            {
+            }
+            return report.ToString();
+        }
 
-		public CrashReport AddData(String title, String contents)
-		{
-			//Convert string to stream
-			MemoryStream stream = new MemoryStream();
-			StreamWriter writer = new StreamWriter(stream);
-			writer.Write(contents);
-			writer.Flush();
-			stream.Position = 0;
+        public CrashReport AddData(String title, String contents)
+        {
+            //Convert string to stream
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(contents);
+            writer.Flush();
+            stream.Position = 0;
 
-			
-			return AddData(title, stream);
-		}
+            
+            return AddData(title, stream);
+        }
 
-		public CrashReport AddData(String title, Stream contents)
-		{
-			values.Add(new KeyValuePair<string, Stream>(title, contents));
-			return this;
-		}
+        public CrashReport AddData(String title, Stream contents)
+        {
+            values.Add(new KeyValuePair<string, Stream>(title, contents));
+            return this;
+        }
 
-		public bool Send()
-		{
-			try
-			{
-				//Not worried about password, but don't want to place it in clear. Not that this is going to stop anybody
-				//But hopefully this barrier keeps it above the lowest hanging fruits
-				String password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
+        public bool Send()
+        {
+            try
+            {
+                //Not worried about password, but don't want to place it in clear. Not that this is going to stop anybody
+                //But hopefully this barrier keeps it above the lowest hanging fruits
+                String password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
 
-				MailAddress address = new MailAddress("chummercrashdumps@gmail.com");
-				SmtpClient client = new SmtpClient
-				{
-					Host = "smtp.gmail.com",
-					Port = 587,
-					EnableSsl = true,
-					DeliveryMethod = SmtpDeliveryMethod.Network,
-					UseDefaultCredentials = false,
-					Credentials = new NetworkCredential(address.Address, password)
-				};
+                MailAddress address = new MailAddress("chummercrashdumps@gmail.com");
+                SmtpClient client = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(address.Address, password)
+                };
 
-				MailMessage message = new MailMessage(address, address);
-				
-				//Forwarding rule used instead?
-				message.CC.Add("chummer5isalive+chummerdump@gmail.com");
+                MailMessage message = new MailMessage(address, address);
+                
+                //Forwarding rule used instead?
+                message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 
-				message.Subject = Subject;
-				message.Body = DefaultInfo();
+                message.Subject = Subject;
+                message.Body = DefaultInfo();
 
-				//Compression?
-				foreach (KeyValuePair<string, Stream> pair in values)
-				{
-					message.Attachments.Add(new Attachment(pair.Value, pair.Key));
-				}
+                //Compression?
+                foreach (KeyValuePair<string, Stream> pair in values)
+                {
+                    message.Attachments.Add(new Attachment(pair.Value, pair.Key));
+                }
 
-				if (Debugger.IsAttached)
-				{
-					Debugger.Break();
-				}
-				else
-				{
-					client.Send(message);
-				}
+                if (Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+                else
+                {
+                    client.Send(message);
+                }
 
-				return true;
-			}
-			catch
-			{
-				return false;
-			}
-		}
-	}
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
 }

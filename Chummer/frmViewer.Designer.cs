@@ -1,35 +1,35 @@
-﻿using System;
+using System;
 
 namespace Chummer
 {
-	partial class frmViewer
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmViewer
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.cmdSaveHTML = new SplitButton();
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -42,6 +42,7 @@ namespace Chummer
             this.cboXSLT = new System.Windows.Forms.ComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.cboLanguage = new System.Windows.Forms.ComboBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.SuspendLayout();
@@ -75,7 +76,7 @@ namespace Chummer
             this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
-            this.tsSaveAsXml.Click += new EventHandler(this.tsSaveAsXml_Click);
+            this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
             // 
             // tsSaveAsPdf
             // 
@@ -83,7 +84,7 @@ namespace Chummer
             this.tsSaveAsPdf.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
             this.tsSaveAsPdf.Text = "Save as PDF";
-            this.tsSaveAsPdf.Click += new EventHandler(this.tsSaveAsPdf_Click);
+            this.tsSaveAsPdf.Click += new System.EventHandler(this.tsSaveAsPdf_Click);
             // 
             // cmsPrintButton
             // 
@@ -117,23 +118,26 @@ namespace Chummer
             // 
             // cboXSLT
             // 
+            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(509, 14);
+            this.cboXSLT.Location = new System.Drawing.Point(518, 14);
             this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(216, 21);
+            this.cboXSLT.Size = new System.Drawing.Size(254, 21);
             this.cboXSLT.TabIndex = 4;
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
             // lblCharacterSheet
             // 
+            this.lblCharacterSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCharacterSheet.AutoSize = true;
-            this.lblCharacterSheet.Location = new System.Drawing.Point(416, 17);
+            this.lblCharacterSheet.Location = new System.Drawing.Point(257, 17);
             this.lblCharacterSheet.Name = "lblCharacterSheet";
             this.lblCharacterSheet.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterSheet.TabIndex = 3;
             this.lblCharacterSheet.Tag = "Label_Viewer_CharacterSheet";
             this.lblCharacterSheet.Text = "Character Sheet:";
+            this.lblCharacterSheet.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // webBrowser1
             // 
@@ -148,11 +152,23 @@ namespace Chummer
             this.webBrowser1.TabIndex = 5;
             this.webBrowser1.WebBrowserShortcutsEnabled = false;
             // 
+            // cboLanguage
+            // 
+            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLanguage.FormattingEnabled = true;
+            this.cboLanguage.Location = new System.Drawing.Point(350, 14);
+            this.cboLanguage.Name = "cboLanguage";
+            this.cboLanguage.Size = new System.Drawing.Size(162, 21);
+            this.cboLanguage.TabIndex = 104;
+            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+            // 
             // frmViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 637);
+            this.Controls.Add(this.cboLanguage);
             this.Controls.Add(this.lblCharacterSheet);
             this.Controls.Add(this.cboXSLT);
             this.Controls.Add(this.cmdSaveHTML);
@@ -170,20 +186,21 @@ namespace Chummer
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
-		internal SplitButton cmdPrint;
-		private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
-		private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
-		internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-		private System.Windows.Forms.ComboBox cboXSLT;
-		private System.Windows.Forms.Label lblCharacterSheet;
-		private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
-		internal SplitButton cmdSaveHTML;
-		private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
-		private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
+        #endregion
+        internal SplitButton cmdPrint;
+        private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
+        private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
+        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
+        private System.Windows.Forms.ComboBox cboXSLT;
+        private System.Windows.Forms.Label lblCharacterSheet;
+        private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
+        internal SplitButton cmdSaveHTML;
+        private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
+        private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.ComboBox cboLanguage;
     }
 
 }

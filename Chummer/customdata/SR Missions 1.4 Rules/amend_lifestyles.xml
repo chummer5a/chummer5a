@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <lifestyles>
+	<lifestyle>
+      <name>Commercial</name>
+      <hide />
+    </lifestyle>
+	<lifestyle>
+      <name>Traveler</name>
+      <hide />
+    </lifestyle>
+  </lifestyles>
+  <qualities>
+    <quality>
+      <name>Subsistance Hunting/Gathering I</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Subsistance Hunting/Gathering II</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Subsistance Hunting/Gathering III</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Subsistance Hunting/Gathering IV</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Drone Maids/Manservants</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Maids/Manservants</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Zombie Maids/Manservants</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Household Gremlins I</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Household Gremlins II</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>No Masters</name>
+      <hide />
+    </quality>
+  </qualities>
+</chummer>

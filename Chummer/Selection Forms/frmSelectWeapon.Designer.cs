@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-	partial class frmSelectWeapon
+    partial class frmSelectWeapon
     {
         /// <summary>
         /// Required designer variable.
@@ -360,7 +360,7 @@
             this.dataGridViewTextBoxColumn13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn13.DataPropertyName = "Cost";
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle11.Format = "#,###,##0¥";
+            dataGridViewCellStyle11.Format = "#,###,##0.##¥";
             dataGridViewCellStyle11.NullValue = null;
             this.dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewCellStyle11;
             this.dataGridViewTextBoxColumn13.FillWeight = 60F;
@@ -422,7 +422,6 @@
             this.tabListView.Size = new System.Drawing.Size(538, 372);
             this.tabListView.TabIndex = 1;
             this.tabListView.Text = "List View";
-            this.tipTooltip.SetToolTip(this.tabListView, "Title_ListView");
             this.tabListView.UseVisualStyleBackColor = true;
             // 
             // chkHideOverAvailLimit
@@ -858,7 +857,7 @@
             this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Cost.DataPropertyName = "Cost";
             dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle14.Format = "#,###,##0¥";
+            dataGridViewCellStyle14.Format = "#,###,##0.##¥";
             dataGridViewCellStyle14.NullValue = null;
             this.Cost.DefaultCellStyle = dataGridViewCellStyle14;
             this.Cost.FillWeight = 60F;
@@ -929,12 +928,12 @@
         #endregion
 
         private System.Windows.Forms.ComboBox cboCategory;
-		private System.Windows.Forms.Label lblCategory;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.DataGridView dgvWeapons;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabBrowse;

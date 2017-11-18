@@ -27,9 +27,10 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="damage" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="descriptor" type="xs:string" minOccurs="1" maxOccurs="1" />
