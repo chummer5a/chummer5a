@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +10,7 @@ using System.Threading;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.Security;
 
 namespace Chummer.Backend.Debugging
 {
@@ -17,8 +18,12 @@ namespace Chummer.Backend.Debugging
 
     internal class CrashHandler
     {
-        [DllImport("kernel32.dll")]
-        static extern uint GetCurrentThreadId();
+        [SuppressUnmanagedCodeSecurity]
+        internal static class SafeNativeMethods
+        {
+            [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+            internal static extern uint GetCurrentThreadId();
+        }
 
         private class DumpData
         {
@@ -31,8 +36,7 @@ namespace Chummer.Backend.Debugging
             public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
             public Dictionary<string, string> attributes = new Dictionary<string, string>();
             public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = GetCurrentThreadId();
-            public IntPtr exceptionPrt = IntPtr.Zero;
+            public uint threadId = SafeNativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {
@@ -83,8 +87,6 @@ namespace Chummer.Backend.Debugging
 
             public void AddException(Exception ex)
             {
-                exceptionPrt = Marshal.GetExceptionPointers();
-
                 pretendfiles.Add("exception.txt", ex.ToString());
 
                 attributes["visible-error-friendly"] = ex.Message;

@@ -85,6 +85,7 @@ namespace Chummer
 #endif
                 prgProgress.Value++;
                 Application.DoEvents();
+                objCharacter.Dispose();
             }
 
             // Finish the document and flush the Writer and Stream.

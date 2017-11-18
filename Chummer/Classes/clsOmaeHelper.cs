@@ -177,14 +177,15 @@ namespace Chummer
         /// </summary>
         public byte[] Compress(byte[] raw)
         {
-            using (MemoryStream memory = new MemoryStream())
+            byte[] arrReturn = null;
+            MemoryStream memory = new MemoryStream();
+            // gzip.Dispose() should call memory.Dispose()
+            using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
             {
-                using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
-                {
-                    gzip.Write(raw, 0, raw.Length);
-                }
-                return memory.ToArray();
+                gzip.Write(raw, 0, raw.Length);
+                arrReturn = memory.ToArray();
             }
+            return arrReturn;
         }
 
         /// <summary>

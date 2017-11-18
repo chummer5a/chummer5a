@@ -44,7 +44,6 @@ namespace Chummer
         private void frmOptions_Load(object sender, EventArgs e)
         {
             PopulateBuildMethodList();
-            PopulateEssenceDecimalsList();
             PopulateLimbCountList();
             SetToolTips();
             PopulateSettingsList();
@@ -106,7 +105,7 @@ namespace Chummer
             _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
             _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
-            _characterOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
+            _characterOptions.EssenceDecimals = Convert.ToInt32(nudEssenceDecimals.Value);
             _characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
             _characterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
                 if (chkExceedNegativeQualities.Checked)
@@ -454,7 +453,7 @@ namespace Chummer
             nudNuyenPerBP.Left = lblNuyenPerBP.Left + lblNuyenPerBP.Width + 6;
             lblMetatypeCostsKarma.Left = chkMetatypeCostsKarma.Left + chkMetatypeCostsKarma.Width;
             nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width;
-            cboEssenceDecimals.Left = lblEssenceDecimals.Left + lblEssenceDecimals.Width + 6;
+            nudEssenceDecimals.Left = lblEssenceDecimals.Left + lblEssenceDecimals.Width + 6;
 
             txtPDFAppPath.Left = lblPDFAppPath.Left + lblPDFAppPath.Width + 6;
             cmdPDFAppPath.Left = txtPDFAppPath.Left + txtPDFAppPath.Width + 6;
@@ -657,7 +656,7 @@ namespace Chummer
             PopulateCustomDataDirectoryTreeView();
 
             cboBuildMethod.SelectedValue = _characterOptions.BuildMethod;
-            cboEssenceDecimals.SelectedValue = _characterOptions.EssenceDecimals == 0 ? "2" : _characterOptions.EssenceDecimals.ToString();
+            nudEssenceDecimals.Value = _characterOptions.EssenceDecimals == 0 ? 2 : _characterOptions.EssenceDecimals;
             chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
             chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
             chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
@@ -974,28 +973,6 @@ namespace Chummer
             cboBuildMethod.DisplayMember = "Name";
             cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.EndUpdate();
-        }
-
-        private void PopulateEssenceDecimalsList()
-        {
-            List<ListItem> lstDecimals = new List<ListItem>();
-
-            ListItem objTwo = new ListItem();
-            objTwo.Value = "2";
-            objTwo.Name = "2";
-
-            ListItem objFour = new ListItem();
-            objFour.Value = "4";
-            objFour.Name = "4";
-
-            lstDecimals.Add(objTwo);
-            lstDecimals.Add(objFour);
-
-            cboEssenceDecimals.BeginUpdate();
-            cboEssenceDecimals.ValueMember = "Value";
-            cboEssenceDecimals.DisplayMember = "Name";
-            cboEssenceDecimals.DataSource = lstDecimals;
-            cboEssenceDecimals.EndUpdate();
         }
 
         private void PopulateLimbCountList()

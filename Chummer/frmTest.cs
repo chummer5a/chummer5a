@@ -194,6 +194,8 @@ namespace Chummer
                     txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
                 }
             }
+
+            objCharacter.Dispose();
         }
 
         private void TestWeapons()
@@ -319,6 +321,8 @@ namespace Chummer
                     txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
                 }
             }
+
+            objCharacter.Dispose();
         }
 
         private void TestArmor()
@@ -414,6 +418,8 @@ namespace Chummer
                     txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
                 }
             }
+
+            objCharacter.Dispose();
         }
 
         private void TestGear()
@@ -484,6 +490,8 @@ namespace Chummer
                     txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
                 }
             }
+
+            objCharacter.Dispose();
         }
 
         private void TestCyberware(string strFile)
@@ -583,6 +591,8 @@ namespace Chummer
                     txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
                 }
             }
+
+            objCharacter.Dispose();
         }
 
         private void TestQuality()
@@ -611,6 +621,8 @@ namespace Chummer
                     txtOutput.Text += objXmlGear["name"].InnerText + " general failure\r\n";
                 }
             }
+
+            objCharacter.Dispose();
         }
 
         void TestMetatype(string strFile)
@@ -915,6 +927,8 @@ namespace Chummer
                 {
                     txtOutput.Text += _objCharacter.Metatype + " general failure\r\n";
                 }
+
+                _objCharacter.Dispose();
             }
         }
 

@@ -122,14 +122,15 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
-            if (objXmlWeapon["cost"] != null)
+            string strCostElement = objXmlWeapon["cost"]?.InnerText;
+            if (!string.IsNullOrEmpty(strCostElement))
             {
                 // Check for a Variable Cost.
-                if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
+                if (strCostElement.StartsWith("Variable"))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objXmlWeapon["cost"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = strCostElement.TrimStart("Variable", true).Trim("()".ToCharArray());
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -154,7 +155,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    decimal.TryParse(objXmlWeapon["cost"].InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _decCost);
+                    decimal.TryParse(strCostElement, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _decCost);
                 }
             }
 
@@ -175,20 +176,18 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objWeaponNode?.Attributes?["translate"]?.InnerText;
+                _strAltCategory = objWeaponNode?.Attributes["translate"]?.InnerText;
             }
 
             // Populate the Range if it differs from the Weapon's Category.
-            if (objXmlWeapon["range"] != null)
+            XmlNode objRangeNode = objXmlWeapon["range"];
+            if (objRangeNode != null)
             {
-                _strRange = objXmlWeapon["range"].InnerText;
-                if (objXmlWeapon["range"].Attributes["multiply"] != null)
-                    _dblRangeMultiplier = Convert.ToDouble(objXmlWeapon["range"].Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
+                _strRange = objRangeNode.InnerText;
+                if (objRangeNode.Attributes["multiply"] != null)
+                    _dblRangeMultiplier = Convert.ToDouble(objRangeNode.Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
-            if (objXmlWeapon["alternaterange"] != null)
-            {
-                _strAlternateRange = objXmlWeapon["alternaterange"].InnerText;
-            }
+            objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
             objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
@@ -266,28 +265,30 @@ namespace Chummer.Backend.Equipment
                         XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                         foreach (XmlNode objXmlAccessoryGear in objXmlWeaponAccessory.SelectNodes("gears/usegear"))
                         {
+                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                            XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
                             int intGearRating = 0;
                             decimal decGearQty = 1;
                             string strChildForceSource = string.Empty;
                             string strChildForcePage = string.Empty;
                             string strChildForceValue = string.Empty;
-                            bool blnStartCollapsed = objXmlAccessoryGear["name"].Attributes?["startcollapsed"]?.InnerText == "yes";
-                            bool blnChildCreateChildren = objXmlAccessoryGear["name"].Attributes?["createchildren"]?.InnerText != "no";
+                            bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == "yes";
+                            bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != "no";
                             bool blnAddChildImprovements = true;
-                            if (objXmlAccessoryGear["name"].Attributes?["addimprovements"]?.InnerText == "no")
+                            if (objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == "no")
                                 blnAddChildImprovements = false;
                             if (objXmlAccessoryGear["rating"] != null)
                                 intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
-                            if (objXmlAccessoryGear["name"].Attributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGear["name"].Attributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                            if (objXmlAccessoryGear["name"].Attributes?["select"] != null)
-                                strChildForceValue = objXmlAccessoryGear["name"].Attributes["select"].InnerText;
+                            if (objXmlAccessoryGearNameAttributes?["qty"] != null)
+                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+                            if (objXmlAccessoryGearNameAttributes?["select"] != null)
+                                strChildForceValue = objXmlAccessoryGearNameAttributes["select"].InnerText;
                             if (objXmlAccessoryGear["source"] != null)
                                 strChildForceSource = objXmlAccessoryGear["source"].InnerText;
                             if (objXmlAccessoryGear["page"] != null)
                                 strChildForcePage = objXmlAccessoryGear["page"].InnerText;
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGear["name"].InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                             Gear objGear = new Gear(_objCharacter);
 
                             TreeNode objGearNode = new TreeNode();
@@ -1855,11 +1856,12 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objGear.WeaponBonus != null)
                         {
-                            if (objGear.WeaponBonus["firemode"] != null)
+                            string strFireMode = objGear.WeaponBonus["firemode"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strFireMode))
                             {
-                                if (objGear.WeaponBonus["firemode"].InnerText.Contains('/'))
+                                if (strFireMode.Contains('/'))
                                 {
-                                    strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+                                    strModes = strFireMode.Split('/');
 
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strModes)
@@ -1867,36 +1869,38 @@ namespace Chummer.Backend.Equipment
                                 }
                                 else
                                 {
-                                    lstModes.Add(objGear.WeaponBonus["firemode"].InnerText);
+                                    lstModes.Add(strFireMode);
                                 }
                             }
-                            if (objGear.WeaponBonus["modereplace"] != null)
+                            strFireMode = objGear.WeaponBonus["modereplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strFireMode))
                             {
                                 lstModes.Clear();
-                                if (objGear.WeaponBonus["modereplace"].InnerText.Contains('/'))
+                                if (strFireMode.Contains('/'))
                                 {
-                                    strModes = objGear.WeaponBonus["modereplace"].InnerText.Split('/');
+                                    strModes = strFireMode.Split('/');
+                                    // Move the contents of the array to a list so it's easier to work with.
+                                    foreach (string strMode in strModes)
+                                        lstModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    strModes[0] = objGear.WeaponBonus["modereplace"].InnerText;
+                                    lstModes.Add(strFireMode);
                                 }
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
-                                    lstModes.Add(strMode);
                             }
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children)
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
                         {
                             if (objChild.WeaponBonus != null)
                             {
-                                if (objGear.WeaponBonus["firemode"] != null)
+                                string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strFireMode))
                                 {
-                                    if (objGear.WeaponBonus["firemode"].InnerText.Contains('/'))
+                                    if (strFireMode.Contains('/'))
                                     {
-                                        strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+                                        strModes = strFireMode.Split('/');
 
                                         // Move the contents of the array to a list so it's easier to work with.
                                         foreach (string strMode in strModes)
@@ -1904,22 +1908,26 @@ namespace Chummer.Backend.Equipment
                                     }
                                     else
                                     {
-                                        lstModes.Add(objGear.WeaponBonus["firemode"].InnerText);
+                                        lstModes.Add(strFireMode);
                                     }
                                 }
-                                if (objGear.WeaponBonus["firemodereplace"] != null)
+                                strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strFireMode))
                                 {
-                                    if (objGear.WeaponBonus["firemodereplace"].InnerText.Contains('/'))
+                                    lstModes.Clear();
+                                    if (strFireMode.Contains('/'))
                                     {
-                                        lstModes.Clear();
-                                        strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
-
+                                        strModes = strFireMode.Split('/');
                                         // Move the contents of the array to a list so it's easier to work with.
                                         foreach (string strMode in strModes)
                                             lstModes.Add(strMode);
                                     }
+                                    else
+                                    {
+                                        lstModes.Add(strFireMode);
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
 
@@ -1943,17 +1951,21 @@ namespace Chummer.Backend.Equipment
                             }
                             if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
                             {
+                                lstModes.Clear();
                                 if (objAccessory.FireModeReplacement.Contains('/'))
                                 {
-                                    lstModes.Clear();
                                     strModes = objAccessory.FireModeReplacement.Split('/');
 
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strModes)
                                         lstModes.Add(strMode);
                                 }
+                                else
+                                {
+                                    lstModes.Add(objAccessory.FireModeReplacement);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
@@ -3143,7 +3155,7 @@ namespace Chummer.Backend.Equipment
                 else if (strAvail == "R")
                     strAvail = LanguageManager.GetString("String_AvailRestricted");
 
-                return objAvailPair.Item1 + strAvail;
+                return objAvailPair.Item1.ToString() + strAvail;
             }
         }
 

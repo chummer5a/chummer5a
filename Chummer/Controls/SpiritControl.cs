@@ -581,7 +581,12 @@ namespace Chummer
                 objCharacter.FileName = strFileName;
             }
             else
+            {
+                objCharacter.Dispose();
                 return;
+            }
+
+            Cursor = Cursors.WaitCursor;
 
             // Code from frmMetatype.
             XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
@@ -793,9 +798,16 @@ namespace Chummer
 
             objCharacter.Alias = strCritterName;
             objCharacter.Created = true;
-            objCharacter.Save();
+            if (!objCharacter.Save())
+            {
+                Cursor = Cursors.Default;
+                objCharacter.Dispose();
+                return;
+            }
+            Cursor = Cursors.Default;
 
             string strOpenFile = objCharacter.FileName;
+            objCharacter.Dispose();
             objCharacter = null;
 
             // Link the newly-created Critter to the Spirit.

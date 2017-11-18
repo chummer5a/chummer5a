@@ -9,7 +9,7 @@ using Amazon.DynamoDBv2.Model;
 
 namespace ChummerDataViewer.Model
 {
-	class DynamoDbLoader : INotifyThreadStatus
+	class DynamoDbLoader : INotifyThreadStatus, IDisposable
 	{
 		const string DataTable = "ChummerDumpsList";
 		private AmazonDynamoDBClient _client;
@@ -189,7 +189,30 @@ namespace ChummerDataViewer.Model
 		{
 			StatusChanged?.Invoke(this, args);
 		}
-	}
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (_client != null)
+                        _client.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
 
 	internal class WaitDurationProvider
 	{

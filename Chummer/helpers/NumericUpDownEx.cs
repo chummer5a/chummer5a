@@ -1,4 +1,4 @@
-﻿// ============================================================================ '
+// ============================================================================ '
 // NumericUpDownEx - v.1.6                                                      '
 // ============================================================================ '
 // Author:   Claudio Nicora                                                     '
@@ -33,22 +33,21 @@ namespace Chummer.helpers
         /// <summary>
         /// object creator
         /// </summary>
-        public NumericUpDownEx()
-            : base()
+        public NumericUpDownEx() : base()
         {
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
             _upDownButtons = base.Controls[0];
             if (_upDownButtons == null || _upDownButtons.GetType().FullName != "System.Windows.Forms.UpDownBase+UpDownButtons")
             {
-                throw new ArgumentNullException(this.GetType().FullName + ": Can't find internal UpDown buttons field.");
+                throw new ArgumentNullException(this.GetType().FullName, "Can't find internal UpDown buttons field.");
             }
             // Get a reference to the underlying TextBox field.
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
             _textbox = base.Controls[1] as TextBox;
             if (_textbox == null || _textbox.GetType().FullName != "System.Windows.Forms.UpDownBase+UpDownEdit")
             {
-                throw new ArgumentNullException(this.GetType().FullName + ": Can't find internal TextBox field.");
+                throw new ArgumentNullException(this.GetType().FullName, "Can't find internal TextBox field.");
             }
             // add handlers (MouseEnter and MouseLeave events of NumericUpDown
             // are not working properly)

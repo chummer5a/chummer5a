@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ChummerDataViewer.Model
 {
-	internal class Database
+	internal class Database : IDisposable
 	{
 		private readonly object _syncRoot = new object();
 		private DatabasePrivateApi innerApi;
@@ -312,5 +312,40 @@ namespace ChummerDataViewer.Model
 				File.Delete(Path.Combine(PersistentState.DatabaseFolder, "persistent.db"));
 			}
 		}
-	}
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _dbConnection.Dispose();
+                    _setKey.Dispose();
+                    _deleteKey.Dispose();
+                    _getKey.Dispose();
+
+                    _getAllCrashes.Dispose();
+                    _getSingleCrash.Dispose();
+                    _getDistinctVersions.Dispose();
+                    _getDistinctBuildTypes.Dispose();
+
+                    _insertCrash.Dispose();
+                    _setZipFile.Dispose();
+                    _setUserStory.Dispose();
+                    _setStackTrace.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
 }

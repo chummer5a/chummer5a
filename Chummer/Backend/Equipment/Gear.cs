@@ -482,7 +482,9 @@ namespace Chummer.Backend.Equipment
 
         protected void CreateChild(XmlDocument objXmlGearDocument, XmlNode objXmlChild, Gear objParent, TreeNode objNode, bool blnHacked, bool blnAddImprovements)
         {
-            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlChild["name"].InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
+            XmlNode objXmlChildName = objXmlChild["name"];
+            XmlAttributeCollection objXmlChildNameAttributes = objXmlChildName.Attributes;
+            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlChildName.InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
             if (objXmlGearNode == null)
                 return;
             int intChildRating = 0;
@@ -490,16 +492,16 @@ namespace Chummer.Backend.Equipment
             string strChildForceSource = string.Empty;
             string strChildForcePage = string.Empty;
             string strChildForceValue = string.Empty;
-            bool blnCreateChildren = objXmlChild["name"].Attributes?["createchildren"]?.InnerText != "no";
+            bool blnCreateChildren = objXmlChildNameAttributes["createchildren"]?.InnerText != "no";
             bool blnAddChildImprovements = blnAddImprovements;
-            if (objXmlChild["name"].Attributes?["addimprovements"]?.InnerText == "no")
+            if (objXmlChildNameAttributes["addimprovements"]?.InnerText == "no")
                 blnAddChildImprovements = false;
             if (objXmlChild["rating"] != null)
                 intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
-            if (objXmlChild["name"].Attributes["qty"] != null)
-                decChildQty = Convert.ToDecimal(objXmlChild["name"].Attributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-            if (objXmlChild["name"].Attributes["select"] != null)
-                strChildForceValue = objXmlChild["name"].Attributes["select"].InnerText;
+            if (objXmlChildNameAttributes["qty"] != null)
+                decChildQty = Convert.ToDecimal(objXmlChildNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+            if (objXmlChildNameAttributes["select"] != null)
+                strChildForceValue = objXmlChildNameAttributes["select"].InnerText;
             if (objXmlChild["source"] != null)
                 strChildForceSource = objXmlChild["source"].InnerText;
             if (objXmlChild["page"] != null)

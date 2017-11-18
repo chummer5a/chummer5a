@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChummerDataViewer.Model
 {
-	class DownloaderWorker : INotifyThreadStatus
+	class DownloaderWorker : INotifyThreadStatus, IDisposable
 	{
 		public event StatusChangedEvent StatusChanged;
 		public string Name => "DownloaderWorker";
@@ -67,23 +67,29 @@ namespace ChummerDataViewer.Model
 	    public static byte[] Decrypt(string key, byte[] encrypted)
 	    {
 	        byte[] buffer;
-	        using (AesManaged managed = new AesManaged())
+            // Create the streams used for encryption.
+            AesManaged managed = null;
+            try
 	        {
-	            managed.IV = GetIv(key);
+                managed = new AesManaged();
+
+                managed.IV = GetIv(key);
 	            managed.Key = GetKey(key);
 	            ICryptoTransform encryptor = managed.CreateDecryptor();
 
-	            // Create the streams used for encryption.
-	            using (MemoryStream msEncrypt = new MemoryStream())
-	            {
-	                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-	                {
-	                    csEncrypt.Write(encrypted, 0, encrypted.Length);
-	                }
-
-	                buffer = msEncrypt.ToArray();
-	            }
-	        }
+                MemoryStream msEncrypt = new MemoryStream();
+                // csEncrypt.Dispose() should call msEncrypt.Dispose()
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    csEncrypt.Write(encrypted, 0, encrypted.Length);
+                    buffer = msEncrypt.ToArray();
+                }
+            }
+            finally
+            {
+                if (managed != null)
+                    managed.Dispose();
+            }
 	        return buffer;
 	    }
 
@@ -146,7 +152,27 @@ namespace ChummerDataViewer.Model
 		}
 
 		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : string.Empty;
-	}
 
-	
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    resetEvent.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+    }
 }

@@ -82,14 +82,17 @@ namespace Chummer
         /// </summary>
         public void AutoSaveCharacter()
         {
-            if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "autosave")))
+            Cursor = Cursors.WaitCursor;
+            string strAutosavePath = Path.Combine(Application.StartupPath, "saves", "autosave");
+            if (!Directory.Exists(strAutosavePath))
             {
                 try
                 {
-                    Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "autosave"));
+                    Directory.CreateDirectory(strAutosavePath);
                 }
                 catch (UnauthorizedAccessException)
                 {
+                    Cursor = Cursors.Default;
                     MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     Autosave_StopWatch.Restart();
                     return;
@@ -101,8 +104,9 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.Alias;
-            string strFilePath = Path.Combine(Application.StartupPath, "saves", "autosave", strShowFileName);
+            string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
+            Cursor = Cursors.Default;
             Autosave_StopWatch.Restart();
         }
 

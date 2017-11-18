@@ -54,6 +54,7 @@ namespace Chummer
                 lblMetatype.Text = objPet.Metatype;
                 if (!string.IsNullOrEmpty(objPet.Metavariant))
                     lblMetatype.Text += " (" + objPet.Metavariant + ")";
+                objPet.Dispose();
                 objPet = null;
             }
         }
@@ -154,6 +155,7 @@ namespace Chummer
                 lblMetatype.Text = objPet.Metatype;
                 if (!string.IsNullOrEmpty(objPet.Metavariant))
                     lblMetatype.Text += " (" + objPet.Metavariant + ")";
+                objPet.Dispose();
                 objPet = null;
 
                 // Set the relative path.

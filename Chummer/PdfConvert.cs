@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
@@ -6,17 +6,26 @@ using System.Web;
 using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Runtime.Serialization;
 
 namespace Codaxy.WkHtmlToPdf
 {
+    [Serializable]
     public class PdfConvertException : Exception
     {
-        public PdfConvertException(String msg) : base(msg) { }
+        public PdfConvertException() : base() { }
+        public PdfConvertException(string msg) : base(msg) { }
+        public PdfConvertException(string msg, Exception innerException) : base(msg, innerException) { }
+        protected PdfConvertException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
+    [Serializable]
     public class PdfConvertTimeoutException : PdfConvertException
     {
         public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.") { }
+        public PdfConvertTimeoutException(string msg) : base("HTML to PDF conversion process has not finished in the given period.") { }
+        public PdfConvertTimeoutException(string msg, Exception innerException) : base("HTML to PDF conversion process has not finished in the given period.") { }
+        protected PdfConvertTimeoutException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     public class PdfOutput

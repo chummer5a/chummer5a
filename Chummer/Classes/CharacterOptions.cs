@@ -10,7 +10,7 @@ using Chummer.Backend;
 
 namespace Chummer
 {
-    public class CharacterOptions
+    public class CharacterOptions : IDisposable
     {
         private readonly Character _character;
         private string _strFileName = "default.xml";
@@ -592,7 +592,6 @@ namespace Chummer
 
             objWriter.WriteEndDocument();
             objWriter.Close();
-            objStream.Close();
         }
 
         /// <summary>
@@ -3526,6 +3525,28 @@ namespace Chummer
         }
 
         public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _objBaseChummerKey?.Dispose();
+                }
+                
+                disposedValue = true;
+            }
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
 
 
         #endregion

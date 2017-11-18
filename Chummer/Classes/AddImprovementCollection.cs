@@ -376,19 +376,19 @@ namespace Chummer.Classes
             else
                 frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill");
 
-
-            Log.Info("selectskill = " + bonusNode.OuterXml);
-            if (bonusNode.OuterXml.Contains("skillgroup"))
+            string strNodeOuterXml = bonusNode.OuterXml;
+            Log.Info("selectskill = " + strNodeOuterXml);
+            if (strNodeOuterXml.Contains("skillgroup"))
                 frmPickSkill.OnlySkillGroup = bonusNode.Attributes?["skillgroup"].InnerText;
-            else if (bonusNode.OuterXml.Contains("skillcategory"))
+            else if (strNodeOuterXml.Contains("skillcategory"))
                 frmPickSkill.OnlyCategory = bonusNode.Attributes?["skillcategory"].InnerText;
-            else if (bonusNode.OuterXml.Contains("skillcategories"))
+            else if (strNodeOuterXml.Contains("skillcategories"))
                 frmPickSkill.LimitToCategories = bonusNode["skillcategories"];
-            else if (bonusNode.OuterXml.Contains("excludecategory"))
+            else if (strNodeOuterXml.Contains("excludecategory"))
                 frmPickSkill.ExcludeCategory = bonusNode.Attributes?["excludecategory"].InnerText;
-            else if (bonusNode.OuterXml.Contains("limittoskill"))
+            else if (strNodeOuterXml.Contains("limittoskill"))
                 frmPickSkill.LimitToSkill = bonusNode.Attributes?["limittoskill"].InnerText;
-            else if (bonusNode.OuterXml.Contains("limittoattribute"))
+            else if (strNodeOuterXml.Contains("limittoattribute"))
                 frmPickSkill.LinkedAttribute = bonusNode.Attributes?["limittoattribute"].InnerText;
 
             bool useKnowledge = Convert.ToBoolean(bonusNode.Attributes?["knowledgeskills"]?.InnerText);
@@ -416,6 +416,7 @@ namespace Chummer.Classes
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
 
+            string strNodeInnerXml = bonusNode.InnerXml;
             // Find the selected Skill.
             if (useKnowledge)
             {
@@ -425,7 +426,7 @@ namespace Chummer.Classes
                     {
                         if (k.Name != frmPickSkill.SelectedSkill) continue;
                         // We've found the selected Skill.
-                        if (bonusNode.InnerXml.Contains("val"))
+                        if (strNodeInnerXml.Contains("val"))
                         {
                             Log.Info("Calling CreateImprovement");
                             CreateImprovement(k.Name, _objImprovementSource, SourceName,
@@ -435,7 +436,7 @@ namespace Chummer.Classes
                                 blnAddToRating);
                         }
 
-                        if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                        if (strNodeInnerXml.Contains("disablespecializationeffects"))
                         {
                             Log.Info("Calling CreateImprovement");
                             CreateImprovement(k.Name, _objImprovementSource, SourceName,
@@ -443,7 +444,7 @@ namespace Chummer.Classes
                                 _strUnique);
                         }
 
-                        if (!bonusNode.InnerXml.Contains("max")) continue;
+                        if (!strNodeInnerXml.Contains("max")) continue;
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(k.Name, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
@@ -457,7 +458,7 @@ namespace Chummer.Classes
                     KnowledgeSkill k = new KnowledgeSkill(_objCharacter) {WriteableName = frmPickSkill.SelectedSkill};
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
                     // We've found the selected Skill.
-                    if (bonusNode.InnerXml.Contains("val"))
+                    if (strNodeInnerXml.Contains("val"))
                     {
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(k.Name, _objImprovementSource, SourceName,
@@ -467,7 +468,7 @@ namespace Chummer.Classes
                             blnAddToRating);
                     }
 
-                    if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                    if (strNodeInnerXml.Contains("disablespecializationeffects"))
                     {
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(k.Name, _objImprovementSource, SourceName,
@@ -475,7 +476,7 @@ namespace Chummer.Classes
                             _strUnique);
                     }
 
-                    if (!bonusNode.InnerXml.Contains("max")) return;
+                    if (!strNodeInnerXml.Contains("max")) return;
                     Log.Info("Calling CreateImprovement");
                     CreateImprovement(k.Name, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.Skill,
@@ -493,7 +494,7 @@ namespace Chummer.Classes
                     {
                         if ($"{objSkill.Name} ({objSkill.Specialization})" != frmPickSkill.SelectedSkill) continue;
                         // We've found the selected Skill.
-                        if (bonusNode.InnerXml.Contains("val"))
+                        if (strNodeInnerXml.Contains("val"))
                         {
                             Log.Info("Calling CreateImprovement");
                             CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
@@ -503,7 +504,7 @@ namespace Chummer.Classes
                                 0, 0, 0, 0, string.Empty, blnAddToRating);
                         }
 
-                        if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                        if (strNodeInnerXml.Contains("disablespecializationeffects"))
                         {
                             Log.Info("Calling CreateImprovement");
                             CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource, SourceName,
@@ -511,7 +512,7 @@ namespace Chummer.Classes
                                 _strUnique);
                         }
 
-                        if (!bonusNode.InnerXml.Contains("max")) continue;
+                        if (!strNodeInnerXml.Contains("max")) continue;
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
                             SourceName,
@@ -522,7 +523,7 @@ namespace Chummer.Classes
                     {
                         if (objSkill.Name != frmPickSkill.SelectedSkill) continue;
                         // We've found the selected Skill.
-                        if (bonusNode.InnerXml.Contains("val"))
+                        if (strNodeInnerXml.Contains("val"))
                         {
                             Log.Info("Calling CreateImprovement");
                             CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
@@ -532,7 +533,7 @@ namespace Chummer.Classes
                                 blnAddToRating);
                         }
 
-                        if (bonusNode.InnerXml.Contains("disablespecializationeffects"))
+                        if (strNodeInnerXml.Contains("disablespecializationeffects"))
                         {
                             Log.Info("Calling CreateImprovement");
                             CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
@@ -540,7 +541,7 @@ namespace Chummer.Classes
                                 _strUnique);
                         }
 
-                        if (!bonusNode.InnerXml.Contains("max")) continue;
+                        if (!strNodeInnerXml.Contains("max")) continue;
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
@@ -726,7 +727,8 @@ namespace Chummer.Classes
 
             Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
 
-            if (bonusNode.InnerXml.Contains("<attribute>"))
+            string strNodeInnerXml = bonusNode.InnerXml;
+            if (strNodeInnerXml.Contains("<attribute>"))
             {
                 List<string> strValue = new List<string>();
                 foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
@@ -734,7 +736,7 @@ namespace Chummer.Classes
                 frmPickAttribute.LimitToList(strValue);
             }
 
-            if (bonusNode.InnerXml.Contains("<excludeattribute>"))
+            if (strNodeInnerXml.Contains("<excludeattribute>"))
             {
                 List<string> strValue = new List<string>();
                 foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("excludeattribute"))
@@ -777,13 +779,13 @@ namespace Chummer.Classes
             int intAugMax = 0;
 
             // Extract the modifiers.
-            if (bonusNode.InnerXml.Contains("min"))
+            if (strNodeInnerXml.Contains("min"))
                 intMin = ValueToInt(_objCharacter, bonusNode["min"].InnerXml, _intRating);
-            if (bonusNode.InnerXml.Contains("val"))
+            if (strNodeInnerXml.Contains("val"))
                 intAug = ValueToInt(_objCharacter, bonusNode["val"].InnerXml, _intRating);
-            if (bonusNode.InnerXml.Contains("max"))
+            if (strNodeInnerXml.Contains("max"))
                 intMax = ValueToInt(_objCharacter, bonusNode["max"].InnerXml, _intRating);
-            if (bonusNode.InnerXml.Contains("aug"))
+            if (strNodeInnerXml.Contains("aug"))
                 intAugMax = ValueToInt(_objCharacter, bonusNode["aug"].InnerXml, _intRating);
 
             string strAttribute = frmPickAttribute.SelectedAttribute;
@@ -811,7 +813,8 @@ namespace Chummer.Classes
 
             Log.Info("selectlimit = " + bonusNode.OuterXml);
 
-            if (bonusNode.InnerXml.Contains("<limit>"))
+            string strNodeInnerXml = bonusNode.InnerXml;
+            if (strNodeInnerXml.Contains("<limit>"))
             {
                 List<string> strValue = new List<string>();
                 foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("limit"))
@@ -819,7 +822,7 @@ namespace Chummer.Classes
                 frmPickLimit.LimitToList(strValue);
             }
 
-            if (bonusNode.InnerXml.Contains("<excludelimit>"))
+            if (strNodeInnerXml.Contains("<excludelimit>"))
             {
                 List<string> strValue = new List<string>();
                 foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("excludelimit"))
@@ -859,13 +862,13 @@ namespace Chummer.Classes
             int intAugMax = 0;
 
             // Extract the modifiers.
-            if (bonusNode.InnerXml.Contains("min"))
+            if (strNodeInnerXml.Contains("min"))
                 intMin = ValueToInt(_objCharacter, bonusNode["min"].InnerXml, _intRating);
-            if (bonusNode.InnerXml.Contains("val"))
+            if (strNodeInnerXml.Contains("val"))
                 intAug = ValueToInt(_objCharacter, bonusNode["val"].InnerXml, _intRating);
-            if (bonusNode.InnerXml.Contains("max"))
+            if (strNodeInnerXml.Contains("max"))
                 intMax = ValueToInt(_objCharacter, bonusNode["max"].InnerXml, _intRating);
-            if (bonusNode.InnerXml.Contains("aug"))
+            if (strNodeInnerXml.Contains("aug"))
                 intAugMax = ValueToInt(_objCharacter, bonusNode["aug"].InnerXml, _intRating);
 
             string strLimit = frmPickLimit.SelectedLimit;
@@ -1547,13 +1550,14 @@ namespace Chummer.Classes
                 int intAug = 0;
                 int intMax = 0;
                 int intAugMax = 0;
+                string strNodeInnerXml = bonusNode.InnerXml;
 
                 // Extract the modifiers.
-                if (bonusNode.InnerXml.Contains("min"))
+                if (strNodeInnerXml.Contains("min"))
                     intMin = ValueToInt(_objCharacter, bonusNode["min"].InnerXml, _intRating);
-                if (bonusNode.InnerXml.Contains("val"))
+                if (strNodeInnerXml.Contains("val"))
                     intAug = ValueToInt(_objCharacter, bonusNode["val"].InnerXml, _intRating);
-                if (bonusNode.InnerXml.Contains("max"))
+                if (strNodeInnerXml.Contains("max"))
                 {
                     if (bonusNode["max"].InnerText.Contains("-natural"))
                     {
@@ -1563,7 +1567,7 @@ namespace Chummer.Classes
                     else
                         intMax = ValueToInt(_objCharacter, bonusNode["max"].InnerXml, _intRating);
                 }
-                if (bonusNode.InnerXml.Contains("aug"))
+                if (strNodeInnerXml.Contains("aug"))
                     intAugMax = ValueToInt(_objCharacter, bonusNode["aug"].InnerXml, _intRating);
 
                 string strUseUnique = _strUnique;
@@ -1848,8 +1852,9 @@ namespace Chummer.Classes
         {
             Log.Info("conditionmonitor");
             Log.Info("conditionmonitor = " + bonusNode.OuterXml.ToString());
+            string strNodeInnerXml = bonusNode.InnerXml;
             // Physical Condition.
-            if (bonusNode.InnerXml.Contains("physical"))
+            if (strNodeInnerXml.Contains("physical"))
             {
                 Log.Info("Calling CreateImprovement for Physical");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCM, _strUnique,
@@ -1857,7 +1862,7 @@ namespace Chummer.Classes
             }
 
             // Stun Condition.
-            if (bonusNode.InnerXml.Contains("stun"))
+            if (strNodeInnerXml.Contains("stun"))
             {
                 Log.Info("Calling CreateImprovement for Stun");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StunCM, _strUnique,
@@ -1865,46 +1870,53 @@ namespace Chummer.Classes
             }
 
             // Condition Monitor Threshold.
-            if (bonusNode["threshold"] != null)
+            XmlNode objNode = bonusNode["threshold"];
+            if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                if (bonusNode["threshold"].Attributes["precedence"] != null)
-                    strUseUnique = "precedence" + bonusNode["threshold"].Attributes["precedence"].InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
+                if (!string.IsNullOrEmpty(strPrecendenceString))
+                    strUseUnique = "precedence" + strPrecendenceString;
 
                 Log.Info("Calling CreateImprovement for Threshold");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThreshold, strUseUnique,
-                    ValueToInt(_objCharacter, bonusNode["threshold"].InnerText, _intRating));
+                    ValueToInt(_objCharacter, objNode.InnerText, _intRating));
             }
 
             // Condition Monitor Threshold Offset. (Additioal boxes appear before the FIRST Condition Monitor penalty)
-            if (bonusNode["thresholdoffset"] != null)
+            objNode = bonusNode["thresholdoffset"];
+            if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                if (bonusNode["thresholdoffset"].Attributes["precedence"] != null)
-                    strUseUnique = "precedence" + bonusNode["thresholdoffset"].Attributes["precedence"].InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
+                if (!string.IsNullOrEmpty(strPrecendenceString))
+                    strUseUnique = "precedence" + strPrecendenceString;
 
                 Log.Info("Calling CreateImprovement for Threshold Offset");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
-                    strUseUnique, ValueToInt(_objCharacter, bonusNode["thresholdoffset"].InnerText, _intRating));
+                    strUseUnique, ValueToInt(_objCharacter, objNode.InnerText, _intRating));
             }
             // Condition Monitor Threshold Offset that must be shared between the two. (Additioal boxes appear before the FIRST Condition Monitor penalty)
-            if (bonusNode["sharedthresholdoffset"] != null)
+            objNode = bonusNode["sharedthresholdoffset"];
+            if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                if (bonusNode["sharedthresholdoffset"].Attributes["precedence"] != null)
-                    strUseUnique = "precedence" + bonusNode["sharedthresholdoffset"].Attributes["precedence"].InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
+                if (!string.IsNullOrEmpty(strPrecendenceString))
+                    strUseUnique = "precedence" + strPrecendenceString;
 
                 Log.Info("Calling CreateImprovement for Threshold Offset");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMSharedThresholdOffset,
-                    strUseUnique, ValueToInt(_objCharacter, bonusNode["sharedthresholdoffset"].InnerText, _intRating));
+                    strUseUnique, ValueToInt(_objCharacter, objNode.InnerText, _intRating));
             }
 
             // Condition Monitor Overflow.
-            if (bonusNode["overflow"] != null)
+            objNode = bonusNode["overflow"];
+            if (objNode != null)
             {
                 Log.Info("Calling CreateImprovement for Overflow");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMOverflow, _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["overflow"].InnerText, _intRating));
+                    ValueToInt(_objCharacter, objNode.InnerText, _intRating));
             }
         }
 
@@ -1913,8 +1925,9 @@ namespace Chummer.Classes
         {
             Log.Info("livingpersona");
             Log.Info("livingpersona = " + bonusNode.OuterXml.ToString());
+            string strNodeInnerXml = bonusNode.InnerXml;
             // Response.
-            if (bonusNode.InnerXml.Contains("response"))
+            if (strNodeInnerXml.Contains("response"))
             {
                 Log.Info("Calling CreateImprovement for response");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaResponse,
@@ -1922,7 +1935,7 @@ namespace Chummer.Classes
             }
 
             // Signal.
-            if (bonusNode.InnerXml.Contains("signal"))
+            if (strNodeInnerXml.Contains("signal"))
             {
                 Log.Info("Calling CreateImprovement for signal");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSignal,
@@ -1931,7 +1944,7 @@ namespace Chummer.Classes
             }
 
             // Firewall.
-            if (bonusNode.InnerXml.Contains("firewall"))
+            if (strNodeInnerXml.Contains("firewall"))
             {
                 Log.Info("Calling CreateImprovement for firewall");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall,
@@ -1939,7 +1952,7 @@ namespace Chummer.Classes
             }
 
             // System.
-            if (bonusNode.InnerXml.Contains("system"))
+            if (strNodeInnerXml.Contains("system"))
             {
                 Log.Info("Calling CreateImprovement for system");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSystem,
@@ -1948,7 +1961,7 @@ namespace Chummer.Classes
             }
 
             // Biofeedback Filter.
-            if (bonusNode.InnerXml.Contains("biofeedback"))
+            if (strNodeInnerXml.Contains("biofeedback"))
             {
                 Log.Info("Calling CreateImprovement for biofeedback");
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaBiofeedback,
@@ -1965,28 +1978,30 @@ namespace Chummer.Classes
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
 
             string strUseUnique = _strUnique;
-            if (bonusNode.Attributes["precedence"] != null)
-                strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
+            string strPrecendenceString = bonusNode.Attributes["precedence"]?.InnerText;
+            if (!string.IsNullOrEmpty(strPrecendenceString))
+                strUseUnique = "precedence" + strPrecendenceString;
 
+            string strBonusNodeName = bonusNode["name"].InnerText;
             // Record the improvement.
             if (bonusNode["bonus"] != null)
             {
                 Log.Info("Calling CreateImprovement for bonus");
-                CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
+                CreateImprovement(strBonusNodeName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, ValueToInt(_objCharacter, bonusNode["bonus"].InnerXml, _intRating), 1, 0, 0, 0,
                     0, string.Empty, blnAddToRating, string.Empty, strCondition);
             }
             if (bonusNode["disablespecializationeffects"] != null)
             {
                 Log.Info("Calling CreateImprovement for disabling specializtion effects");
-                CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
+                CreateImprovement(strBonusNodeName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.DisableSpecializationEffects,
                     strUseUnique, 0, 1, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
             }
             if (bonusNode["max"] != null)
             {
                 Log.Info("Calling CreateImprovement for max");
-                CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
+                CreateImprovement(strBonusNodeName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0,
                     0,
                     string.Empty, blnAddToRating, string.Empty, strCondition);
@@ -1994,7 +2009,7 @@ namespace Chummer.Classes
             if (bonusNode["misceffect"] != null)
             {
                 Log.Info("Calling CreateImprovement for misc effect");
-                CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
+                CreateImprovement(strBonusNodeName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, 0, 0,
                     0, string.Empty, false, bonusNode["misceffect"].InnerText, strCondition);
             }
@@ -3592,7 +3607,8 @@ namespace Chummer.Classes
         public void hardwires(XmlNode bonusNode)
         {
             Log.Info("hardwire");
-            Log.Info("hardwire = " + bonusNode.OuterXml.ToString());
+            string strNodeOuterXml = bonusNode.OuterXml;
+            Log.Info("hardwire = " + strNodeOuterXml);
             Log.Info("Calling CreateImprovement");
             Cyberware objCyberware = CommonFunctions.DeepFindById(SourceName, _objCharacter.Cyberware);
             if (objCyberware == null)
@@ -3608,16 +3624,16 @@ namespace Chummer.Classes
                 else
                     frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill");
 
-                Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
-                if (bonusNode.OuterXml.Contains("skillgroup"))
+                Log.Info("selectskill = " + strNodeOuterXml);
+                if (strNodeOuterXml.Contains("skillgroup"))
                     frmPickSkill.OnlySkillGroup = bonusNode.Attributes["skillgroup"].InnerText;
-                else if (bonusNode.OuterXml.Contains("skillcategory"))
+                else if (strNodeOuterXml.Contains("skillcategory"))
                     frmPickSkill.OnlyCategory = bonusNode.Attributes["skillcategory"].InnerText;
-                else if (bonusNode.OuterXml.Contains("excludecategory"))
+                else if (strNodeOuterXml.Contains("excludecategory"))
                     frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
-                else if (bonusNode.OuterXml.Contains("limittoskill"))
+                else if (strNodeOuterXml.Contains("limittoskill"))
                     frmPickSkill.LimitToSkill = bonusNode.Attributes["limittoskill"].InnerText;
-                else if (bonusNode.OuterXml.Contains("limittoattribute"))
+                else if (strNodeOuterXml.Contains("limittoattribute"))
                     frmPickSkill.LinkedAttribute = bonusNode.Attributes["limittoattribute"].InnerText;
 
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -4075,29 +4091,39 @@ namespace Chummer.Classes
             Log.Info("freespells");
             Log.Info("freespells = " + bonusNode.OuterXml.ToString());
             string strSpellTypeLimit = string.Empty;
-            if (!string.IsNullOrWhiteSpace(bonusNode.Attributes?["limit"]?.InnerText))
-                strSpellTypeLimit = bonusNode.Attributes["limit"].InnerText;
-            if (bonusNode.Attributes?["attribute"] != null)
+            XmlAttributeCollection objNodeAttributes = bonusNode.Attributes;
+            if (objNodeAttributes != null)
             {
-                Log.Info("attribute");
-                CharacterAttrib att = _objCharacter.GetAttribute(bonusNode.Attributes?["attribute"].InnerText);
-                if (att != null)
+                if (!string.IsNullOrWhiteSpace(objNodeAttributes["limit"]?.InnerText))
+                    strSpellTypeLimit = objNodeAttributes["limit"].InnerText;
+                if (objNodeAttributes["attribute"] != null)
                 {
-                    Log.Info(att.Abbrev);
-                    Log.Info("Calling CreateImprovement");
-                    CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, strSpellTypeLimit);
+                    Log.Info("attribute");
+                    CharacterAttrib att = _objCharacter.GetAttribute(objNodeAttributes["attribute"].InnerText);
+                    if (att != null)
+                    {
+                        Log.Info(att.Abbrev);
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, strSpellTypeLimit);
+                    }
                 }
-            }
-            else if (bonusNode.Attributes?["skill"] != null)
-            {
-                Log.Info("skill");
-                string strKey = bonusNode.Attributes?["skill"]?.InnerText ?? string.Empty;
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
-                Log.Info(strKey);
-                if (objSkill != null)
+                else if (objNodeAttributes["skill"] != null)
+                {
+                    Log.Info("skill");
+                    string strKey = objNodeAttributes["skill"]?.InnerText ?? string.Empty;
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
+                    Log.Info(strKey);
+                    if (objSkill != null)
+                    {
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
+                    }
+                }
+                else
                 {
                     Log.Info("Calling CreateImprovement");
-                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
+                    CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, _strUnique,
+                        ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
                 }
             }
             else
@@ -4910,20 +4936,21 @@ namespace Chummer.Classes
                 }
             }
 
+            string strNodeValText = bonusNode["val"].InnerText;
             Log.Info("Calling CreateImprovement");
             if (bonusNode["category"] != null)
             {
                 CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName, imp, _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                    ValueToInt(_objCharacter, strNodeValText, _intRating));
             }
             else
             {
                 CreateImprovement("Ground", _objImprovementSource, SourceName, imp, _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                    ValueToInt(_objCharacter, strNodeValText, _intRating));
                 CreateImprovement("Swim", _objImprovementSource, SourceName, imp, _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                    ValueToInt(_objCharacter, strNodeValText, _intRating));
                 CreateImprovement("Fly", _objImprovementSource, SourceName, imp, _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                    ValueToInt(_objCharacter, strNodeValText, _intRating));
             }
         }
         public void addlimb(XmlNode bonusNode)
@@ -4937,6 +4964,7 @@ namespace Chummer.Classes
         #endregion
     }
 
+    [Serializable]
     internal class AbortedException : Exception
     {
     }
