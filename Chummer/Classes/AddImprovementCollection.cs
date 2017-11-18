@@ -2986,57 +2986,16 @@ namespace Chummer.Classes
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
 
-            if (frmPickMentorSpirit.BonusNode != null)
-            {
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-            }
+            string strForce = ForcedValue;
+            MentorSpirit objMentor = new MentorSpirit(_objCharacter);
+            _objCharacter.MentorSpirits.Add(objMentor);
+            objMentor.Create(mentorDoc, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.Choice1BonusNode, frmPickMentorSpirit.Choice2BonusNode, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
 
-            if (frmPickMentorSpirit.Choice1BonusNode != null)
-            {
-                Log.Info("frmPickMentorSpirit.Choice1BonusNode = " + frmPickMentorSpirit.Choice1BonusNode.OuterXml.ToString());
-                string strForce = ForcedValue;
-                if (!frmPickMentorSpirit.Choice1.StartsWith("Adept:") && !frmPickMentorSpirit.Choice1.StartsWith("Magician:"))
-                    ForcedValue = frmPickMentorSpirit.Choice1;
-                else
-                    ForcedValue = string.Empty;
-                Log.Info("Calling CreateImprovement");
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice1BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                ForcedValue = strForce;
-                _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice1;
-            }
-
-            if (frmPickMentorSpirit.Choice2BonusNode != null)
-            {
-                Log.Info("frmPickMentorSpirit.Choice2BonusNode = " + frmPickMentorSpirit.Choice2BonusNode.OuterXml.ToString());
-                string strForce = ForcedValue;
-                if (!frmPickMentorSpirit.Choice2.StartsWith("Adept:") && !frmPickMentorSpirit.Choice2.StartsWith("Magician:"))
-                    ForcedValue = frmPickMentorSpirit.Choice2;
-                else
-                    ForcedValue = string.Empty;
-                Log.Info("Calling CreateImprovement");
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                ForcedValue = strForce;
-                _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
-            }
-
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
-
-            if (frmPickMentorSpirit.MentorsMask)
-            {
-                Log.Info("frmPickMentorSpirit.MentorsMask = " + frmPickMentorSpirit.MentorsMask);
-                Log.Info("Calling CreateImprovement");
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, _strUnique, 1);
-                CreateImprovement(_strFriendlyName, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, _strUnique, -1);
-            }
-
+            ForcedValue = strForce;
             SelectedValue = strHoldValue;
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("_strForcedValue = " + ForcedValue);
+            CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
         }
 
         // Check for Paragon bonuses.
@@ -3062,35 +3021,19 @@ namespace Chummer.Classes
             if (_blnConcatSelectedValue)
                 SourceName += " (" + SelectedValue + ")";
 
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
 
-            if (frmPickMentorSpirit.BonusNode != null)
-            {
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-            }
+            string strForce = ForcedValue;
+            MentorSpirit objMentor = new MentorSpirit(_objCharacter);
+            _objCharacter.MentorSpirits.Add(objMentor);
+            objMentor.Create(mentorDoc, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.Choice1BonusNode, frmPickMentorSpirit.Choice2BonusNode, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
 
-            if (frmPickMentorSpirit.Choice1BonusNode != null)
-            {
-                string strForce = ForcedValue;
-                ForcedValue = frmPickMentorSpirit.Choice1;
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice1BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                ForcedValue = strForce;
-                _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice1;
-            }
-
-            if (frmPickMentorSpirit.Choice2BonusNode != null)
-            {
-                string strForce = ForcedValue;
-                ForcedValue = frmPickMentorSpirit.Choice2;
-                CreateImprovements(_objImprovementSource, SourceName, frmPickMentorSpirit.Choice2BonusNode,
-                    _blnConcatSelectedValue, _intRating, _strFriendlyName);
-                ForcedValue = strForce;
-                _objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
-            }
-
+            ForcedValue = strForce;
             SelectedValue = strHoldValue;
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("_strForcedValue = " + ForcedValue);
+            CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
         }
 
         // Check for Smartlink bonus.

@@ -249,6 +249,8 @@ Application Changes:
 - Fixed a bug where not having drone modding rules enabled caused the max armor for drones to be calculated as twice the drone's armor instead of the drone's armor + the drone's body.
 - Fixed a bug where if Chummer5 encountered an error while saving a character, it would still assume that the character was saved properly.
 - Added the ability to select a value other than 2 or 4 for the amount of decimal places to consider for essence costs.
+- Fixed a bug where Mentor's Mask would apply the Adept/Magician bonus from the chosen Mentor Spirit twice.
+- Fixed a bug where Re-apply Improvements would not save changes to what improvements are tied to each item.
 
 Data Changes:
 

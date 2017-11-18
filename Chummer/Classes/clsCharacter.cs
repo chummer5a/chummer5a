@@ -207,6 +207,7 @@ namespace Chummer
         private List<string> _lstSources = new List<string>();
         private List<string> _lstCustomDataDirectoryNames = new List<string>();
         private List<Improvement> _lstImprovements = new List<Improvement>();
+        private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
         private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
         private List<Spell> _lstSpells = new List<Spell>();
@@ -822,7 +823,14 @@ namespace Chummer
             // </improvements>
             objWriter.WriteEndElement();
 
-
+            // <improvements>
+            objWriter.WriteStartElement("mentorspirits");
+            foreach (MentorSpirit objMentor in _lstMentorSpirits)
+            {
+                objMentor.Save(objWriter);
+            }
+            // </improvements>
+            objWriter.WriteEndElement();
 
             // <expenses>
             objWriter.WriteStartElement("expenses");
@@ -1245,10 +1253,20 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("groupname", ref _strGroupName);
             objXmlCharacter.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
             Timekeeper.Finish("load_char_misc");
+            Timekeeper.Start("load_char_mentorspirit");
+            // Improvements.
+            XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/character/mentorspirits/mentorspirit");
+            foreach (XmlNode objXmlMentor in objXmlNodeList)
+            {
+                MentorSpirit objMentor = new MentorSpirit(this);
+                objMentor.Load(objXmlMentor);
+                _lstMentorSpirits.Add(objMentor);
+            }
+            Timekeeper.Finish("load_char_mentorspirit");
             bool blnImprovementError = false;
             Timekeeper.Start("load_char_imp");
             // Improvements.
-            XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/character/improvements/improvement");
+            objXmlNodeList = objXmlDocument.SelectNodes("/character/improvements/improvement");
             string strCharacterInnerXml = objXmlCharacter.InnerXml;
             foreach (XmlNode objXmlImprovement in objXmlNodeList)
             {
@@ -1570,9 +1588,32 @@ namespace Chummer
                     _lstGear.Add(objGear);
                 }
             }
-            // If we have a technomancer quality but no Living Persona commlink, we want the user to re-apply improvements
+            // If we have a technomancer quality but no Living Persona commlink, we re-apply its improvements immediately
             if (objLivingPersonaQuality != null)
-                blnImprovementError = true;
+            {
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
+                string strSelected = objLivingPersonaQuality.Extra;
+
+                XmlNode objNode = objLivingPersonaQuality.MyXmlNode;
+                if (objNode != null)
+                {
+                    if (objNode["bonus"] != null)
+                    {
+                        objLivingPersonaQuality.Bonus = objNode["bonus"];
+                        ImprovementManager.ForcedValue = strSelected;
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objNode["bonus"], false, 1, objLivingPersonaQuality.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                        }
+                    }
+                }
+                else
+                {
+                    // Failed to re-apply the improvements, so let's show up the error
+                    blnImprovementError = true;
+                }
+            }
 
             Timekeeper.Finish("load_char_gear");
             Timekeeper.Start("load_char_car");
@@ -1807,16 +1848,36 @@ namespace Chummer
             }
             Timekeeper.Finish("load_char_maxkarmafix");
             Timekeeper.Start("load_char_mentorspiritfix");
-            // If the character doesn't have an Improvement marker that uniquely identifies what the Mentor Spirit is, create it now.
-            if (Qualities.Any(q => q.Name == "Mentor Spirit") && Improvements.All(imp => imp.ImproveType != Improvement.ImprovementType.MentorSpirit))
+            Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
+            if (objMentorQuality != null)
             {
-                Quality mentorQuality = Qualities.First(q => q.Name == "Mentor Spirit");
-                if (!string.IsNullOrWhiteSpace(mentorQuality.Extra))
+                // We don't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
+                if (!Improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.MentorSpirit && imp.ImprovedName != string.Empty))
                 {
-                    XmlDocument doc = XmlManager.Load("mentors.xml");
-                    XmlNode mentorDoc = doc.SelectSingleNode("/chummer/mentors/mentor[name = \"" + mentorQuality.Extra + "\"]");
-                    ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Quality, mentorQuality.InternalId,
-                        Improvement.ImprovementType.MentorSpirit, mentorDoc["id"].InnerText);
+                    /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId);
+                    string strSelected = objMentorQuality.Extra;
+
+                    XmlNode objNode = objMentorQuality.MyXmlNode;
+                    if (objNode != null)
+                    {
+                        if (objNode["bonus"] != null)
+                        {
+                            objMentorQuality.Bonus = objNode["bonus"];
+                            ImprovementManager.ForcedValue = strSelected;
+                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId, objNode["bonus"], false, 1, objMentorQuality.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objMentorQuality.Extra = ImprovementManager.SelectedValue;
+                            }
+                        }
+                    }
+                    else
+                    */
+                    {
+                        // Failed to re-apply the improvements, so let's show up the error
+                        blnImprovementError = true;
+                    }
                 }
             }
             Timekeeper.Finish("load_char_mentorspiritfix");
@@ -5298,6 +5359,17 @@ namespace Chummer
             get
             {
                 return _lstImprovements;
+            }
+        }
+
+        /// <summary>
+        /// Gear.
+        /// </summary>
+        public List<MentorSpirit> MentorSpirits
+        {
+            get
+            {
+                return _lstMentorSpirits;
             }
         }
 

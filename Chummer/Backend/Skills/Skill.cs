@@ -825,6 +825,31 @@ namespace Chummer.Skills
                         value = power?.DisplayNameShort;
                     }
                     break;
+                case Improvement.ImprovementSource.MentorSpirit:
+                    {
+                        MentorSpirit mentor = _character.MentorSpirits.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = mentor?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Metamagic:
+                case Improvement.ImprovementSource.Echo:
+                    {
+                        Metamagic metamagic = _character.Metamagics.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = metamagic?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Art:
+                    {
+                        Art art = _character.Arts.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = art?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Enhancement:
+                    {
+                        Enhancement enhancement = _character.Enhancements.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = enhancement?.DisplayName;
+                    }
+                    break;
                 case Improvement.ImprovementSource.Custom:
                     {
                         return source.CustomName;

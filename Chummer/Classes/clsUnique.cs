@@ -990,10 +990,9 @@ namespace Chummer
         }
 
         #endregion
+    }
 
-        }
-
-        /// <summary>
+    /// <summary>
     /// Type of Spirit.
     /// </summary>
     public enum SpiritType
@@ -1501,7 +1500,6 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Improvement objImprovement = new Improvement();
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
@@ -1512,7 +1510,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             if (objNode["improvementsource"] != null)
             {
-                _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             }
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
@@ -2632,7 +2630,6 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Improvement objImprovement = new Improvement();
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -2642,7 +2639,7 @@ namespace Chummer
 
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-            _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             }
@@ -2882,14 +2879,13 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Improvement objImprovement = new Improvement();
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-            _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -3114,14 +3110,13 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            Improvement objImprovement = new Improvement();
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-            _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -6016,18 +6011,231 @@ namespace Chummer
         #endregion
     }
 
-    public class MentorSpirit : INamedItemWithNode
+    public class MentorSpirit : INamedItemWithGuidAndNode
     {
+        private Guid _guiID;
         private string _strName = string.Empty;
-        private string _strAdvantages = string.Empty;
-        private readonly XmlDocument _objMentorDocument = null;
-        private string _sourceID = string.Empty;
+        private string _strAdvantage = string.Empty;
+        private string _strDisadvantage = string.Empty;
+        private string _strExtra = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
+        private string _strNotes = string.Empty;
+        private XmlNode _nodBonus = null;
+        private XmlNode _nodChoice1 = null;
+        private XmlNode _nodChoice2 = null;
+        private Improvement.ImprovementType _eMentorType;
+        private Guid _sourceID;
+        private readonly Character _objCharacter;
+        private string _strAltName = string.Empty;
+        private string _strAltPage = string.Empty;
+        private bool _blnMentorMask = false;
 
         #region Constructor
-        public MentorSpirit(Improvement.ImprovementType eMentorType, string strSourceID = "")
+        public MentorSpirit(Character objCharacter)
         {
-            _objMentorDocument = XmlManager.Load(eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml");
-            _sourceID = strSourceID;
+            // Create the GUID for the new Mentor Spirit.
+            _guiID = Guid.NewGuid();
+            _objCharacter = objCharacter;
+        }
+
+        /// <summary>
+        /// Create a Mentor Spirit from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlMentor">XmlNode to create the object from.</param>
+        /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
+        /// <param name="objXmlChoice1">Bonus node from Choice 1.</param>
+        /// <param name="objXmlChoice2">Bonus node from Choice 2.</param>
+        /// <param name="strForceValueChoice1">Name/Text for Choice 1.</param>
+        /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
+        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
+        /// <param name="blnMentorMask">Whether the Mentor's Mask is enabled.</param>
+        public virtual void Create(XmlNode objXmlMentor, Improvement.ImprovementType eMentorType, XmlNode objXmlChoice1, XmlNode objXmlChoice2, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
+        {
+            _blnMentorMask = blnMentorMask;
+            _eMentorType = eMentorType;
+            objXmlMentor.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
+
+            if (objXmlMentor["id"] != null)
+                _sourceID = Guid.Parse(objXmlMentor["id"].InnerText);
+
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                XmlNode objMentorSpiritNode = MyXmlNode;
+                if (objMentorSpiritNode != null)
+                {
+                    objMentorSpiritNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objMentorSpiritNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                }
+            }
+
+            // Build the list of advantages gained through the Mentor Spirit.
+            if (!objXmlMentor.TryGetStringFieldQuickly("altadvantage", ref _strAdvantage))
+            {
+                objXmlMentor.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
+            }
+            if (!objXmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref _strDisadvantage))
+            {
+                objXmlMentor.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            }
+
+            _nodBonus = objXmlMentor["bonus"];
+            if (_nodBonus != null)
+            {
+                ImprovementManager.ForcedValue = strForceValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodBonus, false, 1, DisplayName))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else if (!string.IsNullOrEmpty(strForceValue))
+            {
+                _strExtra = strForceValue;
+            }
+            _nodChoice1 = objXmlChoice1;
+            if (_nodChoice1 != null)
+            {
+                ImprovementManager.ForcedValue = strForceValueChoice1;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodChoice1, false, 1, DisplayName))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice1))
+            {
+                _strExtra = strForceValueChoice1;
+            }
+            _nodChoice2 = objXmlChoice2;
+            if (_nodChoice2 != null)
+            {
+                ImprovementManager.ForcedValue = strForceValueChoice2;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodChoice2, false, 1, DisplayName))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice2))
+            {
+                _strExtra = strForceValueChoice2;
+            }
+            if (_blnMentorMask)
+            {
+                ImprovementManager.CreateImprovement(_objCharacter, _guiID.ToString(), Improvement.ImprovementSource.MentorSpirit, DisplayName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
+                ImprovementManager.CreateImprovement(_objCharacter, _guiID.ToString(), Improvement.ImprovementSource.MentorSpirit, DisplayName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
+            }
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public virtual void Save(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("mentorspirit");
+            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("mentortype", _eMentorType.ToString());
+            objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("advantage", _strAdvantage);
+            objWriter.WriteElementString("disadvantage", _strDisadvantage);
+            if (_nodBonus != null)
+                objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+            else
+                objWriter.WriteElementString("bonus", string.Empty);
+            if (_nodChoice1 != null)
+                objWriter.WriteRaw("<choice1>" + _nodChoice1.InnerXml + "</choice1>");
+            else
+                objWriter.WriteElementString("choice1", string.Empty);
+            if (_nodChoice2 != null)
+                objWriter.WriteRaw("<choice2>" + _nodChoice2.InnerXml + "</choice2>");
+            else
+                objWriter.WriteElementString("choice2", string.Empty);
+            objWriter.WriteElementString("notes", _strNotes);
+
+            if (!string.IsNullOrEmpty(SourceID))
+            {
+                objWriter.WriteElementString("id", SourceID);
+            }
+
+            objWriter.WriteEndElement();
+            _objCharacter.SourceProcess(_strSource);
+        }
+
+        /// <summary>
+        /// Load the CharacterAttribute from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public virtual void Load(XmlNode objNode)
+        {
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode["mentortype"] != null)
+                _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerText);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
+            objNode.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            _nodBonus = objNode["bonus"];
+            _nodChoice1 = objNode["choice1"];
+            _nodChoice2 = objNode["choice2"];
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
+            {
+                XmlNode objNewNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
+                if (objNewNode != null)
+                    objNewNode.TryGetField("id", Guid.TryParse, out _sourceID);
+            }
+
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                XmlNode objMentorNode = MyXmlNode;
+                if (objMentorNode != null)
+                {
+                    objMentorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
+                    objMentorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Print(XmlTextWriter objWriter, int intRating)
+        {
+            objWriter.WriteStartElement("mentorspirit");
+            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("mentortype", _eMentorType.ToString());
+            objWriter.WriteElementString("name_english", Name);
+            objWriter.WriteElementString("advantage", Advantage);
+            objWriter.WriteElementString("disadvantage", Disadvantage);
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+            objWriter.WriteElementString("page", Page);
+            if (_objCharacter.Options.PrintNotes)
+                objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteEndElement();
         }
         #endregion
 
@@ -6042,12 +6250,88 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Advantages and Disadvantages that the Mentor Spirit or Paragon grants.
+        /// Whether the Mentor Spirit is taken with a Mentor Mask.
         /// </summary>
-        public string Advantages
+        public bool MentorMask
         {
-            get => _strAdvantages;
-            set => _strAdvantages = value;
+            get => _blnMentorMask;
+            set => _blnMentorMask = value;
+        }
+
+        /// <summary>
+        /// Advantage of the Mentor Spirit or Paragon.
+        /// </summary>
+        public string Advantage
+        {
+            get => _strAdvantage;
+            set => _strAdvantage = value;
+        }
+
+        /// <summary>
+        /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
+        /// </summary>
+        public string DisplayAdvantage
+        {
+            get
+            {
+                string strReturn = _strAdvantage;
+
+                if (!string.IsNullOrEmpty(_strExtra))
+                {
+                    LanguageManager.Load(GlobalOptions.Language, this);
+                    // Attempt to retrieve the CharacterAttribute name.
+                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
+                }
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Disadvantage of the Mentor Spirit or Paragon.
+        /// </summary>
+        public string Disadvantage
+        {
+            get => _strDisadvantage;
+            set => _strDisadvantage = value;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_strAltName))
+                    return _strAltName;
+
+                return _strName;
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get => _strSource;
+            set => _strSource = value;
+        }
+
+        /// <summary>
+        /// Page Number.
+        /// </summary>
+        public string Page
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_strAltPage))
+                    return _strAltPage;
+
+                return _strPage;
+            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -6055,8 +6339,10 @@ namespace Chummer
         /// </summary>
         public string SourceID
         {
-            get => _sourceID;
-            set => _sourceID = value;
+            get
+            {
+                return _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString();
+            }
         }
 
         /// <summary>
@@ -6066,7 +6352,15 @@ namespace Chummer
         {
             get
             {
-                return _objMentorDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID + "\"]");
+                return XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID + "\"]");
+            }
+        }
+
+        public string InternalId
+        {
+            get
+            {
+                return _guiID.ToString();
             }
         }
         #endregion

@@ -299,6 +299,7 @@ namespace Chummer
             MartialArt,
             AIProgram,
             SpiritFettering,
+            MentorSpirit,
             // V This one should always be the last defined enum
             NumImprovementSources
         }
@@ -332,7 +333,7 @@ namespace Chummer
         /// Convert a string to an ImprovementType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        private ImprovementType ConvertToImprovementType(string strValue)
+        public static ImprovementType ConvertToImprovementType(string strValue)
         {
             if (strValue.Contains("InitiativePass"))
             {
@@ -345,7 +346,7 @@ namespace Chummer
         /// Convert a string to an ImprovementSource.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ImprovementSource ConvertToImprovementSource(string strValue)
+        public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
@@ -1472,6 +1473,15 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                             objCharacter.CritterPowers.Remove(objCritterPower);
+                        }
+                        break;
+                    case Improvement.ImprovementType.MentorSpirit:
+                    case Improvement.ImprovementType.Paragon:
+                        MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMentor != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
+                            objCharacter.MentorSpirits.Remove(objMentor);
                         }
                         break;
                     case Improvement.ImprovementType.Gear:

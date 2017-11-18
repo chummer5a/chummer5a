@@ -1872,6 +1872,7 @@ namespace Chummer
                 {
                     if (objNode["bonus"] != null)
                     {
+                        objQuality.Bonus = objNode["bonus"];
                         ImprovementManager.ForcedValue = strSelected;
                         ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId, objNode["bonus"], false, 1, objQuality.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -1950,6 +1951,7 @@ namespace Chummer
                 {
                     if (objNode["bonus"] != null)
                     {
+                        objPower.Bonus = objNode["bonus"];
                         ImprovementManager.ForcedValue = objPower.Extra;
                         ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Power, objPower.InternalId, objNode["bonus"], false, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort);
                     }
@@ -2028,6 +2030,7 @@ namespace Chummer
                 {
                     if (objNode["bonus"] != null)
                     {
+                        objPower.Bonus = objNode["bonus"];
                         string strSelected = objPower.Extra;
                         int intRating = 0;
                         if (!int.TryParse(strSelected, out intRating))
@@ -2068,7 +2071,10 @@ namespace Chummer
                 if (objNode != null)
                 {
                     if (objNode["bonus"] != null)
+                    {
+                        objMetamagic.Bonus = objNode["bonus"];
                         ImprovementManager.CreateImprovements(_objCharacter, objMetamagic.SourceType, objMetamagic.InternalId, objNode["bonus"], false, 1, objMetamagic.DisplayNameShort);
+                    }
                 }
                 else
                 {
@@ -2085,11 +2091,12 @@ namespace Chummer
                 {
                     if (objNode["bonus"] != null || (objCyberware.WirelessOn && objNode["wirelessbonus"] != null))
                     {
+                        objCyberware.Bonus = objNode["bonus"];
                         if (objNode["bonus"] != null)
                             ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             objCyberware.Extra = ImprovementManager.SelectedValue;
-
+                        objCyberware.WirelessBonus = objNode["wirelessbonus"];
                         if (objCyberware.WirelessOn && objNode["wirelessbonus"] != null)
                             ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["wirelessbonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
@@ -2102,6 +2109,7 @@ namespace Chummer
                 }
                 if (objCyberware.PairBonus != null || objNode?["pairbonus"] != null)
                 {
+                    objCyberware.PairBonus = objNode["pairbonus"];
                     Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
                     if (objMatchingCyberware != null)
                         dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
@@ -2131,7 +2139,7 @@ namespace Chummer
                     {
                         if (intCyberwaresCount % 2 == 0)
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.MyXmlNode?["pairbonus"], false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
                             TreeNode objNode = CommonFunctions.FindNode(objLoopCyberware.InternalId, treCyberware);
                             if (objNode != null)
                                 objNode.Text = objCyberware.DisplayName;
@@ -2151,6 +2159,7 @@ namespace Chummer
                 {
                     if (objNode["bonus"] != null)
                     {
+                        objArmor.Bonus = objNode["bonus"];
                         ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objNode["bonus"], false, 1, objArmor.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
@@ -2175,6 +2184,7 @@ namespace Chummer
                     {
                         if (objChild["bonus"] != null)
                         {
+                            objMod.Bonus = objChild["bonus"];
                             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objChild["bonus"], false, 1, objMod.DisplayNameShort);
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
@@ -22781,9 +22791,7 @@ namespace Chummer
         /// </summary>
         private void UpdateMentorSpirits()
         {
-            MentorSpirit objMentor = _objCharacter.MAGEnabled
-                ? CommonFunctions.MentorInformation(_objCharacter)
-                : CommonFunctions.MentorInformation(_objCharacter, Improvement.ImprovementType.Paragon);
+            MentorSpirit objMentor = _objCharacter.MentorSpirits.FirstOrDefault();
 
             if (objMentor == null)
             {
@@ -22796,8 +22804,11 @@ namespace Chummer
                 lblMentorSpiritLabel.Visible = true;
                 lblMentorSpirit.Visible = true;
                 lblMentorSpiritInformation.Visible = true;
-                lblMentorSpirit.Text = objMentor.Name;
-                lblMentorSpiritInformation.Text = objMentor.Advantages;
+                lblMentorSpirit.Text = objMentor.DisplayName;
+                lblMentorSpiritInformation.Text = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + " " +
+                                   objMentor.DisplayAdvantage + "\n\n" +
+                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + " " +
+                                   objMentor.Disadvantage;
             }
         }
 

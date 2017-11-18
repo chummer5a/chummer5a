@@ -1139,6 +1139,7 @@ namespace Chummer
             {
                 if (objNode["bonus"] != null)
                 {
+                    objGear.Bonus = objNode["bonus"];
                     ImprovementManager.ForcedValue = objGear.Extra;
                     ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -2419,58 +2420,6 @@ namespace Chummer
             int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
             return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
-        }
-
-        /// <summary>
-        /// Retrieve the information for the Mentor Spirit or Paragon the character might have.
-        /// </summary>
-        /// <param name="mentorType">Type of feature to check for, either Mentor Spirit or Paragon.</param>
-        public static MentorSpirit MentorInformation(Character objCharacter, Improvement.ImprovementType mentorType = Improvement.ImprovementType.MentorSpirit)
-        {
-            //TODO: STORE ALL THIS IN THE ACTUAL CLASS. SCROUNGING IT UP EVERY TIME IS STUPID. 
-            string strMentorSpirit = string.Empty;
-
-            // Look for the Mentor Spirit or Paragon Quality based on the type chosen.
-            Improvement imp = objCharacter.Improvements.FirstOrDefault(i => i.ImproveType == mentorType);
-            if (imp == null)
-                return null;
-            MentorSpirit objReturn = new MentorSpirit(mentorType, imp.UniqueName);
-            // Load the appropriate XML document.
-            XmlNode objXmlMentor = objReturn.MyXmlNode;
-
-            Quality source = objCharacter.Qualities.FirstOrDefault(q => q.InternalId == imp.SourceName);
-            string strAdvantage = string.Empty;
-            string strDisadvantage = string.Empty;
-
-            if (objXmlMentor == null) return null;
-            // Build the list of advantages gained through the Mentor Spirit.
-            if (!objXmlMentor.TryGetStringFieldQuickly("altadvantage", ref strAdvantage))
-            {
-                objXmlMentor.TryGetStringFieldQuickly("advantage", ref strAdvantage);
-            }
-            if (!objXmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref strDisadvantage))
-            {
-                objXmlMentor.TryGetStringFieldQuickly("disadvantage", ref strDisadvantage);
-            }
-
-            if (source != null)
-            {
-                foreach (Improvement qualityImp in objCharacter.Improvements.Where(i => i.SourceName == source.InternalId))
-                {
-                    if (qualityImp.SourceName != source.InternalId) continue;
-                    if (!string.IsNullOrEmpty(qualityImp.Notes))
-                        strAdvantage += " " + LanguageManager.TranslateExtra(qualityImp.Notes) + ".";
-                }
-            }
-
-            // Populate the Mentor Spirit object.
-            objReturn.Name = objXmlMentor["name"]?.Attributes["translate"]?.InnerText ?? objXmlMentor["name"]?.InnerText;
-            objReturn.Advantages = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + " " +
-                                   strAdvantage + "\n\n" +
-                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + " " +
-                                   strDisadvantage;
-
-            return objReturn;
         }
 
         /// <summary>
