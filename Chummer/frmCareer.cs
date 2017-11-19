@@ -97,12 +97,77 @@ namespace Chummer
             GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
             LanguageManager.Load(GlobalOptions.Language, this);
 
+            ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
+            {
+                cmsAdvancedLifestyle,
+                cmsAdvancedProgram,
+                cmsAmmoExpense,
+                cmsArmor,
+                cmsArmorGear,
+                cmsArmorLocation,
+                cmsArmorMod,
+                cmsBioware,
+                cmsComplexForm,
+                cmsComplexFormPlugin,
+                cmsCritterPowers,
+                cmsCyberware,
+                cmsCyberwareGear,
+                cmsDeleteArmor,
+                cmsDeleteCyberware,
+                cmsDeleteGear,
+                cmsDeleteVehicle,
+                cmsDeleteWeapon,
+                cmsGear,
+                cmsGearButton,
+                cmsGearLocation,
+                cmsGearPlugin,
+                cmsImprovement,
+                cmsImprovementLocation,
+                cmsInitiationNotes,
+                cmsLifestyle,
+                cmsLifestyleNotes,
+                cmsLimitModifier,
+                cmsMartialArtManeuver,
+                cmsMartialArts,
+                cmsMetamagic,
+                cmsQuality,
+                cmsSpell,
+                cmsSpellButton,
+                cmsTechnique,
+                cmsUndoKarmaExpense,
+                cmsUndoNuyenExpense,
+                cmsVehicle,
+                cmsVehicleGear,
+                cmsVehicleLocation,
+                cmsVehicleWeapon,
+                cmsVehicleWeaponAccessory,
+                cmsVehicleWeaponAccessoryGear,
+                cmsVehicleWeaponMod,
+                cmsWeapon,
+                cmsWeaponAccessory,
+                cmsWeaponAccessoryGear,
+                cmsWeaponLocation,
+                cmsWeaponMod
+            };
             // Update the text in the Menus so they can be merged with frmMain properly.
             foreach (ToolStripMenuItem objItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
             {
                 if (objItem.Tag != null)
                 {
                     objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                }
+            }
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    {
+                        if (objItem.Tag != null)
+                        {
+                            objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                        }
+                    }
                 }
             }
 

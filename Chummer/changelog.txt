@@ -256,6 +256,7 @@ Application Changes:
 - Implemented the ability to rename the Extra text of Gear items with the selecttext improvement while in Career mode. This functionality will be extended to other categories (Weapons, Armour, etc.) as teim permits.
 - Character sheets are now printed with the number formatting of the language in which they are printed instead of with the number formatting of the language of the user's current operating system.
 - Fixed a bug related to incorrect printing of certain numbers due to differences in decimal separators. Fixes #2069.
+- Fixed a bug where some context menu strips would not get translated.
 
 Data Changes:
 
