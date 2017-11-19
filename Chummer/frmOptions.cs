@@ -242,7 +242,7 @@ namespace Chummer
 
             if (!blnLoading)
             {
-                string strOldSelected = cboXSLT.SelectedValue.ToString();
+                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
                 // Strip away the language prefix
                 if (strOldSelected.Contains('\\'))
                     strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf('\\') + 1, strOldSelected.Length - 1 - strOldSelected.LastIndexOf('\\'));

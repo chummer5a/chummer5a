@@ -13514,10 +13514,9 @@ namespace Chummer
                 if (_objCharacter.CFPLimit > 0)
                 {
                     s = $"{intFormsPointsUsed} {LanguageManager.GetString("String_Of")} {_objCharacter.CFPLimit}";
-                    if (intFormsPointsUsed > 0)
+                    if (intFormsPointsUsed > _objCharacter.CFPLimit)
                     {
-                        s +=
-                            $": {(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
+                        s += $": {(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
                     }
                 }
                 else
