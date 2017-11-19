@@ -81,7 +81,7 @@ namespace Chummer
 #if DEBUG
                 objCharacter.PrintToStream(objStream, objWriter, GlobalOptions.CultureInfo);
 #else
-                objCharacter.PrintToStream(objWriter);
+                objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
 #endif
                 prgProgress.Value++;
                 Application.DoEvents();

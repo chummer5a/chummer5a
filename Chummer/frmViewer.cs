@@ -292,7 +292,7 @@ namespace Chummer
 #if DEBUG
                 objCharacter.PrintToStream(objStream, objWriter, objPrintCulture);
 #else
-                objCharacter.PrintToStream(objWriter);
+                objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
 #endif
 
             // </characters>
