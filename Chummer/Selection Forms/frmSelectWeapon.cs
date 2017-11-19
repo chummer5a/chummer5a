@@ -178,7 +178,7 @@ namespace Chummer
 
             Weapon objWeapon = new Weapon(_objCharacter);
             TreeNode objNode = new TreeNode();
-            objWeapon.Create(objXmlWeapon, objNode, null, null);
+            objWeapon.Create(objXmlWeapon, objNode, null, null, null, true, false);
 
             lblWeaponReach.Text = objWeapon.TotalReach.ToString();
             lblWeaponDamage.Text = objWeapon.CalculatedDamage();
@@ -301,7 +301,7 @@ namespace Chummer
 
                     TreeNode objNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, objNode, null, null);
+                    objWeapon.Create(objXmlWeapon, objNode, null, null, null, true, false);
 
                     string strID = objWeapon.SourceID.ToString();
                     string strWeaponName = objWeapon.DisplayName;
