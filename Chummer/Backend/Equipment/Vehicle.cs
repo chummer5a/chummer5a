@@ -234,8 +234,7 @@ namespace Chummer.Backend.Equipment
             // If there are any Weapon Mounts that come with the Vehicle, add them.
             if (objXmlVehicle.InnerXml.Contains("<weaponmounts>") && blnCreateChildren)
             {
-                TreeNode mountsNode = new TreeNode();
-                mountsNode.Tag = "String_WeaponMounts";
+
                 XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode objXmlVehicleMod in objXmlModList)
                 {
@@ -461,6 +460,10 @@ namespace Chummer.Backend.Equipment
             foreach (VehicleMod objMod in _lstVehicleMods)
                 objMod.Save(objWriter);
             objWriter.WriteEndElement();
+            objWriter.WriteStartElement("weaponmounts");
+            foreach (WeaponMount wm in WeaponMounts)
+                wm.Save(objWriter);
+            objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
@@ -630,6 +633,18 @@ namespace Chummer.Backend.Equipment
                     objMod.Parent = this;
                     objMod.Load(nodChild, blnCopy);
                     _lstVehicleMods.Add(objMod);
+                }
+            }
+
+            if (strNodeInnerXml.Contains("<weaponmounts>"))
+            {
+                XmlNodeList nodChildren = objNode.SelectNodes("weaponmounts/weaponmount");
+                foreach (XmlNode nodChild in nodChildren)
+                {
+                    WeaponMount wm = new WeaponMount(_objCharacter, this);
+                    wm.Parent = this;
+                    wm.Load(nodChild, this, blnCopy);
+                    WeaponMounts.Add(wm);
                 }
             }
 

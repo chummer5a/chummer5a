@@ -238,7 +238,7 @@ namespace Chummer
         public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles)
         {
             Vehicle objFoundVehicle = null;
-            VehicleMod objFoundVehicleMod = null;
+            WeaponMount objFoundVehicleMod = null;
             return FindVehicleWeapon(strGuid, lstVehicles, out objFoundVehicle, out objFoundVehicleMod);
         }
 
@@ -248,7 +248,7 @@ namespace Chummer
         /// <param name="strGuid">InteralId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out VehicleMod objFoundVehicleMod)
+        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out WeaponMount objFoundVehicleMod)
         {
             Vehicle objFoundVehicle = null;
             return FindVehicleWeapon(strGuid, lstVehicles, out objFoundVehicle, out objFoundVehicleMod);
@@ -262,7 +262,7 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle)
         {
-            VehicleMod objFoundVehicleMod = null;
+            WeaponMount objFoundVehicleMod = null;
             return FindVehicleWeapon(strGuid, lstVehicles, out objFoundVehicle, out objFoundVehicleMod);
         }
 
@@ -273,7 +273,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle, out VehicleMod objFoundVehicleMod)
+        public static Weapon FindVehicleWeapon(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
         {
             if (strGuid != Guid.Empty.ToString())
             {
@@ -286,17 +286,17 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objReturn?.Name))
                         {
                             objFoundVehicle = objVehicle;
-                            objFoundVehicleMod = null;
+                            objFoundWeaponMount = null;
                             return objReturn;
                         }
 
-                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        foreach (WeaponMount objMod in objVehicle.WeaponMounts)
                         {
                             objReturn = DeepFindById(strGuid, objMod.Weapons);
                             if (!string.IsNullOrEmpty(objReturn?.Name))
                             {
                                 objFoundVehicle = objVehicle;
-                                objFoundVehicleMod = objMod;
+                                objFoundWeaponMount = objMod;
                                 return objReturn;
                             }
                         }
@@ -305,7 +305,34 @@ namespace Chummer
             }
 
             objFoundVehicle = null;
-            objFoundVehicleMod = null;
+            objFoundWeaponMount = null;
+            return null;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strGuid"></param>
+        /// <param name="lstVehicles"></param>
+        /// <returns></returns>
+        internal static WeaponMount FindVehicleWeaponMount(string strGuid, List<Vehicle> lstVehicles)
+        {
+            if (strGuid != Guid.Empty.ToString())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    if (!string.IsNullOrEmpty(objVehicle.Name))
+                    {
+                        foreach (WeaponMount objMod in objVehicle.WeaponMounts)
+                        {
+                            if (objMod.InternalId == strGuid && !string.IsNullOrEmpty(objMod.Name))
+                            {
+                                return objMod;
+                            }
+                        }
+                    }
+                }
+            }
+            
             return null;
         }
 
@@ -338,7 +365,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objReturn?.Name))
                             return objReturn;
 
-                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        foreach (WeaponMount objMod in objVehicle.WeaponMounts)
                         {
                             objReturn = FindWeaponAccessory(strGuid, objMod.Weapons, out objFoundWeapon);
                             if (!string.IsNullOrEmpty(objReturn?.Name))
@@ -1339,7 +1366,7 @@ namespace Chummer
         /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
         /// <param name="cmsWeaponAccessoryGear"></param>
         /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
-        public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
+        public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount)
         {
             TreeNode objNode = new TreeNode();
             objNode.Text = objVehicle.DisplayName;
@@ -1397,7 +1424,16 @@ namespace Chummer
                 objNode.Nodes.Add(objChildNode);
                 objNode.Expand();
             }
-
+            if (objVehicle.WeaponMounts.Count > 0)
+            {
+                TreeNode mountsNode = new TreeNode();
+                mountsNode.Tag = "String_WeaponMounts";
+                mountsNode.Text = LanguageManager.GetString("String_WeaponMounts");
+                objNode.Nodes.Add(mountsNode);
+                // Weapon Mounts
+                foreach (WeaponMount wm in objVehicle.WeaponMounts)
+                    CreateWeaponMountTreeNode(wm, mountsNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsVehicleWeaponMount);
+            }
             // Vehicle Weapons (not attached to a mount).
             foreach (Weapon objWeapon in objVehicle.Weapons)
                 CreateWeaponTreeNode(objWeapon, objNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -1440,6 +1476,23 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsVehicle;
             treVehicles.Nodes[0].Nodes.Add(objNode);
             treVehicles.Nodes[0].Expand();
+        }
+
+        private static void CreateWeaponMountTreeNode(WeaponMount wm, TreeNode parentNode, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleWeaponMount)
+        {
+            TreeNode objNode = new TreeNode();
+            objNode.Text = wm.DisplayName;
+            objNode.Tag = wm.InternalId;
+            if (!string.IsNullOrEmpty(wm.Notes))
+            {
+                objNode.ToolTipText = wm.Notes;
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            foreach (Weapon w in wm.Weapons)
+            {
+                CreateWeaponTreeNode(w, objNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            }
+            parentNode.Nodes.Add(objNode);
         }
 
         /// <summary>

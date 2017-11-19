@@ -10271,7 +10271,7 @@
       <category>Size</category>
       <cost>750</cost>
       <slots>1</slots>
-      <weaponcategories></weaponcategories>
+      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
@@ -10282,7 +10282,7 @@
       <category>Size</category>
       <cost>1500</cost>
       <slots>2</slots>
-      <weaponcategories></weaponcategories>
+      <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
@@ -10293,7 +10293,7 @@
       <category>Size</category>
       <cost>4000</cost>
       <slots>4</slots>
-      <weaponcategories></weaponcategories>
+      <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>

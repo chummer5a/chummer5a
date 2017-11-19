@@ -781,7 +781,7 @@ namespace Chummer
             // Populate Vehicles.
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
-                CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear);
+                CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount);
             }
 
             // Populate Initiation/Submersion information.
@@ -3179,7 +3179,7 @@ namespace Chummer
 
                     _objCharacter.Vehicles.Add(objVehicle);
 
-                    CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear);
+                    CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount);
 
                     ScheduleCharacterUpdate();
                     _blnIsDirty = true;
@@ -4993,7 +4993,8 @@ namespace Chummer
                 }
                 else
                 {
-                    Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objMod);
+                    WeaponMount objWeaponMount;
+                    Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objWeaponMount);
                     // Removing a Weapon
                     if (objWeapon != null)
                     {
@@ -6993,7 +6994,8 @@ namespace Chummer
                 TreeNode tn = new TreeNode
                 {
                     Tag = frmPickVehicleMod.WeaponMount.InternalId.ToString(),
-                    Text = frmPickVehicleMod.WeaponMount.DisplayName
+                    Text = frmPickVehicleMod.WeaponMount.DisplayName,
+                    ContextMenuStrip = cmsWeaponMount
                 };
                 node.Nodes.Add(tn);
                 treVehicles.SelectedNode.ExpandAll();
@@ -7133,19 +7135,20 @@ namespace Chummer
                 tsVehicleAddMod_Click(sender, e);
         }
 
-        private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
+        private void tsVehicleAddWeapon_Click(object sender, EventArgs e)
         {
             // Make sure that a Weapon Mount has been selected.
-            VehicleMod objMod = CommonFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            WeaponMount wm = CommonFunctions.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
-            if (objMod == null || (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || string.IsNullOrEmpty(objMod.WeaponMountCategories)))
+            //if (wm == null || (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || string.IsNullOrEmpty(objMod.WeaponMountCategories)))
+            if (wm == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotAddWeapon"), LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
-            frmPickWeapon.LimitToCategories = objMod.WeaponMountCategories;
+            frmPickWeapon.LimitToCategories = wm.WeaponMountCategories;
             frmPickWeapon.ShowDialog();
 
             if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -7167,14 +7170,14 @@ namespace Chummer
             }
             objWeapon.VehicleMounted = true;
 
-            objMod.Weapons.Add(objWeapon);
+            wm.Weapons.Add(objWeapon);
 
             objNode.ContextMenuStrip = cmsVehicleWeapon;
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
 
             if (frmPickWeapon.AddAgain)
-                tsVehicleAddWeaponWeapon_Click(sender, e);
+                tsVehicleAddWeapon_Click(sender, e);
 
             ScheduleCharacterUpdate();
         }
@@ -16145,29 +16148,34 @@ namespace Chummer
             }
             else if (treVehicles.SelectedNode.Level == 2)
             {
-                // If this is a Vehicle Location, don't do anything.
-                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                bool hide = false;
+                // If this is a Vehicle Location or Weapon Mount group, don't do anything.
+                if (treVehicles.SelectedNode.Tag.ToString() == "String_WeaponMounts")
                 {
-                    if (objVehicle.InternalId == treVehicles.SelectedNode.Parent.Tag.ToString())
+                    hide = true;
+                }
+                else
+                {
+                    foreach (Vehicle objVehicle in _objCharacter.Vehicles.Where(v => v.InternalId == treVehicles.SelectedNode.Parent.Tag.ToString()))
                     {
-                        foreach (string strLocation in objVehicle.Locations)
-                        {
-                            if (strLocation == treVehicles.SelectedNode.Tag.ToString())
-                            {
-                                DisplayVehicleWeaponStats(false);
-                                DisplayVehicleCommlinkStats(false);
-                                DisplayVehicleStats(false);
-
-                                nudVehicleGearQty.Visible = false;
-                                lblVehicleGearQtyLabel.Visible = false;
-                                chkVehicleIncludedInWeapon.Visible = false;
-                                chkVehicleWeaponAccessoryInstalled.Visible = false;
-                                _blnSkipRefresh = false;
-                                return;
-                            }
-                        }
+                        hide = objVehicle.Locations.Any(location => location == treVehicles.SelectedNode.Tag.ToString());
+                        break;
                     }
                 }
+
+                if (hide)
+                {
+                    DisplayVehicleWeaponStats(false);
+                    DisplayVehicleCommlinkStats(false);
+                    DisplayVehicleStats(false);
+
+                    nudVehicleGearQty.Visible = false;
+                    lblVehicleGearQtyLabel.Visible = false;
+                    chkVehicleIncludedInWeapon.Visible = false;
+                    chkVehicleWeaponAccessoryInstalled.Visible = false;
+                    _blnSkipRefresh = false;
+                    return;
+                }                
 
                 bool blnVehicleMod = false;
 
@@ -16248,7 +16256,7 @@ namespace Chummer
                     lblVehicleSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objMod.Source) + " " + LanguageManager.GetString("String_Page") + " " + objMod.Page);
                 }
-                else if (treVehicles.SelectedNode.Tag.ToString() == "String_WeaponMounts")
+                else if (treVehicles.SelectedNode.Parent.Tag.ToString() == "String_WeaponMounts")
                 {
 
                 }

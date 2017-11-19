@@ -59,7 +59,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
-            objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
+            objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 
             // Check for a Variable Cost.
@@ -123,7 +123,7 @@ namespace Chummer.Backend.Equipment
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
 		public void Save(XmlTextWriter objWriter)
 		{
-			objWriter.WriteStartElement("mod");
+			objWriter.WriteStartElement("weaponmount");
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
@@ -144,7 +144,13 @@ namespace Chummer.Backend.Equipment
                 w.Save(objWriter);
             }
             objWriter.WriteEndElement();
-			objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteStartElement("weaponmountoptions");
+            foreach (WeaponMountOption w in WeaponMountOptions)
+            {
+                w.Save(objWriter);
+            }
+            objWriter.WriteEndElement();
+            objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
 			objWriter.WriteEndElement();
 			_character.SourceProcess(_strSource);
@@ -184,11 +190,20 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode n in objNode.SelectNodes("weapons/weapon"))
                 {
                     w = new Weapon(null);
-                    w.Load(objNode["weapon"], blnCopy);
+                    w.Load(n, blnCopy);
                     _weapons.Add(w);
                 }
-			}
-			objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+            if (objNode["weaponmountoptions"] != null)
+            {
+                foreach (XmlNode n in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
+                {
+                    WeaponMountOption w = new WeaponMountOption();
+                    w.Load(n, _vehicle);
+                    WeaponMountOptions.Add(w);
+                }
+            }
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
 
@@ -679,6 +694,7 @@ namespace Chummer.Backend.Equipment
             XmlDocument xmlDoc = XmlManager.Load("vehicles.xml");
             XmlNode objXmlMod = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{id}\"]");
             if (objXmlMod == null) Utils.BreakIfDebug();
+            Guid.TryParse(id, out _sourceID);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
@@ -747,7 +763,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
-            objWriter.WriteStartElement("mod");
+            objWriter.WriteStartElement("weaponmountoption");
             objWriter.WriteElementString("id", _sourceID.ToString());
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);

@@ -815,7 +815,7 @@ namespace Chummer
             // Populate Vehicles.
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
-                CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear);
+                CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount);
             }
 
             UpdateInitiationGradeTree();
@@ -5040,14 +5040,14 @@ namespace Chummer
                 }
                 else
                 {
-                    Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objMod);
+                    Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out WeaponMount wm);
                     // Removing a Weapon
                     if (objWeapon != null)
                     {
                         if (objWeapon.Parent == null)
                         {
-                            if (objMod != null)
-                                objMod.Weapons.Remove(objWeapon);
+                            if (wm != null)
+                                wm.Weapons.Remove(objWeapon);
                             // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
                             else
                                 objVehicle.Weapons.Remove(objWeapon);
@@ -10265,7 +10265,7 @@ namespace Chummer
                     }
                     else
                     {
-                        Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out objMod);
+                        Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out WeaponMount wm);
                         // Removing a Weapon
                         if (objWeapon != null)
                         {
@@ -10279,8 +10279,8 @@ namespace Chummer
                             decimal decOriginal = objVehicle.TotalCost;
                             if (objWeapon.Parent == null)
                             {
-                                if (objMod != null)
-                                    objMod.Weapons.Remove(objWeapon);
+                                if (wm != null)
+                                    wm.Weapons.Remove(objWeapon);
                                 // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
                                 else
                                     objVehicle.Weapons.Remove(objWeapon);
@@ -11605,13 +11605,13 @@ namespace Chummer
                 case NuyenExpenseType.AddVehicleWeapon:
                     // Locate the Weapon that was added.
                     Vehicle objAddVehicleWeaponVehicle = null;
-                    VehicleMod objAddVehicleWeaponVehicleMod = null;
-                    Weapon objAddVehicleWeapon = CommonFunctions.FindVehicleWeapon(objEntry.Undo.ObjectId, _objCharacter.Vehicles, out objAddVehicleWeaponVehicle, out objAddVehicleWeaponVehicleMod);
+                    WeaponMount wm = null;
+                    Weapon objAddVehicleWeapon = CommonFunctions.FindVehicleWeapon(objEntry.Undo.ObjectId, _objCharacter.Vehicles, out objAddVehicleWeaponVehicle, out wm);
                     if (objAddVehicleWeapon != null)
                     {
                         // Remove the Weapon.
-                        if (objAddVehicleWeaponVehicleMod != null)
-                            objAddVehicleWeaponVehicleMod.Weapons.Remove(objAddVehicleWeapon);
+                        if (wm != null)
+                            wm.Weapons.Remove(objAddVehicleWeapon);
                         else
                             objAddVehicleWeaponVehicle.Weapons.Remove(objAddVehicleWeapon);
 
