@@ -232,6 +232,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intBase = value;
+                OnPropertyChanged(nameof(Base));
             }
         }
 
@@ -268,6 +269,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intKarma = value;
+                OnPropertyChanged(nameof(Karma));
             }
         }
 
