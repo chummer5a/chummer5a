@@ -880,7 +880,7 @@ namespace Chummer.Backend.Equipment
         /// Core code to Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = false)
+        public virtual void PrintInner(XmlTextWriter objWriter, CultureInfo objCulture, bool blnIsCommlink = false)
         {
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
             {
@@ -903,15 +903,15 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("issin", System.Boolean.FalseString);
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString());
-            objWriter.WriteElementString("qty", _decQty.ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(objCulture));
+            objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(objCulture));
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("qty", _decQty.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(true));
             objWriter.WriteElementString("avail_english", TotalAvail(true, true));
-            objWriter.WriteElementString("cost", TotalCost.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
@@ -924,14 +924,14 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in _objChildren)
             {
                 // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
+                Commlink objCommlink = objGear as Commlink;
+                if (objCommlink != null)
                 {
-                    Commlink objCommlink = objGear as Commlink;
-                    objCommlink?.Print(objWriter);
+                    objCommlink.Print(objWriter, objCulture);
                 }
                 else
                 {
-                    objGear.Print(objWriter);
+                    objGear.Print(objWriter, objCulture);
                 }
             }
             objWriter.WriteEndElement();
@@ -958,10 +958,10 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             PrintBegin(objWriter);
-            PrintInner(objWriter);
+            PrintInner(objWriter, objCulture);
             PrintEnd(objWriter);
         }
         #endregion
@@ -1832,7 +1832,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                 }
                 if (strReturn.Contains("Rating"))
                 {
@@ -1848,7 +1848,7 @@ namespace Chummer.Backend.Equipment
                     decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
                     if (decNumber < 1)
                         decNumber = 1;
-                    strReturn = decNumber.ToString("N2", GlobalOptions.CultureInfo);
+                    strReturn = decNumber.ToString("0.##", GlobalOptions.CultureInfo);
 
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
@@ -1859,7 +1859,7 @@ namespace Chummer.Backend.Equipment
                     strReturn += "/" + strSecondHalf;
                 decimal decReturn;
                 if (decimal.TryParse(strReturn, out decReturn))
-                    return decReturn.ToString("N2", GlobalOptions.CultureInfo);
+                    return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
                 return strReturn;
             }
@@ -1896,7 +1896,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
                     strReturn += "/" + strSecondHalf;
@@ -1915,7 +1915,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -1928,7 +1928,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decimal decReturn;
                     if (decimal.TryParse(_strArmorCapacity, out decReturn))
-                        return decReturn.ToString("N2", GlobalOptions.CultureInfo);
+                        return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }
             }
@@ -2184,7 +2184,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = DisplayNameShort;
 
                 if (_decQty != 1.0m || Category == "Currency")
-                    strReturn = _decQty.ToString(Category == "Currency" ? "N2" : "N0", GlobalOptions.CultureInfo) + " " + strReturn;
+                    strReturn = _decQty.ToString(Category == "Currency" ? "0.##" : "N0", GlobalOptions.CultureInfo) + " " + strReturn;
                 if (_intRating > 0)
                     strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 if (!string.IsNullOrEmpty(_strExtra))

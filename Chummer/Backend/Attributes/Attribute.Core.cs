@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows;
 using System.Xml;
 using Chummer.Datastructures;
+using System.Globalization;
 
 namespace Chummer.Backend.Attributes
 {
@@ -116,17 +117,17 @@ namespace Chummer.Backend.Attributes
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name_english", Abbrev);
             objWriter.WriteElementString("name", DisplayAbbrev);
-            objWriter.WriteElementString("base", Value.ToString());
-            objWriter.WriteElementString("total", TotalValue.ToString());
-            objWriter.WriteElementString("min", TotalMinimum.ToString());
-            objWriter.WriteElementString("max", TotalMaximum.ToString());
-            objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString());
-			objWriter.WriteElementString("bp", CalculatedBP().ToString());
+            objWriter.WriteElementString("base", Value.ToString(objCulture));
+            objWriter.WriteElementString("total", TotalValue.ToString(objCulture));
+            objWriter.WriteElementString("min", TotalMinimum.ToString(objCulture));
+            objWriter.WriteElementString("max", TotalMaximum.ToString(objCulture));
+            objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString(objCulture));
+			objWriter.WriteElementString("bp", CalculatedBP().ToString(objCulture));
 			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
 			objWriter.WriteEndElement();
         }

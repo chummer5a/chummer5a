@@ -760,7 +760,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString("N2", GlobalOptions.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString("0.##", GlobalOptions.CultureInfo);
             }
         }
 
@@ -1204,10 +1204,10 @@ namespace Chummer
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else
-                                        lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                                        lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                                 }
                                 else
-                                    lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                                    lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                             }
                             if (blnSquareBrackets)
                                 lblCapacity.Text = "[" + lblCapacity.Text + "]";
@@ -1239,7 +1239,7 @@ namespace Chummer
                                     string strCalculatedCapacity = string.Empty;
                                     try
                                     {
-                                        strCalculatedCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                                        strCalculatedCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                                     }
                                     catch (XPathException)
                                     {

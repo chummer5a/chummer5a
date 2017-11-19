@@ -268,7 +268,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.CalculatedConcealability();
+                        string objValue = objTemp.CalculatedConcealability(GlobalOptions.CultureInfo);
                     }
                     catch
                     {

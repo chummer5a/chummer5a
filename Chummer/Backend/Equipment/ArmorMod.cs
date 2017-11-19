@@ -367,19 +367,19 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("armormod");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
-            objWriter.WriteElementString("armor", _intA.ToString());
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString());
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("armor", _intA.ToString(objCulture));
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(objCulture));
+            objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString());
-            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
@@ -389,14 +389,14 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in _lstGear)
             {
                 // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
+                Commlink objCommlink = objGear as Commlink;
+                if (objCommlink != null)
                 {
-                    Commlink objCommlink = objGear as Commlink;
-                    objCommlink?.Print(objWriter);
+                    objCommlink.Print(objWriter, objCulture);
                 }
                 else
                 {
-                    objGear.Print(objWriter);
+                    objGear.Print(objWriter, objCulture);
                 }
             }
             objWriter.WriteEndElement();
@@ -937,7 +937,7 @@ namespace Chummer.Backend.Equipment
                 decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = decCapacity.ToString("N2", GlobalOptions.CultureInfo);
+                string strReturn = decCapacity.ToString("0.##", GlobalOptions.CultureInfo);
 
                 return strReturn;
             }
@@ -1013,7 +1013,7 @@ namespace Chummer.Backend.Equipment
                 decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = decCapacity.ToString("N2", GlobalOptions.CultureInfo);
+                string strReturn = decCapacity.ToString("0.##", GlobalOptions.CultureInfo);
                 if (blnSquareBrackets)
                     strReturn = "[" + strReturn + "]";
 

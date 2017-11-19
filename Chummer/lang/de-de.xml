@@ -19,7 +19,7 @@
 -->
 <chummer>
   <version>-495</version>
-  <name>Deutsch (DE)</name>
+  <name>Deutsch (de-DE)</name>
   <strings>
 	<string>
 		<key>Message_Insufficient_Permissions_Warning</key>

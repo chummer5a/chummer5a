@@ -1180,8 +1180,8 @@ namespace Chummer
                 {
                     MessageBox.Show(
                         LanguageManager.GetString("Message_OverCapacityLimit")
-                            .Replace("{0}", MaximumCapacity.ToString("N2", GlobalOptions.CultureInfo))
-                            .Replace("{1}", decCapacity.ToString("N2", GlobalOptions.CultureInfo)),
+                            .Replace("{0}", MaximumCapacity.ToString("0.##", GlobalOptions.CultureInfo))
+                            .Replace("{1}", decCapacity.ToString("0.##", GlobalOptions.CultureInfo)),
                         LanguageManager.GetString("MessageTitle_OverCapacityLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;

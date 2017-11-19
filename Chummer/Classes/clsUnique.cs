@@ -454,13 +454,13 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, int intRating)
+        public void Print(XmlTextWriter objWriter, int intRating, CultureInfo objCulture)
         {
             if (_blnPrint)
             {
                 string strRatingString = string.Empty;
                 if (intRating > 1)
-                    strRatingString = " " + intRating.ToString(GlobalOptions.CultureInfo);
+                    strRatingString = " " + intRating.ToString(objCulture);
                 string strSourceName = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SourceName))
                     strSourceName = " (" + SourceName + ")";
@@ -468,7 +468,7 @@ namespace Chummer
                 objWriter.WriteElementString("name", DisplayNameShort);
                 objWriter.WriteElementString("name_english", Name + strRatingString);
                 objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra) + strRatingString + strSourceName);
-                objWriter.WriteElementString("bp", _intBP.ToString());
+                objWriter.WriteElementString("bp", _intBP.ToString(objCulture));
                 string strQualityType = _objQualityType.ToString();
                 if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -1087,7 +1087,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             // Translate the Critter name if applicable.
             string strName = _strName;
@@ -1101,8 +1101,8 @@ namespace Chummer
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("crittername", _strCritterName);
-            objWriter.WriteElementString("services", _intServicesOwed.ToString());
-            objWriter.WriteElementString("force", _intForce.ToString());
+            objWriter.WriteElementString("services", _intServicesOwed.ToString(objCulture));
+            objWriter.WriteElementString("force", _intForce.ToString(objCulture));
 
             if (objXmlCritterNode != null)
             {
@@ -1127,7 +1127,7 @@ namespace Chummer
                             value = _intForce; //if failed to parse, default to force
                         }
                         value = Math.Max(value, 1); //Min value is 1
-                        objWriter.WriteElementString(attribute, value.ToString());
+                        objWriter.WriteElementString(attribute, value.ToString(objCulture));
 
                         attributes[attribute] = value;
                     }
@@ -1175,7 +1175,7 @@ namespace Chummer
                         objWriter.WriteStartElement("skill");
                         objWriter.WriteElementString("name", objXmlSkillNode.InnerText);
                         objWriter.WriteElementString("attr", attrName);
-                        objWriter.WriteElementString("pool", dicepool.ToString());
+                        objWriter.WriteElementString("pool", dicepool.ToString(objCulture));
                         objWriter.WriteEndElement();
                     }
                     objWriter.WriteEndElement();
@@ -1544,7 +1544,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("spell");
             if (_blnLimited)
@@ -1563,7 +1563,7 @@ namespace Chummer
             objWriter.WriteElementString("duration", DisplayDuration);
             objWriter.WriteElementString("dv", DisplayDV);
             objWriter.WriteElementString("alchemy", Alchemical.ToString());
-            objWriter.WriteElementString("dicepool", DicePool.ToString());
+            objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
@@ -1989,20 +1989,19 @@ namespace Chummer
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    XPathExpression xprDV;
-                    string dv = string.Empty;
+                    string dv = strReturn.TrimStart('F');
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    if (strReturn == "F")
+                    if (string.IsNullOrEmpty(dv))
                     {
-                        strReturn = "F+0";
+                        dv = "0";
                     }
-                    if (strReturn.Contains('-'))
+                    else if (strReturn.Contains('-'))
                     {
-                        dv = strReturn.Substring(strReturn.LastIndexOf('-'));
+                        dv = strReturn.Substring(strReturn.IndexOf('-'));
                     }
                     else if (strReturn.Contains('+'))
                     {
-                        dv = strReturn.Substring(strReturn.LastIndexOf('+'));
+                        dv = strReturn.Substring(strReturn.IndexOf('+'));
                     }
                     foreach (
                         Improvement imp in
@@ -2014,10 +2013,8 @@ namespace Chummer
                         dv += $" + {imp.Value:+0;-0;0}";
                     }
 
-                    object xprResult = null;
-                    xprDV = nav.Compile(dv.TrimStart('+'));
-
-                    xprResult = nav.Evaluate(xprDV);
+                    XPathExpression xprDV = nav.Compile(dv.TrimStart('+'));
+                    object xprResult = nav.Evaluate(xprDV);
                     if (force)
                     {
                         strReturn = $"F{xprResult:+0;-0;0}";
@@ -2648,14 +2645,14 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("metamagic");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("grade", _intGrade.ToString());
+            objWriter.WriteElementString("grade", _intGrade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -3887,14 +3884,14 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteStartElement("martialartadvantages");
             foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
             {
@@ -4720,17 +4717,17 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("role", _strRole);
             objWriter.WriteElementString("location", _strLocation);
             if (IsGroup == false)
-                objWriter.WriteElementString("connection", _intConnection.ToString());
+                objWriter.WriteElementString("connection", _intConnection.ToString(objCulture));
             else
-                objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
-            objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
+                objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString(objCulture) + ")");
+            objWriter.WriteElementString("loyalty", _intLoyalty.ToString(objCulture));
             objWriter.WriteElementString("metatype", _strMetatype);
             objWriter.WriteElementString("sex", _strSex);
             objWriter.WriteElementString("age", _strAge);
@@ -5812,12 +5809,12 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, bool blnPrintNotes = true)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
             objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("year", _intYear.ToString());
-            objWriter.WriteElementString("month", Month.ToString());
-            objWriter.WriteElementString("week", MonthWeek.ToString());
+            objWriter.WriteElementString("year", _intYear.ToString(objCulture));
+            objWriter.WriteElementString("month", Month.ToString(objCulture));
+            objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));
             if (blnPrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();

@@ -274,9 +274,23 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnOmaeAutoLogin, "omaeautologin");
             // Language.
             LoadStringFromRegistry(ref _strLanguage, "language");
-            if (_strLanguage == "en-us2")
+            switch (_strLanguage)
             {
-                _strLanguage = GlobalOptions.DefaultLanguage;
+                case "en-us2":
+                    _strLanguage = GlobalOptions.DefaultLanguage;
+                    break;
+                case "de":
+                    _strLanguage = "de-de";
+                    break;
+                case "fr":
+                    _strLanguage = "fr-fr";
+                    break;
+                case "jp":
+                    _strLanguage = "jp-jp";
+                    break;
+                case "zh":
+                    _strLanguage = "zh-cn";
+                    break;
             }
             // Startup in Fullscreen mode.
             LoadBoolFromRegistry(ref _blnStartupFullscreen, "startupfullscreen");

@@ -1907,9 +1907,9 @@ namespace Chummer
         /// <param name="objStream">MemoryStream to use.</param>
         /// <param name="objWriter">XmlTextWriter to write to.</param>
 #if DEBUG
-        public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter)
+        public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter, CultureInfo objCulture)
 #else
-        public void PrintToStream(XmlTextWriter objWriter)
+        public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture)
 #endif
         {
             XmlDocument objXmlDocument;
@@ -1955,28 +1955,28 @@ namespace Chummer
             // <metavariant_english />
             objWriter.WriteElementString("metavariant_english", _strMetavariant);
             // <movement />
-            objWriter.WriteElementString("movement", FullMovement());
+            objWriter.WriteElementString("movement", FullMovement(objCulture));
             // <walk />
-            objWriter.WriteElementString("walk", FullMovement());
+            objWriter.WriteElementString("walk", FullMovement(objCulture));
             // <run />
-            objWriter.WriteElementString("run", FullMovement());
+            objWriter.WriteElementString("run", FullMovement(objCulture));
             // <sprint />
-            objWriter.WriteElementString("sprint", FullMovement());
+            objWriter.WriteElementString("sprint", FullMovement(objCulture));
             // <movementwalk />
-            objWriter.WriteElementString("movementwalk", Movement);
+            objWriter.WriteElementString("movementwalk", GetMovement(objCulture));
             // <movementswim />
-            objWriter.WriteElementString("movementswim", Swim);
+            objWriter.WriteElementString("movementswim", GetSwim(objCulture));
             // <movementfly />
-            objWriter.WriteElementString("movementfly", Fly);
+            objWriter.WriteElementString("movementfly", GetFly(objCulture));
 
             // <gameplayoption />
             objWriter.WriteElementString("gameplayoption", _strGameplayOption);
             // <maxkarma />
-            objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString());
+            objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(objCulture));
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", $"{_decMaxNuyen:###,###,##0.##}");
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString("0.##", objCulture));
             // <contactmultiplier />
-            objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString());
+            objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(objCulture));
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", _strPriorityMetatype);
             // <priorityattributes />
@@ -2080,63 +2080,63 @@ namespace Chummer
             objWriter.WriteElementString("gamenotes", _strGameNotes);
 
             // <limitphysical />
-            objWriter.WriteElementString("limitphysical", LimitPhysical.ToString());
+            objWriter.WriteElementString("limitphysical", LimitPhysical.ToString(objCulture));
             // <limitmental />
-            objWriter.WriteElementString("limitmental", LimitMental.ToString());
+            objWriter.WriteElementString("limitmental", LimitMental.ToString(objCulture));
             // <limitsocial />
-            objWriter.WriteElementString("limitsocial", LimitSocial.ToString());
+            objWriter.WriteElementString("limitsocial", LimitSocial.ToString(objCulture));
             // <limitastral />
-            objWriter.WriteElementString("limitastral", LimitAstral.ToString());
+            objWriter.WriteElementString("limitastral", LimitAstral.ToString(objCulture));
             // <contactpoints />
-            objWriter.WriteElementString("contactpoints", _intContactPoints.ToString());
+            objWriter.WriteElementString("contactpoints", _intContactPoints.ToString(objCulture));
             // <contactpointsused />
-            objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString());
+            objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString(objCulture));
             // <cfplimit />
-            objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString());
+            objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString(objCulture));
             // <totalaiprogramlimit />
-            objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString());
+            objWriter.WriteElementString("ainormalprogramlimit", _intAINormalProgramLimit.ToString(objCulture));
             // <aiadvancedprogramlimit />
-            objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString());
+            objWriter.WriteElementString("aiadvancedprogramlimit", _intAIAdvancedProgramLimit.ToString(objCulture));
             // <spelllimit />
-            objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString());
+            objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString(objCulture));
             // <karma />
-            objWriter.WriteElementString("karma", _intKarma.ToString());
+            objWriter.WriteElementString("karma", _intKarma.ToString(objCulture));
             // <totalkarma />
-            objWriter.WriteElementString("totalkarma", $"{CareerKarma:###,###,##0}");
+            objWriter.WriteElementString("totalkarma", CareerKarma.ToString(objCulture));
             // <special />
-            objWriter.WriteElementString("special", _intSpecial.ToString());
+            objWriter.WriteElementString("special", _intSpecial.ToString(objCulture));
             // <totalspecial />
-            objWriter.WriteElementString("totalspecial", $"{_intTotalSpecial:###,###,##0}");
+            objWriter.WriteElementString("totalspecial", _intTotalSpecial.ToString(objCulture));
             // <attributes />
-            objWriter.WriteElementString("attributes", _intSpecial.ToString());
+            objWriter.WriteElementString("attributes", _intSpecial.ToString(objCulture));
             // <totalattributes />
-            objWriter.WriteElementString("totalattributes", $"{_intTotalAttributes:###,###,##0}");
+            objWriter.WriteElementString("totalattributes", _intTotalAttributes.ToString(objCulture));
             // <streetcred />
-            objWriter.WriteElementString("streetcred", _intStreetCred.ToString());
+            objWriter.WriteElementString("streetcred", _intStreetCred.ToString(objCulture));
             // <calculatedstreetcred />
-            objWriter.WriteElementString("calculatedstreetcred", CalculatedStreetCred.ToString());
+            objWriter.WriteElementString("calculatedstreetcred", CalculatedStreetCred.ToString(objCulture));
             // <totalstreetcred />
-            objWriter.WriteElementString("totalstreetcred", TotalStreetCred.ToString());
+            objWriter.WriteElementString("totalstreetcred", TotalStreetCred.ToString(objCulture));
             // <burntstreetcred />
-            objWriter.WriteElementString("burntstreetcred", _intBurntStreetCred.ToString());
+            objWriter.WriteElementString("burntstreetcred", _intBurntStreetCred.ToString(objCulture));
             // <notoriety />
-            objWriter.WriteElementString("notoriety", _intNotoriety.ToString());
+            objWriter.WriteElementString("notoriety", _intNotoriety.ToString(objCulture));
             // <calculatednotoriety />
-            objWriter.WriteElementString("calculatednotoriety", CalculatedNotoriety.ToString());
+            objWriter.WriteElementString("calculatednotoriety", CalculatedNotoriety.ToString(objCulture));
             // <totalnotoriety />
-            objWriter.WriteElementString("totalnotoriety", TotalNotoriety.ToString());
+            objWriter.WriteElementString("totalnotoriety", TotalNotoriety.ToString(objCulture));
             // <publicawareness />
-            objWriter.WriteElementString("publicawareness", _intPublicAwareness.ToString());
+            objWriter.WriteElementString("publicawareness", _intPublicAwareness.ToString(objCulture));
             // <calculatedpublicawareness />
-            objWriter.WriteElementString("calculatedpublicawareness", CalculatedPublicAwareness.ToString());
+            objWriter.WriteElementString("calculatedpublicawareness", CalculatedPublicAwareness.ToString(objCulture));
             // <totalpublicawareness />
-            objWriter.WriteElementString("totalpublicawareness", TotalPublicAwareness.ToString());
+            objWriter.WriteElementString("totalpublicawareness", TotalPublicAwareness.ToString(objCulture));
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", $"{_decNuyen:###,###,##0.##}");
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString("0.##", objCulture));
             // <adeptwaydiscount />
-            objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
+            objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString(objCulture));
             // <adept />
             objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString());
             // <magician />
@@ -2149,7 +2149,7 @@ namespace Chummer
             objWriter.WriteElementString("cyberwaredisabled", _blnCyberwareDisabled.ToString());
             // <critter />
             objWriter.WriteElementString("critter", _blnCritterEnabled.ToString());
-            objWriter.WriteElementString("totaless", Essence.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("totaless", Essence.ToString(objCulture));
             // <tradition />
             string strTraditionName = MagicTradition;
             if (strTraditionName == "Custom")
@@ -2188,7 +2188,7 @@ namespace Chummer
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
 
-                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
+                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString(objCulture) + ")");
                 objWriter.WriteStartElement("drainattribute");
                 foreach (string drainAttribute in strDrainAtt.Replace('+', ' ').Split(new [] {' '} , StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -2263,115 +2263,115 @@ namespace Chummer
                 // Add any Improvements for Fading Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
 
-                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
+                objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString(objCulture) + ")");
             }
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
-	        AttributeSection.Print(objWriter);
+	        AttributeSection.Print(objWriter, objCulture);
 
             // </attributes>
             objWriter.WriteEndElement();
 
             // <armor />
-            objWriter.WriteElementString("armor", TotalArmorRating.ToString());
+            objWriter.WriteElementString("armor", TotalArmorRating.ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString());
+            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString());
+            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString());
+            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString());
+            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString());
+            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
             // <armordicestun />
-            objWriter.WriteElementString("armordicestun", (BOD.TotalValue + TotalArmorRating).ToString());
+            objWriter.WriteElementString("armordicestun", (BOD.TotalValue + TotalArmorRating).ToString(objCulture));
             // <firearmordicestun />
-            objWriter.WriteElementString("firearmordicestun", (BOD.TotalValue + TotalFireArmorRating).ToString());
+            objWriter.WriteElementString("firearmordicestun", (BOD.TotalValue + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicestun />
-            objWriter.WriteElementString("coldarmordicestun", (BOD.TotalValue + TotalColdArmorRating).ToString());
+            objWriter.WriteElementString("coldarmordicestun", (BOD.TotalValue + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicestun />
-            objWriter.WriteElementString("electricityarmordicestun", (BOD.TotalValue + TotalElectricityArmorRating).ToString());
+            objWriter.WriteElementString("electricityarmordicestun", (BOD.TotalValue + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicestun />
-            objWriter.WriteElementString("acidarmordicestun", (BOD.TotalValue + TotalAcidArmorRating).ToString());
+            objWriter.WriteElementString("acidarmordicestun", (BOD.TotalValue + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicestun />
-            objWriter.WriteElementString("fallingarmordicestun", (BOD.TotalValue + TotalFallingArmorRating).ToString());
+            objWriter.WriteElementString("fallingarmordicestun", (BOD.TotalValue + TotalFallingArmorRating).ToString(objCulture));
             // <armordicephysical />
-            objWriter.WriteElementString("armordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalArmorRating).ToString());
+            objWriter.WriteElementString("armordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalArmorRating).ToString(objCulture));
             // <firearmordicephysical />
-            objWriter.WriteElementString("firearmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFireArmorRating).ToString());
+            objWriter.WriteElementString("firearmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicephysical />
-            objWriter.WriteElementString("coldarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalColdArmorRating).ToString());
+            objWriter.WriteElementString("coldarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicephysical />
-            objWriter.WriteElementString("electricityarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalElectricityArmorRating).ToString());
+            objWriter.WriteElementString("electricityarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicephysical />
-            objWriter.WriteElementString("acidarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalAcidArmorRating).ToString());
+            objWriter.WriteElementString("acidarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicephysical />
-            objWriter.WriteElementString("fallingarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFallingArmorRating).ToString());
+            objWriter.WriteElementString("fallingarmordicephysical", (BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance) + TotalFallingArmorRating).ToString(objCulture));
 
             // Condition Monitors.
             // <physicalcm />
-            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString());
+            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             // <stuncm />
-            objWriter.WriteElementString("stuncm", StunCM.ToString());
+            objWriter.WriteElementString("stuncm", StunCM.ToString(objCulture));
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
-            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
+            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(objCulture));
             // <stuncmfilled />
-            objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString());
+            objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString(objCulture));
 
             // <cmthreshold>
-            objWriter.WriteElementString("cmthreshold", CMThreshold.ToString());
+            objWriter.WriteElementString("cmthreshold", CMThreshold.ToString(objCulture));
             // <cmthresholdoffset>
-            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString());
+            objWriter.WriteElementString("physicalcmthresholdoffset", PhysicalCMThresholdOffset.ToString(objCulture));
             // <cmthresholdoffset>
-            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString());
+            objWriter.WriteElementString("stuncmthresholdoffset", StunCMThresholdOffset.ToString(objCulture));
             // <cmoverflow>
-            objWriter.WriteElementString("cmoverflow", CMOverflow.ToString());
+            objWriter.WriteElementString("cmoverflow", CMOverflow.ToString(objCulture));
 
             // Calculate Initiatives.
             // Initiative.
-            objWriter.WriteElementString("init", Initiative);
-            objWriter.WriteElementString("initdice", InitiativeDice.ToString());
-            objWriter.WriteElementString("initvalue", InitiativeValue.ToString());
-            objWriter.WriteElementString("initbonus", Math.Max(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative), 0).ToString());
+            objWriter.WriteElementString("init", GetInitiative(objCulture));
+            objWriter.WriteElementString("initdice", InitiativeDice.ToString(objCulture));
+            objWriter.WriteElementString("initvalue", InitiativeValue.ToString(objCulture));
+            objWriter.WriteElementString("initbonus", Math.Max(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative), 0).ToString(objCulture));
 
             // Astral Initiative.
             if (MAGEnabled)
             {
-                objWriter.WriteElementString("astralinit", AstralInitiative);
-                objWriter.WriteElementString("astralinitdice", AstralInitiativeDice.ToString());
-                objWriter.WriteElementString("astralinitvalue", AstralInitiativeValue.ToString());
+                objWriter.WriteElementString("astralinit", GetAstralInitiative(objCulture));
+                objWriter.WriteElementString("astralinitdice", AstralInitiativeDice.ToString(objCulture));
+                objWriter.WriteElementString("astralinitvalue", AstralInitiativeValue.ToString(objCulture));
             }
 
             // Matrix Initiative (AR).
-            objWriter.WriteElementString("matrixarinit", MatrixInitiative);
-            objWriter.WriteElementString("matrixarinitdice", MatrixInitiativeDice.ToString());
-            objWriter.WriteElementString("matrixarinitvalue", MatrixInitiativeValue.ToString());
+            objWriter.WriteElementString("matrixarinit", GetMatrixInitiative(objCulture));
+            objWriter.WriteElementString("matrixarinitdice", MatrixInitiativeDice.ToString(objCulture));
+            objWriter.WriteElementString("matrixarinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Matrix Initiative (Cold).
-            objWriter.WriteElementString("matrixcoldinit", MatrixInitiativeCold);
-            objWriter.WriteElementString("matrixcoldinitdice", MatrixInitiativeDice.ToString());
-            objWriter.WriteElementString("matrixcoldinitvalue", MatrixInitiativeValue.ToString());
+            objWriter.WriteElementString("matrixcoldinit", GetMatrixInitiativeCold(objCulture));
+            objWriter.WriteElementString("matrixcoldinitdice", MatrixInitiativeDice.ToString(objCulture));
+            objWriter.WriteElementString("matrixcoldinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Matrix Initiative (Hot).
-            objWriter.WriteElementString("matrixhotinit", MatrixInitiativeHot);
-            objWriter.WriteElementString("matrixhotinitdice", MatrixInitiativeDice.ToString());
-            objWriter.WriteElementString("matrixhotinitvalue", MatrixInitiativeValue.ToString());
+            objWriter.WriteElementString("matrixhotinit", GetMatrixInitiativeHot(objCulture));
+            objWriter.WriteElementString("matrixhotinitdice", MatrixInitiativeDice.ToString(objCulture));
+            objWriter.WriteElementString("matrixhotinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Rigger Initiative.
-            objWriter.WriteElementString("riggerinit", Initiative);
+            objWriter.WriteElementString("riggerinit", GetInitiative(objCulture));
 
             // <magenabled />
             objWriter.WriteElementString("magenabled", _blnMAGEnabled.ToString());
             // <initiategrade />
-            objWriter.WriteElementString("initiategrade", _intInitiateGrade.ToString());
+            objWriter.WriteElementString("initiategrade", _intInitiateGrade.ToString(objCulture));
             // <resenabled />
             objWriter.WriteElementString("resenabled", _blnRESEnabled.ToString());
             // <submersiongrade />
-            objWriter.WriteElementString("submersiongrade", _intSubmersionGrade.ToString());
+            objWriter.WriteElementString("submersiongrade", _intSubmersionGrade.ToString(objCulture));
             // <depenabled />
             objWriter.WriteElementString("depenabled", _blnDEPEnabled.ToString());
             // <groupmember />
@@ -2382,64 +2382,64 @@ namespace Chummer
             objWriter.WriteElementString("groupnotes", _strGroupNotes);
 
             // <composure />
-            objWriter.WriteElementString("composure", Composure.ToString());
+            objWriter.WriteElementString("composure", Composure.ToString(objCulture));
             // <judgeintentions />
-            objWriter.WriteElementString("judgeintentions", JudgeIntentions.ToString());
+            objWriter.WriteElementString("judgeintentions", JudgeIntentions.ToString(objCulture));
             // <judgeintentionsresist />
-            objWriter.WriteElementString("judgeintentionsresist", JudgeIntentionsResist.ToString());
+            objWriter.WriteElementString("judgeintentionsresist", JudgeIntentionsResist.ToString(objCulture));
             // <liftandcarry />
-            objWriter.WriteElementString("liftandcarry", LiftAndCarry.ToString());
+            objWriter.WriteElementString("liftandcarry", LiftAndCarry.ToString(objCulture));
             // <memory />
-            objWriter.WriteElementString("memory", Memory.ToString());
+            objWriter.WriteElementString("memory", Memory.ToString(objCulture));
             // <liftweight />
-            objWriter.WriteElementString("liftweight", (STR.TotalValue * 15).ToString());
+            objWriter.WriteElementString("liftweight", (STR.TotalValue * 15).ToString(objCulture));
             // <carryweight />
-            objWriter.WriteElementString("carryweight", (STR.TotalValue * 10).ToString());
+            objWriter.WriteElementString("carryweight", (STR.TotalValue * 10).ToString(objCulture));
             // <fatigueresist />
-            objWriter.WriteElementString("fatigueresist", FatigueResist.ToString());
+            objWriter.WriteElementString("fatigueresist", FatigueResist.ToString(objCulture));
             // <radiationresist />
-            objWriter.WriteElementString("radiationresist", RadiationResist.ToString());
+            objWriter.WriteElementString("radiationresist", RadiationResist.ToString(objCulture));
             // <sonicresist />
-            objWriter.WriteElementString("sonicresist", SonicResist.ToString());
+            objWriter.WriteElementString("sonicresist", SonicResist.ToString(objCulture));
             // <toxincontacttesist />
-            objWriter.WriteElementString("toxincontacttesist", ToxinContactResist.ToString());
+            objWriter.WriteElementString("toxincontacttesist", ToxinContactResist.ToString(objCulture));
             // <toxiningestionresist />
-            objWriter.WriteElementString("toxiningestionresist", ToxinIngestionResist.ToString());
+            objWriter.WriteElementString("toxiningestionresist", ToxinIngestionResist.ToString(objCulture));
             // <toxininhalationresist />
-            objWriter.WriteElementString("toxininhalationresist", ToxinInhalationResist.ToString());
+            objWriter.WriteElementString("toxininhalationresist", ToxinInhalationResist.ToString(objCulture));
             // <toxininjectionresist />
-            objWriter.WriteElementString("toxininjectionresist", ToxinInjectionResist.ToString());
+            objWriter.WriteElementString("toxininjectionresist", ToxinInjectionResist.ToString(objCulture));
             // <pathogencontactresist />
-            objWriter.WriteElementString("pathogencontactresist", PathogenContactResist.ToString());
+            objWriter.WriteElementString("pathogencontactresist", PathogenContactResist.ToString(objCulture));
             // <pathogeningestionresist />
-            objWriter.WriteElementString("pathogeningestionresist", PathogenIngestionResist.ToString());
+            objWriter.WriteElementString("pathogeningestionresist", PathogenIngestionResist.ToString(objCulture));
             // <pathogeninhalationresist />
-            objWriter.WriteElementString("pathogeninhalationresist", PathogenInhalationResist.ToString());
+            objWriter.WriteElementString("pathogeninhalationresist", PathogenInhalationResist.ToString(objCulture));
             // <pathogeninjectionresist />
-            objWriter.WriteElementString("pathogeninjectionresist", PathogenInjectionResist.ToString());
+            objWriter.WriteElementString("pathogeninjectionresist", PathogenInjectionResist.ToString(objCulture));
             // <physiologicaladdictionresistfirsttime />
-            objWriter.WriteElementString("physiologicaladdictionresistfirsttime", PhysiologicalAddictionResistFirstTime.ToString());
+            objWriter.WriteElementString("physiologicaladdictionresistfirsttime", PhysiologicalAddictionResistFirstTime.ToString(objCulture));
             // <physiologicaladdictionresistalreadyaddicted />
-            objWriter.WriteElementString("physiologicaladdictionresistalreadyaddicted", PhysiologicalAddictionResistAlreadyAddicted.ToString());
+            objWriter.WriteElementString("physiologicaladdictionresistalreadyaddicted", PhysiologicalAddictionResistAlreadyAddicted.ToString(objCulture));
             // <psychologicaladdictionresistfirsttime />
-            objWriter.WriteElementString("psychologicaladdictionresistfirsttime", PsychologicalAddictionResistFirstTime.ToString());
+            objWriter.WriteElementString("psychologicaladdictionresistfirsttime", PsychologicalAddictionResistFirstTime.ToString(objCulture));
             // <psychologicaladdictionresistalreadyaddicted />
-            objWriter.WriteElementString("psychologicaladdictionresistalreadyaddicted", PsychologicalAddictionResistAlreadyAddicted.ToString());
+            objWriter.WriteElementString("psychologicaladdictionresistalreadyaddicted", PsychologicalAddictionResistAlreadyAddicted.ToString(objCulture));
             // <physicalcmnaturalrecovery />
-            objWriter.WriteElementString("physicalcmnaturalrecovery", PhysicalCMNaturalRecovery.ToString());
+            objWriter.WriteElementString("physicalcmnaturalrecovery", PhysicalCMNaturalRecovery.ToString(objCulture));
             // <stuncmnaturalrecovery />
-            objWriter.WriteElementString("stuncmnaturalrecovery", StunCMNaturalRecovery.ToString());
+            objWriter.WriteElementString("stuncmnaturalrecovery", StunCMNaturalRecovery.ToString(objCulture));
 
             // <skills>
             objWriter.WriteStartElement("skills");
-            SkillsSection.Print(objWriter);
+            SkillsSection.Print(objWriter, objCulture);
             objWriter.WriteEndElement();
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
             foreach (Contact objContact in _lstContacts)
             {
-                objContact.Print(objWriter);
+                objContact.Print(objWriter, objCulture);
             }
             // </contacts>
             objWriter.WriteEndElement();
@@ -2456,7 +2456,7 @@ namespace Chummer
                 string strName = objImprovement.UniqueName + ": ";
                 if (objImprovement.Value > 0)
                     strName += "+";
-                strName += objImprovement.Value.ToString();
+                strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
                     strName += ", " + objImprovement.Condition;
@@ -2482,7 +2482,7 @@ namespace Chummer
                 string strName = objImprovement.UniqueName + ": ";
                 if (objImprovement.Value > 0)
                     strName += "+";
-                strName += objImprovement.Value.ToString();
+                strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
                     strName += ", " + objImprovement.Condition;
@@ -2508,7 +2508,7 @@ namespace Chummer
                 string strName = objImprovement.UniqueName + ": ";
                 if (objImprovement.Value > 0)
                     strName += "+";
-                strName += objImprovement.Value.ToString();
+                strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
                     strName += ", " + objImprovement.Condition;
@@ -2526,7 +2526,7 @@ namespace Chummer
             objWriter.WriteStartElement("spells");
             foreach (Spell objSpell in _lstSpells)
             {
-                objSpell.Print(objWriter);
+                objSpell.Print(objWriter, objCulture);
             }
             // </spells>
             objWriter.WriteEndElement();
@@ -2535,7 +2535,7 @@ namespace Chummer
             objWriter.WriteStartElement("powers");
             foreach (Power objPower in _lstPowers)
             {
-                objPower.Print(objWriter);
+                objPower.Print(objWriter, objCulture);
             }
             // </powers>
             objWriter.WriteEndElement();
@@ -2544,7 +2544,7 @@ namespace Chummer
             objWriter.WriteStartElement("spirits");
             foreach (Spirit objSpirit in _lstSpirits)
             {
-                objSpirit.Print(objWriter);
+                objSpirit.Print(objWriter, objCulture);
             }
             // </spirits>
             objWriter.WriteEndElement();
@@ -2571,7 +2571,7 @@ namespace Chummer
             objWriter.WriteStartElement("martialarts");
             foreach (MartialArt objMartialArt in _lstMartialArts)
             {
-                objMartialArt.Print(objWriter);
+                objMartialArt.Print(objWriter, objCulture);
             }
             // </martialarts>
             objWriter.WriteEndElement();
@@ -2589,7 +2589,7 @@ namespace Chummer
             objWriter.WriteStartElement("armors");
             foreach (Armor objArmor in _lstArmor)
             {
-                objArmor.Print(objWriter);
+                objArmor.Print(objWriter, objCulture);
             }
             // </armors>
             objWriter.WriteEndElement();
@@ -2598,7 +2598,7 @@ namespace Chummer
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
             {
-                objWeapon.Print(objWriter);
+                objWeapon.Print(objWriter, objCulture);
             }
             // </weapons>
             objWriter.WriteEndElement();
@@ -2607,7 +2607,7 @@ namespace Chummer
             objWriter.WriteStartElement("cyberwares");
             foreach (Cyberware objCyberware in _lstCyberware)
             {
-                objCyberware.Print(objWriter);
+                objCyberware.Print(objWriter, objCulture);
             }
             // </cyberwares>
             objWriter.WriteEndElement();
@@ -2635,7 +2635,7 @@ namespace Chummer
             {
                 if (strQualitiesToPrint.TryGetValue(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra, out intLoopRating))
                 {
-                    objQuality.Print(objWriter, intLoopRating);
+                    objQuality.Print(objWriter, intLoopRating, objCulture);
                     strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
                 }
             }
@@ -2646,7 +2646,7 @@ namespace Chummer
             objWriter.WriteStartElement("lifestyles");
             foreach (Lifestyle objLifestyle in _lstLifestyles)
             {
-                objLifestyle.Print(objWriter);
+                objLifestyle.Print(objWriter, objCulture);
             }
             // </lifestyles>
             objWriter.WriteEndElement();
@@ -2656,15 +2656,15 @@ namespace Chummer
             foreach (Gear objGear in _lstGear)
             {
                 // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
+                Commlink objCommlink = objGear as Commlink;
+                if (objCommlink != null)
                 //if (objGear.Category == "Commlinks" || objGear.Category == "Rigger Command Consoles" || objGear.Category == "Cyberdecks" || objGear.GetType() == typeof(Commlink))
                 {
-                    Commlink objCommlink = (Commlink)objGear;
-                    objCommlink.Print(objWriter);
+                    objCommlink.Print(objWriter, objCulture);
                 }
                 else
                 {
-                    objGear.Print(objWriter);
+                    objGear.Print(objWriter, objCulture);
                 }
             }
             // </gears>
@@ -2674,7 +2674,7 @@ namespace Chummer
             objWriter.WriteStartElement("vehicles");
             foreach (Vehicle objVehicle in _lstVehicles)
             {
-                objVehicle.Print(objWriter);
+                objVehicle.Print(objWriter, objCulture);
             }
             // </vehicles>
             objWriter.WriteEndElement();
@@ -2683,7 +2683,7 @@ namespace Chummer
             objWriter.WriteStartElement("metamagics");
             foreach (Metamagic objMetamagic in _lstMetamagics)
             {
-                objMetamagic.Print(objWriter);
+                objMetamagic.Print(objWriter, objCulture);
             }
             // </metamagics>
             objWriter.WriteEndElement();
@@ -2719,7 +2719,7 @@ namespace Chummer
             objWriter.WriteStartElement("calendar");
             //_lstCalendar.Sort();
             foreach (CalendarWeek objWeek in _lstCalendar)
-                objWeek.Print(objWriter, Options.PrintNotes);
+                objWeek.Print(objWriter, objCulture, Options.PrintNotes);
             // </expenses>
             objWriter.WriteEndElement();
 
@@ -2730,7 +2730,7 @@ namespace Chummer
                 objWriter.WriteStartElement("expenses");
                 _lstExpenseLog.Sort(ExpenseLogEntry.CompareDate);
                 foreach (ExpenseLogEntry objExpense in _lstExpenseLog)
-                    objExpense.Print(objWriter);
+                    objExpense.Print(objWriter, objCulture);
                 // </expenses>
                 objWriter.WriteEndElement();
             }
@@ -2745,40 +2745,6 @@ namespace Chummer
         /// <param name="blnDialog">Whether or not the window should be shown as a dialogue window.</param>
         public void Print(bool blnDialog = true)
         {
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            MemoryStream objStream = new MemoryStream();
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
-
-            // Being the document.
-            objWriter.WriteStartDocument();
-
-            // </characters>
-            objWriter.WriteStartElement("characters");
-
-#if DEBUG
-            PrintToStream(objStream, objWriter);
-#else
-            PrintToStream(objWriter);
-#endif
-
-            // </characters>
-            objWriter.WriteEndElement();
-
-            // Finish the document and flush the Writer and Stream.
-            objWriter.WriteEndDocument();
-            objWriter.Flush();
-
-            // Read the stream.
-            StreamReader objReader = new StreamReader(objStream);
-            objStream.Position = 0;
-            XmlDocument objCharacterXML = new XmlDocument();
-
-            // Put the stream into an XmlDocument and send it off to the Viewer.
-            string strXML = objReader.ReadToEnd();
-            objCharacterXML.LoadXml(strXML);
-
-            objWriter.Close();
-
             // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
             // If a Viewer window already exists for this character, use it instead.
             if (_frmPrintView == null)
@@ -2789,18 +2755,18 @@ namespace Chummer
                 };
                 frmViewer frmViewCharacter = new frmViewer();
                 frmViewCharacter.Characters = lstCharacters;
-                frmViewCharacter.CharacterXML = objCharacterXML;
                 _frmPrintView = frmViewCharacter;
                 if (blnDialog)
-                    frmViewCharacter.ShowDialog();
+                    _frmPrintView.ShowDialog();
                 else
-                    frmViewCharacter.Show();
+                    _frmPrintView.Show();
             }
             else
             {
                 _frmPrintView.Activate();
-                _frmPrintView.RefreshView();
+                
             }
+            _frmPrintView.RefreshView();
         }
 
         /// <summary>
@@ -4695,6 +4661,13 @@ namespace Chummer
             }
         }
 
+        public string GetInitiative(CultureInfo objCulture)
+        {
+            return LanguageManager.GetString("String_Initiative")
+                    .Replace("{0}", InitiativeValue.ToString(objCulture))
+                    .Replace("{1}", InitiativeDice.ToString(objCulture));
+        }
+
         /// <summary>
         /// Initiative Dice.
         /// </summary>
@@ -4734,6 +4707,13 @@ namespace Chummer
             }
         }
 
+        public string GetAstralInitiative(CultureInfo objCulture)
+        {
+            return LanguageManager.GetString("String_Initiative")
+                    .Replace("{0}", AstralInitiativeValue.ToString(objCulture))
+                    .Replace("{1}", AstralInitiativeDice.ToString(objCulture));
+        }
+
         /// <summary>
         /// Astral Initiative Value.
         /// </summary>
@@ -4770,7 +4750,13 @@ namespace Chummer
                         .Replace("{0}", MatrixInitiativeValue.ToString())
                         .Replace("{1}", MatrixInitiativeDice.ToString());
             }
+        }
 
+        public string GetMatrixInitiative(CultureInfo objCulture)
+        {
+            return LanguageManager.GetString("String_Initiative")
+                        .Replace("{0}", MatrixInitiativeValue.ToString(objCulture))
+                        .Replace("{1}", MatrixInitiativeDice.ToString(objCulture));
         }
 
         /// <summary>
@@ -4841,6 +4827,17 @@ namespace Chummer
             }
         }
 
+        public string GetMatrixInitiativeCold(CultureInfo objCulture)
+        {
+            if (_strMetatype == "A.I.")
+            {
+                return GetMatrixInitiative(objCulture);
+            }
+            return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
+                    .Replace("{0}", MatrixInitiativeColdValue.ToString(objCulture))
+                    .Replace("{1}", MatrixInitiativeColdDice.ToString(objCulture));
+        }
+
         /// <summary>
         /// Cold Sim Matrix Initiative Value.
         /// </summary>
@@ -4889,6 +4886,18 @@ namespace Chummer
                         .Replace("{0}", MatrixInitiativeHotValue.ToString())
                         .Replace("{1}", MatrixInitiativeHotDice.ToString());
             }
+        }
+
+        public string GetMatrixInitiativeHot(CultureInfo objCulture)
+        {
+            if (_strMetatype == "A.I.")
+            {
+                return GetMatrixInitiative(objCulture);
+            }
+            return
+                LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
+                    .Replace("{0}", MatrixInitiativeHotValue.ToString(objCulture))
+                    .Replace("{1}", MatrixInitiativeHotDice.ToString(objCulture));
         }
 
         /// <summary>
@@ -6316,75 +6325,49 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Movement rate (Culture-dependent).
+        /// </summary>
+        public string GetMovement(CultureInfo objCulture)
+        {
+            if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
+            {
+                string strReturn = string.Empty;
+                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+                XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+                XmlNode variant = meta?.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
+                XmlNode objRunNode = variant?["run"] ?? meta?["run"];
+                XmlNode objWalkNode = variant?["walk"] ?? meta?["walk"];
+                XmlNode objSprintNode = variant?["sprint"] ?? meta?["sprint"];
+
+                _strMovement = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
+                _strRun = objRunNode?.InnerText ?? string.Empty;
+                _strWalk = objWalkNode?.InnerText ?? string.Empty;
+                _strSprint = objSprintNode?.InnerText ?? string.Empty;
+
+                objRunNode = objRunNode?.Attributes?["alt"];
+                objWalkNode = objWalkNode?.Attributes?["alt"];
+                objSprintNode = objSprintNode?.Attributes?["alt"];
+                _strRunAlt = objRunNode?.InnerText ?? string.Empty;
+                _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
+                _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+            }
+            // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+            if (_strMovement == "Special")
+            {
+                return LanguageManager.GetString("String_ModeSpecial");
+            }
+
+            return CalculatedMovement("Ground", true, objCulture);
+        }
+
+        /// <summary>
         /// Character's Movement rate.
         /// </summary>
         public string Movement
         {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
-                {
-                    string strReturn = string.Empty;
-                    XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
-                    XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-                    XmlNode variant = meta?.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
-                    XmlNode objRunNode = variant?["run"] ?? meta?["run"];
-                    XmlNode objWalkNode = variant?["walk"] ?? meta?["walk"];
-                    XmlNode objSprintNode = variant?["sprint"] ?? meta?["sprint"];
-
-                    _strMovement = variant?["movement"]?.InnerText ?? meta?["movement"]?.InnerText ?? string.Empty;
-                    _strRun = objRunNode?.InnerText ?? string.Empty;
-                    _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                    _strSprint = objSprintNode?.InnerText ?? string.Empty;
-
-                    objRunNode = objRunNode?.Attributes?["alt"];
-                    objWalkNode = objWalkNode?.Attributes?["alt"];
-                    objSprintNode = objSprintNode?.Attributes?["alt"];
-                    _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                    _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                    _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
-                }
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                {
-                    return "Special";
-                }
-
-                return CalculatedMovement("Ground", true);
-            }
             set
             {
                 _strMovement = value;
-            }
-        }
-        /// <summary>
-        /// Character's Movement rate in Metres per Combat Turn or Kilometres Per Hour.
-        /// </summary>
-        public string CalculatedMovementSpeed
-        {
-           get
-            {
-                string strReturn = Movement;
-                if (strReturn.Contains(','))
-                {
-                    string[] strMovementWithSprint = strReturn.Split(',');
-                    strReturn = strMovementWithSprint[0].Trim();
-                }
-                if (strReturn.Contains('/'))
-                {
-                    string[] strMovement = strReturn.Split('/');
-                    decimal decWalking = Convert.ToDecimal(strMovement[0], GlobalOptions.CultureInfo);
-                    decimal decRunning = Convert.ToDecimal(strMovement[1], GlobalOptions.CultureInfo);
-
-                    decimal walkratekph = .001m * (60 * 20 * decWalking);
-                    decimal runratekph = .001m * (60 * 20 * decRunning);
-                    //decimal walkratemph = 0.6213712m * walkratekph;
-                    //decimal runratemph = 0.6213712m * runratekph;
-
-                    strReturn = string.Format(LanguageManager.GetString("Tip_CalculatedMovement"), decWalking.ToString("N2", GlobalOptions.CultureInfo), walkratekph.ToString("N2", GlobalOptions.CultureInfo), decRunning.ToString("N2", GlobalOptions.CultureInfo), runratekph.ToString("N2", GlobalOptions.CultureInfo));
-                }
-
-                return strReturn;
             }
         }
 
@@ -6512,7 +6495,7 @@ namespace Chummer
             return decTmp;
         }
 
-        private string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false)
+        private string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false, CultureInfo objCulture = null)
         {
             decimal decSprint = SprintingRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonus, false, strMovementType) / 100.0m;
             decimal decRun = RunningRate(strMovementType) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunMultiplier, false, strMovementType);
@@ -6546,17 +6529,19 @@ namespace Chummer
                 }
             }
 
+            if (objCulture == null)
+                objCulture = GlobalOptions.CultureInfo;
             string strReturn = string.Empty;
             if (strMovementType == "Swim")
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
-                strReturn = $"{decWalk:###,###,##0.##}, {decSprint:###,###,##0.##}m/ hit";
+                strReturn = decWalk.ToString("0.##", objCulture) + ", " + decSprint.ToString("0.##", objCulture) + "m/ hit";
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
-                strReturn = $"{decWalk:###,###,##0.##}/{decRun:###,###,##0.##}, {decSprint:###,###,##0.##}m/ hit";
+                strReturn = decWalk.ToString("0.##", objCulture) + "/" + decRun.ToString("0.##", objCulture) + ", " + decSprint.ToString("0.##", objCulture) + "m/ hit";
             }
             return strReturn;
         }
@@ -6564,69 +6549,63 @@ namespace Chummer
         /// <summary>
         /// Character's Swim rate.
         /// </summary>
-        public string Swim
+        public string GetSwim(CultureInfo objCulture)
         {
-            get
+            // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+            if (_strMovement == "Special")
             {
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                {
-                    return "Special";
-                }
-
-                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
-                XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-                if (objXmlNode != null)
-                {
-                    string strReturn = string.Empty;
-                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
-                    if (strReturn == "Special")
-                    {
-                        return "Special";
-                    }
-                }
-                return CalculatedMovement("Swim");
+                return LanguageManager.GetString("String_ModeSpecial");
             }
+
+            XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+            if (objXmlNode != null)
+            {
+                string strReturn = string.Empty;
+                objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
+                if (strReturn == "Special")
+                {
+                    return LanguageManager.GetString("String_ModeSpecial");
+                }
+            }
+            return CalculatedMovement("Swim", false, objCulture);
         }
 
         /// <summary>
         /// Character's Fly rate.
         /// </summary>
-        public string Fly
+        public string GetFly(CultureInfo objCulture)
         {
-            get
+            // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+            if (_strMovement == "Special")
             {
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                {
-                    return "Special";
-                }
-
-                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
-                XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
-                if (objXmlNode != null)
-                {
-                    string strReturn = string.Empty;
-                    objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
-                    if (strReturn == "Special")
-                    {
-                    return "Special";
-                    }
-                }
-
-                return CalculatedMovement("Fly");
+                return LanguageManager.GetString("String_ModeSpecial");
             }
+
+            XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+            if (objXmlNode != null)
+            {
+                string strReturn = string.Empty;
+                objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
+                if (strReturn == "Special")
+                {
+                    return LanguageManager.GetString("String_ModeSpecial");
+                }
+            }
+
+            return CalculatedMovement("Fly", false, objCulture);
         }
 
         /// <summary>
         /// Full Movement (Movement, Swim, and Fly) for printouts.
         /// </summary>
-        private string FullMovement()
+        private string FullMovement(CultureInfo objCulture = null)
         {
             string strReturn = string.Empty;
-            string strGroundMovement = Movement;
-            string strSwimMovement = Swim;
-            string strFlyMovement = Fly;
+            string strGroundMovement = GetMovement(objCulture);
+            string strSwimMovement = GetSwim(objCulture);
+            string strFlyMovement = GetFly(objCulture);
             if (!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
                 strReturn += strGroundMovement + ", ";
             if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")

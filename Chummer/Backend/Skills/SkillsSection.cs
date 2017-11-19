@@ -825,13 +825,13 @@ namespace Chummer.Skills
         }
 
 
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             foreach (Skill skill in Skills)
             {
                 if ((_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0) && skill.Enabled)
                 {
-                    skill.Print(objWriter);
+                    skill.Print(objWriter, objCulture);
                 }
             }
 
@@ -839,13 +839,13 @@ namespace Chummer.Skills
             {
                 if (skillgroup.Rating > 0)
                 {
-                    skillgroup.Print(objWriter);
+                    skillgroup.Print(objWriter, objCulture);
                 }
             }
 
             foreach (KnowledgeSkill skill in KnowledgeSkills)
             {
-                skill.Print(objWriter);
+                skill.Print(objWriter, objCulture);
             }
         }
     }

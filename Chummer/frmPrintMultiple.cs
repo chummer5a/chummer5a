@@ -79,7 +79,7 @@ namespace Chummer
                 objCharacter.Load();
 
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter);
+                objCharacter.PrintToStream(objStream, objWriter, GlobalOptions.CultureInfo);
 #else
                 objCharacter.PrintToStream(objWriter);
 #endif

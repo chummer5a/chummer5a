@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -150,15 +151,15 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-		internal void Print(XmlTextWriter objWriter)
+		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.Print(objWriter);
+				att.Print(objWriter, objCulture);
 			}
 			foreach (CharacterAttrib att in SpecialAttributeList)
 			{
-				att.Print(objWriter);
+				att.Print(objWriter, objCulture);
 			}
 		}
 		#endregion

@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using System.Globalization;
 
 namespace Chummer.Skills
 {
@@ -237,16 +238,16 @@ namespace Chummer.Skills
             writer.WriteEndElement();
         }
 
-        internal void Print(XmlWriter objWriter)
+        internal void Print(XmlWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("skillgroup");
 
             objWriter.WriteElementString("name", DisplayName);
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("rating", Rating.ToString());
-            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
-            objWriter.WriteElementString("base", Base.ToString());
-            objWriter.WriteElementString("karma", Karma.ToString());
+            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
+            objWriter.WriteElementString("base", Base.ToString(objCulture));
+            objWriter.WriteElementString("karma", Karma.ToString(objCulture));
 
             objWriter.WriteEndElement();
         }

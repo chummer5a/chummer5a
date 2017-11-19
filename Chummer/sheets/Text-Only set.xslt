@@ -71,9 +71,7 @@
           <br/><xsl:value-of select="$lang.LiftCarry"/>: <xsl:value-of select="liftandcarry"/> (<xsl:value-of select="liftweight"/> kg/<xsl:value-of select="carryweight"/> kg)
           <br/><xsl:value-of select="$lang.Memory"/>: <xsl:value-of select="memory"/>
           <br/><xsl:value-of select="$lang.Nuyen"/>:
-            <xsl:call-template name="fnx-fmt-nmbr">
-              <xsl:with-param name="nmbr" select="nuyen"/>
-            </xsl:call-template>
+            <xsl:value-of select="nuyen"/>
             <xsl:value-of select="$lang.NuyenSymbol"/>
 
           <xsl:if test="prioritymetatype != ''">
@@ -448,18 +446,12 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$lang.Base"/>:
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="base"/>
-            <xsl:with-param name="wdth" select="2"/>
-          </xsl:call-template>
+          <xsl:value-of select="base"/>
           <xsl:call-template name="fnx-repeat">
             <xsl:with-param name="count" select="10"/>
           </xsl:call-template>
           <xsl:value-of select="$lang.Pool"/>:
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="total"/>
-            <xsl:with-param name="wdth" select="2"/>
-          </xsl:call-template>
+          <xsl:value-of select="amount"/>
           <xsl:if test="spec != '' and exotic = 'False'">
             (<xsl:value-of select="specializedrating"/>)
           </xsl:if>
@@ -914,10 +906,7 @@
         <xsl:with-param name="string" select="$anme"/>
         <xsl:with-param name="length" select="35"/>
       </xsl:call-template>
-      <xsl:call-template name="fnx-fmt-nmbr">
-        <xsl:with-param name="nmbr" select="armor"/>
-        <xsl:with-param name="wdth" select="2"/>
-      </xsl:call-template>
+      <xsl:value-of select="armor"/>
       <xsl:if test="armormods/armormod">
         <xsl:for-each select="armormods/armormod">
           <xsl:sort select="name"/>
@@ -1055,10 +1044,7 @@
         <xsl:with-param name="string" select="date"/>
         <xsl:with-param name="length" select="25"/>
       </xsl:call-template>
-      <xsl:call-template name="fnx-fmt-nmbr">
-        <xsl:with-param name="nmbr" select="amount"/>
-        <xsl:with-param name="wdth" select="6"/>
-      </xsl:call-template>
+      <xsl:value-of select="amount"/>
       <xsl:call-template name="fnx-repeat">
         <xsl:with-param name="count" select="6"/>
       </xsl:call-template>
@@ -1073,10 +1059,7 @@
         <xsl:with-param name="string" select="date"/>
         <xsl:with-param name="length" select="25"/>
       </xsl:call-template>
-      <xsl:call-template name="fnx-fmt-nmbr">
-        <xsl:with-param name="nmbr" select="amount"/>
-        <xsl:with-param name="wdth" select="7"/>
-      </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
+      <xsl:value-of select="amount"/><xsl:value-of select="$lang.NuyenSymbol"/>
       <xsl:call-template name="fnx-repeat">
         <xsl:with-param name="count" select="4"/>
       </xsl:call-template>

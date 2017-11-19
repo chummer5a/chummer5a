@@ -420,9 +420,7 @@
         <td style="white-space: nowrap;"><strong><xsl:value-of select="karma" /></strong></td>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.Nuyen" /></td>
         <td style="white-space: nowrap;"><strong>
-        <xsl:call-template name="fnx-fmt-nmbr">
-          <xsl:with-param name="nmbr" select="nuyen"/>
-        </xsl:call-template>
+          <xsl:value-of select="nuyen"/>
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </strong></td></tr>
       <tr>

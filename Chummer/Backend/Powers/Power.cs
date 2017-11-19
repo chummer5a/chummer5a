@@ -239,15 +239,15 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra));
-            objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString());
-            objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString());
-            objWriter.WriteElementString("rating", LevelsEnabled ? Rating.ToString() : "0");
-            objWriter.WriteElementString("totalpoints", PowerPoints.ToString());
+            objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
+            objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
+            objWriter.WriteElementString("rating", LevelsEnabled ? Rating.ToString(objCulture) : "0");
+            objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayAction);
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);

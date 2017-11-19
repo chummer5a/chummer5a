@@ -587,7 +587,7 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             // Find the piece of Gear that created this item if applicable
             List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
@@ -639,28 +639,28 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
             objWriter.WriteElementString("type", _strType);
-            objWriter.WriteElementString("reach", TotalReach.ToString());
-            objWriter.WriteElementString("accuracy", TotalAccuracy);
-            objWriter.WriteElementString("damage", CalculatedDamage());
-            objWriter.WriteElementString("damage_english", CalculatedDamage(0, true));
+            objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
+            objWriter.WriteElementString("accuracy", TotalAccuracy.ToString(objCulture));
+            objWriter.WriteElementString("damage", CalculatedDamage(0, false, objCulture));
+            objWriter.WriteElementString("damage_english", CalculatedDamage(0, true, objCulture));
             objWriter.WriteElementString("rawdamage", _strDamage);
             objWriter.WriteElementString("ap", TotalAP);
             objWriter.WriteElementString("mode", CalculatedMode);
             objWriter.WriteElementString("rc", TotalRC);
-            objWriter.WriteElementString("ammo", CalculatedAmmo());
-            objWriter.WriteElementString("ammo_english", CalculatedAmmo(true));
-            objWriter.WriteElementString("conceal", CalculatedConcealability());
+            objWriter.WriteElementString("ammo", CalculatedAmmo(false, objCulture));
+            objWriter.WriteElementString("ammo_english", CalculatedAmmo(true, objCulture));
+            objWriter.WriteElementString("conceal", CalculatedConcealability(objCulture));
             if (objGear != null)
             {
                 objWriter.WriteElementString("avail", objGear.TotalAvail(true));
-                objWriter.WriteElementString("cost", objGear.TotalCost.ToString());
-                objWriter.WriteElementString("owncost", objGear.OwnCost.ToString());
+                objWriter.WriteElementString("cost", objGear.TotalCost.ToString(objCulture));
+                objWriter.WriteElementString("owncost", objGear.OwnCost.ToString(objCulture));
             }
             else
             {
                 objWriter.WriteElementString("avail", TotalAvail);
-                objWriter.WriteElementString("cost", TotalCost.ToString());
-                objWriter.WriteElementString("owncost", OwnCost.ToString());
+                objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
+                objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
             }
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
@@ -670,11 +670,11 @@ namespace Chummer.Backend.Equipment
             {
                 objWriter.WriteStartElement("accessories");
                 foreach (WeaponAccessory objAccessory in _lstAccessories)
-                    objAccessory.Print(objWriter);
+                    objAccessory.Print(objWriter, objCulture);
                 objWriter.WriteEndElement();
             }
 
-            Dictionary<string, string> dictionaryRanges = RangeStrings;
+            Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
             objWriter.WriteStartElement("ranges");
             objWriter.WriteElementString("short", dictionaryRanges["short"]);
@@ -698,7 +698,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Weapon objUnderbarrel in _lstUnderbarrel)
                 {
                     objWriter.WriteStartElement("underbarrel");
-                    objUnderbarrel.Print(objWriter);
+                    objUnderbarrel.Print(objWriter, objCulture);
                     objWriter.WriteEndElement();
                 }
             }
@@ -721,7 +721,7 @@ namespace Chummer.Backend.Equipment
             //objWriter.WriteElementString("ammoslot3", GetAmmoName(_guiAmmoLoaded3));
             //objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
 
-            objWriter.WriteElementString("dicepool", DicePool);
+            objWriter.WriteElementString("dicepool", GetDicePool(objCulture));
             objWriter.WriteElementString("skill", Skill?.Name);
 
             if (_objCharacter.Options.PrintNotes)
@@ -1359,7 +1359,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's total Concealability including all Accessories and Modifications.
         /// </summary>
-        public string CalculatedConcealability()
+        public string CalculatedConcealability(CultureInfo objCulture)
         {
             int intReturn = _intConceal;
 
@@ -1386,9 +1386,9 @@ namespace Chummer.Backend.Equipment
 
             string strReturn = string.Empty;
             if (intReturn >= 0)
-                strReturn = "+" + intReturn.ToString();
+                strReturn = "+" + intReturn.ToString(objCulture);
             else
-                strReturn = intReturn.ToString();
+                strReturn = intReturn.ToString(objCulture);
 
             return strReturn;
         }
@@ -1396,8 +1396,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        public string CalculatedDamage(int intUseSTR = 0, bool blnForceEnglish = false)
+        public string CalculatedDamage(int intUseSTR = 0, bool blnForceEnglish = false, CultureInfo objCulture = null)
         {
+            if (objCulture == null)
+                objCulture = GlobalOptions.CultureInfo;
             string strReturn = _strDamage;
 
             // If the cost is determined by the Rating, evaluate the expression.
@@ -1668,7 +1670,7 @@ namespace Chummer.Backend.Equipment
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
                     dblDamage *= 2.0;
-                strReturn = dblDamage.ToString(GlobalOptions.CultureInfo) + strDamageType + strDamageExtra;
+                strReturn = dblDamage.ToString(objCulture) + strDamageType + strDamageExtra;
             }
             else
             {
@@ -1711,7 +1713,7 @@ namespace Chummer.Backend.Equipment
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
                     dblDamage *= 2.0;
-                strReturn = dblDamage.ToString(GlobalOptions.CultureInfo) + strDamageType + strDamageExtra;
+                strReturn = dblDamage.ToString(objCulture) + strDamageType + strDamageExtra;
             }
 
             // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.
@@ -1745,8 +1747,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Ammo capacity.
         /// </summary>
-        public string CalculatedAmmo(bool blnForceEnglish = false)
+        public string CalculatedAmmo(bool blnForceEnglish = false, CultureInfo objCulture = null)
         {
+            if (objCulture == null)
+                objCulture = GlobalOptions.CultureInfo;
             string[] strSplit = new string[] { " " };
             string[] strAmmos = _strAmmo.Split(strSplit, StringSplitOptions.None);
             string strReturn = string.Empty;
@@ -1798,7 +1802,7 @@ namespace Chummer.Backend.Equipment
                         intAmmo = (intAmmo*(2 + extendedMax))/2;
                     }
 
-                    strAmmoString = intAmmo.ToString();
+                    strAmmoString = intAmmo.ToString(objCulture);
                     if (!string.IsNullOrEmpty(strPrepend))
                         strAmmoString = strPrepend + strAmmoString;
                     strThisAmmo = strAmmoString + strAmmo.Substring(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('('));
@@ -2475,7 +2479,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The full Accuracy of the Weapon including modifiers from accessories.
         /// </summary>
-        public string TotalAccuracy
+        public int TotalAccuracy
         {
             get
             {
@@ -2626,7 +2630,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                return intAccuracy.ToString();
+                return intAccuracy;
             }
         }
 
@@ -2764,56 +2768,53 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
-        public Dictionary<string, string> RangeStrings
+        public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture)
         {
-            get
-            {
-                int intRangeModifier = RangeBonus + 100;
-                int intMin = GetRange("min", false);
-                int intShort = GetRange("short", false);
-                int intMedium = GetRange("medium", false);
-                int intLong = GetRange("long", false);
-                int intExtreme = GetRange("extreme", false);
-                int intAlternateMin = GetRange("min", true);
-                int intAlternateShort = GetRange("short", true);
-                int intAlternateMedium = GetRange("medium", true);
-                int intAlternateLong = GetRange("long", true);
-                int intAlternateExtreme = GetRange("extreme", true);
-                if (intMin > 0)
-                    intMin = (intMin * (intRangeModifier) + 99) / 100;
-                if (intShort > 0)
-                    intShort = (intShort * (intRangeModifier) + 99) / 100;
-                if (intMedium > 0)
-                    intMedium = (intMedium * (intRangeModifier) + 99) / 100;
-                if (intLong > 0)
-                    intLong = (intLong * (intRangeModifier) + 99) / 100;
-                if (intExtreme > 0)
-                    intExtreme = (intExtreme * (intRangeModifier) + 99) / 100;
-                if (intAlternateMin > 0)
-                    intAlternateMin = (intAlternateMin * (intRangeModifier) + 99) / 100;
-                if (intAlternateShort > 0)
-                    intAlternateShort = (intAlternateShort * (intRangeModifier) + 99) / 100;
-                if (intAlternateMedium > 0)
-                    intAlternateMedium = (intAlternateMedium * (intRangeModifier) + 99) / 100;
-                if (intAlternateLong > 0)
-                    intAlternateLong = (intAlternateLong * (intRangeModifier) + 99) / 100;
-                if (intAlternateExtreme > 0)
-                    intAlternateExtreme = (intAlternateExtreme * (intRangeModifier) + 99) / 100;
+            int intRangeModifier = RangeBonus + 100;
+            int intMin = GetRange("min", false);
+            int intShort = GetRange("short", false);
+            int intMedium = GetRange("medium", false);
+            int intLong = GetRange("long", false);
+            int intExtreme = GetRange("extreme", false);
+            int intAlternateMin = GetRange("min", true);
+            int intAlternateShort = GetRange("short", true);
+            int intAlternateMedium = GetRange("medium", true);
+            int intAlternateLong = GetRange("long", true);
+            int intAlternateExtreme = GetRange("extreme", true);
+            if (intMin > 0)
+                intMin = (intMin * (intRangeModifier) + 99) / 100;
+            if (intShort > 0)
+                intShort = (intShort * (intRangeModifier) + 99) / 100;
+            if (intMedium > 0)
+                intMedium = (intMedium * (intRangeModifier) + 99) / 100;
+            if (intLong > 0)
+                intLong = (intLong * (intRangeModifier) + 99) / 100;
+            if (intExtreme > 0)
+                intExtreme = (intExtreme * (intRangeModifier) + 99) / 100;
+            if (intAlternateMin > 0)
+                intAlternateMin = (intAlternateMin * (intRangeModifier) + 99) / 100;
+            if (intAlternateShort > 0)
+                intAlternateShort = (intAlternateShort * (intRangeModifier) + 99) / 100;
+            if (intAlternateMedium > 0)
+                intAlternateMedium = (intAlternateMedium * (intRangeModifier) + 99) / 100;
+            if (intAlternateLong > 0)
+                intAlternateLong = (intAlternateLong * (intRangeModifier) + 99) / 100;
+            if (intAlternateExtreme > 0)
+                intAlternateExtreme = (intAlternateExtreme * (intRangeModifier) + 99) / 100;
 
-                Dictionary<string, string> retDictionary = new Dictionary<string, string>(8)
+            Dictionary<string, string> retDictionary = new Dictionary<string, string>(8)
                 {
-                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin).ToString() + "-" + intShort.ToString() },
-                    { "medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString() + "-" + intMedium.ToString() },
-                    { "long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString() + "-" + intLong.ToString() },
-                    { "extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString() + "-" + intExtreme.ToString() },
-                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin).ToString() + "-" + intAlternateShort.ToString() },
-                    { "alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString() + "-" + intAlternateMedium.ToString() },
-                    { "alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString() + "-" + intAlternateLong.ToString() },
-                    { "alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString() + "-" + intAlternateExtreme.ToString() }
+                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin).ToString(objCulture) + "-" + intShort.ToString(objCulture) },
+                    { "medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString(objCulture) + "-" + intMedium.ToString(objCulture) },
+                    { "long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString(objCulture) + "-" + intLong.ToString(objCulture) },
+                    { "extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString(objCulture) + "-" + intExtreme.ToString(objCulture) },
+                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin).ToString(objCulture) + "-" + intAlternateShort.ToString(objCulture) },
+                    { "alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString(objCulture) + "-" + intAlternateMedium.ToString(objCulture) },
+                    { "alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString(objCulture) + "-" + intAlternateLong.ToString(objCulture) },
+                    { "alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString(objCulture) + "-" + intAlternateExtreme.ToString(objCulture) }
                 };
 
-                return retDictionary;
-            }
+            return retDictionary;
         }
 
         /// <summary>
@@ -2880,49 +2881,46 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.
         /// </summary>
-        public string DicePool
+        public string GetDicePool(CultureInfo objCulture)
         {
-            get
+            Skill objSkill = Skill;
+
+            int intDicePool = 0;
+            int intSmartlinkBonus = 0;
+            int intDicePoolModifier = 0;
+
+            foreach (Gear objGear in _objCharacter.Gear)
             {
-                var objSkill = Skill;
-
-                int intDicePool = 0;
-                int intSmartlinkBonus = 0;
-                int intDicePoolModifier = 0;
-
-                foreach (Gear objGear in _objCharacter.Gear)
+                if (objGear.InternalId == AmmoLoaded)
                 {
-                    if (objGear.InternalId == AmmoLoaded)
+                    if (objGear.WeaponBonus != null)
                     {
-                        if (objGear.WeaponBonus != null)
-                        {
-                            if (objGear.WeaponBonus["pool"] != null)
-                                intDicePoolModifier += Convert.ToInt32(objGear.WeaponBonus["pool"].InnerText);
-                        }
+                        if (objGear.WeaponBonus["pool"] != null)
+                            intDicePoolModifier += Convert.ToInt32(objGear.WeaponBonus["pool"].InnerText);
                     }
                 }
-
-                if (objSkill != null)
-                {
-                    intDicePool = objSkill.Pool;
-                }
-                foreach(Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category))
-                {
-                    intDicePoolModifier += objImprovement.Value;
-                }
-
-                int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;
-                var strReturn = intRating.ToString();
-
-                // If the character has a Specialization, include it in the Dice Pool string.
-                if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
-                {
-                    if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
-                        strReturn += " (" + (intRating + 2).ToString() + ")";
-                }
-
-                return strReturn;
             }
+
+            if (objSkill != null)
+            {
+                intDicePool = objSkill.Pool;
+            }
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category))
+            {
+                intDicePoolModifier += objImprovement.Value;
+            }
+
+            int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;
+            string strReturn = intRating.ToString(objCulture);
+
+            // If the character has a Specialization, include it in the Dice Pool string.
+            if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
+            {
+                if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
+                    strReturn += " (" + (intRating + 2).ToString(objCulture) + ")";
+            }
+
+            return strReturn;
         }
 
         private Skill Skill

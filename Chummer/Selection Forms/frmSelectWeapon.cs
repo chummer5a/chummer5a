@@ -186,7 +186,7 @@ namespace Chummer
             lblWeaponMode.Text = objWeapon.CalculatedMode;
             lblWeaponRC.Text = objWeapon.TotalRC;
             lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
+            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
             lblWeaponAvail.Text = objWeapon.TotalAvail;
 
             decimal decItemCost = 0;
@@ -305,8 +305,8 @@ namespace Chummer
 
                     string strID = objWeapon.SourceID.ToString();
                     string strWeaponName = objWeapon.DisplayName;
-                    string strDice = objWeapon.DicePool;
-                    int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
+                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
+                    int intAccuracy = objWeapon.TotalAccuracy;
                     string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
                     string strAP = objWeapon.TotalAP;
                     if (strAP == "-")

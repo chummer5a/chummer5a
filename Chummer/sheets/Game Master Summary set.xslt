@@ -523,9 +523,7 @@
               </xsl:if>
 
               <p><strong><xsl:value-of select="$lang.Nuyen"/>: </strong>
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                </xsl:call-template>
+                <xsl:value-of select="nuyen"/>
                 <xsl:value-of select="$lang.NuyenSymbol"/>
               </p>
 

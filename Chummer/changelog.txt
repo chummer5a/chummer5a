@@ -254,6 +254,8 @@ Application Changes:
 - Fixed a bug where the "Hide Items Over Availability Limit" checkbox would show up in career mode even though it would have no effect.
 - Checking the "Hide Items Over Availability Limit" checkbox will now also automatically set an item's maximum rating so that it cannot exceed the availability limit.
 - Implemented the ability to rename the Extra text of Gear items with the selecttext improvement while in Career mode. This functionality will be extended to other categories (Weapons, Armour, etc.) as teim permits.
+- Character sheets are now printed with the number formatting of the language in which they are printed instead of with the number formatting of the language of the user's current operating system.
+- Fixed a bug related to incorrect printing of certain numbers due to differences in decimal separators. Fixes #2069.
 
 Data Changes:
 
