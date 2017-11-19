@@ -228,6 +228,9 @@ namespace Chummer
             this.tsGearAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsGearName = new System.Windows.Forms.ToolStripMenuItem();
             this.tsGearNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsGearAllowRenameAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsGearAllowRenameName = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsGearAllowRenameNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicleWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleAddWeaponAccessoryAlt = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddUnderbarrelWeaponAlt = new System.Windows.Forms.ToolStripMenuItem();
@@ -868,6 +871,8 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -954,6 +959,7 @@ namespace Chummer
             this.cmsMetamagic.SuspendLayout();
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
+            this.cmsGearAllowRename.SuspendLayout();
             this.SuspendLayout();
             // 
             // StatusStrip
@@ -2653,7 +2659,7 @@ namespace Chummer
             this.tsGearAddAsPlugin,
             this.tsGearName,
             this.tsGearNotes});
-            this.cmsGear.Name = "cmsWeapon";
+            this.cmsGear.Name = "cmsGear";
             this.cmsGear.Size = new System.Drawing.Size(148, 70);
             this.cmsGear.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
@@ -2683,6 +2689,33 @@ namespace Chummer
             this.tsGearNotes.Tag = "Menu_Notes";
             this.tsGearNotes.Text = "&Notes";
             this.tsGearNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
+            // 
+            // tsGearAddAsPluginAllowRename
+            // 
+            this.tsGearAllowRenameAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsGearAllowRenameAddAsPlugin.Name = "tsGearAllowRenameAddAsPlugin";
+            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsGearAllowRenameAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsGearAllowRenameAddAsPlugin.Text = "&Add as Plugin";
+            this.tsGearAllowRenameAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
+            // 
+            // tsGearAllowRenameName
+            // 
+            this.tsGearAllowRenameName.Image = global::Chummer.Properties.Resources.tag_red;
+            this.tsGearAllowRenameName.Name = "tsGearName";
+            this.tsGearAllowRenameName.Size = new System.Drawing.Size(147, 22);
+            this.tsGearAllowRenameName.Tag = "Menu_NameGear";
+            this.tsGearAllowRenameName.Text = "Name Gear";
+            this.tsGearAllowRenameName.Click += new System.EventHandler(this.tsGearName_Click);
+            // 
+            // tsGearNotesAllowRename
+            // 
+            this.tsGearAllowRenameNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsGearAllowRenameNotes.Name = "tsGearNotes";
+            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsGearAllowRenameNotes.Tag = "Menu_Notes";
+            this.tsGearAllowRenameNotes.Text = "&Notes";
+            this.tsGearAllowRenameNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
             // 
             // cmsVehicleWeapon
             // 
@@ -9909,6 +9942,25 @@ namespace Chummer
             this.tsAIProgramNotes.Text = "&Notes";
             this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
             // 
+            // cmsGearAllowRename
+            // 
+            this.cmsGearAllowRename.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsGearAllowRenameAddAsPlugin,
+            this.tsGearAllowRenameName,
+            this.tsGearAllowRenameNotes,
+            this.tsGearAllowRenameExtra});
+            this.cmsGearAllowRename.Name = "cmsGearAllowRename";
+            this.cmsGearAllowRename.Size = new System.Drawing.Size(153, 92);
+            // 
+            // tsGearAllowRename
+            // 
+            this.tsGearAllowRenameExtra.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsGearAllowRenameExtra.Name = "tsGearAllowRename";
+            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(152, 22);
+            this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
+            this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
+            this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
+            // 
             // frmCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10039,6 +10091,7 @@ namespace Chummer
             this.cmsMetamagic.ResumeLayout(false);
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
+            this.cmsGearAllowRename.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -10856,5 +10909,10 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialKarmaValue;
         private System.Windows.Forms.Button cmdCyberwareChangeMount;
         private System.Windows.Forms.Button cmdVehicleCyberwareChangeMount;
+        private System.Windows.Forms.ContextMenuStrip cmsGearAllowRename;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameExtra;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameAddAsPlugin;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameName;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameNotes;
     }
 }

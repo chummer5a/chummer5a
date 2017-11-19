@@ -4497,6 +4497,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_AdeptWayDiscount</key>
       <text>Bonded Foci Qualifying for Adept Way Discount:</text>
     </string>
+    <string>
+      <key>Menu_RenameExtraText</key>
+      <text>&amp;Remame Extra Text</text>
+    </string>
     <!-- End Region-->
     <!-- Region Vehicles Tab -->
     <string>

@@ -7852,6 +7852,21 @@ namespace Chummer
             tsGearAddAsPlugin_Click(sender, e);
         }
 
+        private void tsGearRename_Click(object sender, EventArgs e)
+        {
+            frmSelectText frmPickText = new frmSelectText();
+            //frmPickText.Description = LanguageManager.GetString("String_AddLocation");
+            frmPickText.ShowDialog(this);
+
+            if (frmPickText.DialogResult == DialogResult.Cancel)
+                return;
+
+            Gear g = CommonFunctions.FindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+            g.Extra = frmPickText.SelectedValue;
+            treGear.SelectedNode.Text = g.DisplayName;
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
         private void tsVehicleAddNexus_Click(object sender, EventArgs e)
         {
             while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
@@ -15607,6 +15622,11 @@ namespace Chummer
             // Select the node that was just added.
             if (objNode.Level < 2)
                 treGear.SelectedNode = objNode;
+
+            if (objNewGear.AllowRename)
+            {
+                objNode.ContextMenuStrip = cmsGearAllowRename;
+            }
 
             ScheduleCharacterUpdate();
             RefreshSelectedGear();

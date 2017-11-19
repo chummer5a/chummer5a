@@ -60,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private int _intMatrixCMFilled = 0;
         private string _strForcedValue = string.Empty;
         private bool _blnDisableQuantity = false;
+        private bool _blnAllowRename = false;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -109,6 +110,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
+            objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
 
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
@@ -550,6 +552,7 @@ namespace Chummer.Backend.Equipment
         public void Copy(Gear objGear, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
         {
             _SourceGuid = objGear._SourceGuid;
+            _blnAllowRename = objGear.AllowRename;
             _strName = objGear.Name;
             _strCategory = objGear.Category;
             _intMaxRating = objGear.MaxRating;
@@ -656,6 +659,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("matrixcmbonus", _intMatrixCMBonus.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("parentid", _strParentID);
+            objWriter.WriteElementString("allowrename", _blnAllowRename.ToString());
             if (_intChildCostMultiplier != 1)
                 objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString(CultureInfo.InvariantCulture));
             if (_intChildAvailModifier != 0)
@@ -756,7 +760,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("gearname", ref _strGearName);
             objNode.TryGetStringFieldQuickly("forcedvalue", ref _strForcedValue);
-
+            objNode.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
             if (!objNode.TryGetStringFieldQuickly("parentid", ref _strParentID))
             {
                 // Legacy Shim
@@ -1427,6 +1431,11 @@ namespace Chummer.Backend.Equipment
                 _strDeviceRating = value;
             }
         }
+
+        /// <summary>
+        /// Allow Renaming the Gear in Create Mode
+        /// </summary>
+        public bool AllowRename => _blnAllowRename;
 
         public string GetMatrixAttributeString(string strAttributeName)
         {
