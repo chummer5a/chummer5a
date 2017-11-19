@@ -64,9 +64,16 @@ namespace Chummer
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             // Populate the Armor Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -140,10 +147,14 @@ namespace Chummer
 
             if (objXmlArmor["rating"] != null)
             {
+                nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+                while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
                 lblRatingLabel.Visible = true;
                 nudRating.Visible = true;
                 nudRating.Enabled = true;
-                nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
                 nudRating.Minimum = 1;
                 nudRating.Value = 1;
             }
@@ -434,8 +445,7 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
-                            Convert.ToInt32(nudRating.Value)))
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked))
                         {
                             TreeNode objNode = new TreeNode();
                             Armor objArmor = new Armor(_objCharacter);
@@ -479,8 +489,7 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
-                            Convert.ToInt32(nudRating.Value)))
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlArmor["id"]?.InnerText;

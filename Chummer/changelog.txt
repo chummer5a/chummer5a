@@ -251,6 +251,8 @@ Application Changes:
 - Added the ability to select a value other than 2 or 4 for the amount of decimal places to consider for essence costs.
 - Fixed a bug where Mentor's Mask would apply the Adept/Magician bonus from the chosen Mentor Spirit twice.
 - Fixed a bug where Re-apply Improvements would not save changes to what improvements are tied to each item.
+- Fixed a bug where the "Hide Items Over Availability Limit" checkbox would show up in career mode even though it would have no effect.
+- Checking the "Hide Items Over Availability Limit" checkbox will now also automatically set an item's maximum rating so that it cannot exceed the availability limit.
 
 Data Changes:
 

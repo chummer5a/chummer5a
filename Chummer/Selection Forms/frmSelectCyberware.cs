@@ -108,9 +108,16 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             chkPrototypeTranshuman.Visible =
                 _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
@@ -192,8 +199,8 @@ namespace Chummer
                     cboCategory.SelectedIndex = 0;
                 cboCategory.EndUpdate();
                 txtSearch_TextChanged(sender, e);
-                lstCyberware.SelectedValue = strSelected;
                 lstCyberware.SelectedIndexChanged += lstCyberware_SelectedIndexChanged;
+                lstCyberware.SelectedValue = strSelected;
             }
 
             UpdateCyberwareInfo();
@@ -296,6 +303,10 @@ namespace Chummer
                     }
                 }
                 nudRating.Maximum = intMaxRating;
+                while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
+                {
+                    nudRating.Maximum -= 1;
+                }
                 nudRating.Value = nudRating.Minimum;
             }
             else
@@ -1084,7 +1095,7 @@ namespace Chummer
                             continue;
                     }
                     if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter,
-                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
+                        chkHideOverAvailLimit.Checked, intMinRating, objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
                         continue;
                     if (ParentVehicle == null && !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter))
                         continue;

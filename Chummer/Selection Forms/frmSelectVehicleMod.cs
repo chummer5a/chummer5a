@@ -66,9 +66,16 @@ namespace Chummer
 
         private void frmSelectVehicleMod_Load(object sender, EventArgs e)
         {
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             string[] strValues = _strLimitToCategories.Split(',');
 
@@ -492,7 +499,7 @@ namespace Chummer
                         }
                     }
 
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objXmlMod["id"].InnerText;
@@ -552,6 +559,10 @@ namespace Chummer
                 {
                     nudRating.Enabled = true;
                     nudRating.Maximum = 20;
+                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                    {
+                        nudRating.Maximum -= 1;
+                    }
                     nudRating.Minimum = intMinRating;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
                 }
@@ -559,6 +570,10 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "body")
                 {
                     nudRating.Maximum = _objVehicle.Body;
+                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                    {
+                        nudRating.Maximum -= 1;
+                    }
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Body");
@@ -567,6 +582,10 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
                 {
                     nudRating.Maximum = _objVehicle.TotalSeats;
+                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                    {
+                        nudRating.Maximum -= 1;
+                    }
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
@@ -576,6 +595,10 @@ namespace Chummer
                     if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
                     {
                         nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
+                        while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
                         nudRating.Minimum = intMinRating;
                         nudRating.Enabled = true;
                         lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");

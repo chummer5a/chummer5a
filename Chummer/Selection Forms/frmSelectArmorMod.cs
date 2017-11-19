@@ -62,9 +62,16 @@ namespace Chummer
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             BuildModList();
         }
@@ -252,6 +259,10 @@ namespace Chummer
             lblA.Text = objXmlMod["armor"].InnerText;
 
             nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
+            while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+            {
+                nudRating.Maximum -= 1;
+            }
             if (nudRating.Maximum <= 1)
                 nudRating.Enabled = false;
             else
@@ -393,8 +404,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter,
-                        chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value)))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem
                     {

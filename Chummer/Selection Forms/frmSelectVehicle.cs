@@ -62,9 +62,16 @@ namespace Chummer
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             // Populate the Vehicle Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -138,7 +145,7 @@ namespace Chummer
             XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
                     objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
@@ -206,7 +213,7 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
                     objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;

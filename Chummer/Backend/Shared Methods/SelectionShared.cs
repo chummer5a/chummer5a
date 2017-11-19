@@ -800,17 +800,14 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="blnHide"></param>
         /// <param name="intRating"></param>
         /// <param name="intAvailModifier"></param>
-        /// <param name="blnAddToList"></param>
         /// <returns></returns>
-        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, bool blnHide, int intRating = 0,
-            int intAvailModifier = 0, bool blnAddToList = true)
+        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, bool blnHide, int intRating = 0, int intAvailModifier = 0)
         {
             if (objXmlGear == null)
                 return false;
-            XmlDocument objXmlDocument = new XmlDocument();
             //TODO: Better handler for restricted gear
-            if (!blnHide || objCharacter.Created || objCharacter.RestrictedGear ||
-                objCharacter.IgnoreRules || !blnAddToList) return blnAddToList;
+            if (!blnHide || objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
+                return true;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objXmlGear["avail"]?.InnerText ?? string.Empty;
@@ -818,29 +815,27 @@ namespace Chummer.Backend.Shared_Methods
             if (strAvailExpr.StartsWith("FixedValues"))
             {
                 var strValues = strAvailExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                strAvailExpr = strValues[Math.Max(intRating - 1, 0)];
+                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
+            }
+            if (strAvailExpr.Substring(0, 1) == "+")
+            {
+                return true;
             }
             if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" ||
                 strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-            if (strAvailExpr.Substring(0, 1) == "+")
-            {
-                strPrefix = "+";
-                strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
-            }
-            if (strPrefix == "+") return blnAddToList;
+            bool blnReturn = true;
+            XmlDocument objXmlDocument = new XmlDocument();
+            XPathNavigator nav = objXmlDocument.CreateNavigator();
             try
             {
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating",
-                    intRating.ToString(GlobalOptions.InvariantCultureInfo)));
-                blnAddToList = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <=
-                               objCharacter.MaximumAvailability;
+                XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)));
+                blnReturn = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <= objCharacter.MaximumAvailability;
             }
             catch (XPathException)
             {
             }
-            return blnAddToList;
+            return blnReturn;
         }
 
         public static bool CheckNuyenRestriction(XPathNavigator nav, XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)

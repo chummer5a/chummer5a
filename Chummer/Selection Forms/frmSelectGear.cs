@@ -85,9 +85,16 @@ namespace Chummer
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
             XmlNodeList objXmlCategoryList;
 
             // Populate the Gear Category list.
@@ -305,7 +312,7 @@ namespace Chummer
                             decCostMultiplier *= 0.9m;
                         if (chkHacked.Checked)
                             decCostMultiplier *= 0.1m;
-                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier) &&
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
                             (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                             Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
                         {
@@ -518,7 +525,7 @@ namespace Chummer
                                     decCostMultiplier *= 0.9m;
                                 if (chkHacked.Checked)
                                     decCostMultiplier *= 0.1m;
-                                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), _intAvailModifier) &&
+                                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
                                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                                     Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
                                 {
@@ -1277,6 +1284,10 @@ namespace Chummer
                     else
                     {
                         nudRating.Minimum = 1;
+                    }
+                    while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    {
+                        nudRating.Maximum -= 1;
                     }
 
                     if (nudRating.Minimum == nudRating.Maximum)
