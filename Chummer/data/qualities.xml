@@ -630,6 +630,7 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus />
+      <nomission />
       <source>AP</source>
       <page>16</page>
     </quality>
@@ -641,6 +642,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>AP</source>
       <page>17</page>
     </quality>
@@ -3086,6 +3088,7 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3097,6 +3100,7 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3634,6 +3638,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3698,6 +3703,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3710,6 +3716,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3722,6 +3729,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3734,6 +3742,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3746,6 +3755,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3758,6 +3768,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -10675,6 +10686,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>54</page>
     </quality>
@@ -10738,6 +10750,7 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>56</page>
     </quality>
@@ -11020,6 +11033,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>57</page>
     </quality>
@@ -11194,6 +11208,7 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -11278,6 +11293,7 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>60</page>
     </quality>
@@ -11334,6 +11350,7 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>HT</source>
       <page>191</page>
     </quality>
@@ -11461,6 +11478,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>R5</source>
       <page>34</page>
     </quality>
@@ -11920,6 +11938,7 @@
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CA</source>
       <page>151</page>
     </quality>
