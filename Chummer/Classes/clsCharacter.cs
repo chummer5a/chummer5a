@@ -240,6 +240,7 @@ namespace Chummer
         private List<string> _lstImprovementGroups = new List<string>();
         private List<CalendarWeek> _lstCalendar = new List<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
+        private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.Replace("0.0.", string.Empty);
@@ -1263,7 +1264,7 @@ namespace Chummer
                 _lstMentorSpirits.Add(objMentor);
             }
             Timekeeper.Finish("load_char_mentorspirit");
-            bool blnImprovementError = false;
+            _lstInternalIdsNeedingReapplyImprovements.Clear();
             Timekeeper.Start("load_char_imp");
             // Improvements.
             objXmlNodeList = objXmlDocument.SelectNodes("/character/improvements/improvement");
@@ -1284,7 +1285,7 @@ namespace Chummer
                     }
                     catch (ArgumentException)
                     {
-                        blnImprovementError = true;
+                        _lstInternalIdsNeedingReapplyImprovements.Add(strLoopSourceName);
                     }
                 }
             }
@@ -1610,8 +1611,8 @@ namespace Chummer
                 }
                 else
                 {
-                    // Failed to re-apply the improvements, so let's show up the error
-                    blnImprovementError = true;
+                    // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
+                    _lstInternalIdsNeedingReapplyImprovements.Add(objLivingPersonaQuality.InternalId);
                 }
             }
 
@@ -1875,16 +1876,14 @@ namespace Chummer
                     else
                     */
                     {
-                        // Failed to re-apply the improvements, so let's show up the error
-                        blnImprovementError = true;
+                        // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
+                        _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
                     }
                 }
             }
             Timekeeper.Finish("load_char_mentorspiritfix");
 
             RefreshRedliner();
-            if (blnImprovementError)
-                MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"), LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
             //      if (blnHasOldQualities)
@@ -5718,9 +5717,20 @@ namespace Chummer
                 return _lstCalendar;
             }
         }
-#endregion
 
-#region Armor Properties
+        /// <summary>
+        /// List of internal IDs that need their improvements re-applied.
+        /// </summary>
+        public List<string> InternalIdsNeedingReapplyImprovements
+        {
+            get
+            {
+                return _lstInternalIdsNeedingReapplyImprovements;
+            }
+        }
+        #endregion
+
+        #region Armor Properties
         /// <summary>
         /// The Character's highest Armor Rating.
         /// </summary>

@@ -1069,6 +1069,16 @@ namespace Chummer
             Icon = Icon.Clone() as Icon;
             Timekeeper.Finish("load_frm_career");
             Timekeeper.Finish("loading");
+
+            if (_objCharacter.InternalIdsNeedingReapplyImprovements.Count > 0)
+            {
+                if (MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"),
+                    LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                {
+                    DoReapplyImprovements(_objCharacter.InternalIdsNeedingReapplyImprovements);
+                    _objCharacter.InternalIdsNeedingReapplyImprovements.Clear();
+                }
+            }
         }
 
         private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1908,7 +1918,13 @@ namespace Chummer
             if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
+            DoReapplyImprovements();
+        }
+
+        private void DoReapplyImprovements(List<string> lstInternalIdFilter = null)
+        {
             UseWaitCursor = true;
+
             string strOutdatedItems = string.Empty;
 
             // Record the status of any flags that normally trigger character events.
@@ -1921,7 +1937,10 @@ namespace Chummer
             _blnReapplyImprovements = true;
 
             // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
-            ImprovementManager.RemoveImprovements(_objCharacter, 0, string.Empty, true);
+            if (lstInternalIdFilter == null)
+                ImprovementManager.RemoveImprovements(_objCharacter, 0, string.Empty, true);
+            else
+                ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName)).ToList());
 
             // Refresh Qualities.
             // We cannot use foreach because qualities can add more qualities
@@ -1929,6 +1948,9 @@ namespace Chummer
             {
                 Quality objQuality = _objCharacter.Qualities[j];
                 if (objQuality.OriginSource == QualitySource.Improvement)
+                    continue;
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objQuality.InternalId))
                     continue;
                 string strSelected = objQuality.Extra;
 
@@ -1958,6 +1980,9 @@ namespace Chummer
             // Refresh Martial Art Advantages.
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objMartialArt.InternalId))
+                    continue;
                 XmlNode objMartialArtNode = objMartialArt.MyXmlNode;
                 if (objMartialArtNode != null)
                 {
@@ -1979,6 +2004,9 @@ namespace Chummer
             // Refresh Spells.
             foreach (Spell objSpell in _objCharacter.Spells)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objSpell.InternalId))
+                    continue;
                 XmlNode objNode = objSpell.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2011,6 +2039,9 @@ namespace Chummer
             // Refresh Adept Powers.
             foreach (Power objPower in _objCharacter.Powers)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objPower.InternalId))
+                    continue;
                 XmlNode objNode = objPower.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2030,12 +2061,15 @@ namespace Chummer
             // Refresh Complex Forms.
             foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objComplexForm.InternalId))
+                    continue;
                 XmlNode objNode = objComplexForm.MyXmlNode;
                 if (objNode != null)
                 {
                     if (objNode["bonus"] != null)
                     {
-                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             objComplexForm.Extra = ImprovementManager.SelectedValue;
                         foreach (TreeNode objParentNode in treComplexForms.Nodes)
@@ -2060,12 +2094,15 @@ namespace Chummer
             // Refresh AI Programs and Advanced Programs
             foreach (AIProgram objProgram in _objCharacter.AIPrograms)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objProgram.InternalId))
+                    continue;
                 XmlNode objNode = objProgram.MyXmlNode;
                 if (objNode != null)
                 {
                     if (objNode["bonus"] != null)
                     {
-                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             objProgram.Extra = ImprovementManager.SelectedValue;
                         foreach (TreeNode objParentNode in treAIPrograms.Nodes)
@@ -2090,6 +2127,9 @@ namespace Chummer
             // Refresh Critter Powers.
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objPower.InternalId))
+                    continue;
                 XmlNode objNode = objPower.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2132,6 +2172,9 @@ namespace Chummer
                 Metamagic objMetamagic = _objCharacter.Metamagics[j];
                 if (objMetamagic.Grade < 0)
                     continue;
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objMetamagic.InternalId))
+                    continue;
                 XmlNode objNode = objMetamagic.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2151,6 +2194,9 @@ namespace Chummer
             Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
             foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.IsModularCurrentlyEquipped))
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCyberware.InternalId))
+                    continue;
                 XmlNode objNode = objCyberware.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2183,7 +2229,7 @@ namespace Chummer
                 }
                 foreach (Gear objGear in objCyberware.Gear)
                 {
-                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treCyberware, ref strOutdatedItems);
+                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treCyberware, ref strOutdatedItems, lstInternalIdFilter);
                 }
                 TreeNode objWareNode = CommonFunctions.FindNode(objCyberware.InternalId, treCyberware);
                 if (objWareNode != null)
@@ -2219,6 +2265,9 @@ namespace Chummer
             // Refresh Armors.
             foreach (Armor objArmor in _objCharacter.Armor)
             {
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objArmor.InternalId))
+                    continue;
                 XmlNode objNode = objArmor.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2243,6 +2292,9 @@ namespace Chummer
 
                 foreach (ArmorMod objMod in objArmor.ArmorMods)
                 {
+                    // We're only re-apply improvements a list of items, not all of them
+                    if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objMod.InternalId))
+                        continue;
                     XmlNode objChild = objMod.MyXmlNode;
 
                     if (objChild != null)
@@ -2267,20 +2319,20 @@ namespace Chummer
                     }
                     foreach (Gear objGear in objMod.Gear)
                     {
-                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor, ref strOutdatedItems);
+                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor, ref strOutdatedItems, lstInternalIdFilter);
                     }
                 }
 
                 foreach (Gear objGear in objArmor.Gear)
                 {
-                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor, ref strOutdatedItems);
+                    CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treArmor, ref strOutdatedItems, lstInternalIdFilter);
                 }
             }
 
             // Refresh Gear.
             foreach (Gear objGear in _objCharacter.Gear)
             {
-                CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treGear, ref strOutdatedItems);
+                CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treGear, ref strOutdatedItems, lstInternalIdFilter);
             }
 
             // Refresh Weapons Gear
@@ -2291,7 +2343,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in objAccessory.Gear)
                     {
-                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treWeapons, ref strOutdatedItems);
+                        CommonFunctions.ReaddGearImprovements(_objCharacter, objGear, treWeapons, ref strOutdatedItems, lstInternalIdFilter);
                     }
                 }
             }

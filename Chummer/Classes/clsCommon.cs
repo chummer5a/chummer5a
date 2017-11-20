@@ -1132,8 +1132,11 @@ namespace Chummer
         #endregion
 
         #region Add Improvements Functions
-        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems)
+        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, List<string> lstInternalIdFilter)
         {
+            // We're only re-apply improvements a list of items, not all of them
+            if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objGear.InternalId))
+                return;
             XmlNode objNode = objGear.MyXmlNode;
             if (objNode != null)
             {
@@ -1156,7 +1159,7 @@ namespace Chummer
                 strOutdatedItems += objGear.DisplayName + "\n";
             }
             foreach (Gear objChild in objGear.Children)
-                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems);
+                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems, lstInternalIdFilter);
         }
         #endregion
 

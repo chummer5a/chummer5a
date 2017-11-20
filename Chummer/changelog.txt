@@ -122,7 +122,7 @@ Application Changes:
 - Fixed a bug that caused 'ware grades to not obey the enabled sourcebook rules, e.g. Omegaware would show up even if Chrome Flesh was not enabled.
 - Fixed a bug where the Power selection dialog allowed the user to select a power that was marked as hidden or was from a sourcebook that the user did not have enabled.
 - Unhardcoded Cultured bioware's restriction from Used grade. Now any piece of bioware or cyberware can be marked as being ineligible for Used grade.
-- If Chummer5 encounters an error while loading improvements from a savefile, it will now warn the user to re-apply improvements and continue loading the character instead of crashing.
+- If Chummer5 encounters an error while loading improvements from a savefile, it will now continue loading the character instead of crashing, and it will prompt the user to re-apply the problematic improvements when the character is loaded.
 - Added a new item in the Special options menu that calculates the total karma value of a character during character creation.
 - Fixed a prompt for modications to items when browsing the Select Armor window.
 - Fixed an incorrect Karma cost change when using the Improved Ability (skill) power in create mode. 
