@@ -379,7 +379,7 @@ namespace Chummer
                         bool blnAllowed = false;
                         foreach (ListItem objCategory in _lstCategory)
                         {
-                            if (objXmlMetatype.SelectSingleNode("qualityrestriction/" + objCategory.Value.ToLower() + "/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
+                            if (objXmlMetatype.SelectSingleNode("qualityrestriction/*/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
                             {
                                 blnAllowed = true;
                                 break;
