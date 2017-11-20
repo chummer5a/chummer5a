@@ -49,8 +49,24 @@
           == <xsl:value-of select="$lang.PersonalData"/> ==
           <br/><xsl:value-of select="$lang.StreetName"/>: <xsl:value-of select="alias"/>
           <br/><xsl:value-of select="$lang.Name"/>: <xsl:value-of select="name"/>
-          <br/><xsl:value-of select="$lang.Movement"/>:
-          <xsl:call-template name="MovementRate"/>
+          <xsl:if test="movementwalk != '' and movementwalk != '0'">
+            <br/><xsl:value-of select="$lang.Movement"/>:
+            <xsl:call-template name="formatrate">
+              <xsl:with-param name="movrate" select="movementwalk"/>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:if test="movementswim != '' and movementswim != '0'">
+            <br/><xsl:value-of select="$lang.Swim"/>:
+            <xsl:call-template name="formatrate">
+              <xsl:with-param name="movrate" select="movementswim"/>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:if test="movementfly != '' and movementfly != '0'">
+            <br/><xsl:value-of select="$lang.Fly"/>:
+            <xsl:call-template name="formatrate">
+              <xsl:with-param name="movrate" select="movementfly"/>
+            </xsl:call-template>
+          </xsl:if>
           <br/><xsl:value-of select="$lang.Karma"/>: <xsl:value-of select="totalkarma"/>
           <br/><xsl:value-of select="$lang.StreetCred"/>: <xsl:value-of select="totalstreetcred"/>
           <br/><xsl:value-of select="$lang.Notoriety"/>: <xsl:value-of select="totalnotoriety"/>

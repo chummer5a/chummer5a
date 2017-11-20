@@ -63,9 +63,42 @@
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:value-of select="$lang.Movement"/>:
-        <xsl:call-template name="MovementRate"/>
-
+              <xsl:if test="movementwalk != '' and movementwalk != '0'">
+                <br/><xsl:value-of select="$lang.Movement"/>:
+                <xsl:variable name="mv1">
+                  <xsl:call-template name="formatrate">
+                    <xsl:with-param name="movrate" select="movementwalk"/>
+                  </xsl:call-template>
+                </xsl:variable>
+                <xsl:call-template name="fnx-pad-r">
+                  <xsl:with-param name="string" select="$mv1"/>
+                  <xsl:with-param name="length" select="32"/>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:if test="movementswim != '' and movementswim != '0'">
+                <br/><xsl:value-of select="$lang.Swim"/>:
+                <xsl:variable name="mv2">
+                  <xsl:call-template name="formatrate">
+                    <xsl:with-param name="movrate" select="movementswim"/>
+                  </xsl:call-template>
+                </xsl:variable>
+                <xsl:call-template name="fnx-pad-r">
+                  <xsl:with-param name="string" select="$mv2"/>
+                  <xsl:with-param name="length" select="32"/>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:if test="movementfly != '' and movementfly != '0'">
+                <br/><xsl:value-of select="$lang.Fly"/>:
+                <xsl:variable name="mv3">
+                  <xsl:call-template name="formatrate">
+                    <xsl:with-param name="movrate" select="movementfly"/>
+                  </xsl:call-template>
+                </xsl:variable>
+                <xsl:call-template name="fnx-pad-r">
+                  <xsl:with-param name="string" select="$mv3"/>
+                  <xsl:with-param name="length" select="32"/>
+                </xsl:call-template>
+              </xsl:if>
                 <br/>
         <xsl:choose>
           <xsl:when test="weight != '' and height != ''">
