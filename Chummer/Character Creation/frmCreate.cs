@@ -2279,26 +2279,26 @@ namespace Chummer
 
             // Refresh Cyberware and Bioware.
             Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.IsModularCurrentlyEquipped))
+            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => lstInternalIdFilter != null && !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCyberware.InternalId))
-                    continue;
                 XmlNode objNode = objCyberware.MyXmlNode;
                 if (objNode != null)
                 {
                     if (objNode["bonus"] != null || (objCyberware.WirelessOn && objNode["wirelessbonus"] != null))
                     {
                         objCyberware.Bonus = objNode["bonus"];
-                        if (objNode["bonus"] != null)
-                            ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                            objCyberware.Extra = ImprovementManager.SelectedValue;
                         objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                        if (objCyberware.WirelessOn && objNode["wirelessbonus"] != null)
-                            ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["wirelessbonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                        if (objCyberware.IsModularCurrentlyEquipped)
+                        {
+                            if (objNode["bonus"] != null)
+                                ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["bonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                            if (objCyberware.WirelessOn && objNode["wirelessbonus"] != null)
+                                ImprovementManager.CreateImprovements(_objCharacter, objCyberware.SourceType, objCyberware.InternalId, objNode["wirelessbonus"], false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                        }
                     }
                 }
                 else
@@ -2308,11 +2308,14 @@ namespace Chummer
                 if (objCyberware.PairBonus != null || objNode?["pairbonus"] != null)
                 {
                     objCyberware.PairBonus = objNode["pairbonus"];
-                    Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
-                    if (objMatchingCyberware != null)
-                        dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
-                    else
-                        dicPairableCyberwares.Add(objCyberware, 1);
+                    if (objCyberware.IsModularCurrentlyEquipped)
+                    {
+                        Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                        if (objMatchingCyberware != null)
+                            dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                        else
+                            dicPairableCyberwares.Add(objCyberware, 1);
+                    }
                 }
                 foreach (Gear objGear in objCyberware.Gear)
                 {
@@ -2361,14 +2364,17 @@ namespace Chummer
                     if (objNode["bonus"] != null)
                     {
                         objArmor.Bonus = objNode["bonus"];
-                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objNode["bonus"], false, 1, objArmor.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        if (objArmor.Equipped)
                         {
-                            objArmor.Extra = ImprovementManager.SelectedValue;
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objNode["bonus"], false, 1, objArmor.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objArmor.Extra = ImprovementManager.SelectedValue;
 
-                            TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
-                            if (objArmorNode != null)
-                                objArmorNode.Text = objArmor.DisplayName;
+                                TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
+                                if (objArmorNode != null)
+                                    objArmorNode.Text = objArmor.DisplayName;
+                            }
                         }
                     }
                 }
@@ -2389,14 +2395,17 @@ namespace Chummer
                         if (objChild["bonus"] != null)
                         {
                             objMod.Bonus = objChild["bonus"];
-                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objChild["bonus"], false, 1, objMod.DisplayNameShort);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            if (objMod.Equipped)
                             {
-                                objMod.Extra = ImprovementManager.SelectedValue;
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objChild["bonus"], false, 1, objMod.DisplayNameShort);
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                {
+                                    objMod.Extra = ImprovementManager.SelectedValue;
 
-                                TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
-                                if (objPluginNode != null)
-                                    objPluginNode.Text = objMod.DisplayName;
+                                    TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
+                                    if (objPluginNode != null)
+                                        objPluginNode.Text = objMod.DisplayName;
+                                }
                             }
                         }
                     }

@@ -1143,14 +1143,17 @@ namespace Chummer
                 if (objNode["bonus"] != null)
                 {
                     objGear.Bonus = objNode["bonus"];
-                    ImprovementManager.ForcedValue = objGear.Extra;
-                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    if (objGear.Equipped)
                     {
-                        objGear.Extra = ImprovementManager.SelectedValue;
-                        TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
-                        if (objGearNode != null)
-                            objGearNode.Text = objGear.DisplayName;
+                        ImprovementManager.ForcedValue = objGear.Extra;
+                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objGear.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                            if (objGearNode != null)
+                                objGearNode.Text = objGear.DisplayName;
+                        }
                     }
                 }
             }

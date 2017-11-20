@@ -257,6 +257,7 @@ Application Changes:
 - Character sheets are now printed with the number formatting of the language in which they are printed instead of with the number formatting of the language of the user's current operating system.
 - Fixed a bug related to incorrect printing of certain numbers due to differences in decimal separators. Fixes #2069.
 - Fixed a bug where some context menu strips would not get translated.
+- Fixed a bug where Re-Apply Improvements would add improvements for items that were not equipped.
 
 Data Changes:
 
