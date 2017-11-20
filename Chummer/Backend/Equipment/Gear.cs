@@ -141,7 +141,7 @@ namespace Chummer.Backend.Equipment
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult != DialogResult.Cancel)
                     {
-                        _strName = frmPickText.SelectedValue;
+                        _strAltName = _strName = frmPickText.SelectedValue;
                     }
                 }
                 else
@@ -149,7 +149,7 @@ namespace Chummer.Backend.Equipment
                     string strCustomName = LanguageManager.GetString(_strForcedValue, false);
                     if (string.IsNullOrEmpty(strCustomName))
                         strCustomName = LanguageManager.TranslateExtra(_strForcedValue);
-                    _strName = strCustomName;
+                    _strAltName = _strName = strCustomName;
                 }
             }
             // Check for a Variable Cost.
@@ -186,7 +186,7 @@ namespace Chummer.Backend.Equipment
 
             string strSource = _guiID.ToString();
 
-            objNode.Text = _strName;
+            objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
 
             // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
