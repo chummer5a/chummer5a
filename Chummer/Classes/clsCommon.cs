@@ -314,7 +314,7 @@ namespace Chummer
         /// <param name="strGuid"></param>
         /// <param name="lstVehicles"></param>
         /// <returns></returns>
-        internal static WeaponMount FindVehicleWeaponMount(string strGuid, List<Vehicle> lstVehicles)
+        internal static WeaponMount FindVehicleWeaponMount(string strGuid, List<Vehicle> lstVehicles, out Vehicle outVehicle)
         {
             if (strGuid != Guid.Empty.ToString())
             {
@@ -326,13 +326,14 @@ namespace Chummer
                         {
                             if (objMod.InternalId == strGuid && !string.IsNullOrEmpty(objMod.Name))
                             {
+                                outVehicle = objVehicle;
                                 return objMod;
                             }
                         }
                     }
                 }
             }
-            
+            outVehicle = null;
             return null;
         }
 

@@ -3843,7 +3843,7 @@
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
         <name>Standard Drone Rack (Mini)</name>
-		<name>Retrans Unit</name>
+        <name>Retrans Unit</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -5840,14 +5840,14 @@
         <gear rating="2" maxrating="7">Sensor Array</gear>
       </gears>
       <seats>2</seats>
-    </vehicle>    
+    </vehicle>
     <vehicle>
       <id>6975423f-43c7-4960-98bb-7363b491856c</id>
       <name>Chrysler-Nissan Jackrabbit (2050)</name>
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>4</armor>            
+      <armor>4</armor>
       <avail>0</avail>
       <body>8</body>
       <category>Cars</category>
@@ -5867,7 +5867,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>6</armor>            
+      <armor>6</armor>
       <avail>0</avail>
       <body>11</body>
       <category>Cars</category>
@@ -5887,7 +5887,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>            
+      <armor>8</armor>
       <avail>0</avail>
       <body>10</body>
       <category>Cars</category>
@@ -5907,7 +5907,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>12</armor>            
+      <armor>12</armor>
       <avail>0</avail>
       <body>12</body>
       <category>Cars</category>
@@ -5927,7 +5927,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>15</armor>            
+      <armor>15</armor>
       <avail>0</avail>
       <body>15</body>
       <category>Cars</category>
@@ -5947,7 +5947,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>1</accel>
-      <armor>12</armor>            
+      <armor>12</armor>
       <avail>0</avail>
       <body>16</body>
       <category>Cars</category>
@@ -5969,7 +5969,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>6</armor>            
+      <armor>6</armor>
       <avail>0</avail>
       <body>12</body>
       <category>Boats</category>
@@ -5989,7 +5989,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>6</armor>            
+      <armor>6</armor>
       <avail>4R</avail>
       <body>12</body>
       <category>Boats</category>
@@ -6009,7 +6009,7 @@
       <page>208</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>4</armor>            
+      <armor>4</armor>
       <avail>0</avail>
       <body>14</body>
       <category>Boats</category>
@@ -6031,7 +6031,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>4</armor>            
+      <armor>4</armor>
       <avail>4</avail>
       <body>18</body>
       <category>Fixed-Wing Aircraft</category>
@@ -6051,7 +6051,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>6</armor>            
+      <armor>6</armor>
       <avail>8</avail>
       <body>20</body>
       <category>Fixed-Wing Aircraft</category>
@@ -6071,7 +6071,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>            
+      <armor>8</armor>
       <avail>8R</avail>
       <body>16</body>
       <category>VTOL/VSTOL</category>
@@ -6091,7 +6091,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>10</armor>            
+      <armor>10</armor>
       <avail>6</avail>
       <body>16</body>
       <category>Rotorcraft</category>
@@ -6111,7 +6111,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>            
+      <armor>8</armor>
       <avail>6</avail>
       <body>22</body>
       <category>Rotorcraft</category>
@@ -6131,7 +6131,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>            
+      <armor>8</armor>
       <avail>7</avail>
       <body>16</body>
       <category>Rotorcraft</category>
@@ -6153,7 +6153,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>6</accel>
-      <armor>12</armor>            
+      <armor>12</armor>
       <avail>13F</avail>
       <body>18</body>
       <category>Fixed-Wing Aircraft</category>
@@ -6173,7 +6173,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>18</armor>            
+      <armor>18</armor>
       <avail>0</avail>
       <body>20</body>
       <category>VTOL/VSTOL</category>
@@ -6193,7 +6193,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>1</accel>
-      <armor>18</armor>            
+      <armor>18</armor>
       <avail>20R</avail>
       <body>18</body>
       <category>Trucks</category>
@@ -6213,7 +6213,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>12</armor>            
+      <armor>12</armor>
       <avail>12R</avail>
       <body>12</body>
       <category>Trucks</category>
@@ -6233,7 +6233,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>2</accel>
-      <armor>10</armor>            
+      <armor>10</armor>
       <avail>16R</avail>
       <body>20</body>
       <category>Municipal/Construction</category>
@@ -6253,7 +6253,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>10</armor>            
+      <armor>10</armor>
       <avail>16R</avail>
       <body>14</body>
       <category>Boats</category>
@@ -6273,7 +6273,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>8</armor>            
+      <armor>8</armor>
       <avail>12R</avail>
       <body>10</body>
       <category>Rotorcraft</category>
@@ -6293,7 +6293,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>3</accel>
-      <armor>10</armor>            
+      <armor>10</armor>
       <avail>12R</avail>
       <body>10</body>
       <category>Rotorcraft</category>
@@ -6313,7 +6313,7 @@
       <page>210</page>
       <source>2050</source>
       <accel>4</accel>
-      <armor>14</armor>            
+      <armor>14</armor>
       <avail>26F</avail>
       <body>16</body>
       <category>VTOL/VSTOL</category>
@@ -6414,9 +6414,9 @@
         <name>Standard Weapon Mount (Drone)</name>
         <name>Standard Weapon Mount (Drone)</name>
       </mods>
-    </vehicle>        
-    <!-- End Region -->        
-    <!-- End Region -->    
+    </vehicle>
+    <!-- End Region -->
+    <!-- End Region -->
     <!-- Region SotA ADL-->
     <vehicle>
       <id>8e1a5fe3-9f13-49f0-b74a-7de82fc40dc2</id>
@@ -6442,7 +6442,7 @@
         <name>Metahuman Adjustment</name>
       </mods>
       <seats>3</seats>
-    </vehicle>    
+    </vehicle>
     <vehicle>
       <id>bd3e79cc-4441-4bc3-977e-fcec22f4a9f7</id>
       <name>Shiawase Motors Shuriken</name>
@@ -7313,245 +7313,245 @@
       <seats>8</seats>
     </vehicle>
     <!-- End Region -->
-  <!-- Region Asphaltkrieger-->
-  <vehicle>
+    <!-- Region Asphaltkrieger-->
+    <vehicle>
       <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
       <name>Mercury Cruiser</name>
-    <handling>4/3</handling>
-    <speed>3</speed>
+      <handling>4/3</handling>
+      <speed>3</speed>
       <accel>3</accel>
       <body>14</body>
-    <armor>11</armor>
-      <pilot>1</pilot>	  
+      <armor>11</armor>
+      <pilot>1</pilot>
       <sensor>2</sensor>
-      <seats>5</seats>  
+      <seats>5</seats>
       <avail>0</avail>
-      <cost>21000</cost>  
-    <source>R5G</source>
+      <cost>21000</cost>
+      <source>R5G</source>
       <page>51</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
       <name>Mercedes-Benz CityMog</name>
-    <handling>5/4</handling>
-    <speed>3</speed>
+      <handling>5/4</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>18</body>
-    <armor>10</armor>
-      <pilot>2</pilot>	  
+      <armor>10</armor>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>3</seats>  
+      <seats>3</seats>
       <avail>0</avail>
-      <cost>44000</cost>  
-    <source>R5G</source>
+      <cost>44000</cost>
+      <source>R5G</source>
       <page>64</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>122a3919-dc05-4d8d-89b3-fa0ac9e1d669</id>
       <name>Mercedes-Benz CityMog CM-X (Pickup)</name>
-    <handling>5/4</handling>
-    <speed>3</speed>
+      <handling>5/4</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>18</body>
-    <armor>10</armor>
-      <pilot>2</pilot>	  
+      <armor>10</armor>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>5</seats>  
+      <seats>5</seats>
       <avail>0</avail>
-      <cost>42000</cost>  
-    <source>R5G</source>
+      <cost>42000</cost>
+      <source>R5G</source>
       <page>64</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
       <name>Mercedes-Benz CityMog Traveller</name>
-    <handling>5/4</handling>
-    <speed>3</speed>
+      <handling>5/4</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>18</body>
-    <armor>10</armor>
-      <pilot>3</pilot>	  
+      <armor>10</armor>
+      <pilot>3</pilot>
       <sensor>2</sensor>
-      <seats>20</seats>  
+      <seats>20</seats>
       <avail>0</avail>
-      <cost>56000</cost>  
-    <source>R5G</source>
+      <cost>56000</cost>
+      <source>R5G</source>
       <page>64</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
-    <mods>
-      <name>Amenities (Middle)</name>
-    </mods>
+      <mods>
+        <name>Amenities (Middle)</name>
+      </mods>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
       <name>Mercedes-Benz CityMog Elite</name>
-    <handling>5/3</handling>
-    <speed>3</speed>
+      <handling>5/3</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>18</body>
-    <armor>12</armor>
-      <pilot>3</pilot>	  
+      <armor>12</armor>
+      <pilot>3</pilot>
       <sensor>4</sensor>
-      <seats>12</seats>  
+      <seats>12</seats>
       <avail>0</avail>
-      <cost>96000</cost>  
-    <source>R5G</source>
+      <cost>96000</cost>
+      <source>R5G</source>
       <page>64</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
-    <mods>
-      <name>Amenities (High)</name>
-    </mods>
+      <mods>
+        <name>Amenities (High)</name>
+      </mods>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>b52811c6-03d4-4dee-8a2e-04ea043b79e8</id>
       <name>Volkswagen Multicity</name>
-    <handling>3/2</handling>
-    <speed>4</speed>
+      <handling>3/2</handling>
+      <speed>4</speed>
       <accel>1</accel>
       <body>12</body>
-    <armor>4</armor>
-      <pilot>1</pilot>	  
+      <armor>4</armor>
+      <pilot>1</pilot>
       <sensor>1</sensor>
-      <seats>3</seats>  
+      <seats>3</seats>
       <avail>0</avail>
-      <cost>18000</cost>  
-    <source>R5G</source>
+      <cost>18000</cost>
+      <source>R5G</source>
       <page>64</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="1" maxrating="1">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>8abe349d-d687-45a0-a1c9-d6189e4eac39</id>
       <name>Volkswagen Urban Explorer</name>
-    <handling>3/3</handling>
-    <speed>3</speed>
+      <handling>3/3</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>13</body>
-    <armor>6</armor>
-      <pilot>2</pilot>	  
+      <armor>6</armor>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>4</seats>  
+      <seats>4</seats>
       <avail>0</avail>
-      <cost>28000</cost>  
-    <source>R5G</source>
+      <cost>28000</cost>
+      <source>R5G</source>
       <page>65</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
-    <mods>
-      <name>Amenities (Middle)</name>
-    <name>SunCell</name>
-    </mods>
+      <mods>
+        <name>Amenities (Middle)</name>
+        <name>SunCell</name>
+      </mods>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>9b5cf9b8-c3ce-4853-91c7-215a73ad4ed2</id>
       <name>Volkswagen Urban Transporter</name>
-    <handling>3/3</handling>
-    <speed>3</speed>
+      <handling>3/3</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>13</body>
-    <armor>6</armor>
-      <pilot>2</pilot>	  
+      <armor>6</armor>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>2</seats>  
+      <seats>2</seats>
       <avail>0</avail>
-      <cost>19500</cost>  
-    <source>R5G</source>
+      <cost>19500</cost>
+      <source>R5G</source>
       <page>65</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>61c57dad-8683-464e-92e1-3ad57776365e</id>
       <name>Volkswagen Urban Traveller</name>
-    <handling>3/3</handling>
-    <speed>3</speed>
+      <handling>3/3</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>13</body>
-    <armor>6</armor>
-      <pilot>2</pilot>	  
+      <armor>6</armor>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>9</seats>  
+      <seats>9</seats>
       <avail>0</avail>
-      <cost>29500</cost>  
-    <source>R5G</source>
+      <cost>29500</cost>
+      <source>R5G</source>
       <page>65</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>1581a0b7-d198-46ba-bf68-88871554fcf1</id>
       <name>Volkswagen Urban Watcher</name>
-    <handling>3/3</handling>
-    <speed>3</speed>
+      <handling>3/3</handling>
+      <speed>3</speed>
       <accel>1</accel>
       <body>16</body>
-    <armor>10</armor>
-      <pilot>2</pilot>	  
+      <armor>10</armor>
+      <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>4</seats>  
+      <seats>4</seats>
       <avail>12R</avail>
-      <cost>65000</cost>  
-    <source>R5G</source>
+      <cost>65000</cost>
+      <source>R5G</source>
       <page>65</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
-    <mods>
-    <name>Landing Drone Rack (Medium)</name>
-    <name>Landing Drone Rack (Medium)</name>
-    <name>Landing Drone Rack (Medium)</name>
-    <name>Landing Drone Rack (Medium)</name>
-    <name>Retrans Unit</name>
-    </mods>
+      <mods>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Retrans Unit</name>
+      </mods>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>d0bdf891-9faa-4128-8439-ae4964a425f7</id>
       <name>Ares Minotaurus</name>
-    <handling>4/5</handling>
-    <speed>5</speed>
+      <handling>4/5</handling>
+      <speed>5</speed>
       <accel>2</accel>
       <body>14</body>
-    <armor>8</armor>
-      <pilot>4</pilot>	  
+      <armor>8</armor>
+      <pilot>4</pilot>
       <sensor>4</sensor>
-      <seats>4</seats>  
+      <seats>4</seats>
       <avail>12F</avail>
-      <cost>45000</cost>  
-    <source>R5G</source>
+      <cost>45000</cost>
+      <source>R5G</source>
       <page>81</page>
-      <category>Cars</category>	  
+      <category>Cars</category>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>98dc1868-0c72-468a-bf82-a87dbbcd0002</id>
       <name>Dodge Hurricane</name>
       <page>57</page>
@@ -7571,7 +7571,7 @@
       </gears>
       <seats>3</seats>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
       <name>Dodge Hurricane Crew Modell</name>
       <page>57</page>
@@ -7591,7 +7591,7 @@
       </gears>
       <seats>6</seats>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
       <name>Dodge Hurricane Security Modell</name>
       <page>57</page>
@@ -7611,7 +7611,7 @@
       </gears>
       <seats>5</seats>
     </vehicle>
-  <vehicle>
+    <vehicle>
       <id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
       <name>BMW X Infinity</name>
       <page>57</page>
@@ -7631,69 +7631,69 @@
       </gears>
       <seats>6</seats>
     </vehicle>
-  <!-- End Region -->
-      <!--Region Shadows in Focus: Metropole-->
-      <vehicle>
-          <id>c659ace5-1dfb-4eeb-b49d-5867b3153649</id>
-          <name>Avibras-Nissan AN 822</name>
-          <page>31</page>
-          <source>SFME</source>
-          <accel>0</accel>
-          <armor>10</armor>
-          <avail>10</avail>
-          <body>14</body>
-          <category>Rotorcraft</category>
-          <cost>221500</cost>
-          <handling>5</handling>
-          <pilot>3</pilot>
-          <sensor>3</sensor>
-		  <seats>5</seats>
-          <speed>6</speed>
-          <gears>
-              <gear rating="3" maxrating="3">Sensor Array</gear>
-              <gear rating="2" select="Evasion">Skill Autosoft</gear>
-              <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
-              <gear rating="2" select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
-          </gears>
-          <mods>
-              <name>Rigger Interface</name>
-			  <name>Manual Controls</name>
-			  <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
-          </mods>
-      </vehicle>
-      <!-- End Region -->
-      <!--Region Shadows in Focus: Metropole-->
-      <vehicle>
-		<id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
-		<name>Ares Citymaster</name>
-		<handling>4/3</handling>
-		<speed>4/3</speed>
-		<accel>2</accel>
-		<body>18</body>
-		<armor>22</armor>
-		<pilot>5</pilot>	  
-		<sensor>5</sensor>
-		<seats>12</seats>  
-		<avail>0</avail>
-		<cost>0</cost>  
-		<source>SPS</source>
-		<page>40</page>
-		<category>Cars</category>	  
-		<gears>
-			<gear rating="5" maxrating="5">Sensor Array</gear>
-		</gears>
-		<mods>
-			<name>Rigger Interface</name>
-			<name select="Chemical Seal">Special Equipment</name>
-			<name>Heavy Weapon Mount</name>
-		</mods>
-		<weapons>
+    <!-- End Region -->
+    <!--Region Shadows in Focus: Metropole-->
+    <vehicle>
+      <id>c659ace5-1dfb-4eeb-b49d-5867b3153649</id>
+      <name>Avibras-Nissan AN 822</name>
+      <page>31</page>
+      <source>SFME</source>
+      <accel>0</accel>
+      <armor>10</armor>
+      <avail>10</avail>
+      <body>14</body>
+      <category>Rotorcraft</category>
+      <cost>221500</cost>
+      <handling>5</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <seats>5</seats>
+      <speed>6</speed>
+      <gears>
+        <gear rating="3" maxrating="3">Sensor Array</gear>
+        <gear rating="2" select="Evasion">Skill Autosoft</gear>
+        <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
+        <gear rating="2" select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name>Manual Controls</name>
+        <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
+      </mods>
+    </vehicle>
+    <!-- End Region -->
+    <!--Region Shadows in Focus: Metropole-->
+    <vehicle>
+      <id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
+      <name>Ares Citymaster</name>
+      <handling>4/3</handling>
+      <speed>4/3</speed>
+      <accel>2</accel>
+      <body>18</body>
+      <armor>22</armor>
+      <pilot>5</pilot>
+      <sensor>5</sensor>
+      <seats>12</seats>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SPS</source>
+      <page>40</page>
+      <category>Cars</category>
+      <gears>
+        <gear rating="5" maxrating="5">Sensor Array</gear>
+      </gears>
+      <mods>
+        <name>Rigger Interface</name>
+        <name select="Chemical Seal">Special Equipment</name>
+        <name>Heavy Weapon Mount</name>
+      </mods>
+      <weapons>
         <weapon>
           <name>Stoner-Ares M202</name>
         </weapon>
       </weapons>
     </vehicle>
-      <!-- End Region -->
+    <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
@@ -7896,7 +7896,7 @@
         </vehicledetails>
       </required>
     </mod>
-	<mod>
+    <mod>
       <id>d3f7ebdb-bdf9-4b62-9934-a12b132c6731</id>
       <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
       <page>31</page>
@@ -7906,7 +7906,7 @@
       <cost>0</cost>
       <rating>0</rating>
       <slots>0</slots>
-	  <bonus>
+      <bonus>
         <devicerating>1</devicerating>
       </bonus>
       <required>
@@ -9036,7 +9036,7 @@
         <vehicledetails>
           <seats operation="greaterthanequals">1</seats>
         </vehicledetails>
-      </required>        
+      </required>
     </mod>
     <mod>
       <id>354bd92f-dafc-42a4-979c-e3631be6cf45</id>
@@ -9422,8 +9422,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
-		<subsystem>Headware</subsystem>
-		<subsystem>Cosmetic Enhancement</subsystem>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9449,8 +9449,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
-		<subsystem>Headware</subsystem>
-		<subsystem>Cosmetic Enhancement</subsystem>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9476,8 +9476,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
-		<subsystem>Headware</subsystem>
-		<subsystem>Cosmetic Enhancement</subsystem>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9502,8 +9502,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
-		<subsystem>Headware</subsystem>
-		<subsystem>Cosmetic Enhancement</subsystem>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9528,8 +9528,8 @@
       </required>
       <subsystems>
         <subsystem>Bodyware</subsystem>
-		<subsystem>Headware</subsystem>
-		<subsystem>Cosmetic Enhancement</subsystem>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cosmetic Enhancement</subsystem>
         <subsystem>Cyberlimb Enhancement</subsystem>
         <subsystem>Cyberlimb Accessory</subsystem>
         <subsystem>Cyber Implant Weapon</subsystem>
@@ -9932,7 +9932,7 @@
       <bonus>
         <handling>+1</handling>
         <offroadhandling>-1</offroadhandling>
-      </bonus>        
+      </bonus>
     </mod>
     <mod>
       <id>aba3338c-0a54-4486-84a4-2e74524b63de</id>
@@ -10256,12 +10256,50 @@
             <category>VTOL/VSTOL</category>
             <category operation="contains">Drones</category>
           </OR>
-        </vehicledetails>            
-      </required>            
+        </vehicledetails>
+      </required>
     </mod>
     <!-- End Region -->
   </mods>
   <weaponmounts>
+    <weaponmount>
+      <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
+      <name>Weapon Mount</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>8F</avail>
+      <category>Size</category>
+      <cost>2500</cost>
+      <slots>0</slots>
+      <forbidden>
+        <control>Armored Manual</control>
+        <control>Remote</control>
+      </forbidden>
+      <required>
+        <flexibility>None</flexibility>
+        <visibility>None</visibility>
+      </required>
+      <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>a567c5d3-38b8-496a-add8-1e176384e935</id>
+      <name>Heavy Weapon Mount</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>14F</avail>
+      <category>Size</category>
+      <cost>5000</cost>
+      <slots>0</slots>
+      <forbidden>
+        <control>Armored Manual</control>
+        <control>Remote</control>
+      </forbidden>
+      <required>
+        <flexibility>None</flexibility>
+        <visibility>None</visibility>
+      </required>
+      <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponcategories>
+    </weaponmount>
     <weaponmount>
       <id>1b44540c-b463-47ed-b288-cf4a8e130eab</id>
       <name>Light</name>
@@ -10295,6 +10333,18 @@
       <slots>4</slots>
       <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponcategories>
     </weaponmount>
+    <!-- Region Visibility -->
+    <weaponmount>
+      <id>292d2ee6-1f7f-482e-838a-41b87cfc30bf</id>
+      <name>None</name>
+      <page>0</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Visibility</category>
+      <cost>0</cost>
+      <create>False</create>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
       <name>External</name>
@@ -10324,6 +10374,19 @@
       <category>Visibility</category>
       <cost>4000</cost>
       <slots>4</slots>
+    </weaponmount>
+    <!-- End Region -->
+    <!-- Region Flexibility -->
+    <weaponmount>
+      <id>6db7d976-5c96-4309-a9ea-d2679a7ef5d1</id>
+      <name>None</name>
+      <page>0</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Flexibility</category>
+      <cost>0</cost>
+      <create>False</create>
+      <slots>0</slots>
     </weaponmount>
     <weaponmount>
       <id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
@@ -10355,6 +10418,19 @@
       <cost>5000</cost>
       <slots>2</slots>
     </weaponmount>
+    <!-- End Region -->
+    <!-- Region Control -->
+    <weaponmount>
+      <id>5ab29479-5212-4a79-8076-202d3c6570a7</id>
+      <name>None</name>
+      <page>0</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Control</category>
+      <cost>0</cost>
+      <create>False</create>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>df720a43-31aa-4053-9f2e-30ec4923cfe8</id>
       <name>Remote</name>
@@ -10385,5 +10461,6 @@
       <cost>1500</cost>
       <slots>2</slots>
     </weaponmount>
+    <!-- End Region -->
   </weaponmounts>
 </chummer>

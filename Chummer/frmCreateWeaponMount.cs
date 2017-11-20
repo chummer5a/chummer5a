@@ -100,18 +100,59 @@ namespace Chummer
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
             TreeNode tree = new TreeNode();
+            //TODO: THIS IS UGLY AS SHIT, FIX BETTER
             XmlNode node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue.ToString() + "\"]");
+            if (node["forbidden"] != null)
+            {
+                XmlNodeList list = node.SelectNodes("/forbidden/control");
+                XmlNode check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboControl.SelectedValue.ToString() + "\"]");
+                if (list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText))
+                    return;
+                list = node.SelectNodes("/forbidden/flexibility");
+                check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboFlexibility.SelectedValue.ToString() + "\"]");
+                if (list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText))
+                    return;
+                list = node.SelectNodes("/forbidden/visibility");
+                check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboVisibility.SelectedValue.ToString() + "\"]");
+                if (list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText))
+                    return;
+            }
+            if (node["required"] != null)
+            {
+                bool requirementsMet = true;
+                XmlNodeList list = node.SelectNodes("/required/control");
+                XmlNode check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboControl.SelectedValue.ToString() + "\"]");
+                if (list.Count > 0)
+                {
+                    requirementsMet = requirementsMet && list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText);
+                    if (!requirementsMet)
+                        return;
+                }
+                list = node.SelectNodes("/required/flexibility");
+                if (list.Count > 0)
+                {
+                    check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboFlexibility.SelectedValue.ToString() + "\"]");
+                    requirementsMet = requirementsMet && list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText);
+                    if (!requirementsMet)
+                        return;
+                }
+                list = node.SelectNodes("/required/visibility");
+                if (list.Count > 0)
+                {
+                    check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboVisibility.SelectedValue.ToString() + "\"]");
+                    requirementsMet = requirementsMet && list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText);
+                    if (!requirementsMet)
+                        return;
+                }
+            }
             WeaponMount mount = new WeaponMount(_character, _vehicle);
             mount.Create(node, tree, _vehicle);
             WeaponMountOption option = new WeaponMountOption();
-            option.Create(cboControl.SelectedValue.ToString());
-            mount.WeaponMountOptions.Add(option);
+            option.Create(cboControl.SelectedValue.ToString(), mount.WeaponMountOptions);
             option = new WeaponMountOption();
-            option.Create(cboFlexibility.SelectedValue.ToString());
-            mount.WeaponMountOptions.Add(option);
+            option.Create(cboFlexibility.SelectedValue.ToString(), mount.WeaponMountOptions);
             option = new WeaponMountOption();
-            option.Create(cboVisibility.SelectedValue.ToString());
-            mount.WeaponMountOptions.Add(option);
+            option.Create(cboVisibility.SelectedValue.ToString(), mount.WeaponMountOptions);
             WeaponMount = mount;
             tree.Text = mount.DisplayName;
             DialogResult = DialogResult.OK;

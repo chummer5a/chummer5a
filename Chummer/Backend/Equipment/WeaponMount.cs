@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Equipment
 {
@@ -30,7 +31,7 @@ namespace Chummer.Backend.Equipment
 		private string _strName = string.Empty;
 		private string _strCategory = string.Empty;
 		private string _strLimit = string.Empty;
-		private string _strSlots = "0";
+		private int _intSlots = 0;
 		private string _strCost = string.Empty;
 
 		private readonly Vehicle _vehicle;
@@ -58,7 +59,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
-            objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
+            objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 
@@ -128,7 +129,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limit", _strLimit);
-			objWriter.WriteElementString("slots", _strSlots);
+			objWriter.WriteElementString("slots", _intSlots.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("markup", _decMarkup.ToString(CultureInfo.InvariantCulture));
@@ -175,7 +176,7 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetStringFieldQuickly("name", ref _strName);
 			objNode.TryGetStringFieldQuickly("category", ref _strCategory);
 			objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
-			objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+			objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
 			objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
 			objNode.TryGetStringFieldQuickly("page", ref _strPage);
 			objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -232,7 +233,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("category", DisplayCategory);
 			objWriter.WriteElementString("limit", _strLimit);
-			objWriter.WriteElementString("slots", _strSlots);
+			objWriter.WriteElementString("slots", _intSlots.ToString());
 			objWriter.WriteElementString("avail", TotalAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());
 			objWriter.WriteElementString("owncost", OwnCost.ToString());
@@ -256,23 +257,19 @@ namespace Chummer.Backend.Equipment
         internal void CreateByName(XmlNode n, TreeNode t)
         {
             XmlDocument doc = XmlManager.Load("vehicles.xml");
-            //I'm not super pleased with this,
             TreeNode tree = new TreeNode();
             WeaponMount mount = this;
             XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["size"].InnerText}\" and category = \"Size\"]");
             mount.Create(node, tree, _vehicle);
             WeaponMountOption option = new WeaponMountOption();
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["flexibility"].InnerText}\" and category = \"Flexibility\"]");
-            option.Create(node["id"].InnerText);
-            mount.WeaponMountOptions.Add(option);
+            option.Create(node["id"].InnerText, mount.WeaponMountOptions);
             option = new WeaponMountOption();
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["control"].InnerText}\" and category = \"Control\"]");
-            option.Create(node["id"].InnerText);
-            mount.WeaponMountOptions.Add(option);
+            option.Create(node["id"].InnerText, mount.WeaponMountOptions);
             option = new WeaponMountOption();
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["visibility"].InnerText}\" and category = \"Visibility\"]");
-            option.Create(node["id"].InnerText);
-            mount.WeaponMountOptions.Add(option);
+            option.Create(node["id"].InnerText, mount.WeaponMountOptions);
             t.Text = DisplayName;
             t.Tag = _guiID.ToString();
         }
@@ -378,15 +375,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Number of Slots the Mod uses.
         /// </summary>
-        public string Slots
+        public int Slots
         {
             get
             {
-                return _strSlots;
+                return _intSlots;
             }
             set
             {
-                _strSlots = value;
+                _intSlots = value;
             }
         }
 
@@ -555,56 +552,105 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Complex Properties
+
         /// <summary>
-        /// Total Availablility of the VehicleMod.
+        /// The number of Slots the Mount consumes, including all child items.
+        /// </summary>
+        public int CalculatedSlots => Slots + WeaponMountOptions.Sum(w => w.Slots);
+
+        /// <summary>
+        /// Total Availability.
         /// </summary>
         public string TotalAvail
         {
             get
             {
-                // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-                if (_strAvail.StartsWith('+'))
-                    return _strAvail;
-
-                string strCalculated = _strAvail;
-
-                // Just a straight cost, so return the value.
-                if (strCalculated.Contains("F") || strCalculated.Contains("R"))
-                {
-                    strCalculated = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1)).ToString() + strCalculated.Substring(strCalculated.Length - 1, 1);
-                }
-                else
-                    strCalculated = Convert.ToInt32(strCalculated).ToString();
-
-                int intAvail;
-                string strAvailText = string.Empty;
-                if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
-                {
-                    strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                    intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
-                }
-                else
-                    intAvail = Convert.ToInt32(strCalculated);
-
+                Tuple<int, string> objAvailPair = TotalAvailPair;
+                string strAvail = objAvailPair.Item2;
                 // Translate the Avail string.
-                if (strAvailText == "R")
-                    strAvailText = LanguageManager.GetString("String_AvailRestricted");
-                else if (strAvailText == "F")
-                    strAvailText = LanguageManager.GetString("String_AvailForbidden");
-                string strReturn = intAvail.ToString() + strAvailText;
+                if (strAvail == "F")
+                    strAvail = LanguageManager.GetString("String_AvailForbidden");
+                else if (strAvail == "R")
+                    strAvail = LanguageManager.GetString("String_AvailRestricted");
 
-                return strReturn;
+                return objAvailPair.Item1.ToString() + strAvail;
             }
         }
 
-		/// <summary>
-		/// Total cost of the VehicleMod.
-		/// </summary>
-		public decimal TotalCost
+        /// <summary>
+        /// Total Availability as a pair: first item is availability magnitude, second is untranslated Restricted/Forbidden state (empty of neither).
+        /// </summary>
+        public Tuple<int, string> TotalAvailPair
+        {
+            get
+            {
+                if (_strAvail.Length == 0)
+                    return new Tuple<int, string>(0, string.Empty);
+                string strAvail = string.Empty;
+                string strAvailExpr = _strAvail;
+                int intAvail = 0;
+
+                if (strAvailExpr.Substring(_strAvail.Length - 1, 1) == "F" || strAvailExpr.Substring(_strAvail.Length - 1, 1) == "R")
+                {
+                    strAvail = strAvailExpr.Substring(_strAvail.Length - 1, 1);
+                    // Remove the trailing character if it is "F" or "R".
+                    strAvailExpr = strAvailExpr.Substring(0, _strAvail.Length - 1);
+                }
+                /*if (strAvailExpr.Contains("{Children Avail}"))
+                {
+                    int intMaxChildAvail = 0;
+                    foreach (Weapon w in Weapons)
+                    {
+                        Tuple<int, string> objLoopAvail = w.TotalAvailPair;
+                        if (objLoopAvail.Item1 > intMaxChildAvail)
+                            intMaxChildAvail = objLoopAvail.Item1;
+                        if (objLoopAvail.Item2.EndsWith('F'))
+                            strAvail = "F";
+                        else if (objLoopAvail.Item2.EndsWith('R') && strAvail != "F")
+                            strAvail = "R";
+                    }
+                    strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
+                }*/
+                XmlDocument objDummyDoc = new XmlDocument();
+                XPathNavigator objNav = objDummyDoc.CreateNavigator();
+                try
+                {
+                    XPathExpression objExpression = objNav.Compile(strAvailExpr);
+                    intAvail = Convert.ToInt32(objNav.Evaluate(objExpression));
+                }
+                catch (XPathException)
+                {
+                }
+
+                // Run through the Accessories and add in their availability.
+                foreach (WeaponMountOption wm in WeaponMountOptions)
+                {
+                    string strAccAvail = string.Empty;
+                    int intAccAvail = 0;
+
+                    if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
+                    {
+                        strAccAvail += wm.TotalAvail;
+                        if (strAccAvail.EndsWith('F'))
+                            strAvail = "F";
+                        if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
+                            strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                        intAccAvail = Convert.ToInt32(strAccAvail);
+                        intAvail += intAccAvail;
+                    }
+                }
+                return new Tuple<int, string>(intAvail, strAvail);
+            }
+        }
+
+        /// <summary>
+        /// Total cost of the WeaponMount.
+        /// </summary>
+        public decimal TotalCost
 		{
 			get
 			{
-				return OwnCost + Weapons.Sum(w => w.TotalCost);
+				return OwnCost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost);
 			}
 		}
 
@@ -652,7 +698,11 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-                string strReturn = $"{DisplayNameShort} ({string.Join(", ", WeaponMountOptions.Select(wm => wm.DisplayName).ToArray())})";
+                string strReturn = $"{DisplayNameShort}";
+                if (WeaponMountOptions.Count > 0)
+                {
+                    strReturn += $" ({string.Join(", ", WeaponMountOptions.Select(wm => wm.DisplayName).ToArray())})";
+                }
                 
                 return strReturn;
 			}
@@ -679,9 +729,8 @@ namespace Chummer.Backend.Equipment
         private Guid _sourceID;
         private string _strCost;
         private string _strCategory;
-        private string _strSlots;
+        private int _intSlots;
         private string _strWeaponMountCategories;
-        private int _intMarkup;
         private string _strAltName;
         private string _strAltPage;
         private string _strAltCategory;
@@ -689,15 +738,19 @@ namespace Chummer.Backend.Equipment
         #region Constructor, Create, Save and Load Methods
 
         /// Create a Weapon Mount from an XmlNode.
-        public void Create(string id)
+        public void Create(string id, List<WeaponMountOption> list)
         {
             XmlDocument xmlDoc = XmlManager.Load("vehicles.xml");
             XmlNode objXmlMod = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{id}\"]");
             if (objXmlMod == null) Utils.BreakIfDebug();
+            if (objXmlMod["create"] != null)
+            {
+                return;
+            }
             Guid.TryParse(id, out _sourceID);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
-            objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
+            objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 
@@ -736,6 +789,7 @@ namespace Chummer.Backend.Equipment
                 else
                     _strCost = objXmlMod["cost"].InnerText;
             }
+            list.Add(this);
             if (GlobalOptions.Language == "en-us") return;
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
             XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID + "\"]");
@@ -767,7 +821,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("id", _sourceID.ToString());
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
-            objWriter.WriteElementString("slots", _strSlots);
+            objWriter.WriteElementString("slots", _intSlots.ToString());
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteEndElement();
@@ -783,11 +837,10 @@ namespace Chummer.Backend.Equipment
             Guid.TryParse(objNode["id"].InnerText, out _sourceID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+            objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-            objNode.TryGetInt32FieldQuickly("markup", ref _intMarkup);
 
             if (GlobalOptions.Language == "en-us") return;
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
@@ -800,6 +853,61 @@ namespace Chummer.Backend.Equipment
 
             objModNode = objXmlDocument.SelectSingleNode($"/chummer/categories/category[. = \"{_strCategory}\"]");
             _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// The cost of just the WeaponMountOption itself.
+        /// </summary>
+        public decimal Cost => Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
+
+        /// <summary>
+        /// Slots consumed by the WeaponMountOption.
+        /// </summary>
+        public int Slots => _intSlots;
+        #endregion
+
+        #region Complex Properties
+        /// <summary>
+        /// Total Availability.
+        /// </summary>
+        public string TotalAvail
+        {
+            get
+            {
+                // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
+
+                string strCalculated = string.Empty;
+                string strReturn = string.Empty;
+
+                // Just a straight cost, so return the value.
+                if (_strAvail.Contains("F") || _strAvail.Contains("R"))
+                {
+                    strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
+                }
+                else
+                    strCalculated = Convert.ToInt32(_strAvail).ToString();
+
+                int intAvail = 0;
+                string strAvailText = string.Empty;
+                if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+                {
+                    strAvailText = strCalculated.Substring(strCalculated.Length - 1);
+                    intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
+                }
+                else
+                    intAvail = Convert.ToInt32(strCalculated);
+
+                // Translate the Avail string.
+                if (strAvailText == "R")
+                    strAvailText = LanguageManager.GetString("String_AvailRestricted");
+                else if (strAvailText == "F")
+                    strAvailText = LanguageManager.GetString("String_AvailForbidden");
+                strReturn = intAvail.ToString() + strAvailText;
+
+                return strReturn;
+            }
         }
         #endregion
     }

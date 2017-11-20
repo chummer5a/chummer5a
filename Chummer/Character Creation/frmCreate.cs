@@ -5078,6 +5078,15 @@ namespace Chummer
 
                                     CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons);
                                 }
+                                else
+                                {
+                                    WeaponMount objMount = CommonFunctions.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
+                                    if (objMount != null)
+                                    {
+                                        objVehicle.WeaponMounts.Remove(objMount);
+                                    }
+                                    treVehicles.SelectedNode.Remove();
+                                }
                             }
                         }
                     }
@@ -6985,7 +6994,7 @@ namespace Chummer
                         break;
                     }
                 }
-                if (node != null)
+                if (node.Tag == null)
                 {
                     node.Tag = "String_WeaponMounts";
                     node.Text = LanguageManager.GetString("String_WeaponMounts");
@@ -7138,7 +7147,7 @@ namespace Chummer
         private void tsVehicleAddWeapon_Click(object sender, EventArgs e)
         {
             // Make sure that a Weapon Mount has been selected.
-            WeaponMount wm = CommonFunctions.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            WeaponMount wm = CommonFunctions.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out Vehicle v);
 
             //if (wm == null || (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || string.IsNullOrEmpty(objMod.WeaponMountCategories)))
             if (wm == null)
