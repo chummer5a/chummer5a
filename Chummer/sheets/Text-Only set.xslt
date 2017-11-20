@@ -451,7 +451,7 @@
             <xsl:with-param name="count" select="10"/>
           </xsl:call-template>
           <xsl:value-of select="$lang.Pool"/>:
-          <xsl:value-of select="amount"/>
+          <xsl:value-of select="total"/>
           <xsl:if test="spec != '' and exotic = 'False'">
             (<xsl:value-of select="specializedrating"/>)
           </xsl:if>
