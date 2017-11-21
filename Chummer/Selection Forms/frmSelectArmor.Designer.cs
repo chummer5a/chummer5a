@@ -281,7 +281,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn7.DataPropertyName = "Cost";
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle11.Format = "#,###,##0.##¥";
+            dataGridViewCellStyle11.Format = "#0.00¥";
             dataGridViewCellStyle11.NullValue = null;
             this.dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle11;
             this.dataGridViewTextBoxColumn7.FillWeight = 60F;
@@ -599,7 +599,7 @@ namespace Chummer
             this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Cost.DataPropertyName = "Cost";
             dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle12.Format = "#,###,##0.##¥";
+            dataGridViewCellStyle12.Format = "#,0.00¥";
             dataGridViewCellStyle12.NullValue = null;
             this.Cost.DefaultCellStyle = dataGridViewCellStyle12;
             this.Cost.FillWeight = 60F;

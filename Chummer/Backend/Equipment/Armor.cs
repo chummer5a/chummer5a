@@ -531,8 +531,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", _strCategory);
             objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("armorname", _strArmorName);
@@ -1254,7 +1254,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decimal decReturn;
                     if (decimal.TryParse(_strArmorCapacity, out decReturn))
-                        strReturn = decReturn.ToString("0.##", GlobalOptions.CultureInfo);
+                        strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     else
                         strReturn = _strArmorCapacity;
                 }
@@ -1276,7 +1276,7 @@ namespace Chummer.Backend.Equipment
                         XPathExpression xprCapacity = nav.Compile(strCapacity);
 
                         strCapacity = nav.Evaluate(xprCapacity).ToString();
-                        strCapacity = (Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString("0.##", GlobalOptions.CultureInfo);
+                        strCapacity = (Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString("#,0.##", GlobalOptions.CultureInfo);
                         strReturn = strCapacity;
                     }
                 }

@@ -378,8 +378,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(objCulture));
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
@@ -937,7 +937,7 @@ namespace Chummer.Backend.Equipment
                 decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = decCapacity.ToString("0.##", GlobalOptions.CultureInfo);
+                string strReturn = decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 return strReturn;
             }
@@ -1013,7 +1013,7 @@ namespace Chummer.Backend.Equipment
                 decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = decCapacity.ToString("0.##", GlobalOptions.CultureInfo);
+                string strReturn = decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
                 if (blnSquareBrackets)
                     strReturn = "[" + strReturn + "]";
 

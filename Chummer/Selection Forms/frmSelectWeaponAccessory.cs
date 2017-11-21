@@ -582,10 +582,10 @@ namespace Chummer
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{decMin:###,###,##0.##¥+}";
+                        lblCost.Text = $"{decMin:#,0.00¥+}";
                     }
                     else
-                        lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                        lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }
@@ -604,13 +604,13 @@ namespace Chummer
                     // Apply any markup.
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                    lblCost.Text = $"{decCost:###,###,##0.##¥}";
+                    lblCost.Text = $"{decCost:#,0.00¥}";
                     lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
                 }
             }
             else
             {
-                lblCost.Text = $"{0:###,###,##0.##¥}";
+                lblCost.Text = $"{0:#,0.00¥}";
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
 

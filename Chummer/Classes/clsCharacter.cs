@@ -1973,7 +1973,7 @@ namespace Chummer
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(objCulture));
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString("0.##", objCulture));
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString("#,0.00", objCulture));
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(objCulture));
             // <prioritymetatype />
@@ -2133,7 +2133,7 @@ namespace Chummer
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _decNuyen.ToString("0.##", objCulture));
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString("#,0.00", objCulture));
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString(objCulture));
             // <adept />
@@ -6545,13 +6545,13 @@ namespace Chummer
             if (strMovementType == "Swim")
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
-                strReturn = decWalk.ToString("0.##", objCulture) + ", " + decSprint.ToString("0.##", objCulture) + "m/ hit";
+                strReturn = decWalk.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
-                strReturn = decWalk.ToString("0.##", objCulture) + "/" + decRun.ToString("0.##", objCulture) + ", " + decSprint.ToString("0.##", objCulture) + "m/ hit";
+                strReturn = decWalk.ToString("#,0.##", objCulture) + "/" + decRun.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
             }
             return strReturn;
         }

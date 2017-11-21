@@ -337,9 +337,9 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value /100);
-                lblCost.Text += " (" + $"{decDiscount:###,###,##0.##¥}" + ")";
+                lblCost.Text += " (" + $"{decDiscount:#,0.00¥}" + ")";
             }
-            lblCost.Text = $"{decNuyen:###,###,##0.##¥}";
+            lblCost.Text = $"{decNuyen:#,0.00¥}";
             return decNuyen;
         }
 

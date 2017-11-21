@@ -653,14 +653,14 @@ namespace Chummer.Backend.Equipment
             if (objGear != null)
             {
                 objWriter.WriteElementString("avail", objGear.TotalAvail(true));
-                objWriter.WriteElementString("cost", objGear.TotalCost.ToString(objCulture));
-                objWriter.WriteElementString("owncost", objGear.OwnCost.ToString(objCulture));
+                objWriter.WriteElementString("cost", objGear.TotalCost.ToString("#,0.00", objCulture));
+                objWriter.WriteElementString("owncost", objGear.OwnCost.ToString("#,0.00", objCulture));
             }
             else
             {
                 objWriter.WriteElementString("avail", TotalAvail);
-                objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
-                objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
+                objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+                objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             }
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);

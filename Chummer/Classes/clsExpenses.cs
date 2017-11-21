@@ -390,7 +390,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("date", _datDate.ToString(objCulture));
-            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Karma ? "0.##" : "N", objCulture));
+            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Nuyen ? "#,0.00" : "#,0.##", objCulture));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());

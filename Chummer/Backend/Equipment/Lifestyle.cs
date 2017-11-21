@@ -224,11 +224,11 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("lifestyle");
             objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("cost", _decCost.ToString(objCulture));
-            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(objCulture));
-            objWriter.WriteElementString("totalcost", TotalCost.ToString(objCulture));
+            objWriter.WriteElementString("cost", _decCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("totalcost", TotalCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("dice", _intDice.ToString(objCulture));
-            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(objCulture));
+            objWriter.WriteElementString("multiplier", _decMultiplier.ToString("#,0.##", objCulture));
             objWriter.WriteElementString("months", _intMonths.ToString(objCulture));
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("type", _objType.ToString());

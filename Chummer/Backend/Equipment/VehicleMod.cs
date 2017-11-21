@@ -337,8 +337,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("slots", _strSlots);
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString(objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("page", Page);
@@ -991,7 +991,7 @@ namespace Chummer.Backend.Equipment
                         {
                             try
                             {
-                                strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
+                                strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
                             }
                             catch (XPathException)
                             {
@@ -1006,7 +1006,7 @@ namespace Chummer.Backend.Equipment
                     {
                         strSecondHalf = strSecondHalf.Trim("[]".ToCharArray());
                         xprCapacity = nav.Compile(strSecondHalf.Replace("Rating", _intRating.ToString()));
-                        strSecondHalf = "[" + Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo) + "]";
+                        strSecondHalf = "[" + Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
                     }
 
                     strReturn += "/" + strSecondHalf;
@@ -1024,7 +1024,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
+                    strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }
@@ -1046,7 +1046,7 @@ namespace Chummer.Backend.Equipment
                     strReturn = "0";
                 decimal decReturn;
                 if (decimal.TryParse(strReturn, out decReturn))
-                    return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
+                    return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 return strReturn;
             }
         }
