@@ -35,7 +35,7 @@ namespace Chummer.UI.Skills
                 lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
                 
                 //New knowledge skills start at 0. Leave the Type selector unlocked until they spend Karma on the skill.
-                cboType.Enabled = skill.Karma == 0 && skill.Base == 0;
+                cboType.Enabled = (skill.Karma == 0 && skill.Base == 0 || string.IsNullOrWhiteSpace(_skill.Type));
 
                 lblName.Visible = true;
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);

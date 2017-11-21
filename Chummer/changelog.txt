@@ -259,6 +259,7 @@ Application Changes:
 - Fixed a bug where some context menu strips would not get translated.
 - Fixed a bug where Re-Apply Improvements would add improvements for items that were not equipped.
 - Fixed a bug where Custom Items would not save their custom names when using a localisation other than en-US. Fixes #2073.
+- Characters that did not properly assign a Type to their Knowledge skills will now be able to change it.
 
 Data Changes:
 
