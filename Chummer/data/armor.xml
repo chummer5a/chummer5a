@@ -3132,7 +3132,7 @@
       <armor>+2</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
-      <gearcapacity>2</gearcapacity>
+      <gearcapacity>6</gearcapacity>
       <avail>0</avail>
       <cost>100</cost>
       <source>SR5</source>
