@@ -2025,9 +2025,37 @@ namespace Chummer
 
             // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
             if (lstInternalIdFilter == null)
-                ImprovementManager.RemoveImprovements(_objCharacter, 0, string.Empty, true);
+                ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x =>
+                                                                        x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Armor ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Bioware ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Echo ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Gear ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Power ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Quality ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Spell).ToList());
             else
-                ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName)).ToList());
+                ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName) &&
+                                                                        (x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Armor ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Bioware ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Echo ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Gear ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Power ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Quality ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.Spell)).ToList());
 
             // Refresh Qualities.
             // We cannot use foreach because qualities can add more qualities
