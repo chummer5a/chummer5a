@@ -1176,6 +1176,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Original Forced Extra string associted with the 'ware.
+        /// </summary>
+        public string Forced
+        {
+            get
+            {
+                return _strForced;
+            }
+            set
+            {
+                _strForced = value;
+            }
+        }
+
+        /// <summary>
         /// Extra string associted with the 'ware.
         /// </summary>
         public string Extra
