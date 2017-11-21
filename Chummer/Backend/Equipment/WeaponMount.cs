@@ -737,16 +737,16 @@ namespace Chummer.Backend.Equipment
 
         #region Constructor, Create, Save and Load Methods
 
-        /// Create a Weapon Mount from an XmlNode.
+        /// <summary>
+        /// Create a Weapon Mount Option from an XmlNode.
+        /// </summary>
+        /// <param name="id">String guid of the object.</param>
+        /// <param name="list">List to add the object to. Called inside the Create method in case the mount itself is null.</param>
         public void Create(string id, List<WeaponMountOption> list)
         {
             XmlDocument xmlDoc = XmlManager.Load("vehicles.xml");
             XmlNode objXmlMod = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{id}\"]");
             if (objXmlMod == null) Utils.BreakIfDebug();
-            if (objXmlMod["create"] != null)
-            {
-                return;
-            }
             Guid.TryParse(id, out _sourceID);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -828,7 +828,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the VehicleMod from the XmlNode.
+        /// Load the Weapon Mount Option from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="objVehicle">Vehicle that the mod is attached to.</param>

@@ -10264,39 +10264,35 @@
   <weaponmounts>
     <weaponmount>
       <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
-      <name>Weapon Mount</name>
+      <name>Standard [SR5]</name>
       <page>461</page>
       <source>SR5</source>
       <avail>8F</avail>
       <category>Size</category>
       <cost>2500</cost>
       <slots>0</slots>
-      <forbidden>
-        <control>Armored Manual</control>
-        <control>Remote</control>
-      </forbidden>
       <required>
-        <flexibility>None</flexibility>
-        <visibility>None</visibility>
+        <control>Manual</control>
+        <control>Remote</control>
+        <flexibility>Fixed</flexibility>
+        <visibility>External</visibility>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponcategories>
     </weaponmount>
     <weaponmount>
       <id>a567c5d3-38b8-496a-add8-1e176384e935</id>
-      <name>Heavy Weapon Mount</name>
+      <name>Heavy [SR5]</name>
       <page>461</page>
       <source>SR5</source>
       <avail>14F</avail>
       <category>Size</category>
       <cost>5000</cost>
       <slots>0</slots>
-      <forbidden>
-        <control>Armored Manual</control>
-        <control>Remote</control>
-      </forbidden>
       <required>
-        <flexibility>None</flexibility>
-        <visibility>None</visibility>
+        <control>Manual</control>
+        <control>Remote</control>
+        <flexibility>Fixed</flexibility>
+        <visibility>External</visibility>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponcategories>
     </weaponmount>
@@ -10335,17 +10331,6 @@
     </weaponmount>
     <!-- Region Visibility -->
     <weaponmount>
-      <id>292d2ee6-1f7f-482e-838a-41b87cfc30bf</id>
-      <name>None</name>
-      <page>0</page>
-      <source>SR5</source>
-      <avail>0</avail>
-      <category>Visibility</category>
-      <cost>0</cost>
-      <create>False</create>
-      <slots>0</slots>
-    </weaponmount>
-    <weaponmount>
       <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
       <name>External</name>
       <page>163</page>
@@ -10378,17 +10363,6 @@
     <!-- End Region -->
     <!-- Region Flexibility -->
     <weaponmount>
-      <id>6db7d976-5c96-4309-a9ea-d2679a7ef5d1</id>
-      <name>None</name>
-      <page>0</page>
-      <source>SR5</source>
-      <avail>0</avail>
-      <category>Flexibility</category>
-      <cost>0</cost>
-      <create>False</create>
-      <slots>0</slots>
-    </weaponmount>
-    <weaponmount>
       <id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
       <name>Fixed</name>
       <page>163</page>
@@ -10420,17 +10394,6 @@
     </weaponmount>
     <!-- End Region -->
     <!-- Region Control -->
-    <weaponmount>
-      <id>5ab29479-5212-4a79-8076-202d3c6570a7</id>
-      <name>None</name>
-      <page>0</page>
-      <source>SR5</source>
-      <avail>0</avail>
-      <category>Control</category>
-      <cost>0</cost>
-      <create>False</create>
-      <slots>0</slots>
-    </weaponmount>
     <weaponmount>
       <id>df720a43-31aa-4053-9f2e-30ec4923cfe8</id>
       <name>Remote</name>
