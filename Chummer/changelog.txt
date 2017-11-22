@@ -262,6 +262,7 @@ Application Changes:
 - Characters that did not properly assign a Type to their Knowledge skills will now be able to change it.
 - Re-Apply Improvements can now handle Stacked Foci.
 - Fixed the Guids of Skills and Skill Groups not being properly loaded from a saved character. Fixes #2081.
+- Added the ability to directly add Armour to an Armor Bundle.
 - Fixed a bug where buying a separate metamagic or enhancement in career mode would check against the karma cost of buying spells instead of the karma cost of getting a metamagic or enhancement respectively.
 - Fixed a bug where wound modifiers were applied twice to knowledge skill dicepools.
 - Fixed a bug where karma modifiers to spell cost where not factored into calculations regarding whether the character has enough karma to buy a new spell.
@@ -411,6 +412,7 @@ Data Changes:
 - Fixed the cost and availability of the Ruhrmetal Wolf II to the correct values.
 - Added the previously missing Strike the Darkness technique to Way of Unified Mana (Hapsum-Do).
 - Added the alternate Norse tradition from Forbidden Arcana
+- Corrected the HK MP75 to use standard submachinegun concealability.
 - Lightning Reflexes properly gives +1 die on defense tests.
 - Jack of All Trades now properly gives its bonus up to Rating 5 and only applies its penalty beyond Rating 5.
 

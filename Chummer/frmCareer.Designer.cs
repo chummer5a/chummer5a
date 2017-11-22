@@ -1113,6 +1113,7 @@ namespace Chummer
             this.tsImprovementNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmorLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsArmorRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsArmorLocationAddArmor = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsImprovementLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsImprovementRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsCyberwareGear = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -13296,6 +13297,15 @@ namespace Chummer
             this.cmsArmorLocation.Size = new System.Drawing.Size(167, 26);
             this.cmsArmorLocation.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
+            // tsArmorLocationAddArmor
+            // 
+            this.tsArmorLocationAddArmor.Image = global::Chummer.Properties.Resources.add;
+            this.tsArmorLocationAddArmor.Name = "tsArmorLocationAddArmor";
+            this.tsArmorLocationAddArmor.Size = new System.Drawing.Size(166, 22);
+            this.tsArmorLocationAddArmor.Tag = "Button_AddArmor";
+            this.tsArmorLocationAddArmor.Text = "&Add Armor";
+            this.tsArmorLocationAddArmor.Click += new System.EventHandler(this.tsArmorLocationAddArmor_Click);
+            // 
             // tsArmorRenameLocation
             // 
             this.tsArmorRenameLocation.Image = global::Chummer.Properties.Resources.building_edit;
@@ -13920,6 +13930,7 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsImprovement;
         private System.Windows.Forms.ToolStripMenuItem tsImprovementNotes;
         private System.Windows.Forms.ContextMenuStrip cmsArmorLocation;
+        private System.Windows.Forms.ToolStripMenuItem tsArmorLocationAddArmor;
         private System.Windows.Forms.ToolStripMenuItem tsArmorRenameLocation;
         private System.Windows.Forms.Label lblEDGInfo;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialPossess;

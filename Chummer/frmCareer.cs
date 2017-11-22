@@ -8533,6 +8533,91 @@ namespace Chummer
                 tsWeaponAddAccessory_Click(sender, e);
         }
 
+        private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
+        {
+            frmSelectArmor frmPickArmor = new frmSelectArmor(_objCharacter, true);
+            frmPickArmor.ShowDialog(this);
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickArmor.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Open the Armor XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+
+            XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + frmPickArmor.SelectedArmor + "\"]");
+
+            TreeNode objNode = new TreeNode();
+            Armor objArmor = new Armor(_objCharacter);
+            List<Weapon> objWeapons = new List<Weapon>();
+            objArmor.Create(objXmlArmor, objNode, cmsArmorMod, cmsArmorGear, frmPickArmor.Rating, objWeapons);
+            objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
+
+            if (objArmor.InternalId == Guid.Empty.ToString())
+                return;
+
+            decimal decCost = objArmor.TotalCost;
+            // Apply a markup if applicable.
+            if (frmPickArmor.Markup != 0)
+            {
+                decCost *= 1 + (frmPickArmor.Markup / 100.0m);
+            }
+
+            // Multiply the cost if applicable.
+            if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+                decCost *= _objOptions.RestrictedCostMultiplier;
+            if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+                decCost *= _objOptions.ForbiddenCostMultiplier;
+
+            // Check the item's Cost and make sure the character can afford it.
+            if (!frmPickArmor.FreeCost)
+            {
+                if (decCost > _objCharacter.Nuyen)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Remove the Improvements created by the Armor.
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
+                    if (frmPickArmor.AddAgain)
+                        cmdAddArmor_Click(sender, e);
+
+                    return;
+                }
+                else
+                {
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    _objCharacter.ExpenseEntries.Add(objExpense);
+                    _objCharacter.Nuyen -= decCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.AddArmor, objArmor.InternalId);
+                    objExpense.Undo = objUndo;
+                }
+            }
+
+            _objCharacter.Armor.Add(objArmor);
+
+            objNode.ContextMenuStrip = cmsArmor;
+            treArmor.SelectedNode.Nodes.Add(objNode);
+            treArmor.SelectedNode.Expand();
+            treArmor.SelectedNode = objNode;
+
+            foreach (Weapon objWeapon in objWeapons)
+            {
+                _objCharacter.Weapons.Add(objWeapon);
+                CommonFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, objArmor.WeaponID);
+            }
+
+            ScheduleCharacterUpdate();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+
+            if (frmPickArmor.AddAgain)
+                cmdAddArmor_Click(sender, e);
+        }
+
         private void tsAddArmorMod_Click(object sender, EventArgs e)
         {
             // Make sure a parent item is selected, then open the Select Accessory window.

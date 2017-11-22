@@ -7993,6 +7993,56 @@ namespace Chummer
             RefreshSelectedVehicle();
         }
 
+        private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
+        {
+            frmSelectArmor frmPickArmor = new frmSelectArmor(_objCharacter);
+            frmPickArmor.ShowDialog(this);
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickArmor.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Open the Armor XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
+
+            XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + frmPickArmor.SelectedArmor + "\"]");
+
+
+            List<Weapon> objWeapons = new List<Weapon>();
+            TreeNode objNode = new TreeNode();
+            Armor objArmor = new Armor(_objCharacter);
+
+            objArmor.Create(objXmlArmor, objNode, cmsArmorMod, cmsArmorGear, frmPickArmor.Rating, objWeapons);
+            objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
+            if (objArmor.InternalId == Guid.Empty.ToString())
+                return;
+
+            if (frmPickArmor.FreeCost)
+            {
+                objArmor.Cost = 0;
+            }
+            _objCharacter.Armor.Add(objArmor);
+
+            objNode.ContextMenuStrip = cmsArmor;
+            treArmor.SelectedNode.Nodes.Add(objNode);
+            treArmor.SelectedNode.Expand();
+            treArmor.SelectedNode = objNode;
+
+            foreach (Weapon objWeapon in objWeapons)
+            {
+                _objCharacter.Weapons.Add(objWeapon);
+                CommonFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            }
+
+            ScheduleCharacterUpdate();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+
+            if (frmPickArmor.AddAgain)
+                cmdAddArmor_Click(sender, e);
+        }
+
         private void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
