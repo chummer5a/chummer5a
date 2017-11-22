@@ -161,6 +161,8 @@
 	<xs:element name="biowareessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />
 	<xs:element name="biowaretotalessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="blackmarketdiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
+    <xs:element name="blockskillcategoryspecializations" type="xs:string" minOccurs="0" maxOccurs="1" />
+    <xs:element name="blockskillspecializations" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="bornrich" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="coldarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="complexformlimit" type="xs:string" minOccurs="0" maxOccurs="1" />

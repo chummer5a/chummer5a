@@ -269,6 +269,7 @@ Application Changes:
 - Unhardcoded the karma cost modifications added by Uneducated, Uncouth, Myostatin Inhibitor, Jack of All Trades, College Education (RF), Linguist, School of Hard Knocks, and Technical School Education. These modifications are now available and fully modifiable through individual tags inside of bonus nodes.
 - Transferred the house rule of education qualities applying their karma costs in create mode from a checkbox in the options menu to a custom ruleset. Users who had this rule previously enabled will need to re-enable it.
 - Selecting an armor, a piece of 'ware, a gear, a quality, a vehicle, or a weapon now properly saves the currently selected value of the category selection box instead of the selected item's category. This does not apply if the search box is not empty and the option to search only in the selected category is disabled.
+- Added support for improvements that block being able to buy specializations for particular skills or skill categories.
 
 Data Changes:
 

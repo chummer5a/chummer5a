@@ -513,6 +513,10 @@ namespace Chummer
                     return objImprovementAdder.newaiprogramkarmacostmultiplier;
                 case "NEWAIADVANCEDPROGRAMKARMACOSTMULTIPLIER":
                     return objImprovementAdder.newaiadvancedprogramkarmacostmultiplier;
+                case "BLOCKSKILLSPECIALIZATIONS":
+                    return objImprovementAdder.blockskillspecializations;
+                case "BLOCKSKILLCATEGORYSPECIALIZATIONS":
+                    return objImprovementAdder.blockskillcategoryspecializations;
                 // No method matches, return a null pointer
                 default:
                     return null;

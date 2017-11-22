@@ -286,6 +286,8 @@ namespace Chummer
             NewAIProgramKarmaCost,
             NewAIAdvancedProgramKarmaCostMultiplier,
             NewAIAdvancedProgramKarmaCost,
+            BlockSkillSpecializations,
+            BlockSkillCategorySpecializations,
             // V This one should always be the last defined enum
             NumImprovementTypes
         }
