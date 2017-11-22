@@ -461,5 +461,10 @@ namespace Chummer
         {
             CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
+
+        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildModList();
+        }
     }
 }
