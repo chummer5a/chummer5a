@@ -2155,8 +2155,28 @@
     </quality>
     <quality>
       <id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
-      <name>Illness</name>
+      <name>Illness (Mild)</name>
       <karma>-5</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <source>BB</source>
+      <page>12</page>
+    </quality>
+    <quality>
+      <id>5189f171-dc65-4db8-8633-78083a85b797</id>
+      <name>Illness (Moderate)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <source>BB</source>
+      <page>12</page>
+    </quality>
+    <quality>
+      <id>d77f5cc9-b816-4251-b8a5-17af514fe640</id>
+      <name>Illness (Severe)</name>
+      <karma>-15</karma>
       <category>Negative</category>
       <limit>3</limit>
       <bonus />
