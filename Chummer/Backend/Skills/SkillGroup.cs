@@ -323,17 +323,6 @@ namespace Chummer.Skills
             _baseBrokenOldValue = BaseUnbroken;
             Id = guid;
 
-            // ReSharper disable once ExplicitCallerInfoArgument
-            Character.SkillsSection.UncouthChanged += sender =>
-            {
-                if(HasSocialSkills)
-                {
-                    OnPropertyChanged(nameof(Rating));
-                    OnPropertyChanged(nameof(BaseUnbroken));
-                    OnPropertyChanged(nameof(KarmaUnbroken));
-                }
-            };
-
             character.SkillImprovementEvent += OnImprovementEvent;
             character.PropertyChanged += Character_PropertyChanged;
         }
@@ -465,6 +454,13 @@ namespace Chummer.Skills
             {
                 OnPropertyChanged(nameof(Karma));
                 OnPropertyChanged(nameof(Base));
+            }
+            if (improvements.Any(x => (x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
+                    (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))))
+            {
+                OnPropertyChanged(nameof(Rating));
+                OnPropertyChanged(nameof(BaseUnbroken));
+                OnPropertyChanged(nameof(KarmaUnbroken));
             }
         }
         private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
