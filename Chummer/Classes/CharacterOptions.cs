@@ -104,7 +104,6 @@ namespace Chummer
         private bool _automaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
-        private bool _blnEducationQualitiesApplyOnChargenKarma;
         private bool _mysaddPpCareer;
         private bool _blnReverseAttributePriorityOrder;
         private bool _blnHhideItemsOverAvailLimit = true;
@@ -430,8 +429,6 @@ namespace Chummer
             objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString());
             // <priorityspellsasadeptpowers />
             objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString());
-            // <educationqualitiesapplyonchargenkarma />
-            objWriter.WriteElementString("educationqualitiesapplyonchargenkarma", _blnEducationQualitiesApplyOnChargenKarma.ToString());
             // <usecalculatedpublicawareness />
             objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
             // <bpcost>
@@ -741,8 +738,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
             // Can spend spells from Magic priority as power points
             objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
-            // Education qualities apply to karma costs at chargen
-            objXmlNode.TryGetBoolFieldQuickly("educationqualitiesapplyonchargenkarma", ref _blnEducationQualitiesApplyOnChargenKarma);
             // Allow more than 35 BP in Negative Qualities.
             objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
             // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
@@ -3456,21 +3451,6 @@ namespace Chummer
             set
             {
                 _blnPrioritySpellsAsAdeptPowers = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether education qualities like Linguist also apply their cost halving discount to karma spent at chargen. 
-        /// </summary>
-        public bool EducationQualitiesApplyOnChargenKarma
-        {
-            get
-            {
-                return _blnEducationQualitiesApplyOnChargenKarma;
-            }
-            set
-            {
-                _blnEducationQualitiesApplyOnChargenKarma = value;
             }
         }
 

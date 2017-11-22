@@ -1646,6 +1646,15 @@
       <category>Negative</category>
       <bonus>
         <notoriety>1</notoriety>
+        <skillcategorypointcostmultiplier>
+          <name>Social Active</name>
+          <val>200</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacostmultiplier>
+          <name>Social Active</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillgroupcategorydisable>Social Active</skillgroupcategorydisable>
         <uncouth />
       </bonus>
       <source>SR5</source>
@@ -1716,6 +1725,22 @@
       <category>Negative</category>
       <bonus>
         <notoriety>1</notoriety>
+        <skillcategorykarmacostmultiplier>
+          <name>Technical Active</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillgroupcategorykarmacostmultiplier>
+          <name>Technical Active</name>
+          <val>200</val>
+        </skillgroupcategorykarmacostmultiplier>
+        <skillcategorykarmacostmultiplier>
+          <name>Professional</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillcategorykarmacostmultiplier>
+          <name>Academic</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
         <uneducated />
       </bonus>
       <source>SR5</source>
@@ -2282,7 +2307,16 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <collegeeducation />
+        <skillcategorypointcostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Academic</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
       </bonus>
       <source>RF</source>
       <page>145</page>
@@ -2506,7 +2540,30 @@
       <karma>2</karma>
       <category>Positive</category>
       <bonus>
-        <jackofalltrades />
+        <knowledgeskillpointcost>
+          <name />
+          <val>-1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </knowledgeskillpointcost>
+        <activeskillpointcost>
+          <name />
+          <val>-1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </activeskillpointcost>
+        <knowledgeskillpointcost>
+          <name />
+          <val>2</val>
+          <min>6</min>
+          <condition>career</condition>
+        </knowledgeskillpointcost>
+        <activeskillpointcost>
+          <name />
+          <val>2</val>
+          <min>6</min>
+          <condition>career</condition>
+        </activeskillpointcost>
       </bonus>
       <source>RF</source>
       <page>147</page>
@@ -2520,6 +2577,7 @@
         <initiative precedence="0">1</initiative>
         <initiativepass precedence="0">1</initiativepass>
         <lightningreflexes />
+        <dodge>1</dodge>
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -2530,7 +2588,20 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <linguist />
+        <skillcategorypointcostmultiplier>
+          <name>Language</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Language</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
+        <skillcategory>
+          <name>Language</name>
+          <bonus>1</bonus>
+        </skillcategory>
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -2662,7 +2733,16 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <schoolofhardknocks />
+        <skillcategorypointcostmultiplier>
+          <name>Street</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Street</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -2775,7 +2855,16 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <techschool />
+        <skillcategorypointcostmultiplier>
+          <name>Professional</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Professional</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
       </bonus>
       <source>RF</source>
       <page>150</page>
@@ -12869,7 +12958,7 @@
       </costdiscount>
       <bonus>
         <freespells skill="Spellcasting" />
-        <spellkarmadiscount>-1</spellkarmadiscount>
+        <newspellkarmacost>-1</newspellkarmacost>
       </bonus>
       <required>
 		<allof>

@@ -53,7 +53,7 @@ namespace Chummer.Skills
 
         public override int CurrentSpCost()
         {
-            return BasePoints;
+            return Math.Max(BasePoints, 0);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            return RangeCost(Base + FreeKarma(), TotalBaseRating);
+            return Math.Max(RangeCost(Base + FreeKarma(), TotalBaseRating), 0);
         }
 
         public override bool IsExoticSkill

@@ -262,6 +262,11 @@ Application Changes:
 - Characters that did not properly assign a Type to their Knowledge skills will now be able to change it.
 - Re-Apply Improvements can now handle Stacked Foci.
 - Fixed the Guids of Skills and Skill Groups not being properly loaded from a saved character. Fixes #2081.
+- Fixed a bug where buying a separate metamagic or enhancement in career mode would check against the karma cost of buying spells instead of the karma cost of getting a metamagic or enhancement respectively.
+- Fixed a bug where wound modifiers were applied twice to knowledge skill dicepools.
+- Fixed a bug where karma modifiers to spell cost where not factored into calculations regarding whether the character has enough karma to buy a new spell.
+- Unhardcoded the karma cost modifications added by Uneducated, Uncouth, Myostatin Inhibitor, Jack of All Trades, College Education (RF), Linguist, School of Hard Knocks, and Technical School Education. These modifications are now available and fully modifiable through individual tags inside of bonus nodes.
+- Transferred the house rule of education qualities applying their karma costs in create mode from a checkbox in the options menu to a custom ruleset. Users who had this rule previously enabled will need to re-enable it.
 
 Data Changes:
 
@@ -406,6 +411,8 @@ Data Changes:
 - Fixed the cost and availability of the Ruhrmetal Wolf II to the correct values.
 - Added the previously missing Strike the Darkness technique to Way of Unified Mana (Hapsum-Do).
 - Added the alternate Norse tradition from Forbidden Arcana
+- Lightning Reflexes properly gives +1 die on defense tests.
+- Jack of All Trades now properly gives its bonus up to Rating 5 and only applies its penalty beyond Rating 5.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
