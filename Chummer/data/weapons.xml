@@ -8392,7 +8392,7 @@
       <name>HK MP75</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>2</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>9P</damage>

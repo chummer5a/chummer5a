@@ -260,6 +260,7 @@ Application Changes:
 - Fixed a bug where Re-Apply Improvements would add improvements for items that were not equipped.
 - Fixed a bug where Custom Items would not save their custom names when using a localisation other than en-US. Fixes #2073.
 - Characters that did not properly assign a Type to their Knowledge skills will now be able to change it.
+- Added the ability to directly add Armour to an Armor Bundle.
 
 Data Changes:
 
@@ -404,6 +405,7 @@ Data Changes:
 - Fixed the cost and availability of the Ruhrmetal Wolf II to the correct values.
 - Added the previously missing Strike the Darkness technique to Way of Unified Mana (Hapsum-Do).
 - Added the alternate Norse tradition from Forbidden Arcana
+- Corrected the HK MP75 to use standard submachinegun concealability.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
