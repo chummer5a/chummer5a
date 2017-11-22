@@ -123,7 +123,7 @@ namespace Chummer
 
             string strSelectedCategoryPath = string.Empty;
             // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
-            if (cboCategory.SelectedValue?.ToString() != "Show All" && !_objCharacter.Options.SearchInCategoryOnly)
+            if (cboCategory.SelectedValue?.ToString() != "Show All")
             {
                 strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
             }
