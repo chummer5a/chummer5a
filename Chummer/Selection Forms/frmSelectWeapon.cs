@@ -191,7 +191,12 @@ namespace Chummer
 
             decimal decItemCost = 0;
             decimal decCost = 0;
-            if (objXmlWeapon["cost"] != null)
+            if (chkFreeItem.Checked)
+            {
+                lblWeaponCost.Text = $"{0:#,0.00¥}";
+                decItemCost = 0;
+            }
+            else if (objXmlWeapon["cost"] != null)
             {
                 if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
                 {
@@ -208,11 +213,9 @@ namespace Chummer
                         decimal.TryParse(strCost.FastEscape('+'), out decMin);
 
                     if (decMax == decimal.MaxValue)
-                    {
-                        lblWeaponCost.Text = $"{decMin:###,###,##0.##¥+}";
-                    }
+                        lblWeaponCost.Text = $"{decMin:#,0.00¥+}";
                     else
-                        lblWeaponCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                        lblWeaponCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
 
                     decItemCost = decMin;
                 }
@@ -224,14 +227,8 @@ namespace Chummer
                     {
                         decCost *= 0.9m;
                     }
-                    lblWeaponCost.Text = $"{decCost:###,###,##0.##¥}";
+                    lblWeaponCost.Text = $"{decCost:#,0.00¥}";
                     decItemCost = decCost;
-
-                    if (chkFreeItem.Checked)
-                    {
-                        lblWeaponCost.Text = $"{0:###,###,##0.##¥}";
-                        decItemCost = 0;
-                    }
                 }
             }
 

@@ -376,7 +376,11 @@ namespace Chummer.Skills
             Source = n["source"]?.InnerText;
             Page = n["page"]?.InnerText;
             if (n["id"] != null)
-                SkillId = Guid.Parse(n["id"]?.InnerText);
+                SkillId = Guid.Parse(n["id"].InnerText);
+            else if (n["suid"] != null)
+                SkillId = Guid.Parse(n["suid"].InnerText);
+            if (n["guid"] != null)
+                Id = Guid.Parse(n["guid"].InnerText);
 
             _translatedName = n["translate"]?.InnerText;
 

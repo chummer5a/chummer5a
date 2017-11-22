@@ -260,6 +260,8 @@ Application Changes:
 - Fixed a bug where Re-Apply Improvements would add improvements for items that were not equipped.
 - Fixed a bug where Custom Items would not save their custom names when using a localisation other than en-US. Fixes #2073.
 - Characters that did not properly assign a Type to their Knowledge skills will now be able to change it.
+- Re-Apply Improvements can now handle Stacked Foci.
+- Fixed the Guids of Skills and Skill Groups not being properly loaded from a saved character. Fixes #2081.
 - Added the ability to directly add Armour to an Armor Bundle.
 
 Data Changes:

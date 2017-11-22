@@ -1126,9 +1126,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
-        /// <param name="strSourceName">Name of the item that granted these Improvements. If empty, deletes all improvements that match objImprovementSource</param>
-        /// <param name="blnReapplyImprovements">Remove all improvements from the improvements list that would be reapplied by Reapply Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "", bool blnReapplyImprovements = false)
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -1136,33 +1135,10 @@ namespace Chummer
                 return;
             }
 
+            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = null;
-            if (blnReapplyImprovements)
-            {
-                Log.Info("Wiping all improvements that would be refreshed by Re-Apply Improvements.");
-                objImprovementList = objCharacter.Improvements.Where(objImprovement =>
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Armor ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Echo ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Gear ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Power ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Quality ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Spell).ToList();
-            }
-            else
-            {
-                Log.Info("objImprovementSource = " + objImprovementSource.ToString());
-                Log.Info("strSourceName = " + strSourceName);
-                objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && (string.IsNullOrEmpty(strSourceName) || objImprovement.SourceName == strSourceName)).ToList();
-            }
+            List<Improvement> objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
             RemoveImprovements(objCharacter, objImprovementList);
         }
 

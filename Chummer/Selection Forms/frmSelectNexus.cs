@@ -225,7 +225,7 @@ namespace Chummer
             lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
             lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
             lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
-            lblCost.Text = String.Format("{0:###,###,##0.##¥}", decCost);
+            lblCost.Text = String.Format("{0:#,0.00¥}", decCost);
 
             Gear objNexus = new Gear(_objCharacter);
             objNexus.Name = LanguageManager.GetString("String_SelectNexus_Nexus") + " (" + LanguageManager.GetString("String_SelectNexus_Processor") + " " + intProcessor.ToString() + ")";

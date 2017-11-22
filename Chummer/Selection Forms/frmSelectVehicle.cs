@@ -472,7 +472,7 @@ namespace Chummer
                     }
                 }
 
-                lblVehicleCost.Text = $"{decCost:###,###,##0.##¥}";
+                lblVehicleCost.Text = $"{decCost:#,0.00¥}";
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
             }
 

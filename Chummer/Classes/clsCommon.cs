@@ -1132,7 +1132,7 @@ namespace Chummer
         #endregion
 
         #region Add Improvements Functions
-        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, List<string> lstInternalIdFilter)
+        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, List<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objGear.InternalId))
@@ -1140,13 +1140,37 @@ namespace Chummer
             XmlNode objNode = objGear.MyXmlNode;
             if (objNode != null)
             {
-                if (objNode["bonus"] != null)
+                if (objGear.Category == "Stacked Focus")
                 {
-                    objGear.Bonus = objNode["bonus"];
-                    if (objGear.Equipped)
+                    StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
+                    if (objStack != null)
+                    {
+                        foreach (Gear objFociGear in objStack.Gear)
+                        {
+                            ReaddGearImprovements(objCharacter, objFociGear, treGears, ref strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
+                        }
+                    }
+                }
+                objGear.Bonus = objNode["bonus"];
+                objGear.WirelessBonus = objNode["wirelessbonus"];
+                if (blnStackEquipped && objGear.Equipped)
+                {
+                    if (objGear.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = objGear.Extra;
-                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objGear.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                            if (objGearNode != null)
+                                objGearNode.Text = objGear.DisplayName;
+                        }
+                    }
+                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                    {
+                        ImprovementManager.ForcedValue = objGear.Extra;
+                        ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objGear.Extra = ImprovementManager.SelectedValue;
@@ -1156,13 +1180,14 @@ namespace Chummer
                         }
                     }
                 }
+                
             }
             else
             {
                 strOutdatedItems += objGear.DisplayName + "\n";
             }
             foreach (Gear objChild in objGear.Children)
-                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems, lstInternalIdFilter);
+                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
         #endregion
 
@@ -2154,7 +2179,7 @@ namespace Chummer
         public static void ClearSpellTab(Character objCharacter, TreeView treSpells)
         {
             // Run through all of the Spells and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, string.Empty);
 
             // Clear the list of Spells.
             foreach (TreeNode objNode in treSpells.Nodes)
@@ -2171,7 +2196,7 @@ namespace Chummer
         public static void ClearAdeptTab(Character objCharacter)
         {
             // Run through all of the Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Power);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Power, string.Empty);
 
             objCharacter.Powers.Clear();
         }
@@ -2182,7 +2207,7 @@ namespace Chummer
         public static void ClearTechnomancerTab(Character objCharacter, TreeView treComplexForms)
         {
             // Run through all of the Complex Forms and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, string.Empty);
 
             // Clear the list of Complex Forms.
             foreach (TreeNode objNode in treComplexForms.Nodes)
@@ -2198,7 +2223,7 @@ namespace Chummer
         public static void ClearAdvancedProgramsTab(Character objCharacter, TreeView treAIPrograms)
         {
             // Run through all of the Advanced Programs and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, string.Empty);
 
             // Clear the list of Advanced Programs.
             foreach (TreeNode objNode in treAIPrograms.Nodes)
@@ -2231,7 +2256,7 @@ namespace Chummer
         public static void ClearCritterTab(Character objCharacter, TreeView treCritterPowers)
         {
             // Run through all of the Critter Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, string.Empty);
 
             // Clear the list of Critter Powers.
             foreach (TreeNode objNode in treCritterPowers.Nodes)

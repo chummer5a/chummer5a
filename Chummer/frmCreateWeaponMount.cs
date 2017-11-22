@@ -129,7 +129,7 @@ namespace Chummer
                 slots += Convert.ToInt32(node["slots"].InnerText);
             }
 
-            lblCost.Text = $"{cost:###,###,##0.##¥}";
+            lblCost.Text = $"{cost:#,0.00¥}";
             lblSlots.Text = slots.ToString();
             lblAvailability.Text = $"{avail}{availSuffix}";
         }

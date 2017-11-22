@@ -144,10 +144,10 @@
               <xsl:with-param name="count" select="$dec"/>
             </xsl:call-template>
           </xsl:variable>
-          <xsl:value-of select="concat('###,###,##0.',decs)"/>
+          <xsl:value-of select="concat('#,0.',decs)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="'###,###,##0'"/>
+          <xsl:value-of select="'#,0'"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

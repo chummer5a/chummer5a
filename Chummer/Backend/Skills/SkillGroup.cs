@@ -311,6 +311,7 @@ namespace Chummer.Skills
             _character = character;
             _groupName = groupName;
             _baseBrokenOldValue = BaseUnbroken;
+            Id = guid;
 
             // ReSharper disable once ExplicitCallerInfoArgument
             Character.SkillsSection.UncouthChanged += sender =>

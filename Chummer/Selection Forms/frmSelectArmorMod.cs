@@ -317,10 +317,10 @@ namespace Chummer
 
                 if (decMax == decimal.MaxValue)
                 {
-                    lblCost.Text = $"{decMin:###,###,##0.##¥+}";
+                    lblCost.Text = $"{decMin:#,0.00¥+}";
                 }
                 else
-                    lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                    lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
             }
             else
             {
@@ -332,7 +332,7 @@ namespace Chummer
                 decimal decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
                 decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                lblCost.Text = $"{decCost:###,###,##0.##¥}";
+                lblCost.Text = $"{decCost:#,0.00¥}";
 
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
             }
@@ -366,7 +366,7 @@ namespace Chummer
             }
 
             if (chkFreeItem.Checked)
-                lblCost.Text = String.Format("{0:###,###,##0.##¥}", 0);
+                lblCost.Text = String.Format("{0:#,0.00¥}", 0);
 
             string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText);
             string strPage = objXmlMod["page"].InnerText;
