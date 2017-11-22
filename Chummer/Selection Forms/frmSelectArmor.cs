@@ -538,7 +538,7 @@ namespace Chummer
             }
             if (objNode != null)
             {
-                _strSelectCategory = objNode["category"]?.InnerText;
+                _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                 _strSelectedArmor = objNode["name"]?.InnerText;
                 _decMarkup = nudMarkup.Value;
                 _intRating = Convert.ToInt32(nudRating.Value);
