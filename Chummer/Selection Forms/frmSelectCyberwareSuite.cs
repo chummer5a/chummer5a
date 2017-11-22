@@ -139,7 +139,7 @@ namespace Chummer
             }
 
             lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
-            lblCost.Text = $"{decTotalCost:###,###,##0.##¥}";
+            lblCost.Text = $"{decTotalCost:#,0.00¥}";
             lblGrade.Text = objXmlSuite["grade"].InnerText;
             _decCost = decTotalCost;
         }

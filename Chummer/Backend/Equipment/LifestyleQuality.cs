@@ -304,7 +304,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("formattedname", FormattedDisplayName);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("lp", _intLP.ToString(objCulture));
-            objWriter.WriteElementString("cost", _decCost.ToString(objCulture));
+            objWriter.WriteElementString("cost", _decCost.ToString("#,0.00", objCulture));
             string strLifestyleQualityType = _objLifestyleQualityType.ToString();
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
@@ -541,7 +541,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Cost > 0)
                 {
-                    strReturn += $" [+{Cost:###,###,###,0.00¥}]";
+                    strReturn += $" [+{Cost:#,0.00¥}]";
                 }
                 return strReturn;
             }

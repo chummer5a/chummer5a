@@ -1135,7 +1135,34 @@ namespace Chummer.Backend.Attributes
             return intBP;
         }
 
-        public int SpentPriorityPoints => Base;
+        public int SpentPriorityPoints
+        {
+            get
+            {
+                int intBase = Base;
+                int intReturn = intBase;
+
+                int intExtra = 0;
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                {
+                    if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCost)
+                            intExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                intReturn += intExtra;
+
+                return Math.Max(intReturn, 0);
+            }
+        }
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
@@ -1147,28 +1174,43 @@ namespace Chummer.Backend.Attributes
         /// <returns>Price in karma</returns>
         public virtual int UpgradeKarmaCost()
         {
+            int intValue = Value;
             int upgrade;
-            if (Value >= TotalMaximum)
+            int intOptionsCost = _objCharacter.Options.KarmaAttribute;
+            if (intValue >= TotalMaximum)
             {
-                upgrade = -1;
+                return -1;
             }
-            else if (Value == 0)
+            else if (intValue == 0)
             {
-                upgrade = _objCharacter.Options.KarmaAttribute;
+                upgrade = intOptionsCost;
             }
             else
             {
-                upgrade = (Value + 1) * _objCharacter.Options.KarmaAttribute;
+                upgrade = (intValue + 1) * intOptionsCost;
             }
             if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                upgrade -= (_objCharacter.STR.MetatypeMinimum - 1) * _objCharacter.Options.KarmaAttribute;
+                upgrade -= (MetatypeMinimum - 1) * intOptionsCost;
 
-            if (_strAbbrev == "STR" && _objCharacter.Cyberware.FirstOrDefault(x => x.Name == "Myostatin Inhibitor") != null)
+            int intExtra = 0;
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
             {
-                upgrade -= 2;
+                if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        (objLoopImprovement.Maximum == 0 || intValue <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
+                        intExtra += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
             }
+            if (decMultiplier != 1.0m)
+                upgrade = Convert.ToInt32(Math.Ceiling(upgrade * decMultiplier));
+            upgrade += intExtra;
 
-            return upgrade;
+            return Math.Max(upgrade, Math.Min(1, intOptionsCost));
 
         }
 
@@ -1177,7 +1219,9 @@ namespace Chummer.Backend.Attributes
             if (Karma == 0)
                 return 0;
 
-            int intTotalBase = TotalBase;
+            int intValue = Value;
+            int intRawTotalBase = TotalBase;
+            int intTotalBase = intRawTotalBase;
             if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 intTotalBase = 1;
 
@@ -1185,13 +1229,25 @@ namespace Chummer.Backend.Attributes
             // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
             int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
 
-            // Since Myostatin Inhibitor just gives a flat -2 per karma level, its effect can be calculated by simple multiplication
-            if (Abbrev == "STR" && _objCharacter.Cyberware.FirstOrDefault(x => x.Name == "Myostatin Inhibitor") != null)
+            int intExtra = 0;
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
             {
-                intCost -= 2 * Karma;
+                if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
+                        intExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
             }
+            if (decMultiplier != 1.0m)
+                intCost = Convert.ToInt32(Math.Ceiling(intCost * decMultiplier));
+            intCost += intExtra;
 
-            return intCost;
+            return Math.Max(intCost, 0);
         }
 
         public bool CanUpgradeCareer

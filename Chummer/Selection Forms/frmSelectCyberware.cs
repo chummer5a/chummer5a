@@ -602,7 +602,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed")} {_decMaximumCapacity:###,###,##0.##}";
+                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed")} {_decMaximumCapacity:#,0.##}";
             }
         }
 
@@ -789,7 +789,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = $"{0:###,###,##0.##¥}";
+                lblCost.Text = $"{0:#,0.00¥}";
             }
             else if (objXmlCyberware["cost"] != null)
             {
@@ -815,7 +815,7 @@ namespace Chummer
                     else
                         decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                    lblCost.Text = decMax == decimal.MaxValue ? $"{decMin:###,###,##0.##¥+}" : $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                    lblCost.Text = decMax == decimal.MaxValue ? $"{decMin:#,0.00¥+}" : $"{decMin:#,0.00} - {decMax:#,0.00¥}";
 
                     decItemCost = decMin;
                 }
@@ -848,16 +848,16 @@ namespace Chummer
                             decItemCost *= 0.9m;
                         }
 
-                        lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
+                        lblCost.Text = $"{decItemCost:#,0.00¥}";
                     }
                     catch (XPathException)
                     {
-                        lblCost.Text = $"{strCost:###,###,##0.##¥}";
+                        lblCost.Text = $"{strCost:#,0.00¥}";
                     }
                 }
             }
             else
-                lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
+                lblCost.Text = $"{decItemCost:#,0.00¥}";
 
             // Test required to find the item.
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
@@ -1135,7 +1135,7 @@ namespace Chummer
             XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
             if (objCyberwareNode == null) return;
 
-            _strSelectCategory = objCyberwareNode["category"]?.InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objCyberwareNode["category"]?.InnerText;
             SelectedCyberware = objCyberwareNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(objCyberwareNode["forcegrade"]?.InnerText))
             {
@@ -1180,8 +1180,8 @@ namespace Chummer
                 {
                     MessageBox.Show(
                         LanguageManager.GetString("Message_OverCapacityLimit")
-                            .Replace("{0}", MaximumCapacity.ToString("0.##", GlobalOptions.CultureInfo))
-                            .Replace("{1}", decCapacity.ToString("0.##", GlobalOptions.CultureInfo)),
+                            .Replace("{0}", MaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo))
+                            .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
                         LanguageManager.GetString("MessageTitle_OverCapacityLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;

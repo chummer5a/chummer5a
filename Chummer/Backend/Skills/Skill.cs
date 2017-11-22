@@ -376,7 +376,11 @@ namespace Chummer.Skills
             Source = n["source"]?.InnerText;
             Page = n["page"]?.InnerText;
             if (n["id"] != null)
-                SkillId = Guid.Parse(n["id"]?.InnerText);
+                SkillId = Guid.Parse(n["id"].InnerText);
+            else if (n["suid"] != null)
+                SkillId = Guid.Parse(n["suid"].InnerText);
+            if (n["guid"] != null)
+                Id = Guid.Parse(n["guid"].InnerText);
 
             _translatedName = n["translate"]?.InnerText;
 
@@ -421,7 +425,14 @@ namespace Chummer.Skills
             get { return Rating > 0; }
         }
 
-        public bool CanHaveSpecs => TotalBaseRating > 0 && KarmaUnlocked;
+        public bool CanHaveSpecs
+        {
+            get
+            {
+                return TotalBaseRating > 0 && KarmaUnlocked &&
+                    !_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) || (x.ImproveType == Improvement.ImprovementType.BlockSkillCategorySpecializations && x.ImprovedName == SkillCategory)) && x.Enabled);
+            }
+        }
 
         public Character CharacterObject
         {

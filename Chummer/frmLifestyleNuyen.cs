@@ -41,13 +41,13 @@ namespace Chummer
             lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:#,0.00¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
             MoveControls();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:###,###,##0.##¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:#,0.00¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
         }
         #endregion
 

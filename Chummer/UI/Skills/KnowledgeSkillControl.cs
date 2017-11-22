@@ -126,17 +126,8 @@ namespace Chummer.UI.Skills
                 int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring;
-                if (_skill.Karma == 0)
-                {
-                    confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
-                        _skill.DisplayName, _skill.Rating + 1, _skill.CharacterObject.Options.KarmaNewKnowledgeSkill, cboType.GetItemText(cboType.SelectedItem));
-                }
-                else
-                {
-                    confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                        _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
-                }
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;

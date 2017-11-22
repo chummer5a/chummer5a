@@ -123,7 +123,7 @@ namespace Chummer
 
             string strSelectedCategoryPath = string.Empty;
             // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
-            if (cboCategory.SelectedValue?.ToString() != "Show All" && !_objCharacter.Options.SearchInCategoryOnly)
+            if (cboCategory.SelectedValue?.ToString() != "Show All")
             {
                 strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
             }
@@ -472,7 +472,7 @@ namespace Chummer
                     }
                 }
 
-                lblVehicleCost.Text = $"{decCost:###,###,##0.##¥}";
+                lblVehicleCost.Text = $"{decCost:#,0.00¥}";
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
             }
 
@@ -507,7 +507,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = objXmlVehicle["category"]?.InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlVehicle["category"]?.InnerText;
             _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
             _decMarkup = nudMarkup.Value;
 

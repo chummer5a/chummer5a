@@ -1328,7 +1328,7 @@ namespace Chummer
             {
                 objXmlCharacter.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
                 objXmlCharacter.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
-                }
+            }
 
             // Attempt to load the Magic Tradition.
             objXmlCharacter.TryGetStringFieldQuickly("tradition", ref _strMagicTradition);
@@ -1414,6 +1414,14 @@ namespace Chummer
                 Cyberware objCyberware = new Cyberware(this);
                 objCyberware.Load(objXmlCyberware);
                 _lstCyberware.Add(objCyberware);
+                // Legacy shim
+                if (objCyberware.Name == "Myostatin Inhibitor")
+                {
+                    if (!Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
+                    {
+                        _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                    }
+                }
             }
 
             Timekeeper.Finish("load_char_ware");
@@ -1593,16 +1601,15 @@ namespace Chummer
             if (objLivingPersonaQuality != null)
             {
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
-                string strSelected = objLivingPersonaQuality.Extra;
 
                 XmlNode objNode = objLivingPersonaQuality.MyXmlNode;
                 if (objNode != null)
                 {
-                    if (objNode["bonus"] != null)
+                    objLivingPersonaQuality.Bonus = objNode["bonus"];
+                    if (objLivingPersonaQuality.Bonus != null)
                     {
-                        objLivingPersonaQuality.Bonus = objNode["bonus"];
-                        ImprovementManager.ForcedValue = strSelected;
-                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objNode["bonus"], false, 1, objLivingPersonaQuality.DisplayNameShort);
+                        ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1, objLivingPersonaQuality.DisplayNameShort);
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -1973,7 +1980,7 @@ namespace Chummer
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(objCulture));
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString("0.##", objCulture));
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString("#,0.00", objCulture));
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(objCulture));
             // <prioritymetatype />
@@ -2133,7 +2140,7 @@ namespace Chummer
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _decNuyen.ToString("0.##", objCulture));
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString("#,0.00", objCulture));
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString(objCulture));
             // <adept />
@@ -4041,9 +4048,105 @@ namespace Chummer
                 _intMaxAvail = value;
             }
         }
-#endregion
 
-#region Attributes
+        public int SpellKarmaCost
+        {
+            get
+            {
+                int intReturn = Options.KarmaSpell;
+
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost)
+                            intReturn += objLoopImprovement.Value;
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+
+                return Math.Max(intReturn, 0);
+            }
+        }
+
+        public int ComplexFormKarmaCost
+        {
+            get
+            {
+                int intReturn = Options.KarmaNewComplexForm;
+
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewComplexFormKarmaCost)
+                            intReturn += objLoopImprovement.Value;
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+
+                return Math.Max(intReturn, 0);
+            }
+        }
+
+        public int AIProgramKarmaCost
+        {
+            get
+            {
+                int intReturn = Options.KarmaNewAIProgram;
+
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIProgramKarmaCost)
+                            intReturn += objLoopImprovement.Value;
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+
+                return Math.Max(intReturn, 0);
+            }
+        }
+
+        public int AIAdvancedProgramKarmaCost
+        {
+            get
+            {
+                int intReturn = Options.KarmaNewAIAdvancedProgram;
+                
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == Created || (objLoopImprovement.Condition == "create") != Created))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost)
+                            intReturn += objLoopImprovement.Value;
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+
+                return Math.Max(intReturn, 0);
+            }
+        }
+        #endregion
+
+        #region Attributes
         /// <summary>
         /// Get an CharacterAttribute by its name.
         /// </summary>
@@ -6545,13 +6648,13 @@ namespace Chummer
             if (strMovementType == "Swim")
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
-                strReturn = decWalk.ToString("0.##", objCulture) + ", " + decSprint.ToString("0.##", objCulture) + "m/ hit";
+                strReturn = decWalk.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
-                strReturn = decWalk.ToString("0.##", objCulture) + "/" + decRun.ToString("0.##", objCulture) + ", " + decSprint.ToString("0.##", objCulture) + "m/ hit";
+                strReturn = decWalk.ToString("#,0.##", objCulture) + "/" + decRun.ToString("#,0.##", objCulture) + ", " + decSprint.ToString("#,0.##", objCulture) + "m/ hit";
             }
             return strReturn;
         }
@@ -8109,16 +8212,10 @@ namespace Chummer
 
         //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down.
         public static readonly HashSet<Improvement.ImprovementType> SkillRelatedImprovements = new HashSet<Improvement.ImprovementType> {
-            Improvement.ImprovementType.Uneducated,
             Improvement.ImprovementType.FreeKnowledgeSkills,
-            Improvement.ImprovementType.Uncouth,
             Improvement.ImprovementType.Skillwire,
             Improvement.ImprovementType.SwapSkillAttribute,
             Improvement.ImprovementType.SkillsoftAccess,
-            Improvement.ImprovementType.SchoolOfHardKnocks,
-            Improvement.ImprovementType.CollegeEducation,
-            Improvement.ImprovementType.Linguist,
-            Improvement.ImprovementType.TechSchool,
             Improvement.ImprovementType.Hardwire,
             Improvement.ImprovementType.Skill,  //Improve pool of skill based on name
             Improvement.ImprovementType.SkillGroup,  //Group
@@ -8137,6 +8234,28 @@ namespace Chummer
             Improvement.ImprovementType.SwapSkillSpecAttribute,
             Improvement.ImprovementType.FreeSpellsSkill,
             Improvement.ImprovementType.DisableSpecializationEffects,
+            Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
+            Improvement.ImprovementType.SkillGroupKarmaCostMultiplier,
+            Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier,
+            Improvement.ImprovementType.ActiveSkillKarmaCost,
+            Improvement.ImprovementType.SkillGroupKarmaCost,
+            Improvement.ImprovementType.SkillGroupDisable,
+            Improvement.ImprovementType.KnowledgeSkillKarmaCost,
+            Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier,
+            Improvement.ImprovementType.SkillCategoryKarmaCost,
+            Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier,
+            Improvement.ImprovementType.SkillGroupCategoryDisable,
+            Improvement.ImprovementType.SkillGroupCategoryKarmaCost,
+            Improvement.ImprovementType.ActiveSkillPointCostMultiplier,
+            Improvement.ImprovementType.SkillGroupPointCostMultiplier,
+            Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier,
+            Improvement.ImprovementType.ActiveSkillPointCost,
+            Improvement.ImprovementType.SkillGroupPointCost,
+            Improvement.ImprovementType.KnowledgeSkillPointCost,
+            Improvement.ImprovementType.SkillCategoryPointCostMultiplier,
+            Improvement.ImprovementType.SkillCategoryPointCost,
+            Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier,
+            Improvement.ImprovementType.SkillGroupCategoryPointCost,
         };
 
         //List of events that might be able to affect attributes. Changes to these types also invoke data bindings controlling skills, since their pools are controlled by attributes.
@@ -8159,6 +8278,10 @@ namespace Chummer
             Improvement.ImprovementType.BiowareEssCost,
             Improvement.ImprovementType.BiowareTotalEssMultiplier,
             Improvement.ImprovementType.BasicBiowareEssCost,
+            Improvement.ImprovementType.AttributeKarmaCostMultiplier,
+            Improvement.ImprovementType.AttributeKarmaCost,
+            Improvement.ImprovementType.AttributePointCostMultiplier,
+            Improvement.ImprovementType.AttributePointCost,
         };
 
         //To get when things change in improvementmanager
