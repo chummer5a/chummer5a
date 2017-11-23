@@ -4907,9 +4907,13 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
       <text>Hide items that are over the Availability Limit during character creation</text>
     </string>
-	<string>
+    <string>
       <key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
       <text>Allow skill points to be used to buy specializations for karma-bought skills</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
+      <text>Mystic Adepts use second MAG attribute for Adept abilities instead of special PP rules</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>

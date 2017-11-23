@@ -275,6 +275,7 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2760,6 +2761,7 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkMysAdeptSecondMAGAttribute);
             this.tabHouseRules.Controls.Add(this.chkAllowPointBuySpecializationsOnKarmaSkills);
             this.tabHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder);
             this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
@@ -2856,6 +2858,7 @@ namespace Chummer
             this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
             this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
             this.chkMysAdPp.UseVisualStyleBackColor = true;
+            this.chkMysAdPp.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAlternateMetatypeAttributeKarma
             // 
@@ -2867,6 +2870,7 @@ namespace Chummer
             this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
             this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
             this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
+            this.chkAlternateMetatypeAttributeKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // label4
             // 
@@ -3229,6 +3233,20 @@ namespace Chummer
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
+            // chkMysAdeptSecondMAGAttribute
+            // 
+            this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
+            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(8, 394);
+            this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
+            this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
+            this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
+    "rules";
+            this.tipTooltip.SetToolTip(this.chkMysAdeptSecondMAGAttribute, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
+            this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
+            this.chkMysAdeptSecondMAGAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -3576,5 +3594,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDecreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.CheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
         private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
+        private System.Windows.Forms.CheckBox chkMysAdeptSecondMAGAttribute;
     }
 }
