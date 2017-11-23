@@ -275,6 +275,7 @@ Application Changes:
 - Fixed a bug where re-applying or re-adding improvements of items that would add the Improved Ability (skill) adept power would not properly end up adding that power.
 - Fixed a bug where improvements that would ask the user to select an adept power to add would not abide by the "ignorerating" node when it was present.
 - Added a house rule that changes Mystic Adepts so that instead of using special rules for obtaining and managing PP, they will have a separate MAG rating to be used for Adept powers and PP. Initiation and Foci will use the lower of the two MAG ratings if this rule is enabled.
+- Fixed a bug where if points and/or karma were allocated to a special attribute to which access was later removed in Create mode, those points and/or karma would not get freed up.
 
 Data Changes:
 

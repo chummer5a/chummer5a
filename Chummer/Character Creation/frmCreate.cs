@@ -21613,6 +21613,8 @@ namespace Chummer
                                 objControl.Dispose();
                             }
                         }
+                        objAttrib.Base = 0;
+                        objAttrib.Karma = 0;
                     }
                     break;
             }
