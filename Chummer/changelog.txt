@@ -270,6 +270,10 @@ Application Changes:
 - Transferred the house rule of education qualities applying their karma costs in create mode from a checkbox in the options menu to a custom ruleset. Users who had this rule previously enabled will need to re-enable it.
 - Selecting an armor, a piece of 'ware, a gear, a quality, a vehicle, or a weapon now properly saves the currently selected value of the category selection box instead of the selected item's category. This does not apply if the search box is not empty and the option to search only in the selected category is disabled.
 - Added support for improvements that block being able to buy specializations for particular skills or skill categories.
+- Unhardcoded the focus bonding cost modification effects of Adept Ways, and unhardcoded the bonuses offered by Burnout's Way (access to Burnout's Way grade) and Magician's Way (can discount all powers other than Improved Reflexes). These effects are now available and fully modifiable through individual tags inside of bonus nodes.
+- Focus bonding cost modifications from Adept Ways now be automatically applied in both Create and Career mode, and their karma effects will automatically be calculated by the time the user is prompted to spend karma on binding a new focus. Removed the numerical up-down in Create mode for the number of foci eligible for Adept Way discounts, as it is now obsolete.
+- Fixed a bug where re-applying or re-adding improvements of items that would add the Improved Ability (skill) adept power would not properly end up adding that power.
+- Fixed a bug where improvements that would ask the user to select an adept power to add would not abide by the "ignorerating" node when it was present.
 
 Data Changes:
 

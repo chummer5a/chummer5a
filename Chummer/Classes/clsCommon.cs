@@ -2477,10 +2477,24 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(objGear.Extra))
                                 ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            {
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                {
+                                    // Clear created improvements
+                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                    return;
+                                }
+                                objGear.Extra = ImprovementManager.SelectedValue;
+                            }
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            objGear.Extra = ImprovementManager.SelectedValue;
+                            {
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                {
+                                    // Clear created improvements
+                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                    return;
+                                }
+                            }
                         }
                     }
                     else
@@ -2495,9 +2509,24 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                         ImprovementManager.ForcedValue = objFociGear.Extra;
                                     if (objGear.Bonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    {
+                                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort))
+                                        {
+                                            // Clear created improvements
+                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                            return;
+                                        }
+                                        objGear.Extra = ImprovementManager.SelectedValue;
+                                    }
                                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                    {
+                                        if (ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                        {
+                                            // Clear created improvements
+                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -517,6 +517,14 @@ namespace Chummer
                     return objImprovementAdder.blockskillspecializations;
                 case "BLOCKSKILLCATEGORYSPECIALIZATIONS":
                     return objImprovementAdder.blockskillcategoryspecializations;
+                case "FOCUSBINDINGKARMACOST":
+                    return objImprovementAdder.focusbindingkarmacost;
+                case "FOCUSBINDINGKARMAMULTIPLIER":
+                    return objImprovementAdder.focusbindingkarmamultiplier;
+                case "MAGICIANSWAYDISCOUNT":
+                    return objImprovementAdder.magicianswaydiscount;
+                case "BURNOUTSWAY":
+                    return objImprovementAdder.burnoutsway;
                 // No method matches, return a null pointer
                 default:
                     return null;

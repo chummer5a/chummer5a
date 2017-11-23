@@ -3191,71 +3191,76 @@ namespace Chummer.Classes
         // Select a Power.
         public void selectpowers(XmlNode bonusNode)
         {
-            XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
-            foreach (XmlNode objNode in objXmlPowerList)
+            Log.Info("selectpower");
+            // If the character isn't an adept or mystic adept, skip the rest of this.
+            if (_objCharacter.AdeptEnabled)
             {
-                Log.Info("selectpower");
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("_strForcedValue = " + ForcedValue);
+                XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
+                foreach (XmlNode objNode in objXmlPowerList)
+                {
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("_strForcedValue = " + ForcedValue);
 
-                // Display the Select Power window and record which Power was selected.
+                    // Display the Select Power window and record which Power was selected.
                     frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
                     Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
-                int intLevels = 0;
-                if (objNode["ignorerating"] != null)
-                    frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
-                if (objNode["val"] != null)
-                    intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
-                if (objNode["pointsperlevel"] != null)
-                    frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
-                if (objNode["limit"] != null)
-                    frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating",_intRating.ToString()));
+                    int intLevels = 0;
+                    if (objNode["ignorerating"] != null)
+                        frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
+                    if (objNode["val"] != null)
+                        intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
+                    if (objNode["pointsperlevel"] != null)
+                        frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    if (objNode["limit"] != null)
+                        frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating", _intRating.ToString()));
                     if (objNode.OuterXml.Contains("limittopowers"))
                         frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
                     frmPickPower.ShowDialog();
 
                     // Make sure the dialogue window was not canceled.
-                if (frmPickPower.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-                else
-                {
-                    SelectedValue = frmPickPower.SelectedPower;
-                    if (_blnConcatSelectedValue)
-                        SourceName += " (" + SelectedValue + ")";
-
-                    XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                    XmlNode objXmlPower =
-                        objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
-
-                    // If no, add the power and mark it free or give it free levels
-                    Power objNewPower = new Power(_objCharacter);
-                    if (!objNewPower.Create(objXmlPower, 0))
+                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                    {
                         throw new AbortedException();
+                    }
+                    else
+                    {
+                        SelectedValue = frmPickPower.SelectedPower;
+                        if (_blnConcatSelectedValue)
+                            SourceName += " (" + SelectedValue + ")";
 
-                    bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+                        XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+                        XmlNode objXmlPower =
+                            objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
 
-                    Log.Info("blnHasPower = " + blnHasPower);
+                        // If no, add the power and mark it free or give it free levels
+                        Power objNewPower = new Power(_objCharacter);
+                        if (!objNewPower.Create(objXmlPower, 0))
+                            throw new AbortedException();
 
-                    if (!blnHasPower)
+                        if (!string.IsNullOrEmpty(objNewPower.Extra))
+                            SelectedValue += " (" + objNewPower.Extra + ")";
+                        bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+
+                        Log.Info("blnHasPower = " + blnHasPower);
+
+                        if (!blnHasPower)
                         {
-                        _objCharacter.Powers.Add(objNewPower);
+                            _objCharacter.Powers.Add(objNewPower);
                         }
 
-                    Log.Info("blnHasPower = " + blnHasPower);
-                    Log.Info("Calling CreateImprovement");
-                    CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
 
-                    if (blnHasPower)
-                    {
-                        foreach (
-                            Power objPower in
-                            _objCharacter.Powers.Where(
-                                objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
+                        if (blnHasPower)
                         {
-                            objPower.ForceEvent(nameof(Power.FreeLevels));
+                            foreach (
+                                Power objPower in
+                                _objCharacter.Powers.Where(
+                                    objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
+                            {
+                                objPower.ForceEvent(nameof(Power.FreeLevels));
+                            }
                         }
                     }
                 }
@@ -5192,6 +5197,42 @@ namespace Chummer.Classes
             Log.Info("blockskillcategoryspecializations = " + bonusNode.OuterXml.ToString());
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillCategorySpecializations, _strUnique);
+        }
+
+        // Flat modifier to cost of binding a focus
+        public void focusbindingkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("focusbindingkarmacost");
+            Log.Info("focusbindingkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerText ?? string.Empty);
+        }
+
+        // Flat modifier to the number that is multiplied by a focus' rating to get the focus' binding karma cost
+        public void focusbindingkarmamultiplier(XmlNode bonusNode)
+        {
+            Log.Info("focusbindingkarmamultiplier");
+            Log.Info("focusbindingkarmamultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerText ?? string.Empty);
+        }
+
+        public void magicianswaydiscount(XmlNode bonusNode)
+        {
+            Log.Info("magicianswaydiscount");
+            Log.Info("magicianswaydiscount = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MagiciansWayDiscount, _strUnique);
+        }
+
+        public void burnoutsway(XmlNode bonusNode)
+        {
+            Log.Info("burnoutsway");
+            Log.Info("burnoutsway = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BurnoutsWay, _strUnique);
         }
         #endregion
     }

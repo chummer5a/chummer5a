@@ -403,8 +403,6 @@ namespace Chummer
             // Check for Special Attributes.
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
@@ -1209,8 +1207,6 @@ namespace Chummer
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.MAGEnabled)
@@ -3912,26 +3908,6 @@ namespace Chummer
         #endregion
 
         #region Button Events
-
-        private void nudAdeptWayDiscount_ValueChanged(object sender, EventArgs e)
-        {
-            // Don't attempt to do anything while the data is still being populated.
-            if (_blnLoading)
-                return;
-
-            // Verify that the CharacterAttribute can be improved within the rules.
-            if (nudAdeptWayDiscount.Value > _objCharacter.Foci.Count)
-            {
-                nudAdeptWayDiscount.Value = Math.Max(Math.Min(_objCharacter.Foci.Count, nudAdeptWayDiscount.Maximum), nudAdeptWayDiscount.Minimum);
-            }
-
-            _objCharacter.AdeptWayDiscount = Convert.ToInt32(nudAdeptWayDiscount.Value);
-            ScheduleCharacterUpdate();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -11844,78 +11820,12 @@ namespace Chummer
 
         private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Checked)
+            if (!e.Node.Checked)
             {
-                // Locate the Focus that is being touched.
-                Gear objSelectedFocus = CommonFunctions.DeepFindById(e.Node.Tag.ToString(), _objCharacter.Gear);
-
-                if (objSelectedFocus != null)
-                {
-                    Focus objFocus = new Focus();
-                    objFocus.Name = objSelectedFocus.Name;
-                    objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
-                    objFocus.Rating = objSelectedFocus.Rating;
-                    objFocus.GearId = e.Node.Tag.ToString();
-                    _objCharacter.Foci.Add(objFocus);
-
-                    // Mark the Gear and Bonded and create an Improvements.
-                    objSelectedFocus.Bonded = true;
-                    if (objSelectedFocus.Equipped)
-                    {
-                        if (objSelectedFocus.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
-                        {
-                            if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
-                                ImprovementManager.ForcedValue = objSelectedFocus.Extra;
-                            if (objSelectedFocus.Bonus != null)
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
-                            objSelectedFocus.Extra = ImprovementManager.SelectedValue;
-                            if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
-
-                            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
-                        }
-                    }
-                }
-                else
-                {
-                    // This is a Stacked Focus.
-                    StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
-                    if (objStack != null)
-                    {
-                        objStack.Bonded = true;
-                        Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, _objCharacter.Gear);
-                        if (objStackGear.Equipped)
-                        {
-                            foreach (Gear objGear in objStack.Gear)
-                            {
-                                if (objGear.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
-                                {
-                                    if (!string.IsNullOrEmpty(objGear.Extra))
-                                        ImprovementManager.ForcedValue = objGear.Extra;
-                                    if (objGear.Bonus != null)
-                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
-                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Focus objFocus = new Focus();
-                foreach (Focus objCharacterFocus in _objCharacter.Foci)
-                {
-                    if (objCharacterFocus.GearId == e.Node.Tag.ToString())
-                    {
-                        objFocus = objCharacterFocus;
-                        break;
-                    }
-                }
+                Focus objFocus = _objCharacter.Foci.FirstOrDefault(x => x.GearId == e.Node.Tag.ToString());
 
                 // Mark the Gear as not Bonded and remove any Improvements.
-                Gear objGear = CommonFunctions.DeepFindById(objFocus.GearId, _objCharacter.Gear);
+                Gear objGear = objFocus != null ? CommonFunctions.DeepFindById(objFocus.GearId, _objCharacter.Gear) : null;
 
                 if (objGear != null)
                 {
@@ -11926,20 +11836,15 @@ namespace Chummer
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = new StackedFocus(_objCharacter);
-                    foreach (StackedFocus objCharacterFocus in _objCharacter.StackedFoci)
-                    {
-                        if (e.Node.Tag.ToString() == objCharacterFocus.InternalId)
-                        {
-                            objStack = objCharacterFocus;
-                            break;
-                        }
-                    }
+                    StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
 
-                    objStack.Bonded = false;
-                    foreach (Gear objFocusGear in objStack.Gear)
+                    if (objStack != null)
                     {
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        objStack.Bonded = false;
+                        foreach (Gear objFocusGear in objStack.Gear)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        }
                     }
                 }
             }
@@ -11990,8 +11895,11 @@ namespace Chummer
                     {
                         if (objNode.Tag.ToString() == objCharacterFocus.InternalId)
                         {
-                            intFociTotal += objCharacterFocus.Rating;
-                            break;
+                            if (objCharacterFocus.Bonded)
+                            {
+                                intFociTotal += objCharacterFocus.Rating;
+                                break;
+                            }
                         }
                     }
 
@@ -12020,6 +11928,95 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 e.Cancel = true;
+                return;
+            }
+
+            if (objSelectedFocus != null)
+            {
+                Focus objFocus = new Focus(_objCharacter);
+                objFocus.Name = objSelectedFocus.Name;
+                objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
+                objFocus.Rating = objSelectedFocus.Rating;
+                objFocus.GearId = e.Node.Tag.ToString();
+
+                if (objSelectedFocus.Equipped)
+                {
+                    if (objSelectedFocus.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
+                    {
+                        if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
+                            ImprovementManager.ForcedValue = objSelectedFocus.Extra;
+                        if (objSelectedFocus.Bonus != null)
+                        {
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort))
+                            {
+                                // Clear created improvements
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
+                                e.Cancel = true;
+                                return;
+                            }
+                            objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                        }
+                        if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                        {
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort))
+                            {
+                                // Clear created improvements
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
+                                e.Cancel = true;
+                                return;
+                            }
+                        }
+                    }
+                }
+                _objCharacter.Foci.Add(objFocus);
+                objSelectedFocus.Bonded = true;
+                CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
+            }
+            else
+            {
+                // This is a Stacked Focus.
+                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
+                if (objStack != null)
+                {
+                    Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, _objCharacter.Gear);
+                    if (objStackGear.Equipped)
+                    {
+                        foreach (Gear objGear in objStack.Gear)
+                        {
+                            if (objGear.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
+                            {
+                                if (!string.IsNullOrEmpty(objGear.Extra))
+                                    ImprovementManager.ForcedValue = objGear.Extra;
+                                if (objGear.Bonus != null)
+                                {
+                                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                    {
+                                        // Clear created improvements
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                    objGear.Extra = ImprovementManager.SelectedValue;
+                                }
+                                if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                                {
+                                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                    {
+                                        // Clear created improvements
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    objStack.Bonded = true;
+                }
             }
         }
 
@@ -13171,10 +13168,6 @@ namespace Chummer
             intFreestyleBP += (int)nudNuyen.Value;
 
             // ------------------------------------------------------------------------------
-            // Calculate the BP discounted by Adept Way for Bonded Foci
-            intKarmaPointsRemain += (int)nudAdeptWayDiscount.Value * 2;
-
-            // ------------------------------------------------------------------------------
             // Calculate the BP used by Spells.
             int intSpellPointsUsed = 0;
             int intRitualPointsUsed = 0;
@@ -13322,15 +13315,36 @@ namespace Chummer
             int intFociPointsUsed = 0;
             foreach (Focus objFocus in _objCharacter.Foci)
             {
+                Gear objFocusGear = _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objFocus.GearId);
+                if (objFocusGear == null)
+                {
+                    objFocusGear = CommonFunctions.FindArmorGear(objFocus.GearId, _objCharacter.Armor);
+                    if (objFocusGear == null)
+                    {
+                        objFocusGear = CommonFunctions.FindWeaponGear(objFocus.GearId, _objCharacter.Weapons);
+                        if (objFocusGear == null)
+                        {
+                            objFocusGear = CommonFunctions.FindCyberwareGear(objFocus.GearId, _objCharacter.Cyberware);
+                            if (objFocusGear == null)
+                            {
+                                objFocusGear = CommonFunctions.FindVehicleGear(objFocus.GearId, _objCharacter.Vehicles);
+                                if (objFocusGear == null)
+                                    continue;
+                            }
+                        }
+                    }
+                }
                 // Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
-                string strFocusName = objFocus.Name;
+                string strFocusName = objFocusGear.Name;
+                string strFocusExtra = objFocusGear.Extra;
                 int intPosition = strFocusName.IndexOf('(');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition - 1);
                 intPosition = strFocusName.IndexOf(',');
                 if (intPosition > -1)
-                    strFocusName = strFocusName.Substring(0, intPosition);
-                int intKarmaMultiplier = 0;
+                    strFocusName = strFocusName.Substring(0, intPosition - 1);
+                int intKarmaMultiplier = 1;
+                int intExtraKarmaCost = 0;
                 switch (strFocusName)
                 {
                     case "Qi Focus":
@@ -13381,12 +13395,16 @@ namespace Chummer
                     case "Flexible Signature Focus":
                         intKarmaMultiplier = _objOptions.KarmaFlexibleSignatureFocus;
                         break;
-                    default:
-                        intKarmaMultiplier = 1;
-                        break;
                 }
-                intKarmaPointsRemain -= objFocus.Rating * intKarmaMultiplier;
-                intFociPointsUsed += objFocus.Rating * intKarmaMultiplier;
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
+                        intExtraKarmaCost += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
+                        intKarmaMultiplier += objLoopImprovement.Value;
+                }
+                intKarmaPointsRemain -= objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
+                intFociPointsUsed += objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
             }
 
             // Calculate the BP used by Stacked Foci.
@@ -13394,8 +13412,9 @@ namespace Chummer
             {
                 if (objFocus.Bonded)
                 {
-                    intKarmaPointsRemain -= objFocus.BindingCost;
-                    intFociPointsUsed += objFocus.BindingCost;
+                    int intBindingCost = objFocus.BindingCost;
+                    intKarmaPointsRemain -= intBindingCost;
+                    intFociPointsUsed += intBindingCost;
                 }
             }
 

@@ -126,14 +126,20 @@ namespace Chummer
             }
             if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
+                ImprovementManager.ForcedValue = Extra;
                 if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
                 {
+                    ImprovementManager.ForcedValue = strOldForce;
                     this.Deleting = true;
                     CharacterObject.Powers.Remove(this);
                     OnPropertyChanged(nameof(TotalRating));
                     return false;
                 }
                 Extra = ImprovementManager.SelectedValue;
+                ImprovementManager.SelectedValue = strOldSelected;
+                ImprovementManager.ForcedValue = strOldForce;
             }
             if (TotalMaximumLevels < Rating)
             {
@@ -343,7 +349,7 @@ namespace Chummer
         {
             get
             {
-                decimal decReturn = Convert.ToDecimal(_strPointsPerLevel,GlobalOptions.InvariantCultureInfo);
+                decimal decReturn = Convert.ToDecimal(_strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }
             set
@@ -449,12 +455,12 @@ namespace Chummer
         {
             get
             {
-                decimal decReturn = 0;
                 if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
                 {
-                    return decReturn;
+                    return 0;
                 }
 
+                decimal decReturn = 0;
                 if (FreeLevels * PointsPerLevel >= FreePoints)
                 {
                     decReturn = Rating * PointsPerLevel;
@@ -466,7 +472,7 @@ namespace Chummer
                     decReturn -= FreePoints;
                 }
                 decReturn -= Discount;
-                return Math.Max(decReturn, 0);
+                return Math.Max(decReturn, 0.0m);
             }            
         }
 
@@ -506,8 +512,7 @@ namespace Chummer
             get
             {
                 int intRating = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
-                decimal decReturn = (decimal) (intRating * 0.25);
-                return decReturn;
+                return intRating * 0.25m;
             }
         }
 
@@ -570,7 +575,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Power Cost is discounted by 25% from Adept Way.
+        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
         /// </summary>
         public bool DiscountedAdeptWay
         {
@@ -708,16 +713,15 @@ namespace Chummer
                 {
                     return false;
                 }
-                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
+                if (_nodAdeptWayRequirements != null)
                 {
-                    blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == "The Magician's Way");
-                }
-                if (!blnReturn)
-                {
-                    XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements?.SelectNodes("required/oneof/quality");
-                    if (objXmlRequiredList != null)
+                    if (_nodAdeptWayRequirements["magicianswayforbids"] == null)
                     {
-                        foreach (XmlNode objNode in objXmlRequiredList)
+                        blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
+                    }
+                    if (!blnReturn)
+                    {
+                        foreach (XmlNode objNode in _nodAdeptWayRequirements.SelectNodes("required/oneof/quality"))
                         {
                             if (objNode.Attributes?["extra"] != null)
                             {
@@ -734,7 +738,7 @@ namespace Chummer
                         }
                     }
                 }
-                if (blnReturn == false && DiscountedAdeptWay)
+                if (!blnReturn && DiscountedAdeptWay)
                 {
                     DiscountedAdeptWay = false;
                 }

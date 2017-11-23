@@ -164,6 +164,7 @@
     <xs:element name="blockskillcategoryspecializations" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="blockskillspecializations" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="bornrich" type="xs:string" minOccurs="0" maxOccurs="1" />
+    <xs:element name="burnoutsway" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="coldarmor" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="complexformlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="composure" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -267,6 +268,24 @@
     <xs:element name="fame" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="fatigueresist" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="firearmor" type="xs:string" minOccurs="0" maxOccurs="1" />
+    <xs:element name="focusbindingkarmacost" minOccurs="0" maxOccurs="unbounded">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="extracontains" type="xs:string" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="focusbindingkarmamultiplier" minOccurs="0" maxOccurs="unbounded">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="extracontains" type="xs:string" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
     <xs:element name="freenegativequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="freepositivequalities" type="xs:integer" minOccurs="0" maxOccurs="1" />
     <xs:element name="freespiritpowerpoints" type="xs:integer" minOccurs="0" maxOccurs="1" />
@@ -405,6 +424,7 @@
       </xs:complexType>
     </xs:element>
     <xs:element name="mademan" type="xs:string" minOccurs="0" maxOccurs="1" />
+    <xs:element name="magicianswaydiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="manaillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
 	<xs:element name="manamanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />

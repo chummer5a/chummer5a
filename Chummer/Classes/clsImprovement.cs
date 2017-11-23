@@ -288,6 +288,10 @@ namespace Chummer
             NewAIAdvancedProgramKarmaCost,
             BlockSkillSpecializations,
             BlockSkillCategorySpecializations,
+            FocusBindingKarmaCost,
+            FocusBindingKarmaMultiplier,
+            MagiciansWayDiscount,
+            BurnoutsWay,
             // V This one should always be the last defined enum
             NumImprovementTypes
         }
@@ -725,6 +729,7 @@ namespace Chummer
         public static string SelectedValue
         {
             get { return _strSelectedValue; }
+            set { _strSelectedValue = value; }
         }
 
         /// <summary>
@@ -732,6 +737,7 @@ namespace Chummer
         /// </summary>
         public static string ForcedValue
         {
+            get { return _strForcedValue; }
             set { _strForcedValue = value; }
         }
 
@@ -1533,6 +1539,12 @@ namespace Chummer
                             }
 
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                        }
+                        break;
+                    case Improvement.ImprovementType.MagiciansWayDiscount:
+                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        {
+                            bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
                         }
                         break;
                 }

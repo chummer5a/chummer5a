@@ -1306,6 +1306,18 @@ namespace Chummer
                         _lstQualities.Add(objQuality);
                         if (objQuality.MyXmlNode?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
+                        // Legacy shim
+                        if ((objQuality.Name == "The Artisan's Way" ||
+                            objQuality.Name == "The Artist's Way" ||
+                            objQuality.Name == "The Athlete's Way" ||
+                            objQuality.Name == "The Burnout's Way" ||
+                            objQuality.Name == "The Invisible Way" ||
+                            objQuality.Name == "The Magician's Way" ||
+                            objQuality.Name == "The Speaker's Way" ||
+                            objQuality.Name == "The Warrior's Way") && objQuality.Bonus?.HasChildNodes == false)
+                        {
+                            _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                        }
                     }
                 }
                 else
@@ -1443,7 +1455,7 @@ namespace Chummer
             objXmlNodeList = objXmlDocument.SelectNodes("/character/foci/focus");
             foreach (XmlNode objXmlFocus in objXmlNodeList)
             {
-                Focus objFocus = new Focus();
+                Focus objFocus = new Focus(this);
                 objFocus.Load(objXmlFocus);
                 _lstFoci.Add(objFocus);
             }
@@ -7194,7 +7206,7 @@ namespace Chummer
         {
             get
             {
-                return _lstQualities.Any(objQuality => objQuality.Name == "The Burnout's Way");
+                return Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.BurnoutsWay && x.Enabled);
             }
         }
 
@@ -8256,6 +8268,8 @@ namespace Chummer
             Improvement.ImprovementType.SkillCategoryPointCost,
             Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier,
             Improvement.ImprovementType.SkillGroupCategoryPointCost,
+            Improvement.ImprovementType.BlockSkillSpecializations,
+            Improvement.ImprovementType.BlockSkillCategorySpecializations,
         };
 
         //List of events that might be able to affect attributes. Changes to these types also invoke data bindings controlling skills, since their pools are controlled by attributes.
