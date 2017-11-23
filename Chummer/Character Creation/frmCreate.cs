@@ -1327,15 +1327,23 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabAdept))
                     tabCharacterTabs.TabPages.Insert(3, tabAdept);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
                 ClearAdeptTab();
                 tabCharacterTabs.TabPages.Remove(tabAdept);
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
+                }
             }
             //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
-            lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
-            nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
+            lblMysticAdeptAssignment.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
+            nudMysticAdeptMAGMagician.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
         }
 
         private void objCharacter_AmbidextrousChanged(object sender)
@@ -1389,16 +1397,24 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                     tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
                 ClearSpellTab();
                 tabCharacterTabs.TabPages.Remove(tabMagician);
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
+                }
             }
 
-            // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
-            nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
+            //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
+            lblMysticAdeptAssignment.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
+            nudMysticAdeptMAGMagician.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
         }
 
         private void objCharacter_TechnomancerTabEnabledChanged(object sender)

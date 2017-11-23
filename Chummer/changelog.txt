@@ -274,6 +274,7 @@ Application Changes:
 - Focus bonding cost modifications from Adept Ways now be automatically applied in both Create and Career mode, and their karma effects will automatically be calculated by the time the user is prompted to spend karma on binding a new focus. Removed the numerical up-down in Create mode for the number of foci eligible for Adept Way discounts, as it is now obsolete.
 - Fixed a bug where re-applying or re-adding improvements of items that would add the Improved Ability (skill) adept power would not properly end up adding that power.
 - Fixed a bug where improvements that would ask the user to select an adept power to add would not abide by the "ignorerating" node when it was present.
+- Added a house rule that changes Mystic Adepts so that instead of using special rules for obtaining and managing PP, they will have a separate MAG rating to be used for Adept powers and PP. Initiation and Foci will use the lower of the two MAG ratings if this rule is enabled.
 
 Data Changes:
 

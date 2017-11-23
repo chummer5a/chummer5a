@@ -479,6 +479,12 @@
                         <xsl:if test="attributes/attribute[name_english = 'MAG']/total != attributes/attribute[name_english = 'MAG']/base">
                           (<xsl:value-of select="attributes/attribute[name_english = 'MAG']/total"/>)
                         </xsl:if>
+                        <xsl:if test="attributes/attribute[name_english = 'MAGAdept']">
+                          | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/base"/>
+                          <xsl:if test="attributes/attribute[name_english = 'MAGAdept']/total != attributes/attribute[name_english = 'MAGAdept']/base">
+                            (<xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/total"/>)
+                          </xsl:if>
+                        </xsl:if>
                       </xsl:when>
                       <xsl:when test="resenabled = 'True'">
                         <xsl:value-of select="$lang.Resonance"/>:
