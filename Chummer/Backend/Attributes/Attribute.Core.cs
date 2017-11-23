@@ -119,6 +119,8 @@ namespace Chummer.Backend.Attributes
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
+            if (Abbrev == "MAGAdept" && (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept))
+                return;
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name_english", Abbrev);
             objWriter.WriteElementString("name", DisplayAbbrev);
@@ -575,7 +577,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if ((_objCharacter.MAGEnabled && Abbrev == "MAG" && _objCharacter.EssencePenaltyMAG > 0) || ((_objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0))
+                if ((_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG > 0) || ((_objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0))
                 {
                     return true;
                 }
@@ -637,7 +639,7 @@ namespace Chummer.Backend.Attributes
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
         {
             // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-            if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
                 return 1;
 
             int intMeat = Value + AttributeModifiers;
@@ -678,7 +680,7 @@ namespace Chummer.Backend.Attributes
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
             if (intReturn < 1)
             {
-                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_strAbbrev == "RES" && _objCharacter.EssencePenalty != 0) || (_strAbbrev == "MAG" && _objCharacter.EssencePenaltyMAG != 0) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
+                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_strAbbrev == "RES" && _objCharacter.EssencePenalty != 0) || ((Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG != 0) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
                     return 0;
                 else
                     return 1;
@@ -702,7 +704,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
                     return 1;
 
                 int intReturn = MetatypeMinimum + MinimumModifiers;
@@ -714,11 +716,11 @@ namespace Chummer.Backend.Attributes
                         intReturn = 1;
                 }
 
-                if ((_strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                if ((_strAbbrev != "MAG" && _strAbbrev != "MAGAdept" && _strAbbrev != "RES" && _strAbbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                     return intReturn;
 
                 int intEssencePenalty = _objCharacter.EssencePenalty;
-                if (_strAbbrev == "MAG")
+                if (_strAbbrev == "MAG" || _strAbbrev == "MAGAdept")
                     intEssencePenalty = _objCharacter.EssencePenaltyMAG;
                 if (intEssencePenalty == 0)
                     return intReturn;
@@ -763,7 +765,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = 0;
-                if (_strAbbrev == "EDG" || _strAbbrev == "MAG" || _strAbbrev == "RES")
+                if (_strAbbrev == "EDG" || _strAbbrev == "MAG" || _strAbbrev == "MAGAdept" || _strAbbrev == "RES")
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
                 else
                     intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
@@ -796,9 +798,14 @@ namespace Chummer.Backend.Attributes
             get {
                 if (string.IsNullOrWhiteSpace(_strDisplayNameShort))
                 {
-                    string strName = "String_Attribute{0}Short".Replace("{0}", _strAbbrev);
-                    _strDisplayNameShort = LanguageManager.GetString(strName);
-                    return _strDisplayNameShort;
+                    if (_strAbbrev == "MAGAdept")
+                    {
+                        _strDisplayNameShort = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    }
+                    else
+                    {
+                        _strDisplayNameShort = LanguageManager.GetString("String_Attribute" + _strAbbrev + "Short");
+                    }
                 }
                 return _strDisplayNameShort;
                 }
@@ -812,9 +819,14 @@ namespace Chummer.Backend.Attributes
                 //TODO: Is this a terrible idea?
                 if (string.IsNullOrWhiteSpace(_strDisplayNameLong))
                 {
-                    string strName = "String_Attribute{0}Long".Replace("{0}", _strAbbrev);
-                    _strDisplayNameLong = LanguageManager.GetString(strName);
-                    return _strDisplayNameLong;
+                    if (_strAbbrev == "MAGAdept")
+                    {
+                        _strDisplayNameLong = LanguageManager.GetString("String_AttributeMAGLong") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    }
+                    else
+                    {
+                        _strDisplayNameLong = LanguageManager.GetString("String_Attribute" + _strAbbrev + "Long");
+                    }
                 }
                 return _strDisplayNameLong;
             }
@@ -828,8 +840,14 @@ namespace Chummer.Backend.Attributes
                 //TODO: Is this a terrible idea?
                 if (string.IsNullOrWhiteSpace(_strDisplayNameFormatted))
                 {
-                    _strDisplayNameFormatted = DisplayNameLong + " (" + DisplayNameShort + ")";
-                    return _strDisplayNameFormatted;
+                    if (_strAbbrev == "MAGAdept")
+                    {
+                        _strDisplayNameFormatted = LanguageManager.GetString("String_AttributeMAGLong") + " (" + LanguageManager.GetString("String_AttributeMAGShort") + ") (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    }
+                    else
+                    {
+                        _strDisplayNameFormatted = DisplayNameLong + " (" + DisplayNameShort + ")";
+                    }
                 }
                 return _strDisplayNameFormatted;
             }
@@ -1064,7 +1082,7 @@ namespace Chummer.Backend.Attributes
                     strModifier += strCyberlimb;
                 }
                 /*
-                if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
+                if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "MAGAdept" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
                 {
                     strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.GetString("String_AttributeESSLong")})";
                 }
@@ -1081,7 +1099,7 @@ namespace Chummer.Backend.Attributes
         {
             int intBP = 0;
 
-            if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
+            if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "MAGAdept" && _strAbbrev != "RES" && _strAbbrev != "DEP")
             {
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 {
@@ -1103,7 +1121,7 @@ namespace Chummer.Backend.Attributes
                 int intEssenceLoss = 0;
                 if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                 {
-                    if (_strAbbrev == "MAG")
+                    if (_strAbbrev == "MAG" || _strAbbrev == "MAGAdept")
                         intEssenceLoss = _objCharacter.EssencePenaltyMAG;
                     else
                         intEssenceLoss = _objCharacter.EssencePenalty;
@@ -1288,6 +1306,7 @@ namespace Chummer.Backend.Attributes
 				case "EDG":
 				case "ESS":
 				case "MAG":
+                case "MAGAdept":
 				case "RES":
 					return AttributeCategory.Special;
 				default:
@@ -1357,7 +1376,10 @@ namespace Chummer.Backend.Attributes
             {
                 if (string.IsNullOrWhiteSpace(_strDisplayAbbrev))
                 {
-                    _strDisplayAbbrev = LanguageManager.GetString($"String_Attribute{Abbrev}Short");
+                    if (Abbrev == "MAGAdept")
+                        _strDisplayAbbrev = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    else
+                        _strDisplayAbbrev = LanguageManager.GetString($"String_Attribute{Abbrev}Short");
                 }
                 return _strDisplayAbbrev;
             }

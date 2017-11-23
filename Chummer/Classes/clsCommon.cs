@@ -2299,6 +2299,9 @@ namespace Chummer
             int intFociTotal = 0;
             bool blnWarned = false;
 
+            int intMaxFocusTotal = objCharacter.MAG.TotalValue * 5;
+            if (objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
+                intMaxFocusTotal = Math.Min(intMaxFocusTotal, objCharacter.MAGAdept.TotalValue * 5);
             foreach (Gear objGear in objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
             {
                 List<Focus> removeFoci = new List<Focus>();
@@ -2313,7 +2316,7 @@ namespace Chummer
                         objFocus.Rating = objGear.Rating;
                         intFociTotal += objFocus.Rating;
                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                        if (intFociTotal > objCharacter.MAG.TotalValue * 5 && !objCharacter.IgnoreRules)
+                        if (intFociTotal > intMaxFocusTotal && !objCharacter.IgnoreRules)
                         {
                             // Mark the Gear a Bonded.
                             foreach (Gear objCharacterGear in objCharacter.Gear)

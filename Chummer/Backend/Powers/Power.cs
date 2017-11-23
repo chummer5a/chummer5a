@@ -444,7 +444,10 @@ namespace Chummer
                     }
 
                 }
-                return Math.Min(intReturn, CharacterObject.MAG.TotalValue);
+                int intMAG = CharacterObject.MAG.TotalValue;
+                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                    intMAG = CharacterObject.MAGAdept.TotalValue;
+                return Math.Min(intReturn, intMAG);
             }
         }
 
@@ -682,7 +685,10 @@ namespace Chummer
                 int intReturn = MaxLevels;
                 if (intReturn == 0)
                 {
-                    intReturn = Math.Max(intReturn, CharacterObject.MAG.TotalValue);
+                    int intMAG = CharacterObject.MAG.TotalValue;
+                    if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                        intMAG = CharacterObject.MAGAdept.TotalValue;
+                    intReturn = Math.Max(intReturn, intMAG);
                 }
                 if (Name == "Improved Ability (skill)")
                 {
@@ -695,7 +701,10 @@ namespace Chummer
                 }
                 if (!CharacterObject.IgnoreRules)
                 {
-                    intReturn = Math.Min(intReturn, CharacterObject.MAG.TotalValue);
+                    int intMAG = CharacterObject.MAG.TotalValue;
+                    if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                        intMAG = CharacterObject.MAGAdept.TotalValue;
+                    intReturn = Math.Max(intReturn, intMAG);
                 }
                 return intReturn;
             }

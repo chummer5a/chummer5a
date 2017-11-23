@@ -105,6 +105,7 @@ namespace Chummer
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
         private bool _mysaddPpCareer;
+        private bool _blnMysAdeptSecondMAGAttribute = false;
         private bool _blnReverseAttributePriorityOrder;
         private bool _blnHhideItemsOverAvailLimit = true;
         private bool _blnAllowHoverIncrement;
@@ -348,6 +349,9 @@ namespace Chummer
             objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString());
 
             objWriter.WriteElementString("mysaddppcareer", MysaddPPCareer.ToString());
+
+            // <mysadeptsecondmagattribute />
+            objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString());
 
             // <exceednegativequalities />
             objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString());
@@ -733,6 +737,9 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
 
             objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _mysaddPpCareer);
+
+            // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+            objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
 
             // Grant a free specialization when taking a martial art.
             objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
@@ -1451,6 +1458,15 @@ namespace Chummer
         {
             get { return _mysaddPpCareer; }
             set { _mysaddPpCareer = value; }
+        }
+
+        /// <summary>
+        /// Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+        /// </summary>
+        public bool MysAdeptSecondMAGAttribute
+        {
+            get { return _blnMysAdeptSecondMAGAttribute; }
+            set { _blnMysAdeptSecondMAGAttribute = value; }
         }
 
         /// <summary>

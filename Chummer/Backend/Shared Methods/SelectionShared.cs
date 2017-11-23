@@ -379,6 +379,8 @@ namespace Chummer.Backend.Shared_Methods
                     {
                         if (objAttribute.Abbrev == "MAG")
                             return character.MAGEnabled;
+                        if (objAttribute.Abbrev == "MAGAdept")
+                            return character.MAGEnabled && character.IsMysticAdept;
                         if (objAttribute.Abbrev == "RES")
                             return character.RESEnabled;
                         if (objAttribute.Abbrev == "DEP")

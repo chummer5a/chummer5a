@@ -4290,6 +4290,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Magic (MAG) CharacterAttribute for Adept powers of Mystic Adepts when the appropriate house rule is enabled.
+        /// </summary>
+        public CharacterAttrib MAGAdept
+        {
+            get
+            {
+                if (Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
+                    return AttributeSection.GetAttributeByName("MAGAdept");
+                else
+                    return MAG;
+            }
+        }
+
+        /// <summary>
         /// Resonance (RES) CharacterAttribute.
         /// </summary>
         public CharacterAttrib RES

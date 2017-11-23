@@ -167,97 +167,103 @@ namespace Chummer
             switch (_strSelect)
             {
                 case "SelectAttribute":
-                {
-                    var frmPickAttribute = new frmSelectAttribute
                     {
-                        Description = LanguageManager.GetString("Title_SelectAttribute")
-                    };
-                    if (_objCharacter.MAGEnabled)
-                        frmPickAttribute.AddMAG();
-                    if (_objCharacter.RESEnabled)
-                        frmPickAttribute.AddRES();
-                    if (_objCharacter.DEPEnabled)
-                        frmPickAttribute.AddDEP();
-                    frmPickAttribute.ShowDialog(this);
+                        var frmPickAttribute = new frmSelectAttribute
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute")
+                        };
+                        if (_objCharacter.MAGEnabled)
+                        {
+                            frmPickAttribute.AddMAG();
+                            if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                                frmPickAttribute.AddMAGAdept();
+                        }
+                        if (_objCharacter.RESEnabled)
+                            frmPickAttribute.AddRES();
+                        if (_objCharacter.DEPEnabled)
+                            frmPickAttribute.AddDEP();
+                        frmPickAttribute.ShowDialog(this);
 
-                    if (frmPickAttribute.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                }
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                    }
                     break;
                 case "SelectMentalAttribute":
-                {
-                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute
                     {
-                        Description = LanguageManager.GetString("Title_SelectAttribute")
-                    };
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute")
+                        };
 
-                    List<string> strValue = new List<string> {"LOG", "WIL", "INT", "CHA", "EDG", "MAG", "RES"};
-                    frmPickAttribute.RemoveFromList(strValue);
+                        List<string> strValue = new List<string> {"LOG", "WIL", "INT", "CHA", "EDG", "MAG", "MAGAdept", "RES"};
+                        frmPickAttribute.RemoveFromList(strValue);
 
-                    frmPickAttribute.ShowDialog(this);
+                        frmPickAttribute.ShowDialog(this);
 
-                    if (frmPickAttribute.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                }
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                    }
                     break;
                 case "SelectPhysicalAttribute":
-                {
-                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-                    frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
+                    {
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                        frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
 
-                    List<string> strValue = new List<string>();
-                    strValue.Add("BOD");
-                    strValue.Add("AGI");
-                    strValue.Add("REA");
-                    strValue.Add("STR");
-                    strValue.Add("EDG");
-                    strValue.Add("MAG");
-                    strValue.Add("RES");
-                    frmPickAttribute.RemoveFromList(strValue);
+                        List<string> strValue = new List<string>();
+                        strValue.Add("BOD");
+                        strValue.Add("AGI");
+                        strValue.Add("REA");
+                        strValue.Add("STR");
+                        strValue.Add("EDG");
+                        strValue.Add("MAG");
+                            strValue.Add("MAGAdept");
+                            strValue.Add("RES");
+                        frmPickAttribute.RemoveFromList(strValue);
 
-                    frmPickAttribute.ShowDialog(this);
+                        frmPickAttribute.ShowDialog(this);
 
-                    if (frmPickAttribute.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                }
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                    }
                     break;
                 case "SelectSpecialAttribute":
-                {
-                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-                    frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
+                    {
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                        frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
 
-                    List<string> strValue = new List<string>();
-                    strValue.Add("MAG");
-                    strValue.Add("RES");
-                    strValue.Add("DEP");
-                    frmPickAttribute.RemoveFromList(strValue);
+                        List<string> strValue = new List<string>();
+                        strValue.Add("MAG");
+                        strValue.Add("MAGAdept");
+                        strValue.Add("RES");
+                        strValue.Add("DEP");
+                        frmPickAttribute.RemoveFromList(strValue);
 
-                    frmPickAttribute.ShowDialog(this);
+                        frmPickAttribute.ShowDialog(this);
 
-                    if (frmPickAttribute.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                }
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                    }
                     break;
                 case "SelectSkill":
-                {
-                    frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                    frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
-                    frmPickSkill.ShowDialog(this);
+                    {
+                        frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                        frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
+                        frmPickSkill.ShowDialog(this);
 
-                    if (frmPickSkill.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickSkill.SelectedSkill;
-                }
+                        if (frmPickSkill.DialogResult == DialogResult.OK)
+                            txtSelect.Text = frmPickSkill.SelectedSkill;
+                    }
                     break;
                 case "SelectKnowSkill":
-                {
-                    frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-                    frmPickSkill.ShowKnowledgeSkills = true;
-                    frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
-                    frmPickSkill.ShowDialog(this);
+                    {
+                        frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                        frmPickSkill.ShowKnowledgeSkills = true;
+                        frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
+                        frmPickSkill.ShowDialog(this);
 
-                    if (frmPickSkill.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickSkill.SelectedSkill;
-                }
+                        if (frmPickSkill.DialogResult == DialogResult.OK)
+                            txtSelect.Text = frmPickSkill.SelectedSkill;
+                    }
                     break;
                 case "SelectSkillCategory":
                     frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory();
