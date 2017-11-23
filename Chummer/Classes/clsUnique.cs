@@ -6063,16 +6063,17 @@ namespace Chummer
             _nodBonus = objXmlMentor["bonus"];
             if (_nodBonus != null)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodBonus, false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                {
-                    _strExtra = ImprovementManager.SelectedValue;
-                }
+                _strExtra = ImprovementManager.SelectedValue;
+                ImprovementManager.ForcedValue = strOldForce;
+                ImprovementManager.SelectedValue = strOldSelected;
             }
             else if (!string.IsNullOrEmpty(strForceValue))
             {
@@ -6081,16 +6082,20 @@ namespace Chummer
             _nodChoice1 = objXmlChoice1;
             if (_nodChoice1 != null)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValueChoice1;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodChoice1, false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (string.IsNullOrEmpty(_strExtra))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
                 }
+                ImprovementManager.ForcedValue = strOldForce;
+                ImprovementManager.SelectedValue = strOldSelected;
             }
             else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice1))
             {
@@ -6099,16 +6104,20 @@ namespace Chummer
             _nodChoice2 = objXmlChoice2;
             if (_nodChoice2 != null)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValueChoice2;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodChoice2, false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (string.IsNullOrEmpty(_strExtra))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
                 }
+                ImprovementManager.ForcedValue = strOldForce;
+                ImprovementManager.SelectedValue = strOldSelected;
             }
             else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice2))
             {
@@ -6136,6 +6145,7 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("advantage", _strAdvantage);
             objWriter.WriteElementString("disadvantage", _strDisadvantage);
+            objWriter.WriteElementString("mentormask", _blnMentorMask.ToString());
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
@@ -6174,6 +6184,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
             objNode.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            objNode.TryGetBoolFieldQuickly("mentormask", ref _blnMentorMask);
             _nodBonus = objNode["bonus"];
             _nodChoice1 = objNode["choice1"];
             _nodChoice2 = objNode["choice2"];
@@ -6212,6 +6223,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("mentormask", MentorMask.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
