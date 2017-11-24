@@ -3724,16 +3724,16 @@
       <source>R5</source>
       <accel>1</accel>
       <armor>8</armor>
-      <avail>2</avail>
+      <avail>12R</avail>
       <body>8</body>
       <category>Drones: Large</category>
-      <cost>4000</cost>
+      <cost>18000</cost>
       <handling>1</handling>
       <pilot>2</pilot>
       <sensor>4</sensor>
       <speed>2</speed>
       <gears>
-        <gear rating="4" maxrating="5">Sensor Array</gear>
+        <gear rating="2" maxrating="5">Sensor Array</gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
       </gears>
       <mods>

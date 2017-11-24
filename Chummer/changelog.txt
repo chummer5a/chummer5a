@@ -423,6 +423,8 @@ Data Changes:
 - Corrected the HK MP75 to use standard submachinegun concealability.
 - Lightning Reflexes properly gives +1 die on defense tests.
 - Jack of All Trades now properly gives its bonus up to Rating 5 and only applies its penalty beyond Rating 5.
+- Fixed incorrect weapon stats for the Marpingen Pro, Mannlicher Dirmingen SX BD and Pressure KS-X.
+- Fixed incorrect stats for the Ares Matilda drone. 
 
 New Strings:
 - Message_Improvement_EmptySelectionList
