@@ -565,6 +565,9 @@ namespace Chummer
                     case "MAG":
                         strReturn = GetString("String_AttributeMAGShort");
                         break;
+                    case "MAGAdept":
+                        strReturn = GetString("String_AttributeMAGShort") + " (" + GetString("String_DescAdept") + ")";
+                        break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort");
                         break;

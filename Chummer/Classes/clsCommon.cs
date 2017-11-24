@@ -2299,6 +2299,9 @@ namespace Chummer
             int intFociTotal = 0;
             bool blnWarned = false;
 
+            int intMaxFocusTotal = objCharacter.MAG.TotalValue * 5;
+            if (objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
+                intMaxFocusTotal = Math.Min(intMaxFocusTotal, objCharacter.MAGAdept.TotalValue * 5);
             foreach (Gear objGear in objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
             {
                 List<Focus> removeFoci = new List<Focus>();
@@ -2313,7 +2316,7 @@ namespace Chummer
                         objFocus.Rating = objGear.Rating;
                         intFociTotal += objFocus.Rating;
                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                        if (intFociTotal > objCharacter.MAG.TotalValue * 5 && !objCharacter.IgnoreRules)
+                        if (intFociTotal > intMaxFocusTotal && !objCharacter.IgnoreRules)
                         {
                             // Mark the Gear a Bonded.
                             foreach (Gear objCharacterGear in objCharacter.Gear)
@@ -2477,10 +2480,24 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(objGear.Extra))
                                 ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            {
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                {
+                                    // Clear created improvements
+                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                    return;
+                                }
+                                objGear.Extra = ImprovementManager.SelectedValue;
+                            }
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            objGear.Extra = ImprovementManager.SelectedValue;
+                            {
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                {
+                                    // Clear created improvements
+                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                    return;
+                                }
+                            }
                         }
                     }
                     else
@@ -2495,9 +2512,24 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                         ImprovementManager.ForcedValue = objFociGear.Extra;
                                     if (objGear.Bonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    {
+                                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort))
+                                        {
+                                            // Clear created improvements
+                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                            return;
+                                        }
+                                        objGear.Extra = ImprovementManager.SelectedValue;
+                                    }
                                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                    {
+                                        if (ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                        {
+                                            // Clear created improvements
+                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }

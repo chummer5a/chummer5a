@@ -507,7 +507,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = objXmlVehicle["category"]?.InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlVehicle["category"]?.InnerText;
             _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
             _decMarkup = nudMarkup.Value;
 

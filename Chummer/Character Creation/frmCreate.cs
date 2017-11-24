@@ -90,17 +90,12 @@ namespace Chummer
             _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
             _objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketDiscountChanged;
-            _objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
-            _objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
             _objCharacter.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
-            _objCharacter.SkillsSection.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
             _objCharacter.ExConChanged += objCharacter_ExConChanged;
             _objCharacter.TrustFundChanged += objCharacter_TrustFundChanged;
-            _objCharacter.SkillsSection.TechSchoolChanged += objCharacter_TechSchoolChanged;
             _objCharacter.RestrictedGearChanged += objCharacter_RestrictedGearChanged;
             _objCharacter.OverclockerChanged += objCharacter_OverclockerChanged;
             _objCharacter.MadeManChanged += objCharacter_MadeManChanged;
-            _objCharacter.SkillsSection.LinguistChanged += objCharacter_LinguistChanged;
             _objCharacter.LightningReflexesChanged += objCharacter_LightningReflexesChanged;
             _objCharacter.FameChanged += objCharacter_FameChanged;
             _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
@@ -408,8 +403,6 @@ namespace Chummer
             // Check for Special Attributes.
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
@@ -532,7 +525,7 @@ namespace Chummer
             MetatypeSelected();
 
             // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
+            if (_objCharacter.IsMysticAdept && !_objOptions.MysAdeptSecondMAGAttribute)
             {
                 nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
                 nudMysticAdeptMAGMagician.Value = _objCharacter.MysticAdeptPowerPoints;
@@ -1015,10 +1008,7 @@ namespace Chummer
                 _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 _objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
-                _objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
-                _objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
                 _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
-                _objCharacter.SkillsSection.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
                 GlobalOptions.MRUChanged -= PopulateMRU;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
@@ -1217,8 +1207,6 @@ namespace Chummer
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
-            nudAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
-            lblAdeptWayDiscount.Visible = _objCharacter.AdeptEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.MAGEnabled)
@@ -1245,6 +1233,10 @@ namespace Chummer
                 {
                     lstSpecialAttributes.Add(_objCharacter.MAG);
                 }
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
@@ -1253,6 +1245,10 @@ namespace Chummer
                 if (lstSpecialAttributes.Contains(_objCharacter.MAG))
                 {
                     lstSpecialAttributes.Remove(_objCharacter.MAG);
+                }
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
                 }
             }
         }
@@ -1331,15 +1327,23 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabAdept))
                     tabCharacterTabs.TabPages.Insert(3, tabAdept);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
                 ClearAdeptTab();
                 tabCharacterTabs.TabPages.Remove(tabAdept);
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
+                }
             }
             //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
-            lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
-            nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
+            lblMysticAdeptAssignment.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
+            nudMysticAdeptMAGMagician.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
         }
 
         private void objCharacter_AmbidextrousChanged(object sender)
@@ -1393,16 +1397,24 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                     tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
                 ClearSpellTab();
                 tabCharacterTabs.TabPages.Remove(tabMagician);
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
+                }
             }
 
-            // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            lblMysticAdeptAssignment.Visible = _objCharacter.IsMysticAdept;
-            nudMysticAdeptMAGMagician.Visible = _objCharacter.IsMysticAdept;
+            //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
+            lblMysticAdeptAssignment.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
+            nudMysticAdeptMAGMagician.Visible = !_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept;
         }
 
         private void objCharacter_TechnomancerTabEnabledChanged(object sender)
@@ -1506,58 +1518,7 @@ namespace Chummer
                 return;
 
         }
-
-        private void objCharacter_UneducatedChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-            // Change to the status of Uneducated being enabled.
-            /*if (_objCharacter.Uneducated)
-            {
-                // If Uneducated is being added, run through all of the Technical Active Skills and disable them.
-                // Do not break SkillGroups as these will be used if this is ever removed.
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    if (objSkillGroupControl.HasTechnicalSkills)
-                    {
-                        objSkillGroupControl.GroupRating = 0;
-                        objSkillGroupControl.IsEnabled = false;
-                    }
-                }
-            }
-            else
-            {
-                // If Uneducated is being removed, run through all of the Technical Active Skills and re-enable them.
-                // If they were a part of a SkillGroup, set their Rating back.
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    if (objSkillGroupControl.HasTechnicalSkills)
-                    {
-                        objSkillGroupControl.IsEnabled = true;
-                    }
-                }
-            }*/
-        }
-
-        private void objCharacter_UncouthChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-        }
-
-        private void objCharacter_SchoolOfHardKnocksChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-            // Change to the status of SchoolOfHardKnocksChanged being enabled.
-            if (_objCharacter.SkillsSection.SchoolOfHardKnocks)
-            {
-            }
-            else
-            { }
-        }
+        
         private void objCharacter_FriendsInHighPlacesChanged(object sender)
         {
             if (_blnReapplyImprovements)
@@ -1603,20 +1564,6 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_TechSchoolChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-            if (_objCharacter.SkillsSection.TechSchool)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
         private void objCharacter_RestrictedGearChanged(object sender)
         {
             if (_blnReapplyImprovements)
@@ -1656,22 +1603,6 @@ namespace Chummer
 
 
             if (_objCharacter.MadeMan)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
-        private void objCharacter_LinguistChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-
-            if (_objCharacter.SkillsSection.Linguist)
             {
 
             }
@@ -2016,10 +1947,7 @@ namespace Chummer
             bool blnMAGEnabled = _objCharacter.MAGEnabled;
             bool blnRESEnabled = _objCharacter.RESEnabled;
             bool blnDEPEnabled = _objCharacter.DEPEnabled;
-            bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
-            bool blnUncouth = _objCharacter.SkillsSection.Uncouth;
             bool blnFriendsInHighPlaces = _objCharacter.FriendsInHighPlaces;
-            bool blnSchoolOfHardKnocks = _objCharacter.SkillsSection.SchoolOfHardKnocks;
 
             _blnReapplyImprovements = true;
 
@@ -2507,14 +2435,8 @@ namespace Chummer
                 objCharacter_RESEnabledChanged(this);
             if (blnDEPEnabled != _objCharacter.DEPEnabled)
                 objCharacter_DEPEnabledChanged(this);
-            if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
-                objCharacter_UneducatedChanged(this);
-            if (blnUncouth != _objCharacter.SkillsSection.Uncouth)
-                objCharacter_UncouthChanged(this);
             if (blnFriendsInHighPlaces != _objCharacter.FriendsInHighPlaces)
                 objCharacter_FriendsInHighPlacesChanged(this);
-            if (blnSchoolOfHardKnocks != _objCharacter.SkillsSection.SchoolOfHardKnocks)
-                objCharacter_SchoolOfHardKnocksChanged(this);
 
             RefreshQualities(treQualities, cmsQuality, true);
             treQualities.SortCustom();
@@ -4010,26 +3932,6 @@ namespace Chummer
         #endregion
 
         #region Button Events
-
-        private void nudAdeptWayDiscount_ValueChanged(object sender, EventArgs e)
-        {
-            // Don't attempt to do anything while the data is still being populated.
-            if (_blnLoading)
-                return;
-
-            // Verify that the CharacterAttribute can be improved within the rules.
-            if (nudAdeptWayDiscount.Value > _objCharacter.Foci.Count)
-            {
-                nudAdeptWayDiscount.Value = Math.Max(Math.Min(_objCharacter.Foci.Count, nudAdeptWayDiscount.Maximum), nudAdeptWayDiscount.Minimum);
-            }
-
-            _objCharacter.AdeptWayDiscount = Convert.ToInt32(nudAdeptWayDiscount.Value);
-            ScheduleCharacterUpdate();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -4270,22 +4172,18 @@ namespace Chummer
             objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
             objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
-            int intMAG = Convert.ToInt32(_objCharacter.MAG.TotalValue);
-            if (_objCharacter.IsMysticAdept)
-            {
-                intMAG = _objCharacter.MAG.TotalValue;
-            }
             if (_objOptions.SpiritForceBasedOnTotalMAG)
             {
-                objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue;
-                objSpiritControl.Force = _objCharacter.MAG.TotalValue;
+                int intMAGTotalValue = _objCharacter.MAG.TotalValue;
+                objSpiritControl.ForceMaximum = intMAGTotalValue * 2;
+                objSpiritControl.Force = intMAGTotalValue;
             }
             else
             {
+                int intMAG = Convert.ToInt32(_objCharacter.MAG.Value);
                 if (intMAG == 0)
                     intMAG = 1;
-
-                objSpiritControl.ForceMaximum = intMAG;
+                objSpiritControl.ForceMaximum = intMAG * 2;
                 objSpiritControl.Force = intMAG;
             }
             objSpiritControl.RebuildSpiritList(_objCharacter.MagicTradition);
@@ -5536,7 +5434,8 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
+                if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && _objCharacter.InitiateGrade + 1 > _objCharacter.MAGAdept.TotalValue))
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -5555,6 +5454,7 @@ namespace Chummer
 
                 // Create the replacement Improvement.
                 ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
+                ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
                 ImprovementManager.Commit(_objCharacter);
 
                 // Update any Metamagic Improvements the character might have.
@@ -5756,6 +5656,7 @@ namespace Chummer
 
                     // Create the replacement Improvement.
                     ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
                     ImprovementManager.Commit(_objCharacter);
                 }
                 else if (_objCharacter.RESEnabled)
@@ -11942,78 +11843,12 @@ namespace Chummer
 
         private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Checked)
+            if (!e.Node.Checked)
             {
-                // Locate the Focus that is being touched.
-                Gear objSelectedFocus = CommonFunctions.DeepFindById(e.Node.Tag.ToString(), _objCharacter.Gear);
-
-                if (objSelectedFocus != null)
-                {
-                    Focus objFocus = new Focus();
-                    objFocus.Name = objSelectedFocus.Name;
-                    objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
-                    objFocus.Rating = objSelectedFocus.Rating;
-                    objFocus.GearId = e.Node.Tag.ToString();
-                    _objCharacter.Foci.Add(objFocus);
-
-                    // Mark the Gear and Bonded and create an Improvements.
-                    objSelectedFocus.Bonded = true;
-                    if (objSelectedFocus.Equipped)
-                    {
-                        if (objSelectedFocus.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
-                        {
-                            if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
-                                ImprovementManager.ForcedValue = objSelectedFocus.Extra;
-                            if (objSelectedFocus.Bonus != null)
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
-                            objSelectedFocus.Extra = ImprovementManager.SelectedValue;
-                            if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
-
-                            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
-                        }
-                    }
-                }
-                else
-                {
-                    // This is a Stacked Focus.
-                    StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
-                    if (objStack != null)
-                    {
-                        objStack.Bonded = true;
-                        Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, _objCharacter.Gear);
-                        if (objStackGear.Equipped)
-                        {
-                            foreach (Gear objGear in objStack.Gear)
-                            {
-                                if (objGear.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
-                                {
-                                    if (!string.IsNullOrEmpty(objGear.Extra))
-                                        ImprovementManager.ForcedValue = objGear.Extra;
-                                    if (objGear.Bonus != null)
-                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
-                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Focus objFocus = new Focus();
-                foreach (Focus objCharacterFocus in _objCharacter.Foci)
-                {
-                    if (objCharacterFocus.GearId == e.Node.Tag.ToString())
-                    {
-                        objFocus = objCharacterFocus;
-                        break;
-                    }
-                }
+                Focus objFocus = _objCharacter.Foci.FirstOrDefault(x => x.GearId == e.Node.Tag.ToString());
 
                 // Mark the Gear as not Bonded and remove any Improvements.
-                Gear objGear = CommonFunctions.DeepFindById(objFocus.GearId, _objCharacter.Gear);
+                Gear objGear = objFocus != null ? CommonFunctions.DeepFindById(objFocus.GearId, _objCharacter.Gear) : null;
 
                 if (objGear != null)
                 {
@@ -12024,20 +11859,15 @@ namespace Chummer
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = new StackedFocus(_objCharacter);
-                    foreach (StackedFocus objCharacterFocus in _objCharacter.StackedFoci)
-                    {
-                        if (e.Node.Tag.ToString() == objCharacterFocus.InternalId)
-                        {
-                            objStack = objCharacterFocus;
-                            break;
-                        }
-                    }
+                    StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
 
-                    objStack.Bonded = false;
-                    foreach (Gear objFocusGear in objStack.Gear)
+                    if (objStack != null)
                     {
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        objStack.Bonded = false;
+                        foreach (Gear objFocusGear in objStack.Gear)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        }
                     }
                 }
             }
@@ -12088,8 +11918,11 @@ namespace Chummer
                     {
                         if (objNode.Tag.ToString() == objCharacterFocus.InternalId)
                         {
-                            intFociTotal += objCharacterFocus.Rating;
-                            break;
+                            if (objCharacterFocus.Bonded)
+                            {
+                                intFociTotal += objCharacterFocus.Rating;
+                                break;
+                            }
                         }
                     }
 
@@ -12107,17 +11940,111 @@ namespace Chummer
                 }
             }
 
-            if (intFociTotal > _objCharacter.MAG.TotalValue * 5 && !_objCharacter.IgnoreRules)
+            if (!_objCharacter.IgnoreRules)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                e.Cancel = true;
-                return;
+                if (intFociTotal > _objCharacter.MAG.TotalValue * 5 ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && _objCharacter.InitiateGrade + 1 > _objCharacter.MAGAdept.TotalValue))
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (intFociCount > _objCharacter.MAG.TotalValue ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && intFociCount > _objCharacter.MAGAdept.TotalValue))
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    e.Cancel = true;
+                    return;
+                }
             }
 
-            if (intFociCount > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
+            if (objSelectedFocus != null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                e.Cancel = true;
+                Focus objFocus = new Focus(_objCharacter);
+                objFocus.Name = objSelectedFocus.Name;
+                objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
+                objFocus.Rating = objSelectedFocus.Rating;
+                objFocus.GearId = e.Node.Tag.ToString();
+
+                if (objSelectedFocus.Equipped)
+                {
+                    if (objSelectedFocus.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
+                    {
+                        if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
+                            ImprovementManager.ForcedValue = objSelectedFocus.Extra;
+                        if (objSelectedFocus.Bonus != null)
+                        {
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort))
+                            {
+                                // Clear created improvements
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
+                                e.Cancel = true;
+                                return;
+                            }
+                            objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                        }
+                        if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                        {
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort))
+                            {
+                                // Clear created improvements
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
+                                e.Cancel = true;
+                                return;
+                            }
+                        }
+                    }
+                }
+                _objCharacter.Foci.Add(objFocus);
+                objSelectedFocus.Bonded = true;
+                CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
+            }
+            else
+            {
+                // This is a Stacked Focus.
+                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
+                if (objStack != null)
+                {
+                    Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, _objCharacter.Gear);
+                    if (objStackGear.Equipped)
+                    {
+                        foreach (Gear objGear in objStack.Gear)
+                        {
+                            if (objGear.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
+                            {
+                                if (!string.IsNullOrEmpty(objGear.Extra))
+                                    ImprovementManager.ForcedValue = objGear.Extra;
+                                if (objGear.Bonus != null)
+                                {
+                                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                    {
+                                        // Clear created improvements
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                    objGear.Extra = ImprovementManager.SelectedValue;
+                                }
+                                if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                                {
+                                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                    {
+                                        // Clear created improvements
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    objStack.Bonded = true;
+                }
             }
         }
 
@@ -13269,10 +13196,6 @@ namespace Chummer
             intFreestyleBP += (int)nudNuyen.Value;
 
             // ------------------------------------------------------------------------------
-            // Calculate the BP discounted by Adept Way for Bonded Foci
-            intKarmaPointsRemain += (int)nudAdeptWayDiscount.Value * 2;
-
-            // ------------------------------------------------------------------------------
             // Calculate the BP used by Spells.
             int intSpellPointsUsed = 0;
             int intRitualPointsUsed = 0;
@@ -13292,8 +13215,7 @@ namespace Chummer
                 int preps = _objCharacter.Spells.Count(spell => spell.Alchemical && !spell.FreeBonus);
 
                 // Each spell costs KarmaSpell.
-                int spellCost = _objOptions.KarmaSpell +
-                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount);
+                int spellCost = _objCharacter.SpellKarmaCost;
                 int limit = _objCharacter.SpellLimit;
 
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
@@ -13421,15 +13343,36 @@ namespace Chummer
             int intFociPointsUsed = 0;
             foreach (Focus objFocus in _objCharacter.Foci)
             {
+                Gear objFocusGear = _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objFocus.GearId);
+                if (objFocusGear == null)
+                {
+                    objFocusGear = CommonFunctions.FindArmorGear(objFocus.GearId, _objCharacter.Armor);
+                    if (objFocusGear == null)
+                    {
+                        objFocusGear = CommonFunctions.FindWeaponGear(objFocus.GearId, _objCharacter.Weapons);
+                        if (objFocusGear == null)
+                        {
+                            objFocusGear = CommonFunctions.FindCyberwareGear(objFocus.GearId, _objCharacter.Cyberware);
+                            if (objFocusGear == null)
+                            {
+                                objFocusGear = CommonFunctions.FindVehicleGear(objFocus.GearId, _objCharacter.Vehicles);
+                                if (objFocusGear == null)
+                                    continue;
+                            }
+                        }
+                    }
+                }
                 // Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
-                string strFocusName = objFocus.Name;
+                string strFocusName = objFocusGear.Name;
+                string strFocusExtra = objFocusGear.Extra;
                 int intPosition = strFocusName.IndexOf('(');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition - 1);
                 intPosition = strFocusName.IndexOf(',');
                 if (intPosition > -1)
-                    strFocusName = strFocusName.Substring(0, intPosition);
-                int intKarmaMultiplier = 0;
+                    strFocusName = strFocusName.Substring(0, intPosition - 1);
+                int intKarmaMultiplier = 1;
+                int intExtraKarmaCost = 0;
                 switch (strFocusName)
                 {
                     case "Qi Focus":
@@ -13480,12 +13423,16 @@ namespace Chummer
                     case "Flexible Signature Focus":
                         intKarmaMultiplier = _objOptions.KarmaFlexibleSignatureFocus;
                         break;
-                    default:
-                        intKarmaMultiplier = 1;
-                        break;
                 }
-                intKarmaPointsRemain -= objFocus.Rating * intKarmaMultiplier;
-                intFociPointsUsed += objFocus.Rating * intKarmaMultiplier;
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
+                        intExtraKarmaCost += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
+                        intKarmaMultiplier += objLoopImprovement.Value;
+                }
+                intKarmaPointsRemain -= objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
+                intFociPointsUsed += objFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
             }
 
             // Calculate the BP used by Stacked Foci.
@@ -13493,8 +13440,9 @@ namespace Chummer
             {
                 if (objFocus.Bonded)
                 {
-                    intKarmaPointsRemain -= objFocus.BindingCost;
-                    intFociPointsUsed += objFocus.BindingCost;
+                    int intBindingCost = objFocus.BindingCost;
+                    intKarmaPointsRemain -= intBindingCost;
+                    intFociPointsUsed += intBindingCost;
                 }
             }
 
@@ -13538,7 +13486,7 @@ namespace Chummer
                 intFormsPointsUsed += 1;
             }
             if (intFormsPointsUsed > _objCharacter.CFPLimit)
-                intKarmaPointsRemain -= (intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm;
+                intKarmaPointsRemain -= (intFormsPointsUsed - _objCharacter.CFPLimit) * _objCharacter.ComplexFormKarmaCost;
             intFreestyleBP += intFormsPointsUsed;
 
             // ------------------------------------------------------------------------------
@@ -13565,11 +13513,11 @@ namespace Chummer
                     intAINormalProgramPointsUsed -= intNumAdvancedProgramPointsAsNormalPrograms;
                 }
                 if (intAINormalProgramPointsUsed > _objCharacter.AINormalProgramLimit)
-                    intKarmaCost += (intAINormalProgramPointsUsed - _objCharacter.AINormalProgramLimit) * _objOptions.KarmaNewAIProgram;
+                    intKarmaCost += (intAINormalProgramPointsUsed - _objCharacter.AINormalProgramLimit) * _objCharacter.AIProgramKarmaCost;
             }
             if (intAIAdvancedProgramPointsUsed > _objCharacter.AIAdvancedProgramLimit)
             {
-                intKarmaCost += (intAIAdvancedProgramPointsUsed - _objCharacter.AIAdvancedProgramLimit) * _objOptions.KarmaNewAIAdvancedProgram;
+                intKarmaCost += (intAIAdvancedProgramPointsUsed - _objCharacter.AIAdvancedProgramLimit) * _objCharacter.AIAdvancedProgramKarmaCost;
             }
             intKarmaPointsRemain -= intKarmaCost;
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
@@ -13682,17 +13630,17 @@ namespace Chummer
                     s = $"{intFormsPointsUsed} {LanguageManager.GetString("String_Of")} {_objCharacter.CFPLimit}";
                     if (intFormsPointsUsed > _objCharacter.CFPLimit)
                     {
-                        s += $": {(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
+                        s += $": {(intFormsPointsUsed - _objCharacter.CFPLimit) * _objCharacter.ComplexFormKarmaCost} {strPoints}";
                     }
                 }
                 else
                 {
-                    s = $"{(intFormsPointsUsed - _objCharacter.CFPLimit) * _objOptions.KarmaNewComplexForm} {strPoints}";
+                    s = $"{(intFormsPointsUsed - _objCharacter.CFPLimit) * _objCharacter.ComplexFormKarmaCost} {strPoints}";
                 }
                 lblComplexFormsBP.Text = s;
 
-                lblAINormalProgramsBP.Text = string.Format("{0} " + strPoints, ((intAINormalProgramPointsUsed - _objCharacter.AINormalProgramLimit) * _objOptions.KarmaNewAIProgram).ToString());
-                lblAIAdvancedProgramsBP.Text = string.Format("{0} " + strPoints, ((intAIAdvancedProgramPointsUsed - _objCharacter.AIAdvancedProgramLimit) * _objOptions.KarmaNewAIAdvancedProgram).ToString());
+                lblAINormalProgramsBP.Text = string.Format("{0} " + strPoints, ((intAINormalProgramPointsUsed - _objCharacter.AINormalProgramLimit) * _objCharacter.AIProgramKarmaCost).ToString());
+                lblAIAdvancedProgramsBP.Text = string.Format("{0} " + strPoints, ((intAIAdvancedProgramPointsUsed - _objCharacter.AIAdvancedProgramLimit) * _objCharacter.AIAdvancedProgramKarmaCost).ToString());
 
                 lblManeuversBP.Text = string.Format("{0} " + strPoints, intManeuverPointsUsed.ToString());
 
@@ -13835,10 +13783,12 @@ namespace Chummer
                 if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                 {
                     ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intMagReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intMagReduction * -1);
                 }
                 else
                 {
                     ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
                 }
             }
 
@@ -21627,6 +21577,8 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 lstSpecialAttributes.Add(_objCharacter.MAG);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
             }
             if (_objCharacter.RESEnabled)
             {
@@ -21661,6 +21613,8 @@ namespace Chummer
                                 objControl.Dispose();
                             }
                         }
+                        objAttrib.Base = 0;
+                        objAttrib.Karma = 0;
                     }
                     break;
             }
@@ -21720,7 +21674,7 @@ namespace Chummer
                         if (intLoopAttribValue > 1)
                         {
                             intTemp += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) * _objCharacter.Options.KarmaAttribute;
-                            if (strAttributeName != "MAG" && strAttributeName != "RES" && strAttributeName != "DEP")
+                            if (strAttributeName != "MAG" && strAttributeName != "MAGAdept" && strAttributeName != "RES" && strAttributeName != "DEP")
                             {
                                 int intVanillaAttribValue = objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.AttributeValueModifiers + 1;
                                 intTemp2 += ((intVanillaAttribValue + 1) * intVanillaAttribValue / 2 - 1) * _objCharacter.Options.KarmaAttribute;
@@ -21756,7 +21710,7 @@ namespace Chummer
                 }
 
                 // Value from free spells
-                intTemp = _objCharacter.SpellLimit * _objCharacter.Options.KarmaSpell;
+                intTemp = _objCharacter.SpellLimit * _objCharacter.SpellKarmaCost;
                 if (intTemp != 0)
                 {
                     strMessage += "\n" + LanguageManager.GetString("String_FreeSpells") + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma");
@@ -21764,7 +21718,7 @@ namespace Chummer
                 }
 
                 // Value from free complex forms
-                intTemp = _objCharacter.CFPLimit * _objCharacter.Options.KarmaNewComplexForm;
+                intTemp = _objCharacter.CFPLimit * _objCharacter.ComplexFormKarmaCost;
                 if (intTemp != 0)
                 {
                     strMessage += "\n" + LanguageManager.GetString("String_FreeCFs") + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma");

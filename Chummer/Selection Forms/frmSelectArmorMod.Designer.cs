@@ -331,6 +331,7 @@
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
             // frmSelectArmorMod
             // 

@@ -696,38 +696,18 @@ namespace Chummer
         {
             get
             {
-                bool blnReturn = _blnContributeToLimit;
-
-                if (!_blnContributeToLimit)
-                {
-                    return false;
-                }
                 if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
                 //Positive Metagenetic Qualities are free if you're a Changeling.
                 if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
-                {
                     return false;
-                }
 
                 //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                switch (_strName)
-                {
-                    case "Mentor Spirit":
-                        if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
-                            return false;
-                        break;
-                    case "High Pain Tolerance (Rating 1)":
-                        if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem."))
-                        {
-                            return false;
-                        }
-                        break;
-                    default:
-                        return true;
-                }
-                return blnReturn;
+                if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+                    return false;
+
+                return _blnContributeToLimit;
             }
             set => _blnContributeToLimit = value;
         }
@@ -742,28 +722,15 @@ namespace Chummer
                 if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
-                    //Positive Metagenetic Qualities are free if you're a Changeling.
-                    if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
-                    {
-                        return false;
-                    }
+                //Positive Metagenetic Qualities are free if you're a Changeling.
+                if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
+                {
+                    return false;
+                }
 
-                    //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                    switch (_strName)
-                    {
-                        case "Mentor Spirit":
-                            if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
-                                return false;
-                            break;
-                        case "High Pain Tolerance (Rating 1)":
-                            if (_objCharacter.Qualities.Any(objQuality => objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem."))
-                            {
-                                return false;
-                            }
-                            break;
-                        default:
-                            return true;
-                    }
+                //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+                if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+                    return false;
 
                 return true;
             }
@@ -1826,7 +1793,7 @@ namespace Chummer
             get
             {
                 string strTip = LanguageManager.GetString("Tip_SpellDrainBase");
-                int intMAG = _objCharacter.MAG.TotalValue;
+                int intMAG = 0;
 
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
                 {
@@ -2260,16 +2227,18 @@ namespace Chummer
     public class Focus : INamedItemWithGuid
     {
         private Guid _guiID;
+        private Character _objCharacter;
         private string _strName = string.Empty;
         private Guid _guiGearId;
         private int _intRating;
         internal string DisplayName;
 
         #region Constructor, Create, Save, and Load Methods
-        public Focus()
+        public Focus(Character objCharacter)
         {
             // Create the GUID for the new Focus.
             _guiID = Guid.NewGuid();
+            _objCharacter = objCharacter;
         }
 
         /// <summary>
@@ -2316,6 +2285,7 @@ namespace Chummer
 
         /// <summary>
         /// GUID of the linked Gear.
+        /// TODO: Replace this with a pointer to the Gear instead of having to do lookups.
         /// </summary>
         public string GearId
         {
@@ -2440,10 +2410,15 @@ namespace Chummer
                 {
                     // Each Focus costs an amount of Karma equal to their Force x speicific Karma cost.
                     string strFocusName = objFocus.Name;
+                    string strFocusExtra = objFocus.Extra;
                     int intPosition = strFocusName.IndexOf('(');
                     if (intPosition > -1)
                         strFocusName = strFocusName.Substring(0, intPosition - 1);
-                    int intKarmaMultiplier = 0;
+                    intPosition = strFocusName.IndexOf(',');
+                    if (intPosition > -1)
+                        strFocusName = strFocusName.Substring(0, intPosition - 1);
+                    int intKarmaMultiplier = 1;
+                    int intExtraKarmaCost = 0;
                     switch (strFocusName)
                     {
                         case "Qi Focus":
@@ -2498,7 +2473,14 @@ namespace Chummer
                             intKarmaMultiplier = 1;
                             break;
                     }
-                    intCost += (objFocus.Rating * intKarmaMultiplier);
+                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
+                            intExtraKarmaCost += objLoopImprovement.Value;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
+                            intKarmaMultiplier += objLoopImprovement.Value;
+                    }
+                    intCost += (objFocus.Rating * intKarmaMultiplier) + intExtraKarmaCost;
                 }
                 return intCost;
             }
@@ -6081,16 +6063,17 @@ namespace Chummer
             _nodBonus = objXmlMentor["bonus"];
             if (_nodBonus != null)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodBonus, false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                {
-                    _strExtra = ImprovementManager.SelectedValue;
-                }
+                _strExtra = ImprovementManager.SelectedValue;
+                ImprovementManager.ForcedValue = strOldForce;
+                ImprovementManager.SelectedValue = strOldSelected;
             }
             else if (!string.IsNullOrEmpty(strForceValue))
             {
@@ -6099,16 +6082,20 @@ namespace Chummer
             _nodChoice1 = objXmlChoice1;
             if (_nodChoice1 != null)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValueChoice1;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodChoice1, false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (string.IsNullOrEmpty(_strExtra))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
                 }
+                ImprovementManager.ForcedValue = strOldForce;
+                ImprovementManager.SelectedValue = strOldSelected;
             }
             else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice1))
             {
@@ -6117,16 +6104,20 @@ namespace Chummer
             _nodChoice2 = objXmlChoice2;
             if (_nodChoice2 != null)
             {
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValueChoice2;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), _nodChoice2, false, 1, DisplayName))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (string.IsNullOrEmpty(_strExtra))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
                 }
+                ImprovementManager.ForcedValue = strOldForce;
+                ImprovementManager.SelectedValue = strOldSelected;
             }
             else if (string.IsNullOrEmpty(_strExtra) && !string.IsNullOrEmpty(strForceValueChoice2))
             {
@@ -6154,6 +6145,7 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("advantage", _strAdvantage);
             objWriter.WriteElementString("disadvantage", _strDisadvantage);
+            objWriter.WriteElementString("mentormask", _blnMentorMask.ToString());
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
@@ -6192,6 +6184,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
             objNode.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            objNode.TryGetBoolFieldQuickly("mentormask", ref _blnMentorMask);
             _nodBonus = objNode["bonus"];
             _nodChoice1 = objNode["choice1"];
             _nodChoice2 = objNode["choice2"];
@@ -6230,6 +6223,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("mentormask", MentorMask.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();

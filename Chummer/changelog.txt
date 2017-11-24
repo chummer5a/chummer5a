@@ -263,6 +263,19 @@ Application Changes:
 - Re-Apply Improvements can now handle Stacked Foci.
 - Fixed the Guids of Skills and Skill Groups not being properly loaded from a saved character. Fixes #2081.
 - Added the ability to directly add Armour to an Armor Bundle.
+- Fixed a bug where buying a separate metamagic or enhancement in career mode would check against the karma cost of buying spells instead of the karma cost of getting a metamagic or enhancement respectively.
+- Fixed a bug where wound modifiers were applied twice to knowledge skill dicepools.
+- Fixed a bug where karma modifiers to spell cost where not factored into calculations regarding whether the character has enough karma to buy a new spell.
+- Unhardcoded the karma cost modifications added by Uneducated, Uncouth, Myostatin Inhibitor, Jack of All Trades, College Education (RF), Linguist, School of Hard Knocks, and Technical School Education. These modifications are now available and fully modifiable through individual tags inside of bonus nodes.
+- Transferred the house rule of education qualities applying their karma costs in create mode from a checkbox in the options menu to a custom ruleset. Users who had this rule previously enabled will need to re-enable it.
+- Selecting an armor, a piece of 'ware, a gear, a quality, a vehicle, or a weapon now properly saves the currently selected value of the category selection box instead of the selected item's category. This does not apply if the search box is not empty and the option to search only in the selected category is disabled.
+- Added support for improvements that block being able to buy specializations for particular skills or skill categories.
+- Unhardcoded the focus bonding cost modification effects of Adept Ways, and unhardcoded the bonuses offered by Burnout's Way (access to Burnout's Way grade) and Magician's Way (can discount all powers other than Improved Reflexes). These effects are now available and fully modifiable through individual tags inside of bonus nodes.
+- Focus bonding cost modifications from Adept Ways now be automatically applied in both Create and Career mode, and their karma effects will automatically be calculated by the time the user is prompted to spend karma on binding a new focus. Removed the numerical up-down in Create mode for the number of foci eligible for Adept Way discounts, as it is now obsolete.
+- Fixed a bug where re-applying or re-adding improvements of items that would add the Improved Ability (skill) adept power would not properly end up adding that power.
+- Fixed a bug where improvements that would ask the user to select an adept power to add would not abide by the "ignorerating" node when it was present.
+- Added a house rule that changes Mystic Adepts so that instead of using special rules for obtaining and managing PP, they will have a separate MAG rating to be used for Adept powers and PP. Initiation and Foci will use the lower of the two MAG ratings if this rule is enabled.
+- Fixed a bug where if points and/or karma were allocated to a special attribute to which access was later removed in Create mode, those points and/or karma would not get freed up.
 
 Data Changes:
 
@@ -408,6 +421,8 @@ Data Changes:
 - Added the previously missing Strike the Darkness technique to Way of Unified Mana (Hapsum-Do).
 - Added the alternate Norse tradition from Forbidden Arcana
 - Corrected the HK MP75 to use standard submachinegun concealability.
+- Lightning Reflexes properly gives +1 die on defense tests.
+- Jack of All Trades now properly gives its bonus up to Rating 5 and only applies its penalty beyond Rating 5.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

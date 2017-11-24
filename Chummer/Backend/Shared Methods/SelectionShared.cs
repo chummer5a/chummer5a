@@ -33,7 +33,7 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="objCritterDocument"></param>
         /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <returns></returns>
-        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "", string strSourceName = "", string strLocation = "")
+        public static bool RequirementsMet(XmlNode objXmlNode, bool blnShowMessage, Character objCharacter, XmlDocument objMetatypeDocument = null, XmlDocument objCritterDocument = null, XmlDocument objQualityDocument = null, string strIgnoreQuality = "", string strLocalName = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
         {
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
@@ -71,177 +71,180 @@ namespace Chummer.Backend.Shared_Methods
                 }
                 return false;
             }
-            // See if the character already has this Quality and whether or not multiple copies are allowed.
-            string strLimitString = string.Empty;
-            // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
-            string strChargenLimitString = objXmlNode["chargenlimit"]?.InnerText;
-            if (!string.IsNullOrWhiteSpace(strChargenLimitString) && !objCharacter.Created)
-                strLimitString = strChargenLimitString;
-            else
+            if (!blnIgnoreLimit)
             {
-                strLimitString = objXmlNode["limit"]?.InnerText;
-                // Default case is each quality can only be taken once
-                if (string.IsNullOrWhiteSpace(strLimitString))
+                // See if the character already has this Quality and whether or not multiple copies are allowed.
+                string strLimitString = string.Empty;
+                // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
+                string strChargenLimitString = objXmlNode["chargenlimit"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strChargenLimitString) && !objCharacter.Created)
+                    strLimitString = strChargenLimitString;
+                else
                 {
-                    if (objXmlNode.Name == "quality" || objXmlNode.Name == "martialart" || objXmlNode.Name == "technique" || objXmlNode.Name == "cyberware" || objXmlNode.Name == "bioware")
-                        strLimitString = "1";
-                    else
-                        strLimitString = "no";
-                }
-            }
-            if (strLimitString != "no")
-            {
-                XmlDocument objDummyDoc = new XmlDocument();
-                XPathNavigator objNavigator = objDummyDoc.CreateNavigator();
-                StringBuilder objLimitString = new StringBuilder(strLimitString);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objLoopAttribute = objCharacter.GetAttribute(strAttribute);
-                    objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
-                    objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
-                }
-                foreach (string strLimb in Character.LimbStrings)
-                {
-                    objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString());
-                }
-                try
-                {
-                    strLimitString = objNavigator.Evaluate(objLimitString.ToString()).ToString();
-                }
-                catch (XPathException)
-                {
-                    strLimitString = "1";
-                }
-
-                string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
-                string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
-                
-                List<string> lstNamesIncludedInLimit = new List<string>();
-                if (objXmlNode["name"] != null)
-                {
-                    lstNamesIncludedInLimit.Add(objXmlNode["name"].InnerText);
-                }
-
-                // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
-                IEnumerable<INamedItem> objListToCheck = null;
-                bool blnCheckCyberwareChildren = false;
-                switch (objXmlNode.Name)
-                {
-                    case "quality":
-                        {
-                            objListToCheck = objCharacter.Qualities.Where(objQuality => objQuality.SourceName == strSourceName);
-                            break;
-                        }
-                    case "metamagic":
-                        {
-                            objListToCheck = objCharacter.Metamagics;
-                            break;
-                        }
-                    case "art":
-                        {
-                            objListToCheck = objCharacter.Arts;
-                            break;
-                        }
-                    case "enhancement":
-                        {
-                            objListToCheck = objCharacter.Enhancements;
-                            break;
-                        }
-                    case "power":
-                        {
-                            objListToCheck = objCharacter.Powers;
-                            break;
-                        }
-                    case "critterpower":
-                        {
-                            objListToCheck = objCharacter.CritterPowers;
-                            break;
-                        }
-                    case "martialart":
-                        {
-                            objListToCheck = objCharacter.MartialArts;
-                            break;
-                        }
-                    case "technique":
-                        {
-                            List <MartialArtAdvantage> objTempList = new List<MartialArtAdvantage>(objCharacter.MartialArts.Count);
-                            foreach (MartialArt objMartialArt in objCharacter.MartialArts)
-                            {
-                                objTempList.AddRange(objMartialArt.Advantages);
-                            }
-                            objListToCheck = objTempList;
-                            break;
-                        }
-                    case "cyberware":
-                    case "bioware":
-                        {
-                            blnCheckCyberwareChildren = true;
-                            break;
-                        }
-                    default:
-                        {
-                            Utils.BreakIfDebug();
-                            break;
-                        }
-                }
-
-                int intLimit = Convert.ToInt32(strLimitString);
-                int intExtendedLimit = intLimit;
-                if (objXmlNode["limitwithinclusions"] != null)
-                {
-                    intExtendedLimit = Convert.ToInt32(objXmlNode["limitwithinclusions"].InnerText);
-                }
-                int intCount = 0;
-                int intExtendedCount = 0;
-                if (objListToCheck != null || blnCheckCyberwareChildren)
-                {
-                    if (blnCheckCyberwareChildren)
+                    strLimitString = objXmlNode["limit"]?.InnerText;
+                    // Default case is each quality can only be taken once
+                    if (string.IsNullOrWhiteSpace(strLimitString))
                     {
-                        if (string.IsNullOrEmpty(strLocation))
-                        {
-                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
-                        }
-                        // We only want to check against 'ware that is on the same side as this one
+                        if (objXmlNode.Name == "quality" || objXmlNode.Name == "martialart" || objXmlNode.Name == "technique" || objXmlNode.Name == "cyberware" || objXmlNode.Name == "bioware")
+                            strLimitString = "1";
                         else
-                        {
-                            intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
-                        }
+                            strLimitString = "no";
                     }
-                    else
-                        intCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
-                    intExtendedCount = intCount;
-                    // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
-                    if (objXmlNode["includeinlimit"] != null)
+                }
+                if (strLimitString != "no")
+                {
+                    XmlDocument objDummyDoc = new XmlDocument();
+                    XPathNavigator objNavigator = objDummyDoc.CreateNavigator();
+                    StringBuilder objLimitString = new StringBuilder(strLimitString);
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
-                        foreach (XmlNode objChildXml in objXmlNode["includeinlimit"].ChildNodes)
-                        {
-                            lstNamesIncludedInLimit.Add(objChildXml.InnerText);
-                        }
+                        CharacterAttrib objLoopAttribute = objCharacter.GetAttribute(strAttribute);
+                        objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
+                        objLimitString.CheapReplace(strLimitString, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
+                    }
+                    foreach (string strLimb in Character.LimbStrings)
+                    {
+                        objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString());
+                    }
+                    try
+                    {
+                        strLimitString = objNavigator.Evaluate(objLimitString.ToString()).ToString();
+                    }
+                    catch (XPathException)
+                    {
+                        strLimitString = "1";
+                    }
 
+                    string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
+                    string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
+
+                    List<string> lstNamesIncludedInLimit = new List<string>();
+                    if (objXmlNode["name"] != null)
+                    {
+                        lstNamesIncludedInLimit.Add(objXmlNode["name"].InnerText);
+                    }
+
+                    // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
+                    IEnumerable<INamedItem> objListToCheck = null;
+                    bool blnCheckCyberwareChildren = false;
+                    switch (objXmlNode.Name)
+                    {
+                        case "quality":
+                            {
+                                objListToCheck = objCharacter.Qualities.Where(objQuality => objQuality.SourceName == strSourceName);
+                                break;
+                            }
+                        case "metamagic":
+                            {
+                                objListToCheck = objCharacter.Metamagics;
+                                break;
+                            }
+                        case "art":
+                            {
+                                objListToCheck = objCharacter.Arts;
+                                break;
+                            }
+                        case "enhancement":
+                            {
+                                objListToCheck = objCharacter.Enhancements;
+                                break;
+                            }
+                        case "power":
+                            {
+                                objListToCheck = objCharacter.Powers;
+                                break;
+                            }
+                        case "critterpower":
+                            {
+                                objListToCheck = objCharacter.CritterPowers;
+                                break;
+                            }
+                        case "martialart":
+                            {
+                                objListToCheck = objCharacter.MartialArts;
+                                break;
+                            }
+                        case "technique":
+                            {
+                                List<MartialArtAdvantage> objTempList = new List<MartialArtAdvantage>(objCharacter.MartialArts.Count);
+                                foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                                {
+                                    objTempList.AddRange(objMartialArt.Advantages);
+                                }
+                                objListToCheck = objTempList;
+                                break;
+                            }
+                        case "cyberware":
+                        case "bioware":
+                            {
+                                blnCheckCyberwareChildren = true;
+                                break;
+                            }
+                        default:
+                            {
+                                Utils.BreakIfDebug();
+                                break;
+                            }
+                    }
+
+                    int intLimit = Convert.ToInt32(strLimitString);
+                    int intExtendedLimit = intLimit;
+                    if (objXmlNode["limitwithinclusions"] != null)
+                    {
+                        intExtendedLimit = Convert.ToInt32(objXmlNode["limitwithinclusions"].InnerText);
+                    }
+                    int intCount = 0;
+                    int intExtendedCount = 0;
+                    if (objListToCheck != null || blnCheckCyberwareChildren)
+                    {
                         if (blnCheckCyberwareChildren)
                         {
                             if (string.IsNullOrEmpty(strLocation))
                             {
-                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, objItem => objItem.Name != strIgnoreQuality && string.IsNullOrEmpty(objItem.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                                intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                             }
                             // We only want to check against 'ware that is on the same side as this one
                             else
                             {
-                                intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                                intCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                             }
                         }
                         else
-                            intExtendedCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                            intCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                        intExtendedCount = intCount;
+                        // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
+                        if (objXmlNode["includeinlimit"] != null)
+                        {
+                            foreach (XmlNode objChildXml in objXmlNode["includeinlimit"].ChildNodes)
+                            {
+                                lstNamesIncludedInLimit.Add(objChildXml.InnerText);
+                            }
+
+                            if (blnCheckCyberwareChildren)
+                            {
+                                if (string.IsNullOrEmpty(strLocation))
+                                {
+                                    intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, objItem => objItem.Name != strIgnoreQuality && string.IsNullOrEmpty(objItem.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                                }
+                                // We only want to check against 'ware that is on the same side as this one
+                                else
+                                {
+                                    intExtendedCount = objCharacter.Cyberware.DeepCount(x => x.Children, x => x.Name != strIgnoreQuality && string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                                }
+                            }
+                            else
+                                intExtendedCount = objListToCheck.Count(objItem => objItem.Name != strIgnoreQuality && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                        }
                     }
-                }
-                if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
-                {
-                    if (blnShowMessage)
+                    if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
                     {
-                        limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-                        MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (blnShowMessage)
+                        {
+                            limitMessage = limitMessage.Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
+                            MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        return false;
                     }
-                    return false;
                 }
             }
 
@@ -376,6 +379,8 @@ namespace Chummer.Backend.Shared_Methods
                     {
                         if (objAttribute.Abbrev == "MAG")
                             return character.MAGEnabled;
+                        if (objAttribute.Abbrev == "MAGAdept")
+                            return character.MAGEnabled && character.IsMysticAdept;
                         if (objAttribute.Abbrev == "RES")
                             return character.RESEnabled;
                         if (objAttribute.Abbrev == "DEP")

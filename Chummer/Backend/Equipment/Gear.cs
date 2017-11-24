@@ -1476,7 +1476,7 @@ namespace Chummer.Backend.Equipment
                 if (Rating > 0)
                     strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
             }
-            if (strExpression.Contains('{'))
+            if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
             {
                 Commlink objParent = Parent as Commlink;
 

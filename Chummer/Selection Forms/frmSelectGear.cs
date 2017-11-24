@@ -1331,7 +1331,7 @@ namespace Chummer
 
                 _strSelectedGear = objNode["name"].InnerText;
                 _strSelectedCategory = objNode["category"].InnerText;
-                _strSelectCategory = _strSelectedCategory;
+                _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _strSelectedCategory;
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;

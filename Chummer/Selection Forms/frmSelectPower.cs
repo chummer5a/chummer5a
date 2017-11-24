@@ -71,14 +71,6 @@ namespace Chummer
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
                 double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
-                if (objXmlPower["limit"] != null && !IgnoreLimits)
-                {
-                    if (_objCharacter.Powers.Count(power => power.Name == objXmlPower["name"].InnerText) >=
-                        Convert.ToInt32(objXmlPower["limit"].InnerText))
-                    {
-                        continue;
-                    }
-                }
                 if (objXmlPower["extrapointcost"]?.InnerText != null)
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
@@ -90,7 +82,7 @@ namespace Chummer
                     continue;
                 }
 
-                if (!SelectionShared.RequirementsMet(objXmlPower, false, _objCharacter, null, null, _objXmlDocument))
+                if (!SelectionShared.RequirementsMet(objXmlPower, false, _objCharacter, null, null, _objXmlDocument, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
                 ListItem objItem = new ListItem();

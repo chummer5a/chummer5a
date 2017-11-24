@@ -1135,7 +1135,7 @@ namespace Chummer
             XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
             if (objCyberwareNode == null) return;
 
-            _strSelectCategory = objCyberwareNode["category"]?.InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objCyberwareNode["category"]?.InnerText;
             SelectedCyberware = objCyberwareNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(objCyberwareNode["forcegrade"]?.InnerText))
             {

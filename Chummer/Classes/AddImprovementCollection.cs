@@ -2558,36 +2558,6 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Uneducated modifiers.
-        public void uneducated(XmlNode bonusNode)
-        {
-            Log.Info("uneducated");
-            Log.Info("uneducated = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Uneducated, _strUnique);
-            _objCharacter.SkillsSection.Uneducated = true;
-        }
-
-        // Check for College Education modifiers.
-        public void collegeeducation(XmlNode bonusNode)
-        {
-            Log.Info("collegeeducation");
-            Log.Info("collegeeducation = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CollegeEducation, _strUnique);
-            _objCharacter.SkillsSection.CollegeEducation = true;
-        }
-
-        // Check for Jack Of All Trades modifiers.
-        public void jackofalltrades(XmlNode bonusNode)
-        {
-            Log.Info("jackofalltrades");
-            Log.Info("jackofalltrades = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JackOfAllTrades, _strUnique);
-            _objCharacter.SkillsSection.JackOfAllTrades = true;
-        }
-
         // Check for Prototype Transhuman modifiers.
         public void prototypetranshuman(XmlNode bonusNode)
         {
@@ -2600,16 +2570,6 @@ namespace Chummer.Classes
 
         }
 
-        // Check for Uncouth modifiers.
-        public void uncouth(XmlNode bonusNode)
-        {
-            Log.Info("uncouth");
-            Log.Info("uncouth = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Uncouth, _strUnique);
-            _objCharacter.SkillsSection.Uncouth = true;
-        }
-
         // Check for Friends In High Places modifiers.
         public void friendsinhighplaces(XmlNode bonusNode)
         {
@@ -2619,16 +2579,6 @@ namespace Chummer.Classes
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FriendsInHighPlaces,
                 _strUnique);
             _objCharacter.FriendsInHighPlaces = true;
-        }
-
-        // Check for School of Hard Knocks modifiers.
-        public void schoolofhardknocks(XmlNode bonusNode)
-        {
-            Log.Info("schoolofhardknocks");
-            Log.Info("schoolofhardknocks = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SchoolOfHardKnocks, _strUnique);
-            _objCharacter.SkillsSection.SchoolOfHardKnocks = true;
         }
 
         // Check for ExCon modifiers.
@@ -2653,16 +2603,6 @@ namespace Chummer.Classes
             _objCharacter.TrustFund = ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
         }
 
-        // Check for Tech School modifiers.
-        public void techschool(XmlNode bonusNode)
-        {
-            Log.Info("techschool");
-            Log.Info("techschool = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TechSchool, _strUnique);
-            _objCharacter.SkillsSection.TechSchool = true;
-        }
-
         // Check for MadeMan modifiers.
         public void mademan(XmlNode bonusNode)
         {
@@ -2671,16 +2611,6 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MadeMan, _strUnique);
             _objCharacter.MadeMan = true;
-        }
-
-        // Check for Linguist modifiers.
-        public void linguist(XmlNode bonusNode)
-        {
-            Log.Info("Linguist");
-            Log.Info("Linguist = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Linguist, _strUnique);
-            _objCharacter.SkillsSection.Linguist = true;
         }
 
         // Check for LightningReflexes modifiers.
@@ -3261,71 +3191,76 @@ namespace Chummer.Classes
         // Select a Power.
         public void selectpowers(XmlNode bonusNode)
         {
-            XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
-            foreach (XmlNode objNode in objXmlPowerList)
+            Log.Info("selectpower");
+            // If the character isn't an adept or mystic adept, skip the rest of this.
+            if (_objCharacter.AdeptEnabled)
             {
-                Log.Info("selectpower");
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("_strForcedValue = " + ForcedValue);
+                XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
+                foreach (XmlNode objNode in objXmlPowerList)
+                {
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("_strForcedValue = " + ForcedValue);
 
-                // Display the Select Power window and record which Power was selected.
+                    // Display the Select Power window and record which Power was selected.
                     frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
                     Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
-                int intLevels = 0;
-                if (objNode["ignorerating"] != null)
-                    frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
-                if (objNode["val"] != null)
-                    intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
-                if (objNode["pointsperlevel"] != null)
-                    frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
-                if (objNode["limit"] != null)
-                    frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating",_intRating.ToString()));
+                    int intLevels = 0;
+                    if (objNode["ignorerating"] != null)
+                        frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
+                    if (objNode["val"] != null)
+                        intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
+                    if (objNode["pointsperlevel"] != null)
+                        frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    if (objNode["limit"] != null)
+                        frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating", _intRating.ToString()));
                     if (objNode.OuterXml.Contains("limittopowers"))
                         frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
                     frmPickPower.ShowDialog();
 
                     // Make sure the dialogue window was not canceled.
-                if (frmPickPower.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-                else
-                {
-                    SelectedValue = frmPickPower.SelectedPower;
-                    if (_blnConcatSelectedValue)
-                        SourceName += " (" + SelectedValue + ")";
-
-                    XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                    XmlNode objXmlPower =
-                        objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
-
-                    // If no, add the power and mark it free or give it free levels
-                    Power objNewPower = new Power(_objCharacter);
-                    if (!objNewPower.Create(objXmlPower, 0))
+                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                    {
                         throw new AbortedException();
+                    }
+                    else
+                    {
+                        SelectedValue = frmPickPower.SelectedPower;
+                        if (_blnConcatSelectedValue)
+                            SourceName += " (" + SelectedValue + ")";
 
-                    bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+                        XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+                        XmlNode objXmlPower =
+                            objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
 
-                    Log.Info("blnHasPower = " + blnHasPower);
+                        // If no, add the power and mark it free or give it free levels
+                        Power objNewPower = new Power(_objCharacter);
+                        if (!objNewPower.Create(objXmlPower, 0))
+                            throw new AbortedException();
 
-                    if (!blnHasPower)
+                        if (!string.IsNullOrEmpty(objNewPower.Extra))
+                            SelectedValue += " (" + objNewPower.Extra + ")";
+                        bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+
+                        Log.Info("blnHasPower = " + blnHasPower);
+
+                        if (!blnHasPower)
                         {
-                        _objCharacter.Powers.Add(objNewPower);
+                            _objCharacter.Powers.Add(objNewPower);
                         }
 
-                    Log.Info("blnHasPower = " + blnHasPower);
-                    Log.Info("Calling CreateImprovement");
-                    CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
 
-                    if (blnHasPower)
-                    {
-                        foreach (
-                            Power objPower in
-                            _objCharacter.Powers.Where(
-                                objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
+                        if (blnHasPower)
                         {
-                            objPower.ForceEvent(nameof(Power.FreeLevels));
+                            foreach (
+                                Power objPower in
+                                _objCharacter.Powers.Where(
+                                    objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
+                            {
+                                objPower.ForceEvent(nameof(Power.FreeLevels));
+                            }
                         }
                     }
                 }
@@ -4795,15 +4730,6 @@ namespace Chummer.Classes
                 }
             }
         }
-        
-        public void spellkarmadiscount(XmlNode bonusNode)
-        {
-            Log.Info("spellkarmadiscount");
-            Log.Info("spellkarmadiscount = " + bonusNode.OuterXml.ToString());
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellKarmaDiscount, _strUnique,
-                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
-        }
 
         public void limitspellcategory(XmlNode bonusNode)
         {
@@ -4903,6 +4829,410 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["limbslot"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, _strUnique,
                 ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+        }
+
+        public void attributekarmacost(XmlNode bonusNode)
+        {
+            Log.Info("attributekarmacost");
+            Log.Info("attributekarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void activeskillkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("activeskillkarmacost");
+            Log.Info("activeskillkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgroupkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupkarmacost");
+            Log.Info("skillgroupkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void knowledgeskillkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("knowledgeskillkarmacost");
+            Log.Info("knowledgeskillkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgroupdisable(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupdisable");
+            Log.Info("skillgroupdisable = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupDisable, _strUnique);
+        }
+
+        public void skillgroupcategorydisable(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupcategorydisable");
+            Log.Info("skillgroupcategorydisable = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryDisable, _strUnique);
+        }
+
+        public void skillgroupcategorykarmacost(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupcategorykarmacost");
+            Log.Info("skillgroupcategorykarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillcategorykarmacost(XmlNode bonusNode)
+        {
+            Log.Info("skillcategorykarmacost");
+            Log.Info("skillcategorykarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void attributepointcost(XmlNode bonusNode)
+        {
+            Log.Info("attributepointcost");
+            Log.Info("attributepointcost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributePointCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void activeskillpointcost(XmlNode bonusNode)
+        {
+            Log.Info("activeskillpointcost");
+            Log.Info("activeskillpointcost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillPointCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgrouppointcost(XmlNode bonusNode)
+        {
+            Log.Info("skillgrouppointcost");
+            Log.Info("skillgrouppointcost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupPointCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void knowledgeskillpointcost(XmlNode bonusNode)
+        {
+            Log.Info("knowledgeskillpointcost");
+            Log.Info("knowledgeskillpointcost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillPointCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgroupcategorypointcost(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupcategorypointcost");
+            Log.Info("skillgroupcategorypointcost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryPointCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillcategorypointcost(XmlNode bonusNode)
+        {
+            Log.Info("skillcategorypointcost");
+            Log.Info("skillcategorypointcost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryPointCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newspellkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("newspellkarmacost");
+            Log.Info("newspellkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newcomplexformkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("newcomplexformkarmacost");
+            Log.Info("newcomplexformkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewComplexFormKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newaiprogramkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("newaiprogramkarmacost");
+            Log.Info("newaiprogramkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIProgramKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newaiadvancedprogramkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("newaiadvancedprogramkarmacost");
+            Log.Info("newaiadvancedprogramkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void attributekarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("attributekarmacostmultiplier");
+            Log.Info("attributekarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void activeskillkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("activeskillkarmacostmultiplier");
+            Log.Info("activeskillkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgroupkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupkarmacostmultiplier");
+            Log.Info("skillgroupkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void knowledgeskillkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("knowledgeskillkarmacostmultiplier");
+            Log.Info("knowledgeskillkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgroupcategorykarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupcategorykarmacostmultiplier");
+            Log.Info("skillgroupcategorykarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillcategorykarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillcategorykarmacostmultiplier");
+            Log.Info("skillcategorykarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void attributepointcostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("attributepointcostmultiplier");
+            Log.Info("attributepointcostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributePointCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void activeskillpointcostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillpointcostmultiplier");
+            Log.Info("skillpointcosmultipliert = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillPointCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgrouppointcostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillgrouppointcostmultiplier");
+            Log.Info("skillgrouppointcostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupPointCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void knowledgeskillpointcostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillpointcostmultiplier");
+            Log.Info("skillpointcosmultipliert = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillgroupcategorypointcostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillgroupcategorypointcostmultiplier");
+            Log.Info("skillgroupcategorypointcostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skillcategorypointcostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("skillcategorypointcostmultiplier");
+            Log.Info("skillcategorypointcostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryPointCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating),
+                1, ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newspellkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("newspellkarmacostmultiplier");
+            Log.Info("newspellkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newcomplexformkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("newcomplexformkarmacostmultiplier");
+            Log.Info("newcomplexformkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newaiprogramkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("newaiprogramkarmacostmultiplier");
+            Log.Info("newaiprogramkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void newaiadvancedprogramkarmacostmultiplier(XmlNode bonusNode)
+        {
+            Log.Info("newaiadvancedprogramkarmacostmultiplier");
+            Log.Info("newaiadvancedprogramkarmacostmultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void blockskillspecializations(XmlNode bonusNode)
+        {
+            Log.Info("blockskillspecializations");
+            Log.Info("blockskillspecializations = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillSpecializations, _strUnique);
+        }
+
+        public void blockskillcategoryspecializations(XmlNode bonusNode)
+        {
+            Log.Info("blockskillcategoryspecializations");
+            Log.Info("blockskillcategoryspecializations = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillCategorySpecializations, _strUnique);
+        }
+
+        // Flat modifier to cost of binding a focus
+        public void focusbindingkarmacost(XmlNode bonusNode)
+        {
+            Log.Info("focusbindingkarmacost");
+            Log.Info("focusbindingkarmacost = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaCost, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerText ?? string.Empty);
+        }
+
+        // Flat modifier to the number that is multiplied by a focus' rating to get the focus' binding karma cost
+        public void focusbindingkarmamultiplier(XmlNode bonusNode)
+        {
+            Log.Info("focusbindingkarmamultiplier");
+            Log.Info("focusbindingkarmamultiplier = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaMultiplier, _strUnique,
+                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerText ?? string.Empty);
+        }
+
+        public void magicianswaydiscount(XmlNode bonusNode)
+        {
+            Log.Info("magicianswaydiscount");
+            Log.Info("magicianswaydiscount = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MagiciansWayDiscount, _strUnique);
+        }
+
+        public void burnoutsway(XmlNode bonusNode)
+        {
+            Log.Info("burnoutsway");
+            Log.Info("burnoutsway = " + bonusNode.OuterXml.ToString());
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BurnoutsWay, _strUnique);
         }
         #endregion
     }

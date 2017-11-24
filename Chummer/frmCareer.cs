@@ -86,8 +86,6 @@ namespace Chummer
             _objCharacter.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
             _objCharacter.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-            _objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
-            _objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
             _objCharacter.FameChanged += objCharacter_FameChanged;
 
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
@@ -531,15 +529,17 @@ namespace Chummer
 				cboAttributeCategory.SelectedValue = "Standard";
 			}
 
-			// If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
-			if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-			{
-				lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
+            // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
+            if (_objCharacter.IsMysticAdept && !_objOptions.MysAdeptSecondMAGAttribute)
+            {
+                lblMysticAdeptMAGAdept.Text = _objCharacter.MysticAdeptPowerPoints.ToString();
 
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
                 cmdIncreasePowerPoints.Visible = _objOptions.MysaddPPCareer;
             }
+            else
+                cmdIncreasePowerPoints.Visible = false;
 
             // Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
             int i = -1;
@@ -702,10 +702,12 @@ namespace Chummer
 
                     objSpiritControl.SpiritName = objSpirit.Name;
                     objSpiritControl.ServicesOwed = objSpirit.ServicesOwed;
+                    int intMAG = 0;
                     if (_objOptions.SpiritForceBasedOnTotalMAG)
-                        objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue * 2;
+                        intMAG = _objCharacter.MAG.TotalValue;
                     else
-                        objSpiritControl.ForceMaximum = _objCharacter.MAG.Value * 2;
+                        intMAG = _objCharacter.MAG.Value;
+                    objSpiritControl.ForceMaximum = intMAG * 2;
                     objSpiritControl.CritterName = objSpirit.CritterName;
                     objSpiritControl.Force = objSpirit.Force;
                     objSpiritControl.Bound = objSpirit.Bound;
@@ -1163,8 +1165,6 @@ namespace Chummer
                 _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
                 _objCharacter.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
-                _objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
-                _objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
                 GlobalOptions.MRUChanged -= PopulateMRU;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
@@ -1385,6 +1385,10 @@ namespace Chummer
                 {
                     lstSpecialAttributes.Add(_objCharacter.MAG);
                 }
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
@@ -1393,6 +1397,10 @@ namespace Chummer
                 if (lstSpecialAttributes.Contains(_objCharacter.MAG))
                 {
                     lstSpecialAttributes.Remove(_objCharacter.MAG);
+                }
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
                 }
             }
 
@@ -1486,15 +1494,23 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabAdept))
                     tabCharacterTabs.TabPages.Insert(3, tabAdept);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
                 _objCharacter.Powers.Clear();
                 tabCharacterTabs.TabPages.Remove(tabAdept);
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
+                }
             }
 
             // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
+            if (_objCharacter.IsMysticAdept && !_objOptions.MysAdeptSecondMAGAttribute)
             {
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
@@ -1518,15 +1534,23 @@ namespace Chummer
             {
                 if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                     tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && !lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
+                }
             }
             else
             {
                 ClearSpellTab();
                 tabCharacterTabs.TabPages.Remove(tabMagician);
+                if (lstSpecialAttributes.Contains(_objCharacter.MAGAdept))
+                {
+                    lstSpecialAttributes.Remove(_objCharacter.MAGAdept);
+                }
             }
 
             // Show the Mystic Adept control if the character is a Mystic Adept, otherwise hide them.
-            if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
+            if (_objCharacter.IsMysticAdept && !_objOptions.MysAdeptSecondMAGAttribute)
             {
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
@@ -1611,18 +1635,6 @@ namespace Chummer
                 ClearCritterTab();
                 tabCharacterTabs.TabPages.Remove(tabCritter);
             }
-        }
-
-        private void objCharacter_UneducatedChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-        }
-
-        private void objCharacter_UncouthChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
         }
 
         private void objCharacter_FameChanged(object sender)
@@ -1931,8 +1943,6 @@ namespace Chummer
             bool blnMAGEnabled = _objCharacter.MAGEnabled;
             bool blnRESEnabled = _objCharacter.RESEnabled;
             bool blnDEPEnabled = _objCharacter.DEPEnabled;
-            bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
-            bool blnUncouth = _objCharacter.SkillsSection.Uncouth;
 
             _blnReapplyImprovements = true;
 
@@ -2420,10 +2430,6 @@ namespace Chummer
                 objCharacter_RESEnabledChanged(this);
             if (blnDEPEnabled != _objCharacter.DEPEnabled)
                 objCharacter_DEPEnabledChanged(this);
-            if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
-                objCharacter_UneducatedChanged(this);
-            if (blnUncouth != _objCharacter.SkillsSection.Uncouth)
-                objCharacter_UncouthChanged(this);
 
             RefreshQualities(treQualities, cmsQuality, true);
             treQualities.SortCustom();
@@ -4032,8 +4038,9 @@ namespace Chummer
 
         private void cmdAddSpell_Click(object sender, EventArgs e)
         {
+            int intSpellKarmaCost = _objCharacter.SpellKarmaCost;
             // Make sure the character has enough Karma before letting them select a Spell.
-            if (_objCharacter.Karma < _objOptions.KarmaSpell)
+            if (_objCharacter.Karma < intSpellKarmaCost)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4063,7 +4070,7 @@ namespace Chummer
             if (!objSpell.FreeBonus)
             {
                 if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
-                    .Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                    .Replace("{0}", objSpell.DisplayName).Replace("{1}", intSpellKarmaCost.ToString())))
                     return;
             }
             // Barehanded Adept
@@ -4118,14 +4125,9 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create(
-                    (_objOptions.KarmaSpell +
-                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1,
-                    LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name,
-                    ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
-                _objCharacter.Karma -= _objOptions.KarmaSpell +
-                                       ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount);
+                _objCharacter.Karma -= intSpellKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -4194,8 +4196,9 @@ namespace Chummer
 
             if (_objOptions.SpiritForceBasedOnTotalMAG)
             {
-                objSpiritControl.ForceMaximum = _objCharacter.MAG.TotalValue * 2;
-                objSpiritControl.Force = _objCharacter.MAG.TotalValue;
+                int intMAGTotalValue = _objCharacter.MAG.TotalValue;
+                objSpiritControl.ForceMaximum = intMAGTotalValue * 2;
+                objSpiritControl.Force = intMAGTotalValue;
             }
             else
             {
@@ -4415,6 +4418,14 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_ComplexFormLimitCareer"), LanguageManager.GetString("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            int intComplexFormKarmaCost = _objCharacter.ComplexFormKarmaCost;
+
+            // Make sure the character has enough Karma before letting them select a Complex Form.
+            if (_objCharacter.Karma < intComplexFormKarmaCost)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             // Let the user select a Program.
             frmSelectProgram frmPickProgram = new frmSelectProgram(_objCharacter);
             frmPickProgram.ShowDialog(this);
@@ -4422,8 +4433,6 @@ namespace Chummer
             // Make sure the dialogue window was not canceled.
             if (frmPickProgram.DialogResult == DialogResult.Cancel)
                 return;
-
-            int intKarmaCost = _objOptions.KarmaNewComplexForm;
 
             XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml");
 
@@ -4450,20 +4459,7 @@ namespace Chummer
 
             _objCharacter.ComplexForms.Add(objProgram);
 
-            // If using the optional rule for costing the same as Spells, change the Karma cost.
-            if (_objOptions.AlternateComplexFormCost)
-                intKarmaCost = _objOptions.KarmaSpell;
-
-            // Make sure the character has enough Karma before letting them select a Complex Form.
-            if (_objCharacter.Karma < intKarmaCost)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // Remove the Improvements created by the Complex Form.
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
-                return;
-            }
-
-            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayNameShort).Replace("{1}", intKarmaCost.ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayNameShort).Replace("{1}", intComplexFormKarmaCost.ToString())))
             {
                 // Remove the Improvements created by the Complex Form.
                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
@@ -4475,9 +4471,9 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry();
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intComplexFormKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
-            _objCharacter.Karma -= intKarmaCost;
+            _objCharacter.Karma -= intComplexFormKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateKarma(KarmaExpenseType.AddComplexForm, objProgram.InternalId);
@@ -5601,7 +5597,8 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
+                if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && _objCharacter.InitiateGrade + 1 > _objCharacter.MAGAdept.TotalValue))
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -5677,6 +5674,7 @@ namespace Chummer
 
                 // Create the replacement Improvement.
                 ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
+                ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
                 ImprovementManager.Commit(_objCharacter);
 
                 // Update any Metamagic Improvements the character might have.
@@ -13237,8 +13235,9 @@ namespace Chummer
 
         private void tsCreateSpell_Click(object sender, EventArgs e)
         {
+            int intSpellKarmaCost = _objCharacter.SpellKarmaCost;
             // Make sure the character has enough Karma before letting them select a Spell.
-            if (_objCharacter.Karma < _objOptions.KarmaSpell)
+            if (_objCharacter.Karma < intSpellKarmaCost)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -13257,7 +13256,7 @@ namespace Chummer
             objNode.Tag = objSpell.InternalId;
             objNode.ContextMenuStrip = cmsSpell;
 
-            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objSpell.DisplayName).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objSpell.DisplayName).Replace("{1}", intSpellKarmaCost.ToString())))
                 return;
 
             _objCharacter.Spells.Add(objSpell);
@@ -13301,9 +13300,9 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
-            objEntry.Create((_objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1, LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+            objEntry.Create(intSpellKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objEntry);
-            _objCharacter.Karma -= _objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount);
+            _objCharacter.Karma -= intSpellKarmaCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -16592,89 +16591,12 @@ namespace Chummer
 
         private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Checked)
+            if (!e.Node.Checked)
             {
-                // Locate the Focus that is being touched.
-                Gear objSelectedFocus = CommonFunctions.DeepFindById(e.Node.Tag.ToString(), _objCharacter.Gear);
-
-                if (objSelectedFocus != null)
-                {
-
-                    Focus objFocus = new Focus();
-                    objFocus.Name = objSelectedFocus.Name;
-                    objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
-                    objFocus.Rating = objSelectedFocus.Rating;
-                    objFocus.GearId = e.Node.Tag.ToString();
-                    _objCharacter.Foci.Add(objFocus);
-
-                    // Mark the Gear and Bonded and create an Improvements.
-                    objSelectedFocus.Bonded = true;
-                    if (objSelectedFocus.Equipped)
-                    {
-                        if (objSelectedFocus.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
-                        {
-                            if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
-                                ImprovementManager.ForcedValue = objSelectedFocus.Extra;
-                            if (objSelectedFocus.Bonus != null)
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
-                            if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort);
-
-                            foreach (Power objPower in _objCharacter.Powers.Where(objPower => objFocus.GearId == objPower.BonusSource))
-                            {
-                                    objSelectedFocus.Extra = objPower.Name;
-                                    break;
-                                }
-                            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
-                        }
-                    }
-                }
-                else
-                {
-                    // This is a Stacked Focus.
-                    StackedFocus objStack = new StackedFocus(_objCharacter);
-                    foreach (StackedFocus objCharacterFocus in _objCharacter.StackedFoci)
-                    {
-                        if (e.Node.Tag.ToString() == objCharacterFocus.InternalId)
-                        {
-                            objStack = objCharacterFocus;
-                            break;
-                        }
-                    }
-
-                    objStack.Bonded = true;
-                    Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, _objCharacter.Gear);
-                    if (objStackGear.Equipped)
-                    {
-                        foreach (Gear objGear in objStack.Gear)
-                        {
-                            if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
-                            {
-                                if (!string.IsNullOrEmpty(objGear.Extra))
-                                    ImprovementManager.ForcedValue = objGear.Extra;
-                                if (objGear.Bonus != null)
-                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                                if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Focus objFocus = new Focus();
-                foreach (Focus objCharacterFocus in _objCharacter.Foci)
-                {
-                    if (objCharacterFocus.GearId == e.Node.Tag.ToString())
-                    {
-                        objFocus = objCharacterFocus;
-                        break;
-                    }
-                }
+                Focus objFocus = _objCharacter.Foci.FirstOrDefault(x => x.GearId == e.Node.Tag.ToString());
 
                 // Mark the Gear as not Bonded and remove any Improvements.
-                Gear objGear = CommonFunctions.DeepFindById(objFocus.GearId, _objCharacter.Gear);
+                Gear objGear = objFocus != null ? CommonFunctions.DeepFindById(objFocus.GearId, _objCharacter.Gear) : null;
 
                 if (objGear != null)
                 {
@@ -16685,20 +16607,15 @@ namespace Chummer
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = new StackedFocus(_objCharacter);
-                    foreach (StackedFocus objCharacterFocus in _objCharacter.StackedFoci)
-                    {
-                        if (e.Node.Tag.ToString() == objCharacterFocus.InternalId)
-                        {
-                            objStack = objCharacterFocus;
-                            break;
-                        }
-                    }
+                    StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
 
-                    objStack.Bonded = false;
-                    foreach (Gear objFocusGear in objStack.Gear)
+                    if (objStack != null)
                     {
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        objStack.Bonded = false;
+                        foreach (Gear objFocusGear in objStack.Gear)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        }
                     }
                 }
             }
@@ -16772,110 +16689,81 @@ namespace Chummer
                 }
             }
 
-            if (intFociTotal > _objCharacter.MAG.TotalValue * 5)
+            if (!_objCharacter.IgnoreRules)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                e.Cancel = true;
-                return;
-            }
-
-            if (intFociCount > _objCharacter.MAG.TotalValue)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                e.Cancel = true;
-                return;
-            }
-
-            // If we've made it this far, everything is okay, so create a Karma Expense for the newly-bound Focus.
-            // Locate the Gear for the Focus.
-            Gear objFocus = null;
-            foreach (Gear objGear in _objCharacter.Gear)
-            {
-                if (objGear.InternalId == e.Node.Tag.ToString())
+                if (intFociTotal > _objCharacter.MAG.TotalValue * 5 ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && intFociTotal > _objCharacter.MAGAdept.TotalValue * 5))
                 {
-                    objFocus = objGear;
-                    break;
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (intFociCount > _objCharacter.MAG.TotalValue ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && intFociCount > _objCharacter.MAGAdept.TotalValue))
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    e.Cancel = true;
+                    return;
                 }
             }
 
-            if (objFocus != null)
+            // If we've made it this far, everything is okay, so create a Karma Expense for the newly-bound Focus.
+
+            if (objSelectedFocus != null)
             {
+                bool blnOldEquipped = objSelectedFocus.Equipped;
+                Focus objFocus = new Focus(_objCharacter);
+                objFocus.Name = objSelectedFocus.Name;
+                objFocus.DisplayName = objSelectedFocus.DisplayNameShort;
+                objFocus.Rating = objSelectedFocus.Rating;
+                objFocus.GearId = e.Node.Tag.ToString();
+                if (objSelectedFocus.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
+                {
+                    if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
+                        ImprovementManager.ForcedValue = objSelectedFocus.Extra;
+                    if (objSelectedFocus.Bonus != null)
+                    {
+                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort))
+                        {
+                            // Clear created improvements
+                            CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                            if (blnOldEquipped)
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
+                            e.Cancel = true;
+                            return;
+                        }
+                        objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                    }
+                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                    {
+                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort))
+                        {
+                            // Clear created improvements
+                            CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                            if (blnOldEquipped)
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                }
+
                 // Determine how much Karma the Focus will cost to bind.
-                string strFocusName = objFocus.Name;
-                if (!string.IsNullOrEmpty(objFocus.Extra))
-                    strFocusName += " (" + objFocus.Extra + ")";
+                string strFocusName = objSelectedFocus.Name;
+                string strFocusExtra = objSelectedFocus.Extra;
                 int intPosition = strFocusName.IndexOf('(');
                 if (intPosition > -1)
                     strFocusName = strFocusName.Substring(0, intPosition - 1);
                 intPosition = strFocusName.IndexOf(',');
                 if (intPosition > -1)
-                    strFocusName = strFocusName.Substring(0, intPosition);
-                int intKarmaMultiplier = 0;
-                bool blnHasKarmaDiscount = false;
+                    strFocusName = strFocusName.Substring(0, intPosition - 1);
+                int intKarmaMultiplier = 1;
+                int intExtraKarmaCost = 0;
                 switch (strFocusName)
                 {
                     case "Qi Focus":
                         intKarmaMultiplier = _objOptions.KarmaQiFocus;
-                        if (objFocus.Extra.Contains("Improved Ability (skill)"))
-                        {
-                            if (objFocus.Extra == "Improved Ability (skill) (Artisan)" && _objCharacter.Qualities.Any(x => x.Name == "The Artist's Way"))
-                                blnHasKarmaDiscount = true;
-                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Artisan's Way") &&
-                                (objFocus.Extra == "Improved Ability (skill) (Animal Handling)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Armorer)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Artisan)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Biotechnology)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Chemistry)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Computer)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Cybercombat)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Cybertechnology)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Demolitions)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Electronic Warfare)" ||
-                                objFocus.Extra == "Improved Ability (skill) (First Aid)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Forgery)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Hacking)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Hardware)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Locksmith)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Medicine)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Navigation)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Software)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Gunnery)" ||
-                                objFocus.Extra.Contains("Mechanic") || 
-                                objFocus.Extra.Contains("Pilot")))
-                                blnHasKarmaDiscount = true;
-                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Athlete's Way") &&
-                                (objFocus.Extra == "Improved Ability (skill) (Gymnastics)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Running)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Flight)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Swimming)"))
-                                blnHasKarmaDiscount = true;
-                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Invisible Way") &&
-                                (objFocus.Extra == "Improved Ability (skill) (Disguise)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Diving)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Escape Artist)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Flight)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Free-Fall)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Gymnastics)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Palming)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Perception)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Palming)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Running)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Sneaking)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Survival)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Swimming)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Tracking)"))
-                                blnHasKarmaDiscount = true;
-                            else if (_objCharacter.Qualities.Any(x => x.Name == "The Speaker's Way") &&
-                                (objFocus.Extra == "Improved Ability (skill) (Con)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Etiquette)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Impersonation)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Instruction)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Intimidation)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Leadership)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Negotiation)" ||
-                                objFocus.Extra == "Improved Ability (skill) (Performance)"))
-                                blnHasKarmaDiscount = true;
-                        }
                         break;
                     case "Sustaining Focus":
                         intKarmaMultiplier = _objOptions.KarmaSustainingFocus;
@@ -16891,7 +16779,6 @@ namespace Chummer
                         break;
                     case "Weapon Focus":
                         intKarmaMultiplier = _objOptions.KarmaWeaponFocus;
-                        blnHasKarmaDiscount = _objCharacter.Qualities.Any(x => x.Name == "The Warrior's Way");
                         break;
                     case "Spellcasting Focus":
                         intKarmaMultiplier = _objOptions.KarmaSpellcastingFocus;
@@ -16923,46 +16810,102 @@ namespace Chummer
                     case "Flexible Signature Focus":
                         intKarmaMultiplier = _objOptions.KarmaFlexibleSignatureFocus;
                         break;
-                    default:
-                        intKarmaMultiplier = 1;
-                        break;
                 }
-                int intKarmaExpense = objFocus.Rating * intKarmaMultiplier;
-                if (blnHasKarmaDiscount)
-                    intKarmaExpense -= 2;
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
+                        intExtraKarmaCost += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
+                        intKarmaMultiplier += objLoopImprovement.Value;
+                }
+                int intKarmaExpense = objSelectedFocus.Rating * intKarmaMultiplier + intExtraKarmaCost;
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Clear created improvements
+                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                    if (blnOldEquipped)
+                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
                     e.Cancel = true;
                     return;
                 }
 
-                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", objFocus.DisplayNameShort)))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", objSelectedFocus.DisplayNameShort)))
                 {
+                    // Clear created improvements
+                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                    if (blnOldEquipped)
+                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, true);
                     e.Cancel = true;
                     return;
                 }
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry();
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + " " + objFocus.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + " " + objSelectedFocus.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objFocus.InternalId);
+                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
                 objExpense.Undo = objUndo;
+
+                _objCharacter.Foci.Add(objFocus);
+                objSelectedFocus.Bonded = true;
+                if (!blnOldEquipped)
+                {
+                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objSelectedFocus, false);
+                }
+                CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
             }
             else
             {
                 // The Focus was not found in Gear, so this is a Stacked Focus.
-                StackedFocus objStack = null;
-                foreach (StackedFocus objCharacterStack in _objCharacter.StackedFoci)
+                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
+                if (objStack == null)
                 {
-                    if (objCharacterStack.InternalId == e.Node.Tag.ToString())
+                    e.Cancel = true;
+                    return;
+                }
+
+                Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, _objCharacter.Gear);
+                if (objStackGear == null)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                bool blnOldEquipped = objStackGear.Equipped;
+                foreach (Gear objGear in objStack.Gear)
+                {
+                    if (objGear.Bonus != null || (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null))
                     {
-                        objStack = objCharacterStack;
-                        break;
+                        if (!string.IsNullOrEmpty(objGear.Extra))
+                            ImprovementManager.ForcedValue = objGear.Extra;
+                        if (objGear.Bonus != null)
+                        {
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                            {
+                                // Clear created improvements
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                                if (blnOldEquipped)
+                                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
+                                e.Cancel = true;
+                                return;
+                            }
+                            objGear.Extra = ImprovementManager.SelectedValue;
+                        }
+                        if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                        {
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                            {
+                                // Clear created improvements
+                                CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                                if (blnOldEquipped)
+                                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
+                                e.Cancel = true;
+                                return;
+                            }
+                        }
                     }
                 }
 
@@ -16970,12 +16913,20 @@ namespace Chummer
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Clear created improvements
+                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                    if (blnOldEquipped)
+                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
                     e.Cancel = true;
                     return;
                 }
 
                 if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus").Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus") + " " + objStack.Name)))
                 {
+                    // Clear created improvements
+                    CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, false);
+                    if (blnOldEquipped)
+                        CommonFunctions.ChangeGearEquippedStatus(_objCharacter, objStackGear, true);
                     e.Cancel = true;
                     return;
                 }
@@ -16989,6 +16940,8 @@ namespace Chummer
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStack.InternalId);
                 objExpense.Undo = objUndo;
+
+                objStack.Bonded = true;
             }
 
             ScheduleCharacterUpdate();
@@ -17001,7 +16954,8 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
+                if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue ||
+                    (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept && _objCharacter.InitiateGrade + 1 > _objCharacter.MAGAdept.TotalValue))
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -17045,6 +16999,7 @@ namespace Chummer
 
                 // Create the replacement Improvement.
                 ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
+                ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, _objCharacter.InitiateGrade);
                 ImprovementManager.Commit(_objCharacter);
 
                 // Update any Metamagic Improvements the character might have.
@@ -18816,66 +18771,63 @@ namespace Chummer
                 if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                 {
                     ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intMagReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intMagReduction * -1);
                 }
                 else
                 {
                     ImprovementManager.CreateImprovement(_objCharacter, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
+                    ImprovementManager.CreateImprovement(_objCharacter, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intMagReduction * -1);
                 }
             }
 
             // If the CharacterAttribute reaches 0, the character has burned out.
-            if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled && (!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue || intMagReduction >= _objCharacter.MAG.TotalMaximum))
+            if (_objCharacter.MAGEnabled)
             {
-                _objCharacter.MAG.Base = 0;
-                _objCharacter.MAG.Karma = 0;
-                _objCharacter.MAG.MetatypeMinimum = 0;
-                _objCharacter.MAG.MetatypeMaximum = 0;
-                _objCharacter.MAG.MetatypeAugmentedMaximum = 0;
-
-                if (_objCharacter.MAGEnabled)
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                 {
-                    // Move all MAG-linked Active Skills to Knowledge Skills.
-                    //List<Skill> lstNewSkills = new List<Skill>();
-                    //foreach (Skill objSkill in _objCharacter.Skills)
-                    //{
-                    //    if (objSkill.Attribute == "MAG" && objSkill.Rating > 0)
-                    //    {
-                    //        int i = panKnowledgeSkills.Controls.Count;
-                    //        Skill objKnowledge = new Skill(_objCharacter);
+                    if ((!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue && _objCharacter.MAG.TotalMaximum < 1) ||
+                    (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue && intMagReduction >= _objCharacter.MAG.TotalMaximum))
+                    {
+                        _objCharacter.MAG.Base = _objCharacter.MAGAdept.Base;
+                        _objCharacter.MAG.Karma = _objCharacter.MAGAdept.Karma;
+                        _objCharacter.MAG.MetatypeMinimum = _objCharacter.MAGAdept.MetatypeMinimum;
+                        _objCharacter.MAG.MetatypeMaximum = _objCharacter.MAGAdept.MetatypeMaximum;
+                        _objCharacter.MAG.MetatypeAugmentedMaximum = _objCharacter.MAGAdept.MetatypeAugmentedMaximum;
+                        _objCharacter.MAGAdept.Base = 0;
+                        _objCharacter.MAGAdept.Karma = 0;
+                        _objCharacter.MAGAdept.MetatypeMinimum = 0;
+                        _objCharacter.MAGAdept.MetatypeMaximum = 0;
+                        _objCharacter.MAGAdept.MetatypeAugmentedMaximum = 0;
 
-                    //        SkillControl objSkillControl = new SkillControl();
-                    //        objKnowledge.Name = objSkill.Name;
-                    //        objSkillControl.SkillObject = objKnowledge;
+                        _objCharacter.MagicianEnabled = false;
+                    }
+                    if ((!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue && _objCharacter.MAGAdept.TotalMaximum < 1) ||
+                    (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue && intMagReduction >= _objCharacter.MAGAdept.TotalMaximum))
+                    {
+                        _objCharacter.MAGAdept.Base = 0;
+                        _objCharacter.MAGAdept.Karma = 0;
+                        _objCharacter.MAGAdept.MetatypeMinimum = 0;
+                        _objCharacter.MAGAdept.MetatypeMaximum = 0;
+                        _objCharacter.MAGAdept.MetatypeAugmentedMaximum = 0;
 
-                    //        // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    //        objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-                    //        objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    //        objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
-                    //        objSkillControl.SkillKarmaClicked += objKnowledgeSkill_KarmaClicked;
-                    //        objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
-
-                    //        objSkillControl.KnowledgeSkill = true;
-                    //        objSkillControl.AllowDelete = true;
-                    //        if (objSkill.Rating > 13)
-                    //            objSkillControl.SkillRatingMaximum = objSkill.Rating;
-                    //        else
-                    //            objSkillControl.SkillRatingMaximum = 12;
-                    //        objSkillControl.SkillRating = objSkill.Rating;
-                    //        objSkillControl.SkillCategory = "Professional";
-                    //        // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-                    //        objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
-                    //        panKnowledgeSkills.Controls.Add(objSkillControl);
-
-                    //        lstNewSkills.Add(objKnowledge);
-                    //    }
-                    //}
-                    //foreach (Skill objSkill in lstNewSkills)
-                    //    _objCharacter.Skills.Add(objSkill);
+                        _objCharacter.AdeptEnabled = false;
+                    }
+                    if (!_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
+                        _objCharacter.MAGEnabled = false;
                 }
+                else if ((!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue && _objCharacter.MAG.TotalMaximum < 1) ||
+                    (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue && intMagReduction >= _objCharacter.MAG.TotalMaximum))
+                {
+                    _objCharacter.MAG.Base = 0;
+                    _objCharacter.MAG.Karma = 0;
+                    _objCharacter.MAG.MetatypeMinimum = 0;
+                    _objCharacter.MAG.MetatypeMaximum = 0;
+                    _objCharacter.MAG.MetatypeAugmentedMaximum = 0;
 
-                _objCharacter.MAGEnabled = false;
-                _objCharacter.MagicianEnabled = false;
-                _objCharacter.AdeptEnabled = false;
+                    _objCharacter.MagicianEnabled = false;
+                    _objCharacter.AdeptEnabled = false;
+                    _objCharacter.MAGEnabled = false;
+                }
             }
             if (_objCharacter.RES.TotalMaximum < 1 && _objCharacter.RESEnabled && (!_objCharacter.Options.SpecialKarmaCostBasedOnShownValue || intReduction >= _objCharacter.RES.TotalMaximum))
             {
@@ -24572,12 +24524,12 @@ namespace Chummer
 
             if (_objCharacter.MAGEnabled && blnPayWithKarma)
             {
-                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Metamagic")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Metamagic")).Replace("{1}", _objOptions.KarmaMetamagic.ToString())))
                     return;
             }
             else if (blnPayWithKarma)
             {
-                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Echo")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Echo")).Replace("{1}", _objOptions.KarmaMetamagic.ToString())))
                     return;
             }
 
@@ -24751,7 +24703,8 @@ namespace Chummer
                     blnPayWithKarma = true;
             }
 
-            if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaSpell)
+            int intSpellKarmaCost = _objCharacter.SpellKarmaCost;
+            if (blnPayWithKarma && _objCharacter.Karma < intSpellKarmaCost)
             {
                 // Make sure the Karma expense would not put them over the limit.
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -24759,7 +24712,7 @@ namespace Chummer
             }
 
             if (blnPayWithKarma)
-                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Enchantment")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Enchantment")).Replace("{1}", intSpellKarmaCost.ToString())))
                     return;
 
             frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Enchantment);
@@ -24790,7 +24743,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create((_objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -24798,7 +24751,7 @@ namespace Chummer
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                _objCharacter.Karma -= _objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount);
+                _objCharacter.Karma -= intSpellKarmaCost;
             }
 
             TreeNode objSpellNode = new TreeNode();
@@ -24855,7 +24808,8 @@ namespace Chummer
                     blnPayWithKarma = true;
             }
 
-            if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaSpell)
+            int intSpellKarmaCost = _objCharacter.SpellKarmaCost;
+            if (blnPayWithKarma && _objCharacter.Karma < intSpellKarmaCost)
             {
                 // Make sure the Karma expense would not put them over the limit.
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -24863,7 +24817,7 @@ namespace Chummer
             }
 
             if (blnPayWithKarma)
-                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Ritual")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+                if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.GetString("String_Ritual")).Replace("{1}", intSpellKarmaCost.ToString())))
                     return;
 
             frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Ritual);
@@ -24894,7 +24848,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry();
-                objEntry.Create((_objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount)) * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -24902,7 +24856,7 @@ namespace Chummer
                 objEntry.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                _objCharacter.Karma -= _objOptions.KarmaSpell + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellKarmaDiscount);
+                _objCharacter.Karma -= intSpellKarmaCost;
             }
 
             TreeNode objSpellNode = new TreeNode();
@@ -25052,7 +25006,7 @@ namespace Chummer
             }
 
             blnPayWithKarma = true;
-            if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaSpell)
+            if (blnPayWithKarma && _objCharacter.Karma < _objOptions.KarmaEnhancement)
             {
                 // Make sure the Karma expense would not put them over the limit.
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -25318,14 +25272,16 @@ namespace Chummer
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
+            int intNewAIProgramCost = _objCharacter.AIProgramKarmaCost;
+            int intNewAIAdvancedProgramCost = _objCharacter.AIAdvancedProgramKarmaCost;
             // Make sure the character has enough Karma before letting them select a Spell.
-            if (_objCharacter.Karma < _objOptions.KarmaNewAIProgram && _objCharacter.Karma < _objOptions.KarmaNewAIAdvancedProgram)
+            if (_objCharacter.Karma < intNewAIProgramCost && _objCharacter.Karma < intNewAIAdvancedProgramCost)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // Let the user select a Program.
-            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, _objCharacter.Karma >= _objOptions.KarmaNewAIAdvancedProgram);
+            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, _objCharacter.Karma >= intNewAIAdvancedProgramCost);
             frmPickProgram.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
@@ -25357,7 +25313,7 @@ namespace Chummer
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
-            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayName).Replace("{1}", (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram).ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objProgram.DisplayName).Replace("{1}", (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString())))
                 return;
 
             _objCharacter.AIPrograms.Add(objProgram);
@@ -25376,9 +25332,9 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
-            objEntry.Create((boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram) * -1, LanguageManager.GetString("String_ExpenseLearnProgram") + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
+            objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram") + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objEntry);
-            _objCharacter.Karma -= (boolIsAdvancedProgram ? _objOptions.KarmaNewAIAdvancedProgram : _objOptions.KarmaNewAIProgram);
+            _objCharacter.Karma -= (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost);
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateKarma((boolIsAdvancedProgram ? KarmaExpenseType.AddAIAdvancedProgram : KarmaExpenseType.AddAIProgram), objProgram.InternalId);
@@ -25533,6 +25489,8 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 lstSpecialAttributes.Add(_objCharacter.MAG);
+                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    lstSpecialAttributes.Add(_objCharacter.MAGAdept);
             }
             if (_objCharacter.RESEnabled)
             {

@@ -425,7 +425,14 @@ namespace Chummer.Skills
             get { return Rating > 0; }
         }
 
-        public bool CanHaveSpecs => TotalBaseRating > 0 && KarmaUnlocked;
+        public bool CanHaveSpecs
+        {
+            get
+            {
+                return TotalBaseRating > 0 && KarmaUnlocked &&
+                    !_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) || (x.ImproveType == Improvement.ImprovementType.BlockSkillCategorySpecializations && x.ImprovedName == SkillCategory)) && x.Enabled);
+            }
+        }
 
         public Character CharacterObject
         {

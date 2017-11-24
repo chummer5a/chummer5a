@@ -2148,6 +2148,10 @@
           <name>STR</name>
           <val>1</val>
         </specificattribute>
+        <attributekarmacost>
+          <name>STR</name>
+          <val>-2</val>
+        </attributekarmacost>
       </bonus>
       <source>CF</source>
       <page>159</page>
