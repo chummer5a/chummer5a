@@ -2012,8 +2012,20 @@ namespace Chummer
             }
             // </priorityskills>
             objWriter.WriteEndElement();
+
             // <handedness />
-            objWriter.WriteElementString("primaryarm", _strPrimaryArm);
+            if (Ambidextrous)
+            {
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Ambidextrous"));
+            }
+            else if (PrimaryArm == "Left")
+            {
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideLeft"));
+            }
+            else
+            {
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideRight"));
+            }
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from having a self-terminated title tag which causes browser to not rendering anything.
             // <name />

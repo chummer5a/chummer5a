@@ -277,6 +277,7 @@ Application Changes:
 - Added a house rule that changes Mystic Adepts so that instead of using special rules for obtaining and managing PP, they will have a separate MAG rating to be used for Adept powers and PP. Initiation and Foci will use the lower of the two MAG ratings if this rule is enabled.
 - Fixed a bug where if points and/or karma were allocated to a special attribute to which access was later removed in Create mode, those points and/or karma would not get freed up.
 - Weapons can now add more weapons (not just underbarreled weapons).
+- Handedness now prints in a localized fashion, and will now display the appropriate value if the character is ambidextrous. Part of fix for #2098.
 
 Data Changes:
 
