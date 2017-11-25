@@ -677,6 +677,7 @@ namespace Chummer.Backend.Equipment
             Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
             objWriter.WriteStartElement("ranges");
+            objWriter.WriteElementString("name", Range);
             objWriter.WriteElementString("short", dictionaryRanges["short"]);
             objWriter.WriteElementString("medium", dictionaryRanges["medium"]);
             objWriter.WriteElementString("long", dictionaryRanges["long"]);
@@ -686,6 +687,7 @@ namespace Chummer.Backend.Equipment
 
             // <alternateranges>
             objWriter.WriteStartElement("alternateranges");
+            objWriter.WriteElementString("name", AlternateRange);
             objWriter.WriteElementString("short", dictionaryRanges["alternateshort"]);
             objWriter.WriteElementString("medium", dictionaryRanges["alternatemedium"]);
             objWriter.WriteElementString("long", dictionaryRanges["alternatelong"]);
