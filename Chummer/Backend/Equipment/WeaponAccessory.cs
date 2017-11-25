@@ -682,12 +682,12 @@ namespace Chummer.Backend.Equipment
 
                     strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
                     XPathExpression xprCost = nav.Compile(strConceal);
-                    double dblConceal = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(dblConceal);
+                    decimal decConceal = Math.Ceiling(Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    intReturn = Convert.ToInt32(decConceal);
                 }
                 else if (!string.IsNullOrEmpty(_strConceal))
                 {
-                    intReturn = Convert.ToInt32(_strConceal);
+                    int.TryParse(_strConceal, out intReturn);
                 }
                 return intReturn;
             }

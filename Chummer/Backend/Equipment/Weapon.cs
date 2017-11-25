@@ -44,7 +44,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost = 0;
         private string _strRange = string.Empty;
         private string _strAlternateRange = string.Empty;
-        private double _dblRangeMultiplier = 1;
+        private decimal _decRangeMultiplier = 1;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strWeaponName = string.Empty;
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strRange = objRangeNode.InnerText;
                 if (objRangeNode.Attributes["multiply"] != null)
-                    _dblRangeMultiplier = Convert.ToDouble(objRangeNode.Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    _decRangeMultiplier = Convert.ToDecimal(objRangeNode.Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
@@ -415,7 +415,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("useskill", _strUseSkill);
             objWriter.WriteElementString("range", _strRange);
             objWriter.WriteElementString("alternaterange", _strAlternateRange);
-            objWriter.WriteElementString("rangemultiply", _dblRangeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("rangemultiply", _decRangeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("source", _strSource);
@@ -567,7 +567,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
-            objNode.TryGetDoubleFieldQuickly("rangemultiply", ref _dblRangeMultiplier);
+            objNode.TryGetDecFieldQuickly("rangemultiply", ref _decRangeMultiplier);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             if (Name == "Unarmed Attack")
                 _blnIncludedInWeapon = true; // Unarmed Attack can never be removed
@@ -1703,16 +1703,16 @@ namespace Chummer.Backend.Equipment
 
             if (!blnDamageReplaced)
             {
-                double dblDamage = 0;
+                int intDamage = 0;
                 try
                 {
                     xprDamage = nav.Compile(strDamage);
-                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.InvariantCultureInfo) + intBonus);
+                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(nav.Evaluate(xprDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
                 }
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
-                    dblDamage *= 2.0;
-                strReturn = dblDamage.ToString(objCulture) + strDamageType + strDamageExtra;
+                    intDamage *= 2;
+                strReturn = intDamage.ToString(objCulture) + strDamageType + strDamageExtra;
             }
             else
             {
@@ -1746,16 +1746,16 @@ namespace Chummer.Backend.Equipment
                 // Replace the division sign with "div" since we're using XPath.
                 strDamage = strDamage.Replace("/", " div ");
 
-                double dblDamage = 0;
+                int intDamage = 0;
                 try
                 {
                     xprDamage = nav.Compile(strDamage);
-                    dblDamage = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.InvariantCultureInfo) + intBonus);
+                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
                 }
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
-                    dblDamage *= 2.0;
-                strReturn = dblDamage.ToString(objCulture) + strDamageType + strDamageExtra;
+                    intDamage *= 2;
+                strReturn = intDamage.ToString(objCulture) + strDamageType + strDamageExtra;
             }
 
             // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.
@@ -2766,8 +2766,8 @@ namespace Chummer.Backend.Equipment
             objRange.Replace("/", " div ");
 
             XPathNavigator nav = objXmlDocument.CreateNavigator();
-            double dblReturn = Convert.ToDouble(nav.Evaluate(objRange.ToString()).ToString(), GlobalOptions.InvariantCultureInfo) * _dblRangeMultiplier;
-            int intReturn = Convert.ToInt32(Math.Ceiling(dblReturn));
+            decimal decReturn = Convert.ToDecimal(nav.Evaluate(objRange.ToString()), GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier;
+            int intReturn = Convert.ToInt32(Math.Ceiling(decReturn));
 
             return intReturn;
         }

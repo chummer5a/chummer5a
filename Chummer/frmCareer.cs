@@ -5554,16 +5554,15 @@ namespace Chummer
                 }
 
                 // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
+                decimal decMultiplier = 1.0m;
                 if (chkInitiationGroup.Checked)
-                    dblMultiplier -= 0.1;
+                    decMultiplier -= 0.1m;
                 if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= _objCharacter.TechnomancerEnabled ? 0.2 : 0.1;
+                    decMultiplier -= _objCharacter.TechnomancerEnabled ? 0.2m : 0.1m;
                 if (chkInitiationSchooling.Checked)
-                    dblMultiplier -= 0.1;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
+                    decMultiplier -= 0.1m;
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
@@ -5640,7 +5639,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -5656,12 +5655,11 @@ namespace Chummer
                 }
 
                 // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
+                decimal decMultiplier = 1.0m;
                 if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= 0.1;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
+                    decMultiplier -= 0.1m;
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
@@ -5711,7 +5709,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -16820,10 +16818,9 @@ namespace Chummer
                 }
 
                 // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
+                decimal decMultiplier = 1.0m;
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
@@ -16874,7 +16871,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -16889,10 +16886,9 @@ namespace Chummer
                 }
 
                 // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
+                decimal decMultiplier = 1.0m;
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 if (intKarmaExpense > _objCharacter.Karma)
                 {
@@ -16942,7 +16938,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
@@ -22850,33 +22846,31 @@ namespace Chummer
         /// </summary>
         private void UpdateInitiationCost()
         {
-            double dblMultiplier = 1.0;
+            decimal decMultiplier = 1.0m;
             int intAmount = 0;
             string strInitTip = string.Empty;
 
             if (_objCharacter.MAGEnabled)
             {
                 if (chkInitiationGroup.Checked)
-                    dblMultiplier -= 0.1;
+                    decMultiplier -= 0.1m;
                 if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= 0.1;
+                    decMultiplier -= 0.1m;
                 if (chkInitiationSchooling.Checked)
-                    dblMultiplier -= 0.1;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
-                intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                    decMultiplier -= 0.1m;
+                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
             else
             {
                 if (chkInitiationGroup.Checked)
-                    dblMultiplier -= 0.2;
+                    decMultiplier -= 0.2m;
                 if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= 0.2;
+                    decMultiplier -= 0.2m;
                 if (chkInitiationSchooling.Checked)
-                    dblMultiplier -= 0.1;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
-                intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * dblMultiplier));
+                    decMultiplier -= 0.1m;
+                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
                 strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }

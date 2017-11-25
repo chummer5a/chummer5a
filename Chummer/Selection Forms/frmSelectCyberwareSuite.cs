@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmSelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
-        private double _dblCharacterESSModifier = 1.0;
+        private decimal _decCharacterESSModifier = 1.0m;
         private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
         private string _strType = "cyberware";
         private Character _objCharacter;
@@ -149,11 +149,11 @@ namespace Chummer
         /// <summary>
         /// Essence cost multiplier from the character.
         /// </summary>
-        public double CharacterESSMultiplier
+        public decimal CharacterESSMultiplier
         {
             set
             {
-                _dblCharacterESSModifier = value;
+                _decCharacterESSModifier = value;
             }
         }
 

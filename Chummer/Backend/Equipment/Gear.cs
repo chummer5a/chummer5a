@@ -1986,7 +1986,7 @@ namespace Chummer.Backend.Equipment
                 objCost.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Parent Cost", string.IsNullOrEmpty(strParentCost) ? "0" : strParentCost);
                 XPathExpression xprCost = nav.Compile(objCost.ToString());
-                // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 decReturn = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }

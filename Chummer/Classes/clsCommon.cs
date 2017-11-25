@@ -2540,12 +2540,12 @@ namespace Chummer
             if (objCharacter.Metatype == "Free Spirit" && !objCharacter.IsCritter)
             {
                 // PC Free Spirit.
-                double dblPowerPoints = 0;
+                decimal decPowerPoints = 0;
 
                 foreach (CritterPower objPower in objCharacter.CritterPowers)
                 {
                     if (objPower.CountTowardsLimit)
-                        dblPowerPoints += objPower.PowerPoints;
+                        decPowerPoints += objPower.PowerPoints;
                 }
 
                 int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
@@ -2554,7 +2554,7 @@ namespace Chummer
                 if (objCharacter.Options.FreeSpiritPowerPointsMAG)
                     intPowerPoints = objCharacter.MAG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - decPowerPoints, intPowerPoints);
             }
             else
             {
@@ -2573,8 +2573,7 @@ namespace Chummer
                 else
                 {
                     // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
-                    double dblMAG = Convert.ToDouble(objCharacter.MAG.TotalValue, GlobalOptions.InvariantCultureInfo);
-                    intPowerPoints = Convert.ToInt32(Math.Floor(dblMAG / 3.0));
+                    intPowerPoints = objCharacter.MAG.TotalValue / 3;
                 }
 
                 int intUsed = 0;// _objCharacter.CritterPowers.Count - intExisting;
@@ -2596,17 +2595,17 @@ namespace Chummer
         public static string CalculateFreeSpritePowerPoints(Character objCharacter)
         {
             // Free Sprite Power Points.
-            double dblPowerPoints = 0;
+            int intUsedPowerPoints = 0;
 
             foreach (CritterPower objPower in objCharacter.CritterPowers)
             {
                 if (objPower.CountTowardsLimit)
-                    dblPowerPoints += 1;
+                    intUsedPowerPoints += 1;
             }
 
             int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - intUsedPowerPoints, intPowerPoints);
         }
 
         /// <summary>

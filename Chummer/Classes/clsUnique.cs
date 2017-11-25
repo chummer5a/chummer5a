@@ -5053,7 +5053,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private int _intKarma;
-        private double _dblPowerPoints;
+        private decimal _decPowerPoints = 0.0m;
         private XmlNode _nodBonus;
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
@@ -5132,7 +5132,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("karma", _intKarma.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("points", _dblPowerPoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("points", _decPowerPoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("counttowardslimit", _blnCountTowardsLimit.ToString());
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
@@ -5159,7 +5159,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetDoubleFieldQuickly("points", ref _dblPowerPoints);
+            objNode.TryGetDecFieldQuickly("points", ref _decPowerPoints);
             objNode.TryGetBoolFieldQuickly("counttowardslimit", ref _blnCountTowardsLimit);
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -5495,10 +5495,10 @@ namespace Chummer
         /// <summary>
         /// Power Points used by the Critter Power (Free Spirits only).
         /// </summary>
-        public double PowerPoints
+        public decimal PowerPoints
         {
-            get => _dblPowerPoints;
-            set => _dblPowerPoints = value;
+            get => _decPowerPoints;
+            set => _decPowerPoints = value;
         }
 
         /// <summary>
@@ -5670,22 +5670,22 @@ namespace Chummer
         {
             get
             {
-                double dblCost = 10.0 + (_intGrade * _objOptions.KarmaInitiation);
-                double dblMultiplier = 1.0;
+                int intCost = 10 + (_intGrade * _objOptions.KarmaInitiation);
+                decimal decMultiplier = 1.0m;
 
                 // Discount for Group.
                 if (_blnGroup)
-                    dblMultiplier -= 0.1;
+                    decMultiplier -= 0.1m;
 
                 // Discount for Ordeal.
                 if (_blnOrdeal)
-                    dblMultiplier -= 0.1;
+                    decMultiplier -= 0.1m;
 
                 // Discount for Schooling.
                 if (_blnSchooling)
-                    dblMultiplier -= 0.1;
+                    decMultiplier -= 0.1m;
 
-                return Convert.ToInt32(Math.Ceiling(dblCost * dblMultiplier));
+                return Convert.ToInt32(Math.Ceiling(intCost * decMultiplier));
             }
         }
 
