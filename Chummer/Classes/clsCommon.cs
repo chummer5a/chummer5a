@@ -1484,6 +1484,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             objNode.Text = wm.DisplayName;
             objNode.Tag = wm.InternalId;
+            objNode.ContextMenuStrip = cmsVehicleWeaponMount;
             if (!string.IsNullOrEmpty(wm.Notes))
             {
                 objNode.ToolTipText = wm.Notes;

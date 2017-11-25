@@ -195,6 +195,22 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
+                    <xs:element name="weaponmounts" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="weaponmount" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="size" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="visibility" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="flexibility" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="control" minOccurs="1" maxOccurs="1"/>
+                              </xs:sequence>
+                            </xs:complexType>                            
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>                    
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
