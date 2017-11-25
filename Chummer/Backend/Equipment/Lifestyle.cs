@@ -220,16 +220,16 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("lifestyle");
             objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("totalcost", TotalCost.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("dice", _intDice.ToString());
-            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("months", _intMonths.ToString());
+            objWriter.WriteElementString("cost", _decCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("totalcost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("dice", _intDice.ToString(objCulture));
+            objWriter.WriteElementString("multiplier", _decMultiplier.ToString("#,0.##", objCulture));
+            objWriter.WriteElementString("months", _intMonths.ToString(objCulture));
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("type", _objType.ToString());
             objWriter.WriteElementString("sourceid", SourceID.ToString());
@@ -259,7 +259,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
                 {
-                    objQuality.Print(objWriter);
+                    objQuality.Print(objWriter, objCulture);
                 }
             }
             // Retrieve the free Grids for the Advanced Lifestyle if applicable.

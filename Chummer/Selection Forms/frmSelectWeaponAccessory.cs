@@ -65,9 +65,16 @@ namespace Chummer
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
             BuildAccessoryList();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -161,7 +168,7 @@ namespace Chummer
                         }
                     }
 
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), 0))
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objXmlAccessory["name"]?.InnerText;
@@ -436,6 +443,10 @@ namespace Chummer
                 nudRating.Visible = true;
                 lblRatingLabel.Visible = true;
                 nudRating.Maximum = intMaxRating;
+                while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
             }
             else
             {
@@ -571,10 +582,10 @@ namespace Chummer
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{decMin:###,###,##0.##¥+}";
+                        lblCost.Text = $"{decMin:#,0.00¥+}";
                     }
                     else
-                        lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                        lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }
@@ -593,13 +604,13 @@ namespace Chummer
                     // Apply any markup.
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                    lblCost.Text = $"{decCost:###,###,##0.##¥}";
+                    lblCost.Text = $"{decCost:#,0.00¥}";
                     lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
                 }
             }
             else
             {
-                lblCost.Text = $"{0:###,###,##0.##¥}";
+                lblCost.Text = $"{0:#,0.00¥}";
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
 

@@ -249,10 +249,13 @@ namespace Chummer.UI.Powers
             get
             {
                 int intMAG;
-                if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
+                if (ObjCharacter.IsMysticAdept)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = ObjCharacter.MysticAdeptPowerPoints;
+                    if (ObjCharacter.Options.MysAdeptSecondMAGAttribute)
+                        intMAG = ObjCharacter.MAGAdept.TotalValue;
+                    else
+                        intMAG = ObjCharacter.MysticAdeptPowerPoints;
                 }
                 else
                 {

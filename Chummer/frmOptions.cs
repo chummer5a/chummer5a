@@ -145,9 +145,9 @@ namespace Chummer
             _characterOptions.AllowPointBuySpecializationsOnKarmaSkills = chkAllowPointBuySpecializationsOnKarmaSkills.Checked;
             _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
             _characterOptions.MysaddPPCareer = chkMysAdPp.Checked;
+            _characterOptions.MysAdeptSecondMAGAttribute = chkMysAdeptSecondMAGAttribute.Checked;
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
-            _characterOptions.EducationQualitiesApplyOnChargenKarma = chkEducationQualitiesApplyOnChargenKarma.Checked;
             _characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
             _characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
             _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
@@ -180,8 +180,6 @@ namespace Chummer
             _characterOptions.KarmaComplexFormSkillsoft = Convert.ToInt32(nudKarmaComplexFormSkillsoft.Value);
             _characterOptions.KarmaJoinGroup = Convert.ToInt32(nudKarmaJoinGroup.Value);
             _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
-            _characterOptions.KarmaNewAIProgram = Convert.ToInt32(nudKarmaNewAIProgram.Value);
-            _characterOptions.KarmaNewAIAdvancedProgram = Convert.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
 
             // Focus costs
             _characterOptions.KarmaAlchemicalFocus = Convert.ToInt32(nudKarmaAlchemicalFocus.Value);
@@ -242,7 +240,7 @@ namespace Chummer
 
             if (!blnLoading)
             {
-                string strOldSelected = cboXSLT.SelectedValue.ToString();
+                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
                 // Strip away the language prefix
                 if (strOldSelected.Contains('\\'))
                     strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf('\\') + 1, strOldSelected.Length - 1 - strOldSelected.LastIndexOf('\\'));
@@ -675,10 +673,10 @@ namespace Chummer
             chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
             chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
             chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
+            chkMysAdeptSecondMAGAttribute.Checked = _characterOptions.MysAdeptSecondMAGAttribute;
             chkHideItemsOverAvail.Checked = _characterOptions.HideItemsOverAvailLimit;
             chkFreeMartialArtSpecialization.Checked = _characterOptions.FreeMartialArtSpecialization;
             chkPrioritySpellsAsAdeptPowers.Checked = _characterOptions.PrioritySpellsAsAdeptPowers;
-            chkEducationQualitiesApplyOnChargenKarma.Checked = _characterOptions.EducationQualitiesApplyOnChargenKarma;
             chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
             chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
             chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;

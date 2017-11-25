@@ -72,7 +72,6 @@ namespace Chummer
             CyberwareTotalEssMultiplierNonRetroactive,
             SpecialTab,
             Initiative,
-            Uneducated,
             LivingPersonaResponse,
             LivingPersonaSignal,
             LivingPersonaFirewall,
@@ -102,7 +101,6 @@ namespace Chummer
             FreeSpiritPowerPoints,
             AdeptPowerPoints,
             ArmorEncumbrancePenalty,
-            Uncouth,
             Initiation,
             Submersion,
             Metamagic,
@@ -151,15 +149,11 @@ namespace Chummer
             PhysicalLimit,
             MentalLimit,
             SocialLimit,
-            SchoolOfHardKnocks,
             FriendsInHighPlaces,
-            JackOfAllTrades,
-            CollegeEducation,
             Erased,
             BornRich,
             Fame,
             LightningReflexes,
-            Linguist,
             MadeMan,
             Overclocker,
             RestrictedGear,
@@ -200,7 +194,6 @@ namespace Chummer
             CritterPower,
             SwapSkillSpecAttribute,
             SpellResistance,
-            SpellKarmaDiscount,
             LimitSpellCategory,
             LimitSpiritCategory,
             WalkSpeed,
@@ -259,6 +252,46 @@ namespace Chummer
             AddLimb,
             StreetCredMultiplier,
             StreetCred,
+            AttributeKarmaCostMultiplier,
+            AttributeKarmaCost,
+            ActiveSkillKarmaCostMultiplier,
+            SkillGroupKarmaCostMultiplier,
+            KnowledgeSkillKarmaCostMultiplier,
+            ActiveSkillKarmaCost,
+            SkillGroupKarmaCost,
+            SkillGroupDisable,
+            KnowledgeSkillKarmaCost,
+            SkillCategoryKarmaCostMultiplier,
+            SkillCategoryKarmaCost,
+            SkillGroupCategoryKarmaCostMultiplier,
+            SkillGroupCategoryDisable,
+            SkillGroupCategoryKarmaCost,
+            AttributePointCostMultiplier,
+            AttributePointCost,
+            ActiveSkillPointCostMultiplier,
+            SkillGroupPointCostMultiplier,
+            KnowledgeSkillPointCostMultiplier,
+            ActiveSkillPointCost,
+            SkillGroupPointCost,
+            KnowledgeSkillPointCost,
+            SkillCategoryPointCostMultiplier,
+            SkillCategoryPointCost,
+            SkillGroupCategoryPointCostMultiplier,
+            SkillGroupCategoryPointCost,
+            NewSpellKarmaCostMultiplier,
+            NewSpellKarmaCost,
+            NewComplexFormKarmaCostMultiplier,
+            NewComplexFormKarmaCost,
+            NewAIProgramKarmaCostMultiplier,
+            NewAIProgramKarmaCost,
+            NewAIAdvancedProgramKarmaCostMultiplier,
+            NewAIAdvancedProgramKarmaCost,
+            BlockSkillSpecializations,
+            BlockSkillCategorySpecializations,
+            FocusBindingKarmaCost,
+            FocusBindingKarmaMultiplier,
+            MagiciansWayDiscount,
+            BurnoutsWay,
             // V This one should always be the last defined enum
             NumImprovementTypes
         }
@@ -299,6 +332,7 @@ namespace Chummer
             MartialArt,
             AIProgram,
             SpiritFettering,
+            MentorSpirit,
             // V This one should always be the last defined enum
             NumImprovementSources
         }
@@ -332,7 +366,7 @@ namespace Chummer
         /// Convert a string to an ImprovementType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        private ImprovementType ConvertToImprovementType(string strValue)
+        public static ImprovementType ConvertToImprovementType(string strValue)
         {
             if (strValue.Contains("InitiativePass"))
             {
@@ -345,7 +379,7 @@ namespace Chummer
         /// Convert a string to an ImprovementSource.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ImprovementSource ConvertToImprovementSource(string strValue)
+        public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
@@ -695,6 +729,7 @@ namespace Chummer
         public static string SelectedValue
         {
             get { return _strSelectedValue; }
+            set { _strSelectedValue = value; }
         }
 
         /// <summary>
@@ -702,6 +737,7 @@ namespace Chummer
         /// </summary>
         public static string ForcedValue
         {
+            get { return _strForcedValue; }
             set { _strForcedValue = value; }
         }
 
@@ -866,6 +902,8 @@ namespace Chummer
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         private static int ValueToInt(Character objCharacter, string strValue, int intRating)
         {
+            if (string.IsNullOrEmpty(strValue))
+                return 0;
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
@@ -1125,9 +1163,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
-        /// <param name="strSourceName">Name of the item that granted these Improvements. If empty, deletes all improvements that match objImprovementSource</param>
-        /// <param name="blnReapplyImprovements">Remove all improvements from the improvements list that would be reapplied by Reapply Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "", bool blnReapplyImprovements = false)
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -1135,33 +1172,10 @@ namespace Chummer
                 return;
             }
 
+            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = null;
-            if (blnReapplyImprovements)
-            {
-                Log.Info("Wiping all improvements that would be refreshed by Re-Apply Improvements.");
-                objImprovementList = objCharacter.Improvements.Where(objImprovement =>
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Armor ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Echo ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Gear ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Power ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Quality ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Spell).ToList();
-            }
-            else
-            {
-                Log.Info("objImprovementSource = " + objImprovementSource.ToString());
-                Log.Info("strSourceName = " + strSourceName);
-                objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && (string.IsNullOrEmpty(strSourceName) || objImprovement.SourceName == strSourceName)).ToList();
-            }
+            List<Improvement> objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
             RemoveImprovements(objCharacter, objImprovementList);
         }
 
@@ -1343,37 +1357,17 @@ namespace Chummer
                             }
                         }
                         break;
-                    case Improvement.ImprovementType.Uneducated:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.Uneducated = false;
-                        break;
-                    case Improvement.ImprovementType.Uncouth:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.Uncouth = false;
-                        break;
                     case Improvement.ImprovementType.FriendsInHighPlaces:
                         if (!blnHasDuplicate)
                             objCharacter.FriendsInHighPlaces = false;
-                        break;
-                    case Improvement.ImprovementType.SchoolOfHardKnocks:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.SchoolOfHardKnocks = false;
                         break;
                     case Improvement.ImprovementType.ExCon:
                         if (!blnHasDuplicate)
                             objCharacter.ExCon = false;
                         break;
-                    case Improvement.ImprovementType.JackOfAllTrades:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.JackOfAllTrades = false;
-                        break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
                         if (!blnHasDuplicate)
                             objCharacter.PrototypeTranshuman = 0;
-                        break;
-                    case Improvement.ImprovementType.CollegeEducation:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.CollegeEducation = false;
                         break;
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
@@ -1391,10 +1385,6 @@ namespace Chummer
                         if (!blnHasDuplicate)
                             objCharacter.LightningReflexes = false;
                         break;
-                    case Improvement.ImprovementType.Linguist:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.Linguist = false;
-                        break;
                     case Improvement.ImprovementType.MadeMan:
                         if (!blnHasDuplicate)
                             objCharacter.MadeMan = false;
@@ -1410,10 +1400,6 @@ namespace Chummer
                     case Improvement.ImprovementType.RestrictedGear:
                         if (!blnHasDuplicate)
                             objCharacter.RestrictedGear = false;
-                        break;
-                    case Improvement.ImprovementType.TechSchool:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.TechSchool = false;
                         break;
                     case Improvement.ImprovementType.TrustFund:
                         if (!blnHasDuplicate)
@@ -1472,6 +1458,15 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                             objCharacter.CritterPowers.Remove(objCritterPower);
+                        }
+                        break;
+                    case Improvement.ImprovementType.MentorSpirit:
+                    case Improvement.ImprovementType.Paragon:
+                        MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMentor != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
+                            objCharacter.MentorSpirits.Remove(objMentor);
                         }
                         break;
                     case Improvement.ImprovementType.Gear:
@@ -1544,6 +1539,12 @@ namespace Chummer
                             }
 
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                        }
+                        break;
+                    case Improvement.ImprovementType.MagiciansWayDiscount:
+                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        {
+                            bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
                         }
                         break;
                 }

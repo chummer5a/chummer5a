@@ -705,7 +705,7 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("vehicle");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -713,46 +713,45 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("handling", TotalHandling);
             objWriter.WriteElementString("accel", TotalAccel);
             objWriter.WriteElementString("speed", TotalSpeed);
-            objWriter.WriteElementString("pilot", Pilot.ToString());
-            objWriter.WriteElementString("body", TotalBody.ToString());
-            objWriter.WriteElementString("armor", TotalArmor.ToString());
-            objWriter.WriteElementString("seats", TotalSeats.ToString());
-            objWriter.WriteElementString("sensor", CalculatedSensor.ToString());
+            objWriter.WriteElementString("pilot", Pilot.ToString(objCulture));
+            objWriter.WriteElementString("body", TotalBody.ToString(objCulture));
+            objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
+            objWriter.WriteElementString("seats", TotalSeats.ToString(objCulture));
+            objWriter.WriteElementString("sensor", CalculatedSensor.ToString(objCulture));
             objWriter.WriteElementString("avail", CalculatedAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString());
-            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString());
-            objWriter.WriteElementString("matrixcm", MatrixCM.ToString());
-            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
+            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
+            objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
-            objWriter.WriteElementString("devicerating", Pilot.ToString());
-            objWriter.WriteElementString("maneuver", Maneuver.ToString());
+            objWriter.WriteElementString("devicerating", DeviceRating.ToString(objCulture));
+            objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
             objWriter.WriteElementString("homenode", HomeNode.ToString());
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
-                objMod.Print(objWriter);
+                objMod.Print(objWriter, objCulture);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
                 // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
+                Commlink objCommlink = objGear as Commlink;
+                if (objCommlink != null)
                 {
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink = (Commlink)objGear;
-                    objCommlink.Print(objWriter);
+                    objCommlink.Print(objWriter, objCulture);
                 }
                 else
                 {
-                    objGear.Print(objWriter);
+                    objGear.Print(objWriter, objCulture);
                 }
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
-                objWeapon.Print(objWriter);
+                objWeapon.Print(objWriter, objCulture);
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);

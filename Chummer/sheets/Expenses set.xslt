@@ -82,10 +82,7 @@
               <td><xsl:value-of select="$lang.RemainingAvailable"/></td>
               <td/>
               <td style="text-decoration: overline">
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="karma"/>
-                  <xsl:with-param name="wdth" select="3"/>
-                </xsl:call-template>
+                <xsl:value-of select="karma"/>
               </td>
               <td/>
               <td/>
@@ -122,10 +119,7 @@
               <td><xsl:value-of select="$lang.RemainingAvailable"/></td>
               <td/>
               <td style="text-align: right; text-decoration: overline;">
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                  <xsl:with-param name="wdth" select="7"/>
-                </xsl:call-template>
+                <xsl:value-of select="nuyen"/>
               </td>
               <td/>
               <td/>

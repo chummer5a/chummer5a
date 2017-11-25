@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -12,7 +13,7 @@ namespace Chummer.Backend.Attributes
 	public class AttributeSection : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
-		public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "RES", "ESS", "DEP" };
+		public static string[] AttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
 	    private Dictionary<string, BindingSource> _bindings = new Dictionary<string, BindingSource>(AttributeStrings.Length);
 		private readonly Character _character;
 		private CharacterAttrib.AttributeCategory _attributeCategory = CharacterAttrib.AttributeCategory.Standard;
@@ -117,6 +118,8 @@ namespace Chummer.Backend.Attributes
         private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode, XPathNavigator nav)
         {
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
+            if (strAttributeLower == "magadept")
+                strAttributeLower = "mag";
             int intMinValue = 1;
             int intMaxValue = 1;
             int intAugValue = 1;
@@ -150,15 +153,15 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-		internal void Print(XmlTextWriter objWriter)
+		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.Print(objWriter);
+				att.Print(objWriter, objCulture);
 			}
 			foreach (CharacterAttrib att in SpecialAttributeList)
 			{
-				att.Print(objWriter);
+				att.Print(objWriter, objCulture);
 			}
 		}
 		#endregion
@@ -193,10 +196,13 @@ namespace Chummer.Backend.Attributes
 
 		public void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
 		{
-			XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
-			target.MetatypeMinimum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}min"].InnerText);
-			target.MetatypeMaximum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}max"].InnerText);
-			target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{source.Abbrev.ToLower()}aug"].InnerText);
+            string strSourceAbbrev = source.Abbrev.ToLower();
+            if (strSourceAbbrev == "magadept")
+                strSourceAbbrev = "mag";
+            XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
+			target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"].InnerText);
+			target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"].InnerText);
+			target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"].InnerText);
 			target.Base = source.Base;
 			target.Karma = source.Karma;
 		}

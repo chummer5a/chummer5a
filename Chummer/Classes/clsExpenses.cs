@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Xml;
 using Chummer.Backend;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -385,11 +386,11 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("date", _datDate.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Karma ? "N0" : "N2", GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("date", _datDate.ToString(objCulture));
+            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Nuyen ? "#,0.00" : "#,0.##", objCulture));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());

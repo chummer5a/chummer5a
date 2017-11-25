@@ -15,9 +15,7 @@
         <td><xsl:value-of select="date"/></td>
         <td/>
         <td style="text-align:right;white-space: nowrap;">
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="amount"/>
-          </xsl:call-template>
+          <xsl:value-of select="amount"/>
           <xsl:value-of select="$sfx"/>
         </td>
         <td/>

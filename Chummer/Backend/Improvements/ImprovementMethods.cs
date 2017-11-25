@@ -209,30 +209,16 @@ namespace Chummer
                     return objImprovementAdder.cyberwareessmultipliernonretroactive;
                 case "CYBERWARETOTALESSMULTIPLIERNONRETROACTIVE":
                     return objImprovementAdder.cyberwaretotalessmultipliernonretroactive;
-                case "UNEDUCATED":
-                    return objImprovementAdder.uneducated;
-                case "COLLEGEEDUCATION":
-                    return objImprovementAdder.collegeeducation;
-                case "JACKOFALLTRADES":
-                    return objImprovementAdder.jackofalltrades;
                 case "PROTOTYPETRANSHUMAN":
                     return objImprovementAdder.prototypetranshuman;
-                case "UNCOUTH":
-                    return objImprovementAdder.uncouth;
                 case "FRIENDSINHIGHPLACES":
                     return objImprovementAdder.friendsinhighplaces;
-                case "SCHOOLOFHARDKNOCKS":
-                    return objImprovementAdder.schoolofhardknocks;
                 case "EXCON":
                     return objImprovementAdder.excon;
                 case "TRUSTFUND":
                     return objImprovementAdder.trustfund;
-                case "TECHSCHOOL":
-                    return objImprovementAdder.techschool;
                 case "MADEMAN":
                     return objImprovementAdder.mademan;
-                case "LINGUIST":
-                    return objImprovementAdder.linguist;
                 case "LIGHTNINGREFLEXES":
                     return objImprovementAdder.lightningreflexes;
                 case "FAME":
@@ -451,8 +437,6 @@ namespace Chummer
                     return objImprovementAdder.addskillspecialization;
                 case "ADDSKILLSPECIALIZATIONOPTION":
                     return objImprovementAdder.addskillspecializationoption;
-                case "SPELLKARMADISCOUNT":
-                    return objImprovementAdder.spellkarmadiscount;
                 case "LIMITSPELLCATEGORY":
                     return objImprovementAdder.limitspellcategory;
                 case "LIMITSPIRITCATEGORY":
@@ -461,6 +445,86 @@ namespace Chummer
                     return objImprovementAdder.movementreplace;
                 case "ADDLIMB":
                     return objImprovementAdder.addlimb;
+                case "ATTRIBUTEKARMACOST":
+                    return objImprovementAdder.attributekarmacost;
+                case "ACTIVESKILLKARMACOST":
+                    return objImprovementAdder.activeskillkarmacost;
+                case "SKILLGROUPKARMACOST":
+                    return objImprovementAdder.skillgroupkarmacost;
+                case "KNOWLEDGESKILLKARMACOST":
+                    return objImprovementAdder.knowledgeskillkarmacost;
+                case "SKILLGROUPDISABLE":
+                    return objImprovementAdder.skillgroupdisable;
+                case "SKILLGROUPCATEGORYDISABLE":
+                    return objImprovementAdder.skillgroupcategorydisable;
+                case "SKILLGROUPCATEGORYKARMACOST":
+                    return objImprovementAdder.skillgroupcategorykarmacost;
+                case "SKILLCATEGORYKARMACOST":
+                    return objImprovementAdder.skillcategorykarmacost;
+                case "ATTRIBUTEPOINTCOST":
+                    return objImprovementAdder.attributepointcost;
+                case "ACTIVESKILLPOINTCOST":
+                    return objImprovementAdder.activeskillpointcost;
+                case "SKILLGROUPPOINTCOST":
+                    return objImprovementAdder.skillgrouppointcost;
+                case "KNOWLEDGESKILLPOINTCOST":
+                    return objImprovementAdder.knowledgeskillpointcost;
+                case "SKILLGROUPCATEGORYPOINTCOST":
+                    return objImprovementAdder.skillgroupcategorypointcost;
+                case "SKILLCATEGORYPOINTCOST":
+                    return objImprovementAdder.skillcategorypointcost;
+                case "NEWSPELLKARMACOST":
+                    return objImprovementAdder.newspellkarmacost;
+                case "NEWCOMPLEXFORMKARMACOST":
+                    return objImprovementAdder.newcomplexformkarmacost;
+                case "NEWAIPROGRAMKARMACOST":
+                    return objImprovementAdder.newaiprogramkarmacost;
+                case "NEWAIADVANCEDPROGRAMKARMACOST":
+                    return objImprovementAdder.newaiadvancedprogramkarmacost;
+                case "ATTRIBUTEKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.attributekarmacostmultiplier;
+                case "ACTIVESKILLKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.activeskillkarmacostmultiplier;
+                case "SKILLGROUPKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.skillgroupkarmacostmultiplier;
+                case "KNOWLEDGESKILLKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.knowledgeskillkarmacostmultiplier;
+                case "SKILLGROUPCATEGORYKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.skillgroupcategorykarmacostmultiplier;
+                case "SKILLCATEGORYKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.skillcategorykarmacostmultiplier;
+                case "ATTRIBUTEPOINTCOSTMULTIPLIER":
+                    return objImprovementAdder.attributepointcostmultiplier;
+                case "ACTIVESKILLPOINTCOSTMULTIPLIER":
+                    return objImprovementAdder.activeskillpointcostmultiplier;
+                case "SKILLGROUPPOINTCOSTMULTIPLIER":
+                    return objImprovementAdder.skillgrouppointcostmultiplier;
+                case "KNOWLEDGESKILLPOINTCOSTMULTIPLIER":
+                    return objImprovementAdder.knowledgeskillpointcostmultiplier;
+                case "SKILLGROUPCATEGORYPOINTCOSTMULTIPLIER":
+                    return objImprovementAdder.skillgroupcategorypointcostmultiplier;
+                case "SKILLCATEGORYPOINTCOSTMULTIPLIER":
+                    return objImprovementAdder.skillcategorypointcostmultiplier;
+                case "NEWSPELLKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.newspellkarmacostmultiplier;
+                case "NEWCOMPLEXFORMKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.newcomplexformkarmacostmultiplier;
+                case "NEWAIPROGRAMKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.newaiprogramkarmacostmultiplier;
+                case "NEWAIADVANCEDPROGRAMKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.newaiadvancedprogramkarmacostmultiplier;
+                case "BLOCKSKILLSPECIALIZATIONS":
+                    return objImprovementAdder.blockskillspecializations;
+                case "BLOCKSKILLCATEGORYSPECIALIZATIONS":
+                    return objImprovementAdder.blockskillcategoryspecializations;
+                case "FOCUSBINDINGKARMACOST":
+                    return objImprovementAdder.focusbindingkarmacost;
+                case "FOCUSBINDINGKARMAMULTIPLIER":
+                    return objImprovementAdder.focusbindingkarmamultiplier;
+                case "MAGICIANSWAYDISCOUNT":
+                    return objImprovementAdder.magicianswaydiscount;
+                case "BURNOUTSWAY":
+                    return objImprovementAdder.burnoutsway;
                 // No method matches, return a null pointer
                 default:
                     return null;

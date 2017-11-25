@@ -62,9 +62,16 @@ namespace Chummer
             {
                 objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             // Populate the Weapon Category list.
             if (_strLimitToCategories.Length > 0)
@@ -171,7 +178,7 @@ namespace Chummer
 
             Weapon objWeapon = new Weapon(_objCharacter);
             TreeNode objNode = new TreeNode();
-            objWeapon.Create(objXmlWeapon, objNode, null, null);
+            objWeapon.Create(objXmlWeapon, objNode, null, null, null, true, false);
 
             lblWeaponReach.Text = objWeapon.TotalReach.ToString();
             lblWeaponDamage.Text = objWeapon.CalculatedDamage();
@@ -179,12 +186,17 @@ namespace Chummer
             lblWeaponMode.Text = objWeapon.CalculatedMode;
             lblWeaponRC.Text = objWeapon.TotalRC;
             lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy;
+            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
             lblWeaponAvail.Text = objWeapon.TotalAvail;
 
             decimal decItemCost = 0;
             decimal decCost = 0;
-            if (objXmlWeapon["cost"] != null)
+            if (chkFreeItem.Checked)
+            {
+                lblWeaponCost.Text = $"{0:#,0.00¥}";
+                decItemCost = 0;
+            }
+            else if (objXmlWeapon["cost"] != null)
             {
                 if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
                 {
@@ -201,11 +213,9 @@ namespace Chummer
                         decimal.TryParse(strCost.FastEscape('+'), out decMin);
 
                     if (decMax == decimal.MaxValue)
-                    {
-                        lblWeaponCost.Text = $"{decMin:###,###,##0.##¥+}";
-                    }
+                        lblWeaponCost.Text = $"{decMin:#,0.00¥+}";
                     else
-                        lblWeaponCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                        lblWeaponCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
 
                     decItemCost = decMin;
                 }
@@ -217,14 +227,8 @@ namespace Chummer
                     {
                         decCost *= 0.9m;
                     }
-                    lblWeaponCost.Text = $"{decCost:###,###,##0.##¥}";
+                    lblWeaponCost.Text = $"{decCost:#,0.00¥}";
                     decItemCost = decCost;
-
-                    if (chkFreeItem.Checked)
-                    {
-                        lblWeaponCost.Text = $"{0:###,###,##0.##¥}";
-                        decItemCost = 0;
-                    }
                 }
             }
 
@@ -294,12 +298,12 @@ namespace Chummer
 
                     TreeNode objNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, objNode, null, null);
+                    objWeapon.Create(objXmlWeapon, objNode, null, null, null, true, false);
 
                     string strID = objWeapon.SourceID.ToString();
                     string strWeaponName = objWeapon.DisplayName;
-                    string strDice = objWeapon.DicePool;
-                    int intAccuracy = Convert.ToInt32(objWeapon.TotalAccuracy);
+                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
+                    int intAccuracy = objWeapon.TotalAccuracy;
                     string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
                     string strAP = objWeapon.TotalAP;
                     if (strAP == "-")
@@ -368,15 +372,10 @@ namespace Chummer
                     {
                         blnHide = !Mounts.Contains(objXmlWeapon["extramount"].InnerText);
                     }
-                    if (!blnHide && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+                    if (blnHide || !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
                     {
                         continue;
                     }
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter,chkHideOverAvailLimit.Checked))
-                    {
-                        continue;
-                    }
-                    if (blnHide) continue;
                     ListItem objItem = new ListItem
                     {
                         Value = objXmlWeapon["id"]?.InnerText,
@@ -603,7 +602,7 @@ namespace Chummer
                     objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
                     if (objNode != null)
                     {
-                        _strSelectCategory = objNode["category"]?.InnerText;
+                        _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                         _strSelectedWeapon = objNode["id"]?.InnerText;
                         _decMarkup = nudMarkup.Value;
                         _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
@@ -627,7 +626,7 @@ namespace Chummer
                         }
                         if (objNode != null)
                         {
-                            _strSelectCategory = objNode["category"]?.InnerText;
+                            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
                         }
                         _decMarkup = nudMarkup.Value;

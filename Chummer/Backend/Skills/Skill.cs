@@ -70,7 +70,7 @@ namespace Chummer.Skills
 
         }
 
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             KnowledgeSkill objSkillAsKnowledgeSkill = this as KnowledgeSkill;
             objWriter.WriteStartElement("skill");
@@ -95,16 +95,16 @@ namespace Chummer.Skills
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
             objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString());
             objWriter.WriteElementString("default", Default.ToString());
-            objWriter.WriteElementString("rating", Rating.ToString());
-            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
-            objWriter.WriteElementString("specializedrating", specRating.ToString());
-            objWriter.WriteElementString("specbonus", (specRating - rating).ToString());
-            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue).ToString());
+            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
+            objWriter.WriteElementString("specializedrating", specRating.ToString(objCulture));
+            objWriter.WriteElementString("specbonus", (specRating - rating).ToString(objCulture));
+            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue).ToString(objCulture));
             objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
             objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
-            objWriter.WriteElementString("base", Base.ToString());
-            objWriter.WriteElementString("karma", Karma.ToString());
+            objWriter.WriteElementString("base", Base.ToString(objCulture));
+            objWriter.WriteElementString("karma", Karma.ToString(objCulture));
             objWriter.WriteElementString("spec", DisplaySpecialization);
             objWriter.WriteElementString("attribute", Attribute);
             objWriter.WriteElementString("displayattribute", DisplayAttribute);
@@ -112,11 +112,11 @@ namespace Chummer.Skills
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
-            objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString());
-            objWriter.WriteElementString("poolmod", dicePoolModifiers.ToString());
+            objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
+            objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString(objCulture));
+            objWriter.WriteElementString("poolmod", dicePoolModifiers.ToString(objCulture));
             objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString());
-            objWriter.WriteElementString("bp", CurrentKarmaCost().ToString());
+            objWriter.WriteElementString("bp", CurrentKarmaCost().ToString(objCulture));
             objWriter.WriteStartElement("skillspecializations");
             foreach (SkillSpecialization objSpec in Specializations)
             {
@@ -376,7 +376,11 @@ namespace Chummer.Skills
             Source = n["source"]?.InnerText;
             Page = n["page"]?.InnerText;
             if (n["id"] != null)
-                SkillId = Guid.Parse(n["id"]?.InnerText);
+                SkillId = Guid.Parse(n["id"].InnerText);
+            else if (n["suid"] != null)
+                SkillId = Guid.Parse(n["suid"].InnerText);
+            if (n["guid"] != null)
+                Id = Guid.Parse(n["guid"].InnerText);
 
             _translatedName = n["translate"]?.InnerText;
 
@@ -421,7 +425,14 @@ namespace Chummer.Skills
             get { return Rating > 0; }
         }
 
-        public bool CanHaveSpecs => TotalBaseRating > 0 && KarmaUnlocked;
+        public bool CanHaveSpecs
+        {
+            get
+            {
+                return TotalBaseRating > 0 && KarmaUnlocked &&
+                    !_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) || (x.ImproveType == Improvement.ImprovementType.BlockSkillCategorySpecializations && x.ImprovedName == SkillCategory)) && x.Enabled);
+            }
+        }
 
         public Character CharacterObject
         {
@@ -466,20 +477,20 @@ namespace Chummer.Skills
             {
                 if (Name.Contains("Flight"))
                 {
-                    string strFlyString = CharacterObject.Fly;
-                    if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains("Special"))
+                    string strFlyString = CharacterObject.GetFly(GlobalOptions.InvariantCultureInfo);
+                    if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains(LanguageManager.GetString("String_ModeSpecial")))
                         return false;
                 }
                 if (Name.Contains("Swimming"))
                 {
-                    string strSwimString = CharacterObject.Swim;
-                    if (string.IsNullOrEmpty(strSwimString) || strSwimString == "0" || strSwimString.Contains("Special"))
+                    string strSwimString = CharacterObject.GetSwim(GlobalOptions.InvariantCultureInfo);
+                    if (string.IsNullOrEmpty(strSwimString) || strSwimString == "0" || strSwimString.Contains(LanguageManager.GetString("String_ModeSpecial")))
                         return false;
                 }
                 if (Name.Contains("Running"))
                 {
-                    string strMovementString = CharacterObject.Movement;
-                    if (string.IsNullOrEmpty(strMovementString) || strMovementString == "0" || strMovementString.Contains("Special"))
+                    string strMovementString = CharacterObject.GetMovement(GlobalOptions.InvariantCultureInfo);
+                    if (string.IsNullOrEmpty(strMovementString) || strMovementString == "0" || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial")))
                         return false;
                 }
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
@@ -823,6 +834,31 @@ namespace Chummer.Skills
                     {
                         Power power = _character.Powers.FirstOrDefault(x => x.InternalId == source.SourceName);
                         value = power?.DisplayNameShort;
+                    }
+                    break;
+                case Improvement.ImprovementSource.MentorSpirit:
+                    {
+                        MentorSpirit mentor = _character.MentorSpirits.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = mentor?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Metamagic:
+                case Improvement.ImprovementSource.Echo:
+                    {
+                        Metamagic metamagic = _character.Metamagics.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = metamagic?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Art:
+                    {
+                        Art art = _character.Arts.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = art?.DisplayName;
+                    }
+                    break;
+                case Improvement.ImprovementSource.Enhancement:
+                    {
+                        Enhancement enhancement = _character.Enhancements.FirstOrDefault(x => x.InternalId == source.SourceName);
+                        value = enhancement?.DisplayName;
                     }
                     break;
                 case Improvement.ImprovementSource.Custom:

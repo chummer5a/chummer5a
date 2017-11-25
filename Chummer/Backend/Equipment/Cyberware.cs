@@ -651,8 +651,6 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            Improvement objImprovement = new Improvement();
-
             objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID);
             if (blnCopy)
             {
@@ -664,7 +662,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["improvementsource"] != null)
-                _objImprovementSource = objImprovement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objNode.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
@@ -809,7 +807,7 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>obv
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("cyberware");
             if (string.IsNullOrWhiteSpace(_strLimbSlot) && _strCategory != "Cyberlimb")
@@ -820,19 +818,19 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.DisplayAbbrev + " " + TotalAgility.ToString() + ", " + _objCharacter.STR.DisplayAbbrev + " " + TotalStrength.ToString() + ", " + LanguageManager.GetString("String_LimitPhysicalShort") + " " + intLimit.ToString() + ")");
             }
             objWriter.WriteElementString("category", DisplayCategory);
-            objWriter.WriteElementString("ess", CalculatedESS().ToString(GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("ess", CalculatedESS().ToString(objCulture));
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString());
-            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             if (_objCharacter.Options != null)
             {
                 objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             }
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("rating", Rating.ToString());
-            objWriter.WriteElementString("minrating", MinRating.ToString());
-            objWriter.WriteElementString("maxrating", MaxRating.ToString());
+            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("minrating", MinRating.ToString(objCulture));
+            objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
             objWriter.WriteElementString("allowsubsystems", _strAllowSubsystems);
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", Grade.DisplayName);
@@ -845,14 +843,14 @@ namespace Chummer.Backend.Equipment
                 foreach (Gear objGear in _lstGear)
                 {
                     // Use the Gear's SubClass if applicable.
-                    if (objGear.GetType() == typeof(Commlink))
+                    Commlink objCommlink = objGear as Commlink;
+                    if (objCommlink != null)
                     {
-                        Commlink objCommlink = objGear as Commlink;
-                        objCommlink?.Print(objWriter);
+                        objCommlink.Print(objWriter, objCulture);
                     }
                     else
                     {
-                        objGear.Print(objWriter);
+                        objGear.Print(objWriter, objCulture);
                     }
                 }
                 objWriter.WriteEndElement();
@@ -860,7 +858,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("children");
             foreach (Cyberware objChild in _objChildren)
             {
-                objChild.Print(objWriter);
+                objChild.Print(objWriter, objCulture);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
@@ -1174,6 +1172,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _strLocation = value;
+            }
+        }
+
+        /// <summary>
+        /// Original Forced Extra string associted with the 'ware.
+        /// </summary>
+        public string Forced
+        {
+            get
+            {
+                return _strForced;
+            }
+            set
+            {
+                _strForced = value;
             }
         }
 
@@ -2075,7 +2088,7 @@ namespace Chummer.Backend.Equipment
 
                     try
                     {
-                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
                     }
                     catch (XPathException)
                     {
@@ -2086,7 +2099,7 @@ namespace Chummer.Backend.Equipment
 
                     strSecondHalf = strSecondHalf.Trim("[]".ToArray());
                     xprCapacity = nav.Compile(strSecondHalf.Replace("Rating", _intRating.ToString()));
-                    strSecondHalf = "[" + Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo) + "]";
+                    strSecondHalf = "[" + Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
 
                     strReturn += "/" + strSecondHalf;
                 }
@@ -2102,7 +2115,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                    strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }
@@ -2113,7 +2126,7 @@ namespace Chummer.Backend.Equipment
                 }
                 decimal decReturn;
                 if (decimal.TryParse(strReturn, out decReturn))
-                    return decReturn.ToString("N2", GlobalOptions.CultureInfo);
+                    return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 return strReturn;
             }
         }

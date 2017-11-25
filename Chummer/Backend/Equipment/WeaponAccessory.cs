@@ -70,7 +70,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>
-        public void Create(XmlNode objXmlAccessory, TreeNode objNode, Tuple<string, string> strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true)
+        public void Create(XmlNode objXmlAccessory, TreeNode objNode, Tuple<string, string> strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
             _strMount = strMount.Item1;
@@ -153,7 +153,7 @@ namespace Chummer.Backend.Equipment
                     string strChildForceValue = string.Empty;
                     bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == "yes";
                     bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != "no";
-                    bool blnAddChildImprovements = !blnSkipCost;
+                    bool blnAddChildImprovements = blnCreateImprovements;
                     if (objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == "no")
                         blnAddChildImprovements = false;
                     if (objXmlAccessoryGear["rating"] != null)
@@ -373,7 +373,7 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("accessory");
             objWriter.WriteElementString("name", DisplayName);
@@ -382,27 +382,26 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rc", _strRC);
             objWriter.WriteElementString("conceal", _strConceal);
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString());
-            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString());
+            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(objCulture));
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in _lstGear)
                 {
                     // Use the Gear's SubClass if applicable.
-                    if (objGear.GetType() == typeof(Commlink))
+                    Commlink objCommlink = objGear as Commlink;
+                    if (objCommlink != null)
                     {
-                        Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink = (Commlink)objGear;
-                        objCommlink.Print(objWriter);
+                        objCommlink.Print(objWriter, objCulture);
                     }
                     else
                     {
-                        objGear.Print(objWriter);
+                        objGear.Print(objWriter, objCulture);
                     }
                 }
                 objWriter.WriteEndElement();

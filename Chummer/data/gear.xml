@@ -5092,6 +5092,7 @@
 		  </OR>
         </geardetails>
       </required>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>0c800bca-e6ff-475b-a014-c2069f5e364c</id>
@@ -5107,6 +5108,7 @@
       <cost>Rating * 2500</cost>
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <allowrename>True</allowrename>
     </gear>
     <!-- End Region -->
     <!-- Region Tools -->
@@ -6494,6 +6496,7 @@
         <selecttext />
       </bonus>
       <cost>300</cost>
+      <allowrename>True</allowrename>
     </gear>
     <!-- End Region -->
     <!-- Region Survival Gear -->
@@ -7746,6 +7749,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>5fae16cf-c68c-46e8-91b2-ca5220824ba5</id>
@@ -7759,6 +7763,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>082b52f1-9109-40aa-bf0e-8cb364fa2f8c</id>
@@ -7772,6 +7777,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
@@ -8092,6 +8098,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 1000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>b6d50e0c-8c72-458c-8985-3088300fca1a</id>
@@ -8105,6 +8112,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 1000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>70ce43e0-2182-4f24-bdfd-9bc57c510edb</id>
@@ -8118,6 +8126,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 1000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>ead947af-b88b-4b0e-9736-c04d6b21024c</id>
@@ -8131,6 +8140,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 1750</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>6006ea2c-55b2-44cd-88ea-1b2184716485</id>
@@ -8144,6 +8154,7 @@
         <selecttext />
       </bonus>
       <cost>2000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>eb5f507b-bc3c-4d51-b140-80a0098a1e8b</id>
@@ -8157,6 +8168,7 @@
         <selecttext />
       </bonus>
       <cost>500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>ddd25c4d-c165-4840-8525-70197a0fbb3c</id>
@@ -8170,6 +8182,7 @@
         <selecttext />
       </bonus>
       <cost>500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>369de39c-e1e0-4357-ac63-a23a3765f21a</id>
@@ -8183,6 +8196,7 @@
         <selecttext />
       </bonus>
       <cost>1000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>c5b7dddf-8e33-401d-998f-fe89956aa75f</id>
@@ -8196,6 +8210,7 @@
         <selecttext />
       </bonus>
       <cost>1500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <!-- End Region -->
     <!-- Region Magical Supplies -->
@@ -8421,6 +8436,7 @@
         <selecttext />
       </bonus>
       <cost>0</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>b68c62de-6dc0-489a-be2e-42f911fc04f3</id>
@@ -8454,6 +8470,7 @@
         <selecttext />
       </bonus>
       <cost>1000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <!-- End Region -->
     <!-- Region Magical Compounds -->
@@ -9909,6 +9926,7 @@
 		  </OR>
         </geardetails>
       </required>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>d57e91ee-89b6-47ab-86fc-1977b92b79aa</id>
@@ -9966,6 +9984,7 @@
 		  </OR>
         </geardetails>
       </required>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>88c4b801-d7e1-4a20-9ddc-97644e15e85f</id>
@@ -10052,6 +10071,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>4ab02099-2d3c-437f-bdba-26ec919283c3</id>
@@ -11288,6 +11308,7 @@
         <selecttext />
       </bonus>
       <cost>10</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>b817e75b-3e79-49e1-be14-9760c8d7bbc6</id>
@@ -11301,6 +11322,7 @@
         <selecttext />
       </bonus>
       <cost>20</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>0ac1108f-19af-4fe5-9dff-27eea4dbf760</id>
@@ -11314,6 +11336,7 @@
         <selecttext />
       </bonus>
       <cost>5</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>b91bd05d-cae9-4f08-96df-7ce17c007def</id>
@@ -11327,6 +11350,7 @@
         <selecttext />
       </bonus>
       <cost>5</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>79ebc733-ea92-4f6a-a1a3-006f3e30fd86</id>
@@ -11340,6 +11364,7 @@
         <selecttext />
       </bonus>
       <cost>50</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>36d6f722-d5ca-4bbe-a067-b00d405258fb</id>
@@ -11353,6 +11378,7 @@
         <selecttext />
       </bonus>
       <cost>10</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>2e1b37a1-8add-43f8-bf2d-e970cb010f80</id>
@@ -11366,6 +11392,7 @@
         <selecttext />
       </bonus>
       <cost>10</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>1b18e3df-3858-44c8-a3a0-feadc903d916</id>
@@ -11421,6 +11448,7 @@
         <selecttext />
       </bonus>
       <cost>50</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>f639e396-b7f4-4543-9196-4d494de103e4</id>
@@ -11434,6 +11462,7 @@
         <selecttext />
       </bonus>
       <cost>20</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>dd07dead-5322-4f52-aacd-575e2223a9e7</id>
@@ -11447,6 +11476,7 @@
         <selecttext />
       </bonus>
       <cost>5</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>79fee23d-b478-488f-842d-b0a88fabcbd6</id>
@@ -11460,6 +11490,7 @@
         <selecttext />
       </bonus>
       <cost>5</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>fe09e753-8f23-4ae3-84c6-b7704ca09432</id>
@@ -11473,6 +11504,7 @@
         <selecttext />
       </bonus>
       <cost>20</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>f1a07f84-485b-4958-83b9-4736d70251a2</id>
@@ -11486,6 +11518,7 @@
         <selecttext />
       </bonus>
       <cost>20</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>5097064d-3ae8-4e1b-8f37-c391a94c0dab</id>
@@ -11499,6 +11532,7 @@
         <selecttext />
       </bonus>
       <cost>100</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>45da425d-750c-4c2e-ad6c-67bbae1b5823</id>
@@ -11512,6 +11546,7 @@
         <selecttext />
       </bonus>
       <cost>100</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>6e46ffe8-c11a-4fd3-a3d3-518fe1cb186e</id>
@@ -11525,6 +11560,7 @@
         <selecttext />
       </bonus>
       <cost>500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>728d329c-b334-4922-bf7a-81d88d008527</id>
@@ -11538,6 +11574,7 @@
         <selecttext />
       </bonus>
       <cost>500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>a04f38a1-262a-4546-a14e-9715c80eb4ea</id>
@@ -11581,6 +11618,7 @@
         <selecttext />
       </bonus>
       <cost>10</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>eddf3311-dd6d-41c0-aeb6-ad2b424fb12e</id>
@@ -11594,6 +11632,7 @@
         <selecttext />
       </bonus>
       <cost>50</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>099de885-bd5d-4994-86cc-d7be6f2df2a4</id>
@@ -11607,6 +11646,7 @@
         <selecttext />
       </bonus>
       <cost>500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>c975d09f-442a-44c6-9659-b7d6889e77af</id>
@@ -11620,6 +11660,7 @@
         <selecttext />
       </bonus>
       <cost>50</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>5a9a38a2-12c2-478a-b303-9fd61ee7dab4</id>
@@ -11633,6 +11674,7 @@
         <selecttext />
       </bonus>
       <cost>250</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>6f38184c-65e6-4f5f-92a5-86751d693fee</id>
@@ -11646,6 +11688,7 @@
         <selecttext />
       </bonus>
       <cost>1000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>bb89c9b0-ff7d-495c-bc86-bbe88076c1cb</id>
@@ -11659,6 +11702,7 @@
         <selecttext />
       </bonus>
       <cost>20000</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>c7da670c-224e-4afa-a11c-5b54c1af04fc</id>
@@ -11672,6 +11716,7 @@
         <selecttext />
       </bonus>
       <cost>1</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>846ea561-6c64-497d-99fd-a7c798f01ea0</id>
@@ -11685,6 +11730,7 @@
         <selecttext />
       </bonus>
       <cost>1</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>5c86798b-c144-486f-9cc9-c0c8ec5e23b8</id>
@@ -12058,6 +12104,7 @@
         <selecttext />
       </bonus>
       <cost>10</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>828b106c-45bd-43b0-a3c8-a9c37af14f6f</id>
@@ -12091,6 +12138,7 @@
         <selecttext />
       </bonus>
       <cost>5</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>f30bc378-998c-47f4-b31d-398c3641b1d5</id>
@@ -12184,6 +12232,7 @@
         <selecttext />
       </bonus>
       <cost>5</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>f320c0e2-9f0c-4cc2-a658-0ef885d3c5cb</id>
@@ -12197,6 +12246,7 @@
         <selecttext />
       </bonus>
       <cost>20</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>821862d9-b558-4562-8adf-77707cc34bac</id>
@@ -12210,6 +12260,7 @@
         <selecttext />
       </bonus>
       <cost>20</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>0ccad261-f107-4248-afd9-03c6b5257308</id>
@@ -12223,6 +12274,7 @@
         <selecttext />
       </bonus>
       <cost>100</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>e234b55a-bc17-45db-8eec-7cae4baa93ed</id>
@@ -13108,6 +13160,7 @@
         <selecttext />
       </bonus>
       <cost>Rating * 1500</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>40b7ac95-e4ba-4651-a348-fe277fac52bc</id>
@@ -13348,6 +13401,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(500-2500)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>c51b5d51-6f27-4e8b-a521-92c3f1cfdb1e</id>
@@ -13361,6 +13415,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(200-750)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>e30bfc81-66ed-4ea3-aec9-fc80ee886a38</id>
@@ -13374,6 +13429,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(2000-1000000)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>89da3246-093b-4609-8ba1-7ec0a3cf93b7</id>
@@ -13387,6 +13443,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(150-400)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>453d23ce-5709-4542-a4a8-ed2221909e84</id>
@@ -13400,6 +13457,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(250-2000)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>0705fa81-ced2-4a0a-a79f-a44a9973c8b7</id>
@@ -13413,6 +13471,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(100-500)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>4a7c6ff3-2789-4e10-a30d-546ea6eb6524</id>
@@ -13426,6 +13485,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(100-300)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>af82cadb-28f4-4a81-a390-6bba487c680d</id>
@@ -13439,6 +13499,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(500-3000)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>2381ad85-afcc-4967-b196-6fa5d04b27aa</id>
@@ -13452,6 +13513,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(100-500)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>08d41449-fcd2-4917-b8e4-0cbd97ce5570</id>
@@ -13465,6 +13527,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(300-1750)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>e80edf87-2f37-43a1-84a4-72850431f79e</id>
@@ -13478,6 +13541,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(750-3000)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>9dede46d-6f5d-457d-b7eb-02a959b655bf</id>
@@ -13491,6 +13555,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(150-1500)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>b909eb31-99bd-4a42-80e6-2002668f166b</id>
@@ -13504,6 +13569,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(1000-1000000)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>f1de35d0-7e24-4860-8caa-773d5439308b</id>
@@ -13517,6 +13583,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(100-500)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>28848160-65f7-495c-a04a-218b17a9cecb</id>
@@ -13530,6 +13597,7 @@
         <selecttext />
       </bonus>
       <cost>Variable(150-600)</cost>
+      <allowrename>True</allowrename>
     </gear>
     <!-- End Region -->
     <!-- Region Metatype-Specific -->

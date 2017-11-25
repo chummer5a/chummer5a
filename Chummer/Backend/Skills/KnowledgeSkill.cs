@@ -208,18 +208,6 @@ namespace Chummer.Skills
         }
 
         /// <summary>
-        /// Things that modify the dicepool of the skill
-        /// </summary>
-        public override int PoolModifiers
-        {
-            get
-            {
-                int adj = _type == "Language" && CharacterObject.SkillsSection.Linguist ? 1 : 0;
-                return base.PoolModifiers + adj + WoundModifier;
-            }
-        }
-
-        /// <summary>
         /// How much karma this costs. Return value during career mode is undefined
         /// </summary>
         /// <returns></returns>
@@ -229,21 +217,43 @@ namespace Chummer.Skills
             int cost = intTotalBaseRating * (intTotalBaseRating + 1);
             int lower = Base + FreeKarma();
             cost -= lower * (lower + 1);
-            if (CharacterObject.Options.EducationQualitiesApplyOnChargenKarma && HasRelatedBoost())
-            {
-                cost -= Math.Max(intTotalBaseRating - Math.Max(2, lower), 0);
-            }
 
             cost /= 2;
             cost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
             // We have bought the first level with karma, too
             if (lower == 0 && cost > 0)
                 cost += CharacterObject.Options.KarmaNewKnowledgeSkill - CharacterObject.Options.KarmaImproveKnowledgeSkill;
+
+            decimal decMultiplier = 1.0m;
+            int intExtra = 0;
+            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+            {
+                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
+                            cost += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(lower, objLoopImprovement.Minimum - 1));
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                    else if (objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCost)
+                            cost += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(lower, objLoopImprovement.Minimum - 1));
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+            }
+            if (decMultiplier != 1.0m)
+                cost = Convert.ToInt32(Math.Ceiling(cost * decMultiplier));
+            cost += intExtra;
+
             cost +=  //Spec
                     (!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
                     CharacterObject.Options.KarmaKnowledgeSpecialization : 0;
-
-            if (UneducatedEffect()) cost *= 2;
 
             return Math.Max(cost, 0);
         }
@@ -268,24 +278,47 @@ namespace Chummer.Skills
             {
                 return -1;
             }
-            int adjustment = 0;
-            if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
+            int intOptionsCost = 1;
+            int value = 0;
+            if (intTotalBaseRating == 0)
             {
-                adjustment = intTotalBaseRating >= 5 ? 2 : -1;
+                intOptionsCost = CharacterObject.Options.KarmaNewKnowledgeSkill;
+                value = intOptionsCost;
             }
-            if (HasRelatedBoost() && CharacterObject.Created && intTotalBaseRating >= 2)
+            else
             {
-                adjustment -= 1;
+                intOptionsCost = CharacterObject.Options.KarmaNewKnowledgeSkill;
+                value = (intTotalBaseRating + 1) * intOptionsCost;
             }
 
-            int value = intTotalBaseRating == 0 ?
-                CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment :
-                (intTotalBaseRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill + adjustment;
+            decimal decMultiplier = 1.0m;
+            int intExtra = 0;
+            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+            {
+                if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intTotalBaseRating &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
+                            intExtra += objLoopImprovement.Value;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                    else if (objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCost)
+                            intExtra += objLoopImprovement.Value;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+            }
+            if (decMultiplier != 1.0m)
+                value = Convert.ToInt32(Math.Ceiling(value * decMultiplier));
+            value += intExtra;
 
-            value = Math.Max(value, 1);
-            if (UneducatedEffect())
-                value *= 2;
-            return value;
+            return Math.Max(value, Math.Min(1, intOptionsCost));
         }
 
         /// <summary>
@@ -295,48 +328,35 @@ namespace Chummer.Skills
         public override int CurrentSpCost()
         {
             int intPointCost = BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1);
-            if (HasRelatedBoost())
-            {
-                intPointCost = (intPointCost + 1)/2;
-            }
-            return intPointCost;
-        }
 
-        /// <summary>
-        /// This method checks if the character have the related knowledge skill
-        /// quality.
-        /// 
-        /// Eg. If it is a language skill, it returns Character.Linguistic, if
-        /// it is technical it returns Character.TechSchool
-        /// </summary>
-        /// <returns></returns>
-        private bool HasRelatedBoost()
-        {
-            switch (_type)
+            int intExtra = 0;
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
             {
-                case "Language":
-                    return CharacterObject.SkillsSection.Linguist;
-                case "Professional":
-                    return CharacterObject.SkillsSection.TechSchool;
-                case "Street":
-                    return CharacterObject.SkillsSection.SchoolOfHardKnocks;
-                case "Academic":
-                    return CharacterObject.SkillsSection.CollegeEducation;
-                case "Interest":
-                    return false;
+                if (objLoopImprovement.Minimum <= BasePoints &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillPointCost)
+                            intExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                    else if (objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryPointCost)
+                            intExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryPointCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
             }
-            return false;
-        }
+            if (decMultiplier != 1.0m)
+                intPointCost = Convert.ToInt32(Math.Ceiling(intPointCost * decMultiplier));
+            intPointCost += intExtra;
 
-        private bool UneducatedEffect()
-        {
-            switch (_type)
-            {
-                case "Professional":
-                case "Academic":
-                    return CharacterObject.SkillsSection.Uneducated;
-            }
-            return false;
+            return Math.Max(intPointCost, 0);
         }
 
         protected override void SaveExtendedData(XmlTextWriter writer)

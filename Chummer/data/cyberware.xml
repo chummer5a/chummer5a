@@ -7260,6 +7260,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <forbidden>
+		<oneof>
+		  <quality>Celerity</quality>
+		</oneof>
+	  </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>

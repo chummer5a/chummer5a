@@ -1160,30 +1160,62 @@ namespace Chummer
         #endregion
 
         #region Add Improvements Functions
-        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems)
+        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, List<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
+            // We're only re-apply improvements a list of items, not all of them
+            if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objGear.InternalId))
+                return;
             XmlNode objNode = objGear.MyXmlNode;
             if (objNode != null)
             {
-                if (objNode["bonus"] != null)
+                if (objGear.Category == "Stacked Focus")
                 {
-                    ImprovementManager.ForcedValue = objGear.Extra;
-                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objNode["bonus"], false, objGear.Rating, objGear.DisplayNameShort);
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
+                    if (objStack != null)
                     {
-                        objGear.Extra = ImprovementManager.SelectedValue;
-                        TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
-                        if (objGearNode != null)
-                            objGearNode.Text = objGear.DisplayName;
+                        foreach (Gear objFociGear in objStack.Gear)
+                        {
+                            ReaddGearImprovements(objCharacter, objFociGear, treGears, ref strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
+                        }
                     }
                 }
+                objGear.Bonus = objNode["bonus"];
+                objGear.WirelessBonus = objNode["wirelessbonus"];
+                if (blnStackEquipped && objGear.Equipped)
+                {
+                    if (objGear.Bonus != null)
+                    {
+                        ImprovementManager.ForcedValue = objGear.Extra;
+                        ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objGear.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                            if (objGearNode != null)
+                                objGearNode.Text = objGear.DisplayName;
+                        }
+                    }
+                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                    {
+                        ImprovementManager.ForcedValue = objGear.Extra;
+                        ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        {
+                            objGear.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                            if (objGearNode != null)
+                                objGearNode.Text = objGear.DisplayName;
+                        }
+                    }
+                }
+                
             }
             else
             {
                 strOutdatedItems += objGear.DisplayName + "\n";
             }
             foreach (Gear objChild in objGear.Children)
-                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems);
+                ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
         #endregion
 
@@ -2202,7 +2234,7 @@ namespace Chummer
         public static void ClearSpellTab(Character objCharacter, TreeView treSpells)
         {
             // Run through all of the Spells and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, string.Empty);
 
             // Clear the list of Spells.
             foreach (TreeNode objNode in treSpells.Nodes)
@@ -2219,7 +2251,7 @@ namespace Chummer
         public static void ClearAdeptTab(Character objCharacter)
         {
             // Run through all of the Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Power);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Power, string.Empty);
 
             objCharacter.Powers.Clear();
         }
@@ -2230,7 +2262,7 @@ namespace Chummer
         public static void ClearTechnomancerTab(Character objCharacter, TreeView treComplexForms)
         {
             // Run through all of the Complex Forms and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, string.Empty);
 
             // Clear the list of Complex Forms.
             foreach (TreeNode objNode in treComplexForms.Nodes)
@@ -2246,7 +2278,7 @@ namespace Chummer
         public static void ClearAdvancedProgramsTab(Character objCharacter, TreeView treAIPrograms)
         {
             // Run through all of the Advanced Programs and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, string.Empty);
 
             // Clear the list of Advanced Programs.
             foreach (TreeNode objNode in treAIPrograms.Nodes)
@@ -2279,7 +2311,7 @@ namespace Chummer
         public static void ClearCritterTab(Character objCharacter, TreeView treCritterPowers)
         {
             // Run through all of the Critter Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, string.Empty);
 
             // Clear the list of Critter Powers.
             foreach (TreeNode objNode in treCritterPowers.Nodes)
@@ -2322,6 +2354,9 @@ namespace Chummer
             int intFociTotal = 0;
             bool blnWarned = false;
 
+            int intMaxFocusTotal = objCharacter.MAG.TotalValue * 5;
+            if (objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
+                intMaxFocusTotal = Math.Min(intMaxFocusTotal, objCharacter.MAGAdept.TotalValue * 5);
             foreach (Gear objGear in objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
             {
                 List<Focus> removeFoci = new List<Focus>();
@@ -2336,7 +2371,7 @@ namespace Chummer
                         objFocus.Rating = objGear.Rating;
                         intFociTotal += objFocus.Rating;
                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                        if (intFociTotal > objCharacter.MAG.TotalValue * 5 && !objCharacter.IgnoreRules)
+                        if (intFociTotal > intMaxFocusTotal && !objCharacter.IgnoreRules)
                         {
                             // Mark the Gear a Bonded.
                             foreach (Gear objCharacterGear in objCharacter.Gear)
@@ -2477,58 +2512,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Retrieve the information for the Mentor Spirit or Paragon the character might have.
-        /// </summary>
-        /// <param name="mentorType">Type of feature to check for, either Mentor Spirit or Paragon.</param>
-        public static MentorSpirit MentorInformation(Character objCharacter, Improvement.ImprovementType mentorType = Improvement.ImprovementType.MentorSpirit)
-        {
-            //TODO: STORE ALL THIS IN THE ACTUAL CLASS. SCROUNGING IT UP EVERY TIME IS STUPID. 
-            string strMentorSpirit = string.Empty;
-
-            // Look for the Mentor Spirit or Paragon Quality based on the type chosen.
-            Improvement imp = objCharacter.Improvements.FirstOrDefault(i => i.ImproveType == mentorType);
-            if (imp == null)
-                return null;
-            MentorSpirit objReturn = new MentorSpirit(mentorType, imp.UniqueName);
-            // Load the appropriate XML document.
-            XmlNode objXmlMentor = objReturn.MyXmlNode;
-
-            Quality source = objCharacter.Qualities.FirstOrDefault(q => q.InternalId == imp.SourceName);
-            string strAdvantage = string.Empty;
-            string strDisadvantage = string.Empty;
-
-            if (objXmlMentor == null) return null;
-            // Build the list of advantages gained through the Mentor Spirit.
-            if (!objXmlMentor.TryGetStringFieldQuickly("altadvantage", ref strAdvantage))
-            {
-                objXmlMentor.TryGetStringFieldQuickly("advantage", ref strAdvantage);
-            }
-            if (!objXmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref strDisadvantage))
-            {
-                objXmlMentor.TryGetStringFieldQuickly("disadvantage", ref strDisadvantage);
-            }
-
-            if (source != null)
-            {
-                foreach (Improvement qualityImp in objCharacter.Improvements.Where(i => i.SourceName == source.InternalId))
-                {
-                    if (qualityImp.SourceName != source.InternalId) continue;
-                    if (!string.IsNullOrEmpty(qualityImp.Notes))
-                        strAdvantage += " " + LanguageManager.TranslateExtra(qualityImp.Notes) + ".";
-                }
-            }
-
-            // Populate the Mentor Spirit object.
-            objReturn.Name = objXmlMentor["name"]?.Attributes["translate"]?.InnerText ?? objXmlMentor["name"]?.InnerText;
-            objReturn.Advantages = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + " " +
-                                   strAdvantage + "\n\n" +
-                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + " " +
-                                   strDisadvantage;
-
-            return objReturn;
-        }
-
-        /// <summary>
         /// Change the Equipped status of a piece of Gear and all of its children.
         /// </summary>
         /// <param name="objGear">Gear object to change.</param>
@@ -2552,10 +2535,24 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(objGear.Extra))
                                 ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            {
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                {
+                                    // Clear created improvements
+                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                    return;
+                                }
+                                objGear.Extra = ImprovementManager.SelectedValue;
+                            }
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                            objGear.Extra = ImprovementManager.SelectedValue;
+                            {
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                {
+                                    // Clear created improvements
+                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                    return;
+                                }
+                            }
                         }
                     }
                     else
@@ -2570,9 +2567,24 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                         ImprovementManager.ForcedValue = objFociGear.Extra;
                                     if (objGear.Bonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    {
+                                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort))
+                                        {
+                                            // Clear created improvements
+                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                            return;
+                                        }
+                                        objGear.Extra = ImprovementManager.SelectedValue;
+                                    }
                                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                                    {
+                                        if (ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                        {
+                                            // Clear created improvements
+                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -67,12 +67,18 @@ namespace Chummer
 
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
+            if (_loading)
+                return;
+
             // Raise the ConnectionGroupRatingChanged Event when the NumericUpDown's Value changes.
             ConnectionRatingChanged(this);
         }
 
         private void nudLoyalty_ValueChanged(object sender, EventArgs e)
         {
+            if (_loading)
+                return;
+
             // Raise the LoyaltyRatingChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
             LoyaltyRatingChanged(this);

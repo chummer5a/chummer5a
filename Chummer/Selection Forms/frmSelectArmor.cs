@@ -64,9 +64,16 @@ namespace Chummer
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             // Populate the Armor Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -140,10 +147,14 @@ namespace Chummer
 
             if (objXmlArmor["rating"] != null)
             {
+                nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+                while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
                 lblRatingLabel.Visible = true;
                 nudRating.Visible = true;
                 nudRating.Enabled = true;
-                nudRating.Maximum = Convert.ToInt32(objXmlArmor["rating"].InnerText);
                 nudRating.Minimum = 1;
                 nudRating.Value = 1;
             }
@@ -434,8 +445,7 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
-                            Convert.ToInt32(nudRating.Value)))
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked))
                         {
                             TreeNode objNode = new TreeNode();
                             Armor objArmor = new Armor(_objCharacter);
@@ -479,8 +489,7 @@ namespace Chummer
                     List<ListItem> lstArmors = new List<ListItem>();
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked,
-                            Convert.ToInt32(nudRating.Value)))
+                        if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlArmor["id"]?.InnerText;
@@ -529,7 +538,7 @@ namespace Chummer
             }
             if (objNode != null)
             {
-                _strSelectCategory = objNode["category"]?.InnerText;
+                _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                 _strSelectedArmor = objNode["name"]?.InnerText;
                 _decMarkup = nudMarkup.Value;
                 _intRating = Convert.ToInt32(nudRating.Value);
@@ -578,7 +587,7 @@ namespace Chummer
                 decimal decItemCost = 0.0m;
                 if (chkFreeItem.Checked)
                 {
-                    lblCost.Text = $"{0:###,###,##0.##¥}";
+                    lblCost.Text = $"{0:#,0.00¥}";
                     decItemCost = 0;
                 }
                 else if (xmlCostElement.InnerText.StartsWith("Variable"))
@@ -597,10 +606,10 @@ namespace Chummer
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{decMin:###,###,##0.##¥+}";
+                        lblCost.Text = $"{decMin:#,0.00¥+}";
                     }
                     else
-                        lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                        lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
 
                     decItemCost = decMin;
                 }
@@ -616,7 +625,7 @@ namespace Chummer
                     {
                         decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
+                    lblCost.Text = $"{decItemCost:#,0.00¥}";
                 }
                 else
                 {
@@ -626,7 +635,7 @@ namespace Chummer
                     {
                         decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{decItemCost:###,###,##0.##¥}";
+                    lblCost.Text = $"{decItemCost:#,0.00¥}";
                 }
 
                 lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;

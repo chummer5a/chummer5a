@@ -144,7 +144,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
+            if (objXmlArmorNode["bonus"] != null && !blnSkipCost && !blnSkipSelectForms)
             {
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString(), objXmlArmorNode["bonus"], false, 1, DisplayNameShort))
                 {
@@ -310,11 +310,11 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
                     {
                         Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                        objCommlink.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost && !blnSkipSelectForms);
                         objGear = objCommlink;
                     }
                     else
-                        objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+                        objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost && !blnSkipSelectForms);
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
                     objGear.Cost = "0";
@@ -342,7 +342,7 @@ namespace Chummer.Backend.Equipment
 
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
+                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null, null, true, !blnSkipCost && !blnSkipSelectForms);
                     objGearWeapon.ParentID = InternalId;
                     objWeapons.Add(objGearWeapon);
 
@@ -522,17 +522,17 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("armor");
             objWriter.WriteElementString("name", DisplayNameShort);
             objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
-            objWriter.WriteElementString("armor", TotalArmor.ToString());
+            objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString());
-            objWriter.WriteElementString("owncost", OwnCost.ToString());
+            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("armorname", _strArmorName);
@@ -541,21 +541,21 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
             {
-                objMod.Print(objWriter);
+                objMod.Print(objWriter, objCulture);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
                 // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
+                Commlink objCommlink = objGear as Commlink;
+                if (objCommlink != null)
                 {
-                    Commlink objCommlink = objGear as Commlink;
-                    objCommlink?.Print(objWriter);
+                    objCommlink.Print(objWriter, objCulture);
                 }
                 else
                 {
-                    objGear.Print(objWriter);
+                    objGear.Print(objWriter, objCulture);
                 }
             }
             objWriter.WriteEndElement();
@@ -777,7 +777,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("N2", GlobalOptions.CultureInfo);
+                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -787,7 +787,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decimal decReturn;
                     if (decimal.TryParse(_strArmorCapacity, out decReturn))
-                        return decReturn.ToString("N2", GlobalOptions.CultureInfo);
+                        return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }
             }
@@ -1254,7 +1254,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decimal decReturn;
                     if (decimal.TryParse(_strArmorCapacity, out decReturn))
-                        strReturn = decReturn.ToString("N2", GlobalOptions.CultureInfo);
+                        strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     else
                         strReturn = _strArmorCapacity;
                 }
@@ -1276,7 +1276,7 @@ namespace Chummer.Backend.Equipment
                         XPathExpression xprCapacity = nav.Compile(strCapacity);
 
                         strCapacity = nav.Evaluate(xprCapacity).ToString();
-                        strCapacity = (Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString("N2", GlobalOptions.CultureInfo);
+                        strCapacity = (Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString("#,0.##", GlobalOptions.CultureInfo);
                         strReturn = strCapacity;
                     }
                 }

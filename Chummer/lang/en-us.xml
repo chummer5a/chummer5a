@@ -19,7 +19,7 @@
 -->
 <chummer>
   <version>-350</version>
-  <name>English (US)</name>
+  <name>English (en-US)</name>
   <strings>
 	<!-- Meta Strings -->
 	<string>
@@ -4497,6 +4497,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_AdeptWayDiscount</key>
       <text>Bonded Foci Qualifying for Adept Way Discount:</text>
     </string>
+    <string>
+      <key>Menu_RenameExtraText</key>
+      <text>&amp;Remame Extra Text</text>
+    </string>
     <!-- End Region-->
     <!-- Region Vehicles Tab -->
     <string>
@@ -4911,9 +4915,13 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
       <text>Hide items that are over the Availability Limit during character creation</text>
     </string>
-	<string>
+    <string>
       <key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
       <text>Allow skill points to be used to buy specializations for karma-bought skills</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
+      <text>Mystic Adepts use second MAG attribute for Adept abilities instead of special PP rules</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>
@@ -8698,7 +8706,7 @@ Do you want to continue?</text>
 	</string>
 	<string>
 	  <key>Message_ImprovementLoadError</key>
-	  <text>Chummer5 encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\nChummer5 will continue loading this character, but to fix the issue, please Re-apply Improvements for this character once it has loaded.</text>
+	  <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
 	</string>
     <!-- End Region -->
     <!-- End Region -->

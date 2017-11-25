@@ -13,22 +13,7 @@ namespace Chummer.Skills
 {
     public class SkillsSection : INotifyPropertyChanged
     {
-        public Action<object> CollegeEducationChanged;
-        public Action<object> JackOfAllTradesChanged;
-        public Action<object> LinguistChanged;
-        public Action<object> SchoolOfHardKnocksChanged;
-        public Action<object> TechSchoolChanged;
-        public Action<object> UncouthChanged;
-        public Action<object> UneducatedChanged;
-        
         private readonly Character _character;
-        private bool _blnUneducated;
-        private bool _blnJackOfAllTrades;
-        private bool _blnCollegeEducation;
-        private bool _blnUncouth;
-        private bool _blnSchoolOfHardKnocks;
-        private bool _blnTechSchool;
-        private bool _blnLinguist;
         private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
 
         public SkillsSection(Character character)
@@ -284,13 +269,6 @@ namespace Chummer.Skills
                 SkillPointsMaximum = intTmp;
             if (skillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
                 SkillGroupPointsMaximum = intTmp;
-            skillNode.TryGetBoolFieldQuickly("uneducated", ref _blnUneducated);
-            skillNode.TryGetBoolFieldQuickly("uncouth", ref _blnUncouth);
-            skillNode.TryGetBoolFieldQuickly("schoolofhardknocks", ref _blnSchoolOfHardKnocks);
-            skillNode.TryGetBoolFieldQuickly("collegeeducation", ref _blnCollegeEducation);
-            skillNode.TryGetBoolFieldQuickly("jackofalltrades", ref _blnJackOfAllTrades);
-            skillNode.TryGetBoolFieldQuickly("techschool", ref _blnTechSchool);
-            skillNode.TryGetBoolFieldQuickly("linguist", ref _blnLinguist);
 
             Timekeeper.Finish("load_char_skills");
         }
@@ -368,13 +346,6 @@ namespace Chummer.Skills
 
             writer.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("uneducated", Uneducated.ToString());
-            writer.WriteElementString("uncouth", Uncouth.ToString());
-            writer.WriteElementString("schoolofhardknocks", SchoolOfHardKnocks.ToString());
-            writer.WriteElementString("collegeeducation", CollegeEducation.ToString());
-            writer.WriteElementString("jackofalltrades", JackOfAllTrades.ToString());
-            writer.WriteElementString("techschool", TechSchool.ToString());
-            writer.WriteElementString("linguist", Linguist.ToString());
 
             writer.WriteStartElement("skills");
             foreach (Skill skill in Skills)
@@ -584,117 +555,6 @@ namespace Chummer.Skills
         /// </summary>
         public int SkillGroupPointsMaximum { get; set; }
 
-        /// <summary>
-        /// Whether or not Uneducated is enabled.
-        /// </summary>
-        public bool Uneducated
-        {
-            get { return _blnUneducated; }
-            set
-            {
-                bool blnOldValue = _blnUneducated;
-                _blnUneducated = value;
-
-                if (blnOldValue != value)
-                    UneducatedChanged?.Invoke(_character);
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Jack of All Trades is enabled.
-        /// </summary>
-        public bool JackOfAllTrades
-        {
-            get { return _blnJackOfAllTrades; }
-            set
-            {
-                bool blnOldValue = _blnJackOfAllTrades;
-                _blnJackOfAllTrades = value;
-
-                if (blnOldValue != value)
-                    JackOfAllTradesChanged?.Invoke(_character);
-            }
-        }
-
-        /// <summary>
-        /// Whether or not College Education is enabled.
-        /// </summary>
-        public bool CollegeEducation
-        {
-            get { return _blnCollegeEducation; }
-            set
-            {
-                bool blnOldValue = _blnCollegeEducation;
-                _blnCollegeEducation = value;
-
-                if (blnOldValue != value)
-                    CollegeEducationChanged?.Invoke(_character);
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Uncouth is enabled.
-        /// </summary>
-        public bool Uncouth
-        {
-            get { return _blnUncouth; }
-            set
-            {
-                bool blnOldValue = _blnUncouth;
-                _blnUncouth = value;
-
-                if (blnOldValue != value)
-                    UncouthChanged?.Invoke(_character);
-            }
-        }
-
-        /// <summary>
-        /// Whether or not School of Hard Knocks is enabled.
-        /// </summary>
-        public bool SchoolOfHardKnocks
-        {
-            get { return _blnSchoolOfHardKnocks; }
-            set
-            {
-                bool blnOldValue = _blnSchoolOfHardKnocks;
-                _blnSchoolOfHardKnocks = value;
-
-                if (blnOldValue != value)
-                    SchoolOfHardKnocksChanged?.Invoke(_character);
-            }
-        }
-
-        /// <summary>
-        /// Whether or not TechSchool is enabled.
-        /// </summary>
-        public bool TechSchool
-        {
-            get { return _blnTechSchool; }
-            set
-            {
-                bool blnOldValue = _blnTechSchool;
-                _blnTechSchool = value;
-
-                if (blnOldValue != value)
-                    TechSchoolChanged?.Invoke(_character);
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Linguist is enabled.
-        /// </summary>
-        public bool Linguist
-        {
-            get { return _blnLinguist; }
-            set
-            {
-                bool blnOldValue = _blnLinguist;
-                _blnLinguist = value;
-
-                if (blnOldValue != value)
-                    LinguistChanged?.Invoke(_character);
-            }
-        }
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
             ExoticSkill rhsExoticSkill = (rhs.IsExoticSkill ? rhs : null) as ExoticSkill;
@@ -825,13 +685,13 @@ namespace Chummer.Skills
         }
 
 
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             foreach (Skill skill in Skills)
             {
                 if ((_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0) && skill.Enabled)
                 {
-                    skill.Print(objWriter);
+                    skill.Print(objWriter, objCulture);
                 }
             }
 
@@ -839,13 +699,13 @@ namespace Chummer.Skills
             {
                 if (skillgroup.Rating > 0)
                 {
-                    skillgroup.Print(objWriter);
+                    skillgroup.Print(objWriter, objCulture);
                 }
             }
 
             foreach (KnowledgeSkill skill in KnowledgeSkills)
             {
-                skill.Print(objWriter);
+                skill.Print(objWriter, objCulture);
             }
         }
     }

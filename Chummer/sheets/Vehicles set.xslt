@@ -350,9 +350,7 @@
       <tr>
         <td class="AttribName"><xsl:value-of select="$lang.VehicleCost"/></td>
         <td class="AttribValue">
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="cost"/>
-          </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
+          <xsl:value-of select="cost"/><xsl:value-of select="$lang.NuyenSymbol"/>
         </td>
       </tr>
   </xsl:template>

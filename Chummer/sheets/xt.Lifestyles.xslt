@@ -32,9 +32,7 @@
           <xsl:value-of select="baselifestyle"/>
         </td>
         <td style="text-align: center;white-space: nowrap;">
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="totalmonthlycost"/>        
-          </xsl:call-template>
+          <xsl:value-of select="totalmonthlycost"/>
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </td>
         <td style="text-align: center">

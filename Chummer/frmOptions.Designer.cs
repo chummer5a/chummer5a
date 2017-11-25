@@ -243,7 +243,6 @@ namespace Chummer
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.chkAllowPointBuySpecializationsOnKarmaSkills = new System.Windows.Forms.CheckBox();
             this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
-            this.chkEducationQualitiesApplyOnChargenKarma = new System.Windows.Forms.CheckBox();
             this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
             this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
             this.chkMysAdPp = new System.Windows.Forms.CheckBox();
@@ -276,6 +275,7 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2761,9 +2761,9 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkMysAdeptSecondMAGAttribute);
             this.tabHouseRules.Controls.Add(this.chkAllowPointBuySpecializationsOnKarmaSkills);
             this.tabHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder);
-            this.tabHouseRules.Controls.Add(this.chkEducationQualitiesApplyOnChargenKarma);
             this.tabHouseRules.Controls.Add(this.chkPrioritySpellsAsAdeptPowers);
             this.tabHouseRules.Controls.Add(this.chkFreeMartialArtSpecialization);
             this.tabHouseRules.Controls.Add(this.chkMysAdPp);
@@ -2802,7 +2802,7 @@ namespace Chummer
             // chkAllowPointBuySpecializationsOnKarmaSkills
             // 
             this.chkAllowPointBuySpecializationsOnKarmaSkills.AutoSize = true;
-            this.chkAllowPointBuySpecializationsOnKarmaSkills.Location = new System.Drawing.Point(8, 394);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Location = new System.Drawing.Point(8, 371);
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Name = "chkAllowPointBuySpecializationsOnKarmaSkills";
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Size = new System.Drawing.Size(366, 17);
             this.chkAllowPointBuySpecializationsOnKarmaSkills.TabIndex = 34;
@@ -2815,7 +2815,7 @@ namespace Chummer
             // chkReverseAttributePriorityOrder
             // 
             this.chkReverseAttributePriorityOrder.AutoSize = true;
-            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(8, 371);
+            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(8, 348);
             this.chkReverseAttributePriorityOrder.Name = "chkReverseAttributePriorityOrder";
             this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(251, 17);
             this.chkReverseAttributePriorityOrder.TabIndex = 33;
@@ -2823,18 +2823,6 @@ namespace Chummer
             this.chkReverseAttributePriorityOrder.Text = "Spend Karma on Attributes before Priority Points";
             this.chkReverseAttributePriorityOrder.UseVisualStyleBackColor = true;
             this.chkReverseAttributePriorityOrder.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkEducationQualitiesApplyOnChargenKarma
-            // 
-            this.chkEducationQualitiesApplyOnChargenKarma.AutoSize = true;
-            this.chkEducationQualitiesApplyOnChargenKarma.Location = new System.Drawing.Point(8, 348);
-            this.chkEducationQualitiesApplyOnChargenKarma.Name = "chkEducationQualitiesApplyOnChargenKarma";
-            this.chkEducationQualitiesApplyOnChargenKarma.Size = new System.Drawing.Size(381, 17);
-            this.chkEducationQualitiesApplyOnChargenKarma.TabIndex = 32;
-            this.chkEducationQualitiesApplyOnChargenKarma.Tag = "Checkbox_Option_EducationQualitiesApplyOnChargenKarma";
-            this.chkEducationQualitiesApplyOnChargenKarma.Text = "Education qualities give karma discount for knowledge skills in create mode";
-            this.chkEducationQualitiesApplyOnChargenKarma.UseVisualStyleBackColor = true;
-            this.chkEducationQualitiesApplyOnChargenKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPrioritySpellsAsAdeptPowers
             // 
@@ -2870,6 +2858,7 @@ namespace Chummer
             this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
             this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
             this.chkMysAdPp.UseVisualStyleBackColor = true;
+            this.chkMysAdPp.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAlternateMetatypeAttributeKarma
             // 
@@ -2881,6 +2870,7 @@ namespace Chummer
             this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
             this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
             this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
+            this.chkAlternateMetatypeAttributeKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // label4
             // 
@@ -3243,6 +3233,20 @@ namespace Chummer
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
+            // chkMysAdeptSecondMAGAttribute
+            // 
+            this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
+            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(8, 394);
+            this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
+            this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
+            this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
+    "rules";
+            this.tipTooltip.SetToolTip(this.chkMysAdeptSecondMAGAttribute, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
+            this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
+            this.chkMysAdeptSecondMAGAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -3572,7 +3576,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkDronemodsMaximumPilot;
         private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
         private System.Windows.Forms.CheckBox chkLiveCustomData;
-        private System.Windows.Forms.CheckBox chkEducationQualitiesApplyOnChargenKarma;
         private System.Windows.Forms.CheckBox chkReverseAttributePriorityOrder;
         private System.Windows.Forms.CheckBox chkHideItemsOverAvail;
         private System.Windows.Forms.CheckBox chkAllowHoverIncrement;
@@ -3591,5 +3594,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDecreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.CheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
         private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
+        private System.Windows.Forms.CheckBox chkMysAdeptSecondMAGAttribute;
     }
 }

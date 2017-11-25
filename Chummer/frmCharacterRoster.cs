@@ -88,11 +88,65 @@ namespace Chummer
                 objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
             }
 
+            TreeNode[] lstFavoritesNodes = new TreeNode[lstFavorites.Count];
+            object lstFavoritesNodesLock = new object();
+            TreeNode[] lstRecentsNodes = new TreeNode[lstRecents.Count];
+            object lstRecentsNodesLock = new object();
+            TreeNode[] lstWatchNodes = new TreeNode[lstWatch.Count];
+            object lstWatchNodesLock = new object();
             Parallel.Invoke(
-                () => { if (objFavouriteNode != null) Parallel.ForEach(lstFavorites, strFile => CacheCharacter(strFile, objFavouriteNode)); },
-                () => { if (objRecentNode != null) Parallel.ForEach(lstRecents, strFile => CacheCharacter(strFile, objRecentNode)); },
-                () => { if (objWatchNode != null) Parallel.ForEach(lstWatch, strFile => CacheCharacter(strFile, objWatchNode)); }
-                );
+                () => {
+                    if (objFavouriteNode != null)
+                        Parallel.For(0, lstFavorites.Count, i =>
+                        {
+                            string strFile = lstFavorites[i];
+                            TreeNode objNode = CacheCharacter(strFile);
+                            lock (lstFavoritesNodesLock)
+                                lstFavoritesNodes[i] = objNode;
+                        });
+
+                    for(int i = 0; i < lstFavoritesNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstFavoritesNodes[i];
+                        if (objNode != null)
+                            objFavouriteNode.Nodes.Add(objNode);
+                    }
+                },
+                () => {
+                    if (objRecentNode != null)
+                        Parallel.For(0, lstRecents.Count, i =>
+                        {
+                            string strFile = lstRecents[i];
+                            TreeNode objNode = CacheCharacter(strFile);
+                            lock (lstRecentsNodesLock)
+                                lstRecentsNodes[i] = objNode;
+                        });
+
+                    for (int i = 0; i < lstRecentsNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstRecentsNodes[i];
+                        if (objNode != null)
+                            objRecentNode.Nodes.Add(objNode);
+                    }
+                },
+                () =>
+                {
+                    if (objWatchNode != null)
+                        Parallel.For(0, lstWatch.Count, i =>
+                        {
+                            string strFile = lstWatch[i];
+                            TreeNode objNode = CacheCharacter(strFile);
+                            lock (lstWatchNodesLock)
+                                lstWatchNodes[i] = objNode;
+                        });
+
+                    for (int i = 0; i < lstWatchNodes.Length; i++)
+                    {
+                        TreeNode objNode = lstWatchNodes[i];
+                        if (objNode != null)
+                            objWatchNode.Nodes.Add(objNode);
+                    }
+                });
             if (objFavouriteNode != null)
                 treCharacterList.Nodes.Add(objFavouriteNode);
             if (objRecentNode != null)
@@ -106,10 +160,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strFile"></param>
         /// <param name="objParentNode"></param>
-        private void CacheCharacter(string strFile, TreeNode objParentNode)
+        private TreeNode CacheCharacter(string strFile)
         {
             if (!File.Exists(strFile))
-                return;
+                return null;
             XmlDocument objXmlSource = new XmlDocument();
             // If we run into any problems loading the character cache, fail out early.
             try
@@ -121,11 +175,11 @@ namespace Chummer
             }
             catch (IOException)
             {
-                return;
+                return null;
             }
             catch (XmlException)
             {
-                return;
+                return null;
             }
             CharacterCache objCache = new CharacterCache();
             XmlNode objXmlSourceNode = objXmlSource.SelectSingleNode("/character");
@@ -176,8 +230,8 @@ namespace Chummer
             {
                 _lstCharacterCache.Add(objCache);
                 objNode.Tag = _lstCharacterCache.IndexOf(objCache);
-                objParentNode.Nodes.Add(objNode);
             }
+            return objNode;
         }
 
         /// <summary>

@@ -49,10 +49,24 @@
             <tr><td>
               <strong><xsl:value-of select="name" /></strong> (<xsl:value-of select="metatype" />)
               &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-              <strong>
-                <xsl:value-of select="$lang.Movement" />:
-              </strong>
-              <xsl:call-template name="MovementRate"/>
+              <xsl:if test="movementwalk != '' and movementwalk != '0'">
+                <strong><xsl:value-of select="$lang.Movement"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementwalk"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="movementswim != '' and movementswim != '0'">
+                <strong><xsl:value-of select="$lang.Swim"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementswim"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="movementfly != '' and movementfly != '0'">
+                <strong><xsl:value-of select="$lang.Fly"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementfly"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
               <table width="100%" cellspacing="0" cellpadding="2">
                 <tr>
                   <td width="9%" align="center"><strong><xsl:value-of select="$lang.BOD"/></strong></td>
@@ -523,9 +537,7 @@
               </xsl:if>
 
               <p><strong><xsl:value-of select="$lang.Nuyen"/>: </strong>
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                </xsl:call-template>
+                <xsl:value-of select="nuyen"/>
                 <xsl:value-of select="$lang.NuyenSymbol"/>
               </p>
 

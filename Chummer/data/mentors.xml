@@ -1989,7 +1989,7 @@
           <name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Mystic Armor, Empathic Healing" />
+              <selectpower limittopowers="Mystic Armor,Empathic Healing" />
             </selectpowers>
           </bonus>
         </choice>
@@ -2001,7 +2001,7 @@
       <id>833ce699-081b-454d-ac93-5c2bd2c61862</id>
       <name>Death</name>
       <advantage>All: +4 ranks of the Knowledge Skill Anatomy, Disease, Infected, or Undead (choose one).</advantage>
-      <disadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must frst pass a Charisma + Willpower (3) Test.</disadvantage>
+      <disadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must first pass a Charisma + Willpower (3) Test.</disadvantage>
       <bonus>
         <selectskill knowledgeskills="True" limittoskill="Anatomy,Disease,Infected,Undead">
           <val>4</val>
@@ -2012,14 +2012,14 @@
         <choice>
           <name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
           <bonus>
-
+            <!-- TODO: Dicepool modifiers for individual spells -->
           </bonus>
         </choice>
         <choice>
           <name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Killing Hands, Plague Cloud" />
+              <selectpower limittopowers="Killing Hands,Plague Cloud" />
             </selectpowers>
           </bonus>
         </choice>

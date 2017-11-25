@@ -27,6 +27,7 @@ using System.ComponentModel;
  using System.Linq;
 using Codaxy.WkHtmlToPdf;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -36,16 +37,30 @@ namespace Chummer
         private XmlDocument _objCharacterXML = new XmlDocument();
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading = false;
+        private CultureInfo objPrintCulture = GlobalOptions.CultureInfo;
+        private BackgroundWorker _workerRefresher = new BackgroundWorker();
+
         #region Control Events
         public frmViewer()
         {
+            _workerRefresher.WorkerSupportsCancellation = true;
+            _workerRefresher.WorkerReportsProgress = false;
+            _workerRefresher.DoWork += AsyncRefresh;
+            _workerRefresher.RunWorkerCompleted += FinishRefresh;
             if (_strSelectedSheet.StartsWith("Shadowrun 4"))
             {
                 _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
             }
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage && !_strSelectedSheet.Contains('\\'))
-                _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
-            else if (GlobalOptions.Language == GlobalOptions.DefaultLanguage && _strSelectedSheet.Contains('\\'))
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                if (!_strSelectedSheet.Contains('\\'))
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
+                else if (_strSelectedSheet.IndexOf('-') == -1 || _strSelectedSheet.IndexOf('-') > _strSelectedSheet.IndexOf('\\'))
+                {
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet.Substring(_strSelectedSheet.IndexOf('\\') + 1));
+                }
+            }
+            else if (_strSelectedSheet.Contains('\\'))
                 _strSelectedSheet = _strSelectedSheet.Substring(_strSelectedSheet.LastIndexOf('\\') + 1, _strSelectedSheet.Length - 1 - _strSelectedSheet.LastIndexOf('\\'));
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
@@ -55,6 +70,24 @@ namespace Chummer
 
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
+            ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
+            {
+                cmsPrintButton,
+                cmsSaveButton
+            };
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    {
+                        if (objItem.Tag != null)
+                        {
+                            objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                        }
+                    }
+                }
+            }
             MoveControls();
         }
 
@@ -232,15 +265,18 @@ namespace Chummer
         /// </summary>
         public void RefreshView()
         {
-            // Create a delegate to handle refreshing the window.
-            MethodInvoker objRefreshDelegate = AsyncRefresh;
-            objRefreshDelegate.BeginInvoke(null, null);
+            if (_workerRefresher.IsBusy)
+            {
+                _workerRefresher.CancelAsync();
+            }
+            Cursor = Cursors.WaitCursor;
+            _workerRefresher.RunWorkerAsync();
         }
 
         /// <summary>
         /// Update the contents of the Viewer window.
         /// </summary>
-        private void AsyncRefresh()
+        private void AsyncRefresh(object sender, EventArgs e)
         {
             // Write the Character information to a MemoryStream so we don't need to create any files.
             MemoryStream objStream = new MemoryStream();
@@ -254,9 +290,9 @@ namespace Chummer
 
             foreach (Character objCharacter in _lstCharacters)
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter);
+                objCharacter.PrintToStream(objStream, objWriter, objPrintCulture);
 #else
-                objCharacter.PrintToStream(objWriter);
+                objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
 #endif
 
             // </characters>
@@ -279,6 +315,11 @@ namespace Chummer
 
             _objCharacterXML = objCharacterXML;
             GenerateOutput();
+        }
+
+        private void FinishRefresh(object sender, EventArgs e)
+        {
+            Cursor = Cursors.Default;
         }
 
         private void MoveControls()
@@ -542,6 +583,13 @@ namespace Chummer
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
+            try
+            {
+                objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue.ToString());
+            }
+            catch (CultureNotFoundException)
+            {
+            }
             if (_blnLoading)
                 return;
             string strOldSelected = _strSelectedSheet;
@@ -571,7 +619,7 @@ namespace Chummer
                 }
             }
             _blnLoading = false;
-            GenerateOutput();
+            RefreshView();
         }
     }
 }
