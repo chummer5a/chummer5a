@@ -5,7 +5,7 @@
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:template name="Lifestyles">
 
-    <tr style="font-weight: bold; text-transform: uppercase;">
+    <tr class="title">
       <td width="50%">
         <xsl:value-of select="$lang.Lifestyle"/>
       </td>

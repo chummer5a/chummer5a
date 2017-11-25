@@ -119,10 +119,8 @@
 
     <table class="rowsummary">
     <tr>
-      <td width="30%">
-        <xsl:call-template name="fnx-uc">
-          <xsl:with-param name="string" select="$txt"/>
-        </xsl:call-template>
+      <td width="30%" class="upper">
+        <xsl:value-of select="$txt"/>
       </td>
       <xsl:if test="$buttons != 'N'">
         <xsl:variable name="blk">

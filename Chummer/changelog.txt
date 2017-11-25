@@ -280,6 +280,7 @@ Application Changes:
 - Handedness now prints in a localized fashion, and will now display the appropriate value if the character is ambidextrous. Part of fix for #2098.
 - Fixed translations for contact tabs and contact controls. Part of fix for #2098.
 - Fixed weapon mount strings not being localized in the UI displaying info about a selected weapon. Part of fix for #2098.
+- Altered the Shadowrun 5 character sheet set so that it can use language-depedent stylesheets. Made the German version of the character sheet not capitalize all letters in any classes. Fixes #2095.
 
 Data Changes:
 
