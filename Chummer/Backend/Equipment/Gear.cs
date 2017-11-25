@@ -251,21 +251,23 @@ namespace Chummer.Backend.Equipment
                         ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-                    TreeNode objGearWeaponNode = new TreeNode();
+                    List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null, null, true, blnAddImprovements);
+                    objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons, null, true, blnAddImprovements);
                     objGearWeapon.ParentID = InternalId;
-                    objGearWeaponNode.ForeColor = SystemColors.GrayText;
-                    if (blnAerodynamic)
+                    foreach (TreeNode objLoopNode in lstGearWeaponNodes)
                     {
-                        objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
-                        objGearWeapon.Range = "Aerodynamic Grenades";
-                        objGearWeaponNode.Text = objGearWeapon.DisplayName;
-                        _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
-                        objNode.Text = DisplayName;
+                        objLoopNode.ForeColor = SystemColors.GrayText;
+                        if (blnAerodynamic)
+                        {
+                            objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
+                            objGearWeapon.Range = "Aerodynamic Grenades";
+                            objLoopNode.Text = objGearWeapon.DisplayName;
+                            _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
+                            objNode.Text = DisplayName;
+                        }
+                        objWeaponNodes.Add(objLoopNode);
                     }
-
-                    objWeaponNodes.Add(objGearWeaponNode);
                     objWeapons.Add(objGearWeapon);
 
                     _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);

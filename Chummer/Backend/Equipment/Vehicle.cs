@@ -297,11 +297,12 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
                 {
                     bool blnAttached = false;
-                    TreeNode objWeaponNode = new TreeNode();
+                    List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                     Weapon objWeapon = new Weapon(_objCharacter);
 
+                    List<Weapon> objSubWeapons = new List<Weapon>();
                     XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                    objWeapon.Create(objXmlWeaponNode, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                    objWeapon.Create(objXmlWeaponNode, lstWeaponNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSubWeapons, cmsVehicleWeaponAccessoryGear);
                     objWeapon.ParentID = InternalId;
                     objWeapon.Cost = 0;
                     objWeapon.VehicleMounted = true;
@@ -312,12 +313,16 @@ namespace Chummer.Backend.Equipment
                         if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                         {
                             objMod.Weapons.Add(objWeapon);
+                            objMod.Weapons.AddRange(objSubWeapons);
                             foreach (TreeNode objModNode in objNode.Nodes)
                             {
                                 if (objModNode.Tag.ToString() == objMod.InternalId)
                                 {
-                                    objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-                                    objModNode.Nodes.Add(objWeaponNode);
+                                    foreach (TreeNode objLoopNode in lstWeaponNodes)
+                                    {
+                                        objLoopNode.ContextMenuStrip = cmsVehicleWeapon;
+                                        objModNode.Nodes.Add(objLoopNode);
+                                    }
                                     objModNode.Expand();
                                     blnAttached = true;
                                     break;
@@ -339,8 +344,11 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (objModNode.Tag.ToString() == objMod.InternalId)
                                     {
-                                        objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-                                        objModNode.Nodes.Add(objWeaponNode);
+                                        foreach (TreeNode objLoopNode in lstWeaponNodes)
+                                        {
+                                            objLoopNode.ContextMenuStrip = cmsVehicleWeapon;
+                                            objModNode.Nodes.Add(objLoopNode);
+                                        }
                                         objModNode.Expand();
                                         blnAttached = true;
                                         break;
@@ -352,7 +360,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Look for Weapon Accessories.
-                    if (objXmlWeapon["accessories"] != null)
+                    if (objXmlWeapon["accessories"] != null && lstWeaponNodes.Count > 0)
                     {
                         foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                         {
@@ -370,8 +378,8 @@ namespace Chummer.Backend.Equipment
 
                             objWeapon.WeaponAccessories.Add(objMod);
 
-                            objWeaponNode.Nodes.Add(objModNode);
-                            objWeaponNode.Expand();
+                            lstWeaponNodes[0].Nodes.Add(objModNode);
+                            lstWeaponNodes[0].Expand();
                         }
                     }
                 }

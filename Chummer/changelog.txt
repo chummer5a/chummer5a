@@ -276,6 +276,7 @@ Application Changes:
 - Fixed a bug where improvements that would ask the user to select an adept power to add would not abide by the "ignorerating" node when it was present.
 - Added a house rule that changes Mystic Adepts so that instead of using special rules for obtaining and managing PP, they will have a separate MAG rating to be used for Adept powers and PP. Initiation and Foci will use the lower of the two MAG ratings if this rule is enabled.
 - Fixed a bug where if points and/or karma were allocated to a special attribute to which access was later removed in Create mode, those points and/or karma would not get freed up.
+- Weapons can now add more weapons (not just underbarreled weapons).
 
 Data Changes:
 
@@ -424,7 +425,8 @@ Data Changes:
 - Lightning Reflexes properly gives +1 die on defense tests.
 - Jack of All Trades now properly gives its bonus up to Rating 5 and only applies its penalty beyond Rating 5.
 - Fixed incorrect weapon stats for the Marpingen Pro, Mannlicher Dirmingen SX BD and Pressure KS-X.
-- Fixed incorrect stats for the Ares Matilda drone. 
+- Fixed incorrect stats for the Ares Matilda drone.
+- Fixed XM30 Kits that were allowed to be taken separately from the main XM30 weapon. Buying an XM30 now adds all kits to the character's weapons list. Fixed XM30's Grenade Launcher kit so that it is not strictly an underbarrel weapon, but a weapon kit that can be treated like other weapon kits (i.e. it can be made into an underbarrel weapon or used as the primary configuration).
 
 New Strings:
 - Message_Improvement_EmptySelectionList

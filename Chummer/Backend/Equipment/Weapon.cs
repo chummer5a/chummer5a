@@ -86,11 +86,11 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Weapon from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
+        /// <param name="lstNodes">List of TreeNodes to populate a TreeView.</param>
         /// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlWeapon, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true, bool blnCreateImprovements = true)
+        public void Create(XmlNode objXmlWeapon, List<TreeNode> lstNodes, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, List<Weapon> objWeapons, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
@@ -198,8 +198,14 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("spec2", ref _strSpec2);
             objXmlWeapon.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory);
 
-            objNode.Text = DisplayName;
-            objNode.Tag = _guiID.ToString();
+            TreeNode objNode = null;
+            if (lstNodes != null)
+            {
+                objNode = new TreeNode();
+                objNode.Text = DisplayName;
+                objNode.Tag = _guiID.ToString();
+                lstNodes.Add(objNode);
+            }
 
             // If the Weapon comes with an Underbarrel Weapon, add it.
             if (objXmlWeapon.InnerXml.Contains("<underbarrels>") && blnCreateChildren)
@@ -207,19 +213,25 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlUnderbarrel in objXmlWeapon["underbarrels"].ChildNodes)
                 {
                     Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
-                    TreeNode objUnderbarrelNode = new TreeNode();
+                    List<TreeNode> lstUnderbarrelNodes = lstNodes == null ? null : new List<TreeNode>();
                     XmlNode objXmlWeaponNode =
                         objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-                    objUnderbarrelWeapon.Create(objXmlWeaponNode, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, true, blnCreateImprovements);
+                    objUnderbarrelWeapon.Create(objXmlWeaponNode, lstUnderbarrelNodes, cmsWeapon, cmsWeaponAccessory, objWeapons, cmsWeaponAccessoryGear, true, blnCreateImprovements);
                     if (!AllowAccessory)
                         objUnderbarrelWeapon.AllowAccessory = false;
                     objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.Parent = this;
                     _lstUnderbarrel.Add(objUnderbarrelWeapon);
-                    objUnderbarrelNode.ContextMenuStrip = cmsWeapon;
-                    objUnderbarrelNode.ForeColor = SystemColors.GrayText;
-                    objNode.Nodes.Add(objUnderbarrelNode);
+                    if (lstNodes != null)
+                    {
+                        foreach (TreeNode objLoopNode in lstUnderbarrelNodes)
+                        {
+                            objLoopNode.ContextMenuStrip = cmsWeapon;
+                            objLoopNode.ForeColor = SystemColors.GrayText;
+                            objNode.Nodes.Add(objLoopNode);
+                        }
+                    }
                 }
             }
 
@@ -332,8 +344,37 @@ namespace Chummer.Backend.Equipment
                     _lstAccessories.Add(objAccessory);
                     objAccessoryNode.Text = objAccessory.DisplayName;
                     objAccessoryNode.ForeColor = SystemColors.GrayText;
-                    objNode.Nodes.Add(objAccessoryNode);
-                    objNode.Expand();
+                    if (objNode != null)
+                    {
+                        objNode.Nodes.Add(objAccessoryNode);
+                        objNode.Expand();
+                    }
+                }
+            }
+
+            // Add Subweapons (not underbarrels) if applicable.
+            if (objWeapons != null && objXmlWeapon.InnerXml.Contains("<addweapon>"))
+            {
+                // More than one Weapon can be added, so loop through all occurrences.
+                foreach (XmlNode objXmlAddWeapon in objXmlWeapon.SelectNodes("addweapon"))
+                {
+                    var objXmlSubWeapon = helpers.Guid.IsGuid(objXmlAddWeapon.InnerText)
+                        ? objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
+                        : objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
+
+                    List<TreeNode> lstSubWeaponNodes = lstNodes == null ? null : new List<TreeNode>();
+                    Weapon objSubWeapon = new Weapon(_objCharacter);
+                    objSubWeapon.Create(objXmlSubWeapon, lstSubWeaponNodes, cmsWeapon, cmsWeaponAccessory, objWeapons, cmsWeaponAccessoryGear, blnCreateChildren, blnCreateImprovements);
+                    objSubWeapon.ParentID = InternalId;
+                    if (lstNodes != null)
+                    {
+                        foreach (TreeNode objLoopNode in lstSubWeaponNodes)
+                        {
+                            objLoopNode.ForeColor = SystemColors.GrayText;
+                            lstNodes.Add(objLoopNode);
+                        }
+                    }
+                    objWeapons.Add(objSubWeapon);
                 }
             }
         }
@@ -456,9 +497,9 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
             if (objNode["sourceid"] == null)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
                 if (objWeaponNode != null)
                 {
@@ -519,7 +560,6 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
             {
-                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
                 if (objWeaponNode?["alternaterange"] != null)
                 {
@@ -544,7 +584,6 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
                 if (objWeaponNode != null)
                 {
@@ -578,6 +617,7 @@ namespace Chummer.Backend.Equipment
                     _lstUnderbarrel.Add(objUnderbarrel);
                 }
             }
+
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
