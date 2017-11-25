@@ -2339,7 +2339,7 @@
     </string>
     <string>
       <key>Label_Contacts</key>
-      <text>Connections:</text>
+      <text>Kontakte</text>
     </string>
     <string>
       <key>Label_Enemies</key>
@@ -3444,8 +3444,12 @@
       <text>Loyalität:</text>
     </string>
     <string>
-      <key>Label_Contact_Group</key>
-      <text>Gruppe:</text>
+      <key>Checkbox_Contact_Group</key>
+      <text>Gruppe</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Free</key>
+      <text>Frei</text>
     </string>
     <string>
       <key>Label_Enemy_Incidence</key>
@@ -4357,7 +4361,7 @@
     </string>
     <string>
       <key>Label_Options_Contacts</key>
-      <text>Connections:</text>
+      <text>Kontakte</text>
     </string>
     <string>
       <key>Label_Options_Enemies</key>
@@ -7785,10 +7789,7 @@
       <key>Label_File</key>
       <text>Datei</text>
     </string>
-    <string>
-      <key>Label_Contact_Free</key>
-      <text>Frei:</text>
-    </string>
+
     <string>
       <key>Tab_Roster_GameNotes</key>
       <text>Spielnotizen</text>

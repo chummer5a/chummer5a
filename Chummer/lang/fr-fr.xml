@@ -3943,8 +3943,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Loyauté :</text>
     </string>
     <string>
-      <key>Label_Contact_Group</key>
-      <text>Groupe :</text>
+      <key>Checkbox_Contact_Group</key>
+      <text>Groupe</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Free</key>
+      <text>Gratuit</text>
     </string>
     <string>
       <key>Label_Enemy_Incidence</key>

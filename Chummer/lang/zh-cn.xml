@@ -3775,8 +3775,12 @@
 			<text>忠诚：</text>
 		</string>
 		<string>
-			<key>Label_Contact_Group</key>
-			<text>魔法团体：</text>
+			<key>Checkbox_Contact_Group</key>
+			<text>魔法团体</text>
+		</string>
+    <string>
+			<key>Checkbox_Contact_Free</key>
+			<text>免费</text>
 		</string>
 		<string>
 			<key>Tip_Contact_OpenLinkedContact</key>
@@ -7169,10 +7173,6 @@
 		<string>
 			<key>Label_Biography</key>
 			<text>自传：</text>
-		</string>
-		<string>
-			<key>Label_Contact_Free</key>
-			<text>免费：</text>
 		</string>
 		<string>
 			<key>Label_CounterspellingDice</key>

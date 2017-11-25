@@ -278,6 +278,8 @@ Application Changes:
 - Fixed a bug where if points and/or karma were allocated to a special attribute to which access was later removed in Create mode, those points and/or karma would not get freed up.
 - Weapons can now add more weapons (not just underbarreled weapons).
 - Handedness now prints in a localized fashion, and will now display the appropriate value if the character is ambidextrous. Part of fix for #2098.
+- Fixed translations for contact tabs and contact controls. Part of fix for #2098.
+- Fixed weapon mount strings not being localized in the UI displaying info about a selected weapon. Part of fix for #2098.
 
 Data Changes:
 
@@ -492,6 +494,10 @@ New Strings:
 - Checkbox_Options_SearchInCategoryOnly
 - Message_Update_CloseForms
 - Menu_RenameExtraText
+- Checkbox_Contact_Group
+- Checkbox_Contact_Free
+- Checkbox_Contact_Blackmail
+- Checkbox_Contact_Family
 
 Changed Strings:
 - Message_PositiveQualityLimit
@@ -499,6 +505,8 @@ Changed Strings:
 
 Removed Strings:
 - Label_MugshotDimensions
+- Label_Contact_Group
+- Label_Contact_Free
 
 Build 195
 
