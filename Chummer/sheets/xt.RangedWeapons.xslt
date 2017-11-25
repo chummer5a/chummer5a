@@ -64,31 +64,35 @@
         <xsl:value-of select="page"/>
       </td>
     </tr>
-    <xsl:if test="ranges/short != ''">
-      <tr style="text-align: center">
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td/>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.S"/>:
-          <xsl:value-of select="ranges/short"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.M"/>:
-          <xsl:value-of select="ranges/medium"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.L"/>:
-          <xsl:value-of select="ranges/long"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.E"/>:
-          <xsl:value-of select="ranges/extreme"/>
-        </td>
-        <td colspan="5"/>
-      </tr>
+
+    <xsl:variable name="weaponPosition" select="position()" />
+    <xsl:for-each select="ranges | alternateranges">
+      <xsl:if test="short != ''">
+        <tr style="text-align: center">
+          <xsl:if test="$weaponPosition mod 2 != 1">
+            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+          </xsl:if>
+          <td/>
+          <td style="text-align: center">
+            <xsl:value-of select="$lang.S"/>:
+            <xsl:value-of select="short"/>
+          </td>
+          <td style="text-align: center">
+            <xsl:value-of select="$lang.M"/>:
+            <xsl:value-of select="medium"/>
+          </td>
+          <td style="text-align: center">
+            <xsl:value-of select="$lang.L"/>:
+            <xsl:value-of select="long"/>
+          </td>
+          <td style="text-align: center">
+            <xsl:value-of select="$lang.E"/>:
+            <xsl:value-of select="extreme"/>
+          </td>
+          <td colspan="5"/>
+        </tr>
       </xsl:if>
+    </xsl:for-each>
 
     <xsl:if test="accessories/accessory or mods/weaponmod">
       <tr>

@@ -261,7 +261,7 @@
   <xsl:variable name="lang.PersonalData"    select="'Charakterdaten'"/>
   <xsl:variable name="lang.PersonalLife"    select="'Privatleben'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'Körperliche Schadensleiste'"/>
-  <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
+  <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natürliche Genesung Pool (1 Tag)'"/>
   <xsl:variable name="lang.PreferredPayment"    select="'Bevorzugte Zahlungsmethode'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'Primärer Arm'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Prominenz'"/>
@@ -275,7 +275,7 @@
   <xsl:variable name="lang.StreetCred"    select="'Straßenruf'"/>
   <xsl:variable name="lang.StreetName"    select="'Straßenname'"/>
   <xsl:variable name="lang.StunTrack"    select="'Geistige Schadensleiste'"/>
-  <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
+  <xsl:variable name="lang.StunNaturalRecovery"  select="'Natürliche Genesung Pool (1 Stunde)'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Wandlungsgrad'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unbenannter Charakter'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Rumpf'"/>
