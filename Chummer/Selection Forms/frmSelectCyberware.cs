@@ -33,7 +33,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private decimal _decCostMultiplier = 1.0m;
-        private double _dblESSMultiplier = 1.0;
+        private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
         private readonly bool _blnCareer;
 
@@ -177,7 +177,7 @@ namespace Chummer
             if (objXmlGrade != null)
             {
                 _decCostMultiplier = Convert.ToDecimal(objXmlGrade["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                _dblESSMultiplier = Convert.ToDouble(objXmlGrade["ess"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                _decESSMultiplier = Convert.ToDecimal(objXmlGrade["ess"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _intAvailModifier = Convert.ToInt32(objXmlGrade["avail"]?.InnerText);
             }
 
@@ -542,12 +542,12 @@ namespace Chummer
         /// <summary>
         /// Essence cost multiplier from the character.
         /// </summary>
-        public double CharacterESSMultiplier { get; set; } = 1.0;
+        public decimal CharacterESSMultiplier { get; set; } = 1.0m;
 
         /// <summary>
         /// Total Essence cost multiplier from the character (stacks multiplicatively at the very last step.
         /// </summary>
-        public double CharacterTotalESSMultiplier { get; set; } = 1.0;
+        public decimal CharacterTotalESSMultiplier { get; set; } = 1.0m;
 
         /// <summary>
         /// Cost multiplier for Genetech.
@@ -557,7 +557,7 @@ namespace Chummer
         /// <summary>
         /// Essence cost multiplier for Basic Bioware.
         /// </summary>
-        public double BasicBiowareESSMultiplier { get; set; } = 1.0;
+        public decimal BasicBiowareESSMultiplier { get; set; } = 1.0m;
 
         /// <summary>
         /// Cost multiplier for Transgenics Bioware.
@@ -864,28 +864,28 @@ namespace Chummer
 
             // Essence.
 
-            double dblESS = 0;
+            decimal decESS = 0;
             if (!chkPrototypeTranshuman.Checked)
             {
                 // Place the Essence cost multiplier in a variable that can be safely modified.
-                double dblCharacterESSModifier = 1;
+                decimal decCharacterESSModifier = 1.0m;
 
                 if (!blnForceNoESSModifier)
                 {
-                    dblCharacterESSModifier = CharacterESSMultiplier;
+                    decCharacterESSModifier = CharacterESSMultiplier;
                     // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
                     if (strSelectCategory == "Basic")
-                        dblCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+                        decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
 
                     if (nudESSDiscount.Visible)
                     {
-                        double dblDiscountModifier = Convert.ToDouble(nudESSDiscount.Value, GlobalOptions.CultureInfo) * 0.01;
-                        dblCharacterESSModifier *= (1.0 - dblDiscountModifier);
+                        decimal decDiscountModifier = nudESSDiscount.Value / 100.0m;
+                        decCharacterESSModifier *= (1.0m - decDiscountModifier);
                     }
 
-                    dblCharacterESSModifier -= (1 - _dblESSMultiplier);
+                    decCharacterESSModifier -= (1 - _decESSMultiplier);
 
-                    dblCharacterESSModifier *= CharacterTotalESSMultiplier;
+                    decCharacterESSModifier *= CharacterTotalESSMultiplier;
                 }
                 string strEss = objXmlCyberware["ess"].InnerText;
                 if (strEss.StartsWith("FixedValues"))
@@ -897,12 +897,12 @@ namespace Chummer
                 XPathExpression xprEssence =
                         _nav.Compile(strEss.Replace("Rating",
                             nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                dblESS =
+                decESS =
                     Math.Round(
-                        Convert.ToDouble(_nav.Evaluate(xprEssence), GlobalOptions.InvariantCultureInfo) *
-                        dblCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+                        Convert.ToDecimal(_nav.Evaluate(xprEssence), GlobalOptions.InvariantCultureInfo) *
+                        decCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             }
-            lblEssence.Text = dblESS.ToString(GlobalOptions.CultureInfo);
+            lblEssence.Text = decESS.ToString(GlobalOptions.CultureInfo);
             if (objXmlCyberware["addtoparentess"] != null)
                 lblEssence.Text = "+" + lblEssence.Text;
 

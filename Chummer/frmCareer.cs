@@ -20372,7 +20372,7 @@ namespace Chummer
                 objSelectedCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
 
             frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, objSource, true, objSelectedCyberware?.MyXmlNode);
-            double dblMultiplier = 1;
+            decimal decMultiplier = 1.0m;
             // Apply the character's Cyberware Essence cost multiplier if applicable.
             if (objSource == Improvement.ImprovementSource.Cyberware)
             {
@@ -20381,39 +20381,39 @@ namespace Chummer
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
-                    frmPickCyberware.CharacterESSMultiplier *= dblMultiplier;
+                    frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                 }
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
                 {
-                    dblMultiplier = 1;
+                    decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier && objImprovement.Enabled)
-                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
-                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                    frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareEssCostNonRetroactive) != 0)
                 {
-                    dblMultiplier = 1;
+                    decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
-                    frmPickCyberware.CharacterESSMultiplier *= dblMultiplier;
+                    frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                 }
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive) != 0)
                 {
-                    dblMultiplier = 1;
+                    decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
-                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                    frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
             }
             // Apply the character's Bioware Essence cost multiplier if applicable.
@@ -20424,62 +20424,62 @@ namespace Chummer
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                     }
-                    frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
+                    frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                 }
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
                 {
-                    dblMultiplier = 1;
+                    decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
-                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
-                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                    frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareEssCostNonRetroactive) != 0)
                 {
-                    dblMultiplier = 1;
+                    decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                            dblMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                            decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
                     }
-                    frmPickCyberware.CharacterESSMultiplier = dblMultiplier;
+                    frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                 }
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
                 {
-                    dblMultiplier = 1;
+                    decMultiplier = 1.0m;
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                            dblMultiplier *= (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100);
+                            decMultiplier *= (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m);
                     }
-                    frmPickCyberware.CharacterTotalESSMultiplier *= dblMultiplier;
+                    frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                 }
             }
 
             // Apply the character's Basic Bioware Essence cost multiplier if applicable.
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost) != 0 && objSource == Improvement.ImprovementSource.Bioware)
             {
-                double dblBasicMultiplier = 1;
+                decMultiplier = 1.0m;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                        dblBasicMultiplier -= (1 - (Convert.ToDouble(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100));
+                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                 }
-                frmPickCyberware.BasicBiowareESSMultiplier = dblBasicMultiplier;
+                frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
             }
 
             // Genetech Cost multiplier.
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && objSource == Improvement.ImprovementSource.Bioware)
             {
-                decimal decMultiplier = 1;
+                decMultiplier = 1.0m;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                        decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
+                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                 }
                 frmPickCyberware.GenetechCostMultiplier = decMultiplier;
             }
@@ -20487,11 +20487,11 @@ namespace Chummer
             // Transgenics Cost multiplier.
             if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.TransgenicsBiowareCost) != 0 && objSource == Improvement.ImprovementSource.Bioware)
             {
-                decimal decMultiplier = 1;
+                decMultiplier = 1.0m;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.TransgenicsBiowareCost && objImprovement.Enabled)
-                        decMultiplier -= (1 - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
+                        decMultiplier -= (1.0m - (Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100.0m));
                 }
                 frmPickCyberware.TransgenicsBiowareCostMultiplier = decMultiplier;
             }

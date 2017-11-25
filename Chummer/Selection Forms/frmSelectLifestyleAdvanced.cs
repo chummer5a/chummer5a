@@ -511,7 +511,7 @@ namespace Chummer
             _objLifestyle.Name = txtLifestyleName.Text;
             //_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
             _objLifestyle.Cost = CalculateValues();
-            _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
+            _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = Convert.ToInt32(nudArea.Value);
             _objLifestyle.Comforts = Convert.ToInt32(nudComforts.Value);

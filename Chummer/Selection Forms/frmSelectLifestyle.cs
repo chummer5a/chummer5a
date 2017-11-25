@@ -22,6 +22,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -80,7 +81,8 @@ namespace Chummer
                 cboLifestyle.SelectedIndex = 0;
             cboLifestyle.EndUpdate();
 
-
+            XmlDocument objDoc = new XmlDocument();
+            XPathNavigator objNav = objDoc.CreateNavigator();
             // Fill the Options list.
             foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
@@ -105,7 +107,19 @@ namespace Chummer
                 else
                 {
                     string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
-                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{strCost}¥]";
+                    decimal decCost = 0.0m;
+                    if (!decimal.TryParse(strCost, out decCost))
+                    {
+                        try
+                        {
+                            decCost = Convert.ToDecimal(objNav.Evaluate(strCost));
+                        }
+                        catch (XPathException)
+                        {
+                            decCost = 0.0m;
+                        }
+                    }
+                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{decCost:#,0.00}¥]";
                 }
                 treQualities.Nodes.Add(nodOption);
             }
@@ -253,7 +267,7 @@ namespace Chummer
             _objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
             _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : Convert.ToInt32(nudRoommates.Value);
-            _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
+            _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.LifestyleQualities.Clear();
             _objLifestyle.StyleType = _objType;
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
@@ -301,6 +315,8 @@ namespace Chummer
             decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
             lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
 
+            XmlDocument objDoc = new XmlDocument();
+            XPathNavigator objNav = objDoc.CreateNavigator();
             // Add the flat costs from qualities
             foreach (TreeNode objNode in treQualities.Nodes)
             {
@@ -308,7 +324,21 @@ namespace Chummer
                 {
                     XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     if (!string.IsNullOrEmpty(objXmlQuality["cost"]?.InnerText))
-                        decCost += Convert.ToDecimal(objXmlQuality["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    {
+                        decimal decLoopCost = 0.0m;
+                        if (!decimal.TryParse(objXmlQuality["cost"].InnerText, out decLoopCost))
+                        {
+                            try
+                            {
+                                decLoopCost = Convert.ToDecimal(objNav.Evaluate(objXmlQuality["cost"].InnerText));
+                            }
+                            catch (XPathException)
+                            {
+                                decLoopCost = 0.0m;
+                            }
+                        }
+                        decCost += decLoopCost;
+                    }
                 }
             }
 
@@ -333,13 +363,13 @@ namespace Chummer
             decBaseCost += decBaseCost * baseMultiplier;
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
+            lblCost.Text = $"{decNuyen:#,0.00¥}";
             if (nudPercentage.Value != 100)
             {
                 decimal decDiscount = decNuyen;
-                decDiscount = decDiscount * (nudPercentage.Value /100);
+                decDiscount = decDiscount * (nudPercentage.Value / 100);
                 lblCost.Text += " (" + $"{decDiscount:#,0.00¥}" + ")";
             }
-            lblCost.Text = $"{decNuyen:#,0.00¥}";
             return decNuyen;
         }
 
