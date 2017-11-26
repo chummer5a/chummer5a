@@ -215,9 +215,9 @@ namespace Chummer
                 Application.DoEvents();
                 try
                 {
-                    TreeNode objTempNode = new TreeNode();
+                    List<TreeNode> lstTempNodes = new List<TreeNode>();
                     Weapon objTemp = new Weapon(objCharacter);
-                    objTemp.Create(objXmlGear, objTempNode, null, null);
+                    objTemp.Create(objXmlGear, lstTempNodes, null, null, null);
                     try
                     {
                         decimal objValue = objTemp.TotalCost;
@@ -944,13 +944,10 @@ namespace Chummer
         public string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             int intValue = 1;
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
-            XPathExpression xprAttribute = nav.Compile(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                int.TryParse(nav.Evaluate(xprAttribute).ToString(), out intValue);
+                int.TryParse(CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString())).ToString(), out intValue);
             }
             catch (XPathException)
             {

@@ -250,6 +250,7 @@ namespace Chummer
             this.chkGroup.Name = "chkGroup";
             this.chkGroup.Size = new System.Drawing.Size(55, 17);
             this.chkGroup.TabIndex = 12;
+            this.chkGroup.Tag = "Checkbox_Contact_Group";
             this.chkGroup.Text = "Group";
             this.chkGroup.UseVisualStyleBackColor = true;
             this.chkGroup.CheckedChanged += new System.EventHandler(this.chkGroup_CheckedChanged);
@@ -261,6 +262,7 @@ namespace Chummer
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(47, 17);
             this.chkFree.TabIndex = 13;
+            this.chkFree.Tag = "Checkbox_Contact_Free";
             this.chkFree.Text = "Free";
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
@@ -290,6 +292,7 @@ namespace Chummer
             this.chkBlackmail.Name = "chkBlackmail";
             this.chkBlackmail.Size = new System.Drawing.Size(71, 17);
             this.chkBlackmail.TabIndex = 16;
+            this.chkBlackmail.Tag = "Checkbox_Contact_Blackmail";
             this.chkBlackmail.Text = "Blackmail";
             this.chkBlackmail.UseVisualStyleBackColor = true;
             this.chkBlackmail.CheckedChanged += new System.EventHandler(this.chkBlackmail_CheckedChanged);
@@ -301,6 +304,7 @@ namespace Chummer
             this.chkFamily.Name = "chkFamily";
             this.chkFamily.Size = new System.Drawing.Size(55, 17);
             this.chkFamily.TabIndex = 17;
+            this.chkFamily.Tag = "Checkbox_Contact_Family";
             this.chkFamily.Text = "Family";
             this.chkFamily.UseVisualStyleBackColor = true;
             this.chkFamily.CheckedChanged += new System.EventHandler(this.chkFamily_CheckedChanged);

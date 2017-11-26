@@ -1791,9 +1791,8 @@ namespace Chummer
                     XmlNode objXmlWeapon = objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                 if (objXmlWeapon != null)
                 {
-                    TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(this);
-                    objWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null);
+                    objWeapon.Create(objXmlWeapon, null, null, null, Weapons);
                     objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                     _lstWeapons.Add(objWeapon);
                 }
@@ -2013,8 +2012,20 @@ namespace Chummer
             }
             // </priorityskills>
             objWriter.WriteEndElement();
+
             // <handedness />
-            objWriter.WriteElementString("primaryarm", _strPrimaryArm);
+            if (Ambidextrous)
+            {
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Ambidextrous"));
+            }
+            else if (PrimaryArm == "Left")
+            {
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideLeft"));
+            }
+            else
+            {
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideRight"));
+            }
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from having a self-terminated title tag which causes browser to not rendering anything.
             // <name />
@@ -2188,8 +2199,7 @@ namespace Chummer
                         strTraditionName = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
                     }
                 }
-
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 StringBuilder objDrain = new StringBuilder(strDrainAtt);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
@@ -2201,10 +2211,9 @@ namespace Chummer
                 {
                     strDrain = "0";
                 }
-                XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
+                int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString(objCulture) + ")");
                 objWriter.WriteStartElement("drainattribute");
@@ -2265,8 +2274,6 @@ namespace Chummer
             if (!string.IsNullOrEmpty(TechnomancerStream))
             {
                 string strDrainAtt = TechnomancerFading;
-                objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 StringBuilder objDrain = new StringBuilder(strDrainAtt);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
@@ -2276,10 +2283,9 @@ namespace Chummer
                 string strDrain = objDrain.ToString();
                 if (string.IsNullOrEmpty(strDrain))
                     strDrain = "0";
-                XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Fading Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
+                int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString(objCulture) + ")");
             }

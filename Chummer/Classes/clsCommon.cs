@@ -25,6 +25,8 @@ using System.Diagnostics;
  using System.Linq;
  using Chummer.Backend.Equipment;
 using System.Xml;
+using System.Xml.XPath;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
@@ -44,6 +46,34 @@ namespace Chummer
         {
             Mentor = 0,
             Paragon = 1
+        }
+        #endregion
+
+        #region XPath Evaluators
+        // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
+        static XmlDocument objXPathNavigatorDocument = new XmlDocument();
+        static XPathNavigator objXPathNavigator = objXPathNavigatorDocument.CreateNavigator();
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(string strXPath)
+        {
+            return objXPathNavigator.Evaluate(strXPath);
+        }
+
+        /// <summary>
+        /// Evaluate an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        {
+            return objXPathNavigator.Evaluate(objXPath);
         }
         #endregion
 
@@ -734,47 +764,59 @@ namespace Chummer
         /// <param name="objGear">Gear to delete.</param>
         /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
         /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public static decimal DeleteGear(Character objCharacter, Gear objGear, TreeView treWeapons)
+        public static decimal DeleteGear(Character objCharacter, Gear objGear, TreeView treWeapons, TreeView treVehicles)
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in objGear.Children)
-                decReturn += DeleteGear(objCharacter, objChild, treWeapons);
+                decReturn += DeleteGear(objCharacter, objChild, treWeapons, treVehicles);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (objGear.WeaponID != Guid.Empty.ToString())
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
-                List<Weapon> lstWeaponsToDelete = new List<Weapon>();
-                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                List<Tuple<Weapon, Vehicle, VehicleMod>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod>>();
+                foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
                 {
-                    if (objWeapon.ParentID == objGear.InternalId)
+                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, null, null));
+                }
+                foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                {
+                    foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        lstWeaponsToDelete.Add(objWeapon);
+                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, null));
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
+                        {
+                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, objMod));
+                        }
                     }
                 }
                 // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Weapon objWeapon in lstWeaponsToDelete)
+                foreach (Tuple<Weapon, Vehicle, VehicleMod> objLoopTuple in lstWeaponsToDelete)
                 {
-                    decReturn += objWeapon.TotalCost;
+                    Weapon objWeapon = objLoopTuple.Item1;
+                    decReturn += objWeapon.TotalCost + DeleteWeapon(objCharacter, objWeapon, treWeapons, treVehicles);
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
+                    else if (objLoopTuple.Item3 != null)
+                        objLoopTuple.Item3.Weapons.Remove(objWeapon);
+                    else if (objLoopTuple.Item2 != null)
+                        objLoopTuple.Item2.Weapons.Remove(objWeapon);
                     else
                         objCharacter.Weapons.Remove(objWeapon);
-
-                    foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
-                    {
-                        foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                        {
-                            decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                        }
-                    }
                 }
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    FindNode(strNodeId, treWeapons)?.Remove();
+                    TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
+                    objLoopNode?.Remove();
                 }
             }
 
@@ -837,36 +879,48 @@ namespace Chummer
             if (objCyberware.WeaponID != Guid.Empty.ToString())
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
-                List<Weapon> lstWeaponsToDelete = new List<Weapon>();
-                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                List<Tuple<Weapon, Vehicle, VehicleMod>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod>>();
+                foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCyberware.InternalId))
                 {
-                    if (objWeapon.ParentID == objCyberware.InternalId)
+                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, null, null));
+                }
+                foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                {
+                    foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCyberware.InternalId))
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        lstWeaponsToDelete.Add(objWeapon);
+                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, null));
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objCyberware.InternalId))
+                        {
+                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, objMod));
+                        }
                     }
                 }
                 // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Weapon objWeapon in lstWeaponsToDelete)
+                foreach (Tuple<Weapon, Vehicle, VehicleMod> objLoopTuple in lstWeaponsToDelete)
                 {
-                    decReturn += objWeapon.TotalCost;
+                    Weapon objWeapon = objLoopTuple.Item1;
+                    decReturn += objWeapon.TotalCost + DeleteWeapon(objCharacter, objWeapon, treWeapons, treVehicles);
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
+                    else if (objLoopTuple.Item3 != null)
+                        objLoopTuple.Item3.Weapons.Remove(objWeapon);
+                    else if (objLoopTuple.Item2 != null)
+                        objLoopTuple.Item2.Weapons.Remove(objWeapon);
                     else
                         objCharacter.Weapons.Remove(objWeapon);
-
-                    foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
-                    {
-                        foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                        {
-                            decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                        }
-                    }
                 }
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    FindNode(strNodeId, treWeapons)?.Remove();
+                    TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
+                    objLoopNode?.Remove();
                 }
             }
 
@@ -889,29 +943,17 @@ namespace Chummer
                     objCharacter.Vehicles.Remove(objLoopVehicle);
                     foreach (Gear objLoopGear in objLoopVehicle.Gear)
                     {
-                        decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
+                        decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons, treVehicles);
                     }
                     foreach (Weapon objLoopWeapon in objLoopVehicle.Weapons)
                     {
-                        foreach (WeaponAccessory objLoopAccessory in objLoopWeapon.WeaponAccessories)
-                        {
-                            foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                            {
-                                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                            }
-                        }
+                        decReturn += DeleteWeapon(objCharacter, objLoopWeapon, treWeapons, treVehicles);
                     }
                     foreach (VehicleMod objLoopMod in objLoopVehicle.Mods)
                     {
                         foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                         {
-                            foreach (WeaponAccessory objLoopAccessory in objLoopWeapon.WeaponAccessories)
-                            {
-                                foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                                {
-                                    decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
-                                }
-                            }
+                            decReturn += DeleteWeapon(objCharacter, objLoopWeapon, treWeapons, treVehicles);
                         }
                         foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                         {
@@ -952,7 +994,76 @@ namespace Chummer
 
             foreach (Gear objLoopGear in objCyberware.Gear)
             {
-                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons);
+                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons, treVehicles);
+            }
+
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
+        /// </summary>
+        /// <param name="objWeapon">Weapon to delete.</param>
+        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
+        /// <param name="treVehicles">TreeView that holds the list of Vehicles.</param>
+        public static decimal DeleteWeapon(Character objCharacter, Weapon objWeapon, TreeView treWeapons, TreeView treVehicles)
+        {
+            decimal decReturn = 0;
+            // Remove any children the Gear may have.
+            foreach (Weapon objChild in objWeapon.Children)
+                decReturn += DeleteWeapon(objCharacter, objChild, treWeapons, treVehicles);
+
+            foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
+            {
+                foreach (Gear objLoopGear in objLoopAccessory.Gear)
+                {
+                    decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons, treVehicles);
+                }
+            }
+
+            List<string> lstNodesToRemoveIds = new List<string>();
+            List<Tuple<Weapon, Vehicle, VehicleMod>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod>>();
+            foreach (Weapon objDeleteWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
+            {
+                lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
+                lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objDeleteWeapon, null, null));
+            }
+            foreach (Vehicle objVehicle in objCharacter.Vehicles)
+            {
+                foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
+                {
+                    lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
+                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objDeleteWeapon, objVehicle, null));
+                }
+
+                foreach (VehicleMod objMod in objVehicle.Mods)
+                {
+                    foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
+                    {
+                        lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
+                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objDeleteWeapon, objVehicle, objMod));
+                    }
+                }
+            }
+            // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
+            foreach (Tuple<Weapon, Vehicle, VehicleMod> objLoopTuple in lstWeaponsToDelete)
+            {
+                Weapon objDeleteWeapon = objLoopTuple.Item1;
+                decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
+                if (objDeleteWeapon.Parent != null)
+                    objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
+                else if (objLoopTuple.Item3 != null)
+                    objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
+                else if (objLoopTuple.Item2 != null)
+                    objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
+                else
+                    objCharacter.Weapons.Remove(objDeleteWeapon);
+            }
+            foreach (string strNodeId in lstNodesToRemoveIds)
+            {
+                // Remove the Weapons from the TreeView.
+                TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
+                objLoopNode?.Remove();
             }
 
             return decReturn;
@@ -964,7 +1075,7 @@ namespace Chummer
         /// <param name="treArmor"></param>
         /// <param name="treWeapons"></param>
         /// <param name="_objImprovementManager"></param>
-        public static decimal DeleteArmor(Character objCharacter, TreeView treArmor, TreeView treWeapons)
+        public static decimal DeleteArmor(Character objCharacter, TreeView treArmor, TreeView treWeapons, TreeView treVehicles)
         {
             if (!ConfirmDelete(objCharacter, LanguageManager.GetString("Message_DeleteArmor")))
                 return 0.0m;
@@ -986,58 +1097,106 @@ namespace Chummer
                     if (objMod.WeaponID != Guid.Empty.ToString())
                     {
                         List<string> lstNodesToRemoveIds = new List<string>();
-                        foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                        List<Tuple<Weapon, Vehicle, VehicleMod>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod>>();
+                        foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
                         {
-                            if (objWeapon.ParentID == objMod.InternalId)
+                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, null, null));
+                        }
+                        foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                        {
+                            foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
                             {
                                 lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                decReturn += objWeapon.TotalCost;
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else
-                                    objCharacter.Weapons.Remove(objWeapon);
+                                lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, null));
                             }
+
+                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                            {
+                                foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
+                                {
+                                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, objVehicleMod));
+                                }
+                            }
+                        }
+                        foreach (Tuple<Weapon, Vehicle, VehicleMod> objLoopTuple in lstWeaponsToDelete)
+                        {
+                            Weapon objDeleteWeapon = objLoopTuple.Item1;
+                            decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
+                            if (objDeleteWeapon.Parent != null)
+                                objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
+                            else if (objLoopTuple.Item3 != null)
+                                objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
+                            else if (objLoopTuple.Item2 != null)
+                                objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
+                            else
+                                objCharacter.Weapons.Remove(objDeleteWeapon);
                         }
                         foreach (string strNodeId in lstNodesToRemoveIds)
                         {
                             // Remove the Weapons from the TreeView.
-                            FindNode(strNodeId, treWeapons)?.Remove();
+                            TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
+                            objLoopNode?.Remove();
                         }
                     }
 
                     ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                     // Remove any Improvements created by the Armor's Gear.
                     foreach (Gear objGear in objMod.Gear)
-                        decReturn += DeleteGear(objCharacter, objGear, treWeapons);
+                        decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
                 }
                 ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
 
                 // Remove any Improvements created by the Armor's Gear.
                 foreach (Gear objGear in objArmor.Gear)
-                    decReturn += DeleteGear(objCharacter, objGear, treWeapons);
+                    decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
 
                 // Remove the Cyberweapon created by the Mod if applicable.
                 if (objArmor.WeaponID != Guid.Empty.ToString())
                 {
                     List<string> lstNodesToRemoveIds = new List<string>();
-                    foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                    List<Tuple<Weapon, Vehicle, VehicleMod>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod>>();
+                    foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objArmor.InternalId))
                     {
-                        if (objWeapon.ParentID == objArmor.InternalId)
+                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, null, null));
+                    }
+                    foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                    {
+                        foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objArmor.InternalId))
                         {
                             lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                            decReturn += objWeapon.TotalCost;
-                            // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                            if (objWeapon.Parent != null)
-                                objWeapon.Parent.Children.Remove(objWeapon);
-                            else
-                                objCharacter.Weapons.Remove(objWeapon);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, null));
                         }
+
+                        foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                        {
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objArmor.InternalId))
+                            {
+                                lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                                lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, objVehicleMod));
+                            }
+                        }
+                    }
+                    foreach (Tuple<Weapon, Vehicle, VehicleMod> objLoopTuple in lstWeaponsToDelete)
+                    {
+                        Weapon objDeleteWeapon = objLoopTuple.Item1;
+                        decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
+                        if (objDeleteWeapon.Parent != null)
+                            objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
+                        else if (objLoopTuple.Item3 != null)
+                            objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
+                        else if (objLoopTuple.Item2 != null)
+                            objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
+                        else
+                            objCharacter.Weapons.Remove(objDeleteWeapon);
                     }
                     foreach (string strNodeId in lstNodesToRemoveIds)
                     {
                         // Remove the Weapons from the TreeView.
-                        FindNode(strNodeId, treWeapons)?.Remove();
+                        TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
+                        objLoopNode?.Remove();
                     }
                 }
 
@@ -1052,23 +1211,47 @@ namespace Chummer
                     if (objMod.WeaponID != Guid.Empty.ToString())
                     {
                         List<string> lstNodesToRemoveIds = new List<string>();
-                        foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                        List<Tuple<Weapon, Vehicle, VehicleMod>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod>>();
+                        foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
                         {
-                            if (objWeapon.ParentID == objMod.InternalId)
+                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, null, null));
+                        }
+                        foreach (Vehicle objVehicle in objCharacter.Vehicles)
+                        {
+                            foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
                             {
                                 lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                decReturn += objWeapon.TotalCost;
-                                // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else
-                                    objCharacter.Weapons.Remove(objWeapon);
+                                lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, null));
                             }
+
+                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                            {
+                                foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
+                                {
+                                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod>(objWeapon, objVehicle, objVehicleMod));
+                                }
+                            }
+                        }
+                        foreach (Tuple<Weapon, Vehicle, VehicleMod> objLoopTuple in lstWeaponsToDelete)
+                        {
+                            Weapon objDeleteWeapon = objLoopTuple.Item1;
+                            decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
+                            if (objDeleteWeapon.Parent != null)
+                                objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
+                            else if (objLoopTuple.Item3 != null)
+                                objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
+                            else if (objLoopTuple.Item2 != null)
+                                objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
+                            else
+                                objCharacter.Weapons.Remove(objDeleteWeapon);
                         }
                         foreach (string strNodeId in lstNodesToRemoveIds)
                         {
                             // Remove the Weapons from the TreeView.
-                            FindNode(strNodeId, treWeapons)?.Remove();
+                            TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
+                            objLoopNode?.Remove();
                         }
                     }
 
@@ -1090,7 +1273,7 @@ namespace Chummer
                             objSelectedArmorMod.Gear.Remove(objGear);
                         else
                             objSelectedArmor.Gear.Remove(objGear);
-                        decReturn += DeleteGear(objCharacter, objGear, treWeapons);
+                        decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
                     }
                 }
             }
@@ -1113,7 +1296,7 @@ namespace Chummer
                     {
                         objCommlink.RefreshCyberdeckArray();
                     }
-                    decReturn += DeleteGear(objCharacter, objGear, treWeapons);
+                    decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
                 }
             }
             objSelectedNode.Remove();
@@ -2387,12 +2570,12 @@ namespace Chummer
             if (objCharacter.Metatype == "Free Spirit" && !objCharacter.IsCritter)
             {
                 // PC Free Spirit.
-                double dblPowerPoints = 0;
+                decimal decPowerPoints = 0;
 
                 foreach (CritterPower objPower in objCharacter.CritterPowers)
                 {
                     if (objPower.CountTowardsLimit)
-                        dblPowerPoints += objPower.PowerPoints;
+                        decPowerPoints += objPower.PowerPoints;
                 }
 
                 int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
@@ -2401,7 +2584,7 @@ namespace Chummer
                 if (objCharacter.Options.FreeSpiritPowerPointsMAG)
                     intPowerPoints = objCharacter.MAG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - decPowerPoints, intPowerPoints);
             }
             else
             {
@@ -2420,8 +2603,7 @@ namespace Chummer
                 else
                 {
                     // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
-                    double dblMAG = Convert.ToDouble(objCharacter.MAG.TotalValue, GlobalOptions.InvariantCultureInfo);
-                    intPowerPoints = Convert.ToInt32(Math.Floor(dblMAG / 3.0));
+                    intPowerPoints = objCharacter.MAG.TotalValue / 3;
                 }
 
                 int intUsed = 0;// _objCharacter.CritterPowers.Count - intExisting;
@@ -2443,17 +2625,17 @@ namespace Chummer
         public static string CalculateFreeSpritePowerPoints(Character objCharacter)
         {
             // Free Sprite Power Points.
-            double dblPowerPoints = 0;
+            int intUsedPowerPoints = 0;
 
             foreach (CritterPower objPower in objCharacter.CritterPowers)
             {
                 if (objPower.CountTowardsLimit)
-                    dblPowerPoints += 1;
+                    intUsedPowerPoints += 1;
             }
 
             int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - dblPowerPoints, intPowerPoints);
+            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - intUsedPowerPoints, intPowerPoints);
         }
 
         /// <summary>

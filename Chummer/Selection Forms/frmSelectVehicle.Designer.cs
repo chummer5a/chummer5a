@@ -388,6 +388,7 @@
             // 
             // nudUsedVehicleDiscount
             // 
+            this.nudUsedVehicleDiscount.DecimalPlaces = 2;
             this.nudUsedVehicleDiscount.Location = new System.Drawing.Point(577, 206);
             this.nudUsedVehicleDiscount.Maximum = new decimal(new int[] {
             50,
@@ -400,7 +401,7 @@
             0,
             0});
             this.nudUsedVehicleDiscount.Name = "nudUsedVehicleDiscount";
-            this.nudUsedVehicleDiscount.Size = new System.Drawing.Size(41, 20);
+            this.nudUsedVehicleDiscount.Size = new System.Drawing.Size(48, 20);
             this.nudUsedVehicleDiscount.TabIndex = 24;
             this.nudUsedVehicleDiscount.Value = new decimal(new int[] {
             20,
@@ -413,7 +414,7 @@
             // lblUsedVehicleDiscountPercentLabel
             // 
             this.lblUsedVehicleDiscountPercentLabel.AutoSize = true;
-            this.lblUsedVehicleDiscountPercentLabel.Location = new System.Drawing.Point(617, 208);
+            this.lblUsedVehicleDiscountPercentLabel.Location = new System.Drawing.Point(631, 208);
             this.lblUsedVehicleDiscountPercentLabel.Name = "lblUsedVehicleDiscountPercentLabel";
             this.lblUsedVehicleDiscountPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblUsedVehicleDiscountPercentLabel.TabIndex = 25;
@@ -422,6 +423,7 @@
             // 
             // nudMarkup
             // 
+            this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(481, 257);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -429,10 +431,10 @@
             0,
             0});
             this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
+            9999,
             0,
             0,
-            -2147483648});
+            -2147352576});
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 28;

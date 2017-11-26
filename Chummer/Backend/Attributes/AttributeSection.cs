@@ -52,7 +52,6 @@ namespace Chummer.Backend.Attributes
 			AttributeList.Clear();
 			SpecialAttributeList.Clear();
             XmlDocument objXmlDocument = XmlManager.Load(_character.IsCritter ? "critters.xml" : "metatypes.xml");
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
             XmlNode objCharNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]/metavariants/metavariant[name = \"" + _character.Metavariant + "\"]")
                         ?? objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _character.Metatype + "\"]");
             XmlNode objCharNodeAnimalForm = null;
@@ -68,7 +67,7 @@ namespace Chummer.Backend.Attributes
                 if (attNodeList.Count == 0)
                 {
                     CharacterAttrib att = new CharacterAttrib(_character, s);
-                    att = RemakeAttribute(att, objCharNode, nav);
+                    att = RemakeAttribute(att, objCharNode);
                     switch (att.ConvertToAttributeCategory(att.Abbrev))
                     {
                         case CharacterAttrib.AttributeCategory.Special:
@@ -81,7 +80,7 @@ namespace Chummer.Backend.Attributes
                     if (objCharNodeAnimalForm != null)
                     {
                         att = new CharacterAttrib(_character, s, CharacterAttrib.AttributeCategory.Shapeshifter);
-                        att = RemakeAttribute(att, objCharNodeAnimalForm, nav);
+                        att = RemakeAttribute(att, objCharNodeAnimalForm);
                         switch (att.ConvertToAttributeCategory(att.Abbrev))
                         {
                             case CharacterAttrib.AttributeCategory.Special:
@@ -115,7 +114,7 @@ namespace Chummer.Backend.Attributes
 			Timekeeper.Finish("load_char_attrib");
 		}
 
-        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode, XPathNavigator nav)
+        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode)
         {
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
             if (strAttributeLower == "magadept")
@@ -130,17 +129,17 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                xprEvaluateMinResult = nav.Evaluate(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
+                xprEvaluateMinResult = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
             }
             catch (XPathException) { }
             try
             {
-                xprEvaluateMaxResult = nav.Evaluate(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
+                xprEvaluateMaxResult = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
             }
             catch (XPathException) { }
             try
             {
-                xprEvaluateAugResult = nav.Evaluate(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
+                xprEvaluateAugResult = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
             }
             catch (XPathException) { }
             if (xprEvaluateMinResult != null)

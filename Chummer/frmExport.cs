@@ -31,13 +31,14 @@ namespace Chummer
 {
     public partial class frmExport : Form
     {
-        private XmlDocument _objCharacterXML = new XmlDocument();
+        private readonly XmlDocument _objCharacterXML = null;
         private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
         private bool _blnSelected = false;
 
         #region Control Events
-        public frmExport()
+        public frmExport(XmlDocument objCharacterXML)
         {
+            _objCharacterXML = objCharacterXML;
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
@@ -207,19 +208,5 @@ namespace Chummer
         }
         #endregion
         #endregion
-
-        #region Properties
-        /// <summary>
-        /// Character's XmlDocument.
-        /// </summary>
-        public XmlDocument CharacterXml
-        {
-            set
-            {
-                _objCharacterXML = value;
-            }
-        }
-        #endregion
-
     }
 }

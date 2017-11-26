@@ -21,7 +21,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decMultiplier;
         private int _intMonths = 1;
         private int _intRoommates;
-        private int _intPercentage = 100;
+        private decimal _decPercentage = 100.0m;
         private string _strLifestyleName = string.Empty;
         private bool _blnPurchased;
         private int _intEntertainment;
@@ -107,7 +107,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("multiplier", _decMultiplier.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("months", _intMonths.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("roommates", _intRoommates.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("percentage", _intPercentage.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("percentage", _decPercentage.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("lifestylename", _strLifestyleName);
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("comforts", _intComforts.ToString(CultureInfo.InvariantCulture));
@@ -173,7 +173,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
             objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts);
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
-            objNode.TryGetInt32FieldQuickly("percentage", ref _intPercentage);
+            objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("lifestylename", ref _strLifestyleName);
             objNode.TryGetBoolFieldQuickly("purchased", ref _blnPurchased);
 
@@ -647,15 +647,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Percentage of the total cost the character pays per month.
         /// </summary>
-        public int Percentage
+        public decimal Percentage
         {
             get
             {
-                return _intPercentage;
+                return _decPercentage;
             }
             set
             {
-                _intPercentage = value;
+                _decPercentage = value;
             }
         }
 
@@ -728,7 +728,7 @@ namespace Chummer.Backend.Equipment
                 decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.InvariantCultureInfo);
                 decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.InvariantCultureInfo);
 
-                decimal decPercentage = Convert.ToDecimal(_intPercentage, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                decimal decPercentage = _decPercentage / 100.0m;
 
                 decimal decBaseLifestyleCost = Convert.ToInt32(decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly));
                 if (!_blnTrustFund)

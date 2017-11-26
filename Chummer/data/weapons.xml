@@ -500,9 +500,11 @@
       <ammo>30(c)</ammo>
       <avail>15F</avail>
       <cost>4500</cost>
-      <underbarrels>
-        <underbarrel>HK XM30 Grenade Launcher</underbarrel>
-      </underbarrels>
+      <addweapon>HK XM30 Grenade Launcher</addweapon>
+      <addweapon>HK XM30 Carbine</addweapon>
+      <addweapon>HK XM30 LMG</addweapon>
+      <addweapon>HK XM30 Shotgun</addweapon>
+      <addweapon>HK XM30 Sniper</addweapon>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -526,9 +528,52 @@
       <page>37</page>
     </weapon>
     <weapon>
+      <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
+      <name>HK XM30 Grenade Launcher</name>
+      <category>Grenade Launchers</category>
+      <hide />
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <spec>Grenade Launchers</spec>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>Grenade</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <ammocategory>Grenade Launchers</ammocategory>
+      <avail>0</avail>
+      <cost>0</cost>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Shock Pad</name>
+        </accessory>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <useskill>Heavy Weapons</useskill>
+      <range>Grenade Launchers</range>
+      <source>RG</source>
+      <page>37</page>
+    </weapon>
+    <weapon>
       <id>cc446f64-1dbd-42dd-8fc4-ca17dc6bcf42</id>
       <name>HK XM30 Carbine</name>
-      <category>Assault Rifles</category>
+      <category>Submachine Guns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Submachine Guns</spec>
@@ -568,7 +613,8 @@
     <weapon>
       <id>1bdda305-3448-4419-871d-42bcd971751b</id>
       <name>HK XM30 LMG</name>
-      <category>Assault Rifles</category>
+      <category>Light Machine Guns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Machine Guns</spec>
@@ -611,7 +657,8 @@
     <weapon>
       <id>146d58e4-d705-41a0-bd92-c1901b71ffc0</id>
       <name>HK XM30 Shotgun</name>
-      <category>Assault Rifles</category>
+      <category>Shotguns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
@@ -652,7 +699,8 @@
     <weapon>
       <id>5d366d23-c0cd-4613-a035-f5a5378dcfa9</id>
       <name>HK XM30 Sniper</name>
-      <category>Assault Rifles</category>
+      <category>Sniper Rifles</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sniper Rifles</spec>
@@ -6910,48 +6958,6 @@
     </weapon>
     <!-- End Region -->
     <!-- Region Run and Gun -->
-    <weapon>
-      <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
-      <name>HK XM30 Grenade Launcher</name>
-      <category>Underbarrel Weapons</category>
-      <hide />
-      <type>Ranged</type>
-      <conceal>6</conceal>
-      <spec>Grenade Launchers</spec>
-      <accuracy>4</accuracy>
-      <reach>0</reach>
-      <damage>Grenade</damage>
-      <ap>-</ap>
-      <mode>SS</mode>
-      <rc>0</rc>
-      <ammo>6(c)</ammo>
-      <ammocategory>Grenade Launchers</ammocategory>
-      <avail>0</avail>
-      <cost>0</cost>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Internal</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
-      <accessories>
-        <accessory>
-          <name>Shock Pad</name>
-        </accessory>
-        <accessory>
-          <name>Imaging Scope</name>
-        </accessory>
-        <accessory>
-          <name>Smartgun System, Internal</name>
-        </accessory>
-      </accessories>
-      <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launchers</range>
-      <source>RG</source>
-      <page>37</page>
-    </weapon>
     <weapon>
       <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
       <name>Nissan Optiumum II Shotgun</name>

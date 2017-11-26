@@ -28,7 +28,7 @@ namespace Chummer
     public partial class frmSelectPower : Form
     {
         private string _strLimitToPowers;
-        private double _dblLimitToRating;
+        private decimal _decLimitToRating;
 
         private readonly Character _objCharacter;
 
@@ -70,14 +70,14 @@ namespace Chummer
             XmlNodeList objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
+                decimal decPoints = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
                 if (objXmlPower["extrapointcost"]?.InnerText != null)
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost. 
                     if (!_objCharacter.Powers.Any(power => power.Name == objXmlPower["name"].InnerText && power.TotalRating > 0))
-                        dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                        decPoints += Convert.ToDecimal(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 }
-                if (_dblLimitToRating > 0 && dblPoints > _dblLimitToRating)
+                if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {
                     continue;
                 }
@@ -160,9 +160,9 @@ namespace Chummer
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XmlNode objXmlPower in objXmlPowerList)
             {
-                double dblPoints = Convert.ToDouble(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
-                dblPoints += Convert.ToDouble(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                if (_dblLimitToRating > 0 && dblPoints > _dblLimitToRating)
+                decimal decPoints = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.InvariantCultureInfo);
+                decPoints += Convert.ToDecimal(objXmlPower["extrapointcost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {
                     continue;
                 }
@@ -247,13 +247,13 @@ namespace Chummer
         /// </summary>
         public int LimitToRating 
         {
-            set { _dblLimitToRating = value * PointsPerLevel; } 
+            set { _decLimitToRating = value * PointsPerLevel; } 
         }
 
         /// <summary>
         /// Value of the PP per level if using LimitToRating. Defaults to 0.25.
         /// </summary>
-        public double PointsPerLevel { set; get; } = 0.25;
+        public decimal PointsPerLevel { set; get; } = 0.25m;
 
         #endregion
 

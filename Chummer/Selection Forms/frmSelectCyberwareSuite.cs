@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmSelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
-        private double _dblCharacterESSModifier = 1.0;
+        private decimal _decCharacterESSModifier = 1.0m;
         private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
         private string _strType = "cyberware";
         private Character _objCharacter;
@@ -125,8 +125,7 @@ namespace Chummer
 
             // Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
+            
             lblCyberware.Text = string.Empty;
 
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
@@ -149,11 +148,11 @@ namespace Chummer
         /// <summary>
         /// Essence cost multiplier from the character.
         /// </summary>
-        public double CharacterESSMultiplier
+        public decimal CharacterESSMultiplier
         {
             set
             {
-                _dblCharacterESSModifier = value;
+                _decCharacterESSModifier = value;
             }
         }
 

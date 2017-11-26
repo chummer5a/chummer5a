@@ -30,24 +30,27 @@
         <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-            font-size: 10pt;
-            margin: 0;
-            text-align: left;
-            vertical-align: top;
+          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+          font-size: 10pt;
+          margin: 0;
+          text-align: left;
+          vertical-align: top;
           }
           html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
+          height: 100%;
+          margin: 0px;  /* this affects the margin on the html before sending to printer */
+          }
+          .upper {
+          text-transform: uppercase;
           }
           .tablestyle {
-            border-collapse: collapse;
-            border-color: #1c4a2d;
-            border-style: solid;
-            border-width: 0.5mm;
-            cellpadding: 2;
-            cellspacing: 0;
-            width: 100%;
+          border-collapse: collapse;
+          border-color: #1c4a2d;
+          border-style: solid;
+          border-width: 0.5mm;
+          cellpadding: 2;
+          cellspacing: 0;
+          width: 100%;
           }
         </style>
         <style media="print">

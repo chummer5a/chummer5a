@@ -3211,7 +3211,7 @@ namespace Chummer.Classes
                     if (objNode["val"] != null)
                         intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
                     if (objNode["pointsperlevel"] != null)
-                        frmPickPower.PointsPerLevel = Convert.ToDouble(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
+                        frmPickPower.PointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
                     if (objNode["limit"] != null)
                         frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating", _intRating.ToString()));
                     if (objNode.OuterXml.Contains("limittopowers"))

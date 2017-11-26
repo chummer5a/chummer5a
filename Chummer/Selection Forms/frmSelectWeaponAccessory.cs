@@ -527,7 +527,6 @@ namespace Chummer
             if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
                 && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
                 cboExtraMount.SelectedIndex += 1;
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = string.Empty;
@@ -548,9 +547,8 @@ namespace Chummer
                 }
                 try
                 {
-                    XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)));
                     int intTmp;
-                    if (int.TryParse(nav.Evaluate(xprAvail)?.ToString(), out intTmp))
+                    if (int.TryParse(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))?.ToString(), out intTmp))
                         lblAvail.Text = intTmp.ToString() + strAvail;
                 }
                 catch (XPathException)
@@ -594,8 +592,7 @@ namespace Chummer
                     decimal decCost = 0.0m;
                     try
                     {
-                        XPathExpression xprCost = nav.Compile(strCost);
-                        decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                        decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                     }
                     catch (XPathException)
                     {
