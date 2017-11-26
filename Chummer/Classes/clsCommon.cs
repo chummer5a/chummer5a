@@ -25,6 +25,8 @@ using System.Diagnostics;
  using System.Linq;
  using Chummer.Backend.Equipment;
 using System.Xml;
+using System.Xml.XPath;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
@@ -44,6 +46,34 @@ namespace Chummer
         {
             Mentor = 0,
             Paragon = 1
+        }
+        #endregion
+
+        #region XPath Evaluators
+        // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
+        static XmlDocument objXPathNavigatorDocument = new XmlDocument();
+        static XPathNavigator objXPathNavigator = objXPathNavigatorDocument.CreateNavigator();
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(string strXPath)
+        {
+            return objXPathNavigator.Evaluate(strXPath);
+        }
+
+        /// <summary>
+        /// Evaluate an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        {
+            return objXPathNavigator.Evaluate(objXPath);
         }
         #endregion
 

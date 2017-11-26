@@ -1088,13 +1088,18 @@ namespace Chummer
                         //Here is some black magic (used way too many places)
                         //To calculate the int value of a string
                         //TODO: implement a sane expression evaluator
-
-                        XPathNavigator navigator = objXmlCritterNode.CreateNavigator();
-                        XPathExpression exp = navigator.Compile(strInner.Replace("F", _intForce.ToString()));
-                        int value;
-                        if (!int.TryParse(navigator.Evaluate(exp).ToString(), out value))
+                        strInner = strInner.Replace("F", _intForce.ToString());
+                        int value = 0;
+                        try
                         {
-                            value = _intForce; //if failed to parse, default to force
+                            value = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner));
+                        }
+                        catch (XPathException)
+                        {
+                            if (!int.TryParse(strInner, out value))
+                            {
+                                value = _intForce; //if failed to parse, default to force
+                            }
                         }
                         value = Math.Max(value, 1); //Min value is 1
                         objWriter.WriteElementString(attribute, value.ToString(objCulture));
@@ -1802,19 +1807,14 @@ namespace Chummer
                 {
                     intMAG = _objCharacter.Options.SpiritForceBasedOnTotalMAG ? _objCharacter.MAG.TotalValue : _objCharacter.MAG.Value;
                 }
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-
+                
                 for (int i = 1; i <= intMAG * 2; i++)
                 {
                     // Calculate the Spell's Drain for the current Force.
-                    XPathExpression xprDV = nav.Compile(DV.Replace("F", i.ToString()).Replace("/", " div "));
-
                     object xprResult = null;
                     try
                     {
-                        xprResult = nav.Evaluate(xprDV);
+                        xprResult = CommonFunctions.EvaluateInvariantXPath(DV.Replace("F", i.ToString()).Replace("/", " div "));
                     }
                     catch (XPathException)
                     {
@@ -1957,8 +1957,6 @@ namespace Chummer
                 bool force = _strDV.StartsWith('F');
                 if (_objCharacter.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.DrainValue))
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
                     string dv = strReturn.TrimStart('F');
                     //Navigator can't do math on a single value, so inject a mathable value.
                     if (string.IsNullOrEmpty(dv))
@@ -1983,8 +1981,7 @@ namespace Chummer
                         dv += $" + {imp.Value:+0;-0;0}";
                     }
 
-                    XPathExpression xprDV = nav.Compile(dv.TrimStart('+'));
-                    object xprResult = nav.Evaluate(xprDV);
+                    object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'));
                     if (force)
                     {
                         strReturn = $"F{xprResult:+0;-0;0}";

@@ -80,9 +80,7 @@ namespace Chummer
             if (cboLifestyle.SelectedIndex == -1)
                 cboLifestyle.SelectedIndex = 0;
             cboLifestyle.EndUpdate();
-
-            XmlDocument objDoc = new XmlDocument();
-            XPathNavigator objNav = objDoc.CreateNavigator();
+            
             // Fill the Options list.
             foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
@@ -112,7 +110,7 @@ namespace Chummer
                     {
                         try
                         {
-                            decCost = Convert.ToDecimal(objNav.Evaluate(strCost));
+                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost));
                         }
                         catch (XPathException)
                         {
@@ -315,8 +313,6 @@ namespace Chummer
             decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
             lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
 
-            XmlDocument objDoc = new XmlDocument();
-            XPathNavigator objNav = objDoc.CreateNavigator();
             // Add the flat costs from qualities
             foreach (TreeNode objNode in treQualities.Nodes)
             {
@@ -330,7 +326,7 @@ namespace Chummer
                         {
                             try
                             {
-                                decLoopCost = Convert.ToDecimal(objNav.Evaluate(objXmlQuality["cost"].InnerText));
+                                decLoopCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objXmlQuality["cost"].InnerText));
                             }
                             catch (XPathException)
                             {

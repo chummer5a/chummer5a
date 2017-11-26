@@ -1445,14 +1445,10 @@ namespace Chummer.Backend.Equipment
             string strReturn = _strDamage;
 
             // If the cost is determined by the Rating, evaluate the expression.
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
-
             string strDamage = string.Empty;
             string strDamageExpression = _strDamage;
             string strDamageType = string.Empty;
             string strDamageExtra = string.Empty;
-            XPathExpression xprDamage;
 
             if (_objCharacter != null)
             {
@@ -1706,8 +1702,7 @@ namespace Chummer.Backend.Equipment
                 int intDamage = 0;
                 try
                 {
-                    xprDamage = nav.Compile(strDamage);
-                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(nav.Evaluate(xprDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
+                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
                 }
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
@@ -1749,8 +1744,7 @@ namespace Chummer.Backend.Equipment
                 int intDamage = 0;
                 try
                 {
-                    xprDamage = nav.Compile(strDamage);
-                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
+                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(CommonFunctions.EvaluateInvariantXPath(strDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
                 }
                 catch (XPathException) { }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
@@ -2547,12 +2541,10 @@ namespace Chummer.Backend.Equipment
                     if (strAccuracy.Contains("{" + strAttribute + "}"))
                         strAccuracy = strAccuracy.Replace("{" + strAttribute + "}", objLoopAttribute.TotalValue.ToString());
                 }
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 //try
                 {
-                    intAccuracy = Convert.ToInt32(nav.Evaluate(strAccuracy));
+                    intAccuracy = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAccuracy));
                 }
                 //catch (XPathException)
                 {
@@ -2765,8 +2757,7 @@ namespace Chummer.Backend.Equipment
             // Replace the division sign with "div" since we're using XPath.
             objRange.Replace("/", " div ");
 
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
-            decimal decReturn = Convert.ToDecimal(nav.Evaluate(objRange.ToString()), GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier;
+            decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objRange.ToString()), GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier;
             int intReturn = Convert.ToInt32(Math.Ceiling(decReturn));
 
             return intReturn;
@@ -3233,12 +3224,9 @@ namespace Chummer.Backend.Equipment
                     }
                     strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
                 }
-                XmlDocument objDummyDoc = new XmlDocument();
-                XPathNavigator objNav = objDummyDoc.CreateNavigator();
                 try
                 {
-                    XPathExpression objExpression = objNav.Compile(strAvailExpr);
-                    intAvail = Convert.ToInt32(objNav.Evaluate(objExpression));
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr));
                 }
                 catch (XPathException)
                 {

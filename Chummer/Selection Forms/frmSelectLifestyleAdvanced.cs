@@ -34,7 +34,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Advanced;
 
-        private readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         private bool _blnSkipRefresh = false;
         private int _intTravelerRdmLP = 0;

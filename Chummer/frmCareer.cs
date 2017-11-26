@@ -893,8 +893,7 @@ namespace Chummer
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.MagicTradition + "\"]");
                 lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
                 string strDrainAtt = _objCharacter.TraditionDrain;
-
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 StringBuilder objDrain = new StringBuilder(strDrainAtt);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
@@ -906,10 +905,9 @@ namespace Chummer
                 {
                     strDrain = "0";
                 }
-                XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
-                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
+                int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
                 lblDrainAttributesValue.Text = intDrain.ToString();
             }
 
@@ -921,8 +919,7 @@ namespace Chummer
 
                 // Update the Fading CharacterAttribute Value.
                 string strDrainAtt = _objCharacter.TechnomancerFading;
-
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 StringBuilder objDrain = new StringBuilder(strDrainAtt);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
@@ -934,12 +931,10 @@ namespace Chummer
                 {
                     strFading = "0";
                 }
-                XPathExpression xprDrain = nav.Compile(strFading);
                 int intFading = 0;
                 try
                 {
-                    XPathExpression xprFading = nav.Compile(strFading);
-                    intFading = Convert.ToInt32(nav.Evaluate(xprFading).ToString());
+                    intFading = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strFading).ToString());
                 }
                 catch (XPathException) { }
                 intFading += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
@@ -1739,8 +1734,7 @@ namespace Chummer
 
             objWriter.Close();
 
-            frmExport frmExportCharacter = new frmExport();
-            frmExportCharacter.CharacterXml = objCharacterXML;
+            frmExport frmExportCharacter = new frmExport(objCharacterXML);
             frmExportCharacter.ShowDialog(this);
         }
 
@@ -16388,8 +16382,6 @@ namespace Chummer
                 if (_objCharacter.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
                     string strTip = string.Empty;
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
 
                     string strDrain = lblDrainAttributes.Text;
 
@@ -16401,8 +16393,7 @@ namespace Chummer
                     int intDrain = 0;
                     try
                     {
-                        XPathExpression xprDrain = nav.Compile(strDrain);
-                        intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
+                        intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain).ToString());
                     }
                     catch (XPathException)
                     {
@@ -20829,10 +20820,8 @@ namespace Chummer
             decimal decCost = 0;
             if (objNewGear.Cost.Contains("Gear Cost"))
             {
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 string strCost = objNewGear.Cost.Replace("Gear Cost", objSelectedGear.CalculatedCost.ToString());
-                XPathExpression xprCost = nav.Compile(strCost);
-                decCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
+                decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo);
             }
             else
             {

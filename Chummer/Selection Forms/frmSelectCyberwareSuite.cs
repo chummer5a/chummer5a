@@ -125,8 +125,7 @@ namespace Chummer
 
             // Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
+            
             lblCyberware.Text = string.Empty;
 
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);

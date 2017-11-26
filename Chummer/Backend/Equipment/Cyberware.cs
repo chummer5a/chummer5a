@@ -1490,11 +1490,9 @@ namespace Chummer.Backend.Equipment
                     strRating = strRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
                     strRating = strRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
                     strRating = strRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
-                    XmlDocument objDummyDoc = new XmlDocument();
-                    XPathNavigator objNav = objDummyDoc.CreateNavigator();
                     try
                     {
-                        intReturn = Convert.ToInt32(objNav.Evaluate(strRating));
+                        intReturn = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strRating));
                     }
                     catch (XPathException)
                     {
@@ -1537,11 +1535,9 @@ namespace Chummer.Backend.Equipment
                     strRating = strRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
                     strRating = strRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
                     strRating = strRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
-                    XmlDocument objDummyDoc = new XmlDocument();
-                    XPathNavigator objNav = objDummyDoc.CreateNavigator();
                     try
                     {
-                        intReturn = Convert.ToInt32(objNav.Evaluate(strRating));
+                        intReturn = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strRating));
                     }
                     catch (XPathException)
                     {
@@ -1904,8 +1900,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 // If the Avail starts with "+", return the base string and don't try to calculate anything since we're looking at a child component.
                 if (_strAvail.StartsWith('+'))
                 {
@@ -1923,8 +1917,7 @@ namespace Chummer.Backend.Equipment
                         }
                         strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => MinRating.ToString());
                         strAvailExpr = strAvailExpr.Replace("Rating", _intRating.ToString());
-                        XPathExpression xprAvail = nav.Compile(strAvailExpr);
-                        return "+" + nav.Evaluate(xprAvail).ToString() + strAvail;
+                        return "+" + CommonFunctions.EvaluateInvariantXPath(strAvailExpr).ToString() + strAvail;
                     }
                     else
                         return _strAvail;
@@ -1957,8 +1950,7 @@ namespace Chummer.Backend.Equipment
                         // Remove the trailing character if it is "F" or "R".
                         strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                     }
-                    XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
-                    strCalculated = (Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier).ToString() + strAvail;
+                    strCalculated = (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", _intRating.ToString()))) + intAvailModifier).ToString() + strAvail;
                 }
                 else
                 {
@@ -2002,8 +1994,7 @@ namespace Chummer.Backend.Equipment
                             string strChildAvailExpr = strChildAvail;
 
                             // Remove the "+" since the expression can't be evaluated if it starts with this.
-                            XPathExpression xprAvail = nav.Compile(strChildAvailExpr.TrimStart('+'));
-                            strChildAvail = "+" + nav.Evaluate(xprAvail);
+                            strChildAvail = "+" + CommonFunctions.EvaluateInvariantXPath(strChildAvailExpr.TrimStart('+'));
                             if (!string.IsNullOrEmpty(strChildAvailText))
                                 strChildAvail += strChildAvailText;
                         }
@@ -2077,9 +2068,6 @@ namespace Chummer.Backend.Equipment
                 string strReturn = "0";
                 if (strCapacity.Contains("/["))
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     int intPos = strCapacity.IndexOf("/[");
                     string strFirstHalf = strCapacity.Substring(0, intPos);
                     string strSecondHalf = strCapacity.Substring(intPos + 1, _strCapacity.Length - intPos - 1);
@@ -2087,11 +2075,9 @@ namespace Chummer.Backend.Equipment
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strFirstHalf.Replace("Rating", _intRating.ToString()));
-
                     try
                     {
-                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     }
                     catch (XPathException)
                     {
@@ -2101,24 +2087,19 @@ namespace Chummer.Backend.Equipment
                         strReturn = "[" + strCapacity + "]";
 
                     strSecondHalf = strSecondHalf.Trim("[]".ToArray());
-                    xprCapacity = nav.Compile(strSecondHalf.Replace("Rating", _intRating.ToString()));
-                    strSecondHalf = "[" + Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                    strSecondHalf = "[" + Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
 
                     strReturn += "/" + strSecondHalf;
                 }
                 else if (strCapacity.Contains("Rating"))
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                     bool blnSquareBrackets = strCapacity.Contains('[');
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }
@@ -2157,13 +2138,9 @@ namespace Chummer.Backend.Equipment
             if (strESS.Contains("Rating"))
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                 strESS = strESS.Replace("Rating", _intRating.ToString());
 
-                XPathExpression xprEss = nav.Compile(strESS);
-                decReturn = Convert.ToDecimal(nav.Evaluate(strESS), GlobalOptions.InvariantCultureInfo);
+                decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strESS), GlobalOptions.InvariantCultureInfo);
             }
             else
             {
@@ -2300,8 +2277,6 @@ namespace Chummer.Backend.Equipment
                 if (strCostExpression.Contains("Rating") || strCostExpression.Contains("MinRating") || strCostExpression.Contains("Parent Cost") || strCostExpression.Contains("Gear Cost") || strCostExpression.Contains("Children Cost"))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
                     if (string.IsNullOrEmpty(strParentCost))
                         strParentCost = "0";
                     strCostExpression = strCostExpression.Replace("Parent Cost", strParentCost);
@@ -2310,8 +2285,8 @@ namespace Chummer.Backend.Equipment
                     strCostExpression = strCostExpression.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.CheapReplace("MinRating", () => MinRating.ToString());
                     strCostExpression = strCostExpression.Replace("Rating", _intRating.ToString());
-                    XPathExpression xprCost = nav.Compile(strCostExpression);
-                    decCost = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo);
+
+                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCostExpression).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {

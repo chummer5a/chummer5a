@@ -254,7 +254,6 @@ namespace Chummer
 
             // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
 
             lblA.Text = objXmlMod["armor"].InnerText;
 
@@ -278,8 +277,7 @@ namespace Chummer
             string strAvail = string.Empty;
             string strAvailExpr = string.Empty;
             strAvailExpr = objXmlMod["avail"].InnerText;
-
-            XPathExpression xprAvail;
+            
             if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
             {
                 strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
@@ -292,8 +290,7 @@ namespace Chummer
             }
             try
             {
-                xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
+                lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString() + strAvail;
             }
             catch (XPathException)
             {
@@ -326,10 +323,9 @@ namespace Chummer
             {
                 string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString());
-                XPathExpression xprCost = nav.Compile(strCost);
 
                 // Apply any markup.
-                decimal decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                 decCost *= 1 + (nudMarkup.Value / 100.0m);
 
                 lblCost.Text = $"{decCost:#,0.00¥}";
@@ -355,10 +351,9 @@ namespace Chummer
                 }
 
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
                 if (_objCapacityStyle == CapacityStyle.Standard)
-                    lblCapacity.Text = "[" + nav.Evaluate(xprCapacity) + "]";
+                    lblCapacity.Text = "[" + CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))) + "]";
                 else if (_objCapacityStyle == CapacityStyle.PerRating)
                     lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + "]";
                 else if (_objCapacityStyle == CapacityStyle.Zero)

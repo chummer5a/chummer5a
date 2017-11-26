@@ -674,15 +674,11 @@ namespace Chummer.Backend.Equipment
                 if (_strConceal.Contains("Rating"))
                 {
                     // If the cost is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     string strConceal = string.Empty;
                     string strCostExpression = _strConceal;
 
                     strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
-                    XPathExpression xprCost = nav.Compile(strConceal);
-                    decimal decConceal = Math.Ceiling(Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    decimal decConceal = Math.Ceiling(Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strConceal), GlobalOptions.InvariantCultureInfo));
                     intReturn = Convert.ToInt32(decConceal);
                 }
                 else if (!string.IsNullOrEmpty(_strConceal))
@@ -839,9 +835,6 @@ namespace Chummer.Backend.Equipment
                 if (_strAvail.Contains("Rating"))
                 {
                     // If the availability is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     string strAvail = string.Empty;
                     string strAvailExpr = _strAvail;
 
@@ -851,8 +844,7 @@ namespace Chummer.Backend.Equipment
                         // Remove the trailing character if it is "F" or "R".
                         strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                     }
-                    XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
-                    strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
+                    strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", _intRating.ToString()))).ToString() + strAvail;
                 }
                 else
                 {
@@ -967,17 +959,12 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decReturn = 0;
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                 string strCost = string.Empty;
                 string strCostExpression = _strCost;
 
                 strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
                 strCost = strCost.Replace("Rating", _intRating.ToString());
-                XPathExpression xprCost = nav.Compile(strCost);
-                decReturn = Convert.ToDecimal(nav.Evaluate(xprCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
+                decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;

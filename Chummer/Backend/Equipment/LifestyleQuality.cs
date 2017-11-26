@@ -590,11 +590,9 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = 0.0m;
                 if (!decimal.TryParse(_strCost, out decReturn))
                 {
-                    XmlDocument objDoc = new XmlDocument();
-                    XPathNavigator objNav = objDoc.CreateNavigator();
                     try
                     {
-                        decReturn = Convert.ToDecimal(objNav.Evaluate(_strCost));
+                        decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(_strCost));
                     }
                     catch (XPathException)
                     {

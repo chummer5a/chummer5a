@@ -93,8 +93,6 @@ namespace Chummer.Backend.Shared_Methods
                 }
                 if (strLimitString != "no")
                 {
-                    XmlDocument objDummyDoc = new XmlDocument();
-                    XPathNavigator objNavigator = objDummyDoc.CreateNavigator();
                     StringBuilder objLimitString = new StringBuilder(strLimitString);
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
@@ -108,7 +106,7 @@ namespace Chummer.Backend.Shared_Methods
                     }
                     try
                     {
-                        strLimitString = objNavigator.Evaluate(objLimitString.ToString()).ToString();
+                        strLimitString = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString()).ToString();
                     }
                     catch (XPathException)
                     {
@@ -404,10 +402,7 @@ namespace Chummer.Backend.Shared_Methods
                         }
                     }
                     name = $"\n\t{strAttributes} {intNodeVal}";
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-                    XPathExpression xprAttributes = nav.Compile(strValue);
-                    return Convert.ToInt32(nav.Evaluate(xprAttributes)) >= intNodeVal;
+                    return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strValue)) >= intNodeVal;
                 case "careerkarma":
                     // Check Career Karma requirement.
                     name = "\n\t" + LanguageManager.GetString("Message_SelectQuality_RequireKarma")
@@ -830,12 +825,9 @@ namespace Chummer.Backend.Shared_Methods
                 strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
             bool blnReturn = true;
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
             try
             {
-                XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)));
-                blnReturn = Convert.ToInt32(nav.Evaluate(xprAvail)) + intAvailModifier <= objCharacter.MaximumAvailability;
+                blnReturn = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)))) + intAvailModifier <= objCharacter.MaximumAvailability;
             }
             catch (XPathException)
             {
@@ -843,7 +835,7 @@ namespace Chummer.Backend.Shared_Methods
             return blnReturn;
         }
 
-        public static bool CheckNuyenRestriction(XPathNavigator nav, XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
         {
             // Cost.
             decimal decCost = 0.0m;
@@ -870,8 +862,7 @@ namespace Chummer.Backend.Shared_Methods
             {
                 try
                 {
-                    XPathExpression xprCost = nav.Compile(objCostNode.InnerText.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)));
-                    decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCostNode.InnerText.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
                 }
                 catch (XPathException)
                 {

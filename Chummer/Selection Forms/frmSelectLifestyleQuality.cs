@@ -161,11 +161,9 @@ namespace Chummer
                     decimal decCost = 0.0m;
                     if (!decimal.TryParse(strCost, out decCost))
                     {
-                        XmlDocument objDoc = new XmlDocument();
-                        XPathNavigator objNav = objDoc.CreateNavigator();
                         try
                         {
-                            decCost = Convert.ToDecimal(objNav.Evaluate(strCost));
+                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost));
                         }
                         catch (XPathException)
                         {
@@ -677,11 +675,8 @@ namespace Chummer
                                 {
                                     strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
-
-                                XmlDocument objXmlDocument = new XmlDocument();
-                                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                                XPathExpression xprAttributes = nav.Compile(strAttributes);
-                                if (Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                
+                                if (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                     blnOneOfMet = true;
                                 break;
                             case "skillgrouptotal":
@@ -940,11 +935,8 @@ namespace Chummer
                                 {
                                     strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
-
-                                XmlDocument objXmlDocument = new XmlDocument();
-                                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                                XPathExpression xprAttributes = nav.Compile(strAttributes);
-                                if (Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                
+                                if (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                     blnFound = true;
                                 break;
                             case "skillgrouptotal":

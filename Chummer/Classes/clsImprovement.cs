@@ -923,15 +923,12 @@ namespace Chummer
                 {
                     strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
-                XPathExpression xprValue = nav.Compile(strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                decimal decValue = Convert.ToDecimal(nav.Evaluate(xprValue), GlobalOptions.InvariantCultureInfo);
+                decimal decValue = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strReturn), GlobalOptions.InvariantCultureInfo);
                 int intValue = Convert.ToInt32(Math.Floor(decValue));
 
                 //Log.Exit("ValueToInt");

@@ -314,7 +314,7 @@ namespace Chummer
                             decCostMultiplier *= 0.1m;
                         if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
                             (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                            Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
+                            Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
                         {
                             ListItem objItem = new ListItem();
                             objItem.Value = objXmlGear["name"].InnerText;
@@ -527,7 +527,7 @@ namespace Chummer
                                     decCostMultiplier *= 0.1m;
                                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
                                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                                    Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(_objXmlDocument.CreateNavigator(), objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
+                                    Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))
                                 {
                                     ListItem objItem = new ListItem();
                                     // When searching, Category needs to be added to the Value so we can identify the English Category name.
@@ -981,7 +981,6 @@ namespace Chummer
 
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.
-                XPathNavigator nav = _objXmlDocument.CreateNavigator();
 
                 // Avail.
                 // If avail contains "F" or "R", remove it from the string so we can use the expression.
@@ -1016,8 +1015,7 @@ namespace Chummer
                     }
                 }
                 strAvailExpr = objAvailNode.InnerText;
-
-                XPathExpression xprAvail;
+                
                 if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
@@ -1036,8 +1034,7 @@ namespace Chummer
 
                 try
                 {
-                    xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                    lblAvail.Text = strPrefix + (Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier).ToString() + strAvail;
+                    lblAvail.Text = strPrefix + (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))) + _intAvailModifier).ToString() + strAvail;
                 }
                 catch (XPathException)
                 {
@@ -1087,8 +1084,7 @@ namespace Chummer
                     {
                         try
                         {
-                            XPathExpression xprCost = nav.Compile(objCostNode.InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                            decimal decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo) * decMultiplier;
+                            decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCostNode.InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo) * decMultiplier;
                             decCost *= 1 + (nudMarkup.Value / 100.0m);
                             if (chkBlackMarketDiscount.Checked)
                                 decCost *= 0.9m;
@@ -1172,7 +1168,6 @@ namespace Chummer
                             strCapacity = strFirstHalf;
                             if (blnSquareBrackets && strCapacity.Length > 2)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                            XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
                             if (objXmlGear[strCapacityField].InnerText == "[*]")
                                 lblCapacity.Text = "*";
@@ -1184,10 +1179,10 @@ namespace Chummer
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else
-                                        lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                        lblCapacity.Text = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
                                 }
                                 else
-                                    lblCapacity.Text = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                    lblCapacity.Text = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
                             }
                             if (blnSquareBrackets)
                                 lblCapacity.Text = "[" + lblCapacity.Text + "]";
@@ -1200,7 +1195,6 @@ namespace Chummer
                             strCapacity = objXmlGear[strCapacityField].InnerText;
                             if (blnSquareBrackets && strCapacity.Length > 2)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                            XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
 
                             if (objXmlGear[strCapacityField].InnerText == "[*]")
                                 lblCapacity.Text = "*";
@@ -1219,7 +1213,7 @@ namespace Chummer
                                     string strCalculatedCapacity = string.Empty;
                                     try
                                     {
-                                        strCalculatedCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                        strCalculatedCapacity = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
                                     }
                                     catch (XPathException)
                                     {
