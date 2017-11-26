@@ -6125,8 +6125,8 @@ namespace Chummer
             }
             if (_blnMentorMask)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, _guiID.ToString(), Improvement.ImprovementSource.MentorSpirit, DisplayName, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
-                ImprovementManager.CreateImprovement(_objCharacter, _guiID.ToString(), Improvement.ImprovementSource.MentorSpirit, DisplayName, Improvement.ImprovementType.DrainValue, string.Empty, -1);
+                ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
+                ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), Improvement.ImprovementType.DrainValue, string.Empty, -1);
             }
         }
 
