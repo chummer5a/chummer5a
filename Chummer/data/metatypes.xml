@@ -336,9 +336,9 @@
           <strmin>1</strmin>
           <strmax>6</strmax>
           <straug>10</straug>
-          <chamin>3</chamin>
-          <chamax>8</chamax>
-          <chaaug>12</chaaug>
+          <chamin>2</chamin>
+          <chamax>7</chamax>
+          <chaaug>11</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -551,6 +551,7 @@
           </bonus>
           <qualities>
             <positive>
+              <quality>Arcane Arrester</quality>
               <quality>Arcane Arrester</quality>
               <quality>Thermographic Vision</quality>
             </positive>
@@ -807,9 +808,9 @@
           <name>Hobgoblin</name>
           <category>Metavariant</category>
           <karma>40</karma>
-          <bodmin>1</bodmin>
-          <bodmax>6</bodmax>
-          <bodaug>10</bodaug>
+          <bodmin>3</bodmin>
+          <bodmax>8</bodmax>
+          <bodaug>12</bodaug>
           <agimin>1</agimin>
           <agimax>6</agimax>
           <agiaug>10</agiaug>
@@ -819,9 +820,9 @@
           <strmin>2</strmin>
           <strmax>7</strmax>
           <straug>11</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>5</chamax>
+          <chaaug>9</chaaug>
           <intmin>1</intmin>
           <intmax>6</intmax>
           <intaug>10</intaug>
@@ -853,7 +854,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Fangs</quality>
-			  <quality>Keen-Eared</quality>
+              <quality>Keen-Eared</quality>
             </positive>
             <negative>
               <quality>Poor Self Control (Vindictive)</quality>
@@ -1397,7 +1398,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <walk>4/1/0</walk>
+      <walk>1/1/0</walk>
       <run>4/0/0</run>
       <sprint>4/1/0</sprint>
       <bonus>
@@ -1415,7 +1416,7 @@
           <quality>Thermographic Vision</quality>
           <quality>Natural Weapon: Kick (Centaur)</quality>
           <quality>Magic Sense</quality>
-		  <quality>Centaur Body</quality>
+          <quality>Centaur Body</quality>
         </positive>
       </qualities>
       <powers>
@@ -1560,7 +1561,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <unlockskills name="Assensing">Name</unlockskills>
         <lifestylecost>100</lifestylecost>
       </bonus>
       <qualities>
