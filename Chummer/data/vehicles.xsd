@@ -237,25 +237,10 @@
               <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
               <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
               <xs:element name="create" type="xs:string" minOccurs="0" maxOccurs="1" />
+              <xs:element name="optionaldrone" type="xs:string" minOccurs="0" maxOccurs="1" />
               <xs:element name="slots" type="xs:string" minOccurs="0" maxOccurs="1" />
-              <xs:element name="forbidden" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="control" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="flexibility" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="visibility" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="required" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="control" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="flexibility" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="visibility" type="xs:string" minOccurs="0" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
+              <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
+              <xs:element ref="required" minOccurs="0" maxOccurs="1" />
               <xs:element name="weaponcategories" type="xs:string" minOccurs="0" maxOccurs="1" />
             </xs:sequence>
           </xs:complexType>

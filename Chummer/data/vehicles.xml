@@ -10616,7 +10616,193 @@
     <!-- End Region -->
     <!-- End Region -->
     <!-- Region Drone Mounts -->
-    
+    <weaponmount>
+      <id>4fdb0fb3-c987-41a0-b11e-d82fe6ac85b1</id>
+      <name>Micro (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>8R</avail>
+      <category>Size</category>
+      <cost>400</cost>
+      <optionaldrone />
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Micro-Drone Weapons</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>94d06312-0487-4f3c-a8e9-e02ac2d04a2e</id>
+      <name>Mini (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>4R</avail>
+      <category>Size</category>
+      <cost>800</cost>
+      <optionaldrone/>
+      <slots>1</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Tasers,Holdouts,Light Pistols,Grenades,Blades,Clubs</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>9ee5e112-8ced-4266-9141-02ef18e33f43</id>
+      <name>Small (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>8R</avail>
+      <category>Size</category>
+      <cost>1600</cost>
+      <optionaldrone/>
+      <slots>2</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>0ec991be-a888-4547-8ca2-ad43d7c7399e</id>
+      <name>Standard (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>10F</avail>
+      <category>Size</category>
+      <cost>2400</cost>
+      <optionaldrone/>
+      <slots>3</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>2ab20ea4-441c-482d-977e-a5e90f37cb51</id>
+      <name>Large (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>12F</avail>
+      <category>Size</category>
+      <cost>3200</cost>
+      <optionaldrone/>
+      <slots>4</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Grenade Launchers,Sporting Rifles</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>30099989-d8ca-4f9c-adf0-1de36b6f8ab6</id>
+      <name>Huge (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>16F</avail>
+      <category>Size</category>
+      <cost>4000</cost>
+      <optionaldrone/>
+      <slots>5</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Grenade Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Sporting Rifles,Sniper Rifles</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>52973ba7-3dbb-49fe-9a4c-8105eb6ab4bc</id>
+      <name>Heavy (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>20F</avail>
+      <category>Size</category>
+      <cost>4800</cost>
+      <optionaldrone/>
+      <slots>6</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+        <weaponmountdetails>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
+      </required>
+      <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponcategories>
+    </weaponmount>
+    <weaponmount>
+      <id>be56fb91-88d3-4bfb-8e42-d12929b44fe5</id>
+      <name>None</name>
+      <page>163</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Control</category>
+      <cost>0</cost>
+      <optionaldrone/>
+      <slots>0</slots>
+    </weaponmount>
+    <weaponmount>
+      <id>c6939caa-e94d-4db3-94f6-a46fbcc4df07</id>
+      <name>None</name>
+      <page>163</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Flexibility</category>
+      <cost>0</cost>
+      <optionaldrone/>
+      <slots>0</slots>
+    </weaponmount>
+    <weaponmount>
+      <id>b7333366-24bf-4f47-bb68-b1cfe8f450fd</id>
+      <name>None</name>
+      <page>163</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Visibility</category>
+      <cost>0</cost>
+      <optionaldrone/>
+      <slots>0</slots>
+    </weaponmount>
     <!-- End Region -->
   </weaponmounts>
 </chummer>

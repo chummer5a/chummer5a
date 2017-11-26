@@ -43,32 +43,39 @@ namespace Chummer
 
             // Populate the Armor Category list.
             XmlNodeList nodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount");
+            
             if (nodeList != null)
                 foreach (XmlNode node in nodeList)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = node["id"].InnerText;
-                    objItem.Name = node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText;
-                    switch (node["category"].InnerText)
+                    bool add = true;
+                    if (node["optionaldrone"] != null && !_vehicle.IsDrone)
                     {
-                        case "Visibility":
-                            _lstVisibility.Add(objItem);
-                            break;
-                        case "Flexibility":
-                            _lstFlexibility.Add(objItem);
-                            break;
-                        case "Control":
-                            _lstControl.Add(objItem);
-                            break;
-                        case "Size":
-                            _lstSize.Add(objItem);
-                            break;
-                        default:
-                            Utils.BreakIfDebug();
-                            break;
+                        add = false;
                     }
-
-
+                    if (add)
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = node["id"].InnerText;
+                        objItem.Name = node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText;
+                        switch (node["category"].InnerText)
+                        {
+                            case "Visibility":
+                                _lstVisibility.Add(objItem);
+                                break;
+                            case "Flexibility":
+                                _lstFlexibility.Add(objItem);
+                                break;
+                            case "Control":
+                                _lstControl.Add(objItem);
+                                break;
+                            case "Size":
+                                _lstSize.Add(objItem);
+                                break;
+                            default:
+                                Utils.BreakIfDebug();
+                                break;
+                        }
+                    }
                 }
             cboSize.BeginUpdate();
             cboSize.ValueMember = "Value";

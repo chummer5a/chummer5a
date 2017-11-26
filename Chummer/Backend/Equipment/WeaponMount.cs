@@ -227,7 +227,7 @@ namespace Chummer.Backend.Equipment
 		/// Print the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter)
+		public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
 		{
 			objWriter.WriteStartElement("mod");
 			objWriter.WriteElementString("name", DisplayNameShort);
@@ -243,7 +243,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("weapons");
             foreach (Weapon w in _weapons)
             {
-                w.Print(objWriter);
+                w.Print(objWriter, objCulture);
             }
             objWriter.WriteEndElement();
 			if (_character.Options.PrintNotes)
