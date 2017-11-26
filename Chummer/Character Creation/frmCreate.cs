@@ -13095,15 +13095,20 @@ namespace Chummer
             // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
-                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
-                     _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
-                    intNegativeQualities < -1*_objCharacter.GameplayOptionQualityLimit)
+                int intNegativeQualityLimit = -_objCharacter.GameplayOptionQualityLimit;
+                if (intNegativeQualities < intNegativeQualityLimit)
                 {
-                    intNegativeQualities = -1*_objCharacter.GameplayOptionQualityLimit;
+                    intNegativeQualities = intNegativeQualityLimit;
                 }
-                else
+            }
+
+            // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
+            if (_objOptions.ExceedPositiveQualitiesCostDoubled)
+            {
+                int intPositiveQualityExcess = intPositiveQualities - _objCharacter.GameplayOptionQualityLimit;
+                if (intPositiveQualityExcess > 0)
                 {
-                    intNegativeQualities = Math.Max(intNegativeQualities,-1 * _objCharacter.GameplayOptionQualityLimit);
+                    intPositiveQualities += intPositiveQualityExcess;
                 }
             }
 
@@ -17333,15 +17338,20 @@ namespace Chummer
             // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
-                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
-                 _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
-                intNegativePoints < -1 * _objCharacter.MaxKarma)
+                int intNegativeQualityLimit = -_objCharacter.GameplayOptionQualityLimit;
+                if (intNegativePoints < intNegativeQualityLimit)
                 {
-                    intNegativePoints = -1 * _objCharacter.MaxKarma;
+                    intNegativePoints = intNegativeQualityLimit;
                 }
-                else
+            }
+
+            // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
+            if (_objOptions.ExceedPositiveQualitiesCostDoubled)
+            {
+                int intPositiveQualityExcess = intPointsUsed - _objCharacter.GameplayOptionQualityLimit;
+                if (intPositiveQualityExcess > 0)
                 {
-                    intNegativePoints = -1 * _objCharacter.GameplayOptionQualityLimit;
+                    intPointsUsed += intPositiveQualityExcess;
                 }
             }
 

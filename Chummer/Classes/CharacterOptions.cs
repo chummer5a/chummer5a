@@ -57,6 +57,7 @@ namespace Chummer
         private bool _blnExceedNegativeQualities;
         private bool _blnExceedNegativeQualitiesLimit;
         private bool _blnExceedPositiveQualities;
+        private bool _blnExceedPositiveQualitiesCostDoubled;
         private bool _blnExtendAnyDetectionSpell;
         private bool _blnFreeContactsMultiplierEnabled;
         private bool _blnDroneArmorMultiplierEnabled;
@@ -347,6 +348,8 @@ namespace Chummer
             objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString());
             // <exceedpositivequalities />
             objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString());
+            // <exceedpositivequalitiescostdoubled />
+            objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString());
 
             objWriter.WriteElementString("mysaddppcareer", MysaddPPCareer.ToString());
 
@@ -735,6 +738,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue", ref _blnSpecialKarmaCostBasedOnShownValue);
             // Allow more than 35 BP in Positive Qualities.
             objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
+            // Double all positive qualities in excess of the limit
+            objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled", ref _blnExceedPositiveQualitiesCostDoubled);
 
             objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _mysaddPpCareer);
 
@@ -1950,6 +1955,21 @@ namespace Chummer
             set
             {
                 _blnExceedPositiveQualities = value;
+            }
+        }
+
+        /// <summary>
+        /// If true, the karma cost of qualities is doubled after the initial 25.
+        /// </summary>
+        public bool ExceedPositiveQualitiesCostDoubled
+        {
+            get
+            {
+                return _blnExceedPositiveQualitiesCostDoubled;
+            }
+            set
+            {
+                _blnExceedPositiveQualitiesCostDoubled = value;
             }
         }
 

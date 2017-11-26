@@ -108,10 +108,9 @@ namespace Chummer
             _characterOptions.EssenceDecimals = Convert.ToInt32(nudEssenceDecimals.Value);
             _characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
             _characterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
-                if (chkExceedNegativeQualities.Checked)
-                    chkExceedNegativeQualitiesLimit.Enabled = true;
             _characterOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
             _characterOptions.ExceedPositiveQualities = chkExceedPositiveQualities.Checked;
+            _characterOptions.ExceedPositiveQualitiesCostDoubled = chkExceedPositiveQualitiesCostDoubled.Checked;
             _characterOptions.ExtendAnyDetectionSpell = chkExtendAnyDetectionSpell.Checked;
             _characterOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
             _characterOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
@@ -307,6 +306,14 @@ namespace Chummer
             if (!chkExceedNegativeQualitiesLimit.Enabled)
                 chkExceedNegativeQualitiesLimit.Checked = false;
             OptionsChanged(sender,e);
+        }
+
+        private void chkExceedPositiveQualities_CheckedChanged(object sender, EventArgs e)
+        {
+            chkExceedPositiveQualitiesCostDoubled.Enabled = chkExceedNegativeQualities.Checked;
+            if (!chkExceedPositiveQualitiesCostDoubled.Enabled)
+                chkExceedPositiveQualitiesCostDoubled.Checked = false;
+            OptionsChanged(sender, e);
         }
 
         private void chkContactMultiplier_CheckedChanged(object sender, EventArgs e)
@@ -687,6 +694,8 @@ namespace Chummer
             chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;
             chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
             chkExceedPositiveQualities.Checked = _characterOptions.ExceedPositiveQualities;
+            chkExceedPositiveQualitiesCostDoubled.Checked = _characterOptions.ExceedPositiveQualitiesCostDoubled;
+            chkExceedPositiveQualitiesCostDoubled.Enabled = chkExceedPositiveQualities.Checked;
             chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
             chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
             chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;

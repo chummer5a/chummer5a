@@ -281,6 +281,7 @@ Application Changes:
 - Fixed translations for contact tabs and contact controls. Part of fix for #2098.
 - Fixed weapon mount strings not being localized in the UI displaying info about a selected weapon. Part of fix for #2098.
 - Altered the Shadowrun 5 character sheet set so that it can use language-depedent stylesheets. Made the German version of the character sheet not capitalize all letters in any classes. Fixes #2095.
+- Added a house rule where characters can take an unlimited amount of Positive Qualities, but any quality karma costs in excess of the limit set in options are doubled, as if they were taken in career mode.
 
 Data Changes:
 
@@ -503,6 +504,7 @@ New Strings:
 - Checkbox_Contact_Free
 - Checkbox_Contact_Blackmail
 - Checkbox_Contact_Family
+- Checkbox_Options_ExceedPositiveQualitiesCostDoubled
 
 Changed Strings:
 - Message_PositiveQualityLimit
