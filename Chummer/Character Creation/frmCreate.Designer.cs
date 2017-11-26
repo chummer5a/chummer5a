@@ -4433,11 +4433,11 @@ namespace Chummer
             // cmdAddSpell
             // 
             this.cmdAddSpell.AutoSize = true;
-            this.cmdAddSpell.ContextMenuStrip = this.cmsSpellButton;
+            //this.cmdAddSpell.ContextMenuStrip = this.cmsSpellButton;
             this.cmdAddSpell.Location = new System.Drawing.Point(8, 26);
             this.cmdAddSpell.Name = "cmdAddSpell";
             this.cmdAddSpell.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddSpell.SplitMenuStrip = this.cmsSpellButton;
+            //this.cmdAddSpell.SplitMenuStrip = this.cmsSpellButton;
             this.cmdAddSpell.TabIndex = 140;
             this.cmdAddSpell.Tag = "Button_AddSpell";
             this.cmdAddSpell.Text = "&Add Spell";
