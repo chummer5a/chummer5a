@@ -3893,18 +3893,8 @@ namespace Chummer
             }
             set
             {
-                bool oldCanAffordSpec = CanAffordSpecialization;
-
                 OnPropertyChanged(ref _intKarma, value);
-
-                if(oldCanAffordSpec != CanAffordSpecialization)
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordSpecialization)));
             }
-        }
-
-        public bool CanAffordSpecialization
-        {
-            get { return Karma >= Math.Min(Options.KarmaSpecialization, Options.KarmaKnowledgeSpecialization); }
         }
 
         /// <summary>
@@ -8275,6 +8265,8 @@ namespace Chummer
             Improvement.ImprovementType.KnowledgeSkillKarmaCost,
             Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier,
             Improvement.ImprovementType.SkillCategoryKarmaCost,
+            Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier,
+            Improvement.ImprovementType.SkillCategorySpecializationKarmaCost,
             Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier,
             Improvement.ImprovementType.SkillGroupCategoryDisable,
             Improvement.ImprovementType.SkillGroupCategoryKarmaCost,

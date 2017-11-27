@@ -261,6 +261,8 @@ namespace Chummer
             SkillGroupKarmaCost,
             SkillGroupDisable,
             KnowledgeSkillKarmaCost,
+            SkillCategorySpecializationKarmaCostMultiplier,
+            SkillCategorySpecializationKarmaCost,
             SkillCategoryKarmaCostMultiplier,
             SkillCategoryKarmaCost,
             SkillGroupCategoryKarmaCostMultiplier,

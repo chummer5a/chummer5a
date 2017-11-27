@@ -414,11 +414,32 @@ namespace Chummer.Skills
             if (cost < 0 && Debugger.IsAttached)
                 Debugger.Break();
 
+            int intSpecCost = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+            int intSpecCount = 0;
             foreach (SkillSpecialization objSpec in Specializations)
             {
                 if (!objSpec.Free && (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma || _character.BuildMethod == CharacterBuildMethod.LifeModule))
-                    cost += _character.Options.KarmaSpecialization;
+                    intSpecCount += 1;
             }
+            int intExtraSpecCost = 0;
+            decimal decSpecCostMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+            {
+                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                            intExtraSpecCost += objLoopImprovement.Value * intSpecCount;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+            }
+            if (decSpecCostMultiplier != 1.0m)
+                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCount * intSpecCost * decSpecCostMultiplier));
+            cost += intSpecCost + intExtraSpecCost; //Spec
 
             return Math.Max(0, cost);
 
@@ -554,12 +575,64 @@ namespace Chummer.Skills
             CharacterObject.Karma -= price;
         }
 
+        private bool _oldCanAffordSpecialization = false;
+        public bool CanAffordSpecialization
+        {
+            get
+            {
+                if (!CanHaveSpecs)
+                    return false;
+                int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+
+                int intExtraSpecCost = 0;
+                int intTotalBaseRating = TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == SkillCategory)
+                        {
+                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                intExtraSpecCost += objLoopImprovement.Value;
+                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    price = Convert.ToInt32(Math.Ceiling(price * decSpecCostMultiplier));
+                price += intExtraSpecCost; //Spec
+
+                return price <= CharacterObject.Karma;
+            }
+        }
 
         public void AddSpecialization(string name)
         {
-            int price = CharacterObject.Options.KarmaSpecialization;
-            if (IsKnowledgeSkill)
-                price = CharacterObject.Options.KarmaKnowledgeSpecialization;
+            int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+
+            int intExtraSpecCost = 0;
+            int intTotalBaseRating = TotalBaseRating;
+            decimal decSpecCostMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+            {
+                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                            intExtraSpecCost += objLoopImprovement.Value;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+            }
+            if (decSpecCostMultiplier != 1.0m)
+                price = Convert.ToInt32(Math.Ceiling(price * decSpecCostMultiplier));
+            price += intExtraSpecCost; //Spec
 
             if (price > CharacterObject.Karma)
                 return;
