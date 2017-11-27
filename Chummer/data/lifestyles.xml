@@ -570,7 +570,7 @@
       <lp>2</lp>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>50</cost>
+      <cost>500</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -744,7 +744,7 @@
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>50</cost>
+      <cost>75</cost>
       <page>222</page>
     </quality>
     <quality>
