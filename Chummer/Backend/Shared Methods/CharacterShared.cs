@@ -611,11 +611,9 @@ namespace Chummer
             }
             if (objDrain != null)
             {
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 try
                 {
-                    intDrain = Convert.ToInt32(nav.Evaluate(objDrain.ToString()));
+                    intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objDrain.ToString()));
                 }
                 catch (XPathException)
                 {

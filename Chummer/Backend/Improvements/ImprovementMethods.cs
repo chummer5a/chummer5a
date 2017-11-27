@@ -461,6 +461,8 @@ namespace Chummer
                     return objImprovementAdder.skillgroupcategorykarmacost;
                 case "SKILLCATEGORYKARMACOST":
                     return objImprovementAdder.skillcategorykarmacost;
+                case "SKILLCATEGORYSPECIALIZATIONKARMACOST":
+                    return objImprovementAdder.skillcategoryspecializationkarmacost;
                 case "ATTRIBUTEPOINTCOST":
                     return objImprovementAdder.attributepointcost;
                 case "ACTIVESKILLPOINTCOST":
@@ -493,6 +495,8 @@ namespace Chummer
                     return objImprovementAdder.skillgroupcategorykarmacostmultiplier;
                 case "SKILLCATEGORYKARMACOSTMULTIPLIER":
                     return objImprovementAdder.skillcategorykarmacostmultiplier;
+                case "SKILLCATEGORYSPECIALIZATIONKARMACOSTMULTIPLIER":
+                    return objImprovementAdder.skillcategoryspecializationkarmacostmultiplier;
                 case "ATTRIBUTEPOINTCOSTMULTIPLIER":
                     return objImprovementAdder.attributepointcostmultiplier;
                 case "ACTIVESKILLPOINTCOSTMULTIPLIER":

@@ -3338,6 +3338,7 @@ namespace Chummer
             this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
             this.tabContacts.Size = new System.Drawing.Size(535, 204);
             this.tabContacts.TabIndex = 0;
+            this.tabContacts.Tag = "Label_Contacts";
             this.tabContacts.Text = "Contacts";
             // 
             // lblContactPoints
@@ -3429,6 +3430,7 @@ namespace Chummer
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
             this.tabEnemies.Size = new System.Drawing.Size(535, 204);
             this.tabEnemies.TabIndex = 1;
+            this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
             // 
             // label6
@@ -4443,11 +4445,11 @@ namespace Chummer
             // cmdAddSpell
             // 
             this.cmdAddSpell.AutoSize = true;
-            this.cmdAddSpell.ContextMenuStrip = this.cmsSpellButton;
+            //this.cmdAddSpell.ContextMenuStrip = this.cmsSpellButton;
             this.cmdAddSpell.Location = new System.Drawing.Point(8, 26);
             this.cmdAddSpell.Name = "cmdAddSpell";
             this.cmdAddSpell.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddSpell.SplitMenuStrip = this.cmsSpellButton;
+            //this.cmdAddSpell.SplitMenuStrip = this.cmsSpellButton;
             this.cmdAddSpell.TabIndex = 140;
             this.cmdAddSpell.Tag = "Button_AddSpell";
             this.cmdAddSpell.Text = "&Add Spell";

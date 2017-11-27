@@ -251,21 +251,23 @@ namespace Chummer.Backend.Equipment
                         ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + objXmlAddWeapon.InnerText + "\"]")
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlAddWeapon.InnerText + "\"]");
 
-                    TreeNode objGearWeaponNode = new TreeNode();
+                    List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objGearWeaponNode, null, null, null, true, blnAddImprovements);
+                    objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons, null, true, blnAddImprovements);
                     objGearWeapon.ParentID = InternalId;
-                    objGearWeaponNode.ForeColor = SystemColors.GrayText;
-                    if (blnAerodynamic)
+                    foreach (TreeNode objLoopNode in lstGearWeaponNodes)
                     {
-                        objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
-                        objGearWeapon.Range = "Aerodynamic Grenades";
-                        objGearWeaponNode.Text = objGearWeapon.DisplayName;
-                        _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
-                        objNode.Text = DisplayName;
+                        objLoopNode.ForeColor = SystemColors.GrayText;
+                        if (blnAerodynamic)
+                        {
+                            objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
+                            objGearWeapon.Range = "Aerodynamic Grenades";
+                            objLoopNode.Text = objGearWeapon.DisplayName;
+                            _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic") + ")";
+                            objNode.Text = DisplayName;
+                        }
+                        objWeaponNodes.Add(objLoopNode);
                     }
-
-                    objWeaponNodes.Add(objGearWeaponNode);
                     objWeapons.Add(objGearWeapon);
 
                     _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
@@ -1257,10 +1259,6 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (_strCost.StartsWith("Parent Cost"))
                 {
-
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     string strCostExpression = _strCost;
                     string strCost = "0";
 
@@ -1480,8 +1478,6 @@ namespace Chummer.Backend.Equipment
             {
                 Commlink objParent = Parent as Commlink;
 
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 StringBuilder objValue = new StringBuilder(strExpression);
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 foreach (string strMatrixAttribute in MatrixAttributeStrings)
@@ -1509,7 +1505,7 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                decimal decValue = Math.Ceiling(Convert.ToDecimal(nav.Evaluate(objValue.ToString()), GlobalOptions.InvariantCultureInfo));
+                decimal decValue = Math.Ceiling(Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objValue.ToString()), GlobalOptions.InvariantCultureInfo));
                 return Convert.ToInt32(decValue);
             }
             int intReturn = 0;
@@ -1722,9 +1718,7 @@ namespace Chummer.Backend.Equipment
             string strCalculated;
 
             string strAvailExpression = _strAvail;
-
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
+            
             if (strAvailExpression.Contains("Rating"))
             {
                 // If the availability is determined by the Rating, evaluate the expression.
@@ -1738,8 +1732,7 @@ namespace Chummer.Backend.Equipment
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpression = strAvailExpression.Substring(0, strAvailExpression.Length - 1);
                 }
-                XPathExpression xprAvail = nav.Compile(strAvailExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture)));
-                strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
+                strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture)))).ToString() + strAvail;
             }
             else
             {
@@ -1770,13 +1763,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strAvailText != "F")
                             strAvailText = strAvail.Substring(strAvail.Length - 1);
-                        XPathExpression xprAvail = nav.Compile(strAvail.Substring(0, strAvail.Length - 1));
-                        intAvail += Convert.ToInt32(nav.Evaluate(xprAvail));
+                        intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail.Substring(0, strAvail.Length - 1)));
                     }
                     else
                     {
-                        XPathExpression xprAvail = nav.Compile(strAvail);
-                        intAvail += Convert.ToInt32(nav.Evaluate(xprAvail));
+                        intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
                     }
                 }
             }
@@ -1811,8 +1802,6 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strCapacity;
                 string strSecondHalf = string.Empty;
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
                 if (strReturn.Contains("/["))
                 {
                     int intPos = strReturn.IndexOf("/[");
@@ -1822,7 +1811,6 @@ namespace Chummer.Backend.Equipment
                     string strCapacity = strFirstHalf;
                     if (blnSquareBrackets && strCapacity.Length > 2)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
                     if (_strArmorCapacity == "[*]")
                         strReturn = "*";
@@ -1832,7 +1820,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
                 if (strReturn.Contains("Rating"))
                 {
@@ -1842,10 +1830,9 @@ namespace Chummer.Backend.Equipment
                     string strCapacity = strReturn;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
                     // This has resulted in a non-whole number, so round it (minimum of 1).
-                    decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.InvariantCultureInfo);
+                    decimal decNumber = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString())), GlobalOptions.InvariantCultureInfo);
                     if (decNumber < 1)
                         decNumber = 1;
                     strReturn = decNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
@@ -1874,9 +1861,6 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strArmorCapacity.Contains("/["))
                 {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     int intPos = _strArmorCapacity.IndexOf("/[");
                     string strFirstHalf = _strArmorCapacity.Substring(0, intPos);
                     string strSecondHalf = _strArmorCapacity.Substring(intPos + 1, _strArmorCapacity.Length - intPos - 1);
@@ -1884,8 +1868,6 @@ namespace Chummer.Backend.Equipment
                     string strCapacity = strFirstHalf;
                     if (blnSquareBrackets && strCapacity.Length > 2)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
                     string strReturn;
                     if (_strArmorCapacity == "[*]")
@@ -1896,7 +1878,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
                     strReturn += "/" + strSecondHalf;
@@ -1905,17 +1887,13 @@ namespace Chummer.Backend.Equipment
                 else if (_strArmorCapacity.Contains("Rating"))
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                     bool blnSquareBrackets = _strArmorCapacity.Contains('[');
                     string strCapacity = _strArmorCapacity;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
 
-                    string strReturn = Convert.ToDecimal(nav.Evaluate(xprCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    string strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -1975,17 +1953,15 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
                 objCost.Replace("Gear Cost", decGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Parent Cost", string.IsNullOrEmpty(strParentCost) ? "0" : strParentCost);
-                XPathExpression xprCost = nav.Compile(objCost.ToString());
-                // This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                decReturn = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }
         }

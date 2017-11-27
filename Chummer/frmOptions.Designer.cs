@@ -241,6 +241,7 @@ namespace Chummer
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
             this.chkAllowPointBuySpecializationsOnKarmaSkills = new System.Windows.Forms.CheckBox();
             this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
             this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
@@ -258,6 +259,7 @@ namespace Chummer
             this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
             this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
             this.chkExceedNegativeQualities = new System.Windows.Forms.CheckBox();
+            this.chkExceedPositiveQualitiesCostDoubled = new System.Windows.Forms.CheckBox();
             this.chkExceedPositiveQualities = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.nudKnowledgeMultiplier = new System.Windows.Forms.NumericUpDown();
@@ -275,7 +277,6 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2779,6 +2780,7 @@ namespace Chummer
             this.tabHouseRules.Controls.Add(this.chkAllowCyberwareESSDiscounts);
             this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit);
             this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualities);
+            this.tabHouseRules.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled);
             this.tabHouseRules.Controls.Add(this.chkExceedPositiveQualities);
             this.tabHouseRules.Controls.Add(this.label3);
             this.tabHouseRules.Controls.Add(this.nudKnowledgeMultiplier);
@@ -2798,6 +2800,20 @@ namespace Chummer
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // chkMysAdeptSecondMAGAttribute
+            // 
+            this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
+            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(8, 394);
+            this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
+            this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
+            this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
+            this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
+    "rules";
+            this.tipTooltip.SetToolTip(this.chkMysAdeptSecondMAGAttribute, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
+            this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
+            this.chkMysAdeptSecondMAGAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkAllowPointBuySpecializationsOnKarmaSkills
             // 
@@ -2897,7 +2913,7 @@ namespace Chummer
             0});
             this.nudDroneArmorMultiplier.Name = "nudDroneArmorMultiplier";
             this.nudDroneArmorMultiplier.Size = new System.Drawing.Size(36, 20);
-            this.nudDroneArmorMultiplier.TabIndex = 25;
+            this.nudDroneArmorMultiplier.TabIndex = 26;
             this.nudDroneArmorMultiplier.Value = new decimal(new int[] {
             2,
             0,
@@ -2911,7 +2927,7 @@ namespace Chummer
             this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(8, 233);
             this.chkDroneArmorMultiplier.Name = "chkDroneArmorMultiplier";
             this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(252, 17);
-            this.chkDroneArmorMultiplier.TabIndex = 24;
+            this.chkDroneArmorMultiplier.TabIndex = 25;
             this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
             this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
             this.chkDroneArmorMultiplier.UseVisualStyleBackColor = true;
@@ -2923,7 +2939,7 @@ namespace Chummer
             this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(476, 76);
             this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
             this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(269, 17);
-            this.chkUseTotalValueForFreeKnowledge.TabIndex = 23;
+            this.chkUseTotalValueForFreeKnowledge.TabIndex = 24;
             this.chkUseTotalValueForFreeKnowledge.Tag = "Checkbox_Options_UseTotalValueForFreeKnowledge";
             this.chkUseTotalValueForFreeKnowledge.Text = "Free Contacts use the augmented LOG+INT values";
             this.chkUseTotalValueForFreeKnowledge.UseVisualStyleBackColor = true;
@@ -2935,7 +2951,7 @@ namespace Chummer
             this.chkUseTotalValueForFreeContacts.Location = new System.Drawing.Point(476, 26);
             this.chkUseTotalValueForFreeContacts.Name = "chkUseTotalValueForFreeContacts";
             this.chkUseTotalValueForFreeContacts.Size = new System.Drawing.Size(261, 17);
-            this.chkUseTotalValueForFreeContacts.TabIndex = 22;
+            this.chkUseTotalValueForFreeContacts.TabIndex = 23;
             this.chkUseTotalValueForFreeContacts.Tag = "Checkbox_Options_UseTotalValueForFreeContacts";
             this.chkUseTotalValueForFreeContacts.Text = "Free Contacts use the augmented Charisma value";
             this.chkUseTotalValueForFreeContacts.UseVisualStyleBackColor = true;
@@ -2947,7 +2963,7 @@ namespace Chummer
             this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(8, 210);
             this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
             this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
-            this.chkUseCalculatedPublicAwareness.TabIndex = 21;
+            this.chkUseCalculatedPublicAwareness.TabIndex = 22;
             this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
             this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
             this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
@@ -2959,7 +2975,7 @@ namespace Chummer
             this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(8, 95);
             this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
             this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
-            this.chkDontDoubleQualityRefunds.TabIndex = 20;
+            this.chkDontDoubleQualityRefunds.TabIndex = 21;
             this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
             this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
             this.tipTooltip.SetToolTip(this.chkDontDoubleQualityRefunds, "Allows characters in Career mode to remove Negative Qualities and buy off Negativ" +
@@ -2973,7 +2989,7 @@ namespace Chummer
             this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(8, 187);
             this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
             this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
-            this.chkESSLossReducesMaximumOnly.TabIndex = 19;
+            this.chkESSLossReducesMaximumOnly.TabIndex = 20;
             this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
             this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
             this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
@@ -2985,7 +3001,7 @@ namespace Chummer
             this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(8, 164);
             this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
             this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
-            this.chkAllowCyberwareESSDiscounts.TabIndex = 18;
+            this.chkAllowCyberwareESSDiscounts.TabIndex = 19;
             this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
             this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
             this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Permits adjustment of essence costs on a per-item basis.");
@@ -2996,10 +3012,10 @@ namespace Chummer
             // 
             this.chkExceedNegativeQualitiesLimit.AutoSize = true;
             this.chkExceedNegativeQualitiesLimit.Enabled = false;
-            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(476, 145);
+            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(476, 168);
             this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
             this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(308, 17);
-            this.chkExceedNegativeQualitiesLimit.TabIndex = 17;
+            this.chkExceedNegativeQualitiesLimit.TabIndex = 18;
             this.chkExceedNegativeQualitiesLimit.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
             this.chkExceedNegativeQualitiesLimit.Text = "Characters only receive up to 35 BP from Negative Qualities";
             this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
@@ -3008,14 +3024,27 @@ namespace Chummer
             // chkExceedNegativeQualities
             // 
             this.chkExceedNegativeQualities.AutoSize = true;
-            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(458, 122);
+            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(458, 145);
             this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
             this.chkExceedNegativeQualities.Size = new System.Drawing.Size(278, 17);
-            this.chkExceedNegativeQualities.TabIndex = 16;
+            this.chkExceedNegativeQualities.TabIndex = 17;
             this.chkExceedNegativeQualities.Tag = "Checkbox_Options_ExceedNegativeQualities";
             this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
             this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
             this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.chkExceedNegativeQualities_CheckedChanged);
+            // 
+            // chkExceedPositiveQualitiesCostDoubled
+            // 
+            this.chkExceedPositiveQualitiesCostDoubled.AutoSize = true;
+            this.chkExceedPositiveQualitiesCostDoubled.Enabled = false;
+            this.chkExceedPositiveQualitiesCostDoubled.Location = new System.Drawing.Point(476, 122);
+            this.chkExceedPositiveQualitiesCostDoubled.Name = "chkExceedPositiveQualitiesCostDoubled";
+            this.chkExceedPositiveQualitiesCostDoubled.Size = new System.Drawing.Size(305, 17);
+            this.chkExceedPositiveQualitiesCostDoubled.TabIndex = 16;
+            this.chkExceedPositiveQualitiesCostDoubled.Tag = "Checkbox_Options_ExceedPositiveQualitiesCostDoubled";
+            this.chkExceedPositiveQualitiesCostDoubled.Text = "Double all Positive Quality karma costs in excess of the limit";
+            this.chkExceedPositiveQualitiesCostDoubled.UseVisualStyleBackColor = true;
+            this.chkExceedPositiveQualitiesCostDoubled.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkExceedPositiveQualities
             // 
@@ -3027,7 +3056,7 @@ namespace Chummer
             this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
             this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
             this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
-            this.chkExceedPositiveQualities.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkExceedPositiveQualities.CheckedChanged += new System.EventHandler(this.chkExceedPositiveQualities_CheckedChanged);
             // 
             // label3
             // 
@@ -3232,20 +3261,7 @@ namespace Chummer
             this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
-            // 
-            // chkMysAdeptSecondMAGAttribute
-            // 
-            this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
-            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(8, 394);
-            this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
-            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
-            this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
-            this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
-            this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
-    "rules";
-            this.tipTooltip.SetToolTip(this.chkMysAdeptSecondMAGAttribute, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
-            this.chkMysAdeptSecondMAGAttribute.UseVisualStyleBackColor = true;
-            this.chkMysAdeptSecondMAGAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            
             // 
             // frmOptions
             // 
@@ -3542,6 +3558,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkContactMultiplier;
         private System.Windows.Forms.CheckBox chkExceedNegativeQualitiesLimit;
         private System.Windows.Forms.CheckBox chkExceedNegativeQualities;
+        private System.Windows.Forms.CheckBox chkExceedPositiveQualitiesCostDoubled;
         private System.Windows.Forms.CheckBox chkExceedPositiveQualities;
         private System.Windows.Forms.CheckBox chkLifeModule;
         private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;

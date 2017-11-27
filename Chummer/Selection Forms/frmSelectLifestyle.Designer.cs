@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cboLifestyle = new System.Windows.Forms.ComboBox();
             this.lblLifestyles = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
@@ -167,14 +166,15 @@
             // 
             // nudPercentage
             // 
+            this.nudPercentage.DecimalPlaces = 2;
             this.nudPercentage.Location = new System.Drawing.Point(337, 107);
             this.nudPercentage.Maximum = new decimal(new int[] {
-            900,
+            99999,
             0,
             0,
-            0});
+            131072});
             this.nudPercentage.Name = "nudPercentage";
-            this.nudPercentage.Size = new System.Drawing.Size(45, 20);
+            this.nudPercentage.Size = new System.Drawing.Size(58, 20);
             this.nudPercentage.TabIndex = 17;
             this.nudPercentage.Value = new decimal(new int[] {
             100,
@@ -216,13 +216,8 @@
             // nudRoommates
             // 
             this.nudRoommates.Location = new System.Drawing.Point(337, 84);
-            this.nudRoommates.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.nudRoommates.Name = "nudRoommates";
-            this.nudRoommates.Size = new System.Drawing.Size(45, 20);
+            this.nudRoommates.Size = new System.Drawing.Size(58, 20);
             this.nudRoommates.TabIndex = 15;
             this.nudRoommates.ValueChanged += new System.EventHandler(this.nudRoommates_ValueChanged);
             // 
@@ -238,14 +233,19 @@
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
-            // frmSelectAdvancedLifestyle
+            // frmSelectLifestyle
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -272,7 +272,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectAdvancedLifestyle";
+            this.Name = "frmSelectLifestyle";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectAdvancedLifestyle";

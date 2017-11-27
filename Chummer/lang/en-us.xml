@@ -5334,12 +5334,20 @@ Do you want to continue?</text>
       <text>Hobbies/Vice:</text>
     </string>
     <string>
-      <key>Label_Contact_Group</key>
-      <text>Group:</text>
+      <key>Checkbox_Contact_Group</key>
+      <text>Group</text>
     </string>
     <string>
-      <key>Label_Contact_Free</key>
-      <text>Free:</text>
+      <key>Checkbox_Contact_Free</key>
+      <text>Free</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Blackmail</key>
+      <text>Blackmail</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Family</key>
+      <text>Family</text>
     </string>
     <string>
       <key>Label_Enemy_Incidence</key>
@@ -6950,6 +6958,10 @@ Do you want to continue?</text>
     <string>
       <key>Checkbox_Options_ExceedPositiveQualities</key>
       <text>Allow characters to exceed their Positive Quality limit</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
+      <text>Double all Positive Quality karma costs in excess of the limit</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedNegativeQualities</key>

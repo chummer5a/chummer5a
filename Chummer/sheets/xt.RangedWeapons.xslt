@@ -64,31 +64,58 @@
         <xsl:value-of select="page"/>
       </td>
     </tr>
-    <xsl:if test="ranges/short != ''">
+
+    <xsl:if test="ranges/name != '' or alternateranges/name != ''">
       <tr style="text-align: center">
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
-        <td/>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.S"/>:
-          <xsl:value-of select="ranges/short"/>
+        <td />
+        <td colspan="6">
+          <table class="tablestyle">
+            <tr>
+              <th style="text-align: center; vertical-align: middle; width: 36%;">
+                <xsl:value-of select="$lang.Range"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.S"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.M"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.L"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.E"/>
+              </th>
+            </tr>
+            <xsl:for-each select="ranges | alternateranges">
+              <xsl:if test="name != ''">
+                <tr>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="name"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="short"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="medium"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="long"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="extreme"/>
+                  </td>
+                </tr>
+              </xsl:if>
+            </xsl:for-each>
+          </table>
         </td>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.M"/>:
-          <xsl:value-of select="ranges/medium"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.L"/>:
-          <xsl:value-of select="ranges/long"/>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="$lang.E"/>:
-          <xsl:value-of select="ranges/extreme"/>
-        </td>
-        <td colspan="5"/>
+        <td colspan="3"/>
       </tr>
-      </xsl:if>
+    </xsl:if>
 
     <xsl:if test="accessories/accessory or mods/weaponmod">
       <tr>
@@ -177,29 +204,55 @@
             <xsl:value-of select="page"/>
           </td>
         </tr>
-        <xsl:if test="ranges/short != ''">
+        <xsl:if test="ranges/name != '' or alternateranges/name != ''">
           <tr style="text-align: center">
             <xsl:if test="position() mod 2 != 1">
               <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
             </xsl:if>
-            <td/>
-            <td>
-              <xsl:value-of select="$lang.S"/>:
-              <xsl:value-of select="ranges/short"/>
+            <td />
+            <td colspan="6">
+              <table class="tablestyle">
+                <tr>
+                  <th style="text-align: center; vertical-align: middle; width: 36%;">
+                    <xsl:value-of select="$lang.Range"/>
+                  </th>
+                  <th style="text-align: center; vertical-align: middle; width: 16%;">
+                    <xsl:value-of select="$lang.S"/>
+                  </th>
+                  <th style="text-align: center; vertical-align: middle; width: 16%;">
+                    <xsl:value-of select="$lang.M"/>
+                  </th>
+                  <th style="text-align: center; vertical-align: middle; width: 16%;">
+                    <xsl:value-of select="$lang.L"/>
+                  </th>
+                  <th style="text-align: center; vertical-align: middle; width: 16%;">
+                    <xsl:value-of select="$lang.E"/>
+                  </th>
+                </tr>
+                <xsl:for-each select="ranges | alternateranges">
+                  <xsl:if test="name != ''">
+                    <tr>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="name"/>
+                      </td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="short"/>
+                      </td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="medium"/>
+                      </td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="long"/>
+                      </td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <xsl:value-of select="extreme"/>
+                      </td>
+                    </tr>
+                  </xsl:if>
+                </xsl:for-each>
+              </table>
             </td>
-            <td>
-              <xsl:value-of select="$lang.M"/>:
-              <xsl:value-of select="ranges/medium"/>
-            </td>
-            <td>
-              <xsl:value-of select="$lang.L"/>:
-              <xsl:value-of select="ranges/long"/>
-            </td>
-            <td>
-              <xsl:value-of select="$lang.E"/>:
-              <xsl:value-of select="ranges/extreme"/>
-            </td>
-            <td colspan="5"/>
+            <td colspan="3"/>
           </tr>
         </xsl:if>
         <xsl:if test="accessories/accessory">

@@ -261,6 +261,8 @@ namespace Chummer
             SkillGroupKarmaCost,
             SkillGroupDisable,
             KnowledgeSkillKarmaCost,
+            SkillCategorySpecializationKarmaCostMultiplier,
+            SkillCategorySpecializationKarmaCost,
             SkillCategoryKarmaCostMultiplier,
             SkillCategoryKarmaCost,
             SkillGroupCategoryKarmaCostMultiplier,
@@ -923,16 +925,13 @@ namespace Chummer
                 {
                     strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
-                XPathExpression xprValue = nav.Compile(strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                double dblValue = Convert.ToDouble(nav.Evaluate(xprValue).ToString(), GlobalOptions.InvariantCultureInfo);
-                int intValue = Convert.ToInt32(Math.Floor(dblValue));
+                decimal decValue = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strReturn), GlobalOptions.InvariantCultureInfo);
+                int intValue = Convert.ToInt32(Math.Floor(decValue));
 
                 //Log.Exit("ValueToInt");
                 return intValue;
@@ -1474,7 +1473,7 @@ namespace Chummer
                         if (objGear != null)
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            CommonFunctions.DeleteGear(objCharacter, objGear, null);
+                            CommonFunctions.DeleteGear(objCharacter, objGear, null, null);
                             objCharacter.Gear.Remove(objGear);
                         }
                         break;

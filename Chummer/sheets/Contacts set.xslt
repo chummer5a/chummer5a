@@ -24,22 +24,29 @@
         <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-            font-size: 10pt;
-            margin: 0;
-            text-align: center;
-            vertical-align: top;
+          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+          font-size: 10pt;
+          margin: 0;
+          text-align: center;
+          vertical-align: top;
           }
           html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
+          height: 100%;
+          margin: 0px;  /* this affects the margin on the html before sending to printer */
           }
           .tablestyle {
-            border-collapse: collapse;
-            border-color: #1c4a2d;
-            border-style: solid;
-            border-width: 0.5mm;
-            width: 100%;
+          border-collapse: collapse;
+          border-color: #1c4a2d;
+          border-style: solid;
+          border-width: 0.5mm;
+          width: 100%;
+          }
+          .upper {
+          text-transform: uppercase;
+          }
+          .title {
+          font-weight: bold;
+          text-transform: uppercase;
           }
         </style>
         <style media="print">
@@ -56,7 +63,7 @@
       <body>
         <div id="ContactsBlock">
           <table class="tablestyle">
-            <tr style="font-weight: bold; text-decoration: underline; text-transform: uppercase;">
+            <tr class="title" style="font-weight: bold; text-decoration: underline;">
               <td width="25%" style="text-align: left">
                 <xsl:value-of select="$lang.Name"/>
               </td>

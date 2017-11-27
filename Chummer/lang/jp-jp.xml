@@ -3960,8 +3960,12 @@
       <text>忠誠値:</text>
     </string>
     <string>
-      <key>Label_Contact_Group</key>
-      <text>グループ:</text>
+      <key>Checkbox_Contact_Group</key>
+      <text>グループ</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Free</key>
+      <text>無料</text>
     </string>
     <string>
       <key>Label_Enemy_Incidence</key>
@@ -5202,7 +5206,7 @@
     </string>
     <string>
       <key>Label_Options_Enemies</key>
-      <text>Enemies</text>
+      <text>敵</text>
     </string>
     <string>
       <key>Label_Options_Carryover</key>

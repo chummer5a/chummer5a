@@ -545,14 +545,12 @@ namespace Chummer
 
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.
-                XPathNavigator nav = _objXmlDocument.CreateNavigator();
 
                 int intMinRating = 1;
                 if (objXmlMod["minrating"]?.InnerText.Length > 0)
                 {
                     string strMinRating = ReplaceStrings(objXmlMod["minrating"]?.InnerText);
-                    XPathExpression xprRating = nav.Compile(strMinRating);
-                    intMinRating = Convert.ToInt32(nav.Evaluate(xprRating).ToString());
+                    intMinRating = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strMinRating));
                 }
                 // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
                 if (objXmlMod["rating"].InnerText == "qty")
@@ -641,7 +639,7 @@ namespace Chummer
                 }
                 try
                 {
-                    lblAvail.Text = Convert.ToInt32(nav.Evaluate(ReplaceStrings(strAvailExpr))).ToString();
+                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(ReplaceStrings(strAvailExpr))).ToString();
                 }
                 catch (XPathException)
                 {
@@ -695,8 +693,7 @@ namespace Chummer
                         strCost = ReplaceStrings(strCost);
                     }
 
-                    XPathExpression xprCost = nav.Compile(strCost);
-                    decItemCost = Convert.ToDecimal(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                     decItemCost *= _intModMultiplier;
 
                     // Apply any markup.
@@ -726,8 +723,7 @@ namespace Chummer
                     strSlots = objXmlMod["slots"].InnerText;
                 }
                 strSlots = ReplaceStrings(strSlots);
-                XPathExpression xprSlots = nav.Compile(strSlots);
-                lblSlots.Text = nav.Evaluate(xprSlots).ToString();
+                lblSlots.Text = CommonFunctions.EvaluateInvariantXPath(strSlots).ToString();
 
                 if (objXmlMod["category"].InnerText != null)
                 {

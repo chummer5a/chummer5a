@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -131,7 +131,7 @@
             // lblTotalLP
             // 
             this.lblTotalLP.AutoSize = true;
-            this.lblTotalLP.Location = new System.Drawing.Point(331, 226);
+            this.lblTotalLP.Location = new System.Drawing.Point(334, 226);
             this.lblTotalLP.Name = "lblTotalLP";
             this.lblTotalLP.Size = new System.Drawing.Size(26, 13);
             this.lblTotalLP.TabIndex = 13;
@@ -175,14 +175,15 @@
             // 
             // nudPercentage
             // 
+            this.nudPercentage.DecimalPlaces = 2;
             this.nudPercentage.Location = new System.Drawing.Point(337, 270);
             this.nudPercentage.Maximum = new decimal(new int[] {
-            900,
+            99999,
             0,
             0,
-            0});
+            131072});
             this.nudPercentage.Name = "nudPercentage";
-            this.nudPercentage.Size = new System.Drawing.Size(45, 20);
+            this.nudPercentage.Size = new System.Drawing.Size(67, 20);
             this.nudPercentage.TabIndex = 17;
             this.nudPercentage.Value = new decimal(new int[] {
             100,
@@ -224,13 +225,8 @@
             // nudRoommates
             // 
             this.nudRoommates.Location = new System.Drawing.Point(337, 247);
-            this.nudRoommates.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.nudRoommates.Name = "nudRoommates";
-            this.nudRoommates.Size = new System.Drawing.Size(45, 20);
+            this.nudRoommates.Size = new System.Drawing.Size(67, 20);
             this.nudRoommates.TabIndex = 15;
             this.nudRoommates.ValueChanged += new System.EventHandler(this.nudRoommates_ValueChanged);
             // 
@@ -375,22 +371,22 @@
             // 
             this.treLifestyleQualities.Location = new System.Drawing.Point(1, 36);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode1.Name = "nodPositiveLifestyleQualities";
-            treeNode1.Tag = "Label_SummaryPositiveQualities";
-            treeNode1.Text = "Positive Qualities";
-            treeNode2.Name = "nodNegativeLifestyleQualities";
-            treeNode2.Tag = "Label_SummaryNegativeQualities";
-            treeNode2.Text = "Negative Qualities";
-            treeNode3.Name = "nodLifestyleEntertainments";
-            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode3.Text = "Entertainments";
-            treeNode4.Name = "nodFreeMatrixGrids";
-            treeNode4.Text = "Free Matrix Grids";
+            treeNode17.Name = "nodPositiveLifestyleQualities";
+            treeNode17.Tag = "Label_SummaryPositiveQualities";
+            treeNode17.Text = "Positive Qualities";
+            treeNode18.Name = "nodNegativeLifestyleQualities";
+            treeNode18.Tag = "Label_SummaryNegativeQualities";
+            treeNode18.Text = "Negative Qualities";
+            treeNode19.Name = "nodLifestyleEntertainments";
+            treeNode19.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode19.Text = "Entertainments";
+            treeNode20.Name = "nodFreeMatrixGrids";
+            treeNode20.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20});
             this.treLifestyleQualities.Size = new System.Drawing.Size(249, 286);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);

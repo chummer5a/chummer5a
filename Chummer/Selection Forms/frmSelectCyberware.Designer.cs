@@ -137,7 +137,7 @@
             // lblEssence
             // 
             this.lblEssence.AutoSize = true;
-            this.lblEssence.Location = new System.Drawing.Point(335, 83);
+            this.lblEssence.Location = new System.Drawing.Point(332, 83);
             this.lblEssence.Name = "lblEssence";
             this.lblEssence.Size = new System.Drawing.Size(19, 13);
             this.lblEssence.TabIndex = 5;
@@ -146,7 +146,7 @@
             // lblCapacity
             // 
             this.lblCapacity.AutoSize = true;
-            this.lblCapacity.Location = new System.Drawing.Point(335, 105);
+            this.lblCapacity.Location = new System.Drawing.Point(332, 105);
             this.lblCapacity.Name = "lblCapacity";
             this.lblCapacity.Size = new System.Drawing.Size(19, 13);
             this.lblCapacity.TabIndex = 10;
@@ -165,7 +165,7 @@
             // lblAvail
             // 
             this.lblAvail.AutoSize = true;
-            this.lblAvail.Location = new System.Drawing.Point(335, 128);
+            this.lblAvail.Location = new System.Drawing.Point(332, 128);
             this.lblAvail.Name = "lblAvail";
             this.lblAvail.Size = new System.Drawing.Size(19, 13);
             this.lblAvail.TabIndex = 12;
@@ -184,7 +184,7 @@
             // lblCost
             // 
             this.lblCost.AutoSize = true;
-            this.lblCost.Location = new System.Drawing.Point(335, 150);
+            this.lblCost.Location = new System.Drawing.Point(332, 150);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(19, 13);
             this.lblCost.TabIndex = 16;
@@ -212,7 +212,7 @@
             // 
             // nudRating
             // 
-            this.nudRating.Location = new System.Drawing.Point(338, 58);
+            this.nudRating.Location = new System.Drawing.Point(335, 58);
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(37, 20);
             this.nudRating.TabIndex = 3;
@@ -316,21 +316,22 @@
             // 
             // nudESSDiscount
             // 
-            this.nudESSDiscount.Location = new System.Drawing.Point(483, 81);
+            this.nudESSDiscount.DecimalPlaces = 2;
+            this.nudESSDiscount.Location = new System.Drawing.Point(481, 81);
             this.nudESSDiscount.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.nudESSDiscount.Name = "nudESSDiscount";
-            this.nudESSDiscount.Size = new System.Drawing.Size(37, 20);
+            this.nudESSDiscount.Size = new System.Drawing.Size(46, 20);
             this.nudESSDiscount.TabIndex = 7;
             this.nudESSDiscount.ValueChanged += new System.EventHandler(this.nudESSDiscount_ValueChanged);
             // 
             // lblESSDiscountLabel
             // 
             this.lblESSDiscountLabel.AutoSize = true;
-            this.lblESSDiscountLabel.Location = new System.Drawing.Point(381, 83);
+            this.lblESSDiscountLabel.Location = new System.Drawing.Point(379, 83);
             this.lblESSDiscountLabel.Name = "lblESSDiscountLabel";
             this.lblESSDiscountLabel.Size = new System.Drawing.Size(96, 13);
             this.lblESSDiscountLabel.TabIndex = 6;
@@ -340,7 +341,7 @@
             // lblESSDiscountPercentLabel
             // 
             this.lblESSDiscountPercentLabel.AutoSize = true;
-            this.lblESSDiscountPercentLabel.Location = new System.Drawing.Point(520, 80);
+            this.lblESSDiscountPercentLabel.Location = new System.Drawing.Point(530, 83);
             this.lblESSDiscountPercentLabel.Name = "lblESSDiscountPercentLabel";
             this.lblESSDiscountPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblESSDiscountPercentLabel.TabIndex = 8;
@@ -349,7 +350,7 @@
             // lblTest
             // 
             this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(432, 128);
+            this.lblTest.Location = new System.Drawing.Point(429, 128);
             this.lblTest.Name = "lblTest";
             this.lblTest.Size = new System.Drawing.Size(19, 13);
             this.lblTest.TabIndex = 14;
@@ -358,7 +359,7 @@
             // lblTestLabel
             // 
             this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(381, 128);
+            this.lblTestLabel.Location = new System.Drawing.Point(379, 128);
             this.lblTestLabel.Name = "lblTestLabel";
             this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
             this.lblTestLabel.TabIndex = 13;
@@ -427,7 +428,8 @@
             // 
             // nudMarkup
             // 
-            this.nudMarkup.Location = new System.Drawing.Point(483, 104);
+            this.nudMarkup.DecimalPlaces = 2;
+            this.nudMarkup.Location = new System.Drawing.Point(481, 104);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -439,14 +441,14 @@
             0,
             -2147483648});
             this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(37, 20);
+            this.nudMarkup.Size = new System.Drawing.Size(46, 20);
             this.nudMarkup.TabIndex = 41;
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
             // lblMarkupLabel
             // 
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(431, 104);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(429, 106);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
             this.lblMarkupLabel.TabIndex = 40;
@@ -456,7 +458,7 @@
             // lblMarkupPercentLabel
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(520, 104);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(530, 106);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblMarkupPercentLabel.TabIndex = 42;

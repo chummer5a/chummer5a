@@ -1729,6 +1729,10 @@
           <name>Technical Active</name>
           <val>200</val>
         </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Technical Active</name>
+          <val>200</val>
+        </skillcategoryspecializationkarmacostmultiplier>
         <skillgroupcategorykarmacostmultiplier>
           <name>Technical Active</name>
           <val>200</val>
@@ -1737,10 +1741,18 @@
           <name>Professional</name>
           <val>200</val>
         </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Professional</name>
+          <val>200</val>
+        </skillcategoryspecializationkarmacostmultiplier>
         <skillcategorykarmacostmultiplier>
           <name>Academic</name>
           <val>200</val>
         </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Academic</name>
+          <val>200</val>
+        </skillcategoryspecializationkarmacostmultiplier>
         <uneducated />
       </bonus>
       <source>SR5</source>

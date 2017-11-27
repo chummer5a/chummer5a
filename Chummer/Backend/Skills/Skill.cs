@@ -911,8 +911,29 @@ namespace Chummer.Skills
         {
             get
             {
-                return string.Format(LanguageManager.GetString("Tip_Skill_AddSpecialization"),
-                    IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization);
+                int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+
+                int intExtraSpecCost = 0;
+                int intTotalBaseRating = TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == SkillCategory)
+                        {
+                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                intExtraSpecCost += objLoopImprovement.Value;
+                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    price = Convert.ToInt32(Math.Ceiling(price * decSpecCostMultiplier));
+                price += intExtraSpecCost; //Spec
+                return string.Format(LanguageManager.GetString("Tip_Skill_AddSpecialization"), price.ToString());
             }
         }
 
@@ -1135,6 +1156,11 @@ namespace Chummer.Skills
                     _oldUpgrade = CanUpgradeCareer;
                     OnPropertyChanged(nameof(CanUpgradeCareer));
                 }
+                if (_oldCanAffordSpecialization != CanAffordSpecialization)
+                {
+                    _oldCanAffordSpecialization = CanAffordSpecialization;
+                    OnPropertyChanged(nameof(CanAffordSpecialization));
+                }
             }
         }
 
@@ -1185,6 +1211,24 @@ namespace Chummer.Skills
             else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.BlockSkillDefault))
             {
                 OnPropertyChanged(nameof(PoolToolTip));
+            }
+            if (improvements.Any(imp => imp.ImprovedName == SkillCategory &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost ||
+                imp.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)))
+            {
+                OnPropertyChanged(nameof(CanAffordSpecialization));
+            }
+            if (improvements.Any(imp =>
+                ((imp.ImprovedName == Name || string.IsNullOrEmpty(imp.ImprovedName)) && 
+                (imp.ImproveType == Improvement.ImprovementType.ActiveSkillKarmaCost ||
+                imp.ImproveType == Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier ||
+                imp.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost ||
+                imp.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier)) ||
+                (imp.ImprovedName == SkillCategory) &&
+                (imp.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCost ||
+                imp.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)))
+            {
+                OnPropertyChanged(nameof(CanUpgradeCareer));
             }
         }
     }

@@ -54,94 +54,7 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <style type="text/css">
-          * {
-          font-family: segoe, tahoma, 'trebuchet ms', arial;
-          font-size: 8.25pt;
-          margin: 0;
-          text-align: left;
-          vertical-align: top;
-          }
-          html {
-          height: 100%;
-          margin: 0em;  /* this affects the margin on the html before sending to printer */
-          }
-          .tablestyle {
-          border-collapse: collapse;
-          border-color: #1c4a2d;
-          border-style: solid;
-          border-width: 0.5mm;
-          cellpadding: 2;
-          cellspacing: 0;
-          width: 100%;
-          }
-          .attributecell p {
-          padding: 0.25em;
-          margin: 0.25em;
-          border: solid 0.0625em #1c4a2d;
-          text-transform: uppercase;
-          }
-          .indent {
-          padding-left: 2mm;
-          }
-          .notesrow {
-          text-align: justify;
-          }
-          .notesrow2 {
-          padding-left: 2mm;
-          padding-right: 2mm;
-          text-align: justify;
-          }
-          th {
-          text-align: center;
-          text-transform: uppercase;
-          }
-          .title {
-          font-weight: bold;
-          text-transform: uppercase;
-          }
-          .upper {
-          text-transform: uppercase;
-          }
-          .block {
-          bottom-padding: 0;
-          page-break-inside: avoid;
-          margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
-          }
-          .mugshot {
-          width: auto;
-          max-width: 100%;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-          .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          }
-        </style>
-        <!--[if IE]
-        <style type="text/css">
-        .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-        </style>
-        -->
-        <style media="print">
-          @page {
-          size: auto;
-          margin-top: 0.5in;
-          margin-left: 0.5in;
-          margin-right: 0.5in;
-          margin-bottom: 0.5in;
-          }
-        </style>
+        <xsl:call-template name="Shadowrun5CSS" />
       </head>
       <body>
         <div class="block" style="width: 100%; text-align: center; vertical-align: center; border-bottom: thick solid #1c4a2d; margin: 0; padding-top: 0.9em; padding-bottom: 0.1em; font-weight: bold; font-variant: small-caps; font-size: 17pt; letter-spacing: 0.05em; text-shadow: 0 0 0.05em #fffff, 0 0 0.1em #1c4a2d;">
@@ -681,10 +594,10 @@
                   <div class="block" id="CMBlock">
                     <table class="tablestyle">
                       <tr>
-                        <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                        <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
                           <xsl:value-of select="$lang.PhysicalTrack"/>
                         </td>
-                        <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                        <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
                           <xsl:value-of select="$lang.StunTrack"/>
                         </td>
                       </tr>

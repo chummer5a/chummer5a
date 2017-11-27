@@ -615,11 +615,7 @@ namespace Chummer
                 }
                 else if (xmlCostElement.InnerText.Contains("Rating"))
                 {
-                    XPathNavigator nav = _objXmlDocument.CreateNavigator();
-                    XPathExpression xprCost =
-                        nav.Compile(xmlCostElement.InnerText.Replace("Rating",
-                            nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)));
-                    decItemCost = (Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo));
+                    decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(xmlCostElement.InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
                     decItemCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {
