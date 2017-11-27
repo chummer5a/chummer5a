@@ -44,6 +44,7 @@ namespace Chummer.Backend.Equipment
         private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
         private List<Gear> _lstGear = new List<Gear>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
+        private List<WeaponMount> _lstWeaponMounts = new List<WeaponMount>();
         private string _strNotes = string.Empty;
         private string _strAltName = string.Empty;
         private string _strAltCategory = string.Empty;
@@ -76,7 +77,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsVehicleWeapon">ContextMenuStrip to attach to Vehicle Weapons.</param>
         /// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip to attach to Weapon Accessories.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, bool blnCreateChildren = true)
+        public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear = null, ContextMenuStrip cmsVehicleWeaponMount = null, bool blnCreateChildren = true)
         {
             objXmlVehicle.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
@@ -230,10 +231,24 @@ namespace Chummer.Backend.Equipment
                     int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
             }
 
+            // If there are any Weapon Mounts that come with the Vehicle, add them.
+            if (objXmlVehicle.InnerXml.Contains("<weaponmounts>") && blnCreateChildren)
+            {
+
+                XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("weaponmounts/weaponmount");
+                foreach (XmlNode objXmlVehicleMod in objXmlModList)
+                {
+                    TreeNode t = new TreeNode();
+                    WeaponMount w = new WeaponMount(_objCharacter, this);
+                    w.CreateByName(objXmlVehicleMod, t);
+                    WeaponMounts.Add(w);
+                }
+            }
+
             // If there is any Gear that comes with the Vehicle, add them.
             if (objXmlVehicle.InnerXml.Contains("<gears>") && blnCreateChildren)
-            {
-                XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+			{
+				XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
 
                 XmlNodeList objXmlGearList = objXmlVehicle.SelectNodes("gears/gear");
                 foreach (XmlNode objXmlVehicleGear in objXmlGearList)
@@ -308,21 +323,17 @@ namespace Chummer.Backend.Equipment
                     objWeapon.VehicleMounted = true;
 
                     // Find the first free Weapon Mount in the Vehicle.
-                    foreach (VehicleMod objMod in _lstVehicleMods)
+                    foreach (WeaponMount w in _lstWeaponMounts)
                     {
-                        if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
+                        if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
                         {
-                            objMod.Weapons.Add(objWeapon);
-                            objMod.Weapons.AddRange(objSubWeapons);
+                            w.Weapons.Add(objWeapon);
                             foreach (TreeNode objModNode in objNode.Nodes)
                             {
-                                if (objModNode.Tag.ToString() == objMod.InternalId)
+                                if (objModNode.Tag.ToString() == w.InternalId)
                                 {
-                                    foreach (TreeNode objLoopNode in lstWeaponNodes)
-                                    {
-                                        objLoopNode.ContextMenuStrip = cmsVehicleWeapon;
-                                        objModNode.Nodes.Add(objLoopNode);
-                                    }
+                                    objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                    objModNode.Nodes.Add(objWeaponNode);
                                     objModNode.Expand();
                                     blnAttached = true;
                                     break;
@@ -332,29 +343,48 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
-                    if (!blnAttached)
-                    {
+					// If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
+					if (!blnAttached)
+					{
                         foreach (VehicleMod objMod in _lstVehicleMods)
                         {
-                            if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                            if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                             {
                                 objMod.Weapons.Add(objWeapon);
                                 foreach (TreeNode objModNode in objNode.Nodes)
                                 {
                                     if (objModNode.Tag.ToString() == objMod.InternalId)
                                     {
-                                        foreach (TreeNode objLoopNode in lstWeaponNodes)
-                                        {
-                                            objLoopNode.ContextMenuStrip = cmsVehicleWeapon;
-                                            objModNode.Nodes.Add(objLoopNode);
-                                        }
+                                        objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                        objModNode.Nodes.Add(objWeaponNode);
                                         objModNode.Expand();
                                         blnAttached = true;
                                         break;
                                     }
                                 }
                                 break;
+                            }
+                        }
+                        if (!blnAttached)
+                        {
+                            foreach (VehicleMod objMod in _lstVehicleMods)
+                            {
+                                if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                {
+                                    objMod.Weapons.Add(objWeapon);
+                                    foreach (TreeNode objModNode in objNode.Nodes)
+                                    {
+                                        if (objModNode.Tag.ToString() == objMod.InternalId)
+                                        {
+                                            objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                            objModNode.Nodes.Add(objWeaponNode);
+                                            objModNode.Expand();
+                                            blnAttached = true;
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
                             }
                         }
                     }
@@ -430,6 +460,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
                 objMod.Save(objWriter);
+            objWriter.WriteEndElement();
+            objWriter.WriteStartElement("weaponmounts");
+            foreach (WeaponMount wm in WeaponMounts)
+                wm.Save(objWriter);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
@@ -600,6 +634,18 @@ namespace Chummer.Backend.Equipment
                     objMod.Parent = this;
                     objMod.Load(nodChild, blnCopy);
                     _lstVehicleMods.Add(objMod);
+                }
+            }
+
+            if (strNodeInnerXml.Contains("<weaponmounts>"))
+            {
+                XmlNodeList nodChildren = objNode.SelectNodes("weaponmounts/weaponmount");
+                foreach (XmlNode nodChild in nodChildren)
+                {
+                    WeaponMount wm = new WeaponMount(_objCharacter, this);
+                    wm.Parent = this;
+                    wm.Load(nodChild, this, blnCopy);
+                    WeaponMounts.Add(wm);
                 }
             }
 
@@ -1189,11 +1235,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public List<Weapon> Weapons
+        public List<Weapon> Weapons => _lstWeapons;
+
+        public List<WeaponMount> WeaponMounts
         {
             get
             {
-                return _lstWeapons;
+                return _lstWeaponMounts;
             }
         }
 
@@ -1433,7 +1481,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed).AsParallel().Sum(objMod => objMod.CalculatedSlots);
+                return _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed).AsParallel().Sum(objMod => objMod.CalculatedSlots) + WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed).AsParallel().Sum(wm => wm.CalculatedSlots);
             }
         }
 
@@ -1467,6 +1515,8 @@ namespace Chummer.Backend.Equipment
                             }
                     }
                 }
+                intDroneModSlots += WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed).AsParallel().Sum(wm => wm.CalculatedSlots);
+
                 return intDroneModSlots;
             }
         }
@@ -1546,6 +1596,7 @@ namespace Chummer.Backend.Equipment
                         intModSlotsUsed += intActualSlots;
                     }
                 }
+                intModSlotsUsed += WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed).AsParallel().Sum(wm => wm.CalculatedSlots);
                 return intModSlotsUsed;
             }
         }
@@ -1574,7 +1625,7 @@ namespace Chummer.Backend.Equipment
                         decCost += objMod.Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
                     }
                 }
-
+                decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
                 decCost += _lstGear.AsParallel().Sum(objGear => objGear.TotalCost);
 
                 return decCost;
@@ -2342,14 +2393,20 @@ namespace Chummer.Backend.Equipment
             {
                 int intProtection = _intBody + _intAddProtectionModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Protection"))
+                foreach (VehicleMod objMod in _lstVehicleMods.AsParallel().Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Protection"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
                     if (intSlots > 0)
                         intProtection -= intSlots;
                 }
-
+                foreach (WeaponMount wm in WeaponMounts.AsParallel().Where(wm => !wm.IncludedInVehicle && wm.Installed))
+                {
+                    // Subtract the Modification's Slots from the Vehicle's base Body.
+                    int intSlots = wm.CalculatedSlots;
+                    if (intSlots > 0)
+                        intProtection -= intSlots;
+                }
                 return intProtection;
             }
         }
