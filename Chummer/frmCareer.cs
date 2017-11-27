@@ -37,6 +37,7 @@ using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
 using Chummer.Backend.Attributes;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -1913,8 +1914,19 @@ namespace Chummer
                 return;
             }
 
-            for (int i = 1; i <= intClones; i++)
-                GlobalOptions.MainForm.LoadCharacter(_objCharacter.FileName, false, _objCharacter.Alias + " " + i.ToString(), true);
+            Cursor = Cursors.WaitCursor;
+            Character[] lstClones = new Character[intClones];
+            object lstClonesLock = new object();
+            Parallel.For(0, intClones, i =>
+            {
+                Character objLoopCharacter = frmMain.LoadCharacter(_objCharacter.FileName, _objCharacter.Alias + " " + i.ToString(), true);
+                lock (lstClonesLock)
+                {
+                    lstClones[i] = objLoopCharacter;
+                }
+            });
+            Cursor = Cursors.Default;
+            GlobalOptions.MainForm.OpenCharacterList(lstClones, false);
         }
 
         private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
@@ -1929,7 +1941,7 @@ namespace Chummer
 
         private void DoReapplyImprovements(List<string> lstInternalIdFilter = null)
         {
-            UseWaitCursor = true;
+            Cursor = Cursors.WaitCursor;
 
             string strOutdatedItems = string.Empty;
 
@@ -2452,7 +2464,7 @@ namespace Chummer
             // Immediately call character update because it re-applies essence loss improvements
             UpdateCharacterInfo();
 
-            UseWaitCursor = false;
+            Cursor = Cursors.Default;
 
             if (!string.IsNullOrEmpty(strOutdatedItems))
             {
@@ -2479,19 +2491,20 @@ namespace Chummer
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
+                Cursor = Cursors.WaitCursor;
                 Character objVessel = new Character();
                 objVessel.FileName = openFileDialog.FileName;
                 objVessel.Load();
                 // Make sure the Vessel is in Career Mode.
                 if (!objVessel.Created)
                 {
+                    Cursor = Cursors.Default;
                     MessageBox.Show(LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     objVessel.Dispose();
                     objVessel = null;
                     return;
                 }
 
-                Cursor = Cursors.WaitCursor;
                 // Load the Spirit's save file into a new Merge character.
                 Character objMerge = new Character();
                 objMerge.FileName = _objCharacter.FileName;
@@ -2607,9 +2620,10 @@ namespace Chummer
                         objMerge = null;
                         objVessel.Dispose();
                         objVessel = null;
-                        Cursor = Cursors.Default;
 
-                        GlobalOptions.MainForm.LoadCharacter(strOpenFile);
+                        Character objOpenCharacter = frmMain.LoadCharacter(strOpenFile);
+                        Cursor = Cursors.Default;
+                        GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
                     }
                     else
                     {
@@ -2808,8 +2822,9 @@ namespace Chummer
                     objMerge.Dispose();
                     objMerge = null;
 
+                    Character objOpenCharacter = frmMain.LoadCharacter(strOpenFile);
                     Cursor = Cursors.Default;
-                    GlobalOptions.MainForm.LoadCharacter(strOpenFile);
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 else
                 {
@@ -4365,7 +4380,7 @@ namespace Chummer
                 objHole = new Cyberware(_objCharacter);
                 TreeNode treNode = new TreeNode();
 
-                objHole.Create(xmlEssHole, _objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
+                objHole.Create(xmlEssHole, _objCharacter, CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options).FirstOrDefault(x => x.Name == "Standard"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
                 treCyberware.Nodes.Add(treNode);
                 _objCharacter.Cyberware.Add(objHole);
             }
@@ -7881,7 +7896,7 @@ namespace Chummer
                     // Move all of the child nodes in the current parent to the Selected Improvements parent node.
                     foreach (TreeNode objNode in treImprovements.SelectedNode.Nodes)
                     {
-                        Improvement objImprovement = new Improvement();
+                        Improvement objImprovement = null;
                         foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                         {
                             if (objCharacterImprovement.CustomGroup == treImprovements.SelectedNode.Text)
@@ -7909,7 +7924,7 @@ namespace Chummer
                 }
                 if (treImprovements.SelectedNode.Level > 0)
                 {
-                    Improvement objImprovement = new Improvement();
+                    Improvement objImprovement = null;
                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                     {
                         if (objCharacterImprovement.SourceName == treImprovements.SelectedNode.Tag.ToString())
@@ -13172,7 +13187,7 @@ namespace Chummer
             {
                 if (treImprovements.SelectedNode.Level > 0)
                 {
-                    Improvement objImprovement = new Improvement();
+                    Improvement objImprovement = null;
                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                     {
                         if (objCharacterImprovement.SourceName == treImprovements.SelectedNode.Tag.ToString())
@@ -17528,7 +17543,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Improvement objImprovement = new Improvement();
+                    Improvement objImprovement = null;
                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                     {
                         if (objCharacterImprovement.SourceName == treImprovements.SelectedNode.Tag.ToString())
@@ -17576,7 +17591,7 @@ namespace Chummer
             {
                 if (treImprovements.SelectedNode.Level > 0)
                 {
-                    Improvement objImprovement = new Improvement();
+                    Improvement objImprovement = null;
                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                     {
                         if (objCharacterImprovement.SourceName == treImprovements.SelectedNode.Tag.ToString())
@@ -19112,6 +19127,8 @@ namespace Chummer
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             if (_objCharacter.PrintWindow != null)
                 _objCharacter.PrintWindow.RefreshView();
+            if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(_objCharacter) == true)
+                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshView();
 
             cmdQuickenSpell.Visible = _objCharacter.HasImprovement(Improvement.ImprovementType.QuickeningMetamagic, true);
             cmdAddBioware.Enabled = !_objCharacter.HasImprovement(Improvement.ImprovementType.DisableBioware, true);
@@ -20314,6 +20331,7 @@ namespace Chummer
                 Cursor = Cursors.Default;
                 return true;
             }
+            Cursor = Cursors.Default;
             return false;
         }
 
@@ -23042,7 +23060,7 @@ namespace Chummer
             foreach (ListItem objItem in lstImprovements)
             {
                 i++;
-                Improvement objImprovement = new Improvement();
+                Improvement objImprovement = null;
                 foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
                 {
                     if (objCharacterImprovement.SourceName == objItem.Value)

@@ -515,6 +515,8 @@ namespace Chummer
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix).Count;
 
+            Grade objTestGrade = CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware).FirstOrDefault(x => x.Name == "Standard");
+
             // Gear.
             foreach (XmlNode objXmlGear in objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix))
             {
@@ -528,7 +530,7 @@ namespace Chummer
                     List<TreeNode> lstNodes = new List<TreeNode>();
                     List<Vehicle> objVehicles = new List<Vehicle>();
                     List<TreeNode> objVehicleNodes = new List<TreeNode>();
-                    objTemp.Create(objXmlGear, objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
+                    objTemp.Create(objXmlGear, objCharacter, objTestGrade, objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
                     try
                     {
                         decimal objValue = objTemp.TotalCost;

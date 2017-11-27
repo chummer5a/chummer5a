@@ -173,9 +173,6 @@ namespace Chummer
         private static XmlDocument _objXmlClipboard = new XmlDocument();
         private static ClipboardContentType _objClipboardContentType = new ClipboardContentType();
 
-        public static readonly GradeList CyberwareGrades = new GradeList();
-        public static readonly GradeList BiowareGrades = new GradeList();
-
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
@@ -417,9 +414,6 @@ namespace Chummer
                     _lstSourcebookInfo.Add(objSource);
                 }
             }
-
-            CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);
-            BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
         }
         #endregion
 
@@ -818,6 +812,9 @@ namespace Chummer
         /// <param name="strFile">Name of the file to add.</param>
         public static void AddToMRUList(string strFile, string strMRUType = "mru")
         {
+            if (string.IsNullOrEmpty(strFile))
+                return;
+
             List<string> strFiles = ReadMRUList(strMRUType);
 
             // Make sure the file doesn't exist in the sticky MRU list if we're adding to base MRU list.

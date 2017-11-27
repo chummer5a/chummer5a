@@ -1939,7 +1939,7 @@ namespace Chummer
 
         private void DoReapplyImprovements(List<string> lstInternalIdFilter = null)
         {
-            UseWaitCursor = true;
+            Cursor = Cursors.WaitCursor;
 
             string strOutdatedItems = string.Empty;
 
@@ -2465,7 +2465,7 @@ namespace Chummer
             // Immediately call character update because it re-applies essence loss improvements
             UpdateCharacterInfo();
 
-            UseWaitCursor = false;
+            Cursor = Cursors.Default;
 
             if (!string.IsNullOrEmpty(strOutdatedItems))
             {
@@ -10337,20 +10337,10 @@ namespace Chummer
                 if (objCyberware == null)
                     return;
 
-                GradeList objGradeList;
-                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                {
-                    GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
-                    objGradeList = GlobalOptions.BiowareGrades;
-                }
-                else
-                {
-                    GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
-                    objGradeList = GlobalOptions.CyberwareGrades;
-                }
+                List<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, _objCharacter.Options);
 
                 // Updated the selected Cyberware Grade.
-                objCyberware.Grade = objGradeList.GetGrade(cboCyberwareGrade.SelectedValue.ToString());
+                objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == cboCyberwareGrade.SelectedValue.ToString());
 
                 // Run through all of the child pieces and make sure their Grade matches.
                 foreach (Cyberware objChildCyberware in objCyberware.Children)
@@ -13976,6 +13966,8 @@ namespace Chummer
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             if (_objCharacter.PrintWindow != null)
                 _objCharacter.PrintWindow.RefreshView();
+            if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(_objCharacter) == true)
+                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshView();
 
             cmdAddBioware.Enabled = !_objCharacter.HasImprovement(Improvement.ImprovementType.DisableBioware, true);
             cmdAddCyberware.Enabled = !_objCharacter.HasImprovement(Improvement.ImprovementType.DisableCyberware, true);
@@ -15249,7 +15241,7 @@ namespace Chummer
 
                 return true;
             }
-
+            Cursor = Cursors.Default;
             return false;
         }
 
@@ -15338,9 +15330,9 @@ namespace Chummer
             _blnSkipToolStripRevert = true;
             if (_objCharacter.Save())
             {
+                Character objOpenCharacter = frmMain.LoadCharacter(_objCharacter.FileName);
                 Cursor = Cursors.Default;
-
-                GlobalOptions.MainForm.LoadCharacter(_objCharacter.FileName, false);
+                GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }
             else
@@ -17173,18 +17165,7 @@ namespace Chummer
         /// </summary>
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
-            // Load the Cyberware information.
-            GradeList objGradeList;
-            if (blnBioware)
-            {
-                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
-                objGradeList = GlobalOptions.BiowareGrades;
-            }
-            else
-            {
-                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
-                objGradeList = GlobalOptions.CyberwareGrades;
-            }
+            List<Grade> objGradeList = CommonFunctions.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
             List<ListItem> lstCyberwareGrades = new List<ListItem>();
 
             foreach (Grade objWareGrade in objGradeList)

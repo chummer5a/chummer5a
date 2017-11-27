@@ -142,6 +142,7 @@
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\TreeNodeCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -159,7 +160,6 @@
     <Compile Include="Backend\Equipment\Equipment.cs" />
     <Compile Include="Backend\Equipment\Gear.cs" />
     <Compile Include="Backend\Equipment\Grade.cs" />
-    <Compile Include="Backend\Equipment\GradeList.cs" />
     <Compile Include="Backend\Equipment\Lifestyle.cs" />
     <Compile Include="Backend\Equipment\LifestyleQuality.cs" />
     <Compile Include="Backend\Equipment\LifestyleType.cs" />

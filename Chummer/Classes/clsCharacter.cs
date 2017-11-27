@@ -1277,7 +1277,7 @@ namespace Chummer
                     // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
                     (!string.IsNullOrEmpty(strLoopSourceName) && strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)))
                 {
-                    Improvement objImprovement = new Improvement();
+                    Improvement objImprovement = new Improvement(this);
                     try
                     {
                         objImprovement.Load(objXmlImprovement);
@@ -2777,9 +2777,8 @@ namespace Chummer
                 {
                     this
                 };
-                frmViewer frmViewCharacter = new frmViewer();
-                frmViewCharacter.Characters = lstCharacters;
-                _frmPrintView = frmViewCharacter;
+                frmViewer _frmPrintView = new frmViewer();
+                _frmPrintView.Characters = lstCharacters;
                 if (blnDialog)
                     _frmPrintView.ShowDialog();
                 else
@@ -2788,9 +2787,10 @@ namespace Chummer
             else
             {
                 _frmPrintView.Activate();
-                
             }
             _frmPrintView.RefreshView();
+            if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(this) == true)
+                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshView();
         }
 
         /// <summary>
@@ -4553,7 +4553,7 @@ namespace Chummer
                     TechnomancerStream = "Default";
                 else
                     TechnomancerStream = string.Empty;
-                ImprovementManager.ClearCachedValue(Improvement.ImprovementType.MatrixInitiativeDice);
+                ImprovementManager.ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(this, Improvement.ImprovementType.MatrixInitiativeDice));
                 if (value && Created)
                     _decEssenceAtSpecialStart = Essence;
                     if (blnOldValue != value)

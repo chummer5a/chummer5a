@@ -158,19 +158,32 @@ namespace Chummer
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
             string strLoop = string.Empty;
-            for (int i = 1; i < strArgs.Length; ++i)
+            List<Character> lstCharactersToLoad = new List<Character>();
+            object lstCharactersToLoadLock = new object();
+            bool blnShowTest = false;
+            object blnShowTestLock = new object();
+            Parallel.For(1, strArgs.Length, i =>
             {
                 strLoop = strArgs[i];
                 if (strLoop == "/test")
                 {
-                    frmTest frmTestData = new frmTest();
-                    frmTestData.Show();
+                    lock (blnShowTestLock)
+                        blnShowTest = true;
                 }
                 else if (!strLoop.StartsWith('/'))
                 {
-                    LoadCharacter(strLoop);
+                    Character objLoopCharacter = LoadCharacter(strLoop);
+                    lock (lstCharactersToLoadLock)
+                        lstCharactersToLoad.Add(objLoopCharacter);
                 }
+            });
+
+            if (blnShowTest)
+            {
+                frmTest frmTestData = new frmTest();
+                frmTestData.Show();
             }
+            OpenCharacterList(lstCharactersToLoad);
 
             frmCharacter.WindowState = FormWindowState.Maximized;
             frmCharacter.Show();
@@ -278,10 +291,23 @@ namespace Chummer
             System.Diagnostics.Process.Start("https://github.com/chummer5a/chummer5a/issues/");
         }
 
+        private frmPrintMultiple _frmPrintMultipleCharacters;
+
+        public frmPrintMultiple PrintMultipleCharactersForm
+        {
+            get
+            {
+                return _frmPrintMultipleCharacters;
+            }
+        }
+
         private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
-            frmPrintMultiple frmPrintMultipleCharacters = new frmPrintMultiple();
-            frmPrintMultipleCharacters.ShowDialog(this);
+            if (_frmPrintMultipleCharacters == null)
+                _frmPrintMultipleCharacters = new frmPrintMultiple();
+            else
+                _frmPrintMultipleCharacters.Activate();
+            _frmPrintMultipleCharacters.Show(this);
         }
 
         private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
@@ -326,7 +352,7 @@ namespace Chummer
 
             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 return;
-            Cursor.Current = Cursors.WaitCursor;
+            Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
@@ -344,14 +370,17 @@ namespace Chummer
             frmNewCharacter.Show();
 
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
-            Cursor.Current = Cursors.Default;
+            Cursor = Cursors.Default;
         }
 
         private void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-            LoadCharacter(strFileName);
+            Cursor = Cursors.WaitCursor;
+            Character objOpenCharacter = LoadCharacter(strFileName);
+            Cursor = Cursors.Default;
+            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -369,7 +398,10 @@ namespace Chummer
         private void mnuStickyMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
-            LoadCharacter(strFileName);
+            Cursor = Cursors.WaitCursor;
+            Character objOpenCharacter = LoadCharacter(strFileName);
+            Cursor = Cursors.Default;
+            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
@@ -590,10 +622,19 @@ namespace Chummer
 
         private void frmMain_DragDrop(object sender, DragEventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             // Open each file that has been dropped into the window.
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            foreach (string strFileName in s)
-                LoadCharacter(strFileName);
+            Character[] lstCharacters = new Character[s.Length];
+            object lstCharactersLock = new object();
+            Parallel.For(0, s.Length, i =>
+            {
+                Character objLoopCharacter = LoadCharacter(s[i]);
+                lock (lstCharactersLock)
+                    lstCharacters[i] = objLoopCharacter;
+            });
+            Cursor = Cursors.Default;
+            GlobalOptions.MainForm.OpenCharacterList(lstCharacters);
         }
 
         private void frmMain_DragEnter(object sender, DragEventArgs e)
@@ -672,7 +713,7 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
             }
-            Cursor.Current = Cursors.WaitCursor;
+            Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
@@ -690,7 +731,7 @@ namespace Chummer
             frmNewCharacter.Show();
 
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
-            Cursor.Current = Cursors.Default;
+            Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -705,33 +746,98 @@ namespace Chummer
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 Timekeeper.Start("load_sum");
-                foreach (string strFileName in openFileDialog.FileNames)
+                Cursor = Cursors.WaitCursor;
+                Character[] lstCharacters = new Character[openFileDialog.FileNames.Length];
+                object lstCharactersLock = new object();
+                Parallel.For(0, lstCharacters.Length, i =>
                 {
-                    LoadCharacter(strFileName);
-                    Timekeeper.Start("load_event_time");
-                    Application.DoEvents();
-                    Timekeeper.Finish("load_event_time");
-                }
+                    Character objLoopCharacter = LoadCharacter(openFileDialog.FileNames[i]);
+                    lock (lstCharactersLock)
+                        lstCharacters[i] = objLoopCharacter;
+                });
+                Cursor = Cursors.Default;
+                GlobalOptions.MainForm.OpenCharacterList(lstCharacters);
+                Application.DoEvents();
                 Timekeeper.Finish("load_sum");
                 Timekeeper.Log();
             }
         }
 
         /// <summary>
-        /// Load a Character and open the correct window.
+        /// Opens the correct window for a single character (not thread-safe).
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
+        {
+            OpenCharacterList(new List<Character>{ objCharacter }, blnIncludeInMRU);
+        }
+
+        /// <summary>
+        /// Open the correct windows for a list of characters (not thread-safe).
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMRU = true)
+        {
+            if (lstCharacters == null)
+                return;
+
+            Cursor = Cursors.WaitCursor;
+
+            foreach (Character objCharacter in lstCharacters)
+            {
+                if (objCharacter == null)
+                    continue;
+                Timekeeper.Start("load_event_time");
+                // Show the character form.
+                if (!objCharacter.Created)
+                {
+                    frmCreate frmCharacter = new frmCreate(objCharacter)
+                    {
+                        MdiParent = this,
+                        WindowState = FormWindowState.Maximized,
+                        Loading = true
+                    };
+                    frmCharacter.Show();
+                }
+                else
+                {
+                    frmCareer frmCharacter = new frmCareer(objCharacter)
+                    {
+                        MdiParent = this,
+                        WindowState = FormWindowState.Maximized,
+                        Loading = true
+                    };
+                    frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
+                    frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;
+                    frmCharacter.Show();
+                }
+
+                if (blnIncludeInMRU)
+                    GlobalOptions.AddToMRUList(objCharacter.FileName);
+
+                objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+                objCharacter_CharacterNameChanged(objCharacter);
+                Timekeeper.Finish("load_event_time");
+            }
+
+            Cursor = Cursors.Default;
+        }
+
+        /// <summary>
+        /// Load a Character from a file and return it (thread-safe).
         /// </summary>
         /// <param name="strFileName">File to load.</param>
         /// <param name="blnIncludeInMRU">Whether or not the file should appear in the MRU list.</param>
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        public void LoadCharacter(string strFileName, bool blnIncludeInMRU = true, string strNewName = "", bool blnClearFileName = false)
+        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false)
         {
+            Character objCharacter = null;
             if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
             {
                 Timekeeper.Start("loading");
-                Cursor.Current = Cursors.WaitCursor;
                 bool blnLoaded = false;
-                Character objCharacter = new Character();
+                objCharacter = new Character();
                 objCharacter.FileName = strFileName;
 
                 XmlDocument objXmlDocument = new XmlDocument();
@@ -745,7 +851,7 @@ namespace Chummer
                     catch (XmlException ex)
                     {
                         MessageBox.Show(LanguageManager.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        return null;
                     }
                 }
                 XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
@@ -774,11 +880,9 @@ namespace Chummer
                 Timekeeper.Start("load_file");
                 blnLoaded = objCharacter.Load();
                 Timekeeper.Finish("load_file");
-                Timekeeper.Start("load_free");
                 if (!blnLoaded)
                 {
-                    Cursor.Current = Cursors.Default;
-                    return;
+                    return null;
                 }
 
                 // If a new name is given, set the character's name to match (used in cloning).
@@ -787,42 +891,12 @@ namespace Chummer
                 // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                 if (blnClearFileName)
                     objCharacter.FileName = string.Empty;
-
-                // Show the character form.
-                if (!objCharacter.Created)
-                {
-                    frmCreate frmCharacter = new frmCreate(objCharacter)
-                    {
-                        MdiParent = this,
-                        WindowState = FormWindowState.Maximized,
-                        Loading = true
-                    };
-                    frmCharacter.Show();
-                }
-                else
-                {
-                    frmCareer frmCharacter = new frmCareer(objCharacter)
-                    {
-                        MdiParent = this,
-                        WindowState = FormWindowState.Maximized,
-                        Loading = true
-                    };
-                    frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
-                    frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;
-                    frmCharacter.Show();
-                }
-
-                if (blnIncludeInMRU)
-                    GlobalOptions.AddToMRUList(strFileName);
-
-                objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
-                objCharacter_CharacterNameChanged(objCharacter);
-                Cursor.Current = Cursors.Default;
             }
             else
             {
                 MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            return objCharacter;
         }
 
         /// <summary>

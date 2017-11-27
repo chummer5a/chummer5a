@@ -137,7 +137,7 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _blnIsConnected = false;
-                this.Invoke(new Action(() => Close()));
+                this.DoThreadSafe(new Action(() => Close()));
             }
             else if (LatestVersion != LanguageManager.GetString("String_No_Update_Found"))
             {
@@ -162,14 +162,14 @@ namespace Chummer
                     {
                         MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         _blnIsConnected = false;
-                        this.Invoke(new Action(() => Close()));
+                        this.DoThreadSafe(new Action(() => Close()));
                     }
                 }
                 else
                 {
                     MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     _blnIsConnected = false;
-                    this.Invoke(new Action(() => Close()));
+                    this.DoThreadSafe(new Action(() => Close()));
                 }
             }
         }
@@ -481,7 +481,7 @@ namespace Chummer
                 else
                 {
                     _blnIsConnected = false;
-                    this.Invoke(new Action(() => Close()));
+                    this.DoThreadSafe(new Action(() => Close()));
                 }
             }
         }

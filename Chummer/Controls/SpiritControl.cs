@@ -159,11 +159,19 @@ namespace Chummer
             if (Path.GetExtension(_objSpirit.FileName) == "chum5")
             {
                 if (!blnUseRelative)
-                    GlobalOptions.MainForm.LoadCharacter(_objSpirit.FileName, false);
+                {
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(_objSpirit.FileName);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
+                }
                 else
                 {
                     string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
-                    GlobalOptions.MainForm.LoadCharacter(strFile, false);
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
                 }
             }
             else
@@ -803,7 +811,6 @@ namespace Chummer
                 objCharacter.Dispose();
                 return;
             }
-            Cursor = Cursors.Default;
 
             string strOpenFile = objCharacter.FileName;
             objCharacter.Dispose();
@@ -816,8 +823,10 @@ namespace Chummer
             else
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile"));
             FileNameChanged(this);
-
-            GlobalOptions.MainForm.LoadCharacter(strOpenFile, true);
+            
+            Character objOpenCharacter = frmMain.LoadCharacter(strOpenFile);
+            Cursor = Cursors.Default;
+            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         /// <summary>

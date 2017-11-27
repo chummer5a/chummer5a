@@ -31,6 +31,7 @@ namespace Chummer
     public partial class frmSelectCyberware : Form
     {
         private readonly Character _objCharacter;
+        private readonly List<Grade> _objGradeList;
 
         private decimal _decCostMultiplier = 1.0m;
         private decimal _decESSMultiplier = 1.0m;
@@ -92,6 +93,8 @@ namespace Chummer
                     _objXmlDocument = XmlManager.Load("bioware.xml");
                     break;
             }
+
+            _objGradeList = CommonFunctions.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -1120,15 +1123,12 @@ namespace Chummer
             SelectedCyberware = objCyberwareNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(objCyberwareNode["forcegrade"]?.InnerText))
             {
-                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(objCyberwareNode["forcegrade"].InnerText);
-            }
-            else if (_objMode == Mode.Bioware)
-            {
-                SelectedGrade = GlobalOptions.BiowareGrades.GetGrade(_strSelectedGrade);
+                
+                SelectedGrade = _objGradeList.FirstOrDefault(x => x.Name == objCyberwareNode["forcegrade"].InnerText);
             }
             else
             {
-                SelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(_strSelectedGrade);
+                SelectedGrade = _objGradeList.FirstOrDefault(x => x.Name == _strSelectedGrade);
             }
 
             _strSelectedGrade = SelectedGrade.Name.ToString();
@@ -1181,20 +1181,8 @@ namespace Chummer
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
-                GradeList objGradeList = null;
-                if (_objMode == Mode.Bioware)
-                {
-                    GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
-                    objGradeList = GlobalOptions.BiowareGrades;
-                }
-                else
-                {
-                    GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
-                    objGradeList = GlobalOptions.CyberwareGrades;
-                }
-
                 _lstGrade.Clear();
-                foreach (Grade objGrade in objGradeList)
+                foreach (Grade objGrade in _objGradeList)
                 {
                     if (objGrade.Name == "None" && (string.IsNullOrEmpty(_strForceGrade) || _strForceGrade != "None"))
                         continue;

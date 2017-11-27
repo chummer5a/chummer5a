@@ -39,7 +39,7 @@
             // lblSellForLabel
             // 
             this.lblSellForLabel.AutoSize = true;
-            this.lblSellForLabel.Location = new System.Drawing.Point(21, 14);
+            this.lblSellForLabel.Location = new System.Drawing.Point(9, 14);
             this.lblSellForLabel.Name = "lblSellForLabel";
             this.lblSellForLabel.Size = new System.Drawing.Size(62, 13);
             this.lblSellForLabel.TabIndex = 0;
@@ -48,14 +48,20 @@
             // 
             // nudPercent
             // 
-            this.nudPercent.Location = new System.Drawing.Point(89, 12);
+            this.nudPercent.DecimalPlaces = 2;
+            this.nudPercent.Location = new System.Drawing.Point(77, 12);
             this.nudPercent.Maximum = new decimal(new int[] {
-            9999,
+            999999,
             0,
             0,
-            0});
+            131072});
+            this.nudPercent.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
             this.nudPercent.Name = "nudPercent";
-            this.nudPercent.Size = new System.Drawing.Size(48, 20);
+            this.nudPercent.Size = new System.Drawing.Size(60, 20);
             this.nudPercent.TabIndex = 1;
             this.nudPercent.Value = new decimal(new int[] {
             50,

@@ -339,6 +339,7 @@ namespace Chummer
             NumImprovementSources
         }
 
+        private readonly Character _objCharacter = null;
         private string _strImprovedName = string.Empty;
         private string _strSourceName = string.Empty;
         private int _intMin = 0;
@@ -389,6 +390,10 @@ namespace Chummer
         #endregion
 
         #region Save and Load Methods
+        public Improvement(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -548,8 +553,8 @@ namespace Chummer
             {
                 if (Enabled)
                 {
-                    ImprovementManager.ClearCachedValue(_objImprovementType);
-                    ImprovementManager.ClearCachedValue(value);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, _objImprovementType));
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, value));
                 }
                 _objImprovementType = value;
             }
@@ -565,7 +570,7 @@ namespace Chummer
             {
                 _objImprovementSource = value;
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(Improvement.ImprovementType.MatrixInitiativeDice);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImprovementType.MatrixInitiativeDice));
             }
         }
 
@@ -651,7 +656,7 @@ namespace Chummer
             {
                 _strUniqueName = value;
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(ImproveType);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
             }
         }
 
@@ -665,7 +670,7 @@ namespace Chummer
             {
                 _blnAddToRating = value;
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(ImproveType);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
             }
         }
 
@@ -687,7 +692,7 @@ namespace Chummer
             set
             {
                 _blnEnabled = value;
-                ImprovementManager.ClearCachedValue(ImproveType);
+                ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
             }
         }
 
@@ -711,8 +716,7 @@ namespace Chummer
         private static string _strSelectedValue = string.Empty;
         private static string _strForcedValue = string.Empty;
         private static readonly List<Improvement> _lstTransaction = new List<Improvement>();
-        private static Dictionary<Improvement.ImprovementType, int> _dictionaryCachedValues = new Dictionary<Improvement.ImprovementType, int>((int)Improvement.ImprovementType.NumImprovementTypes);
-        private static Character _objLastCachedCharacter = null;
+        private static Dictionary<Tuple<Character, Improvement.ImprovementType>, int> _dictionaryCachedValues = new Dictionary<Tuple<Character, Improvement.ImprovementType>, int>((int)Improvement.ImprovementType.NumImprovementTypes);
         #region Properties
 
         /// <summary>
@@ -743,12 +747,12 @@ namespace Chummer
             set { _strForcedValue = value; }
         }
 
-        public static void ClearCachedValue(Improvement.ImprovementType eImprovementType)
+        public static void ClearCachedValue(Tuple<Character, Improvement.ImprovementType> objImprovementType)
         {
-            if (_dictionaryCachedValues.ContainsKey(eImprovementType))
-                _dictionaryCachedValues[eImprovementType] = int.MinValue;
+            if (_dictionaryCachedValues.ContainsKey(objImprovementType))
+                _dictionaryCachedValues[objImprovementType] = int.MinValue;
             else
-                _dictionaryCachedValues.Add(eImprovementType, int.MinValue);
+                _dictionaryCachedValues.Add(objImprovementType, int.MinValue);
         }
         #endregion
 
@@ -775,7 +779,8 @@ namespace Chummer
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
             int intCachedValue;
-            if (_objLastCachedCharacter == objCharacter && !blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objImprovementType, out intCachedValue) && intCachedValue != int.MinValue)
+            Tuple<Character, Improvement.ImprovementType> objCacheKey = new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovementType);
+            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objCacheKey, out intCachedValue) && intCachedValue != int.MinValue)
             {
                 return intCachedValue;
             }
@@ -880,18 +885,10 @@ namespace Chummer
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName))
             {
-                if (_objLastCachedCharacter != objCharacter)
-                {
-                    for(Improvement.ImprovementType eLoopImprovement = 0; eLoopImprovement < Improvement.ImprovementType.NumImprovementTypes; ++eLoopImprovement)
-                    {
-                        ClearCachedValue(eLoopImprovement);
-                    }
-                    _objLastCachedCharacter = objCharacter;
-                }
-                if (_dictionaryCachedValues.ContainsKey(objImprovementType))
-                    _dictionaryCachedValues[objImprovementType] = intValue + intCustomValue;
+                if (_dictionaryCachedValues.ContainsKey(objCacheKey))
+                    _dictionaryCachedValues[objCacheKey] = intValue + intCustomValue;
                 else
-                    _dictionaryCachedValues.Add(objImprovementType, intValue + intCustomValue);
+                    _dictionaryCachedValues.Add(objCacheKey, intValue + intCustomValue);
             }
 
             return intValue + intCustomValue;
@@ -1201,7 +1198,7 @@ namespace Chummer
             {
                 // Remove the Improvement.
                 objCharacter.Improvements.Remove(objImprovement);
-                ClearCachedValue(objImprovement.ImproveType);
+                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
@@ -1409,20 +1406,10 @@ namespace Chummer
                         {
                             foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
                             {
+                                string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
                                 // Determine which GradeList to use for the Cyberware.
-                                GradeList objGradeList;
-                                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                {
-                                    GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
-                                    objGradeList = GlobalOptions.BiowareGrades;
-                                }
-                                else
-                                {
-                                    GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
-                                    objGradeList = GlobalOptions.CyberwareGrades;
-                                }
-
-                                objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
+                                List<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options);
+                                objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == strNewName);
                             }
                         }
                         break;
@@ -1609,7 +1596,7 @@ namespace Chummer
             if (objCharacter != null)
             {
                 // Record the improvement.
-                Improvement objImprovement = new Improvement();
+                Improvement objImprovement = new Improvement(objCharacter);
                 objImprovement.ImprovedName = strImprovedName;
                 objImprovement.ImproveSource = objImprovementSource;
                 objImprovement.SourceName = strSourceName;
@@ -1628,7 +1615,7 @@ namespace Chummer
 
                 // Add the Improvement to the list.
                 objCharacter.Improvements.Add(objImprovement);
-                ClearCachedValue(objImprovement.ImproveType);
+                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
 
                 // Add the Improvement to the Transaction List.
                 _lstTransaction.Add(objImprovement);
@@ -1660,7 +1647,7 @@ namespace Chummer
             foreach (Improvement objImprovement in _lstTransaction)
             {
                 RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
-                ClearCachedValue(objImprovement.ImproveType);
+                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
 
             _lstTransaction.Clear();

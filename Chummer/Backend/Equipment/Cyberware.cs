@@ -75,28 +75,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions)
         {
-            if (objSource == Improvement.ImprovementSource.Bioware)
+            List<Grade> lstGrades = CommonFunctions.GetGradeList(objSource, objCharacterOptions);
+            foreach (Grade objGrade in lstGrades)
             {
-                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacterOptions);
-                foreach (Grade objGrade in GlobalOptions.BiowareGrades)
-                {
-                    if (objGrade.Name == strValue)
-                        return objGrade;
-                }
-
-                return GlobalOptions.BiowareGrades.GetGrade("Standard");
+                if (objGrade.Name == strValue)
+                    return objGrade;
             }
-            else
-            {
-                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacterOptions);
-                foreach (Grade objGrade in GlobalOptions.CyberwareGrades)
-                {
-                    if (objGrade.Name == strValue)
-                        return objGrade;
-                }
 
-                return GlobalOptions.CyberwareGrades.GetGrade("Standard");
-            }
+            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
         }
         #endregion
 

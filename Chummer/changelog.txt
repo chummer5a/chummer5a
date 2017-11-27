@@ -282,6 +282,9 @@ Application Changes:
 - Fixed weapon mount strings not being localized in the UI displaying info about a selected weapon. Part of fix for #2098.
 - Altered the Shadowrun 5 character sheet set so that it can use language-depedent stylesheets. Made the German version of the character sheet not capitalize all letters in any classes. Fixes #2095.
 - Added a house rule where characters can take an unlimited amount of Positive Qualities, but any quality karma costs in excess of the limit set in options are doubled, as if they were taken in career mode.
+- Players may now alter starting karma and maximum karma-to-nuyen for characters in Create mode alongside altering maximum availability.
+- Fixed a bug where the character sheet viewer screen from printing multiple characters would not allow any open characters to be changed, and would produce a blank sheet if the language was changed.
+- Story Builder will now calculate the runner's age and birth year using the current year + 72 as the present year instead of it being fixed to 2075.
 
 Data Changes:
 

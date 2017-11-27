@@ -182,9 +182,15 @@ namespace Chummer.Skills
 
             if (IsKnowledgeSkill && CharacterObject.SkillsoftAccess)
             {
+                int intMax = 0;
                 //TODO this works with translate?
-                return CachedWareRating = CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
-                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))).Max(x => x.Rating);
+                foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
+                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))))
+                {
+                    if (objSkillsoft.Rating > intMax)
+                        intMax = objSkillsoft.Rating;
+                }
+                return CachedWareRating = intMax;
             }
 
             return CachedWareRating = 0;

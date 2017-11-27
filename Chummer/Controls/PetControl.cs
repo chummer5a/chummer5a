@@ -47,6 +47,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objContact.FileName))
             {
+                Cursor = Cursors.WaitCursor;
                 // Load the character to get their Metatype.
                 Character objPet = new Character();
                 objPet.FileName = _objContact.FileName;
@@ -56,6 +57,7 @@ namespace Chummer
                     lblMetatype.Text += " (" + objPet.Metavariant + ")";
                 objPet.Dispose();
                 objPet = null;
+                Cursor = Cursors.Default;
             }
         }
 
@@ -118,11 +120,19 @@ namespace Chummer
             if (Path.GetExtension(_objContact.FileName) == "chum5")
             {
                 if (!blnUseRelative)
-                    GlobalOptions.MainForm.LoadCharacter(_objContact.FileName, false);
+                {
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(_objContact.FileName);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
+                }
                 else
                 {
                     string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-                    GlobalOptions.MainForm.LoadCharacter(strFile, false);
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
                 }
             }
             else
@@ -145,6 +155,7 @@ namespace Chummer
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
+                Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile"));
 
@@ -165,6 +176,7 @@ namespace Chummer
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();
 
                 FileNameChanged(this);
+                Cursor = Cursors.Default;
             }
         }
 

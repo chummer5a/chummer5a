@@ -217,11 +217,19 @@ namespace Chummer
             if (Path.GetExtension(_objContact.FileName) == "chum5")
             {
                 if (!blnUseRelative)
-                    GlobalOptions.MainForm.LoadCharacter(_objContact.FileName, false);
+                {
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(_objContact.FileName);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
+                }
                 else
                 {
                     string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-                    GlobalOptions.MainForm.LoadCharacter(strFile, false);
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
                 }
             }
             else

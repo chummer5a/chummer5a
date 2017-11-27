@@ -2822,6 +2822,29 @@ namespace Chummer
             return lstReturn;
         }
 
+        /// <summary>
+        /// Return a list of CyberwareGrades from XML files.
+        /// </summary>
+        /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        public static List<Grade> GetGradeList(Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions = null)
+        {
+            List<Grade> lstGrades = new List<Grade>();
+            string strXmlFile = objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml";
+            XmlDocument objXMlDocument = XmlManager.Load(strXmlFile);
+
+            string strBookFilter = string.Empty;
+            if (objCharacterOptions != null)
+                strBookFilter = "[(" + objCharacterOptions.BookXPath() + ")]";
+            foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade" + strBookFilter))
+            {
+                Grade objGrade = new Grade();
+                objGrade.Load(objNode);
+                lstGrades.Add(objGrade);
+            }
+
+            return lstGrades;
+        }
+
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.

@@ -715,7 +715,7 @@ namespace Chummer.Skills
                     {
                         s.Append("\n");
                         s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
-                        if (cyberware.Grade != GlobalOptions.CyberwareGrades.GetGrade("Standard"))
+                        if (cyberware.Grade.Name != "Standard")
                         {
                             s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
                         }
@@ -761,7 +761,7 @@ namespace Chummer.Skills
                                 s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
                             s.AppendFormat("{0} ", GetName(objSwapSkillAttribute));
                             s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
-                            if (cyberware.Grade != GlobalOptions.CyberwareGrades.GetGrade("Standard"))
+                            if (cyberware.Grade.Name != "Standard")
                             {
                                 s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
                             }
@@ -1071,9 +1071,15 @@ namespace Chummer.Skills
             int skillWireRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire);
             if ((skillWireRating > 0 || IsKnowledgeSkill) && CharacterObject.SkillsoftAccess)
             {
+                int intMax = 0;
                 //TODO this works with translate?
-                return CachedWareRating = Math.Min(CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
-                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))).Max(x => x.Rating), skillWireRating);
+                foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
+                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))))
+                {
+                    if (objSkillsoft.Rating > intMax)
+                        intMax = objSkillsoft.Rating;
+                }
+                return CachedWareRating = Math.Min(intMax, skillWireRating);
             }
 
             return CachedWareRating = 0;

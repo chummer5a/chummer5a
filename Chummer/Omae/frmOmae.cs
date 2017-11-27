@@ -290,7 +290,12 @@ namespace Chummer
                         bytFile = _objOmaeHelper.Decompress(bytFile);
                         File.WriteAllBytes(strFullPath, bytFile);
                         if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            _frmMain.LoadCharacter(strFullPath);
+                        {
+                            Cursor = Cursors.WaitCursor;
+                            Character objOpenCharacter = frmMain.LoadCharacter(strFullPath);
+                            Cursor = Cursors.Default;
+                            _frmMain.OpenCharacter(objOpenCharacter);
+                        }
                     }
                     catch (EndpointNotFoundException)
                     {

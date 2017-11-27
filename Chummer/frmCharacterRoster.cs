@@ -374,7 +374,10 @@ namespace Chummer
             if (treCharacterList.SelectedNode.Level > 0)
             {
                 CharacterCache objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-                GlobalOptions.MainForm.LoadCharacter(objCache.FilePath);
+                Cursor = Cursors.WaitCursor;
+                Character objOpenCharacter = frmMain.LoadCharacter(objCache.FilePath);
+                Cursor = Cursors.Default;
+                GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
         private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
