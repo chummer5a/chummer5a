@@ -187,10 +187,9 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 			if (objNode["weapons"] != null)
 			{
-                Weapon w = new Weapon(null);
                 foreach (XmlNode n in objNode.SelectNodes("weapons/weapon"))
                 {
-                    w = new Weapon(null);
+                    Weapon w = new Weapon(_character);
                     w.Load(n, blnCopy);
                     _weapons.Add(w);
                 }

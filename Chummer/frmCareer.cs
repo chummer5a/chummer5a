@@ -5226,7 +5226,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out WeaponMount wm);
+                    Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out WeaponMount wm, out VehicleMod vm);
                     // Removing a Weapon
                     if (objWeapon != null)
                     {
@@ -10608,7 +10608,7 @@ namespace Chummer
                     }
                     else
                     {
-                        Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out WeaponMount wm);
+                        Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle, out WeaponMount wm, out VehicleMod vm);
                         // Removing a Weapon
                         if (objWeapon != null)
                         {
@@ -11947,9 +11947,7 @@ namespace Chummer
                     break;
                 case NuyenExpenseType.AddVehicleWeapon:
                     // Locate the Weapon that was added.
-                    Vehicle objAddVehicleWeaponVehicle = null;
-                    WeaponMount wm = null;
-                    Weapon objAddVehicleWeapon = CommonFunctions.FindVehicleWeapon(objEntry.Undo.ObjectId, _objCharacter.Vehicles, out objAddVehicleWeaponVehicle, out wm);
+                    Weapon objAddVehicleWeapon = CommonFunctions.FindVehicleWeapon(objEntry.Undo.ObjectId, _objCharacter.Vehicles, out Vehicle objAddVehicleWeaponVehicle, out WeaponMount wm, out VehicleMod vm);
                     if (objAddVehicleWeapon != null)
                     {
                         // Remove the Weapon.
