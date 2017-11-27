@@ -328,12 +328,16 @@ namespace Chummer.Backend.Equipment
                         if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
                         {
                             w.Weapons.Add(objWeapon);
+                            w.Weapons.AddRange(objSubWeapons);
                             foreach (TreeNode objModNode in objNode.Nodes)
                             {
                                 if (objModNode.Tag.ToString() == w.InternalId)
                                 {
-                                    objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-                                    objModNode.Nodes.Add(objWeaponNode);
+                                    foreach (TreeNode objWeaponNode in lstWeaponNodes)
+                                    {
+                                        objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                        objModNode.Nodes.Add(objWeaponNode);
+                                    }
                                     objModNode.Expand();
                                     blnAttached = true;
                                     break;
@@ -351,12 +355,16 @@ namespace Chummer.Backend.Equipment
                             if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                             {
                                 objMod.Weapons.Add(objWeapon);
+                                objMod.Weapons.AddRange(objSubWeapons);
                                 foreach (TreeNode objModNode in objNode.Nodes)
                                 {
                                     if (objModNode.Tag.ToString() == objMod.InternalId)
                                     {
-                                        objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-                                        objModNode.Nodes.Add(objWeaponNode);
+                                        foreach (TreeNode objWeaponNode in lstWeaponNodes)
+                                        {
+                                            objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                            objModNode.Nodes.Add(objWeaponNode);
+                                        }
                                         objModNode.Expand();
                                         blnAttached = true;
                                         break;
@@ -372,12 +380,16 @@ namespace Chummer.Backend.Equipment
                                 if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
+                                    objMod.Weapons.AddRange(objSubWeapons);
                                     foreach (TreeNode objModNode in objNode.Nodes)
                                     {
                                         if (objModNode.Tag.ToString() == objMod.InternalId)
                                         {
-                                            objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
-                                            objModNode.Nodes.Add(objWeaponNode);
+                                            foreach (TreeNode objWeaponNode in lstWeaponNodes)
+                                            {
+                                                objWeaponNode.ContextMenuStrip = cmsVehicleWeapon;
+                                                objModNode.Nodes.Add(objWeaponNode);
+                                            }
                                             objModNode.Expand();
                                             blnAttached = true;
                                             break;

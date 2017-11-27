@@ -153,7 +153,8 @@ namespace Chummer
                 cmsWeaponAccessory,
                 cmsWeaponAccessoryGear,
                 cmsWeaponLocation,
-                cmsWeaponMod
+                cmsWeaponMod,
+                cmsWeaponMount,
             };
 
             // Update the text in the Menus so they can be merged with frmMain properly.
@@ -7185,7 +7186,7 @@ namespace Chummer
                 wm = CommonFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
                 if (wm != null)
                 {
-                    if (!wm.Name.StartsWith("Mechanical Arm") && !wm.Name.StartsWith("Drone Arm"))
+                    if (!wm.Name.StartsWith("Mechanical Arm") && !wm.Name.Contains("Drone Arm"))
                     {
                         wm = null;
                     }
@@ -7215,7 +7216,7 @@ namespace Chummer
 
             List<TreeNode> lstNodes = new List<TreeNode>();
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objMod.Weapons, cmsVehicleWeaponAccessoryGear);
+            objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
             if (frmPickWeapon.FreeCost)
