@@ -8288,7 +8288,6 @@ namespace Chummer
         public static readonly HashSet<Improvement.ImprovementType> AttribRelatedImprovements = new HashSet<Improvement.ImprovementType> {
             Improvement.ImprovementType.Attribute,
             Improvement.ImprovementType.Essence,
-            Improvement.ImprovementType.Infirm,
             Improvement.ImprovementType.EssenceMax,
             Improvement.ImprovementType.Attributelevel,
             Improvement.ImprovementType.Seeker,
