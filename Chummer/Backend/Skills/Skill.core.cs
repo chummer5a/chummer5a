@@ -437,8 +437,9 @@ namespace Chummer.Skills
                     }
                 }
             }
+            intSpecCost = (intSpecCount * intSpecCost);
             if (decSpecCostMultiplier != 1.0m)
-                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCount * intSpecCost * decSpecCostMultiplier));
+                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCost * decSpecCostMultiplier));
             cost += intSpecCost + intExtraSpecCost; //Spec
 
             return Math.Max(0, cost);
