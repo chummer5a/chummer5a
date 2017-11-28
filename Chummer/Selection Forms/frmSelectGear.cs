@@ -1004,7 +1004,7 @@ namespace Chummer
                         }
                     }
                     objAvailNode = objXmlGear["avail" + intHighestAvailNode];
-                    for (int i = Convert.ToInt32(nudRating.Value); i <= intHighestAvailNode; ++i)
+                    for (int i = decimal.ToInt32(nudRating.Value); i <= intHighestAvailNode; ++i)
                     {
                         XmlNode objLoopNode = objXmlGear["avail" + i.ToString(GlobalOptions.InvariantCultureInfo)];
                         if (objLoopNode != null)
@@ -1070,7 +1070,7 @@ namespace Chummer
                             }
                         }
                         objCostNode = objXmlGear["cost" + intHighestCostNode];
-                        for (int i = Convert.ToInt32(nudRating.Value); i <= intHighestCostNode; ++i)
+                        for (int i = decimal.ToInt32(nudRating.Value); i <= intHighestCostNode; ++i)
                         {
                             XmlNode objLoopNode = objXmlGear["cost" + i.ToString(GlobalOptions.InvariantCultureInfo)];
                             if (objLoopNode != null)
@@ -1109,7 +1109,7 @@ namespace Chummer
                             string[] strValues = objCostNode.InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                             string strCost = "0";
                             if (nudRating.Value > 0)
-                                strCost = strValues[Convert.ToInt32(nudRating.Value) - 1].Trim("[]".ToCharArray());
+                                strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim("[]".ToCharArray());
                             decimal decCost = Convert.ToDecimal(strCost, GlobalOptions.InvariantCultureInfo) * decMultiplier;
                             decCost *= 1 + (nudMarkup.Value / 100.0m);
                             if (chkBlackMarketDiscount.Checked)
@@ -1176,8 +1176,8 @@ namespace Chummer
                                 if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
                                 {
                                     string[] strValues = objXmlGear[strCapacityField].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                                    if (strValues.Length >= Convert.ToInt32(nudRating.Value))
-                                        lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                                    if (strValues.Length >= decimal.ToInt32(nudRating.Value))
+                                        lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
                                     else
                                     {
                                         try
@@ -1229,8 +1229,8 @@ namespace Chummer
                                 if (objXmlGear[strCapacityField].InnerText.StartsWith("FixedValues"))
                                 {
                                     string[] strValues = objXmlGear[strCapacityField].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                                    if (strValues.Length >= Convert.ToInt32(nudRating.Value))
-                                        lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                                    if (strValues.Length >= decimal.ToInt32(nudRating.Value))
+                                        lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
                                     else
                                         lblCapacity.Text = "0";
                                 }
@@ -1289,7 +1289,7 @@ namespace Chummer
                     {
                         nudRating.Minimum = 1;
                     }
-                    while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -1359,7 +1359,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _intSelectedRating = Convert.ToInt32(nudRating.Value);
+            _intSelectedRating = decimal.ToInt32(nudRating.Value);
             _decSelectedQty = nudGearQty.Value;
             _decMarkup = nudMarkup.Value;
 

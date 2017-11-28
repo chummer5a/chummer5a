@@ -523,8 +523,8 @@ namespace Chummer
         private void AcceptForm()
         {
             _strSelectedMod = lstMod.SelectedValue.ToString();
-            _intSelectedRating = Convert.ToInt32(nudRating.Value);
-            _intMarkup = Convert.ToInt32(nudMarkup.Value);
+            _intSelectedRating = decimal.ToInt32(nudRating.Value);
+            _intMarkup = decimal.ToInt32(nudMarkup.Value);
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
             _strSelectCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
@@ -557,7 +557,7 @@ namespace Chummer
                 {
                     nudRating.Enabled = true;
                     nudRating.Maximum = 20;
-                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -568,7 +568,7 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "body")
                 {
                     nudRating.Maximum = _objVehicle.Body;
-                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -580,7 +580,7 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
                 {
                     nudRating.Maximum = _objVehicle.TotalSeats;
-                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -593,7 +593,7 @@ namespace Chummer
                     if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
                     {
                         nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
-                        while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -616,7 +616,7 @@ namespace Chummer
                 string strAvailExpr = objXmlMod["avail"].InnerText;
                 if (strAvailExpr.StartsWith("FixedValues"))
                 {
-                    int intRating = Convert.ToInt32(nudRating.Value - 1);
+                    int intRating = decimal.ToInt32(nudRating.Value - 1);
                     strAvailExpr = strAvailExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray());
                     string[] strValues = strAvailExpr.Split(',');
                     if (intRating > strValues.Length || intRating < 0)
@@ -681,7 +681,7 @@ namespace Chummer
                         strCost = objXmlMod["cost"].InnerText;
                         if (strCost.StartsWith("FixedValues"))
                         {
-                            int intRating = Convert.ToInt32(nudRating.Value) - 1;
+                            int intRating = decimal.ToInt32(nudRating.Value) - 1;
                             strCost = strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray());
                             string[] strValues = strCost.Split(',');
                             if (intRating < 0 || intRating > strValues.Length)
@@ -716,7 +716,7 @@ namespace Chummer
                 if (objXmlMod["slots"].InnerText.StartsWith("FixedValues"))
                 {
                     string[] strValues = objXmlMod["slots"].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    strSlots = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                    strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
                 else
                 {

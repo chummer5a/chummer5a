@@ -670,7 +670,7 @@ namespace Chummer.Backend.Attributes
                     int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
                     // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
                     intLimbTotal += intMeat * intMissingLimbCount;
-                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intMaxLimbs, GlobalOptions.CultureInfo)));
+                    intReturn = (intLimbTotal + intMaxLimbs - 1) / intMaxLimbs;
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
@@ -1175,7 +1175,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
                 intReturn += intExtra;
 
                 return Math.Max(intReturn, 0);
@@ -1225,7 +1225,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
             if (decMultiplier != 1.0m)
-                upgrade = Convert.ToInt32(Math.Ceiling(upgrade * decMultiplier));
+                upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier));
             upgrade += intExtra;
 
             return Math.Max(upgrade, Math.Min(1, intOptionsCost));
@@ -1262,7 +1262,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
             if (decMultiplier != 1.0m)
-                intCost = Convert.ToInt32(Math.Ceiling(intCost * decMultiplier));
+                intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier));
             intCost += intExtra;
 
             return Math.Max(intCost, 0);

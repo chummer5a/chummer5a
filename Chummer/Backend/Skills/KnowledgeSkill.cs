@@ -232,13 +232,13 @@ namespace Chummer.Skills
 
             decimal decMultiplier = 1.0m;
             int intExtra = 0;
-            int intSpecCost = CharacterObject.Options.KarmaKnowledgeSpecialization;
             int intSpecCount = 0;
             foreach (SkillSpecialization objSpec in Specializations)
             {
                 if (!objSpec.Free && (BuyWithKarma || CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule))
                     intSpecCount += 1;
             }
+            int intSpecCost = CharacterObject.Options.KarmaKnowledgeSpecialization * intSpecCount;
             int intExtraSpecCost = 0;
             decimal decSpecCostMultiplier = 1.0m;
             foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
@@ -267,11 +267,10 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                cost = Convert.ToInt32(Math.Ceiling(cost * decMultiplier));
+                cost = decimal.ToInt32(decimal.Ceiling(cost * decMultiplier));
 
-            intSpecCost = (intSpecCount * intSpecCost);
             if (decSpecCostMultiplier != 1.0m)
-                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCost * decSpecCostMultiplier));
+                intSpecCost = decimal.ToInt32(decimal.Ceiling(intSpecCost * decSpecCostMultiplier));
             cost += intExtra;
             cost += intSpecCost + intExtraSpecCost; //Spec
 
@@ -335,7 +334,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                value = Convert.ToInt32(Math.Ceiling(value * decMultiplier));
+                value = decimal.ToInt32(decimal.Ceiling(value * decMultiplier));
             value += intExtra;
 
             return Math.Max(value, Math.Min(1, intOptionsCost));
@@ -373,7 +372,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                intPointCost = Convert.ToInt32(Math.Ceiling(intPointCost * decMultiplier));
+                intPointCost = decimal.ToInt32(decimal.Ceiling(intPointCost * decMultiplier));
             intPointCost += intExtra;
 
             return Math.Max(intPointCost, 0);

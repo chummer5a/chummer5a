@@ -217,10 +217,10 @@ namespace Chummer
             // Export Starting Nuyen.
             if (chkStartingNuyen.Checked)
             {
-                int intNuyenBP = Convert.ToInt32(_objCharacter.NuyenBP);
+                decimal decNuyenBP = _objCharacter.NuyenBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.InvariantCultureInfo) / 2.0);
-                objWriter.WriteElementString("nuyenbp", intNuyenBP.ToString());
+                    decNuyenBP /= 2.0m;
+                objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
             // Export Active Skills.

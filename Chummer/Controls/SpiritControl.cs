@@ -55,7 +55,7 @@ namespace Chummer
         {
             // Raise the ServicesOwedChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.ServicesOwed = Convert.ToInt32(nudServices.Value);
+            _objSpirit.ServicesOwed = decimal.ToInt32(nudServices.Value);
             ServicesOwedChanged(this);
         }
 
@@ -70,7 +70,7 @@ namespace Chummer
         {
             // Raise the ForceChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.Force = Convert.ToInt32(nudForce.Value);
+            _objSpirit.Force = decimal.ToInt32(nudForce.Value);
             ForceChanged(this);
         }
 
@@ -233,7 +233,7 @@ namespace Chummer
                 return;
             }
 
-            CreateCritter(cboSpiritName.SelectedValue.ToString(), Convert.ToInt32(nudForce.Value));
+            CreateCritter(cboSpiritName.SelectedValue.ToString(), decimal.ToInt32(nudForce.Value));
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -417,7 +417,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudForce.Maximum);
+                return decimal.ToInt32(nudForce.Maximum);
             }
             set
             {
@@ -778,7 +778,7 @@ namespace Chummer
             {
                 int intRating = 0;
                 if (objXmlGear.Attributes["rating"] != null)
-                    intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
+                    intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0));
                 string strForceValue = string.Empty;
                 if (objXmlGear.Attributes["select"] != null)
                     strForceValue = objXmlGear.Attributes["select"].InnerText;

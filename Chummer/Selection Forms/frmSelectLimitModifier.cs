@@ -49,7 +49,7 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnName = txtName.Text;
-            _intBonus = Convert.ToInt32(nudBonus.Value);
+            _intBonus = decimal.ToInt32(nudBonus.Value);
             _strCondition = txtCondition.Text;
             DialogResult = DialogResult.OK;
         }

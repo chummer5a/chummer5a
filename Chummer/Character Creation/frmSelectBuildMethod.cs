@@ -105,6 +105,7 @@ namespace Chummer
                 intQualityLimits = _objCharacter.GameplayOptionQualityLimit;
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
                 nudMaxAvail.Value = objCharacter.MaximumAvailability;
+                nudSumtoTen.Value = objCharacter.SumtoTen;
             }
             else
             {
@@ -120,7 +121,7 @@ namespace Chummer
             switch (cboBuildMethod.SelectedValue.ToString())
             {
                 case "Karma":
-                    _objCharacter.NuyenMaximumBP = Convert.ToInt32(nudMaxNuyen.Value);
+                    _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
                     _objCharacter.BuildMethod = CharacterBuildMethod.Karma;
                     break;
                 case "Priority":
@@ -130,19 +131,19 @@ namespace Chummer
                 case "SumtoTen":
                     _objCharacter.NuyenMaximumBP = decNuyenBP;
                     _objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
-                    _objCharacter.SumtoTen = Convert.ToInt32(nudSumtoTen.Value);
+                    _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
                     break;
                 case "LifeModule":
-                    _objCharacter.NuyenMaximumBP = Convert.ToInt32(nudMaxNuyen.Value);
+                    _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
                     _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
                     break;
             }
             _objCharacter.BuildPoints = 0;
-            _objCharacter.BuildKarma = Convert.ToInt32(nudKarma.Value);
+            _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.Text;
             _objCharacter.GameplayOptionQualityLimit = intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
-            _objCharacter.MaximumAvailability = Convert.ToInt32(nudMaxAvail.Value);
+            _objCharacter.MaximumAvailability = decimal.ToInt32(nudMaxAvail.Value);
             DialogResult = DialogResult.OK;
         }
 

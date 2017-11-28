@@ -127,7 +127,7 @@ namespace Chummer
                 decTotalESS += objCyberware.CalculatedESS();
             }
 
-            lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
+            lblEssence.Text = decimal.Round(decTotalESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
             lblCost.Text = $"{decTotalCost:#,0.00¥}";
             lblGrade.Text = objXmlSuite["grade"].InnerText;
             _decCost = decTotalCost;

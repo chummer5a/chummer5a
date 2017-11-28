@@ -375,7 +375,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                cost = Convert.ToInt32(Math.Ceiling(cost * decMultiplier));
+                cost = decimal.ToInt32(decimal.Ceiling(cost * decMultiplier));
             cost += intExtra;
 
             return Math.Max(cost, 0);
@@ -414,13 +414,13 @@ namespace Chummer.Skills
             if (cost < 0 && Debugger.IsAttached)
                 Debugger.Break();
 
-            int intSpecCost = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
             int intSpecCount = 0;
             foreach (SkillSpecialization objSpec in Specializations)
             {
                 if (!objSpec.Free && (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma || _character.BuildMethod == CharacterBuildMethod.LifeModule))
                     intSpecCount += 1;
             }
+            int intSpecCost = intSpecCount * (IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization);
             int intExtraSpecCost = 0;
             decimal decSpecCostMultiplier = 1.0m;
             foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
@@ -437,9 +437,8 @@ namespace Chummer.Skills
                     }
                 }
             }
-            intSpecCost = (intSpecCount * intSpecCost);
             if (decSpecCostMultiplier != 1.0m)
-                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCost * decSpecCostMultiplier));
+                intSpecCost = decimal.ToInt32(decimal.Ceiling(intSpecCost * decSpecCostMultiplier));
             cost += intSpecCost + intExtraSpecCost; //Spec
 
             return Math.Max(0, cost);
@@ -491,7 +490,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                cost = Convert.ToInt32(Math.Ceiling(cost * decMultiplier));
+                cost = decimal.ToInt32(decimal.Ceiling(cost * decMultiplier));
             cost += intExtra;
 
             return Math.Max(cost, 0);
@@ -545,7 +544,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                upgrade = Convert.ToInt32(Math.Ceiling(upgrade * decMultiplier));
+                upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier));
             upgrade += intExtra;
 
             return Math.Max(upgrade, Math.Min(1, intOptionsCost));
@@ -603,7 +602,7 @@ namespace Chummer.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    price = Convert.ToInt32(Math.Ceiling(price * decSpecCostMultiplier));
+                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
                 price += intExtraSpecCost; //Spec
 
                 return price <= CharacterObject.Karma;
@@ -632,7 +631,7 @@ namespace Chummer.Skills
                 }
             }
             if (decSpecCostMultiplier != 1.0m)
-                price = Convert.ToInt32(Math.Ceiling(price * decSpecCostMultiplier));
+                price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
             price += intExtraSpecCost; //Spec
 
             if (price > CharacterObject.Karma)

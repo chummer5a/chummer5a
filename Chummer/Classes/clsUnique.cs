@@ -204,7 +204,7 @@ namespace Chummer
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _intBP = Convert.ToInt32(frmPickNumber.SelectedValue);
+                        _intBP = decimal.ToInt32(frmPickNumber.SelectedValue);
                     }
                 }
                 else
@@ -5693,7 +5693,7 @@ namespace Chummer
                 if (_blnSchooling)
                     decMultiplier -= 0.1m;
 
-                return Convert.ToInt32(Math.Ceiling(intCost * decMultiplier));
+                return decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier));
             }
         }
 

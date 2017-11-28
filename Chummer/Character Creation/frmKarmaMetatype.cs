@@ -582,7 +582,7 @@ namespace Chummer
                 XmlNode objXmlMetavariant = objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue + "\"]");
                 int intForce = 0;
                 if (nudForce.Visible)
-                    intForce = Convert.ToInt32(nudForce.Value);
+                    intForce = decimal.ToInt32(nudForce.Value);
 
                 // Set Metatype information.
                 int intMinModifier = 0;
@@ -930,7 +930,7 @@ namespace Chummer
                 {
                     int intRating = 0;
                     if (objXmlGear.Attributes["rating"] != null)
-                        intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
+                        intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0));
                     string strForceValue = string.Empty;
                     if (objXmlGear.Attributes["select"] != null)
                         strForceValue = objXmlGear.Attributes["select"].InnerText;

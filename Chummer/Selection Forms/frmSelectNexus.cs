@@ -122,12 +122,12 @@ namespace Chummer
         {
             decimal decCost = 0;
 
-            int intProcessor = Convert.ToInt32(nudProcessor.Value);
-            int intSystem = Convert.ToInt32(nudSystem.Value);
-            int intResponse = Convert.ToInt32(nudResponse.Value);
-            int intFirewall = Convert.ToInt32(nudFirewall.Value);
-            int intPersona = Convert.ToInt32(nudPersona.Value);
-            int intSignal = Convert.ToInt32(nudSignal.Value);
+            int intProcessor = decimal.ToInt32(nudProcessor.Value);
+            int intSystem = decimal.ToInt32(nudSystem.Value);
+            int intResponse = decimal.ToInt32(nudResponse.Value);
+            int intFirewall = decimal.ToInt32(nudFirewall.Value);
+            int intPersona = decimal.ToInt32(nudPersona.Value);
+            int intSignal = decimal.ToInt32(nudSignal.Value);
 
             // Determine the individual component costs and ratings.
             // Response.

@@ -2761,7 +2761,7 @@ namespace Chummer.Backend.Equipment
             objRange.Replace("/", " div ");
 
             decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objRange.ToString()), GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier;
-            int intReturn = Convert.ToInt32(Math.Ceiling(decReturn));
+            int intReturn = decimal.ToInt32(decimal.Ceiling(decReturn));
 
             return intReturn;
         }

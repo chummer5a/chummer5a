@@ -172,7 +172,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudRating.Value);
+                return decimal.ToInt32(nudRating.Value);
             }
         }
 
@@ -258,7 +258,7 @@ namespace Chummer
             lblA.Text = objXmlMod["armor"].InnerText;
 
             nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
-            while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum)))
+            while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
             {
                 nudRating.Maximum -= 1;
             }
@@ -347,7 +347,7 @@ namespace Chummer
                 if (strCapacity.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    strCapacity = strValues[Convert.ToInt32(nudRating.Value) - 1];
+                    strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
 
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);

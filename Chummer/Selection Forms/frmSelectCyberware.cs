@@ -300,7 +300,7 @@ namespace Chummer
                     }
                 }
                 nudRating.Maximum = intMaxRating;
-                while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Maximum), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
+                while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum), objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -743,8 +743,8 @@ namespace Chummer
                 if (strAvailExpr.StartsWith("FixedValues"))
                 {
                     string[] strValues = strAvailExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Convert.ToInt32(nudRating.Value) > 0)
-                        strAvailExpr = strValues[Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    if (decimal.ToInt32(nudRating.Value) > 0)
+                        strAvailExpr = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
                 if (strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-'))
                 {
@@ -793,8 +793,8 @@ namespace Chummer
                 if (strCost.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Convert.ToInt32(nudRating.Value) > 0)
-                        strCost = strValues[Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    if (decimal.ToInt32(nudRating.Value) > 0)
+                        strCost = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
                 // Check for a Variable Cost.
                 if (strCost.StartsWith("Variable"))
@@ -886,11 +886,11 @@ namespace Chummer
                 if (strEss.StartsWith("FixedValues"))
                 {
                     string[] strValues = strEss.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (Convert.ToInt32(nudRating.Value) > 0)
-                    strEss = strValues[Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    if (decimal.ToInt32(nudRating.Value) > 0)
+                    strEss = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
                 decESS =
-                    Math.Round(
+                    decimal.Round(
                         Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo) *
                         decCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             }
@@ -1132,11 +1132,11 @@ namespace Chummer
             }
 
             _strSelectedGrade = SelectedGrade.Name.ToString();
-            SelectedRating = Convert.ToInt32(nudRating.Value);
+            SelectedRating = decimal.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
             if (nudESSDiscount.Visible)
-                SelectedESSDiscount = Convert.ToInt32(nudESSDiscount.Value);
+                SelectedESSDiscount = decimal.ToInt32(nudESSDiscount.Value);
 
             if (objCyberwareNode["capacity"].InnerText.Contains('[') && _objParentNode != null && _objCharacter.Options.EnforceCapacity)
             {
@@ -1147,7 +1147,7 @@ namespace Chummer
                 if (strCapacity.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    strCapacity = strValues[Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    strCapacity = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
                 decimal decCapacity = 0;
 

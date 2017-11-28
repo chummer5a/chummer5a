@@ -730,7 +730,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decPercentage = _decPercentage / 100.0m;
 
-                decimal decBaseLifestyleCost = Convert.ToInt32(decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly));
+                decimal decBaseLifestyleCost = decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly);
                 if (!_blnTrustFund)
                 {
                     decReturn += decBaseLifestyleCost;

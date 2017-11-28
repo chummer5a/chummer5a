@@ -497,7 +497,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
             intReturn += intExtra;
 
             return Math.Max(intReturn, 0);
@@ -544,7 +544,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                cost = Convert.ToInt32(Math.Ceiling(cost * decMultiplier));
+                cost = decimal.ToInt32(decimal.Ceiling(cost * decMultiplier));
             cost += intExtra;
 
             return Math.Max(cost, 0); 
@@ -598,7 +598,7 @@ namespace Chummer.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
             intReturn += intExtra;
 
             return Math.Max(intReturn, Math.Min(1, intOptionsCost));

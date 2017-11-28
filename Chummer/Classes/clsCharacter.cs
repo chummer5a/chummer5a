@@ -3970,7 +3970,7 @@ namespace Chummer
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if (objEntry.Type == ExpenseType.Karma && objEntry.Amount > 0 && objEntry.Refund == false)
-                        intKarma += Convert.ToInt32(objEntry.Amount);
+                        intKarma += decimal.ToInt32(objEntry.Amount);
                 }
 
                 return intKarma;
@@ -4075,7 +4075,7 @@ namespace Chummer
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
 
                 return Math.Max(intReturn, 0);
             }
@@ -4099,7 +4099,7 @@ namespace Chummer
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
 
                 return Math.Max(intReturn, 0);
             }
@@ -4123,7 +4123,7 @@ namespace Chummer
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
 
                 return Math.Max(intReturn, 0);
             }
@@ -4147,7 +4147,7 @@ namespace Chummer
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = Convert.ToInt32(Math.Ceiling(intReturn * decMultiplier));
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
 
                 return Math.Max(intReturn, 0);
             }
@@ -4754,7 +4754,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum. Round the remaining amount up to get the total penalty to RES and DEP.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
+                return decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
 
@@ -4766,7 +4766,7 @@ namespace Chummer
             get
             {
                 // Subtract the character's current Essence from its maximum, but taking into account essence modifiers that only affect MAG. Round the remaining amount up to get the total penalty to MAG.
-                return Convert.ToInt32(Math.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
+                return decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence - (Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100), GlobalOptions.InvariantCultureInfo) / 100.0m)));
             }
         }
 
@@ -5318,7 +5318,7 @@ namespace Chummer
             {
                 int intReturn = BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
-                    intReturn += Convert.ToInt32(Math.Floor(Essence));
+                    intReturn += decimal.ToInt32(decimal.Floor(Essence));
                 return intReturn.ToString(GlobalOptions.CultureInfo);
             }
         }
@@ -5332,7 +5332,7 @@ namespace Chummer
             {
                 int intReturn = 2 * BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
-                    intReturn += Convert.ToInt32(Math.Floor(Essence));
+                    intReturn += decimal.ToInt32(decimal.Floor(Essence));
                 return intReturn.ToString(GlobalOptions.CultureInfo);
             }
         }
@@ -6384,16 +6384,16 @@ namespace Chummer
                     int intHomeNodeDP = Math.Max(_objHomeNodeCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0, _objHomeNodeVehicle?.DeviceRating ?? 0);
                     if (intHomeNodeDP >= intHomeNodePilot)
                     {
-                        intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+                        intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
                     }
                     else
                     {
-                        intLimit = (CHA.TotalValue + intHomeNodePilot + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+                        intLimit = (CHA.TotalValue + intHomeNodePilot + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
                     }
                 }
                 else
                 {
-                    intLimit = (CHA.TotalValue * 2 + WIL.TotalValue + Convert.ToInt32(Math.Ceiling(Essence)) + 2) / 3;
+                    intLimit = (CHA.TotalValue * 2 + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
                 }
                 return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit);
             }

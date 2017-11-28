@@ -245,7 +245,7 @@ namespace Chummer.UI.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    price = Convert.ToInt32(Math.Ceiling(price * decSpecCostMultiplier));
+                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
                 price += intExtraSpecCost; //Spec
 
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price.ToString());

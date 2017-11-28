@@ -78,9 +78,9 @@ namespace Chummer
             int intGlitchThreshold = 0;
             int intGlitchMin = 1;
 
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
+            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
@@ -146,7 +146,7 @@ namespace Chummer
                     intHitCount += intResult;
                 }
             }
-            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && Convert.ToInt32(nudDice.Value) % 2 == 0)
+            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && decimal.ToInt32(nudDice.Value) % 2 == 0)
             {
                 do
                 {
@@ -249,9 +249,9 @@ namespace Chummer
             int intGlitchCount = 0;
             int intGlitchThreshold = 0;
 
-            intGlitchThreshold = Convert.ToInt32(Math.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
             // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= Convert.ToInt32(nudGremlins.Value);
+            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
@@ -317,7 +317,7 @@ namespace Chummer
                     intHitCount += intLoopResult;
                 }
             }
-            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && Convert.ToInt32(nudDice.Value) % 2 == 0)
+            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && decimal.ToInt32(nudDice.Value) % 2 == 0)
             {
                 do
                 {
