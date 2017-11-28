@@ -1608,6 +1608,7 @@ namespace Chummer
         /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
         /// <param name="cmsWeaponAccessoryGear"></param>
         /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
+        /// <param name="cmsVehicleWeaponMount">ContextMenuStrip for Vehicle Weapon Mounts.</param>
         public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount)
         {
             TreeNode objNode = new TreeNode();
