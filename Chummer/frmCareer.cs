@@ -16482,7 +16482,7 @@ namespace Chummer
                     catch (XPathException)
                     {
                     }
-                        intDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
+                    intDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
 
                     strTip = lblDrainAttributes.Text;
 

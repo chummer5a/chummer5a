@@ -983,11 +983,15 @@ namespace Chummer.Backend.Equipment
                         {
                             try
                             {
-                                strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                             }
                             catch (XPathException)
                             {
                                 strReturn = "0";
+                            }
+                            catch (InvalidCastException) // Result is text and not a double
+                            {
+                                strReturn = strCapacity;
                             }
                         }
                     }
@@ -997,7 +1001,7 @@ namespace Chummer.Backend.Equipment
                     if (strSecondHalf.Contains("Rating"))
                     {
                         strSecondHalf = strSecondHalf.Trim("[]".ToCharArray());
-                        strSecondHalf = "[" + Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                        strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
                     }
 
                     strReturn += "/" + strSecondHalf;
@@ -1010,7 +1014,7 @@ namespace Chummer.Backend.Equipment
                     string strCapacity = _strCapacity;
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }

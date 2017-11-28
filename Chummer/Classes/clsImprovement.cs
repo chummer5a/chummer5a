@@ -926,8 +926,7 @@ namespace Chummer
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                decimal decValue = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strReturn), GlobalOptions.InvariantCultureInfo);
-                int intValue = Convert.ToInt32(Math.Floor(decValue));
+                int intValue = Convert.ToInt32(Math.Floor((double)CommonFunctions.EvaluateInvariantXPath(strReturn)));
 
                 //Log.Exit("ValueToInt");
                 return intValue;

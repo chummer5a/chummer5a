@@ -610,12 +610,9 @@ namespace Chummer.Backend.Equipment
                     }
                     strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
                 }*/
-                XmlDocument objDummyDoc = new XmlDocument();
-                XPathNavigator objNav = objDummyDoc.CreateNavigator();
                 try
                 {
-                    XPathExpression objExpression = objNav.Compile(strAvailExpr);
-                    intAvail = Convert.ToInt32(objNav.Evaluate(objExpression));
+                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr));
                 }
                 catch (XPathException)
                 {

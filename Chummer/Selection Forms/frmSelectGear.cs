@@ -1179,10 +1179,10 @@ namespace Chummer
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else
-                                        lblCapacity.Text = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                        lblCapacity.Text = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
                                 }
                                 else
-                                    lblCapacity.Text = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                    lblCapacity.Text = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
                             }
                             if (blnSquareBrackets)
                                 lblCapacity.Text = "[" + lblCapacity.Text + "]";
@@ -1213,11 +1213,15 @@ namespace Chummer
                                     string strCalculatedCapacity = string.Empty;
                                     try
                                     {
-                                        strCalculatedCapacity = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                        strCalculatedCapacity = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
                                     }
                                     catch (XPathException)
                                     {
                                         lblCapacity.Text = "0";
+                                    }
+                                    catch (InvalidCastException) // Result is text and not a double
+                                    {
+                                        lblCapacity.Text = strCapacity;
                                     }
                                     if (!string.IsNullOrEmpty(strCalculatedCapacity))
                                         lblCapacity.Text = strCalculatedCapacity;

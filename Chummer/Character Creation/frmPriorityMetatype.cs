@@ -1555,15 +1555,14 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset.ToString();
             int intValue = 1;
-            object xprEvaluateResult = null;
+            string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                xprEvaluateResult = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
+                intValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce))));
             }
             catch (XPathException) { }
-            if (xprEvaluateResult is double)
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+            catch (InvalidCastException) { } // Result is text and not a double
             intValue += intOffset;
             if (intForce > 0)
             {

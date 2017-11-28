@@ -547,9 +547,7 @@ namespace Chummer
                 }
                 try
                 {
-                    int intTmp;
-                    if (int.TryParse(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))?.ToString(), out intTmp))
-                        lblAvail.Text = intTmp.ToString() + strAvail;
+                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))).ToString() + strAvail;
                 }
                 catch (XPathException)
                 {

@@ -922,10 +922,8 @@ namespace Chummer.Backend.Equipment
                 strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
                 strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
 
-                decimal decCapacity = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity));
-
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
+                string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
 
                 return strReturn;
             }
@@ -995,10 +993,8 @@ namespace Chummer.Backend.Equipment
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                decimal decCapacity = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity));
-
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                string strReturn = decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
+                string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
                 if (blnSquareBrackets)
                     strReturn = "[" + strReturn + "]";
 

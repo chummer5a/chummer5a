@@ -615,9 +615,8 @@ namespace Chummer
                 {
                     intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objDrain.ToString()));
                 }
-                catch (XPathException)
-                {
-                }
+                catch (XPathException) { }
+                catch (InvalidCastException) { } // Result is text and not a double
             }
 
             if (valueText != null || tooltip != null)

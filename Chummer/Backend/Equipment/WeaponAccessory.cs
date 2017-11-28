@@ -678,8 +678,12 @@ namespace Chummer.Backend.Equipment
                     string strCostExpression = _strConceal;
 
                     strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
-                    decimal decConceal = Math.Ceiling(Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strConceal), GlobalOptions.InvariantCultureInfo));
-                    intReturn = Convert.ToInt32(decConceal);
+                    try
+                    {
+                        intReturn = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strConceal)));
+                    }
+                    catch (XPathException) { }
+                    catch (InvalidCastException) { }
                 }
                 else if (!string.IsNullOrEmpty(_strConceal))
                 {

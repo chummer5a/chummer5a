@@ -50,6 +50,7 @@ namespace Chummer
         #endregion
 
         #region XPath Evaluators
+        // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
         static XmlDocument objXPathNavigatorDocument = new XmlDocument();
         static XPathNavigator objXPathNavigator = objXPathNavigatorDocument.CreateNavigator();

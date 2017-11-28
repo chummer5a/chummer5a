@@ -1085,14 +1085,10 @@ namespace Chummer
                     String strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(attribute, ref strInner))
                     {
-                        //Here is some black magic (used way too many places)
-                        //To calculate the int value of a string
-                        //TODO: implement a sane expression evaluator
-                        strInner = strInner.Replace("F", _intForce.ToString());
-                        int value = 0;
+                        int value = 1;
                         try
                         {
-                            value = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner));
+                            value = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString())));
                         }
                         catch (XPathException)
                         {

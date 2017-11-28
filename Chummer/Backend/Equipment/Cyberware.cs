@@ -2063,9 +2063,13 @@ namespace Chummer.Backend.Equipment
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
                     try
                     {
-                        strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     }
                     catch (XPathException)
+                    {
+                        strReturn = "0";
+                    }
+                    catch (InvalidCastException) // Result is text and not a double
                     {
                         strReturn = "0";
                     }
@@ -2073,7 +2077,18 @@ namespace Chummer.Backend.Equipment
                         strReturn = "[" + strCapacity + "]";
 
                     strSecondHalf = strSecondHalf.Trim("[]".ToArray());
-                    strSecondHalf = "[" + Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                    try
+                    {
+                        strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                    }
+                    catch (XPathException)
+                    {
+                        strSecondHalf = "[" + strSecondHalf + "]";
+                    }
+                    catch (InvalidCastException) // Result is text and not a double
+                    {
+                        strSecondHalf = "[" + strSecondHalf + "]";
+                    }
 
                     strReturn += "/" + strSecondHalf;
                 }
@@ -2085,7 +2100,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                    strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }

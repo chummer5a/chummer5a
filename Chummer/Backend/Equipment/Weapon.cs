@@ -1699,25 +1699,17 @@ namespace Chummer.Backend.Equipment
 
             if (!blnDamageReplaced)
             {
-                int intDamage = 0;
                 try
                 {
-                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(
-                                    CommonFunctions.EvaluateInvariantXPath(strDamage),
-                                    GlobalOptions.InvariantCultureInfo))) + intBonus;
+                    int intDamage = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strDamage))) + intBonus;
+                    if (_strName == "Unarmed Attack (Smashing Blow)")
+                        intDamage *= 2;
+                    strDamage = intDamage.ToString(objCulture);
                 }
-                catch (XPathException)
-                {
-                    
-                }
-                catch (OverflowException)
-                {
-                    //Utils.BreakIfDebug();
-                    // decimal > max size when trying to parse text like (Special + 0)
-                }
-                if (_strName == "Unarmed Attack (Smashing Blow)")
-                    intDamage *= 2;
-                strReturn = intDamage.ToString(objCulture) + strDamageType + strDamageExtra;
+                catch (XPathException) { }
+                catch (InvalidCastException) { } // Result is text and not a double
+
+                strReturn = strDamage + strDamageType + strDamageExtra;
             }
             else
             {
@@ -1751,15 +1743,16 @@ namespace Chummer.Backend.Equipment
                 // Replace the division sign with "div" since we're using XPath.
                 strDamage = strDamage.Replace("/", " div ");
 
-                int intDamage = 0;
                 try
                 {
-                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(CommonFunctions.EvaluateInvariantXPath(strDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
+                    int intDamage = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strDamage))) + intBonus;
+                    if (_strName == "Unarmed Attack (Smashing Blow)")
+                        intDamage *= 2;
+                    strDamage = intDamage.ToString(objCulture);
                 }
                 catch (XPathException) { }
-                if (_strName == "Unarmed Attack (Smashing Blow)")
-                    intDamage *= 2;
-                strReturn = intDamage.ToString(objCulture) + strDamageType + strDamageExtra;
+                catch (InvalidCastException) { } // Result is text and not a double
+                strReturn = strDamage + strDamageType + strDamageExtra;
             }
 
             // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.

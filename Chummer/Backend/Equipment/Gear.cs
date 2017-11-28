@@ -1505,8 +1505,7 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                decimal decValue = Math.Ceiling(Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objValue.ToString()), GlobalOptions.InvariantCultureInfo));
-                return Convert.ToInt32(decValue);
+                return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
             }
             int intReturn = 0;
             int.TryParse(strExpression, out intReturn);
@@ -1820,7 +1819,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
                 if (strReturn.Contains("Rating"))
                 {
@@ -1832,10 +1831,10 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                     // This has resulted in a non-whole number, so round it (minimum of 1).
-                    decimal decNumber = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString())), GlobalOptions.InvariantCultureInfo);
-                    if (decNumber < 1)
-                        decNumber = 1;
-                    strReturn = decNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    double dblNumber = (double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()));
+                    if (dblNumber < 1)
+                        dblNumber = 1;
+                    strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
 
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
@@ -1878,7 +1877,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
                     strReturn += "/" + strSecondHalf;
@@ -1893,7 +1892,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                    string strReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -1919,8 +1918,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decReturn;
-
                 string strCostExpression = _strCost;
 
                 if (strCostExpression.StartsWith("FixedValues"))
@@ -1961,7 +1958,7 @@ namespace Chummer.Backend.Equipment
                 objCost.Replace("Parent Cost", string.IsNullOrEmpty(strParentCost) ? "0" : strParentCost);
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
+                decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objCost.ToString()), GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }
         }

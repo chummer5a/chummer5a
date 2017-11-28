@@ -946,10 +946,11 @@ namespace Chummer
         public string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             int intValue = 1;
+            string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                int.TryParse(CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString())).ToString(), out intValue);
+                intValue = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce)));
             }
             catch (XPathException)
             {

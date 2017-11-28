@@ -123,31 +123,26 @@ namespace Chummer.Backend.Attributes
             int intMaxValue = 1;
             int intAugValue = 1;
 
-            object xprEvaluateMinResult = null;
-            object xprEvaluateMaxResult = null;
-            object xprEvaluateAugResult = null;
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                xprEvaluateMinResult = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
+                intMinValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
             }
-            catch (XPathException) { }
+            catch (XPathException) { intMinValue = 1; }
+            catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                xprEvaluateMaxResult = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
+                intMaxValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
             }
-            catch (XPathException) { }
+            catch (XPathException) { intMaxValue = 1; }
+            catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                xprEvaluateAugResult = CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0"));
+                intAugValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
             }
-            catch (XPathException) { }
-            if (xprEvaluateMinResult != null)
-                intMinValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateMinResult.ToString(), GlobalOptions.InvariantCultureInfo)));
-            if (xprEvaluateMaxResult != null)
-                intMaxValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateMaxResult.ToString(), GlobalOptions.InvariantCultureInfo)));
-            if (xprEvaluateAugResult != null)
-                intAugValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateAugResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+            catch (XPathException) { intAugValue = 1; }
+            catch (InvalidCastException) { intAugValue = 1; }
+
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;
         }

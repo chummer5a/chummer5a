@@ -839,15 +839,14 @@ namespace Chummer
         public string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             int intValue = 0;
-            object xprEvaluateResult = null;
+            string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                xprEvaluateResult = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
+                intValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce))));
             }
             catch (XPathException) { }
-            if (xprEvaluateResult != null && xprEvaluateResult.GetType() == typeof(Double))
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(),GlobalOptions.InvariantCultureInfo)));
+            catch (InvalidCastException) { } // Result is text and not a double
             intValue += intOffset;
             if (intForce > 0)
             {
