@@ -847,6 +847,7 @@ namespace Chummer
             }
             catch (XPathException) { }
             catch (OverflowException) { } // Result is text and not a double
+            catch (InvalidCastException) { } // Result is text and not a double
             intValue += intOffset;
             if (intForce > 0)
             {

@@ -1715,6 +1715,7 @@ namespace Chummer.Backend.Equipment
                 }
                 catch (XPathException) { }
                 catch (OverflowException) { } // Result is text and not a double
+                catch (InvalidCastException) { } // Result is text and not a double
 
                 strReturn = strDamage + strDamageType + strDamageExtra;
             }
@@ -1759,6 +1760,7 @@ namespace Chummer.Backend.Equipment
                 }
                 catch (XPathException) { }
                 catch (OverflowException) { } // Result is text and not a double
+                catch (InvalidCastException) { } // Result is text and not a double
                 strReturn = strDamage + strDamageType + strDamageExtra;
             }
 

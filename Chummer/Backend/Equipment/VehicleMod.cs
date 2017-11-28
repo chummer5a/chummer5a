@@ -999,6 +999,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 strReturn = strCapacity;
                             }
+                            catch (InvalidCastException) // Result is text and not a double
+                            {
+                                strReturn = strCapacity;
+                            }
                         }
                     }
                     if (blnSquareBrackets)
@@ -1016,6 +1020,10 @@ namespace Chummer.Backend.Equipment
                             strSecondHalf = "[" + strSecondHalf + "]";
                         }
                         catch (OverflowException) // Result is text and not a double
+                        {
+                            strSecondHalf = "[" + strSecondHalf + "]";
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
                         {
                             strSecondHalf = "[" + strSecondHalf + "]";
                         }

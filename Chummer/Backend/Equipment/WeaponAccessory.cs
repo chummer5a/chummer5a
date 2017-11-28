@@ -690,6 +690,7 @@ namespace Chummer.Backend.Equipment
                     }
                     catch (XPathException) { }
                     catch (OverflowException) { }
+                    catch (InvalidCastException) { }
                 }
                 else if (!string.IsNullOrEmpty(_strConceal))
                 {

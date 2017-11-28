@@ -617,6 +617,7 @@ namespace Chummer
                 }
                 catch (XPathException) { }
                 catch (OverflowException) { } // Result is text and not a double
+                catch (InvalidCastException) { } // Result is text and not a double
             }
 
             if (valueText != null || tooltip != null)

@@ -1192,6 +1192,10 @@ namespace Chummer
                                         {
                                             lblCapacity.Text = strCapacity;
                                         }
+                                        catch (InvalidCastException) // Result is text and not a double
+                                        {
+                                            lblCapacity.Text = strCapacity;
+                                        }
                                     }
                                 }
                                 else
@@ -1205,6 +1209,10 @@ namespace Chummer
                                         lblCapacity.Text = strCapacity;
                                     }
                                     catch (OverflowException) // Result is text and not a double
+                                    {
+                                        lblCapacity.Text = strCapacity;
+                                    }
+                                    catch (InvalidCastException) // Result is text and not a double
                                     {
                                         lblCapacity.Text = strCapacity;
                                     }
@@ -1246,6 +1254,10 @@ namespace Chummer
                                         lblCapacity.Text = strCapacity;
                                     }
                                     catch (OverflowException) // Result is text and not a double
+                                    {
+                                        lblCapacity.Text = strCapacity;
+                                    }
+                                    catch (InvalidCastException) // Result is text and not a double
                                     {
                                         lblCapacity.Text = strCapacity;
                                     }
