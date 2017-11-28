@@ -1490,13 +1490,16 @@ namespace Chummer.Classes
             {
                 Contact selectedContact = selectedContactsList[index];
 
-                if (nodSelect["mademan"] != null)
+                if (nodSelect["forceloyalty"] != null)
                 {
-                    selectedContact.MadeMan = true;
+                    selectedContact.ForceLoyalty = true;
                     CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, SourceName,
-                        Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
+                        Improvement.ImprovementType.ContactForceLoyalty, selectedContact.GUID);
                 }
-
+                if (nodSelect["loyalty"] != null)
+                {
+                    selectedContact.Loyalty = Convert.ToInt32(nodSelect["loyalty"].InnerText);
+                }
                 if (String.IsNullOrWhiteSpace(SelectedValue))
                 {
                     SelectedValue = selectedContact.Name;
@@ -1524,11 +1527,12 @@ namespace Chummer.Classes
             bool group = bonusNode["group"] != null;
             bool free = bonusNode["free"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
-
+            bool forceloyalty = bonusNode["forceloyalty"] != null;
             Contact contact = new Contact(_objCharacter);
             contact.Free = free;
             contact.IsGroup = group;
             contact.Loyalty = loyalty;
+            contact.ForceLoyalty = forceloyalty;
             contact.Connection = connection;
             contact.ReadOnly = !canwrite;
             _objCharacter.Contacts.Add(contact);

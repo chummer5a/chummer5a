@@ -2912,7 +2912,8 @@
       <bonus>
         <mademan />
         <selectcontact>
-          <mademan />
+          <forceloyalty />
+          <loyalty>3</loyalty>
           <type>group</type>
         </selectcontact>
       </bonus>
@@ -10523,6 +10524,7 @@
         <addcontact>
           <loyalty>3</loyalty>
           <connection>5</connection>
+          <forceloyalty />
           <free />
           <group />
         </addcontact>

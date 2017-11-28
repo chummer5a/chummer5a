@@ -295,7 +295,8 @@ namespace Chummer
             MagiciansWayDiscount,
             BurnoutsWay,
             // V This one should always be the last defined enum
-            NumImprovementTypes
+            NumImprovementTypes,
+            ContactForceLoyalty
         }
 
         public enum ImprovementSource

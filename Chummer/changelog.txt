@@ -285,6 +285,7 @@ Application Changes:
 - Players may now alter starting karma and maximum karma-to-nuyen for characters in Create mode alongside altering maximum availability.
 - Fixed a bug where the character sheet viewer screen from printing multiple characters would not allow any open characters to be changed, and would produce a blank sheet if the language was changed.
 - Story Builder will now calculate the runner's age and birth year using the current year + 72 as the present year instead of it being fixed to 2075.
+- Altered behaviour of the Made Man and Prime Datahaven Membership qualities to unbind forcing the Loyalty to 1/3 from being a Group.
 
 Data Changes:
 

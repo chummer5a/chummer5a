@@ -4590,6 +4590,7 @@ namespace Chummer
         private bool _blnBlackmail;
         private bool _blnFamily;
         private bool _readonly;
+        private bool _blnForceLoyalty;
 
         #region Helper Methods
         /// <summary>
@@ -4643,7 +4644,7 @@ namespace Chummer
             objWriter.WriteElementString("colour", _objColour.ToArgb().ToString());
             objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
-            objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
+            objWriter.WriteElementString("forceloyalty", _blnForceLoyalty.ToString());
             objWriter.WriteElementString("family",_blnFamily.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
 
@@ -4692,7 +4693,15 @@ namespace Chummer
             }
 
             if (objNode["readonly"] != null) _readonly = true;
-            objNode.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
+            if (objNode["forceloyalty"] != null)
+            {
+                objNode.TryGetBoolFieldQuickly("forceloyalty", ref _blnForceLoyalty);
+            }
+            else if (objNode["mademan"] != null)
+            {
+                objNode.TryGetBoolFieldQuickly("mademan", ref _blnForceLoyalty);
+            }
+                
         }
 
         /// <summary>
@@ -4718,7 +4727,7 @@ namespace Chummer
             objWriter.WriteElementString("hobbiesvice", _strHobbiesVice);
             objWriter.WriteElementString("personallife", _strPersonalLife);
             objWriter.WriteElementString("type", LanguageManager.GetString("String_" + _objContactType.ToString()));
-            objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
+            objWriter.WriteElementString("forceloyalty", _blnForceLoyalty.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
             objWriter.WriteElementString("family", _blnFamily.ToString());
             if (_objCharacter.Options.PrintNotes)
@@ -4907,23 +4916,23 @@ namespace Chummer
         /// </summary>
         public bool IsGroup
         {
-            get => _blnIsGroup || _blnMadeMan;
+            get => _blnIsGroup;
             set
             {
                 _blnIsGroup = value;
 
-                if (value)
+                if (value && !ForceLoyalty)
                 {
                     _intLoyalty = 1;
                 }
             }
         }
 
-        public bool LoyaltyEnabled => !IsGroup;
+        public bool LoyaltyEnabled => !IsGroup && !ForceLoyalty;
 
         public int ConnectionMaximum => !_objCharacter.Created ? (_objCharacter.FriendsInHighPlaces ? 12 : 6) : 12;
 
-        public string QuickText => $"({Connection}/{(IsGroup ? (MadeMan ? "M" : "G") : Loyalty.ToString())})";
+        public string QuickText => $"({Connection}/{(IsGroup ? $"{Loyalty}G" : Loyalty.ToString())})";
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
@@ -5029,6 +5038,12 @@ namespace Chummer
         {
             get => _blnFamily;
             set => _blnFamily = value;
+        }
+
+        public bool ForceLoyalty
+        {
+            get => _blnForceLoyalty;
+            set => _blnForceLoyalty = value;
         }
 
         #endregion
