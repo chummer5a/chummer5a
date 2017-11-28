@@ -294,9 +294,8 @@ namespace Chummer
             FocusBindingKarmaMultiplier,
             MagiciansWayDiscount,
             BurnoutsWay,
-            // V This one should always be the last defined enum
-            NumImprovementTypes,
-            ContactForceLoyalty
+            ContactForceLoyalty,
+            NumImprovementTypes // <- This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -336,8 +335,7 @@ namespace Chummer
             AIProgram,
             SpiritFettering,
             MentorSpirit,
-            // V This one should always be the last defined enum
-            NumImprovementSources
+            NumImprovementSources // <- This one should always be the last defined enum
         }
 
         private readonly Character _objCharacter = null;
