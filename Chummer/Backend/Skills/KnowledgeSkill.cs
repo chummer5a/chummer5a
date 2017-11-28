@@ -268,8 +268,10 @@ namespace Chummer.Skills
             }
             if (decMultiplier != 1.0m)
                 cost = Convert.ToInt32(Math.Ceiling(cost * decMultiplier));
+
+            intSpecCost = (intSpecCount * intSpecCost);
             if (decSpecCostMultiplier != 1.0m)
-                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCount * intSpecCost * decSpecCostMultiplier));
+                intSpecCost = Convert.ToInt32(Math.Ceiling(intSpecCost * decSpecCostMultiplier));
             cost += intExtra;
             cost += intSpecCost + intExtraSpecCost; //Spec
 

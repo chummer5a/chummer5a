@@ -17505,7 +17505,7 @@ namespace Chummer
                 strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidAttributeExcess").Replace("{0}", (i * -1).ToString());
             }
 
-            i = _objCharacter.Special - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
+            i = _objCharacter.TotalSpecial - CalculateAttributePriorityPoints(_objCharacter.AttributeSection.SpecialAttributeList);
             // Check if the character has gone over on Special Attributes
             if (i < 0)
             {
