@@ -613,7 +613,7 @@ namespace Chummer
             {
                 try
                 {
-                    intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(objDrain.ToString()));
+                    intDrain = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objDrain.ToString())));
                 }
                 catch (XPathException) { }
                 catch (InvalidCastException) { } // Result is text and not a double

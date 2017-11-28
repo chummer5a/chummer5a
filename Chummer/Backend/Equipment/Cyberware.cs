@@ -2067,11 +2067,11 @@ namespace Chummer.Backend.Equipment
                     }
                     catch (XPathException)
                     {
-                        strReturn = "0";
+                        strReturn = strFirstHalf;
                     }
                     catch (InvalidCastException) // Result is text and not a double
                     {
-                        strReturn = "0";
+                        strReturn = strFirstHalf;
                     }
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";

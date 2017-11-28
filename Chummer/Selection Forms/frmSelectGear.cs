@@ -1179,10 +1179,36 @@ namespace Chummer
                                     if (strValues.Length >= Convert.ToInt32(nudRating.Value))
                                         lblCapacity.Text = strValues[Convert.ToInt32(nudRating.Value) - 1];
                                     else
-                                        lblCapacity.Text = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                    {
+                                        try
+                                        {
+                                            lblCapacity.Text = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                        }
+                                        catch (XPathException)
+                                        {
+                                            lblCapacity.Text = strCapacity;
+                                        }
+                                        catch (InvalidCastException) // Result is text and not a double
+                                        {
+                                            lblCapacity.Text = strCapacity;
+                                        }
+                                    }
                                 }
                                 else
-                                    lblCapacity.Text = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                {
+                                    try
+                                    {
+                                        lblCapacity.Text = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                                    }
+                                    catch (XPathException)
+                                    {
+                                        lblCapacity.Text = strCapacity;
+                                    }
+                                    catch (InvalidCastException) // Result is text and not a double
+                                    {
+                                        lblCapacity.Text = strCapacity;
+                                    }
+                                }
                             }
                             if (blnSquareBrackets)
                                 lblCapacity.Text = "[" + lblCapacity.Text + "]";
@@ -1217,7 +1243,7 @@ namespace Chummer
                                     }
                                     catch (XPathException)
                                     {
-                                        lblCapacity.Text = "0";
+                                        lblCapacity.Text = strCapacity;
                                     }
                                     catch (InvalidCastException) // Result is text and not a double
                                     {

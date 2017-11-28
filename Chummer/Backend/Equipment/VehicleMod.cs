@@ -987,7 +987,7 @@ namespace Chummer.Backend.Equipment
                             }
                             catch (XPathException)
                             {
-                                strReturn = "0";
+                                strReturn = strCapacity;
                             }
                             catch (InvalidCastException) // Result is text and not a double
                             {
@@ -1001,7 +1001,18 @@ namespace Chummer.Backend.Equipment
                     if (strSecondHalf.Contains("Rating"))
                     {
                         strSecondHalf = strSecondHalf.Trim("[]".ToCharArray());
-                        strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                        try
+                        {
+                            strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                        }
+                        catch (XPathException)
+                        {
+                            strSecondHalf = "[" + strSecondHalf + "]";
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
+                        {
+                            strSecondHalf = "[" + strSecondHalf + "]";
+                        }
                     }
 
                     strReturn += "/" + strSecondHalf;
