@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
  using System.Net;
  using Application = System.Windows.Forms.Application;
+using System.Text;
 
 namespace Chummer
 {
@@ -106,6 +107,7 @@ namespace Chummer
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
             _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
+            _characterOptions.DontRoundEssenceInternally = chkDontRoundEssenceInternally.Checked;
             _characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
             _characterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
             _characterOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
@@ -151,6 +153,22 @@ namespace Chummer
             _characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
             _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
             _characterOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
+
+            StringBuilder objNuyenFormat = new StringBuilder("#,0");
+            int intNuyenDecimalPlacesMaximum = decimal.ToInt32(nudNuyenDecimalsMaximum.Value);
+            int intNuyenDecimalPlacesAlways = decimal.ToInt32(nudNuyenDecimalsAlways.Value);
+            if (intNuyenDecimalPlacesMaximum > 0)
+            {
+                objNuyenFormat.Append(".");
+                for (int i = 0; i < intNuyenDecimalPlacesMaximum; ++i)
+                {
+                    if (i <= intNuyenDecimalPlacesAlways)
+                        objNuyenFormat.Append("0");
+                    else
+                        objNuyenFormat.Append("#");
+                }
+            }
+            _characterOptions.NuyenFormat = objNuyenFormat.ToString();
 
             // Karma options.
             _characterOptions.KarmaAttribute = decimal.ToInt32(nudKarmaAttribute.Value);
@@ -460,6 +478,10 @@ namespace Chummer
             nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width;
             nudEssenceDecimals.Left = lblEssenceDecimals.Left + lblEssenceDecimals.Width + 6;
 
+            intWidth = Math.Max(lblNuyenDecimalsAlwaysLabel.Width, lblNuyenDecimalsMaximumLabel.Width);
+            nudNuyenDecimalsAlways.Left = lblNuyenDecimalsAlwaysLabel.Left + intWidth + 6;
+            nudNuyenDecimalsMaximum.Left = lblNuyenDecimalsMaximumLabel.Left + intWidth + 6;
+
             txtPDFAppPath.Left = lblPDFAppPath.Left + lblPDFAppPath.Width + 6;
             cmdPDFAppPath.Left = txtPDFAppPath.Left + txtPDFAppPath.Width + 6;
             cmdPDFTest.Left = nudPDFOffset.Left + nudPDFOffset.Width + 6;
@@ -662,6 +684,7 @@ namespace Chummer
 
             cboBuildMethod.SelectedValue = _characterOptions.BuildMethod;
             nudEssenceDecimals.Value = _characterOptions.EssenceDecimals == 0 ? 2 : _characterOptions.EssenceDecimals;
+            chkDontRoundEssenceInternally.Checked = _characterOptions.DontRoundEssenceInternally;
             chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
             chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
             chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
@@ -729,6 +752,21 @@ namespace Chummer
             nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
             txtSettingName.Enabled = cboSetting.SelectedValue.ToString() != "default.xml";
             txtSettingName.Text = _characterOptions.Name;
+
+            int intNuyenDecimalPlacesMaximum = 0;
+            int intNuyenDecimalPlacesAlways = 0;
+            string strNuyenFormat = _characterOptions.NuyenFormat;
+            int intDecimalIndex = strNuyenFormat.IndexOf('.');
+            if (intDecimalIndex != -1)
+            {
+                strNuyenFormat = strNuyenFormat.Substring(intDecimalIndex);
+                intNuyenDecimalPlacesMaximum = strNuyenFormat.Length - 1;
+                intNuyenDecimalPlacesAlways = strNuyenFormat.IndexOf('#') - 1;
+                if (intNuyenDecimalPlacesAlways < 0)
+                    intNuyenDecimalPlacesAlways = intNuyenDecimalPlacesMaximum;
+            }
+            nudNuyenDecimalsMaximum.Value = intNuyenDecimalPlacesMaximum;
+            nudNuyenDecimalsAlways.Value = intNuyenDecimalPlacesAlways;
 
             SetDefaultValueForLimbCount();
             PopulateKarmaFields();
@@ -1486,6 +1524,12 @@ namespace Chummer
                         OptionsChanged(sender, e);
                 }
             }
+        }
+
+        private void nudNuyenDecimalsMaximum_ValueChanged(object sender, EventArgs e)
+        {
+            nudNuyenDecimalsAlways.Maximum = nudNuyenDecimalsMaximum.Value;
+            OptionsChanged(sender, e);
         }
     }
 }

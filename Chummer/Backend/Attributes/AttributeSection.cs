@@ -129,19 +129,19 @@ namespace Chummer.Backend.Attributes
                 intMinValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "min"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
             }
             catch (XPathException) { intMinValue = 1; }
-            catch (InvalidCastException) { intMinValue = 1; }
+            catch (OverflowException) { intMinValue = 1; }
             try
             {
                 intMaxValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "max"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
             }
             catch (XPathException) { intMaxValue = 1; }
-            catch (InvalidCastException) { intMaxValue = 1; }
+            catch (OverflowException) { intMaxValue = 1; }
             try
             {
                 intAugValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objCharacterNode[strAttributeLower + "aug"]?.InnerText.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1")));
             }
             catch (XPathException) { intAugValue = 1; }
-            catch (InvalidCastException) { intAugValue = 1; }
+            catch (OverflowException) { intAugValue = 1; }
 
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;

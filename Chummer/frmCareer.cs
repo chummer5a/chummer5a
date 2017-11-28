@@ -1900,7 +1900,7 @@ namespace Chummer
 
         private void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
         {
-            frmSelectNumber frmPickNumber = new frmSelectNumber(false);
+            frmSelectNumber frmPickNumber = new frmSelectNumber(0);
             frmPickNumber.Description = LanguageManager.GetString("String_CloningMachineNumber");
             frmPickNumber.Minimum = 1;
             frmPickNumber.ShowDialog(this);
@@ -3663,7 +3663,7 @@ namespace Chummer
                 }
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveEnemy") + " " + objSender.ContactName, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaCost;
@@ -3769,7 +3769,7 @@ namespace Chummer
                 }
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(FetteringCost * -1,
                     LanguageManager.GetString("String_ExpenseFetteredSpirit") + " " + thisSpirit.Name,
                     ExpenseType.Karma, DateTime.Now);
@@ -4134,7 +4134,7 @@ namespace Chummer
             if (!objSpell.FreeBonus)
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(-intSpellKarmaCost, LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
                 _objCharacter.Karma -= intSpellKarmaCost;
@@ -4480,7 +4480,7 @@ namespace Chummer
             treComplexForms.Nodes[0].Expand();
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(intComplexFormKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intComplexFormKarmaCost;
@@ -4551,7 +4551,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -4710,7 +4710,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -5037,7 +5037,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -5138,7 +5138,7 @@ namespace Chummer
                     // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                     if (objMod.Name == "Obsolete" || (objMod.Name == "Obsolescent" && _objOptions.AllowObsolescentUpgrade))
                     {
-                        frmSelectNumber frmModPercent = new frmSelectNumber();
+                        frmSelectNumber frmModPercent = new frmSelectNumber(2);
                         frmModPercent.Minimum = 0;
                         frmModPercent.Maximum = 1000000;
                         frmModPercent.Description = LanguageManager.GetString("String_Retrofit");
@@ -5170,7 +5170,7 @@ namespace Chummer
                         treVehicles.SelectedNode.Parent.Nodes.Add(objTreeNode);
 
                         // Create an Expense Log Entry for removing the Obsolete Mod.
-                        ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                        ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                         objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit").Replace("{0}", objVehicle.DisplayName), ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5310,7 +5310,7 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsMartialArts;
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt") + " " + frmPickMartialArt.SelectedMartialArt, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
@@ -5438,7 +5438,7 @@ namespace Chummer
             treMartialArts.SelectedNode = objNode;
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnManeuver") + " " + objManeuver.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
@@ -5598,7 +5598,7 @@ namespace Chummer
                 }
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
@@ -5614,7 +5614,7 @@ namespace Chummer
 
                 if (chkInitiationSchooling.Checked)
                 {
-                    ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(_objCharacter);
                     objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objNuyenExpense);
                     _objCharacter.Nuyen -= 10000;
@@ -5681,7 +5681,7 @@ namespace Chummer
                     return;
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade") + " " + _objCharacter.SubmersionGrade.ToString() + " -> " + (_objCharacter.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
@@ -5777,7 +5777,7 @@ namespace Chummer
                 return;
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
             _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5791,7 +5791,7 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry();
+                objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(frmNewExpense.Amount * 2000 * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5827,7 +5827,7 @@ namespace Chummer
             }
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
             _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5841,7 +5841,7 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry();
+                objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(frmNewExpense.Amount * 2000.0m, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5875,7 +5875,7 @@ namespace Chummer
                 return;
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
             objEntry.Refund = frmNewExpense.Refund;
             _objCharacter.ExpenseEntries.Add(objEntry);
@@ -5890,7 +5890,7 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry();
+                objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(frmNewExpense.Amount / 2000.0m * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5926,7 +5926,7 @@ namespace Chummer
             }
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
             _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -5940,7 +5940,7 @@ namespace Chummer
             if (frmNewExpense.KarmaNuyenExchange)
             {
                 // Create the Expense Log Entry.
-                objEntry = new ExpenseLogEntry();
+                objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(frmNewExpense.Amount / 2000.0m, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -6000,7 +6000,7 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle") + " " + objLifestyle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Nuyen -= decAmount;
@@ -6060,7 +6060,7 @@ namespace Chummer
             }
             if (objPower.Karma > 0)
             {
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower") + " " + objPower.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
 
@@ -6170,7 +6170,7 @@ namespace Chummer
                     return;
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseComplexForm") + " " + objProgram.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaCost;
@@ -6259,7 +6259,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
+            frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
             decimal decMinValue = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
             frmPickNumber.Minimum = decMinValue;
             frmPickNumber.Maximum = objSelectedGear.Quantity - decMinValue;
@@ -6363,7 +6363,7 @@ namespace Chummer
 
             Gear objSelectedGear = CommonFunctions.DeepFindById(frmPickItem.SelectedItem, _objCharacter.Gear);
 
-            frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
+            frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
             frmPickNumber.Minimum = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
             frmPickNumber.Maximum = objGear.Quantity;
             frmPickNumber.Description = LanguageManager.GetString("String_MergeGear");
@@ -6453,7 +6453,7 @@ namespace Chummer
                 decMove = decMinAmount;
             else
             {
-                frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
+                frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
                 frmPickNumber.Minimum = decMinAmount;
                 frmPickNumber.Maximum = objSelectedGear.Quantity;
                 frmPickNumber.Description = LanguageManager.GetString("String_MoveGear");
@@ -6636,7 +6636,7 @@ namespace Chummer
                     decMove = decMinAmount;
                 else
                 {
-                    frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency");
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
                     frmPickNumber.Minimum = decMinAmount;
                     frmPickNumber.Maximum = objSelectedGear.Quantity;
                     frmPickNumber.Description = LanguageManager.GetString("String_MoveGear");
@@ -6832,7 +6832,7 @@ namespace Chummer
                 if (blnAddItem && objQuality.ContributeToBP)
                 {
                     // Create the Karma expense.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Karma -= intKarmaCost;
@@ -6850,7 +6850,7 @@ namespace Chummer
                 if (blnAddItem)
                 {
                     // Create a Karma Expense for the Negative Quality.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
 
@@ -7031,7 +7031,7 @@ namespace Chummer
                 if (blnAddItem)
                 {
                     // Create the Karma expense.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort), ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Karma -= intKarmaCost;
@@ -7061,7 +7061,7 @@ namespace Chummer
                     if (blnAddItem)
                     {
                         // Create the Karma expense.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseSwapNegativeQuality").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", objNewQuality.DisplayNameShort), ExpenseType.Karma, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Karma -= intKarmaCost;
@@ -7186,7 +7186,7 @@ namespace Chummer
                     if (!_objCharacter.Options.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
                         intKarmaCost *= 2;
 
-                    ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                     objEntry.Create(intKarmaCost, LanguageManager.GetString("String_ExpenseSwapPositiveQuality").Replace("{0}", objSelectedQuality.DisplayNameShort).Replace("{1}", LanguageManager.GetString("String_Karma")), ExpenseType.Karma, DateTime.Now, true);
                     _objCharacter.ExpenseEntries.Add(objEntry);
                     _objCharacter.Karma += intKarmaCost;
@@ -7245,7 +7245,7 @@ namespace Chummer
                 }
 
                 // Create the Karma expense.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + " " + objSelectedQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaCost;
@@ -7422,7 +7422,7 @@ namespace Chummer
                         else if (objQuality.ContributeToBP && (objQuality.BP == 0 || ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", objQuality.DisplayNameShort).Replace("{1}", intKarmaCost.ToString()))))
                         {
                             // Create the Karma expense.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                             _objCharacter.ExpenseEntries.Add(objExpense);
                             _objCharacter.Karma -= intKarmaCost;
@@ -7438,7 +7438,7 @@ namespace Chummer
                         if (MessageBox.Show(LanguageManager.GetString("Message_AddNegativeQuality"), LanguageManager.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             // Create a Karma Expense for the Negative Quality.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                             objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality") + " " + objQuality.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                             _objCharacter.ExpenseEntries.Add(objExpense);
 
@@ -8220,7 +8220,7 @@ namespace Chummer
             if (treSpells.SelectedNode == null || treSpells.SelectedNode.Level != 1)
                 return;
 
-            frmSelectNumber frmPickNumber = new frmSelectNumber(false);
+            frmSelectNumber frmPickNumber = new frmSelectNumber(0);
             frmPickNumber.Description = LanguageManager.GetString("String_QuickeningKarma").Replace("{0}", treSpells.SelectedNode.Text);
             frmPickNumber.Minimum = 1;
             frmPickNumber.ShowDialog(this);
@@ -8240,7 +8240,7 @@ namespace Chummer
                 return;
 
             // Create the Karma expense.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseQuickenMetamagic") + " " + treSpells.SelectedNode.Text, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
@@ -8445,7 +8445,13 @@ namespace Chummer
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
-                    frmSelectNumber frmPickNumber = new frmSelectNumber();
+                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                     if (decMax > 1000000)
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;
@@ -8488,7 +8494,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -8565,7 +8571,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -8690,7 +8696,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -8883,7 +8889,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -8979,7 +8985,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -9040,7 +9046,7 @@ namespace Chummer
                     else
                     {
                         // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + " " + frmPickVehicleMod.WeaponMount.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen -= decCost;
@@ -9173,7 +9179,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -9265,7 +9271,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -9339,7 +9345,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 if (treMartialArts.SelectedNode.Nodes.Count > 1)
                 {
-                    ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                    ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                     objEntry.Create(_objOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique") + " " + frmPickMartialArtAdvantage.SelectedAdvantage, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objEntry);
                     _objCharacter.Karma -= _objOptions.KarmaManeuver;
@@ -9463,7 +9469,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -9640,7 +9646,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -10052,7 +10058,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = objCyberware.TotalCost * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         string strEntry = string.Empty;
                         if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                             strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
@@ -10092,7 +10098,7 @@ namespace Chummer
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                         decAmount += CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
                         objExpense.Create(decAmount, strEntry + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
@@ -10141,7 +10147,7 @@ namespace Chummer
                     // Create the Expense Log Entry for the sale.
                     decimal decAmount = objArmor.TotalCost * frmSell.SellPercent;
                     decAmount += CommonFunctions.DeleteArmor(_objCharacter, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
@@ -10164,7 +10170,7 @@ namespace Chummer
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = (decOriginal - objMod.Parent.TotalCost) * frmSell.SellPercent;
                         decAmount += CommonFunctions.DeleteArmor(_objCharacter, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
@@ -10196,7 +10202,7 @@ namespace Chummer
                             decNewCost = objArmor.TotalCost;
                         decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
                         decAmount += CommonFunctions.DeleteArmor(_objCharacter, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
@@ -10230,7 +10236,7 @@ namespace Chummer
                         decNewCost = objArmor.TotalCost;
                     decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
                     decAmount += CommonFunctions.DeleteArmor(_objCharacter, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
@@ -10286,7 +10292,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry for the sale.
                     decimal decAmount = (objWeapon.TotalCost + CommonFunctions.DeleteWeapon(_objCharacter, objWeapon, treWeapons, treVehicles)) * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
@@ -10337,7 +10343,7 @@ namespace Chummer
                         {
                             decAmount += CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
                         }
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
@@ -10367,7 +10373,7 @@ namespace Chummer
 
                         decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                         decAmount += CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
@@ -10402,7 +10408,7 @@ namespace Chummer
                     // Create the Expense Log Entry for the sale.
                     decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                     decAmount += CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
@@ -10483,7 +10489,7 @@ namespace Chummer
                             decAmount += CommonFunctions.DeleteCyberware(_objCharacter, objLoopCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                     }
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle") + " " + objVehicle.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen += decAmount;
@@ -10528,7 +10534,7 @@ namespace Chummer
                         {
                             decAmount += CommonFunctions.DeleteCyberware(_objCharacter, objLoopCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
                         }
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objExpense);
                         _objCharacter.Nuyen += decAmount;
@@ -10565,7 +10571,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry for the sale.
                             decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                             _objCharacter.ExpenseEntries.Add(objExpense);
                             _objCharacter.Nuyen += decAmount;
@@ -10595,7 +10601,7 @@ namespace Chummer
                                 {
                                     decAmount += CommonFunctions.DeleteGear(_objCharacter, objLoopGear, treWeapons, treVehicles) * frmSell.SellPercent;
                                 }
-                                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                                 objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory") + " " + objWeaponAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                                 _objCharacter.ExpenseEntries.Add(objExpense);
                                 _objCharacter.Nuyen += decAmount;
@@ -10627,7 +10633,7 @@ namespace Chummer
                                     // Create the Expense Log Entry for the sale.
                                     decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                     decAmount += CommonFunctions.DeleteCyberware(_objCharacter, objCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
-                                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware") + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                                     _objCharacter.ExpenseEntries.Add(objExpense);
                                     _objCharacter.Nuyen += decAmount;
@@ -10671,7 +10677,7 @@ namespace Chummer
                                         // Create the Expense Log Entry for the sale.
                                         decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                         decAmount += CommonFunctions.DeleteGear(_objCharacter, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
-                                        ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                                         _objCharacter.ExpenseEntries.Add(objExpense);
                                         _objCharacter.Nuyen += decAmount;
@@ -10927,7 +10933,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon") + " " + objWeapon.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -10986,7 +10992,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -11070,7 +11076,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -11121,7 +11127,7 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objItem = lstKarma.SelectedItems[0];
 
             // Find the selected Karma Expense.
@@ -11630,7 +11636,7 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objItem = lstNuyen.SelectedItems[0];
 
             // Find the selected Nuyen Expense.
@@ -12980,7 +12986,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     string strEntry = string.Empty;
                     strEntry = LanguageManager.GetString("String_ExpensePurchaseVehicleCyberware");
                     objExpense.Create(decCost * -1, strEntry + " " + objCyberware.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
@@ -13233,7 +13239,7 @@ namespace Chummer
             treSpells.SelectedNode = objNode;
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create(intSpellKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnSpell") + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objEntry);
             _objCharacter.Karma -= intSpellKarmaCost;
@@ -13467,7 +13473,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -13626,7 +13632,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -13754,7 +13760,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -13898,7 +13904,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -14130,7 +14136,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -14256,7 +14262,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -16772,7 +16778,7 @@ namespace Chummer
                 }
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + " " + objSelectedFocus.DisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
@@ -16863,7 +16869,7 @@ namespace Chummer
                 }
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + " " + LanguageManager.GetString("String_StackedFocus") + " " + objStack.Name, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
@@ -16907,7 +16913,7 @@ namespace Chummer
                     return;
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
@@ -16975,7 +16981,7 @@ namespace Chummer
                     return;
 
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade") + " " + _objCharacter.SubmersionGrade.ToString() + " -> " + (_objCharacter.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Karma -= intKarmaExpense;
@@ -17268,7 +17274,7 @@ namespace Chummer
                     }
 
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Karma -= intKarmaExpense;
@@ -17312,7 +17318,7 @@ namespace Chummer
                     }
 
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Karma -= intKarmaExpense;
@@ -17429,7 +17435,7 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
 
             // Find the selected Karma Expense.
             foreach (ExpenseLogEntry objCharacterEntry in _objCharacter.ExpenseEntries)
@@ -17491,7 +17497,7 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
 
             // Find the selected Nuyen Expense.
             foreach (ExpenseLogEntry objCharacterEntry in _objCharacter.ExpenseEntries)
@@ -18659,8 +18665,11 @@ namespace Chummer
             if (!_objCharacter.RefreshRedliner())
                 RefreshSelectedCyberware();
 
-            decimal decESS = decimal.Round(_objCharacter.Essence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-            lblESSMax.Text = decESS.ToString(GlobalOptions.CultureInfo);
+            decimal decESS = _objCharacter.Essence;
+            decimal decRoundedESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                decESS = decRoundedESS;
+            lblESSMax.Text = decRoundedESS.ToString(GlobalOptions.CultureInfo);
             tssEssence.Text = lblESSMax.Text;
 
             lblCyberwareESS.Text =
@@ -18676,7 +18685,10 @@ namespace Chummer
             // Reduce a character's MAG and RES from Essence Loss.
             int intMetatypeMaximumESS = _objCharacter.ESS.MetatypeMaximum;
             int intReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
-            int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decimal.Round(_objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero)));
+            decimal decESSMag = _objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG;
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                decESSMag = decimal.Round(decESSMag, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+            int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
 
             // Remove any Improvements from MAG and RES from Essence Loss.
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
@@ -19126,8 +19138,8 @@ namespace Chummer
             }
 
             // Update the Nuyen and Karma for the character.
-            tssNuyen.Text = $"{_objCharacter.Nuyen:#,0.00¥}";
-            lblRemainingNuyen.Text = $"{_objCharacter.Nuyen:#,0.00¥}";
+            tssNuyen.Text = _objCharacter.Nuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblRemainingNuyen.Text = _objCharacter.Nuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             PopulateExpenseList();
 
@@ -19173,7 +19185,7 @@ namespace Chummer
             lblCareerKarma.Text = _objCharacter.CareerKarma.ToString();
 
             // Career Nuyen.
-            lblCareerNuyen.Text = $"{_objCharacter.CareerNuyen:#,0.00¥}";
+            lblCareerNuyen.Text = _objCharacter.CareerNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             // Update Damage Resistance Pool.
             lblCMDamageResistancePool.Text =
@@ -19335,7 +19347,7 @@ namespace Chummer
                 }
 
                 lblCyberwareAvail.Text = objCyberware.TotalAvail;
-                lblCyberwareCost.Text = $"{objCyberware.TotalCost:#,0.00¥}";
+                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
                                             objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " +
                                             LanguageManager.GetString("String_Remaining") + ")";
@@ -19395,7 +19407,7 @@ namespace Chummer
                     lblCyberwareName.Text = objGear.DisplayNameShort;
                     lblCyberwareCategory.Text = objGear.DisplayCategory;
                     lblCyberwareAvail.Text = objGear.TotalAvail(true);
-                    lblCyberwareCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                    lblCyberwareCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
                                                 " " + LanguageManager.GetString("String_Remaining") + ")";
                     lblCyberwareEssence.Text = "0";
@@ -19659,7 +19671,7 @@ namespace Chummer
                 lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                 lblWeaponAvail.Text = objWeapon.TotalAvail;
-                lblWeaponCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                lblWeaponCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
                 lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
@@ -19712,7 +19724,7 @@ namespace Chummer
                     }
 
                     lblWeaponAvail.Text = objWeapon.TotalAvail;
-                    lblWeaponCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                    lblWeaponCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                     lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
                     lblWeaponRC.Text = objWeapon.TotalRC;
@@ -19827,7 +19839,7 @@ namespace Chummer
                         lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory");
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail;
                         lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy.ToString();
-                        lblWeaponCost.Text = $"{objSelectedAccessory.TotalCost:#,0.00¥}";
+                        lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
                         lblWeaponDamage.Text = string.Empty;
                         lblWeaponRC.Text = objSelectedAccessory.RC;
@@ -19890,7 +19902,7 @@ namespace Chummer
                             lblWeaponName.Text = objGear.DisplayNameShort;
                             lblWeaponCategory.Text = objGear.DisplayCategory;
                             lblWeaponAvail.Text = objGear.TotalAvail(true);
-                            lblWeaponCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                            lblWeaponCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy.ToString();
                             lblWeaponConceal.Text = string.Empty;
                             lblWeaponDamage.Text = string.Empty;
@@ -20001,7 +20013,7 @@ namespace Chummer
                 lblArmorAvail.Text = objArmor.TotalAvail;
                 lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                 lblArmorRating.Text = string.Empty;
-                lblArmorCost.Text = $"{objArmor.TotalCost:#,0.00¥}";
+                lblArmorCost.Text = objArmor.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strBook = _objOptions.LanguageBookShort(objArmor.Source);
                 string strPage = objArmor.Page;
                 lblArmorSource.Text = strBook + " " + strPage;
@@ -20035,7 +20047,7 @@ namespace Chummer
                     }
                     if (!string.IsNullOrEmpty(objSelectedMod.GearCapacity))
                         lblArmorCapacity.Text = objSelectedMod.GearCapacity + "/" + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
-                    lblArmorCost.Text = $"{objSelectedMod.TotalCost:#,0.00¥}";
+                    lblArmorCost.Text = objSelectedMod.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
                     string strPage = objSelectedMod.Page;
@@ -20073,7 +20085,7 @@ namespace Chummer
                                 lblArmorCapacity.Text = "[1]";
                         }
                     }
-                    lblArmorCost.Text = $"{objSelectedGear.TotalCost:#,0.00¥}";
+                    lblArmorCost.Text = objSelectedGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
                     string strPage = objSelectedGear.Page;
                     lblArmorSource.Text = strBook + " " + strPage;
@@ -20102,7 +20114,7 @@ namespace Chummer
                 lblArmorValue.Text = string.Empty;
                 lblArmorAvail.Text = objSelectedGear.TotalAvail(true);
                 lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                lblArmorCost.Text = $"{objSelectedGear.TotalCost:#,0.00¥}";
+                lblArmorCost.Text = objSelectedGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
                 string strPage = objSelectedGear.Page;
                 lblArmorSource.Text = strBook + " " + strPage;
@@ -20171,7 +20183,7 @@ namespace Chummer
                     lblGearAvail.Text = objGear.TotalAvail(true);
                     try
                     {
-                        lblGearCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                        lblGearCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
                     catch (FormatException)
                     {
@@ -20694,7 +20706,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     string strEntry = string.Empty;
                     if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                         strEntry = LanguageManager.GetString("String_ExpensePurchaseCyberware");
@@ -20977,7 +20989,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -21226,7 +21238,7 @@ namespace Chummer
                 else
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear") + " " + objNewGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
@@ -21335,13 +21347,13 @@ namespace Chummer
                 if (objLifestyle == null)
                     return;
 
-                lblLifestyleCost.Text = $"{objLifestyle.TotalMonthlyCost:#,0.00¥}";
+                lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
                 string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
                 string strPage = objLifestyle.Page;
                 lblLifestyleSource.Text = strBook + " " + strPage;
                 tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.GetString("String_Page") + " " + objLifestyle.Page);
-                //lblLifestyleTotalCost.Text = String.Format("= {0:#,0.00¥}", objLifestyle.TotalCost);
+                //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 // Change the Cost/Month label.
                 if (objLifestyle.StyleType == LifestyleType.Safehouse)
@@ -21625,7 +21637,7 @@ namespace Chummer
                 lblVehicleName.Text = objVehicle.DisplayNameShort;
                 lblVehicleCategory.Text = objVehicle.DisplayCategory;
                 lblVehicleAvail.Text = objVehicle.CalculatedAvail;
-                lblVehicleCost.Text = $"{objVehicle.TotalCost:#,0.00¥}";
+                lblVehicleCost.Text = objVehicle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
                 lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
@@ -21803,7 +21815,7 @@ namespace Chummer
                     lblVehicleName.Text = objMod.DisplayNameShort;
                     lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
                     lblVehicleAvail.Text = objMod.TotalAvail;
-                    lblVehicleCost.Text = $"{objMod.TotalCost:#,0.00¥}";
+                    lblVehicleCost.Text = objMod.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblVehicleHandling.Text = string.Empty;
                     lblVehicleAccel.Text = string.Empty;
                     lblVehicleSpeed.Text = string.Empty;
@@ -21839,7 +21851,7 @@ namespace Chummer
                         lblVehicleName.Text = objGear.DisplayNameShort;
                         lblVehicleCategory.Text = objGear.DisplayCategory;
                         lblVehicleAvail.Text = objGear.TotalAvail(true);
-                        lblVehicleCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -21980,7 +21992,7 @@ namespace Chummer
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
-                        lblVehicleCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -22045,7 +22057,7 @@ namespace Chummer
                     lblVehicleName.Text = objGear.DisplayNameShort;
                     lblVehicleCategory.Text = objGear.DisplayCategory;
                     lblVehicleAvail.Text = objGear.TotalAvail(true);
-                    lblVehicleCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                    lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblVehicleHandling.Text = string.Empty;
                     lblVehicleAccel.Text = string.Empty;
                     lblVehicleSpeed.Text = string.Empty;
@@ -22170,7 +22182,7 @@ namespace Chummer
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
-                        lblVehicleCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -22220,7 +22232,7 @@ namespace Chummer
                             lblVehicleName.Text = objCyberware.DisplayNameShort;
                             lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
                             lblVehicleAvail.Text = objCyberware.TotalAvail;
-                            lblVehicleCost.Text = $"{objCyberware.TotalCost:#,0.00¥}";
+                            lblVehicleCost.Text = objCyberware.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             lblVehicleHandling.Text = string.Empty;
                             lblVehicleAccel.Text = string.Empty;
                             lblVehicleSpeed.Text = string.Empty;
@@ -22261,7 +22273,7 @@ namespace Chummer
                     lblVehicleName.Text = objGear.DisplayNameShort;
                     lblVehicleCategory.Text = objGear.DisplayCategory;
                     lblVehicleAvail.Text = objGear.TotalAvail(true);
-                    lblVehicleCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                    lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblVehicleHandling.Text = string.Empty;
                     lblVehicleAccel.Text = string.Empty;
                     lblVehicleSpeed.Text = string.Empty;
@@ -22301,7 +22313,7 @@ namespace Chummer
                         lblVehicleName.Text = objAccessory.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory");
                         lblVehicleAvail.Text = objAccessory.TotalAvail;
-                        lblVehicleCost.Text = $"{objAccessory.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objAccessory.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -22466,7 +22478,7 @@ namespace Chummer
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                             lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                             lblVehicleAvail.Text = objWeapon.TotalAvail;
-                        lblVehicleCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -22535,7 +22547,7 @@ namespace Chummer
                     ListViewItem objItem = new ListViewItem();
                     objItem.Text = objExpense.Date.ToShortDateString() + " " + objExpense.Date.ToShortTimeString();
                     ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem();
-                    objAmountItem.Text = objExpense.Amount.ToString(objExpense.Type == ExpenseType.Nuyen ? "#,0.00" : "#,0.##", GlobalOptions.CultureInfo);
+                    objAmountItem.Text = objExpense.Amount.ToString(objExpense.Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", GlobalOptions.CultureInfo);
                     ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem();
                     objReasonItem.Text = objExpense.Reason;
                     ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem();
@@ -24121,7 +24133,7 @@ namespace Chummer
             else
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry();
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite") + " " + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objExpense);
                 _objCharacter.Nuyen -= decCost;
@@ -24318,7 +24330,7 @@ namespace Chummer
                 return;
 
             // Create the Karma expense.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry();
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_PowerPoint"), ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objExpense);
             _objCharacter.Karma -= intKarmaCost;
@@ -24426,7 +24438,7 @@ namespace Chummer
             if (blnPayWithKarma)
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(_objOptions.KarmaMetamagic * -1, strType + " " + frmPickMetamagic.SelectedMetamagic, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -24503,7 +24515,7 @@ namespace Chummer
             if (blnPayWithKarma)
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(_objOptions.KarmaMetamagic * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -24595,7 +24607,7 @@ namespace Chummer
             if (blnPayWithKarma)
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(-intSpellKarmaCost, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -24700,7 +24712,7 @@ namespace Chummer
             if (blnPayWithKarma)
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(-intSpellKarmaCost, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -24916,7 +24928,7 @@ namespace Chummer
             if (blnPayWithKarma)
             {
                 // Create the Expense Log Entry.
-                ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                 objEntry.Create(_objOptions.KarmaEnhancement * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -25184,7 +25196,7 @@ namespace Chummer
             treAIPrograms.Nodes[0].Expand();
 
             // Create the Expense Log Entry.
-            ExpenseLogEntry objEntry = new ExpenseLogEntry();
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram") + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objEntry);
             _objCharacter.Karma -= (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost);

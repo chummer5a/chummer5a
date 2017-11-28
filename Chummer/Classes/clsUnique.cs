@@ -196,7 +196,7 @@ namespace Chummer
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(false);
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(0);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;

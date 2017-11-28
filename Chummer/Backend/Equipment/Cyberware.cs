@@ -197,7 +197,13 @@ namespace Chummer.Backend.Equipment
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -810,8 +816,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ess", CalculatedESS().ToString(objCulture));
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             if (_objCharacter.Options != null)
             {
                 objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
@@ -2069,7 +2075,7 @@ namespace Chummer.Backend.Equipment
                     {
                         strReturn = strFirstHalf;
                     }
-                    catch (InvalidCastException) // Result is text and not a double
+                    catch (OverflowException) // Result is text and not a double
                     {
                         strReturn = strFirstHalf;
                     }
@@ -2085,7 +2091,7 @@ namespace Chummer.Backend.Equipment
                     {
                         strSecondHalf = "[" + strSecondHalf + "]";
                     }
-                    catch (InvalidCastException) // Result is text and not a double
+                    catch (OverflowException) // Result is text and not a double
                     {
                         strSecondHalf = "[" + strSecondHalf + "]";
                     }
@@ -2220,7 +2226,7 @@ namespace Chummer.Backend.Equipment
             }
             decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 
-            if (_objCharacter != null)
+            if (_objCharacter != null && !_objCharacter.Options.DontRoundEssenceInternally)
                 decReturn = decimal.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             decReturn += _objChildren.Where(objChild => objChild.AddToParentESS).AsParallel().Sum(objChild => objChild.CalculatedESS());
             return decReturn;

@@ -587,7 +587,7 @@ namespace Chummer
                 decimal decItemCost = 0.0m;
                 if (chkFreeItem.Checked)
                 {
-                    lblCost.Text = $"{0:#,0.00¥}";
+                    lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     decItemCost = 0;
                 }
                 else if (xmlCostElement.InnerText.StartsWith("Variable"))
@@ -606,10 +606,10 @@ namespace Chummer
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{decMin:#,0.00¥+}";
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                     }
                     else
-                        lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     decItemCost = decMin;
                 }
@@ -621,7 +621,7 @@ namespace Chummer
                     {
                         decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{decItemCost:#,0.00¥}";
+                    lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 else
                 {
@@ -631,7 +631,7 @@ namespace Chummer
                     {
                         decItemCost *= 0.9m;
                     }
-                    lblCost.Text = $"{decItemCost:#,0.00¥}";
+                    lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
 
                 lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;

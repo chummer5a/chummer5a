@@ -125,7 +125,13 @@ namespace Chummer.Backend.Equipment
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -337,8 +343,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("slots", _strSlots);
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("page", Page);
@@ -989,7 +995,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 strReturn = strCapacity;
                             }
-                            catch (InvalidCastException) // Result is text and not a double
+                            catch (OverflowException) // Result is text and not a double
                             {
                                 strReturn = strCapacity;
                             }
@@ -1009,7 +1015,7 @@ namespace Chummer.Backend.Equipment
                         {
                             strSecondHalf = "[" + strSecondHalf + "]";
                         }
-                        catch (InvalidCastException) // Result is text and not a double
+                        catch (OverflowException) // Result is text and not a double
                         {
                             strSecondHalf = "[" + strSecondHalf + "]";
                         }

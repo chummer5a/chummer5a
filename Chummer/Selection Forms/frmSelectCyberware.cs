@@ -785,7 +785,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = $"{0:#,0.00¥}";
+                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else if (objXmlCyberware["cost"] != null)
             {
@@ -811,7 +811,9 @@ namespace Chummer
                     else
                         decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                    lblCost.Text = decMax == decimal.MaxValue ? $"{decMin:#,0.00¥+}" : $"{decMin:#,0.00} - {decMax:#,0.00¥}";
+                    lblCost.Text = decMax == decimal.MaxValue ?
+                        decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+" :
+                        decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     decItemCost = decMin;
                 }
@@ -843,16 +845,16 @@ namespace Chummer
                             decItemCost *= 0.9m;
                         }
 
-                        lblCost.Text = $"{decItemCost:#,0.00¥}";
+                        lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
                     catch (XPathException)
                     {
-                        lblCost.Text = $"{strCost:#,0.00¥}";
+                        lblCost.Text = strCost + '¥';
                     }
                 }
             }
             else
-                lblCost.Text = $"{decItemCost:#,0.00¥}";
+                lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             // Test required to find the item.
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
@@ -889,10 +891,9 @@ namespace Chummer
                     if (decimal.ToInt32(nudRating.Value) > 0)
                     strEss = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
-                decESS =
-                    decimal.Round(
-                        Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo) *
-                        decCharacterESSModifier, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+                decESS = decCharacterESSModifier * Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
+                if (!_objCharacter.Options.DontRoundEssenceInternally)
+                    decESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
             }
             lblEssence.Text = decESS.ToString(GlobalOptions.CultureInfo);
             if (objXmlCyberware["addtoparentess"] != null)

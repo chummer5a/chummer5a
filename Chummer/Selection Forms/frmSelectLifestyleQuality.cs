@@ -170,7 +170,7 @@ namespace Chummer
                             decCost = 0.0m;
                         }
                     }
-                    lblCost.Text = decCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;

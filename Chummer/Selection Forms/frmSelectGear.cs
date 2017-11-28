@@ -1090,7 +1090,7 @@ namespace Chummer
                                 decCost *= 0.9m;
                             if (chkHacked.Checked)
                                 decCost *= 0.1m;
-                            lblCost.Text = String.Format("{0:#,0.00¥}", decCost * _intCostMultiplier);
+                            lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             decItemCost = decCost;
                         }
                         catch (XPathException)
@@ -1100,7 +1100,7 @@ namespace Chummer
                             if (decimal.TryParse(objCostNode.InnerText, out decTemp))
                             {
                                 decItemCost = decTemp;
-                                lblCost.Text = String.Format("{0:#,0.00¥}", decItemCost * _intCostMultiplier);
+                                lblCost.Text = (decItemCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             }
                         }
 
@@ -1116,7 +1116,7 @@ namespace Chummer
                                 decCost *= 0.9m;
                             if (chkHacked.Checked)
                                 decCost *= 0.1m;
-                            lblCost.Text = String.Format("{0:#,0.00¥+}", decCost * _intCostMultiplier);
+                            lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                             decItemCost = decCost;
                         }
                         else if (objCostNode.InnerText.StartsWith("Variable"))
@@ -1134,9 +1134,9 @@ namespace Chummer
                                 decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                             if (decMax == decimal.MaxValue)
-                                lblCost.Text = $"{decMin:#,0.00¥+}";
+                                lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                             else
-                                lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
+                                lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                             decItemCost = decMin;
                         }
@@ -1188,7 +1188,7 @@ namespace Chummer
                                         {
                                             lblCapacity.Text = strCapacity;
                                         }
-                                        catch (InvalidCastException) // Result is text and not a double
+                                        catch (OverflowException) // Result is text and not a double
                                         {
                                             lblCapacity.Text = strCapacity;
                                         }
@@ -1204,7 +1204,7 @@ namespace Chummer
                                     {
                                         lblCapacity.Text = strCapacity;
                                     }
-                                    catch (InvalidCastException) // Result is text and not a double
+                                    catch (OverflowException) // Result is text and not a double
                                     {
                                         lblCapacity.Text = strCapacity;
                                     }
@@ -1245,7 +1245,7 @@ namespace Chummer
                                     {
                                         lblCapacity.Text = strCapacity;
                                     }
-                                    catch (InvalidCastException) // Result is text and not a double
+                                    catch (OverflowException) // Result is text and not a double
                                     {
                                         lblCapacity.Text = strCapacity;
                                     }

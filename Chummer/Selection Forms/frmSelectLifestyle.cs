@@ -117,7 +117,7 @@ namespace Chummer
                             decCost = 0.0m;
                         }
                     }
-                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{decCost:#,0.00}¥]";
+                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)}¥]";
                 }
                 treQualities.Nodes.Add(nodOption);
             }
@@ -359,12 +359,12 @@ namespace Chummer
             decBaseCost += decBaseCost * baseMultiplier;
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
-            lblCost.Text = $"{decNuyen:#,0.00¥}";
+            lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             if (nudPercentage.Value != 100)
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value / 100);
-                lblCost.Text += " (" + $"{decDiscount:#,0.00¥}" + ")";
+                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥' + ")";
             }
             return decNuyen;
         }

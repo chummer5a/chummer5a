@@ -1392,7 +1392,7 @@ namespace Chummer.Backend.Attributes
             int price = UpgradeKarmaCost();
             string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
 
-            ExpenseLogEntry entry = new ExpenseLogEntry();
+            ExpenseLogEntry entry = new ExpenseLogEntry(_objCharacter);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, _strAbbrev);
 

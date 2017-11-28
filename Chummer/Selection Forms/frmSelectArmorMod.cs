@@ -298,7 +298,9 @@ namespace Chummer
             }
 
             // Cost.
-            if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+            if (chkFreeItem.Checked)
+                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            else if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
             {
                 decimal decMin = 0;
                 decimal decMax = decimal.MaxValue;
@@ -314,10 +316,10 @@ namespace Chummer
 
                 if (decMax == decimal.MaxValue)
                 {
-                    lblCost.Text = $"{decMin:#,0.00¥+}";
+                    lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                 }
                 else
-                    lblCost.Text = $"{decMin:#,0.00} - {decMax:#,0.00¥}";
+                    lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {
@@ -328,7 +330,7 @@ namespace Chummer
                 decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                 decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                lblCost.Text = $"{decCost:#,0.00¥}";
+                lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
             }
@@ -359,9 +361,6 @@ namespace Chummer
                 else if (_objCapacityStyle == CapacityStyle.Zero)
                     lblCapacity.Text = "[0]";
             }
-
-            if (chkFreeItem.Checked)
-                lblCost.Text = String.Format("{0:#,0.00¥}", 0);
 
             string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText);
             string strPage = objXmlMod["page"].InnerText;

@@ -192,7 +192,7 @@ namespace Chummer.Skills
             string upgradetext =
                 $"{LanguageManager.GetString("String_ExpenseSkillGroup")} {DisplayName} {Rating} -> {(Rating + 1)}";
 
-            ExpenseLogEntry entry = new ExpenseLogEntry();
+            ExpenseLogEntry entry = new ExpenseLogEntry(_character);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
 

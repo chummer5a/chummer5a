@@ -472,7 +472,7 @@ namespace Chummer
                     }
                 }
 
-                lblVehicleCost.Text = $"{decCost:#,0.00¥}";
+                lblVehicleCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
             }
 

@@ -1562,7 +1562,7 @@ namespace Chummer
                 intValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce))));
             }
             catch (XPathException) { }
-            catch (InvalidCastException) { } // Result is text and not a double
+            catch (OverflowException) { } // Result is text and not a double
             intValue += intOffset;
             if (intForce > 0)
             {

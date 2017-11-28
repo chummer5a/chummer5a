@@ -4974,7 +4974,7 @@ namespace Chummer
                     // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                     if (objMod.Name == "Obsolete" || (objMod.Name == "Obsolescent" && _objOptions.AllowObsolescentUpgrade))
                     {
-                        frmSelectNumber frmModPercent = new frmSelectNumber();
+                        frmSelectNumber frmModPercent = new frmSelectNumber(2);
                         frmModPercent.Minimum = 0;
                         frmModPercent.Maximum = 1000000;
                         frmModPercent.Description = LanguageManager.GetString("String_Retrofit");
@@ -5006,7 +5006,7 @@ namespace Chummer
                         treVehicles.SelectedNode.Parent.Nodes.Add(objTreeNode);
 
                         // Create an Expense Log Entry for removing the Obsolete Mod.
-                        ExpenseLogEntry objEntry = new ExpenseLogEntry();
+                        ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
                         objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit").Replace("{0}", objVehicle.DisplayName), ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.Add(objEntry);
 
@@ -6897,7 +6897,13 @@ namespace Chummer
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
-                    frmSelectNumber frmPickNumber = new frmSelectNumber();
+                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                     if (decMax > 1000000)
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;
@@ -13752,10 +13758,13 @@ namespace Chummer
             decNuyen += nudNuyen.Value * _objOptions.NuyenPerBP;
             decNuyen += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Nuyen));
 
-            lblNuyenTotal.Text = $"= {decNuyen:#,0.00¥}";
+            lblNuyenTotal.Text = "= " + decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-            decimal decESS = decimal.Round(_objCharacter.Essence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
-            lblESSMax.Text = decESS.ToString(GlobalOptions.CultureInfo);
+            decimal decESS = _objCharacter.Essence;
+            decimal decRoundedESS = decimal.Round(decESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                decESS = decRoundedESS;
+            lblESSMax.Text = decRoundedESS.ToString(GlobalOptions.CultureInfo);
             tssEssence.Text = lblESSMax.Text;
 
             lblCyberwareESS.Text = decimal.Round(_objCharacter.CyberwareEssence, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
@@ -13765,7 +13774,10 @@ namespace Chummer
             // Reduce a character's MAG and RES from Essence Loss.
             int intMetatypeMaximumESS = _objCharacter.ESS.MetatypeMaximum;
             int intReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
-            int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decimal.Round(_objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero)));
+            decimal decESSMag = _objCharacter.Essence + _objCharacter.EssencePenalty - _objCharacter.EssencePenaltyMAG;
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                decESSMag = decimal.Round(decESSMag, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+            int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
 
             // Remove any Improvements from MAG and RES from Essence Loss.
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
@@ -14085,9 +14097,9 @@ namespace Chummer
             _objCharacter.Nuyen = decNuyen - decDeductions;
             if (blnDoUIUpdate)
             {
-                lblRemainingNuyen.Text = $"{_objCharacter.Nuyen:#,0.00¥}";
-                tssNuyenRemaining.Text = $"{_objCharacter.Nuyen:#,0.00¥}";
-                //lblNuyenBP.Text = $"{_objCharacter.Nuyen:#,0.00¥}";
+                lblRemainingNuyen.Text = _objCharacter.Nuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                tssNuyenRemaining.Text = _objCharacter.Nuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                //lblNuyenBP.Text = _objCharacter.Nuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
             return _objCharacter.Nuyen;
@@ -14205,7 +14217,7 @@ namespace Chummer
                 chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
 
                 lblCyberwareAvail.Text = objCyberware.TotalAvail;
-                lblCyberwareCost.Text = objCyberware.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberwareCapacity.Text =
                     $"{objCyberware.CalculatedCapacity} ({objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)} {LanguageManager.GetString("String_Remaining")})";
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
@@ -14222,7 +14234,7 @@ namespace Chummer
                 lblCyberwareName.Text = objGear.DisplayNameShort;
                 lblCyberwareCategory.Text = objGear.DisplayCategory;
                 lblCyberwareAvail.Text = objGear.TotalAvail(true);
-                lblCyberwareCost.Text = objGear.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                lblCyberwareCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                 lblCyberwareEssence.Text = "0";
                 cboCyberwareGrade.Enabled = false;
@@ -14494,7 +14506,7 @@ namespace Chummer
                 lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                 lblWeaponAvail.Text = objWeapon.TotalAvail;
-                lblWeaponCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                lblWeaponCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
                 lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
@@ -14552,7 +14564,7 @@ namespace Chummer
                     lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
                     lblWeaponAvail.Text = objWeapon.TotalAvail;
-                    lblWeaponCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                    lblWeaponCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                     lblWeaponDamage.Text = objWeapon.CalculatedDamage();
                     lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
@@ -14588,7 +14600,7 @@ namespace Chummer
                         lblWeaponName.Text = objSelectedAccessory.DisplayNameShort;
                         lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory");
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail;
-                        lblWeaponCost.Text = $"{objSelectedAccessory.TotalCost:#,0.00¥}";
+                        lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
                         lblWeaponDamage.Text = string.Empty;
                         lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString();
@@ -14654,7 +14666,7 @@ namespace Chummer
                             lblWeaponName.Text = objGear.DisplayNameShort;
                             lblWeaponCategory.Text = objGear.DisplayCategory;
                             lblWeaponAvail.Text = objGear.TotalAvail(true);
-                            lblWeaponCost.Text = $"{objGear.TotalCost:#,0.00¥}";
+                            lblWeaponCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             lblWeaponConceal.Text = string.Empty;
                             lblWeaponDamage.Text = string.Empty;
                             lblWeaponRC.Text = string.Empty;
@@ -14751,7 +14763,7 @@ namespace Chummer
                 lblArmorValue.Text = objArmor.TotalArmor.ToString();
                 lblArmorAvail.Text = objArmor.TotalAvail;
                 lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
-                lblArmorCost.Text = objArmor.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                lblArmorCost.Text = objArmor.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strBook = _objOptions.LanguageBookShort(objArmor.Source);
                 string strPage = objArmor.Page;
                 lblArmorSource.Text = strBook + " " + strPage;
@@ -14799,7 +14811,7 @@ namespace Chummer
                     }
                     if (!string.IsNullOrEmpty(objSelectedMod.GearCapacity))
                         lblArmorCapacity.Text = objSelectedMod.GearCapacity + "/" + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
-                    lblArmorCost.Text = objSelectedMod.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                    lblArmorCost.Text = objSelectedMod.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
                     string strPage = objSelectedMod.Page;
@@ -14851,11 +14863,11 @@ namespace Chummer
                     }
                     try
                     {
-                        lblArmorCost.Text = $"{objSelectedGear.TotalCost:#,0.00¥}";
+                        lblArmorCost.Text = objSelectedGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
                     catch (FormatException)
                     {
-                        lblArmorCost.Text = $"{objSelectedGear.Cost:#,0.00¥}";
+                        lblArmorCost.Text = objSelectedGear.Cost + '¥';
                     }
                     string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
                     string strPage = objSelectedGear.Page;
@@ -14901,11 +14913,11 @@ namespace Chummer
                 lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
                 try
                 {
-                    lblArmorCost.Text = $"{objSelectedGear.TotalCost:#,0.00¥}";
+                    lblArmorCost.Text = objSelectedGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 catch (FormatException)
                 {
-                    lblArmorCost.Text = $"{objSelectedGear.Cost:#,0.00¥}";
+                    lblArmorCost.Text = objSelectedGear.Cost + '¥';
                 }
                 string strBook = _objOptions.LanguageBookShort(objSelectedGear.Source);
                 string strPage = objSelectedGear.Page;
@@ -15093,7 +15105,7 @@ namespace Chummer
                 nudGearQty.Increment = objGear.CostFor;
                 try
                 {
-                    lblGearCost.Text = objGear.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                    lblGearCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
                 }
                 catch (FormatException)
                 {
@@ -15345,7 +15357,7 @@ namespace Chummer
             // If the character was built with Karma, record their staring Karma amount (if any).
             if (_objCharacter.Karma > 0)
             {
-                ExpenseLogEntry objKarma = new ExpenseLogEntry();
+                ExpenseLogEntry objKarma = new ExpenseLogEntry(_objCharacter);
                 objKarma.Create(_objCharacter.Karma, "Starting Karma", ExpenseType.Karma, DateTime.Now);
                 _objCharacter.ExpenseEntries.Add(objKarma);
 
@@ -15373,7 +15385,7 @@ namespace Chummer
 	        }
 
 	        // Create an Expense Entry for Starting Nuyen.
-            ExpenseLogEntry objNuyen = new ExpenseLogEntry();
+            ExpenseLogEntry objNuyen = new ExpenseLogEntry(_objCharacter);
             objNuyen.Create(_objCharacter.Nuyen, "Starting Nuyen", ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.Add(objNuyen);
 
@@ -16040,14 +16052,14 @@ namespace Chummer
                 return;
             }
 
-            lblLifestyleCost.Text = $"{objLifestyle.TotalMonthlyCost:#,0.00¥}";
+            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo);
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + $"{objLifestyle.Multiplier:#,0.00¥}";
+            lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + objLifestyle.Multiplier.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
             string strPage = objLifestyle.Page;
             lblLifestyleSource.Text = strBook + " " + strPage;
             tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.GetString("String_Page") + " " + objLifestyle.Page);
-            lblLifestyleTotalCost.Text = $"{objLifestyle.TotalCost:#,0.00¥}";
+            lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             // Change the Cost/Month label.
             if (objLifestyle.StyleType == LifestyleType.Safehouse)
@@ -16274,7 +16286,7 @@ namespace Chummer
                 lblVehicleAvailLabel.Visible = true;
                 lblVehicleAvail.Text = objVehicle.CalculatedAvail;
                 lblVehicleCostLabel.Visible = true;
-                lblVehicleCost.Text = $"{objVehicle.TotalCost:#,0.00¥}";
+                lblVehicleCost.Text = objVehicle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
                 lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
@@ -16436,7 +16448,7 @@ namespace Chummer
                     lblVehicleAvailLabel.Visible = true;
                     lblVehicleAvail.Text = objMod.TotalAvail;
                     lblVehicleCostLabel.Visible = true;
-                    lblVehicleCost.Text = $"{objMod.TotalCost:#,0.00¥}";
+                    lblVehicleCost.Text = objMod.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     nudVehicleGearQty.Visible = true;
                     lblVehicleGearQtyLabel.Visible = true;
@@ -16485,7 +16497,7 @@ namespace Chummer
                         lblVehicleName.Text = objGear.DisplayNameShort;
                         lblVehicleCategory.Text = objGear.DisplayCategory;
                         lblVehicleAvail.Text = objGear.TotalAvail(true);
-                        lblVehicleCost.Text = objGear.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                        lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         DisplayVehicleStats(false);
                         DisplayVehicleWeaponStats(false);
                         DisplayVehicleCommlinkStats(false);
@@ -16558,7 +16570,7 @@ namespace Chummer
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
-                        lblVehicleCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleSlots.Text = string.Empty;
                         string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                         string strPage = objWeapon.Page;
@@ -16618,7 +16630,7 @@ namespace Chummer
                     lblVehicleName.Text = objGear.DisplayNameShort;
                     lblVehicleCategory.Text = objGear.DisplayCategory;
                     lblVehicleAvail.Text = objGear.TotalAvail(true);
-                    lblVehicleCost.Text = objGear.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                    lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                     lblVehicleDeviceLabel.Visible = true;
                     DisplayVehicleWeaponStats(false);
@@ -16675,7 +16687,7 @@ namespace Chummer
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
-                        lblVehicleCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -16747,7 +16759,7 @@ namespace Chummer
                             lblVehicleName.Text = objCyberware.DisplayNameShort;
                             lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
                             lblVehicleAvail.Text = objCyberware.TotalAvail;
-                            lblVehicleCost.Text = $"{objCyberware.TotalCost:#,0.00¥}";
+                            lblVehicleCost.Text = objCyberware.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             lblVehicleHandling.Text = string.Empty;
                             lblVehicleAccel.Text = string.Empty;
                             lblVehicleSpeed.Text = string.Empty;
@@ -16817,7 +16829,7 @@ namespace Chummer
                     lblVehicleName.Text = objGear.DisplayNameShort;
                     lblVehicleCategory.Text = objGear.DisplayCategory;
                     lblVehicleAvail.Text = objGear.TotalAvail(true);
-                    lblVehicleCost.Text = objGear.TotalCost.ToString("#,0.00¥", GlobalOptions.CultureInfo);
+                    lblVehicleCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblVehicleHandling.Text = string.Empty;
                     lblVehicleAccel.Text = string.Empty;
                     lblVehicleSpeed.Text = string.Empty;
@@ -16873,7 +16885,7 @@ namespace Chummer
                         lblVehicleName.Text = objAccessory.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory");
                         lblVehicleAvail.Text = objAccessory.TotalAvail;
-                        lblVehicleCost.Text = $"{objAccessory.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objAccessory.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -16968,7 +16980,7 @@ namespace Chummer
                         lblVehicleName.Text = objWeapon.DisplayNameShort;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
-                        lblVehicleCost.Text = $"{objWeapon.TotalCost:#,0.00¥}";
+                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleHandling.Text = string.Empty;
                         lblVehicleAccel.Text = string.Empty;
                         lblVehicleSpeed.Text = string.Empty;
@@ -17037,7 +17049,7 @@ namespace Chummer
                     lblVehicleName.Text = objAccessory.DisplayNameShort;
                     lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory");
                     lblVehicleAvail.Text = objAccessory.TotalAvail;
-                    lblVehicleCost.Text = $"{objAccessory.TotalCost:#,0.00¥}";
+                    lblVehicleCost.Text = objAccessory.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblVehicleHandling.Text = string.Empty;
                     lblVehicleAccel.Text = string.Empty;
                     lblVehicleSpeed.Text = string.Empty;
@@ -17540,17 +17552,18 @@ namespace Chummer
             if (decNuyen < 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidNuyenExcess").Replace("{0}",
-                                  $"{(decNuyen * -1):#,0.00¥}");
+                strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidNuyenExcess").Replace("{0}", (decNuyen * -1).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥');
             }
 
             // Check if the character's Essence is above 0.
             double dblEss = decimal.ToDouble(_objCharacter.Essence);
-            double dblMinEss = Math.Pow(10.0, -_objCharacter.Options.EssenceDecimals);
+            double dblMinEss = 0.0;
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                dblMinEss = Math.Pow(10.0, -_objCharacter.Options.EssenceDecimals);
             if (dblEss < dblMinEss && _objCharacter.ESS.MetatypeMaximum > 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidEssenceExcess").Replace("{0}", ((dblEss - dblMinEss) * -1).ToString(GlobalOptions.CultureInfo));
+                strMessage += "\n\t" + LanguageManager.GetString("Message_InvalidEssenceExcess").Replace("{0}", (dblMinEss - dblEss).ToString(GlobalOptions.CultureInfo));
             }
 
             // If the character has Magician enabled, make sure a Tradition has been selected.
@@ -18304,7 +18317,7 @@ namespace Chummer
                 }
 
                 // Characters get a +1 bonus to the roll for every 100 Nueyn they have left over, up to a maximum of 3X the number of dice rolled for the Lifestyle.
-                frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen();
+                frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(_objCharacter);
                 frmStartingNuyen.Dice = objLifestyle.Dice;
                 frmStartingNuyen.Multiplier = objLifestyle.Multiplier;
 
@@ -19817,8 +19830,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblBuildNegativeQualities, LanguageManager.GetString("Tip_BuildNegativeQualities"));
             tipTooltip.SetToolTip(lblBuildContacts, LanguageManager.GetString("Tip_CommonContacts").Replace("{0}", _objOptions.BPContact.ToString()));
             tipTooltip.SetToolTip(lblBuildEnemies, LanguageManager.GetString("Tip_CommonEnemies"));
-            tipTooltip.SetToolTip(lblBuildNuyen, LanguageManager.GetString("Tip_CommonNuyen").Replace("{0}",
-                $"{_objOptions.NuyenPerBP:#,0.00¥}"));
+            tipTooltip.SetToolTip(lblBuildNuyen, LanguageManager.GetString("Tip_CommonNuyen").Replace("{0}", _objOptions.NuyenPerBP.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥'));
             tipTooltip.SetToolTip(lblBuildSkillGroups, LanguageManager.GetString("Tip_SkillsSkillGroups").Replace("{0}", _objOptions.BPSkillGroup.ToString()));
             tipTooltip.SetToolTip(lblBuildActiveSkills, LanguageManager.GetString("Tip_SkillsActiveSkills").Replace("{0}", _objOptions.KarmaSpecialization.ToString()).Replace("{1}", _objOptions.BPActiveSkillSpecialization.ToString()));
             tipTooltip.SetToolTip(lblBuildKnowledgeSkills, LanguageManager.GetString("Tip_SkillsKnowledgeSkills").Replace("{0}", _objOptions.FreeKnowledgeMultiplier.ToString()).Replace("{1}", _objOptions.BPKnowledgeSkill.ToString()));

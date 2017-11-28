@@ -99,7 +99,13 @@ namespace Chummer.Backend.Equipment
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -382,8 +388,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rc", _strRC);
             objWriter.WriteElementString("conceal", _strConceal);
             objWriter.WriteElementString("avail", TotalAvail);
-            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
@@ -683,7 +689,7 @@ namespace Chummer.Backend.Equipment
                         intReturn = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strConceal)));
                     }
                     catch (XPathException) { }
-                    catch (InvalidCastException) { }
+                    catch (OverflowException) { }
                 }
                 else if (!string.IsNullOrEmpty(_strConceal))
                 {

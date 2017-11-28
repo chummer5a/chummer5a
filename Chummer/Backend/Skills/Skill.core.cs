@@ -565,7 +565,7 @@ namespace Chummer.Skills
             string upgradetext =
                 $"{LanguageManager.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
-            ExpenseLogEntry entry = new    ExpenseLogEntry();
+            ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Id.ToString());
             
@@ -643,7 +643,7 @@ namespace Chummer.Skills
 
             SkillSpecialization nspec = new SkillSpecialization(name, false);
 
-            ExpenseLogEntry entry = new ExpenseLogEntry();
+            ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 

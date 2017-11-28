@@ -665,9 +665,9 @@ namespace Chummer
                         decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
                     if (decMax == decimal.MaxValue)
-                        lblCost.Text = string.Format("{0:#,0.00¥+}", decMin);
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                     else
-                        lblCost.Text = string.Format("{0:#,0.00}", decMin) + "-" + string.Format("{0:#,0.00¥}", decMax);
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     decItemCost = decMin;
                 }
@@ -704,7 +704,7 @@ namespace Chummer
                         decItemCost *= 0.9m;
                     }
 
-                    lblCost.Text = string.Format("{0:#,0.00¥}", decItemCost);
+                    lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
 
                 // Update the Avail Test Label.

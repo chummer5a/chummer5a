@@ -23,12 +23,21 @@ namespace Chummer
 {
     public partial class frmLifestyleNuyen : Form
     {
+        readonly Character _objCharacter;
+
         #region Control Events
-        public frmLifestyleNuyen()
+        public frmLifestyleNuyen(Character objCharacter)
         {
+            _objCharacter = objCharacter;
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
+        }
+
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        public frmLifestyleNuyen()
+        {
+            InitializeComponent();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -41,13 +50,13 @@ namespace Chummer
             lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:#,0.00¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            lblResult.Text = $" + {Extra}) x {Multiplier} = {((nudDiceResult.Value + Extra) * Multiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥'}";
             MoveControls();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {string.Format("{0:#,0.00¥}", (nudDiceResult.Value + Extra) * Multiplier)}";
+            lblResult.Text = $" + {Extra}) x {Multiplier} = {((nudDiceResult.Value + Extra) * Multiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥'}";
         }
         #endregion
 

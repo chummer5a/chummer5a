@@ -171,7 +171,13 @@ namespace Chummer.Backend.Equipment
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -912,8 +918,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("qty", _decQty.ToString(Category == "Currency" ? "#,0.00" : "#,0.##", objCulture));
             objWriter.WriteElementString("avail", TotalAvail(true));
             objWriter.WriteElementString("avail_english", TotalAvail(true, true));
-            objWriter.WriteElementString("cost", TotalCost.ToString("#,0.00", objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());

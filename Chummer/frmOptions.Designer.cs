@@ -101,6 +101,10 @@ namespace Chummer
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
+            this.nudNuyenDecimalsMaximum = new System.Windows.Forms.NumericUpDown();
+            this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
+            this.nudNuyenDecimalsAlways = new System.Windows.Forms.NumericUpDown();
+            this.lblNuyenDecimalsAlwaysLabel = new System.Windows.Forms.Label();
             this.chkLiveCustomData = new System.Windows.Forms.CheckBox();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.lblPDFLocation = new System.Windows.Forms.Label();
@@ -128,6 +132,7 @@ namespace Chummer
             this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
             this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chkDontRoundEssenceInternally = new System.Windows.Forms.CheckBox();
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
             this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
@@ -303,6 +308,8 @@ namespace Chummer
             this.tabGeneral.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabGlobal.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMaximum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsAlways)).BeginInit();
             this.grpSelectedSourcebook.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -1071,6 +1078,10 @@ namespace Chummer
             // tabGlobal
             // 
             this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+            this.tabGlobal.Controls.Add(this.nudNuyenDecimalsMaximum);
+            this.tabGlobal.Controls.Add(this.lblNuyenDecimalsMaximumLabel);
+            this.tabGlobal.Controls.Add(this.nudNuyenDecimalsAlways);
+            this.tabGlobal.Controls.Add(this.lblNuyenDecimalsAlwaysLabel);
             this.tabGlobal.Controls.Add(this.chkLiveCustomData);
             this.tabGlobal.Controls.Add(this.grpSelectedSourcebook);
             this.tabGlobal.Controls.Add(this.cboPDFParameters);
@@ -1100,6 +1111,52 @@ namespace Chummer
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
             // 
+            // nudNuyenDecimalsMaximum
+            // 
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 290);
+            this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
+            28,
+            0,
+            0,
+            0});
+            this.nudNuyenDecimalsMaximum.Name = "nudNuyenDecimalsMaximum";
+            this.nudNuyenDecimalsMaximum.Size = new System.Drawing.Size(61, 20);
+            this.nudNuyenDecimalsMaximum.TabIndex = 32;
+            this.nudNuyenDecimalsMaximum.ValueChanged += new System.EventHandler(this.nudNuyenDecimalsMaximum_ValueChanged);
+            // 
+            // lblNuyenDecimalsMaximumLabel
+            // 
+            this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(5, 292);
+            this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
+            this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
+            this.lblNuyenDecimalsMaximumLabel.TabIndex = 31;
+            this.lblNuyenDecimalsMaximumLabel.Tag = "Label_Options_NuyenDecimalsMaximum";
+            this.lblNuyenDecimalsMaximumLabel.Text = "Maximum number of Nuyen decimal places to display:";
+            // 
+            // nudNuyenDecimalsAlways
+            // 
+            this.nudNuyenDecimalsAlways.Location = new System.Drawing.Point(269, 268);
+            this.nudNuyenDecimalsAlways.Maximum = new decimal(new int[] {
+            28,
+            0,
+            0,
+            0});
+            this.nudNuyenDecimalsAlways.Name = "nudNuyenDecimalsAlways";
+            this.nudNuyenDecimalsAlways.Size = new System.Drawing.Size(61, 20);
+            this.nudNuyenDecimalsAlways.TabIndex = 30;
+            this.nudNuyenDecimalsAlways.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // lblNuyenDecimalsAlwaysLabel
+            // 
+            this.lblNuyenDecimalsAlwaysLabel.AutoSize = true;
+            this.lblNuyenDecimalsAlwaysLabel.Location = new System.Drawing.Point(5, 270);
+            this.lblNuyenDecimalsAlwaysLabel.Name = "lblNuyenDecimalsAlwaysLabel";
+            this.lblNuyenDecimalsAlwaysLabel.Size = new System.Drawing.Size(248, 13);
+            this.lblNuyenDecimalsAlwaysLabel.TabIndex = 29;
+            this.lblNuyenDecimalsAlwaysLabel.Tag = "Label_Options_NuyenDecimalsAlways";
+            this.lblNuyenDecimalsAlwaysLabel.Text = "Number of Nuyen decimal places to always display:";
+            // 
             // chkLiveCustomData
             // 
             this.chkLiveCustomData.AutoSize = true;
@@ -1120,7 +1177,7 @@ namespace Chummer
             this.grpSelectedSourcebook.Controls.Add(this.lblPDFOffset);
             this.grpSelectedSourcebook.Controls.Add(this.nudPDFOffset);
             this.grpSelectedSourcebook.Controls.Add(this.cmdPDFTest);
-            this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 360);
+            this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 395);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
             this.grpSelectedSourcebook.Size = new System.Drawing.Size(392, 80);
             this.grpSelectedSourcebook.TabIndex = 27;
@@ -1197,7 +1254,7 @@ namespace Chummer
             // 
             this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
+            this.cboPDFParameters.Location = new System.Drawing.Point(152, 323);
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
             this.cboPDFParameters.TabIndex = 26;
@@ -1242,7 +1299,7 @@ namespace Chummer
             // lblPDFParametersLabel
             // 
             this.lblPDFParametersLabel.AutoSize = true;
-            this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 293);
+            this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 328);
             this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
             this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
             this.lblPDFParametersLabel.TabIndex = 19;
@@ -1275,7 +1332,7 @@ namespace Chummer
             // 
             // cmdPDFAppPath
             // 
-            this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 324);
+            this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 359);
             this.cmdPDFAppPath.Name = "cmdPDFAppPath";
             this.cmdPDFAppPath.Size = new System.Drawing.Size(27, 23);
             this.cmdPDFAppPath.TabIndex = 11;
@@ -1285,7 +1342,7 @@ namespace Chummer
             // 
             // txtPDFAppPath
             // 
-            this.txtPDFAppPath.Location = new System.Drawing.Point(153, 326);
+            this.txtPDFAppPath.Location = new System.Drawing.Point(153, 361);
             this.txtPDFAppPath.Name = "txtPDFAppPath";
             this.txtPDFAppPath.ReadOnly = true;
             this.txtPDFAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1294,7 +1351,7 @@ namespace Chummer
             // lblPDFAppPath
             // 
             this.lblPDFAppPath.AutoSize = true;
-            this.lblPDFAppPath.Location = new System.Drawing.Point(6, 329);
+            this.lblPDFAppPath.Location = new System.Drawing.Point(6, 364);
             this.lblPDFAppPath.Name = "lblPDFAppPath";
             this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
             this.lblPDFAppPath.TabIndex = 9;
@@ -1390,6 +1447,7 @@ namespace Chummer
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.chkDontRoundEssenceInternally);
             this.tabPage2.Controls.Add(this.cmdCharacterRoster);
             this.tabPage2.Controls.Add(this.txtCharacterRosterPath);
             this.tabPage2.Controls.Add(this.lblCharacterRosterLabel);
@@ -1417,6 +1475,18 @@ namespace Chummer
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Tag = "Tab_Options_Character";
             this.tabPage2.Text = "Character and Printing";
+            // 
+            // chkDontRoundEssenceInternally
+            // 
+            this.chkDontRoundEssenceInternally.AutoSize = true;
+            this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(8, 368);
+            this.chkDontRoundEssenceInternally.Name = "chkDontRoundEssenceInternally";
+            this.chkDontRoundEssenceInternally.Size = new System.Drawing.Size(349, 17);
+            this.chkDontRoundEssenceInternally.TabIndex = 24;
+            this.chkDontRoundEssenceInternally.Tag = "Checkbox_Option_DontRoundEssenceInternally";
+            this.chkDontRoundEssenceInternally.Text = "Only round Essence for display purposes, not for internal calculations";
+            this.chkDontRoundEssenceInternally.UseVisualStyleBackColor = true;
+            this.chkDontRoundEssenceInternally.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // cmdCharacterRoster
             // 
@@ -3261,7 +3331,6 @@ namespace Chummer
             this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
-            
             // 
             // frmOptions
             // 
@@ -3314,6 +3383,8 @@ namespace Chummer
             this.tabControl2.ResumeLayout(false);
             this.tabGlobal.ResumeLayout(false);
             this.tabGlobal.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMaximum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsAlways)).EndInit();
             this.grpSelectedSourcebook.ResumeLayout(false);
             this.grpSelectedSourcebook.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).EndInit();
@@ -3612,5 +3683,10 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
         private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
         private System.Windows.Forms.CheckBox chkMysAdeptSecondMAGAttribute;
+        private System.Windows.Forms.CheckBox chkDontRoundEssenceInternally;
+        private System.Windows.Forms.NumericUpDown nudNuyenDecimalsMaximum;
+        private System.Windows.Forms.Label lblNuyenDecimalsMaximumLabel;
+        private System.Windows.Forms.NumericUpDown nudNuyenDecimalsAlways;
+        private System.Windows.Forms.Label lblNuyenDecimalsAlwaysLabel;
     }
 }

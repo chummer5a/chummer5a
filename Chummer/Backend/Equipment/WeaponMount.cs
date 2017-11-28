@@ -83,7 +83,13 @@ namespace Chummer.Backend.Equipment
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber();
+                        string strNuyenFormat = _character.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                         if (decMax > 1000000)
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
@@ -198,7 +204,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (XmlNode n in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
                 {
-                    WeaponMountOption w = new WeaponMountOption();
+                    WeaponMountOption w = new WeaponMountOption(_character);
                     w.Load(n, _vehicle);
                     WeaponMountOptions.Add(w);
                 }
@@ -260,13 +266,13 @@ namespace Chummer.Backend.Equipment
             WeaponMount mount = this;
             XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["size"].InnerText}\" and category = \"Size\"]");
             mount.Create(node, tree, _vehicle);
-            WeaponMountOption option = new WeaponMountOption();
+            WeaponMountOption option = new WeaponMountOption(_character);
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["flexibility"].InnerText}\" and category = \"Flexibility\"]");
             option.Create(node["id"].InnerText, mount.WeaponMountOptions);
-            option = new WeaponMountOption();
+            option = new WeaponMountOption(_character);
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["control"].InnerText}\" and category = \"Control\"]");
             option.Create(node["id"].InnerText, mount.WeaponMountOptions);
-            option = new WeaponMountOption();
+            option = new WeaponMountOption(_character);
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["visibility"].InnerText}\" and category = \"Visibility\"]");
             option.Create(node["id"].InnerText, mount.WeaponMountOptions);
             t.Text = DisplayName;
@@ -720,6 +726,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Category;
 
+        private readonly Character _objCharacter;
         private string _strAvail;
         private string _strName;
         private Guid _sourceID;
@@ -732,6 +739,10 @@ namespace Chummer.Backend.Equipment
         private string _strAltCategory;
 
         #region Constructor, Create, Save and Load Methods
+        public WeaponMountOption(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+        }
 
         /// <summary>
         /// Create a Weapon Mount Option from an XmlNode.
@@ -771,7 +782,13 @@ namespace Chummer.Backend.Equipment
 
                     if (intMin != 0 || intMax != 0)
                     {
-                        var frmPickNumber = new frmSelectNumber();
+                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
                         if (intMax == 0)
                             intMax = 1000000;
                         frmPickNumber.Minimum = intMin;

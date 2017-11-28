@@ -92,6 +92,7 @@ namespace Chummer
         private bool _blnUsePointsOnBrokenGroups;
         private bool _blnUseTotalValueForFreeContacts;
         private bool _blnUseTotalValueForFreeKnowledge;
+        private bool _blnDoNotRoundEssenceInternally;
         private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
@@ -111,6 +112,7 @@ namespace Chummer
         private bool _blnHhideItemsOverAvailLimit = true;
         private bool _blnAllowHoverIncrement;
         private bool _blnSearchInCategoryOnly = true;
+        private string _strNuyenFormat = "#,0.00";
 
         private readonly XmlDocument _objBookDoc = null;
         private string _strBookXPath = string.Empty;
@@ -368,6 +370,10 @@ namespace Chummer
             objWriter.WriteElementString("restrictedcostmultiplier", _intRestrictedCostMultiplier.ToString());
             // <forbiddencostmultiplier />
             objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString());
+            // <donotroundessenceinternally />
+            objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString());
+            // <nuyenformat />
+            objWriter.WriteElementString("nuyenformat", _strNuyenFormat.ToString());
             // <essencedecimals />
             objWriter.WriteElementString("essencedecimals", _intEssenceDecimals.ToString());
             // <enforcecapacity />
@@ -762,6 +768,10 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
             // Forbidden cost multiplier.
             objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
+            // Only round essence when its value is displayed
+            objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+            // Format in which nuyen values are displayed
+            objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
             // Number of decimal places to round to when calculating Essence.
             objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref _intEssenceDecimals);
             // Whether or not Capacity limits should be enforced.
@@ -2064,6 +2074,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
+        /// </summary>
+        public string NuyenFormat
+        {
+            get
+            {
+                return _strNuyenFormat;
+            }
+            set
+            {
+                _strNuyenFormat = value;
+            }
+        }
+
+        /// <summary>
         /// Number of decimal places to round to when calculating Essence.
         /// </summary>
         public int EssenceDecimals
@@ -2075,6 +2100,21 @@ namespace Chummer
             set
             {
                 _intEssenceDecimals = value;
+            }
+        }
+
+        /// <summary>
+        /// Only round essence when its value is displayed
+        /// </summary>
+        public bool DontRoundEssenceInternally
+        {
+            get
+            {
+                return _blnDoNotRoundEssenceInternally;
+            }
+            set
+            {
+                _blnDoNotRoundEssenceInternally = value;
             }
         }
 

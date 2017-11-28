@@ -447,7 +447,7 @@ namespace Chummer
                     CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
                             _objLifestyle.FreeGrids);
             lblQualityLp.Text = objQuality.LP.ToString();
-            lblQualityCost.Text = $"{objQuality.Cost:#,0.00¥}";
+            lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page}";
             tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
             cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
@@ -679,7 +679,7 @@ namespace Chummer
             decNuyen += decExtraCostServicesOutings + (decExtraCostServicesOutings * (intMultiplier / 100.0m)); ;
             decNuyen += decExtraCostContracts;
             lblTotalLP.Text = intLP.ToString();
-            lblCost.Text = $"{decNuyen:#,0.00¥}";
+            lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             return decNuyen;
         }

@@ -21,7 +21,7 @@ namespace Chummer
 		private readonly List<object> _lstSize;
 		private bool _loading = true;
 	    private Vehicle _vehicle;
-	    private Character _character;
+	    private readonly Character _objCharacter;
 		private XmlDocument _xmlDoc;
 
         public WeaponMount WeaponMount { get; internal set; }
@@ -33,7 +33,7 @@ namespace Chummer
 			_lstSize = new List<object>();
 			_lstVisibility = new List<object>();
 		    _vehicle = vehicle;
-		    _character = character;
+		    _objCharacter = character;
 			InitializeComponent();
 		}
 
@@ -152,13 +152,13 @@ namespace Chummer
                         return;
                 }
             }
-            WeaponMount mount = new WeaponMount(_character, _vehicle);
+            WeaponMount mount = new WeaponMount(_objCharacter, _vehicle);
             mount.Create(node, tree, _vehicle);
-            WeaponMountOption option = new WeaponMountOption();
+            WeaponMountOption option = new WeaponMountOption(_objCharacter);
             option.Create(cboControl.SelectedValue.ToString(), mount.WeaponMountOptions);
-            option = new WeaponMountOption();
+            option = new WeaponMountOption(_objCharacter);
             option.Create(cboFlexibility.SelectedValue.ToString(), mount.WeaponMountOptions);
-            option = new WeaponMountOption();
+            option = new WeaponMountOption(_objCharacter);
             option.Create(cboVisibility.SelectedValue.ToString(), mount.WeaponMountOptions);
             WeaponMount = mount;
             tree.Text = mount.DisplayName;
@@ -199,7 +199,7 @@ namespace Chummer
                 slots += Convert.ToInt32(node["slots"].InnerText);
             }
 
-            lblCost.Text = $"{cost:#,0.00¥}";
+            lblCost.Text = cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblSlots.Text = slots.ToString();
             lblAvailability.Text = $"{avail}{availSuffix}";
         }

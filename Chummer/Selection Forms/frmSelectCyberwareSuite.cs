@@ -127,8 +127,9 @@ namespace Chummer
                 decTotalESS += objCyberware.CalculatedESS();
             }
 
-            lblEssence.Text = decimal.Round(decTotalESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
-            lblCost.Text = $"{decTotalCost:#,0.00¥}";
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                lblEssence.Text = decimal.Round(decTotalESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+            lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblGrade.Text = objXmlSuite["grade"].InnerText;
             _decCost = decTotalCost;
         }

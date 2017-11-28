@@ -267,6 +267,7 @@ namespace Chummer
     public class ExpenseLogEntry
     {
         private Guid _guiID = new Guid();
+        private readonly Character _objCharacter;
         private DateTime _datDate = new DateTime();
         private decimal _decAmount = 0;
         private string _strReason = string.Empty;
@@ -316,8 +317,9 @@ namespace Chummer
         #endregion
 
         #region Constructor, Create, Save, Load, and Print Methods
-        public ExpenseLogEntry()
+        public ExpenseLogEntry(Character objCharacter)
         {
+            _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
             LanguageManager.Load(GlobalOptions.Language, null);
         }
@@ -390,7 +392,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("date", _datDate.ToString(objCulture));
-            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Nuyen ? "#,0.00" : "#,0.##", objCulture));
+            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());

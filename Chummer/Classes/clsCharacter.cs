@@ -1713,7 +1713,7 @@ namespace Chummer
             XmlNodeList objXmlExpenseList = objXmlDocument.SelectNodes("/character/expenses/expense");
             foreach (XmlNode objXmlExpense in objXmlExpenseList)
             {
-                ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry();
+                ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
                 objExpenseLogEntry.Load(objXmlExpense);
                 _lstExpenseLog.Add(objExpenseLogEntry);
             }
@@ -1991,7 +1991,7 @@ namespace Chummer
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(objCulture));
             // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(Options.NuyenFormat, objCulture));
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(objCulture));
             // <prioritymetatype />
@@ -2163,7 +2163,7 @@ namespace Chummer
             // <created />
             objWriter.WriteElementString("created", _blnCreated.ToString());
             // <nuyen />
-            objWriter.WriteElementString("nuyen", _decNuyen.ToString("#,0.00", objCulture));
+            objWriter.WriteElementString("nuyen", _decNuyen.ToString(Options.NuyenFormat, objCulture));
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString(objCulture));
             // <adept />
