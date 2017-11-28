@@ -1702,9 +1702,19 @@ namespace Chummer.Backend.Equipment
                 int intDamage = 0;
                 try
                 {
-                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strDamage), GlobalOptions.InvariantCultureInfo))) + intBonus;
+                    intDamage = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(
+                                    CommonFunctions.EvaluateInvariantXPath(strDamage),
+                                    GlobalOptions.InvariantCultureInfo))) + intBonus;
                 }
-                catch (XPathException) { }
+                catch (XPathException)
+                {
+                    
+                }
+                catch (OverflowException)
+                {
+                    //Utils.BreakIfDebug();
+                    // decimal > max size when trying to parse text like (Special + 0)
+                }
                 if (_strName == "Unarmed Attack (Smashing Blow)")
                     intDamage *= 2;
                 strReturn = intDamage.ToString(objCulture) + strDamageType + strDamageExtra;

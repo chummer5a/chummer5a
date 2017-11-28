@@ -2777,7 +2777,7 @@ namespace Chummer
                 {
                     this
                 };
-                frmViewer _frmPrintView = new frmViewer();
+                _frmPrintView = new frmViewer();
                 _frmPrintView.Characters = lstCharacters;
                 if (blnDialog)
                     _frmPrintView.ShowDialog();
