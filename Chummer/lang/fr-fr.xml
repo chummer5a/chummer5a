@@ -5100,8 +5100,8 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>x nouvel Indice</text>
     </string>
     <string>
-      <key>Label_Options_NewRatingTen</key>
-      <text>x nouvel Indice) + 10</text>
+      <key>Label_Options_NewRatingPlus</key>
+      <text>x nouvel Indice) +</text>
     </string>
     <string>
       <key>Label_Options_BPCost</key>

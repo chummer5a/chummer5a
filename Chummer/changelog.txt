@@ -290,6 +290,8 @@ Application Changes:
 - Added options for formatting how many decimal places are always displayed for Nuyen and how many places can possibly displayed in total. Chummer5a will always keep track of costs to 28 decimal places' worth of precision regardless of these options. Fixes #2094.
 - Fixed issues regarding Enchantment spells not being properly added or re-added in certain cases.
 - Fixed a bug where PACKS kits containing spells would add them to the wrong categories and would completely ignore Rituals and Enchantments.
+- Added the ability to define custom karma costs for knowledge skill specializations different from active skill ones. Fixes #2113.
+- Added the ability to define a custom flat cost for initiations and submersions instead of it being always set to 10.
 
 Data Changes:
 
@@ -517,15 +519,19 @@ New Strings:
 - Checkbox_Option_DontRoundEssenceInternally
 - Label_Options_NuyenDecimalsAlways
 - Label_Options_NuyenDecimalsMaximum
+- Label_Options_NewKnoSpecialization
+- Label_Options_NewRatingPlus
 
 Changed Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf
+- Label_Options_NewSpecialization
 
 Removed Strings:
 - Label_MugshotDimensions
 - Label_Contact_Group
 - Label_Contact_Free
+- Label_Options_NewRatingTen
 
 Build 195
 

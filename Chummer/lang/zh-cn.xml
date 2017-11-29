@@ -4497,8 +4497,8 @@
 			<text>x 新等级</text>
 		</string>
 		<string>
-			<key>Label_Options_NewRatingTen</key>
-			<text>x 新等级）+10</text>
+			<key>Label_Options_NewRatingPlus</key>
+			<text>x 新等级）+</text>
 		</string>
 		<string>
 			<key>Label_Options_BPCost</key>

@@ -166,6 +166,9 @@ namespace Chummer
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.treSourcebook = new System.Windows.Forms.TreeView();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
+            this.nudKarmaInitiationFlat = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaKnowledgeSpecialization = new System.Windows.Forms.Label();
+            this.nudKarmaKnowledgeSpecialization = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaRitualSpellcastingFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaRitualSpellcastingFocus = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaRitualSpellcastingFocus = new System.Windows.Forms.Label();
@@ -319,6 +322,8 @@ namespace Chummer
             this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabKarmaCosts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaKnowledgeSpecialization)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaRitualSpellcastingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaFlexibleSignatureFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).BeginInit();
@@ -352,7 +357,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdOK.Location = new System.Drawing.Point(370, 626);
+            this.cmdOK.Location = new System.Drawing.Point(370, 636);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 5;
@@ -386,7 +391,7 @@ namespace Chummer
             // lblKarmaComplexFormOptionExtra
             // 
             this.lblKarmaComplexFormOptionExtra.AutoSize = true;
-            this.lblKarmaComplexFormOptionExtra.Location = new System.Drawing.Point(219, 318);
+            this.lblKarmaComplexFormOptionExtra.Location = new System.Drawing.Point(244, 344);
             this.lblKarmaComplexFormOptionExtra.Name = "lblKarmaComplexFormOptionExtra";
             this.lblKarmaComplexFormOptionExtra.Size = new System.Drawing.Size(46, 13);
             this.lblKarmaComplexFormOptionExtra.TabIndex = 32;
@@ -395,7 +400,7 @@ namespace Chummer
             // 
             // nudKarmaComplexFormOption
             // 
-            this.nudKarmaComplexFormOption.Location = new System.Drawing.Point(166, 316);
+            this.nudKarmaComplexFormOption.Location = new System.Drawing.Point(191, 342);
             this.nudKarmaComplexFormOption.Name = "nudKarmaComplexFormOption";
             this.nudKarmaComplexFormOption.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaComplexFormOption.TabIndex = 31;
@@ -404,7 +409,7 @@ namespace Chummer
             // lblKarmaComplexFormOption
             // 
             this.lblKarmaComplexFormOption.AutoSize = true;
-            this.lblKarmaComplexFormOption.Location = new System.Drawing.Point(8, 318);
+            this.lblKarmaComplexFormOption.Location = new System.Drawing.Point(8, 344);
             this.lblKarmaComplexFormOption.Name = "lblKarmaComplexFormOption";
             this.lblKarmaComplexFormOption.Size = new System.Drawing.Size(112, 13);
             this.lblKarmaComplexFormOption.TabIndex = 30;
@@ -432,7 +437,7 @@ namespace Chummer
             // lblKarmaInitiationBracket
             // 
             this.lblKarmaInitiationBracket.AutoSize = true;
-            this.lblKarmaInitiationBracket.Location = new System.Drawing.Point(158, 526);
+            this.lblKarmaInitiationBracket.Location = new System.Drawing.Point(178, 552);
             this.lblKarmaInitiationBracket.Name = "lblKarmaInitiationBracket";
             this.lblKarmaInitiationBracket.Size = new System.Drawing.Size(10, 13);
             this.lblKarmaInitiationBracket.TabIndex = 54;
@@ -441,16 +446,16 @@ namespace Chummer
             // lblKarmaInitiationExtra
             // 
             this.lblKarmaInitiationExtra.AutoSize = true;
-            this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(219, 526);
+            this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(244, 552);
             this.lblKarmaInitiationExtra.Name = "lblKarmaInitiationExtra";
-            this.lblKarmaInitiationExtra.Size = new System.Drawing.Size(98, 13);
+            this.lblKarmaInitiationExtra.Size = new System.Drawing.Size(83, 13);
             this.lblKarmaInitiationExtra.TabIndex = 56;
-            this.lblKarmaInitiationExtra.Tag = "Label_Options_NewRatingTen";
-            this.lblKarmaInitiationExtra.Text = "x New Rating) + 10";
+            this.lblKarmaInitiationExtra.Tag = "Label_Options_NewRatingPlus";
+            this.lblKarmaInitiationExtra.Text = "x New Rating) +";
             // 
             // nudKarmaInitiation
             // 
-            this.nudKarmaInitiation.Location = new System.Drawing.Point(166, 524);
+            this.nudKarmaInitiation.Location = new System.Drawing.Point(191, 550);
             this.nudKarmaInitiation.Name = "nudKarmaInitiation";
             this.nudKarmaInitiation.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaInitiation.TabIndex = 55;
@@ -459,7 +464,7 @@ namespace Chummer
             // lblKarmaInitiation
             // 
             this.lblKarmaInitiation.AutoSize = true;
-            this.lblKarmaInitiation.Location = new System.Drawing.Point(8, 526);
+            this.lblKarmaInitiation.Location = new System.Drawing.Point(8, 552);
             this.lblKarmaInitiation.Name = "lblKarmaInitiation";
             this.lblKarmaInitiation.Size = new System.Drawing.Size(112, 13);
             this.lblKarmaInitiation.TabIndex = 53;
@@ -468,7 +473,7 @@ namespace Chummer
             // 
             // nudKarmaManeuver
             // 
-            this.nudKarmaManeuver.Location = new System.Drawing.Point(166, 394);
+            this.nudKarmaManeuver.Location = new System.Drawing.Point(191, 420);
             this.nudKarmaManeuver.Name = "nudKarmaManeuver";
             this.nudKarmaManeuver.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaManeuver.TabIndex = 40;
@@ -477,7 +482,7 @@ namespace Chummer
             // lblKarmaManeuver
             // 
             this.lblKarmaManeuver.AutoSize = true;
-            this.lblKarmaManeuver.Location = new System.Drawing.Point(8, 396);
+            this.lblKarmaManeuver.Location = new System.Drawing.Point(8, 422);
             this.lblKarmaManeuver.Name = "lblKarmaManeuver";
             this.lblKarmaManeuver.Size = new System.Drawing.Size(94, 13);
             this.lblKarmaManeuver.TabIndex = 39;
@@ -487,7 +492,7 @@ namespace Chummer
             // lblKarmaSpiritExtra
             // 
             this.lblKarmaSpiritExtra.AutoSize = true;
-            this.lblKarmaSpiritExtra.Location = new System.Drawing.Point(219, 370);
+            this.lblKarmaSpiritExtra.Location = new System.Drawing.Point(244, 396);
             this.lblKarmaSpiritExtra.Name = "lblKarmaSpiritExtra";
             this.lblKarmaSpiritExtra.Size = new System.Drawing.Size(87, 13);
             this.lblKarmaSpiritExtra.TabIndex = 38;
@@ -496,7 +501,7 @@ namespace Chummer
             // 
             // nudKarmaSpirit
             // 
-            this.nudKarmaSpirit.Location = new System.Drawing.Point(166, 368);
+            this.nudKarmaSpirit.Location = new System.Drawing.Point(191, 394);
             this.nudKarmaSpirit.Name = "nudKarmaSpirit";
             this.nudKarmaSpirit.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaSpirit.TabIndex = 37;
@@ -505,7 +510,7 @@ namespace Chummer
             // lblKarmaSpirit
             // 
             this.lblKarmaSpirit.AutoSize = true;
-            this.lblKarmaSpirit.Location = new System.Drawing.Point(8, 370);
+            this.lblKarmaSpirit.Location = new System.Drawing.Point(8, 396);
             this.lblKarmaSpirit.Name = "lblKarmaSpirit";
             this.lblKarmaSpirit.Size = new System.Drawing.Size(30, 13);
             this.lblKarmaSpirit.TabIndex = 36;
@@ -515,7 +520,7 @@ namespace Chummer
             // lblKarmaCarryoverExtra
             // 
             this.lblKarmaCarryoverExtra.AutoSize = true;
-            this.lblKarmaCarryoverExtra.Location = new System.Drawing.Point(219, 500);
+            this.lblKarmaCarryoverExtra.Location = new System.Drawing.Point(244, 526);
             this.lblKarmaCarryoverExtra.Name = "lblKarmaCarryoverExtra";
             this.lblKarmaCarryoverExtra.Size = new System.Drawing.Size(51, 13);
             this.lblKarmaCarryoverExtra.TabIndex = 52;
@@ -524,7 +529,7 @@ namespace Chummer
             // 
             // nudKarmaCarryover
             // 
-            this.nudKarmaCarryover.Location = new System.Drawing.Point(166, 498);
+            this.nudKarmaCarryover.Location = new System.Drawing.Point(191, 524);
             this.nudKarmaCarryover.Name = "nudKarmaCarryover";
             this.nudKarmaCarryover.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaCarryover.TabIndex = 51;
@@ -533,7 +538,7 @@ namespace Chummer
             // lblKarmaCarryover
             // 
             this.lblKarmaCarryover.AutoSize = true;
-            this.lblKarmaCarryover.Location = new System.Drawing.Point(8, 500);
+            this.lblKarmaCarryover.Location = new System.Drawing.Point(8, 526);
             this.lblKarmaCarryover.Name = "lblKarmaCarryover";
             this.lblKarmaCarryover.Size = new System.Drawing.Size(141, 13);
             this.lblKarmaCarryover.TabIndex = 50;
@@ -543,7 +548,7 @@ namespace Chummer
             // lblKarmaContactExtra
             // 
             this.lblKarmaContactExtra.AutoSize = true;
-            this.lblKarmaContactExtra.Location = new System.Drawing.Point(219, 448);
+            this.lblKarmaContactExtra.Location = new System.Drawing.Point(244, 474);
             this.lblKarmaContactExtra.Name = "lblKarmaContactExtra";
             this.lblKarmaContactExtra.Size = new System.Drawing.Size(120, 13);
             this.lblKarmaContactExtra.TabIndex = 46;
@@ -552,7 +557,7 @@ namespace Chummer
             // 
             // nudKarmaContact
             // 
-            this.nudKarmaContact.Location = new System.Drawing.Point(166, 446);
+            this.nudKarmaContact.Location = new System.Drawing.Point(191, 472);
             this.nudKarmaContact.Name = "nudKarmaContact";
             this.nudKarmaContact.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaContact.TabIndex = 45;
@@ -561,7 +566,7 @@ namespace Chummer
             // lblKarmaContact
             // 
             this.lblKarmaContact.AutoSize = true;
-            this.lblKarmaContact.Location = new System.Drawing.Point(8, 448);
+            this.lblKarmaContact.Location = new System.Drawing.Point(8, 474);
             this.lblKarmaContact.Name = "lblKarmaContact";
             this.lblKarmaContact.Size = new System.Drawing.Size(49, 13);
             this.lblKarmaContact.TabIndex = 44;
@@ -571,7 +576,7 @@ namespace Chummer
             // lblKarmaEnemyExtra
             // 
             this.lblKarmaEnemyExtra.AutoSize = true;
-            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(219, 474);
+            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(244, 500);
             this.lblKarmaEnemyExtra.Name = "lblKarmaEnemyExtra";
             this.lblKarmaEnemyExtra.Size = new System.Drawing.Size(120, 13);
             this.lblKarmaEnemyExtra.TabIndex = 49;
@@ -580,7 +585,7 @@ namespace Chummer
             // 
             // nudKarmaEnemy
             // 
-            this.nudKarmaEnemy.Location = new System.Drawing.Point(166, 472);
+            this.nudKarmaEnemy.Location = new System.Drawing.Point(191, 498);
             this.nudKarmaEnemy.Name = "nudKarmaEnemy";
             this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaEnemy.TabIndex = 48;
@@ -589,7 +594,7 @@ namespace Chummer
             // lblKarmaEnemy
             // 
             this.lblKarmaEnemy.AutoSize = true;
-            this.lblKarmaEnemy.Location = new System.Drawing.Point(8, 474);
+            this.lblKarmaEnemy.Location = new System.Drawing.Point(8, 500);
             this.lblKarmaEnemy.Name = "lblKarmaEnemy";
             this.lblKarmaEnemy.Size = new System.Drawing.Size(47, 13);
             this.lblKarmaEnemy.TabIndex = 47;
@@ -599,7 +604,7 @@ namespace Chummer
             // lblKarmaNuyenPerExtra
             // 
             this.lblKarmaNuyenPerExtra.AutoSize = true;
-            this.lblKarmaNuyenPerExtra.Location = new System.Drawing.Point(219, 422);
+            this.lblKarmaNuyenPerExtra.Location = new System.Drawing.Point(244, 448);
             this.lblKarmaNuyenPerExtra.Name = "lblKarmaNuyenPerExtra";
             this.lblKarmaNuyenPerExtra.Size = new System.Drawing.Size(55, 13);
             this.lblKarmaNuyenPerExtra.TabIndex = 43;
@@ -608,7 +613,7 @@ namespace Chummer
             // 
             // nudKarmaNuyenPer
             // 
-            this.nudKarmaNuyenPer.Location = new System.Drawing.Point(166, 420);
+            this.nudKarmaNuyenPer.Location = new System.Drawing.Point(191, 446);
             this.nudKarmaNuyenPer.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -622,7 +627,7 @@ namespace Chummer
             // lblKarmaNuyenPer
             // 
             this.lblKarmaNuyenPer.AutoSize = true;
-            this.lblKarmaNuyenPer.Location = new System.Drawing.Point(8, 422);
+            this.lblKarmaNuyenPer.Location = new System.Drawing.Point(8, 448);
             this.lblKarmaNuyenPer.Name = "lblKarmaNuyenPer";
             this.lblKarmaNuyenPer.Size = new System.Drawing.Size(38, 13);
             this.lblKarmaNuyenPer.TabIndex = 41;
@@ -632,7 +637,7 @@ namespace Chummer
             // lblKarmaImproveComplexFormExtra
             // 
             this.lblKarmaImproveComplexFormExtra.AutoSize = true;
-            this.lblKarmaImproveComplexFormExtra.Location = new System.Drawing.Point(219, 292);
+            this.lblKarmaImproveComplexFormExtra.Location = new System.Drawing.Point(244, 318);
             this.lblKarmaImproveComplexFormExtra.Name = "lblKarmaImproveComplexFormExtra";
             this.lblKarmaImproveComplexFormExtra.Size = new System.Drawing.Size(71, 13);
             this.lblKarmaImproveComplexFormExtra.TabIndex = 29;
@@ -641,7 +646,7 @@ namespace Chummer
             // 
             // nudKarmaImproveComplexForm
             // 
-            this.nudKarmaImproveComplexForm.Location = new System.Drawing.Point(166, 290);
+            this.nudKarmaImproveComplexForm.Location = new System.Drawing.Point(191, 316);
             this.nudKarmaImproveComplexForm.Name = "nudKarmaImproveComplexForm";
             this.nudKarmaImproveComplexForm.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveComplexForm.TabIndex = 28;
@@ -650,7 +655,7 @@ namespace Chummer
             // lblKarmaImproveComplexForm
             // 
             this.lblKarmaImproveComplexForm.AutoSize = true;
-            this.lblKarmaImproveComplexForm.Location = new System.Drawing.Point(8, 292);
+            this.lblKarmaImproveComplexForm.Location = new System.Drawing.Point(8, 318);
             this.lblKarmaImproveComplexForm.Name = "lblKarmaImproveComplexForm";
             this.lblKarmaImproveComplexForm.Size = new System.Drawing.Size(137, 13);
             this.lblKarmaImproveComplexForm.TabIndex = 27;
@@ -659,7 +664,7 @@ namespace Chummer
             // 
             // nudKarmaNewComplexForm
             // 
-            this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(166, 264);
+            this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(191, 290);
             this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
             this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewComplexForm.TabIndex = 26;
@@ -668,7 +673,7 @@ namespace Chummer
             // lblKarmaNewComplexForm
             // 
             this.lblKarmaNewComplexForm.AutoSize = true;
-            this.lblKarmaNewComplexForm.Location = new System.Drawing.Point(8, 266);
+            this.lblKarmaNewComplexForm.Location = new System.Drawing.Point(8, 292);
             this.lblKarmaNewComplexForm.Name = "lblKarmaNewComplexForm";
             this.lblKarmaNewComplexForm.Size = new System.Drawing.Size(98, 13);
             this.lblKarmaNewComplexForm.TabIndex = 25;
@@ -677,7 +682,7 @@ namespace Chummer
             // 
             // nudKarmaSpell
             // 
-            this.nudKarmaSpell.Location = new System.Drawing.Point(166, 238);
+            this.nudKarmaSpell.Location = new System.Drawing.Point(191, 264);
             this.nudKarmaSpell.Name = "nudKarmaSpell";
             this.nudKarmaSpell.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaSpell.TabIndex = 24;
@@ -686,7 +691,7 @@ namespace Chummer
             // lblKarmaSpell
             // 
             this.lblKarmaSpell.AutoSize = true;
-            this.lblKarmaSpell.Location = new System.Drawing.Point(8, 240);
+            this.lblKarmaSpell.Location = new System.Drawing.Point(8, 266);
             this.lblKarmaSpell.Name = "lblKarmaSpell";
             this.lblKarmaSpell.Size = new System.Drawing.Size(55, 13);
             this.lblKarmaSpell.TabIndex = 23;
@@ -696,7 +701,7 @@ namespace Chummer
             // lblKarmaQualityExtra
             // 
             this.lblKarmaQualityExtra.AutoSize = true;
-            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(219, 214);
+            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(244, 240);
             this.lblKarmaQualityExtra.Name = "lblKarmaQualityExtra";
             this.lblKarmaQualityExtra.Size = new System.Drawing.Size(53, 13);
             this.lblKarmaQualityExtra.TabIndex = 22;
@@ -705,7 +710,7 @@ namespace Chummer
             // 
             // nudKarmaQuality
             // 
-            this.nudKarmaQuality.Location = new System.Drawing.Point(166, 212);
+            this.nudKarmaQuality.Location = new System.Drawing.Point(191, 238);
             this.nudKarmaQuality.Name = "nudKarmaQuality";
             this.nudKarmaQuality.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaQuality.TabIndex = 21;
@@ -714,7 +719,7 @@ namespace Chummer
             // lblKarmaQuality
             // 
             this.lblKarmaQuality.AutoSize = true;
-            this.lblKarmaQuality.Location = new System.Drawing.Point(8, 214);
+            this.lblKarmaQuality.Location = new System.Drawing.Point(8, 240);
             this.lblKarmaQuality.Name = "lblKarmaQuality";
             this.lblKarmaQuality.Size = new System.Drawing.Size(133, 13);
             this.lblKarmaQuality.TabIndex = 20;
@@ -724,7 +729,7 @@ namespace Chummer
             // lblKarmaAttributeExtra
             // 
             this.lblKarmaAttributeExtra.AutoSize = true;
-            this.lblKarmaAttributeExtra.Location = new System.Drawing.Point(219, 188);
+            this.lblKarmaAttributeExtra.Location = new System.Drawing.Point(244, 214);
             this.lblKarmaAttributeExtra.Name = "lblKarmaAttributeExtra";
             this.lblKarmaAttributeExtra.Size = new System.Drawing.Size(71, 13);
             this.lblKarmaAttributeExtra.TabIndex = 19;
@@ -733,7 +738,7 @@ namespace Chummer
             // 
             // nudKarmaAttribute
             // 
-            this.nudKarmaAttribute.Location = new System.Drawing.Point(166, 186);
+            this.nudKarmaAttribute.Location = new System.Drawing.Point(191, 212);
             this.nudKarmaAttribute.Name = "nudKarmaAttribute";
             this.nudKarmaAttribute.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaAttribute.TabIndex = 18;
@@ -742,7 +747,7 @@ namespace Chummer
             // lblKarmaAttribute
             // 
             this.lblKarmaAttribute.AutoSize = true;
-            this.lblKarmaAttribute.Location = new System.Drawing.Point(8, 188);
+            this.lblKarmaAttribute.Location = new System.Drawing.Point(8, 214);
             this.lblKarmaAttribute.Name = "lblKarmaAttribute";
             this.lblKarmaAttribute.Size = new System.Drawing.Size(110, 13);
             this.lblKarmaAttribute.TabIndex = 17;
@@ -752,7 +757,7 @@ namespace Chummer
             // lblKarmaImproveSkillGroupExtra
             // 
             this.lblKarmaImproveSkillGroupExtra.AutoSize = true;
-            this.lblKarmaImproveSkillGroupExtra.Location = new System.Drawing.Point(219, 162);
+            this.lblKarmaImproveSkillGroupExtra.Location = new System.Drawing.Point(244, 188);
             this.lblKarmaImproveSkillGroupExtra.Name = "lblKarmaImproveSkillGroupExtra";
             this.lblKarmaImproveSkillGroupExtra.Size = new System.Drawing.Size(71, 13);
             this.lblKarmaImproveSkillGroupExtra.TabIndex = 16;
@@ -761,7 +766,7 @@ namespace Chummer
             // 
             // nudKarmaImproveSkillGroup
             // 
-            this.nudKarmaImproveSkillGroup.Location = new System.Drawing.Point(166, 160);
+            this.nudKarmaImproveSkillGroup.Location = new System.Drawing.Point(191, 186);
             this.nudKarmaImproveSkillGroup.Name = "nudKarmaImproveSkillGroup";
             this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveSkillGroup.TabIndex = 15;
@@ -770,7 +775,7 @@ namespace Chummer
             // lblKarmaImproveSkillGroup
             // 
             this.lblKarmaImproveSkillGroup.AutoSize = true;
-            this.lblKarmaImproveSkillGroup.Location = new System.Drawing.Point(8, 162);
+            this.lblKarmaImproveSkillGroup.Location = new System.Drawing.Point(8, 188);
             this.lblKarmaImproveSkillGroup.Name = "lblKarmaImproveSkillGroup";
             this.lblKarmaImproveSkillGroup.Size = new System.Drawing.Size(122, 13);
             this.lblKarmaImproveSkillGroup.TabIndex = 14;
@@ -780,7 +785,7 @@ namespace Chummer
             // lblKarmaImproveActiveSkillExtra
             // 
             this.lblKarmaImproveActiveSkillExtra.AutoSize = true;
-            this.lblKarmaImproveActiveSkillExtra.Location = new System.Drawing.Point(219, 136);
+            this.lblKarmaImproveActiveSkillExtra.Location = new System.Drawing.Point(244, 162);
             this.lblKarmaImproveActiveSkillExtra.Name = "lblKarmaImproveActiveSkillExtra";
             this.lblKarmaImproveActiveSkillExtra.Size = new System.Drawing.Size(71, 13);
             this.lblKarmaImproveActiveSkillExtra.TabIndex = 13;
@@ -789,7 +794,7 @@ namespace Chummer
             // 
             // nudKarmaImproveActiveSkill
             // 
-            this.nudKarmaImproveActiveSkill.Location = new System.Drawing.Point(166, 134);
+            this.nudKarmaImproveActiveSkill.Location = new System.Drawing.Point(191, 160);
             this.nudKarmaImproveActiveSkill.Name = "nudKarmaImproveActiveSkill";
             this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveActiveSkill.TabIndex = 12;
@@ -798,7 +803,7 @@ namespace Chummer
             // lblKarmaImproveActiveSkill
             // 
             this.lblKarmaImproveActiveSkill.AutoSize = true;
-            this.lblKarmaImproveActiveSkill.Location = new System.Drawing.Point(8, 136);
+            this.lblKarmaImproveActiveSkill.Location = new System.Drawing.Point(8, 162);
             this.lblKarmaImproveActiveSkill.Name = "lblKarmaImproveActiveSkill";
             this.lblKarmaImproveActiveSkill.Size = new System.Drawing.Size(123, 13);
             this.lblKarmaImproveActiveSkill.TabIndex = 11;
@@ -808,7 +813,7 @@ namespace Chummer
             // lblKarmaImproveKnowledgeSkillExtra
             // 
             this.lblKarmaImproveKnowledgeSkillExtra.AutoSize = true;
-            this.lblKarmaImproveKnowledgeSkillExtra.Location = new System.Drawing.Point(219, 110);
+            this.lblKarmaImproveKnowledgeSkillExtra.Location = new System.Drawing.Point(244, 136);
             this.lblKarmaImproveKnowledgeSkillExtra.Name = "lblKarmaImproveKnowledgeSkillExtra";
             this.lblKarmaImproveKnowledgeSkillExtra.Size = new System.Drawing.Size(71, 13);
             this.lblKarmaImproveKnowledgeSkillExtra.TabIndex = 10;
@@ -817,7 +822,7 @@ namespace Chummer
             // 
             // nudKarmaImproveKnowledgeSkill
             // 
-            this.nudKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(166, 108);
+            this.nudKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(191, 134);
             this.nudKarmaImproveKnowledgeSkill.Name = "nudKarmaImproveKnowledgeSkill";
             this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveKnowledgeSkill.TabIndex = 9;
@@ -826,7 +831,7 @@ namespace Chummer
             // lblKarmaImproveKnowledgeSkill
             // 
             this.lblKarmaImproveKnowledgeSkill.AutoSize = true;
-            this.lblKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(8, 110);
+            this.lblKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(8, 136);
             this.lblKarmaImproveKnowledgeSkill.Name = "lblKarmaImproveKnowledgeSkill";
             this.lblKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(146, 13);
             this.lblKarmaImproveKnowledgeSkill.TabIndex = 8;
@@ -835,7 +840,7 @@ namespace Chummer
             // 
             // nudKarmaNewSkillGroup
             // 
-            this.nudKarmaNewSkillGroup.Location = new System.Drawing.Point(166, 82);
+            this.nudKarmaNewSkillGroup.Location = new System.Drawing.Point(191, 108);
             this.nudKarmaNewSkillGroup.Name = "nudKarmaNewSkillGroup";
             this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewSkillGroup.TabIndex = 7;
@@ -844,7 +849,7 @@ namespace Chummer
             // lblKarmaNewSkillGroup
             // 
             this.lblKarmaNewSkillGroup.AutoSize = true;
-            this.lblKarmaNewSkillGroup.Location = new System.Drawing.Point(8, 84);
+            this.lblKarmaNewSkillGroup.Location = new System.Drawing.Point(8, 110);
             this.lblKarmaNewSkillGroup.Name = "lblKarmaNewSkillGroup";
             this.lblKarmaNewSkillGroup.Size = new System.Drawing.Size(83, 13);
             this.lblKarmaNewSkillGroup.TabIndex = 6;
@@ -853,7 +858,7 @@ namespace Chummer
             // 
             // nudKarmaNewActiveSkill
             // 
-            this.nudKarmaNewActiveSkill.Location = new System.Drawing.Point(166, 56);
+            this.nudKarmaNewActiveSkill.Location = new System.Drawing.Point(191, 82);
             this.nudKarmaNewActiveSkill.Name = "nudKarmaNewActiveSkill";
             this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewActiveSkill.TabIndex = 5;
@@ -862,7 +867,7 @@ namespace Chummer
             // lblKarmaNewActiveSkill
             // 
             this.lblKarmaNewActiveSkill.AutoSize = true;
-            this.lblKarmaNewActiveSkill.Location = new System.Drawing.Point(8, 58);
+            this.lblKarmaNewActiveSkill.Location = new System.Drawing.Point(8, 84);
             this.lblKarmaNewActiveSkill.Name = "lblKarmaNewActiveSkill";
             this.lblKarmaNewActiveSkill.Size = new System.Drawing.Size(84, 13);
             this.lblKarmaNewActiveSkill.TabIndex = 4;
@@ -871,7 +876,7 @@ namespace Chummer
             // 
             // nudKarmaNewKnowledgeSkill
             // 
-            this.nudKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(166, 30);
+            this.nudKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(191, 56);
             this.nudKarmaNewKnowledgeSkill.Name = "nudKarmaNewKnowledgeSkill";
             this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewKnowledgeSkill.TabIndex = 3;
@@ -880,7 +885,7 @@ namespace Chummer
             // lblKarmaNewKnowledgeSkill
             // 
             this.lblKarmaNewKnowledgeSkill.AutoSize = true;
-            this.lblKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(8, 32);
+            this.lblKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(8, 58);
             this.lblKarmaNewKnowledgeSkill.Name = "lblKarmaNewKnowledgeSkill";
             this.lblKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(107, 13);
             this.lblKarmaNewKnowledgeSkill.TabIndex = 2;
@@ -889,7 +894,7 @@ namespace Chummer
             // 
             // nudKarmaSpecialization
             // 
-            this.nudKarmaSpecialization.Location = new System.Drawing.Point(166, 4);
+            this.nudKarmaSpecialization.Location = new System.Drawing.Point(191, 4);
             this.nudKarmaSpecialization.Name = "nudKarmaSpecialization";
             this.nudKarmaSpecialization.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaSpecialization.TabIndex = 1;
@@ -900,10 +905,10 @@ namespace Chummer
             this.lblKarmaSpecialization.AutoSize = true;
             this.lblKarmaSpecialization.Location = new System.Drawing.Point(8, 6);
             this.lblKarmaSpecialization.Name = "lblKarmaSpecialization";
-            this.lblKarmaSpecialization.Size = new System.Drawing.Size(97, 13);
+            this.lblKarmaSpecialization.Size = new System.Drawing.Size(152, 13);
             this.lblKarmaSpecialization.TabIndex = 0;
             this.lblKarmaSpecialization.Tag = "Label_Options_NewSpecialization";
-            this.lblKarmaSpecialization.Text = "New Specialization";
+            this.lblKarmaSpecialization.Text = "New Active Skill Specialization";
             // 
             // chkPrintSkillsWithZeroRating
             // 
@@ -1033,7 +1038,7 @@ namespace Chummer
             this.tabControl1.Location = new System.Drawing.Point(0, 32);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(815, 588);
+            this.tabControl1.Size = new System.Drawing.Size(815, 602);
             this.tabControl1.TabIndex = 4;
             // 
             // tabGeneral
@@ -1046,7 +1051,7 @@ namespace Chummer
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(807, 562);
+            this.tabGeneral.Size = new System.Drawing.Size(807, 576);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Tag = "Tab_Options_General";
             this.tabGeneral.Text = "General";
@@ -1054,7 +1059,7 @@ namespace Chummer
             // cmdEnableSourcebooks
             // 
             this.cmdEnableSourcebooks.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(11, 528);
+            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(11, 542);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(226, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
@@ -1072,7 +1077,7 @@ namespace Chummer
             this.tabControl2.Location = new System.Drawing.Point(243, 6);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(556, 550);
+            this.tabControl2.Size = new System.Drawing.Size(556, 564);
             this.tabControl2.TabIndex = 2;
             // 
             // tabGlobal
@@ -1106,7 +1111,7 @@ namespace Chummer
             this.tabGlobal.Location = new System.Drawing.Point(4, 22);
             this.tabGlobal.Name = "tabGlobal";
             this.tabGlobal.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGlobal.Size = new System.Drawing.Size(548, 524);
+            this.tabGlobal.Size = new System.Drawing.Size(548, 538);
             this.tabGlobal.TabIndex = 0;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
@@ -1471,7 +1476,7 @@ namespace Chummer
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(548, 524);
+            this.tabPage2.Size = new System.Drawing.Size(548, 538);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Tag = "Tab_Options_Character";
             this.tabPage2.Text = "Character and Printing";
@@ -1692,7 +1697,7 @@ namespace Chummer
             this.tabPage1.Controls.Add(this.chkEnforceSkillMaximumModifiedRating);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(548, 524);
+            this.tabPage1.Size = new System.Drawing.Size(548, 538);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Tag = "Tab_Options_Miscellaneous";
             this.tabPage1.Text = "Miscellaneous";
@@ -1858,7 +1863,7 @@ namespace Chummer
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(548, 524);
+            this.tabPage3.Size = new System.Drawing.Size(548, 538);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Github Issues";
             // 
@@ -1890,6 +1895,9 @@ namespace Chummer
             // tabKarmaCosts
             // 
             this.tabKarmaCosts.BackColor = System.Drawing.SystemColors.Control;
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaInitiationFlat);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaKnowledgeSpecialization);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaKnowledgeSpecialization);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaRitualSpellcastingFocusExtra);
             this.tabKarmaCosts.Controls.Add(this.nudKarmaRitualSpellcastingFocus);
             this.tabKarmaCosts.Controls.Add(this.lblKarmaRitualSpellcastingFocus);
@@ -2009,10 +2017,36 @@ namespace Chummer
             this.tabKarmaCosts.Location = new System.Drawing.Point(4, 22);
             this.tabKarmaCosts.Name = "tabKarmaCosts";
             this.tabKarmaCosts.Padding = new System.Windows.Forms.Padding(3);
-            this.tabKarmaCosts.Size = new System.Drawing.Size(807, 562);
+            this.tabKarmaCosts.Size = new System.Drawing.Size(807, 576);
             this.tabKarmaCosts.TabIndex = 1;
             this.tabKarmaCosts.Tag = "Tab_Options_KarmaCosts";
             this.tabKarmaCosts.Text = "Karma Costs";
+            // 
+            // nudKarmaInitiationFlat
+            // 
+            this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(330, 550);
+            this.nudKarmaInitiationFlat.Name = "nudKarmaInitiationFlat";
+            this.nudKarmaInitiationFlat.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaInitiationFlat.TabIndex = 121;
+            this.nudKarmaInitiationFlat.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // lblKarmaKnowledgeSpecialization
+            // 
+            this.lblKarmaKnowledgeSpecialization.AutoSize = true;
+            this.lblKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(8, 32);
+            this.lblKarmaKnowledgeSpecialization.Name = "lblKarmaKnowledgeSpecialization";
+            this.lblKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(175, 13);
+            this.lblKarmaKnowledgeSpecialization.TabIndex = 119;
+            this.lblKarmaKnowledgeSpecialization.Tag = "Label_Options_NewSpecialization";
+            this.lblKarmaKnowledgeSpecialization.Text = "New Knowledge Skill Specialization";
+            // 
+            // nudKarmaKnowledgeSpecialization
+            // 
+            this.nudKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(191, 30);
+            this.nudKarmaKnowledgeSpecialization.Name = "nudKarmaKnowledgeSpecialization";
+            this.nudKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaKnowledgeSpecialization.TabIndex = 120;
+            this.nudKarmaKnowledgeSpecialization.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblKarmaRitualSpellcastingFocusExtra
             // 
@@ -2510,7 +2544,7 @@ namespace Chummer
             // lblKarmaComplexFormSkillsoftExtra
             // 
             this.lblKarmaComplexFormSkillsoftExtra.AutoSize = true;
-            this.lblKarmaComplexFormSkillsoftExtra.Location = new System.Drawing.Point(219, 344);
+            this.lblKarmaComplexFormSkillsoftExtra.Location = new System.Drawing.Point(244, 370);
             this.lblKarmaComplexFormSkillsoftExtra.Name = "lblKarmaComplexFormSkillsoftExtra";
             this.lblKarmaComplexFormSkillsoftExtra.Size = new System.Drawing.Size(46, 13);
             this.lblKarmaComplexFormSkillsoftExtra.TabIndex = 35;
@@ -2519,7 +2553,7 @@ namespace Chummer
             // 
             // nudKarmaComplexFormSkillsoft
             // 
-            this.nudKarmaComplexFormSkillsoft.Location = new System.Drawing.Point(166, 342);
+            this.nudKarmaComplexFormSkillsoft.Location = new System.Drawing.Point(191, 368);
             this.nudKarmaComplexFormSkillsoft.Name = "nudKarmaComplexFormSkillsoft";
             this.nudKarmaComplexFormSkillsoft.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaComplexFormSkillsoft.TabIndex = 34;
@@ -2528,7 +2562,7 @@ namespace Chummer
             // lblKarmaComplexFormSkillsoft
             // 
             this.lblKarmaComplexFormSkillsoft.AutoSize = true;
-            this.lblKarmaComplexFormSkillsoft.Location = new System.Drawing.Point(8, 344);
+            this.lblKarmaComplexFormSkillsoft.Location = new System.Drawing.Point(8, 370);
             this.lblKarmaComplexFormSkillsoft.Name = "lblKarmaComplexFormSkillsoft";
             this.lblKarmaComplexFormSkillsoft.Size = new System.Drawing.Size(117, 13);
             this.lblKarmaComplexFormSkillsoft.TabIndex = 33;
@@ -2595,7 +2629,7 @@ namespace Chummer
             this.tabOptionalRules.Controls.Add(this.chkMoreLethalGameplay);
             this.tabOptionalRules.Location = new System.Drawing.Point(4, 22);
             this.tabOptionalRules.Name = "tabOptionalRules";
-            this.tabOptionalRules.Size = new System.Drawing.Size(807, 562);
+            this.tabOptionalRules.Size = new System.Drawing.Size(807, 576);
             this.tabOptionalRules.TabIndex = 2;
             this.tabOptionalRules.Tag = "Tab_Options_OptionalRules";
             this.tabOptionalRules.Text = "Optional Rules";
@@ -2603,7 +2637,7 @@ namespace Chummer
             // cmdIncreaseCustomDirectoryLoadOrder
             // 
             this.cmdIncreaseCustomDirectoryLoadOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(459, 535);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(459, 549);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(167, 24);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
@@ -2615,7 +2649,7 @@ namespace Chummer
             // cmdDecreaseCustomDirectoryLoadOrder
             // 
             this.cmdDecreaseCustomDirectoryLoadOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(632, 535);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(632, 549);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(167, 24);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
@@ -2646,7 +2680,7 @@ namespace Chummer
             this.treCustomDataDirectories.ShowLines = false;
             this.treCustomDataDirectories.ShowPlusMinus = false;
             this.treCustomDataDirectories.ShowRootLines = false;
-            this.treCustomDataDirectories.Size = new System.Drawing.Size(791, 347);
+            this.treCustomDataDirectories.Size = new System.Drawing.Size(791, 361);
             this.treCustomDataDirectories.TabIndex = 40;
             this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
             // 
@@ -2866,7 +2900,7 @@ namespace Chummer
             this.tabHouseRules.Controls.Add(this.chkUnarmedSkillImprovements);
             this.tabHouseRules.Location = new System.Drawing.Point(4, 22);
             this.tabHouseRules.Name = "tabHouseRules";
-            this.tabHouseRules.Size = new System.Drawing.Size(807, 562);
+            this.tabHouseRules.Size = new System.Drawing.Size(807, 576);
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
@@ -3398,6 +3432,8 @@ namespace Chummer
             this.tabPage3.ResumeLayout(false);
             this.tabKarmaCosts.ResumeLayout(false);
             this.tabKarmaCosts.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaKnowledgeSpecialization)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaRitualSpellcastingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaFlexibleSignatureFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).EndInit();
@@ -3688,5 +3724,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblNuyenDecimalsMaximumLabel;
         private System.Windows.Forms.NumericUpDown nudNuyenDecimalsAlways;
         private System.Windows.Forms.Label lblNuyenDecimalsAlwaysLabel;
+        private System.Windows.Forms.Label lblKarmaKnowledgeSpecialization;
+        private System.Windows.Forms.NumericUpDown nudKarmaKnowledgeSpecialization;
+        private System.Windows.Forms.NumericUpDown nudKarmaInitiationFlat;
     }
 }
