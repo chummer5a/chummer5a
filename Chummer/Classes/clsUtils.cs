@@ -176,6 +176,35 @@ namespace Chummer
                 if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
+            // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
+            // Cannot use foreach because saving a character as created removes the current form and adds a new one
+            for (int i = 0; i < GlobalOptions.MainForm.OpenCharacterForms.Count; ++i)
+            {
+                CharacterShared objOpenCharacterForm = GlobalOptions.MainForm.OpenCharacterForms[i];
+                if (objOpenCharacterForm.IsDirty)
+                {
+                    string strCharacterName = objOpenCharacterForm.CharacterObject.Alias;
+                    if (string.IsNullOrWhiteSpace(strCharacterName))
+                        strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
+                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (objResult == DialogResult.Yes)
+                    {
+                        // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                        bool blnResult = objOpenCharacterForm.SaveCharacter();
+                        if (!blnResult)
+                            return;
+                        // We saved a character as created, which closed the current form and added a new one
+                        // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
+                        else if (!GlobalOptions.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                            i -= 1;
+                    }
+                    else if (objResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+            }
+            Log.Info("Restart Chummer");
             GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;

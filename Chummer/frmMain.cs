@@ -49,6 +49,7 @@ namespace Chummer
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
         private List<Character> _lstCharacters = new List<Character>();
+        private List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion = string.Empty;
@@ -82,7 +83,7 @@ namespace Chummer
             GlobalOptions.MRUChanged += PopulateMRU;
 
             // Delete the old executable if it exists (created by the update process).
-            foreach (string strLoopOldFilePath in Directory.GetFiles(Application.StartupPath, "*.old"))
+            foreach (string strLoopOldFilePath in Directory.GetFiles(Application.StartupPath, "*.old", SearchOption.AllDirectories))
             {
                 if (File.Exists(strLoopOldFilePath))
                     File.Delete(strLoopOldFilePath);
@@ -1061,6 +1062,12 @@ namespace Chummer
         {
             get { return _lstCharacters; }
             set { _lstCharacters = value; }
+        }
+
+        public List<CharacterShared> OpenCharacterForms
+        {
+            get { return _lstOpenCharacterForms; }
+            set { _lstOpenCharacterForms = value; }
         }
         #endregion
 

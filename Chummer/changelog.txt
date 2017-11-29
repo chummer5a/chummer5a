@@ -292,6 +292,7 @@ Application Changes:
 - Fixed a bug where PACKS kits containing spells would add them to the wrong categories and would completely ignore Rituals and Enchantments.
 - Added the ability to define custom karma costs for knowledge skill specializations different from active skill ones. Fixes #2113.
 - Added the ability to define a custom flat cost for initiations and submersions instead of it being always set to 10.
+- Fixed a bug where saving a character to a new file when the character's form would be closed due to Chummer wishing to restart itself would end up with Chummer not re-opening the character when it started back up.
 
 Data Changes:
 

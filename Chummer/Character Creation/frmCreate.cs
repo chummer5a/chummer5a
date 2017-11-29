@@ -48,7 +48,6 @@ namespace Chummer
         private bool _blnSkipRefresh = false;
         private bool _blnSkipUpdate = false;
         private bool _blnLoading = false;
-        private bool _blnIsDirty = false;
         private bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements = false;
         private bool _blnFreestyle = false;
@@ -75,6 +74,7 @@ namespace Chummer
         {
             InitializeComponent();
             GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
+            GlobalOptions.MainForm.OpenCharacterForms.Add(this);
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             _objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
@@ -982,6 +982,7 @@ namespace Chummer
                 _blnLoading = true;
                 Application.Idle -= UpdateCharacterInfo;
                 GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
+                GlobalOptions.MainForm.OpenCharacterForms.Remove(this);
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
@@ -1070,8 +1071,6 @@ namespace Chummer
 
                 // Trash the global variables and dispose of the Form.
                 _objCharacter.Dispose();
-                _objOptions = null;
-                _objCharacter = null;
                 Dispose(true);
             }
         }
@@ -15226,115 +15225,31 @@ namespace Chummer
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        private void UpdateWindowTitle(bool blnCanSkip = true)
+        public override void UpdateWindowTitle(bool blnCanSkip = true)
         {
-            if (Text.EndsWith('*') && blnCanSkip)
-                return;
-
-            Text = string.Empty;
-            if (!string.IsNullOrEmpty(txtAlias.Text))
-                Text += txtAlias.Text + " - ";
-            Text += LanguageManager.GetString("Title_CreateNewCharacter");
-            Text += " (" + _objCharacter.Options.Name + ")";
-            if (_blnIsDirty)
-                Text += "*";
+            UpdateWindowTitle(txtAlias.Text, LanguageManager.GetString("Title_CreateNewCharacter"), true);
         }
 
         /// <summary>
         /// Save the Character.
         /// </summary>
-        private bool SaveCharacter(bool blnNeedConfirm = true)
+        public override bool SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
-            // If the Character does not have a file name, trigger the Save As menu item instead.
-            if (string.IsNullOrEmpty(_objCharacter.FileName))
-            {
-                return SaveCharacterAs();
-            }
-            // If the Created is checked, make sure the user wants to actually save this character.
-            if (chkCharacterCreated.Checked)
-            {
-                if (blnNeedConfirm && !ConfirmSaveCreatedCharacter())
-                {
-                    chkCharacterCreated.Checked = false;
-                    return false;
-                }
-            }
-            //if (_objCharacter.Created)
-            //{
-            //    foreach (Skill objSkill in _objCharacter.Skills)
-            //    {
-            //        if (objSkill.RatingMaximum == 6)
-            //            objSkill.RatingMaximum = 12;
-            //        else if (objSkill.RatingMaximum == 7)
-            //            objSkill.RatingMaximum = 13;
-            //    }
-            //    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-            //    {
-            //        if (objSkillGroup.RatingMaximum == 6)
-            //            objSkillGroup.RatingMaximum = 12;
-            //    }
-            //}
-
-            Cursor = Cursors.WaitCursor;
-            if (_objCharacter.Save())
-            {
-                _blnIsDirty = false;
-                GlobalOptions.AddToMRUList(_objCharacter.FileName);
-                UpdateWindowTitle(false);
-                Cursor = Cursors.Default;
-
-                // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                if (chkCharacterCreated.Checked)
-                {
-                    SaveCharacterAsCreated();
-                }
-
-                return true;
-            }
-            Cursor = Cursors.Default;
-            return false;
+            return base.SaveCharacter(blnNeedConfirm, chkCharacterCreated.Checked);
         }
 
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
-        private bool SaveCharacterAs()
+        public override bool SaveCharacterAs(bool blnDoCreated = false)
         {
-            // If the Created is checked, make sure the user wants to actually save this character.
-            if (chkCharacterCreated.Checked)
-            {
-                if (!ConfirmSaveCreatedCharacter())
-                {
-                    chkCharacterCreated.Checked = false;
-                    return false;
-                }
-            }
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
-
-            string strShowFileName = string.Empty;
-            string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-            strShowFileName = strFile[strFile.Length - 1];
-
-            if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
-
-            saveFileDialog.FileName = strShowFileName;
-
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                _objCharacter.FileName = saveFileDialog.FileName;
-                return SaveCharacter(false);
-            }
-
-            return false;
+            return base.SaveCharacter(chkCharacterCreated.Checked);
         }
 
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        private void SaveCharacterAsCreated()
+        public override void SaveCharacterAsCreated()
         {
             Cursor = Cursors.WaitCursor;
             // If the character was built with Karma, record their staring Karma amount (if any).
@@ -18239,7 +18154,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public bool ConfirmSaveCreatedCharacter()
+        public override bool ConfirmSaveCreatedCharacter()
         {
             if (MessageBox.Show(LanguageManager.GetString("Message_ConfirmCreate"), LanguageManager.GetString("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return false;

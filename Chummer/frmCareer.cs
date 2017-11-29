@@ -48,7 +48,6 @@ namespace Chummer
         private bool _blnSkipRefresh = false;
         private bool _blnSkipUpdate = false;
         private bool _blnLoading = false;
-        private bool _blnIsDirty = false;
         private bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements = false;
         private bool _blnRequestCharacterUpdate = false;
@@ -94,6 +93,7 @@ namespace Chummer
 
             GlobalOptions.MRUChanged += PopulateMRU;
             GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
+            GlobalOptions.MainForm.OpenCharacterForms.Add(this);
             LanguageManager.Load(GlobalOptions.Language, this);
 
             ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
@@ -1148,6 +1148,7 @@ namespace Chummer
                 _blnLoading = true;
                 Application.Idle -= UpdateCharacterInfo;
                 GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
+                GlobalOptions.MainForm.OpenCharacterForms.Remove(this);
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
@@ -1235,8 +1236,6 @@ namespace Chummer
 
                 // Trash the global variables and dispose of the Form.
                 _objCharacter.Dispose();
-                _objOptions = null;
-                _objCharacter = null;
                 Dispose(true);
             }
         }
@@ -20384,64 +20383,9 @@ namespace Chummer
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        private void UpdateWindowTitle(bool blnCanSkip = true)
+        public override void UpdateWindowTitle(bool blnCanSkip = true)
         {
-            if (Text.EndsWith('*') && blnCanSkip)
-                return;
-
-            Text = string.Empty;
-            if (!string.IsNullOrEmpty(txtAlias.Text))
-                Text += txtAlias.Text + " - ";
-            Text += LanguageManager.GetString("Title_CareerMode");
-            Text += " (" + _objCharacter.Options.Name + ")";
-            if (_blnIsDirty)
-                Text += "*";
-        }
-
-        /// <summary>
-        /// Save the Character.
-        /// </summary>
-        private bool SaveCharacter()
-        {
-            // If the Character does not have a file name, trigger the Save As menu item instead.
-            if (string.IsNullOrEmpty(_objCharacter.FileName))
-                return SaveCharacterAs();
-
-            Cursor = Cursors.WaitCursor;
-            if (_objCharacter.Save())
-            {
-                _blnIsDirty = false;
-                GlobalOptions.AddToMRUList(_objCharacter.FileName);
-                UpdateWindowTitle(false);
-                Cursor = Cursors.Default;
-                return true;
-            }
-            Cursor = Cursors.Default;
-            return false;
-        }
-
-        /// <summary>
-        /// Save the Character using the Save As dialogue box.
-        /// </summary>
-        private bool SaveCharacterAs()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
-
-            string strShowFileName = Path.GetFileName(_objCharacter.FileName);
-
-            if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
-
-            saveFileDialog.FileName = strShowFileName;
-
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                _objCharacter.FileName = saveFileDialog.FileName;
-                return SaveCharacter();
-            }
-
-            return false;
+            UpdateWindowTitle(txtAlias.Text, LanguageManager.GetString("Title_CareerMode"), true);
         }
 
         /// <summary>
