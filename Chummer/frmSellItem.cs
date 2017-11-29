@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace Chummer
         public frmSellItem()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -57,11 +57,11 @@ namespace Chummer
         /// <summary>
         /// The percentage the item will be sold at.
         /// </summary>
-        public double SellPercent
+        public decimal SellPercent
         {
             get
             {
-                return Convert.ToDouble(nudPercent.Value / 100, GlobalOptions.CultureInfo);
+                return (nudPercent.Value / 100.0m);
             }
         }
         #endregion

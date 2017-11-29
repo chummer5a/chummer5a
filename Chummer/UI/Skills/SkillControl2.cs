@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -40,9 +40,8 @@ namespace Chummer.UI.Skills
             lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 
             skill.PropertyChanged += Skill_PropertyChanged;
-
+            skill.CharacterObject.AttributeSection.AttributeCategoryChanged += AttributeCategoryOnPropertyChanged;
             _attributeActive = skill.AttributeObject;
-            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
             Skill_PropertyChanged(null, null);  //if null it updates all
             _normal = btnAttribute.Font;
             _italic = new Font(_normal, FontStyle.Italic);
@@ -55,16 +54,15 @@ namespace Chummer.UI.Skills
                 lblCareerRating.Visible = true;
 
                 btnCareerIncrease.Visible = true;
-                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudSkill.Visible = false;
                 nudKarma.Visible = false;
                 chkKarma.Visible = false;
 
                 cboSpec.Visible = false;
+                btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
-
-                lblCareerSpec.DataBindings.Add("Text", skill, nameof(skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 lblCareerSpec.Visible = true;
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
@@ -125,7 +123,7 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); };
+                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name); };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -135,13 +133,22 @@ namespace Chummer.UI.Skills
 
             ResumeLayout();
         }
-        
+
+        private void AttributeCategoryOnPropertyChanged(object obj)
+        {
+            _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+            _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
+
+            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+            AttributeActiveOnPropertyChanged(null, null);
+        }
+
         private void ContextMenu_Opening(object sender, CancelEventArgs e)
         {
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
             {
                 if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
         }
 
@@ -203,7 +210,7 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
@@ -218,8 +225,30 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-                        _skill.CharacterObject.Options.KarmaSpecialization);
+                int price = _skill.CharacterObject.Options.KarmaSpecialization;
+
+                int intExtraSpecCost = 0;
+                int intTotalBaseRating = _skill.TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
+                        {
+                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                intExtraSpecCost += objLoopImprovement.Value;
+                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+                price += intExtraSpecCost; //Spec
+
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price.ToString());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;
@@ -241,9 +270,9 @@ namespace Chummer.UI.Skills
         private void SetupDropdown()
         {
             List<ListItem> lstAttributeItems = new List<ListItem>();
-            foreach (string strLoopAttribute in Character.AttributeStrings)
-            {
-                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.Instance.GetString($"String_Attribute{strLoopAttribute}Short")));
+		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
+		    {
+                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
             }
 
             cboSelectAttribute.BeginUpdate();
@@ -316,26 +345,26 @@ namespace Chummer.UI.Skills
         {
             Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
         }
-
+        
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
+            CommonFunctions.OpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
         }
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
+                !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
             {
                 chkKarma.Checked = true;
             }
         }
 
-        private void RatingChanged(object sender, EventArgs e)
+        /* Delnar: TODO Awaiting other authors' approval before activation.
+        private void chkKarma_CheckChanged(object sender, EventArgs e)
         {
-            if (_skill.LearnedRating == 0 && _skill.Specializations.Count > 0)
-            {
-                _skill.Specializations.Clear();
-            }
+            cboSpec_TextChanged(sender, e);
         }
+        */
     }
 }

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,14 +31,14 @@ namespace Chummer
         public frmSelectCalendarStart()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
         public frmSelectCalendarStart(CalendarWeek objWeek)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
 
             nudYear.Value = objWeek.Year;
@@ -59,7 +59,7 @@ namespace Chummer
         private void nudMonth_ValueChanged(object sender, EventArgs e)
         {
             // All months have 4 weeks with the exception of months 3, 6, 9, and 12 which have 5 each.
-            switch (Convert.ToInt32(nudMonth.Value))
+            switch (decimal.ToInt32(nudMonth.Value))
             {
                 case 3:
                 case 6:
@@ -80,9 +80,9 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _intSelectedYear = Convert.ToInt32(nudYear.Value);
-            int intMonth = Convert.ToInt32(nudMonth.Value);
-            int intWeek = Convert.ToInt32(nudWeek.Value);
+            _intSelectedYear = decimal.ToInt32(nudYear.Value);
+            int intMonth = decimal.ToInt32(nudMonth.Value);
+            int intWeek = decimal.ToInt32(nudWeek.Value);
 
             // Calculate the week number based on the selected month and week combination.
             _intSelectedWeek = (intMonth - 1) * 4 + intWeek;

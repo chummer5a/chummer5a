@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:include schemaLocation="../data../bonuses.xsd" />
   <xs:include schemaLocation="../data../conditions.xsd" /> 
@@ -47,7 +47,13 @@
                     <xs:element name="mutant" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="print" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
+					<xs:element name="limitwithinclusions" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="chargenlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="chargenonly" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="onlyprioritygiven" type="xs:string" minOccurs="0" maxOccurs="1" />
+					<xs:element name="nolevels" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+					<xs:element ref="firstlevelbonus" minOccurs="0" maxOccurs="1" />
                     <xs:element name="nomission" minOccurs="0" maxOccurs="1" />
                     <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />

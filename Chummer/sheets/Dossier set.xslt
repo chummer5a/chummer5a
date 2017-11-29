@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Dossier character summary sheet -->
 <!-- Created by Jeff Halket, modified by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
@@ -16,33 +16,56 @@
     </xsl:variable>
     <title><xsl:value-of select="$TitleName"/></title>
 
-    <xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
+    <xsl:text disable-output-escaping="yes"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:text>
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-            font-size: 9pt;
-            margin: 0;
-            vertical-align: top;
+          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+          font-size: 9pt;
+          margin: 0;
+          vertical-align: top;
           }
           html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
+          height: 100%;
+          margin: 0px;  /* this affects the margin on the html before sending to printer */
           }
           .label {
-            font-weight: bold;
-            width: 15%;
+          font-weight: bold;
+          width: 15%;
+          }
+          .mugshot {
+          width: auto;
+          max-width: 100%;
+          object-fit: scale-down;
+          image-rendering: optimizeQuality;
+          }
+          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+          .mugshot {
+          width: 100%;
+          max-width: inherit;
+          object-fit: scale-down;
+          }
           }
         </style>
+        <!--[if IE]
+        <style type="text/css">
+        .mugshot {
+          width: 100%;
+          max-width: inherit;
+          object-fit: scale-down;
+          }
+        </style>
+        -->
         <style media="print">
            @page {
             size: auto;
             margin-top: 0.5in;
             margin-left: 0.5in;
             margin-right: 0.5in;
-            margin-bottom: 0.75in;
+            margin-bottom: 0.5in;
           }
         </style>
       </head>
@@ -53,11 +76,22 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Name"/>:</td>
               <td><xsl:value-of select="name"/></td>
-              <td rowspan="10" width="40%" align="center">
-                <xsl:if test="mainmugshotbase64 != ''">
-                  <img src="data:image/png;base64,{mainmugshotbase64}" />
-                </xsl:if>
-              </td>
+              <xsl:choose>
+                <xsl:when test="mainmugshotbase64 != ''">
+                  <td rowspan="11" width="40%" align="center" style="text-align:center; vertical-align: middle; width: 40%;">
+                    <table width="100%" style="cellpadding: 0; width: 100%;">
+                      <tr>
+                        <td style = "text-align: center; vertical-align: middle;">
+                          <img src="data:image/png;base64,{mainmugshotbase64}" class="mugshot" style="width: auto; max-height: 14em;" />
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </xsl:when>
+                <xsl:otherwise>
+                  <td rowspan="11"/>
+                </xsl:otherwise>
+                </xsl:choose>
             </tr>
             <tr>
               <td class="label"><xsl:value-of select="$lang.Alias"/>:</td>

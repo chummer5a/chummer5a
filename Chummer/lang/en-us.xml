@@ -19,8 +19,21 @@
 -->
 <chummer>
   <version>-350</version>
-  <name>English (US)</name>
+  <name>English (en-US)</name>
   <strings>
+	<!-- Meta Strings -->
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
+	<string>
+		<key>Message_File_Cannot_Be_Accessed</key>
+		<text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
+	</string>
     <!-- Region Common Strings -->
     <string>
       <key>String_Search</key>
@@ -801,6 +814,14 @@
     <string>
       <key>Checkbox_HideOverAvailLimit</key>
       <text>Hide Items Over Avail Limit ({0})</text>
+    </string>
+	<string>
+      <key>Checkbox_ShowOnlyAffordItems</key>
+      <text>Show Only Items I Can Afford</text>
+    </string>
+	<string>
+      <key>String_Immune</key>
+      <text>Immune</text>
     </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
@@ -1694,6 +1715,10 @@
       <key>Message_DeleteQuality</key>
       <text>Are you sure you want to delete this Quality?</text>
     </string>
+	<string>
+      <key>Message_LowerQualityLevel</key>
+      <text>Are you sure you want to remove a level from this Quality?</text>
+    </string>
     <string>
       <key>Message_DeleteMetatypeQuality</key>
       <text>Are you sure you want to remove this Metatype Quality for {0}?</text>
@@ -1710,6 +1735,10 @@
       <key>Message_DeletePositiveQualityCareer</key>
       <text>Are you sure you want to delete this Positive Quality? You will not receiving any Karma for removing it.</text>
     </string>
+	<string>
+	  <key>Message_LowerPositiveQualityLevelCareer</key>
+	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receiving any Karma for removing it.</text>
+	</string>
     <string>
       <key>Message_DeleteImprovement</key>
       <text>Are you sure you want to delete this Improvement?</text>
@@ -1792,7 +1821,7 @@
     </string>
     <string>
       <key>Message_PositiveQualityLimit</key>
-      <text>You cannot spend more than {0} on Positive Qualities.</text>
+      <text>You cannot spend more than {0} on Positive Qualities and Group Contacts.</text>
     </string>
     <string>
       <key>Message_PositiveQualityMoreThanNegativeQuality</key>
@@ -1805,6 +1834,10 @@
     <string>
       <key>Message_MetavariantQuality</key>
       <text>You cannot remove Qualities that come from your Metatype/Metavariant.</text>
+    </string>
+	<string>
+      <key>Message_ImprovementQuality</key>
+      <text>This Quality was added by {0}. You must remove it in order to remove this quality.</text>
     </string>
     <string>
       <key>MessageTitle_MetavariantQuality</key>
@@ -2434,6 +2467,10 @@
       <key>Message_ConfirmKarmaExpenseRemove</key>
       <text>Are you sure you want to spend {1} Karma on removing {0}?</text>
     </string>
+	<string>
+	  <key>Message_ConfirmKarmaExpenseLowerLevel</key>
+	  <text>Are you sure you want to spend {1} Karma on removing a level from {0}?</text>
+	</string>
     <string>
       <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
       <text>Are you sure you want to add this Complex Form Option for {0} Karma?</text>
@@ -2633,6 +2670,14 @@
     <string>
       <key>MessageTitle_ConfirmReapplyImprovements</key>
       <text>Re-apply Improvements</text>
+    </string>
+	<string>
+      <key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>
+      <text>While reapplying improvements, the following items were found to not have data file entries:\n\n</text>
+    </string>
+	<string>
+      <key>Message_ReapplyImprovementsFoundOutdatedItems_Bottom</key>
+      <text>\nAny improvements they granted could not be added back. Please manually remove and replace these items and/or make sure any custom data files used when creating this character are still present and active.</text>
     </string>
     <string>
       <key>MessageTitle_Possession</key>
@@ -3593,6 +3638,10 @@
       <key>Button_SwapQuality</key>
       <text>Swap Quality</text>
     </string>
+	<string>
+		<key>Label_QualityLevel</key>
+		<text>Quality Level:</text>
+	</string>
     <string>
       <key>Button_AddContact</key>
       <text>&amp;Add Contact</text>
@@ -4200,6 +4249,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_EssenceHole</key>
       <text>Essence Hole:</text>
     </string>
+	<string>
+      <key>Button_ChangeMountedLocation</key>
+      <text>Change Mounted Location</text>
+    </string>
     <!-- End Region-->
     <!-- Region Street Gear/Lifestyle Tab -->
     <string>
@@ -4444,6 +4497,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_AdeptWayDiscount</key>
       <text>Bonded Foci Qualifying for Adept Way Discount:</text>
     </string>
+    <string>
+      <key>Menu_RenameExtraText</key>
+      <text>&amp;Remame Extra Text</text>
+    </string>
     <!-- End Region-->
     <!-- Region Vehicles Tab -->
     <string>
@@ -4489,6 +4546,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_VehicleSeats</key>
       <text>Seats:</text>
+    </string>
+    <string>
+      <key>Menu_AddWeaponMount</key>
+      <text>Add Weapon Mount</text>
+    </string>
+    <string>
+      <key>String_WeaponMounts</key>
+      <text>Weapon Mounts</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Info Tab -->
@@ -4567,10 +4632,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_Mugshot</key>
       <text>Mugshot:</text>
-    </string>
-    <string>
-      <key>Label_MugshotDimensions</key>
-      <text>210px X 310px</text>
     </string>
     <string>
       <key>Checkbox_Created</key>
@@ -4853,6 +4914,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
       <text>Hide items that are over the Availability Limit during character creation</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
+      <text>Allow skill points to be used to buy specializations for karma-bought skills</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
+      <text>Mystic Adepts use second MAG attribute for Adept abilities instead of special PP rules</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>
@@ -5252,13 +5321,33 @@ Do you want to continue?</text>
       <key>Label_Contact_Loyalty</key>
       <text>Loyalty:</text>
     </string>
-    <string>
-      <key>Label_Contact_Group</key>
-      <text>Group:</text>
+	<string>
+      <key>Label_Contact_PersonalLife</key>
+      <text>Personal Life:</text>
+    </string>
+	<string>
+      <key>Label_Contact_PreferredPayment</key>
+      <text>Preferred Payment:</text>
+    </string>
+	<string>
+      <key>Label_Contact_HobbiesVice</key>
+      <text>Hobbies/Vice:</text>
     </string>
     <string>
-      <key>Label_Contact_Free</key>
-      <text>Free:</text>
+      <key>Checkbox_Contact_Group</key>
+      <text>Group</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Free</key>
+      <text>Free</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Blackmail</key>
+      <text>Blackmail</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Family</key>
+      <text>Family</text>
     </string>
     <string>
       <key>Label_Enemy_Incidence</key>
@@ -5680,6 +5769,14 @@ Do you want to continue?</text>
       <key>Checkbox_DiceRoller_RushedJob</key>
       <text>Rushed Job (Glitch on 1 or 2)</text>
     </string>
+	<string>
+      <key>Checkbox_DiceRoller_BubbleDie</key>
+      <text>Bubble Die (Fix Even Dicepool Glitch Chances)</text>
+    </string>
+	<string>
+	  <key>String_BubbleDie</key>
+	  <text>Only for Glitching:</text>
+	</string>
     <string>
       <key>Label_DiceRoller_Result</key>
       <text>Result:</text>
@@ -5724,6 +5821,10 @@ Do you want to continue?</text>
       <key>String_DiceRoller_Failure</key>
       <text>Failure</text>
     </string>
+	<string>
+	  <key>Label_DiceRoller_Sum</key>
+	  <text>Sum:</text>
+	</string>
     <!-- End Region-->
     <!-- Region Expense Window -->
     <string>
@@ -5792,7 +5893,7 @@ Do you want to continue?</text>
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Result of</text>
+      <text>Result of {0}D6: (</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Metatype Window -->
@@ -6859,6 +6960,10 @@ Do you want to continue?</text>
       <text>Allow characters to exceed their Positive Quality limit</text>
     </string>
     <string>
+      <key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
+      <text>Double all Positive Quality karma costs in excess of the limit</text>
+    </string>
+    <string>
       <key>Checkbox_Options_ExceedNegativeQualities</key>
       <text>Allow characters to exceed their Negative Quality limit</text>
     </string>
@@ -6971,6 +7076,10 @@ Do you want to continue?</text>
       <text>Number of decimal places to round Essence to:</text>
     </string>
     <string>
+      <key>Checkbox_Option_DontRoundEssenceInternally</key>
+      <text>Only round Essence for display purposes, not for internal calculations</text>
+    </string>
+    <string>
       <key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
       <text>Free Spirits receive Power Points based on MAG instead of EDG</text>
     </string>
@@ -7043,12 +7152,24 @@ Do you want to continue?</text>
       <text>Use Unix-Style Parameters when opening PDFs</text>
     </string>
     <string>
+      <key>Checkbox_Options_SearchInCategoryOnly</key>
+      <text>Searching in selection forms is restricted to the current Category</text>
+    </string>
+    <string>
       <key>Button_ToggleSourcebooks</key>
       <text>Toggle all Sourcebooks On/Off</text>
     </string>
     <string>
       <key>Label_Options_CharacterRoster</key>
       <text>Character Roster Watch Folder</text>
+    </string>
+    <string>
+      <key>Label_Options_NuyenDecimalsAlways</key>
+      <text>Number of Nuyen decimal places to always display:</text>
+    </string>
+    <string>
+      <key>Label_Options_NuyenDecimalsMaximum</key>
+      <text>Maximum number of Nuyen decimal places to display:</text>
     </string>
     <!-- End Region-->
     <!-- Region Print Multiple Window -->
@@ -7505,6 +7626,14 @@ Do you want to continue?</text>
       <key>Checkbox_SelectGeneric_LimitList</key>
       <text>Show only {0} I can take</text>
     </string>
+	<string>
+      <key>Message_SelectGeneric_ChargenRestriction</key>
+      <text>You cannot select this {0} because your character has already been created.</text>
+    </string>
+	<string>
+      <key>MessageTitle_SelectGeneric_PriorityRestriction</key>
+      <text>You cannot select this {0} because your character's build method does not allow you to buy this {0}.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Nexus Window -->
     <string>
@@ -7730,6 +7859,10 @@ Do you want to continue?</text>
     <string>
       <key>Title_SelectQuality</key>
       <text>Select a Quality</text>
+    </string>
+	<string>
+      <key>Label_FilterByKarma</key>
+      <text>Filter by Karma:</text>
     </string>
     <string>
       <key>Checkbox_SelectQuality_LimitList</key>
@@ -8015,6 +8148,54 @@ Do you want to continue?</text>
       <key>Warning_Update_CouldNotConnect</key>
       <text>Chummer was unable to connect to the update server. Please check your firewall and proxy settings.</text>
     </string>
+	<string>
+      <key>Button_Download</key>
+      <text>Download</text>
+    </string>
+	<string>
+      <key>Button_Redownload</key>
+      <text>Re-Download</text>
+    </string>
+	<string>
+      <key>Button_Up_To_Date</key>
+      <text>Already Up-to-Date</text>
+    </string>
+	<string>
+      <key>Button_Install_Restart</key>
+      <text>Install and Restart</text>
+    </string>
+	<string>
+	  <key>Label_Updater_Status</key>
+	  <text>Updater Status:</text>
+	</string>
+	<string>
+	  <key>String_Up_To_Date</key>
+	  <text>Chummer5 is up-to-date. Currently installed version is {0}. Latest {1} version of Chummer5 is {2}.</text>
+	</string>
+	<string>
+	  <key>String_Nightly_Changelog_Warning</key>
+	  <text>Versions in the nightly changelog are temporary.</text>
+	</string>
+	<string>
+      <key>String_Stable</key>
+      <text>stable</text>
+    </string>
+	<string>
+      <key>String_Nightly</key>
+      <text>nightly</text>
+    </string>
+	<string>
+	  <key>String_Update_Available</key>
+	  <text>Update available to version ({0})! Currently installed version is ({1}).</text>
+	</string>
+  <string>
+	  <key>String_Checking_For_Update</key>
+	  <text>Checking for Updates...</text>
+	</string>
+  <string>
+      <key>Message_Update_CloseForms</key>
+      <text>A newer version of Chummer5a has been automatically downloaded. Should we apply it and restart the application?</text>
+    </string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
     <string>
@@ -8054,6 +8235,10 @@ Do you want to continue?</text>
     <string>
       <key>Label_CreateImprovementValue</key>
       <text>Value:</text>
+    </string>
+	<string>
+      <key>Label_CreateImprovementExactly</key>
+      <text>Exactly:</text>
     </string>
     <string>
       <key>Label_CreateImprovementMinimum</key>
@@ -8369,6 +8554,14 @@ Do you want to continue?</text>
       <key>String_CustomItem_SelectText</key>
       <text>Enter a name for this custom item.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <!-- End Region-->
     <!-- Region CharacterOptions Messages -->
     <string>
@@ -8396,6 +8589,32 @@ Do you want to continue?</text>
       <text>Cannot Load Character</text>
     </string>
     <!-- End Region-->
+	<!-- Region Karma Value Strings -->
+	<string>
+      <key>MessageTitle_KarmaValue</key>
+      <text>Character Karma Value</text>
+    </string>
+	<string>
+      <key>Message_KarmaValue</key>
+      <text>Besides knowledge points from life modules, and ignoring metatype effects for which karma value cannot be objectively judged, this character has the following karma value:</text>
+    </string>
+	<string>
+      <key>Menu_KarmaValue</key>
+      <text>Calculate Karma Value</text>
+    </string>
+	<string>
+      <key>String_Total</key>
+      <text>Total</text>
+    </string>
+	<string>
+      <key>String_FreeSpells</key>
+      <text>Free Spells</text>
+    </string>
+	<string>
+      <key>String_FreeCFs</key>
+      <text>Free Complex Forms</text>
+    </string>
+	<!-- End Region-->
     <!-- Region Special Strings -->
     <string>
       <key>String_SkillCommand</key>
@@ -8437,6 +8656,82 @@ Do you want to continue?</text>
       <key>Message_InvalidCharacters</key>
       <text>This text contains one or more invalid characters. Invalid character(s): "\n Please remove any invalid characters and try again.</text>
     </string>
+	<string>
+	  <key>String_DealerConnection_Drones</key>
+	  <text>Drones</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Groundcraft</key>
+	  <text>Groundcraft</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Watercraft</key>
+	  <text>Watercraft</text>
+	</string>
+	<string>
+	  <key>String_DealerConnection_Aircraft</key>
+	  <text>Aircraft</text>
+	</string>
+	<string>
+	  <key>Message_MissingSourceBooks</key>
+	  <text>This character was created with the following books that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+	</string>
+	<string>
+	  <key>Message_MissingSourceBooks_Title</key>
+	  <text>Missing Books</text>
+	</string>
+	<string>
+	  <key>Message_MissingCustomDataDirectories</key>
+	  <text>This character was created with the following custom data directories that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+	</string>
+	<string>
+	  <key>Message_MissingCustomDataDirectories_Title</key>
+	  <text>Missing Custom Data Directories</text>
+	</string>
+	<string>
+	  <key>Message_Duplicate_CustomDataDirectoryName</key>
+	  <text>Custom data directory of this name already exists.</text>
+	</string>
+	<string>
+	  <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+	  <text>Duplicate Custom Data Directory Name</text>
+	</string>
+	<string>
+	  <key>Label_CustomDataDirectories</key>
+	  <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+	</string>
+	<string>
+	  <key>Button_AddCustomDirectory</key>
+	  <text>Add Directory</text>
+	</string>
+	<string>
+	  <key>Button_RenameCustomDataDirectory</key>
+	  <text>Rename Entry</text>
+	</string>
+	<string>
+	  <key>Button_RemoveCustomDirectory</key>
+	  <text>Remove Directory</text>
+	</string>
+	<string>
+	  <key>Button_IncreaseCustomDirectoryLoadOrder</key>
+	  <text>Increase Load Order</text>
+	</string>
+	<string>
+	  <key>Button_DecreaseCustomDirectoryLoadOrder</key>
+	  <text>Decrease Load Order</text>
+	</string>
+	<string>
+	  <key>String_ShowAll</key>
+	  <text>Show All</text>
+	</string>
+	<string>
+	  <key>MessageTitle_ImprovementLoadError</key>
+	  <text>Error Encountered While Loading Improvements</text>
+	</string>
+	<string>
+	  <key>Message_ImprovementLoadError</key>
+	  <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
+	</string>
     <!-- End Region -->
     <!-- End Region -->
     <string>

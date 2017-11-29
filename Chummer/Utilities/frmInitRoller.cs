@@ -35,7 +35,7 @@ namespace Chummer
         public frmInitRoller()
         {
             InitializeComponent();
-            //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
         }
 
@@ -99,7 +99,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudDiceResult.Value);
+                return decimal.ToInt32(nudDiceResult.Value);
             }
         }
         #endregion

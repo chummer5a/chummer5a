@@ -36,7 +36,7 @@
       <multiplier>0</multiplier>
       <source>SR5</source>
       <page>1</page>
-      <hidden />
+      <hide />
     </lifestyle>
     <lifestyle>
       <id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
@@ -404,6 +404,7 @@
       <page>220</page>
     </quality>
     <quality>
+      <id>080401ff-1470-4b32-86bb-bd615fd63b86</id>
       <name>Discreet Cleaning Service</name>
       <category>Entertainment - Service</category>
       <lp>4</lp>
@@ -569,7 +570,7 @@
       <lp>2</lp>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>50</cost>
+      <cost>500</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -743,7 +744,7 @@
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>50</cost>
+      <cost>75</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -1121,7 +1122,7 @@
       <name>DocWagon Contract, Basic</name>
       <category>Contracts</category>
       <lp>0</lp>
-      <cost>417</cost>
+      <cost>5000 div 12</cost>
       <source>SR5</source>
       <page>450</page>
     </quality>
@@ -1130,7 +1131,7 @@
       <name>DocWagon Contract, Gold</name>
       <category>Contracts</category>
       <lp>0</lp>
-      <cost>2084</cost>
+      <cost>25000 div 12</cost>
       <source>SR5</source>
       <page>450</page>
     </quality>
@@ -1139,7 +1140,7 @@
       <name>DocWagon Contract, Platinum</name>
       <category>Contracts</category>
       <lp>0</lp>
-      <cost>4167</cost>
+      <cost>50000 div 12</cost>
       <source>SR5</source>
       <page>450</page>
     </quality>
@@ -1148,7 +1149,7 @@
       <name>DocWagon Contract, Super-Platinum</name>
       <category>Contracts</category>
       <lp>0</lp>
-      <cost>8334</cost>
+      <cost>100000 div 12</cost>
       <source>SR5</source>
       <page>450</page>
     </quality>

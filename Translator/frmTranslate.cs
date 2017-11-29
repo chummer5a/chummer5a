@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -164,8 +164,8 @@ namespace Translator
                         if (objAttrib == null)
                             objAttrib = _objDataDoc.CreateAttribute("translated");
                         else
-                            objAttrib.InnerText = true.ToString();
-                        objAttrib.InnerText = true.ToString();
+                            objAttrib.InnerText = System.Boolean.TrueString;
+                        objAttrib.InnerText = System.Boolean.TrueString;
                         xmlNodeLocal.Attributes.Append(objAttrib);
                     }
                 }
@@ -190,12 +190,12 @@ namespace Translator
                     if (itemOf == null)
                     {
                         itemOf = _objDataDoc.CreateAttribute("translated");
-                        itemOf.InnerText = true.ToString();
+                        itemOf.InnerText = System.Boolean.TrueString;
                         xmlNodeLocal.Attributes?.Append(itemOf);
                     }
                     else
                     {
-                        itemOf.InnerText = true.ToString();
+                        itemOf.InnerText = System.Boolean.TrueString;
                     }
                 }
             }
@@ -310,7 +310,7 @@ namespace Translator
         }
         private void txtSearch_GotFocus(object sender, EventArgs e)
         {
-            txtSearch.SelectAll();
+            //txtSearch.SelectAll();
         }
 
         private void txtSearch_KeyPressed(object sender, KeyPressEventArgs e)
@@ -324,7 +324,7 @@ namespace Translator
         private void LoadLanguageFiles()
         {
             // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            _strCode = Language.Substring(Language.IndexOf("(") + 1, 2);
+            _strCode = Language.Substring(Language.IndexOf('(') + 1, 2);
             _objTranslationDoc.Load(string.Concat(_strPath, "lang\\", _strCode, ".xml"));
             _objDataDoc.Load(string.Concat(_strPath, "lang\\", _strCode, "_data.xml"));
         }

@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace Chummer
         public PetControl()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -47,6 +47,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objContact.FileName))
             {
+                Cursor = Cursors.WaitCursor;
                 // Load the character to get their Metatype.
                 Character objPet = new Character();
                 objPet.FileName = _objContact.FileName;
@@ -54,7 +55,9 @@ namespace Chummer
                 lblMetatype.Text = objPet.Metatype;
                 if (!string.IsNullOrEmpty(objPet.Metavariant))
                     lblMetatype.Text += " (" + objPet.Metavariant + ")";
+                objPet.Dispose();
                 objPet = null;
+                Cursor = Cursors.Default;
             }
         }
 
@@ -110,18 +113,26 @@ namespace Chummer
 
                 if (blnError)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
             if (Path.GetExtension(_objContact.FileName) == "chum5")
             {
                 if (!blnUseRelative)
-                    GlobalOptions.Instance.MainForm.LoadCharacter(_objContact.FileName, false);
+                {
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(_objContact.FileName);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
+                }
                 else
                 {
                     string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-                    GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
                 }
             }
             else
@@ -144,8 +155,9 @@ namespace Chummer
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
+                Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_OpenFile"));
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile"));
 
                 // Load the character to get their Metatype.
                 Character objPet = new Character();
@@ -154,6 +166,7 @@ namespace Chummer
                 lblMetatype.Text = objPet.Metatype;
                 if (!string.IsNullOrEmpty(objPet.Metavariant))
                     lblMetatype.Text += " (" + objPet.Metavariant + ")";
+                objPet.Dispose();
                 objPet = null;
 
                 // Set the relative path.
@@ -163,17 +176,18 @@ namespace Chummer
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();
 
                 FileNameChanged(this);
+                Cursor = Cursors.Default;
             }
         }
 
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_RemoveCharacterAssociation"), LanguageManager.Instance.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkFile"));
+                tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile"));
                 lblMetatype.Text = string.Empty;
                 FileNameChanged(this);
             }
@@ -189,7 +203,7 @@ namespace Chummer
                 _objContact.Notes = frmContactNotes.Notes;
 
             string strTooltip = string.Empty;
-            strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
+            strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += "\n\n" + _objContact.Notes;
             tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
@@ -201,7 +215,7 @@ namespace Chummer
             {
                 if (objItem.Tag != null)
                 {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
                 }
             }
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Text-Only Character Sheet -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -497 -->
@@ -21,6 +21,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
             font-family: 'courier new', courier;
@@ -48,8 +49,24 @@
           == <xsl:value-of select="$lang.PersonalData"/> ==
           <br/><xsl:value-of select="$lang.StreetName"/>: <xsl:value-of select="alias"/>
           <br/><xsl:value-of select="$lang.Name"/>: <xsl:value-of select="name"/>
-          <br/><xsl:value-of select="$lang.Movement"/>:
-          <xsl:call-template name="MovementRate"/>
+          <xsl:if test="movementwalk != '' and movementwalk != '0'">
+            <br/><xsl:value-of select="$lang.Movement"/>:
+            <xsl:call-template name="formatrate">
+              <xsl:with-param name="movrate" select="movementwalk"/>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:if test="movementswim != '' and movementswim != '0'">
+            <br/><xsl:value-of select="$lang.Swim"/>:
+            <xsl:call-template name="formatrate">
+              <xsl:with-param name="movrate" select="movementswim"/>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:if test="movementfly != '' and movementfly != '0'">
+            <br/><xsl:value-of select="$lang.Fly"/>:
+            <xsl:call-template name="formatrate">
+              <xsl:with-param name="movrate" select="movementfly"/>
+            </xsl:call-template>
+          </xsl:if>
           <br/><xsl:value-of select="$lang.Karma"/>: <xsl:value-of select="totalkarma"/>
           <br/><xsl:value-of select="$lang.StreetCred"/>: <xsl:value-of select="totalstreetcred"/>
           <br/><xsl:value-of select="$lang.Notoriety"/>: <xsl:value-of select="totalnotoriety"/>
@@ -70,9 +87,7 @@
           <br/><xsl:value-of select="$lang.LiftCarry"/>: <xsl:value-of select="liftandcarry"/> (<xsl:value-of select="liftweight"/> kg/<xsl:value-of select="carryweight"/> kg)
           <br/><xsl:value-of select="$lang.Memory"/>: <xsl:value-of select="memory"/>
           <br/><xsl:value-of select="$lang.Nuyen"/>:
-            <xsl:call-template name="fnx-fmt-nmbr">
-              <xsl:with-param name="nmbr" select="nuyen"/>
-            </xsl:call-template>
+            <xsl:value-of select="nuyen"/>
             <xsl:value-of select="$lang.NuyenSymbol"/>
 
           <xsl:if test="prioritymetatype != ''">
@@ -135,6 +150,12 @@
               (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total"/>)
             </xsl:if>
           </xsl:if>
+          <xsl:if test="depenabled = 'True'">
+            <br/><xsl:value-of select="$lang.DEP"/>: <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base"/>
+            <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
+              (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total"/>)
+            </xsl:if>
+          </xsl:if>
 
           <br/>
           <br/>== <xsl:value-of select="$lang.DerivedAttributes"/> ==
@@ -174,12 +195,12 @@
             </xsl:call-template>
           <xsl:value-of select="matrixhotinit"/>
           <br/><xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat($lang.PhysicalTrack1,' ',$lang.PhysicalTrack2,': ')"/>
+              <xsl:with-param name="string" select="concat($lang.PhysicalTrack,': ')"/>
               <xsl:with-param name="length" select="27"/>
             </xsl:call-template>
             <xsl:value-of select="physicalcm"/>
           <br/><xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat($lang.StunTrack1,' ',$lang.StunTrack2,': ')"/>
+              <xsl:with-param name="string" select="concat($lang.StunTrack,': ')"/>
               <xsl:with-param name="length" select="27"/>
             </xsl:call-template>
             <xsl:value-of select="stuncm"/>
@@ -441,18 +462,12 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$lang.Base"/>:
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="base"/>
-            <xsl:with-param name="wdth" select="2"/>
-          </xsl:call-template>
+          <xsl:value-of select="base"/>
           <xsl:call-template name="fnx-repeat">
             <xsl:with-param name="count" select="10"/>
           </xsl:call-template>
           <xsl:value-of select="$lang.Pool"/>:
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="total"/>
-            <xsl:with-param name="wdth" select="2"/>
-          </xsl:call-template>
+          <xsl:value-of select="total"/>
           <xsl:if test="spec != '' and exotic = 'False'">
             (<xsl:value-of select="specializedrating"/>)
           </xsl:if>
@@ -907,10 +922,7 @@
         <xsl:with-param name="string" select="$anme"/>
         <xsl:with-param name="length" select="35"/>
       </xsl:call-template>
-      <xsl:call-template name="fnx-fmt-nmbr">
-        <xsl:with-param name="nmbr" select="armor"/>
-        <xsl:with-param name="wdth" select="2"/>
-      </xsl:call-template>
+      <xsl:value-of select="armor"/>
       <xsl:if test="armormods/armormod">
         <xsl:for-each select="armormods/armormod">
           <xsl:sort select="name"/>
@@ -1048,10 +1060,7 @@
         <xsl:with-param name="string" select="date"/>
         <xsl:with-param name="length" select="25"/>
       </xsl:call-template>
-      <xsl:call-template name="fnx-fmt-nmbr">
-        <xsl:with-param name="nmbr" select="amount"/>
-        <xsl:with-param name="wdth" select="6"/>
-      </xsl:call-template>
+      <xsl:value-of select="amount"/>
       <xsl:call-template name="fnx-repeat">
         <xsl:with-param name="count" select="6"/>
       </xsl:call-template>
@@ -1066,10 +1075,7 @@
         <xsl:with-param name="string" select="date"/>
         <xsl:with-param name="length" select="25"/>
       </xsl:call-template>
-      <xsl:call-template name="fnx-fmt-nmbr">
-        <xsl:with-param name="nmbr" select="amount"/>
-        <xsl:with-param name="wdth" select="7"/>
-      </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
+      <xsl:value-of select="amount"/><xsl:value-of select="$lang.NuyenSymbol"/>
       <xsl:call-template name="fnx-repeat">
         <xsl:with-param name="count" select="4"/>
       </xsl:call-template>

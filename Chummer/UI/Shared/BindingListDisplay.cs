@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,9 +19,9 @@ namespace Chummer.UI.Shared
         private readonly BindingList<TType> _contents; //List of all items supposed to be displayed
         private readonly Func<TType, Control> _createFunc;  //Function to create a control out of a item
         private readonly bool _loadVisibleOnly;
-        private List<ControlWithMetaData> _contentList;
+        private readonly List<ControlWithMetaData> _contentList;
         private readonly List<int> _displayIndex = new List<int>();
-        private IndexComparer _indexComparer;
+        private readonly IndexComparer _indexComparer;
         private BitArray _rendered;
         private int _offScreenChunkSize = 1;
         private bool _allRendered;
@@ -29,29 +29,42 @@ namespace Chummer.UI.Shared
         private Predicate<TType> _visibleFilter = x => true;
         private IComparer<TType> _comparison;
 
-        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadFast = false, bool loadVisibleOnly = true)
+        public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> createFunc, bool loadVisibleOnly = true)
         {
             InitializeComponent();
             _contents = contents;
             _createFunc = createFunc;
             _loadVisibleOnly = loadVisibleOnly;
-
-            if (loadFast)
+            DoubleBuffered = true;
+            pnlDisplay.SuspendLayout();
+            _contentList = new List<ControlWithMetaData>();
+            foreach (TType objLoopTType in _contents)
             {
-                InitialSetup();
+                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
             }
+            _indexComparer = new IndexComparer(_contents);
+            if (_comparison == null) _comparison = _indexComparer;
+            _contents.ListChanged += ContentsChanged;
+            ComptuteDisplayIndex();
+            LoadScreenContent();
+            BindingListDisplay_SizeChanged(null, null);
+            pnlDisplay.ResumeLayout();
         }
 
-        private void SkillsDisplay_Load(object sender, EventArgs e)
+        private void BindingListDisplay_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
-
-            if (_contentList == null)
-            {
-                InitialSetup();
-            }
-
             Application.Idle += ApplicationOnIdle;
+        }
+
+        /// <summary>
+        /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
+        /// </summary>
+        public BindingList<TType> Contents
+        {
+            get
+            {
+                return _contents;
+            }
         }
 
         private void LoadRange(int min, int max, bool blnSuspend = true)
@@ -70,40 +83,6 @@ namespace Chummer.UI.Shared
                 item.Control.Visible = true;
                 _rendered[i] = true;
             }
-        }
-
-        private bool UnrenderedInRange(int min, int max)
-        {
-            bool any = false;
-
-            for (int i = min; i < max; i++)
-            {
-                if (_rendered[i] == false) any = true;
-            }
-
-            return !any;
-        }
-
-        private void InitialSetup()
-        {
-            pnlDisplay.SuspendLayout();
-            SetupContentList();
-            ComptuteDisplayIndex();
-            LoadScreenContent();
-            BindingListDisplay_SizeChanged(null, null);
-            pnlDisplay.ResumeLayout();
-        }
-
-        private void SetupContentList()
-        {
-            _contentList = new List<ControlWithMetaData>();
-            foreach (TType objLoopTType in _contents)
-            {
-                _contentList.Add(new ControlWithMetaData(objLoopTType, this));
-            }
-            _indexComparer = new IndexComparer(_contents);
-            if (_comparison == null) _comparison = _indexComparer;
-            _contents.ListChanged += ContentsChanged;
         }
 
         private void ComptuteDisplayIndex()
@@ -128,7 +107,10 @@ namespace Chummer.UI.Shared
                 _displayIndex.Add(objTTypeIndexDictionary[objLoopTType]);
             }
 
-            _rendered = new BitArray(_displayIndex.Count);
+            if (_rendered == null || _rendered.Length != _displayIndex.Count)
+                _rendered = new BitArray(_displayIndex.Count);
+            else
+                _rendered.SetAll(false);
         }
 
         private void LoadScreenContent()
@@ -146,13 +128,13 @@ namespace Chummer.UI.Shared
 
         private int VisibleElements()
         {
-            return _contentList.Count == 0 ? 0 :  Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
+            return _contentList.Count == 0 ? 0 : Math.Min(Height / _contentList[0].Control.Height + 2, _contentList.Count);
         }
 
-        private void ClearAllCache()
+        private void ClearCache(IEnumerable<ControlWithMetaData> lstToClear)
         {
             _allRendered = false;
-            foreach (ControlWithMetaData item in _contentList)
+            foreach (ControlWithMetaData item in lstToClear)
             {
                 item.Reset();
             }
@@ -168,7 +150,7 @@ namespace Chummer.UI.Shared
             {
                 _resetAtIdle = false;
                 pnlDisplay.SuspendLayout();
-                ClearAllCache();
+                ClearCache(_contentList);
                 LoadScreenContent();  //TODO: Don't do this and call if becomes visible
                 pnlDisplay.ResumeLayout();
             }
@@ -211,7 +193,7 @@ namespace Chummer.UI.Shared
             _visibleFilter = predicate;
 
             pnlDisplay.SuspendLayout();
-            ClearAllCache();
+            ClearCache(_contentList);
             if (_contentList.Count > 0)
             {
                 pnlDisplay.Height = _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
@@ -226,28 +208,42 @@ namespace Chummer.UI.Shared
             _comparison = comparison;
 
             pnlDisplay.SuspendLayout();
-            ClearAllCache();
+            ClearCache(_contentList);
             LoadScreenContent();
             pnlDisplay.ResumeLayout();
         }
 
         private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
         {
-            _indexComparer.Reset(_contents);
+            int intNewIndex = eventArgs?.NewIndex ?? 0;
+            List<ControlWithMetaData> lstToRedraw = null;
             switch (eventArgs.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                    return;
-                //case ListChangedType.Reset:
-                //    break;
-                case ListChangedType.ItemAdded:
-                    _contentList.Insert(eventArgs.NewIndex, new ControlWithMetaData(_contents[eventArgs.NewIndex], this));
+                    break;
+                case ListChangedType.Reset:
+                    foreach (ControlWithMetaData objLoopControl in _contentList)
+                    {
+                        objLoopControl.Cleanup();
+                    }
+                    _contentList.Clear();
+                    foreach (TType objLoopTType in _contents)
+                    {
+                        _contentList.Add(new ControlWithMetaData(objLoopTType, this));
+                    }
                     _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList;
+                    break;
+                case ListChangedType.ItemAdded:
+                    _contentList.Insert(intNewIndex, new ControlWithMetaData(_contents[intNewIndex], this));
+                    _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
                     break;
                 case ListChangedType.ItemDeleted:
-                    _contentList[eventArgs.NewIndex].Cleanup();
-                    _contentList.RemoveAt(eventArgs.NewIndex);
+                    _contentList[intNewIndex].Cleanup();
+                    _contentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(_contents);
+                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
                     break;
                 //case ListChangedType.ItemMoved:
                 //    break;
@@ -262,11 +258,14 @@ namespace Chummer.UI.Shared
                     Utils.BreakIfDebug();
                     break;
             }
-            pnlDisplay.ResumeLayout();
-            ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            ClearAllCache();
-            LoadScreenContent();
-            pnlDisplay.SuspendLayout();
+            if (lstToRedraw != null && lstToRedraw.Count > 0)
+            {
+                pnlDisplay.SuspendLayout();
+                ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                ClearCache(lstToRedraw);
+                LoadScreenContent();
+                pnlDisplay.ResumeLayout();
+            }
         }
 
         private void BindingListDisplay_Scroll(object sender, ScrollEventArgs e)
@@ -280,12 +279,13 @@ namespace Chummer.UI.Shared
         {
             pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
 
-            if (_contentList == null) return; //In some edge case i don't know, this is done before _Load()
-
-            pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
+            if (_contentList == null) //In some edge case i don't know, this is done before _Load()
+                pnlDisplay.Height = Height;
+            else
+                pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
             foreach (Control control in pnlDisplay.Controls)
             {
-                control.Width = pnlDisplay.Width - 2;
+                control.Width = pnlDisplay.Width;
             }
         }
 

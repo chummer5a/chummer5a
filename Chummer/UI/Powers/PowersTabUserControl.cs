@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,7 +22,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
         }
 
         public void MissingDatabindingsWorkaround()
@@ -31,7 +31,6 @@ namespace Chummer.UI.Powers
             CalculatePowerPoints();
         }
 
-        private bool _loadCalled;
         private bool _initialized;
         private Character _character;
         private List<Tuple<string, Predicate<Power>>> _dropDownList;
@@ -50,15 +49,12 @@ namespace Chummer.UI.Powers
 
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
-            _loadCalled = true;
             RealLoad();
         }
 
         private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
         {
-            if (_initialized) return;
-
-            if (!(_character != null && _loadCalled)) return;
+            if (_initialized || _character == null) return;
 
             _initialized = true;  //Only do once
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
@@ -70,7 +66,8 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            //this.SuspendLayout();
+            this.SuspendLayout();
+            DoubleBuffered = true;
             MakePowerDisplays();
 
             parts.TaskEnd("MakePowerDisplay()");
@@ -108,24 +105,24 @@ namespace Chummer.UI.Powers
             parts.TaskEnd("visible");
             Panel1_Resize();
             parts.TaskEnd("resize");
+            //this.Update();
+            this.ResumeLayout(true);
+            //this.PerformLayout();
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-            //this.Update();
-            //this.ResumeLayout(true);
-            //this.PerformLayout();
         }
 
         private List<Tuple<string, IComparer<Power>>> GenerateSortList()
         {
             List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
             {
-                new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical"),
                     new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortRating"),
-                    new PowerSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Power_SortAction"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating"),
+                    new PowerSorter((x, y) => y.TotalRating.CompareTo(x.TotalRating))),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction"),
                     new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
-                //new Tuple<string, IComparer<Power>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
+                //new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortCategory"),
                 //    new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
             };
 
@@ -136,21 +133,21 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingAboveZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
                     power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.Instance.GetString("String_PowerFilterRatingZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
                     power => power.Rating == 0)
             };
             //TODO: TRANSLATIONS
 
             ret.AddRange(
                 from XmlNode objNode 
-                in XmlManager.Instance.Load("powers.xml").SelectNodes("/chummer/categories/category")
+                in XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category")
                 let displayName = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
                 select new Tuple<string, Predicate<Power>>(
-                    $"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
+                    $"{LanguageManager.GetString("Label_Category")} {displayName}", 
                     power => power.Category == objNode.InnerText));
 
             return ret;
@@ -173,11 +170,11 @@ namespace Chummer.UI.Powers
 
         private void Panel1_Resize()
         {
-            int height = pnlPowers.Height;
-            const int intWidth = 255;
-            if (_powers == null) return;
-            _powers.Height = height - _powers.Top;
-            _powers.Size = new Size(pnlPowers.Width - (intWidth+10), pnlPowers.Height - 39);
+            if (_powers != null)
+            {
+                _powers.Height = pnlPowers.Height - _powers.Top;
+                _powers.Width = pnlPowers.Width - _powers.Left;
+            }
         }
 
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,7 +186,6 @@ namespace Chummer.UI.Powers
             {
                 csender.DropDownStyle = ComboBoxStyle.DropDown;
                 _searchMode = true;
-                
             }
             else
             {
@@ -227,14 +223,16 @@ namespace Chummer.UI.Powers
             Power objPower = new Power(ObjCharacter);
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
 
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-            objPower.Create(objXmlPower, ObjCharacter.ObjImprovementManager);
-            ObjCharacter.Powers.Add(objPower);
-            MissingDatabindingsWorkaround();
-            if (frmPickPower.AddAgain)
-                cmdAddPower_Click(sender, e);
+            if (objPower.Create(objXmlPower))
+            {
+                ObjCharacter.Powers.Add(objPower);
+                MissingDatabindingsWorkaround();
+                if (frmPickPower.AddAgain)
+                    cmdAddPower_Click(sender, e);
+            }
         }
 
         /// <summary>
@@ -242,7 +240,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
+            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
             ValidateVisibility();
         }
 
@@ -251,10 +249,13 @@ namespace Chummer.UI.Powers
             get
             {
                 int intMAG;
-                if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
+                if (ObjCharacter.IsMysticAdept)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = ObjCharacter.MysticAdeptPowerPoints;
+                    if (ObjCharacter.Options.MysAdeptSecondMAGAttribute)
+                        intMAG = ObjCharacter.MAGAdept.TotalValue;
+                    else
+                        intMAG = ObjCharacter.MysticAdeptPowerPoints;
                 }
                 else
                 {
@@ -263,7 +264,7 @@ namespace Chummer.UI.Powers
                 }
 
                 // Add any Power Point Improvements to MAG.
-                intMAG += ObjCharacter.ObjImprovementManager.ValueOf(Improvement.ImprovementType.AdeptPowerPoints);
+                intMAG += ImprovementManager.ValueOf(ObjCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
                 return intMAG;
             }
@@ -273,7 +274,7 @@ namespace Chummer.UI.Powers
         {
             get
             {
-                return PowerPointsTotal - ObjCharacter.Powers.Sum(objPower => objPower.PowerPoints);
+                return PowerPointsTotal - ObjCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
             }
         }
 

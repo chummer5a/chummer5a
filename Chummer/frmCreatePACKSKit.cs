@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ namespace Chummer
         public frmCreatePACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
         }
@@ -45,20 +45,20 @@ namespace Chummer
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(txtFileName.Text))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith("_packs.xml"))
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace Chummer
                 XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + txtName.Text + "\" and category = \"Custom\"]");
                 if (objXmlPACKSList.Count > 0)
                 {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_DuplicateName").Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName").Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -124,6 +124,7 @@ namespace Chummer
                 int intWIL = _objCharacter.WIL.Value - (_objCharacter.WIL.MetatypeMinimum - 1);
                 int intEDG = _objCharacter.EDG.Value - (_objCharacter.EDG.MetatypeMinimum - 1);
                 int intMAG = _objCharacter.MAG.Value - (_objCharacter.MAG.MetatypeMinimum - 1);
+                int intMAGAdept = _objCharacter.MAGAdept.Value - (_objCharacter.MAGAdept.MetatypeMinimum - 1);
                 int intDEP = _objCharacter.DEP.Value - (_objCharacter.DEP.MetatypeMinimum - 1);
                 int intRES = _objCharacter.RES.Value - (_objCharacter.RES.MetatypeMinimum - 1);
                 // <attributes>
@@ -138,7 +139,11 @@ namespace Chummer
                 objWriter.WriteElementString("wil", intWIL.ToString());
                 objWriter.WriteElementString("edg", intEDG.ToString());
                 if (_objCharacter.MAGEnabled)
+                {
                     objWriter.WriteElementString("mag", intMAG.ToString());
+                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                        objWriter.WriteElementString("magadept", intMAGAdept.ToString());
+                }
                 if (_objCharacter.RESEnabled)
                     objWriter.WriteElementString("res", intRES.ToString());
                 if (_objCharacter.DEPEnabled)
@@ -212,10 +217,10 @@ namespace Chummer
             // Export Starting Nuyen.
             if (chkStartingNuyen.Checked)
             {
-                int intNuyenBP = Convert.ToInt32(_objCharacter.NuyenBP);
+                decimal decNuyenBP = _objCharacter.NuyenBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.InvariantCultureInfo) / 2.0);
-                objWriter.WriteElementString("nuyenbp", intNuyenBP.ToString());
+                    decNuyenBP /= 2.0m;
+                objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
             // Export Active Skills.
@@ -691,9 +696,8 @@ namespace Chummer
 
             objWriter.WriteEndDocument();
             objWriter.Close();
-            objStream.Close();
 
-            MessageBox.Show(LanguageManager.Instance.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.Instance.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 
@@ -709,7 +713,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
-        private void WriteGear(XmlWriter objWriter, List<Gear> lstGear)
+        private void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
         {
             // <gears>
             objWriter.WriteStartElement("gears");
@@ -728,7 +732,7 @@ namespace Chummer
                     objWriter.WriteElementString("category", objGear.Category);
                     if (objGear.Rating > 0)
                         objWriter.WriteElementString("rating", objGear.Rating.ToString());
-                    if (objGear.Quantity > 1)
+                    if (objGear.Quantity != 1)
                         objWriter.WriteElementString("qty", objGear.Quantity.ToString());
                     if (objGear.Children.Count > 0)
                         WriteGear(objWriter, objGear.Children);

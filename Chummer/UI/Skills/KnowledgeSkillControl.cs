@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -35,7 +35,7 @@ namespace Chummer.UI.Skills
                 lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
                 
                 //New knowledge skills start at 0. Leave the Type selector unlocked until they spend Karma on the skill.
-                cboType.Enabled = skill.Karma == 0;
+                cboType.Enabled = (skill.Karma == 0 && skill.Base == 0 || string.IsNullOrWhiteSpace(_skill.Type));
 
                 lblName.Visible = true;
                 lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -49,8 +49,10 @@ namespace Chummer.UI.Skills
                 lblModifiedRating.Location = new Point(294 - 30, 4);
 
                 btnAddSpec.Visible = true;
+                btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnCareerIncrease.Visible = true;
-
+                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
                 lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
@@ -125,17 +127,8 @@ namespace Chummer.UI.Skills
                 int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring;
-                if (_skill.Karma == 0)
-                {
-                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseKnowledgeSkill"), 
-                        _skill.DisplayName, _skill.Rating + 1, _skill.CharacterObject.Options.KarmaNewKnowledgeSkill, cboType.GetItemText(cboType.SelectedItem));
-                }
-                else
-                {
-                    confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                        _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
-                }
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;
@@ -150,8 +143,30 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-                        _skill.CharacterObject.Options.KarmaSpecialization);
+                int price = _skill.CharacterObject.Options.KarmaKnowledgeSpecialization;
+
+                int intExtraSpecCost = 0;
+                int intTotalBaseRating = _skill.TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
+                        {
+                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                intExtraSpecCost += objLoopImprovement.Value;
+                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+                price += intExtraSpecCost; //Spec
+
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price.ToString());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;
@@ -173,23 +188,16 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
-            if (nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
+            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
+                nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
             {
                 chkKarma.Checked = true;
             }
         }
 
-        private void cboSkill_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboSkill_TextChanged(object sender, EventArgs e)
         {
             _skill.LoadDefaultType(_skill.Name);
-        }
-
-        private void RatingChanged(object sender, EventArgs e)
-        {
-            if (_skill.LearnedRating == 0 && _skill.Specializations.Count > 0)
-            {
-                _skill.Specializations.Clear();
-            }
         }
     }
 }

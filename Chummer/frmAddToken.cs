@@ -33,11 +33,13 @@ namespace Chummer
         // used when the user has filled out the information
         private InitiativeUserControl parentControl;
         private Character _character;
+        private Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp = 0;
 
         public frmAddToken(InitiativeUserControl init)
         {
             InitializeComponent();
-            //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
             
@@ -63,14 +65,12 @@ namespace Chummer
         {
             if (File.Exists(fileName) && fileName.EndsWith("chum5"))
             {
-                bool blnLoaded = false;
+                Cursor = Cursors.WaitCursor;
                 Character objCharacter = new Character();
                 objCharacter.FileName = fileName;
-                blnLoaded = objCharacter.Load();
-
-                if (!blnLoaded)
+                if (!objCharacter.Load())
                 {
-                    ;   // TODO edward setup error page
+                    Cursor = Cursors.Default;   // TODO edward setup error page
                     return; // we obviously cannot init
                 }
 
@@ -78,6 +78,7 @@ namespace Chummer
                 txtName.Text = objCharacter.Name;
                 nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
                 _character = objCharacter;
+                Cursor = Cursors.Default;
             }
         }
 
@@ -98,23 +99,55 @@ namespace Chummer
         /// <param name="e"></param>
         private void btnOK_Click(object sender, EventArgs e)
         {
+            Random objRandom = MersenneTwister.SfmtRandom.Create();
             if (_character != null)
             {
-                _character.InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue;
                 _character.InitialInit = (int)nudInitStart.Value;
                 _character.Delayed = false;
                 _character.InitPasses = (int)nudInit.Value;
+                if (chkAutoRollInit.Checked)
+                {
+                    int intInitRoll = 0;
+                    for (int j = 0; j < _character.InitPasses; j++)
+                    {
+                        do
+                        {
+                            _intModuloTemp = _objRandom.Next();
+                        }
+                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                        intInitRoll += 1 + _intModuloTemp % 6;
+                    }
+                    _character.InitRoll = intInitRoll + _character.InitialInit;
+                }
+                else
+                    _character.InitRoll = int.MinValue;
                 _character.Name = txtName.Text;
             }
             else
+            {
                 _character = new Character()
                 {
                     Name = txtName.Text,
                     InitPasses = (int)nudInit.Value,
-                    InitRoll = chkAutoRollInit.Checked ? new Random().Next((int)nudInit.Value, ((int)nudInit.Value) * 6) + ((int)nudInitStart.Value) : Int32.MinValue,
+                    InitRoll = int.MinValue,
                     Delayed = false,
                     InitialInit = (int)nudInitStart.Value
                 };
+                if (chkAutoRollInit.Checked)
+                {
+                    int intInitRoll = 0;
+                    for (int j = 0; j < _character.InitPasses; j++)
+                    {
+                        do
+                        {
+                            _intModuloTemp = _objRandom.Next();
+                        }
+                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                        intInitRoll += 1 + _intModuloTemp % 6;
+                    }
+                    _character.InitRoll = intInitRoll + _character.InitialInit;
+                }
+            }
             parentControl.AddToken(_character);
             Close();
         }

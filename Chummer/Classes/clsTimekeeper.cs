@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -28,8 +29,8 @@ namespace Chummer
     static class Timekeeper
     {
         static Stopwatch time = new Stopwatch();
-        private static readonly Dictionary<String, TimeSpan> Starts = new Dictionary<string, TimeSpan>(); 
-        private static readonly Dictionary<string, Tuple<TimeSpan, int>> Statistics = new Dictionary<string, Tuple<TimeSpan, int>>();
+        private static readonly ConcurrentDictionary<String, TimeSpan> Starts = new ConcurrentDictionary<string, TimeSpan>(); 
+        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> Statistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
         static Timekeeper ()
         {
@@ -38,10 +39,7 @@ namespace Chummer
 
         public static void Start(string taskname)
         {
-            if (!Starts.ContainsKey(taskname))
-            {
-                Starts.Add(taskname, time.Elapsed);
-            }
+            Starts.TryAdd(taskname, time.Elapsed);
         }
 
         public static TimeSpan Elapsed(string taskname)
@@ -60,11 +58,10 @@ namespace Chummer
         public static TimeSpan Finish(string taskname)
         {
             TimeSpan objStartTimeSpan;
-            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
+            if (Starts.TryRemove(taskname, out objStartTimeSpan))
             {
                 TimeSpan final = time.Elapsed - objStartTimeSpan;
 
-                Starts.Remove(taskname);
                 string logentry = $"Task \"{taskname}\" finished in {final}";
                 Chummer.Log.Info(logentry);
 
@@ -77,7 +74,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Statistics.Add(taskname, new Tuple<TimeSpan, int>(final, 1));
+                    Statistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
                 
                 return final;

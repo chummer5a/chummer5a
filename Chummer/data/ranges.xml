@@ -79,10 +79,10 @@
     <range>
       <category>Shotguns</category>
       <min>0</min>
-      <short>15</short>
-      <medium>30</medium>
-      <long>45</long>
-      <extreme>60</extreme>
+      <short>10</short>
+      <medium>40</medium>
+      <long>80</long>
+      <extreme>150</extreme>
     </range>
     <range>
       <category>Shotguns (slug)</category>
@@ -141,7 +141,7 @@
       <extreme>1500</extreme>
     </range>
     <range>
-      <category>Grenade Launcher</category>
+      <category>Grenade Launchers</category>
       <min>5</min>
       <short>50</short>
       <medium>100</medium>
@@ -149,7 +149,7 @@
       <extreme>500</extreme>
     </range>
     <range>
-      <category>Missile Launcher</category>
+      <category>Missile Launchers</category>
       <min>20</min>
       <short>70</short>
       <medium>150</medium>
@@ -227,6 +227,30 @@
       <medium>STR*4</medium>
       <long>STR*8</long>
       <extreme>STR*15</extreme>
+    </range>
+	<range>
+      <category>Harpoon Gun</category>
+      <min>0</min>
+      <short>5</short>
+      <medium>20</medium>
+      <long>40</long>
+      <extreme>60</extreme>
+    </range>
+	<range>
+      <category>Harpoon Gun (Underwater)</category>
+      <min>0</min>
+      <short>6</short>
+      <medium>24</medium>
+      <long>60</long>
+      <extreme>120</extreme>
+    </range>
+	<range>
+      <category>Flamethrowers</category>
+      <min>0</min>
+      <short>15</short>
+      <medium>20</medium>
+      <long>-1</long>
+      <extreme>-1</extreme>
     </range>
   </ranges>
 </chummer>

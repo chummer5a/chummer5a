@@ -45,6 +45,8 @@ namespace Chummer
         private int round;
         private bool _finishedCombatTurn;
         private int totalChummersWithNoInit;
+        private Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp = 0;
 
         /// <summary>
         /// Default constructor
@@ -83,6 +85,7 @@ namespace Chummer
                 chkBoxChummer.Items.RemoveAt(index);
                 if (chkBoxChummer.Items.Count > 0)
                     chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
+                characters[index].Dispose();
                 characters.RemoveAt(index);
             }
         }
@@ -280,11 +283,23 @@ namespace Chummer
         private void btnReset_Click(object sender, EventArgs e)
         {
             // for every checked character, we re-roll init
-            Random random = new Random();
             for (int i = 0; i < characters.Count; i++)
             {
                 if (chkBoxChummer.CheckedIndices.Contains(i))
-                    characters[i].InitRoll = random.Next(characters[i].InitPasses, characters[i].InitPasses * 6) + characters[i].InitialInit;
+                {
+                    Character objLoopCharacter = characters[i];
+                    int intInitRoll = 0;
+                    for (int j = 0; j < objLoopCharacter.InitPasses; j++)
+                    {
+                        do
+                        {
+                            _intModuloTemp = _objRandom.Next();
+                        }
+                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                        intInitRoll += 1 + _intModuloTemp % 6;
+                    }
+                    objLoopCharacter.InitRoll = intInitRoll + objLoopCharacter.InitialInit;
+                }
             }
 
             // query for new initiatives
@@ -292,15 +307,16 @@ namespace Chummer
             {
                 if (chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
                 {
+                    Character objLoopCharacter = characters[j];
                     frmInitRoller frmHits = new frmInitRoller();
-                    frmHits.Text = "Initiative: " + characters[j].Name;
+                    frmHits.Text = "Initiative: " + objLoopCharacter.Name;
                     frmHits.Description = "initiative result";
-                    frmHits.Dice = characters[j].InitPasses;
+                    frmHits.Dice = objLoopCharacter.InitPasses;
                     frmHits.ShowDialog(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
                         return;   // we decided not to actually change the initiative
-                    characters[j].InitRoll = frmHits.Result + characters[j].InitialInit;
+                    objLoopCharacter.InitRoll = frmHits.Result + objLoopCharacter.InitialInit;
                 }
             }
 

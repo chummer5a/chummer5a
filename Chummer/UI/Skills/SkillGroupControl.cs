@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Chummer.Skills;
+using System.ComponentModel;
 
 namespace Chummer.UI.Skills
 {
@@ -15,10 +16,12 @@ namespace Chummer.UI.Skills
 
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
+            SuspendLayout();
             lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
 
+            _skillGroup.PropertyChanged += SkillGroup_PropertyChanged;
             tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
-            
+
             if (_skillGroup.Character.Created)
             {
                 nudKarma.Visible = false;
@@ -26,11 +29,10 @@ namespace Chummer.UI.Skills
 
                 btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
-                tipToolTip.SetToolTip(btnCareerIncrease, skillGroup.UpgradeToolTip);
+                tipToolTip.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
 
                 lblGroupRating.Visible = true;
-                lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
             {
@@ -48,23 +50,45 @@ namespace Chummer.UI.Skills
                     nudSkill.Enabled = false;
                 }
             }
-
+            ResumeLayout();
             sw.TaskEnd("Create skillgroup");
         }
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer parrent = ParentForm as frmCareer;
-            if (parrent != null)
+            frmCareer objParent = ParentForm as frmCareer;
+            if (objParent != null)
             {
-                string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
 
-                if (!parrent.ConfirmKarmaExpense(confirmstring))
+                if (!objParent.ConfirmKarmaExpense(confirmstring))
                     return;
             }
 
             _skillGroup.Upgrade();
+        }
+
+        private void SkillGroup_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            //I learned something from this but i'm not sure it is a good solution
+            //scratch that, i'm sure it is a bad solution. (Tooltip manager from tooltip, properties from reflection?
+
+            //if name of changed is null it does magic to change all, otherwise it only does one.
+            bool all = false;
+            switch (propertyChangedEventArgs?.PropertyName)
+            {
+                case null:
+                    all = true;
+                    goto case nameof(SkillGroup.ToolTip);
+                case nameof(SkillGroup.ToolTip):
+                    tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
+                    if (all) { goto case nameof(Skill.UpgradeToolTip); }
+                    break;
+                case nameof(SkillGroup.UpgradeToolTip):
+                    tipToolTip.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
+                    break;
+            }
         }
     }
 }

@@ -18,13 +18,13 @@ using System.Web.Script.Serialization;
 
 namespace CrashHandler
 {
-	public class CrashDumper
+	public class CrashDumper : IDisposable
 	{
 		public List<string> FilesList => _filesList;
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
-		public event CrashDumperProgressChangedEvent CrashDumperProgressChanged;
+		internal Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
 		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
@@ -38,7 +38,7 @@ namespace CrashHandler
 		private volatile CrashDumperProgress _progress;
 		private Thread _worker;
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
-
+        private string _strLatestDumpName = string.Empty;
 	    
 	    private TextWriter CrashLogWriter;
 
@@ -59,7 +59,7 @@ namespace CrashHandler
 
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("Could not deserialize");
 			}
 
             CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
@@ -83,15 +83,16 @@ namespace CrashHandler
 
 		private void AttemptDebug(Process process)
 		{
-			bool sucess = DbgHlp.DebugActiveProcess(new IntPtr(process.Id));
+			bool sucess = SafeNativeMethods.DebugActiveProcess(new IntPtr(process.Id));
 
-			if (sucess)
+            int intLastError = Marshal.GetLastWin32Error();
+            if (sucess)
 			{
 				Attributes["debugger-attached-sucess"] = "True";
 			}
 			else
 			{
-				Attributes["debugger-attached-error"] = new Win32Exception(Marshal.GetLastWin32Error()).Message;
+                Attributes["debugger-attached-error"] = new Win32Exception(intLastError).Message;
 			}
 		}
 
@@ -187,10 +188,10 @@ namespace CrashHandler
 		    catch (RemoteServiceException rex)
 		    {
 		        SetProgress(CrashDumperProgress.Error);
-		        System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message);
+
+		        System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message + "\n\nPlease manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
 		        Process?.Kill();
 		        Environment.Exit(-1);
-
 		    }
 		    catch (Exception ex)
 			{
@@ -208,11 +209,11 @@ namespace CrashHandler
 		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
-			bool ret;
-			using (FileStream file = File.Create(Path.Combine(WorkingDirectory, "crashdump.dmp")))
+            bool ret = false;
+            _strLatestDumpName = "crashdump-" + DateTime.Now.ToFileTimeUtc().ToString() + ".dmp";
+            using (FileStream file = File.Create(Path.Combine(WorkingDirectory, _strLatestDumpName)))
 			{
-
-				MiniDumpExceptionInformation info = new MiniDumpExceptionInformation();
+                MiniDumpExceptionInformation info = new MiniDumpExceptionInformation();
 				info.ClientPointers = true;
 				info.ExceptionPointers = exceptionInfo;
 				info.ThreadId = threadId;
@@ -229,11 +230,11 @@ namespace CrashHandler
 				if (extraInfo)
 				{
 					dtype |= 0;
-					ret = !(DbgHlp.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+					ret = !(SafeNativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
 					
 				}
-				else if (DbgHlp.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+				else if (SafeNativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
@@ -241,11 +242,9 @@ namespace CrashHandler
 					//Might solve the problem if crashhandler stops working on remote (hah)					
 					Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
 					Attributes["debug-debug-thread-id"] = threadId.ToString();
-
 				}
 				else
 				{
-					int errorNo = Marshal.GetLastWin32Error();
 					ret = true;
 				}
 
@@ -288,42 +287,48 @@ namespace CrashHandler
 
 		private byte[] GetZip()
 		{
-			using (MemoryStream mem = new MemoryStream())
-			{
-				using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, true))
-				{
-					foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
-					{
-						archive.CreateEntryFromFile(file, Path.GetFileName(file));
-					}
-				}
-
-				return mem.ToArray();
-			}
-		}
+            byte[] objReturn = null;
+            MemoryStream mem = new MemoryStream();
+            // archive.Dispose() should call mem.Dispose()
+            using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))
+            {
+                foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
+                {
+                    archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                }
+                objReturn = mem.ToArray();
+            }
+            return objReturn;
+        }
 
 		private byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
 		{
 			byte[] encrypted;
-			using (AesManaged managed = new AesManaged())
+            // Create the streams used for encryption.
+            AesManaged managed = null;
+            try
 			{
-				Iv = managed.IV;
+                managed = new AesManaged();
+
+                Iv = managed.IV;
 				Key = managed.Key;
 
 				// Create a decrytor to perform the stream transform.
 				ICryptoTransform encryptor = managed.CreateEncryptor(managed.Key, managed.IV);
 
-				// Create the streams used for encryption.
-				using (MemoryStream msEncrypt = new MemoryStream())
-				{
-					using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-					{
-						csEncrypt.Write(unencrypted, 0, unencrypted.Length);
-					}
-
-					encrypted = msEncrypt.ToArray();
-				}
+                MemoryStream msEncrypt = new MemoryStream();
+                // csEncrypt.Dispose() should call msEncrupt.Dispose()
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    csEncrypt.Write(unencrypted, 0, unencrypted.Length);
+                    encrypted = msEncrypt.ToArray();
+                }
 			}
+            finally
+            {
+                if (managed != null)
+                    managed.Dispose();
+            }
 
 			return encrypted;
 		}
@@ -348,17 +353,24 @@ namespace CrashHandler
 
 	    private string ExtractUrl(string input)
 		{
-			Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
-		    if ("success".Equals(top["status"]))
-		    {
-		        Dictionary<string, object> files = (Dictionary<string, object>) ((ArrayList) top["files"])[0];
-		        string ret = (string) files["url"];
-		        return ret;
-		    }
-		    else
-		    {
-		        throw new RemoteServiceException(top["reason"].ToString());
-		    }
+            try
+            {
+                Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
+                if ("success".Equals(top["status"]))
+                {
+                    Dictionary<string, object> files = (Dictionary<string, object>)((ArrayList)top["files"])[0];
+                    string ret = (string)files["url"];
+                    return ret;
+                }
+                else
+                {
+                    throw new RemoteServiceException(top["reason"].ToString());
+                }
+            }
+            catch (ArgumentException)
+            {
+                throw new RemoteServiceException("Unable to connect to Crash Dump upload server.");
+            }
 		}
 
 		private void UploadToAws()
@@ -458,8 +470,40 @@ namespace CrashHandler
 		{
 			return string.Join("", iv.Select(x => x.ToString("X2"))) + ":" + string.Join("", key.Select(x => x.ToString("X2")));
 		}
-	}
 
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _startSendEvent.Dispose();
+                    if (CrashLogWriter != null)
+                        CrashLogWriter.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // Override destructor only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~CrashDumper() {
+        //   Dispose(false);
+        // }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            // Uncomment the following line if the destructor is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
+
+    [Serializable]
     internal class RemoteServiceException : Exception
     {
         public RemoteServiceException(string toString) : base(toString)
@@ -467,8 +511,6 @@ namespace CrashHandler
 
         }
     }
-
-    public delegate void CrashDumperProgressChangedEvent(object sender, CrashDumperProgressChangedEventArgs args);
 
 	public class CrashDumperProgressChangedEventArgs : EventArgs
 	{

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Game Master character summary sheet -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -500 -->
@@ -21,6 +21,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+        <meta charset="UTF-8" />
         <style type="text/css">
           * {
             font-family: tahoma, 'trebuchet ms', arial;
@@ -48,10 +49,24 @@
             <tr><td>
               <strong><xsl:value-of select="name" /></strong> (<xsl:value-of select="metatype" />)
               &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-              <strong>
-                <xsl:value-of select="$lang.Movement" />:
-              </strong>
-              <xsl:call-template name="MovementRate"/>
+              <xsl:if test="movementwalk != '' and movementwalk != '0'">
+                <strong><xsl:value-of select="$lang.Movement"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementwalk"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="movementswim != '' and movementswim != '0'">
+                <strong><xsl:value-of select="$lang.Swim"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementswim"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
+              <xsl:if test="movementfly != '' and movementfly != '0'">
+                <strong><xsl:value-of select="$lang.Fly"/>: </strong>
+                <xsl:call-template name="formatrate">
+                  <xsl:with-param name="movrate" select="movementfly"/>
+                </xsl:call-template>&#160;&#160;&#160;&#160;
+              </xsl:if>
               <table width="100%" cellspacing="0" cellpadding="2">
                 <tr>
                   <td width="9%" align="center"><strong><xsl:value-of select="$lang.BOD"/></strong></td>
@@ -141,6 +156,14 @@
                       (<xsl:value-of select="attributes/attribute[name_english = 'RES']/total" />)
                     </xsl:if>
                   </td>
+                  </xsl:if>
+                  <xsl:if test="depenabled = 'True'">
+                    <td width="9%" align="center">
+                      <xsl:value-of select="attributes/attribute[name_english = 'DEP']/base" />
+                      <xsl:if test="attributes/attribute[name_english = 'DEP']/total != attributes/attribute[name_english = 'DEP']/base">
+                        (<xsl:value-of select="attributes/attribute[name_english = 'DEP']/total" />)
+                      </xsl:if>
+                    </td>
                   </xsl:if>
                   <td width="9%" align="center">
                     <xsl:value-of select="totaless" />
@@ -514,9 +537,8 @@
               </xsl:if>
 
               <p><strong><xsl:value-of select="$lang.Nuyen"/>: </strong>
-                <xsl:call-template name="fnx-fmt-nmbr">
-                  <xsl:with-param name="nmbr" select="nuyen"/>
-                </xsl:call-template>
+                <xsl:value-of select="nuyen"/>
+                <xsl:value-of select="$lang.NuyenSymbol"/>
               </p>
 
               <xsl:if test="notes != ''">

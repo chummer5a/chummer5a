@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,30 +32,30 @@ namespace Chummer
         private string _strForcedValue = string.Empty;
         private bool _blnShowQualities = false;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         #region Control Events
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+
+            // Load the Martial Arts information.
+            _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
 
         private void frmSelectMartialArt_Load(object sender, EventArgs e)
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
             XmlNodeList objArtList;
             List<ListItem> lstMartialArt = new List<ListItem>();
-
-            // Load the Martial Arts information.
-            _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
 
             // Populate the Martial Arts list.
             if (string.IsNullOrEmpty(_strForcedValue))
@@ -65,7 +65,9 @@ namespace Chummer
             foreach (XmlNode objXmlArt in objArtList)
             {
                 XmlNode objXmlQuality = objXmlArt["quality"];
-                if ((_blnShowQualities && objXmlQuality != null) || (!_blnShowQualities && objXmlQuality == null))
+                if (_blnShowQualities != (objXmlQuality != null))
+                    continue;
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlArt["name"].InnerText;
@@ -116,7 +118,7 @@ namespace Chummer
                 strPage = objXmlArt["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArt["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArt["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -189,7 +191,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

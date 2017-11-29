@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Chummer.Backend.Powers
@@ -9,9 +9,7 @@ namespace Chummer.Backend.Powers
         
         public PowerSorter(Comparison<Power> comparison)
         {
-            if(comparison == null) throw new ArgumentNullException(nameof(comparison));
-
-            _comparison = comparison;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         /// <summary>

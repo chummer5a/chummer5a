@@ -28,19 +28,18 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory = string.Empty;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         #region Control Events
         public frmSelectSpellCategory()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objXmlDocument = XmlManager.Load("spells.xml");
         }
 
         private void frmSelectSpellCategory_Load(object sender, EventArgs e)
         {
-            _objXmlDocument = XmlManager.Instance.Load("spells.xml");
-
             // Build the list of Spell Categories from the Spells file.
             XmlNodeList objXmlCategoryList;
             List<ListItem> lstCategory = new List<ListItem>();

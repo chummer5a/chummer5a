@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
  using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
- using Amazon.Runtime.Internal.Transform;
  using Newtonsoft.Json;
  using Formatting = Newtonsoft.Json.Formatting;
 
@@ -32,15 +31,16 @@ namespace Chummer
 {
     public partial class frmExport : Form
     {
-        private XmlDocument _objCharacterXML = new XmlDocument();
+        private readonly XmlDocument _objCharacterXML = null;
         private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
         private bool _blnSelected = false;
 
         #region Control Events
-        public frmExport()
+        public frmExport(XmlDocument objCharacterXML)
         {
+            _objCharacterXML = objCharacterXML;
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -128,19 +128,19 @@ namespace Chummer
         private void ExportNormal()
         {
             // Look for the file extension information.
-            string strLine = "";
+            string strLine = string.Empty;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
             StreamReader objFile = new StreamReader(exportSheetPath);
             while ((strLine = objFile.ReadLine()) != null)
             {
                 if (strLine.StartsWith("<!-- ext:"))
-                    strExtension = strLine.Replace("<!-- ext:", string.Empty).Replace("-->", string.Empty).Trim();
+                    strExtension = strLine.TrimStart("<!-- ext:", true).Replace("-->", string.Empty).Trim();
             }
             objFile.Close();
 
             SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
-            SaveFileDialog1.Title = LanguageManager.Instance.GetString("Button_Viewer_SaveAsHtml");
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 
@@ -175,7 +175,7 @@ namespace Chummer
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
             {
-                _dictCache.Add(new KeyValuePair<string, string>(cboXSLT.Text, rtbText.Text));
+                _dictCache.Add(cboXSLT.Text, rtbText.Text);
             }
         }
         #endregion
@@ -187,7 +187,7 @@ namespace Chummer
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
             {
-                _dictCache.Add(new KeyValuePair<string, string>(cboXSLT.Text, rtbText.Text));
+                _dictCache.Add(cboXSLT.Text, rtbText.Text);
             }
         }
 
@@ -208,19 +208,5 @@ namespace Chummer
         }
         #endregion
         #endregion
-
-        #region Properties
-        /// <summary>
-        /// Character's XmlDocument.
-        /// </summary>
-        public XmlDocument CharacterXml
-        {
-            set
-            {
-                _objCharacterXML = value;
-            }
-        }
-        #endregion
-
     }
 }

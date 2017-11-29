@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ namespace Chummer
         public frmReload()
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -58,7 +58,7 @@ namespace Chummer
                         objAmmo.Name += ")";
                     }
                 }
-                if (!string.IsNullOrEmpty(objGear.Location))
+                else if (!string.IsNullOrEmpty(objGear.Location))
                     objAmmo.Name += " (" + objGear.Location + ")";
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
@@ -111,7 +111,7 @@ namespace Chummer
             Font objFont = objSender.Font;
             int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
             int intNewWidth;
-            foreach (ListItem objItem in ((ComboBox)sender).Items)
+            foreach (ListItem objItem in objSender.Items)
             {
                 intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
                 if (intWidth < intNewWidth)
@@ -153,7 +153,7 @@ namespace Chummer
         {
             get
             {
-                return cboAmmo.SelectedValue.ToString();
+                return cboAmmo.SelectedValue?.ToString() ?? string.Empty;
             }
         }
 

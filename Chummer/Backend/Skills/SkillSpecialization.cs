@@ -21,13 +21,17 @@ namespace Chummer
 
         static SkillSpecialization()
         {
-            if (GlobalOptions.Instance.Language != "en-us")
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument document = XmlManager.Instance.Load("skills.xml");
+                XmlDocument document = XmlManager.Load("skills.xml");
                 XmlNodeList specList = document.SelectNodes("/chummer/*/skill/specs/spec");
-                foreach (XmlNode node in specList.Cast<XmlNode>().Where(node => node.Attributes?["translate"] != null))
+                foreach (XmlNode node in specList)
                 {
-                    _translator.Add(node.InnerText, node.Attributes?["translate"]?.InnerText);
+                    string strTranslate = node.Attributes?["translate"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTranslate))
+                    {
+                        _translator.Add(node.InnerText, strTranslate);
+                    }
                 }
             }
         }
@@ -48,7 +52,7 @@ namespace Chummer
             objWriter.WriteStartElement("spec");
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("name", _name);
-            if(_translated != null) objWriter.WriteElementString(GlobalOptions.Instance.Language, _translated);
+            if(_translated != null) objWriter.WriteElementString(GlobalOptions.Language, _translated);
             if(_free) objWriter.WriteElementString("free", string.Empty);
             objWriter.WriteEndElement();
         }
@@ -62,7 +66,7 @@ namespace Chummer
             return new SkillSpecialization(objNode["name"].InnerText, objNode["free"] != null)
             {
                 _guiID = Guid.Parse(objNode["guid"].InnerText),
-                _translated = objNode[GlobalOptions.Instance.Language]?.InnerText
+                _translated = objNode[GlobalOptions.Language]?.InnerText
             };
         }
 

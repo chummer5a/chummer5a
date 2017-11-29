@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
-        public frmSelectNexus(Character objCharacter, bool blnCareer = false)
+        public frmSelectNexus(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objGear = new Gear(objCharacter);
             MoveControls();
@@ -120,14 +120,14 @@ namespace Chummer
         /// </summary>
         private void CalculateNexus()
         {
-            int intCost = 0;
+            decimal decCost = 0;
 
-            int intProcessor = Convert.ToInt32(nudProcessor.Value);
-            int intSystem = Convert.ToInt32(nudSystem.Value);
-            int intResponse = Convert.ToInt32(nudResponse.Value);
-            int intFirewall = Convert.ToInt32(nudFirewall.Value);
-            int intPersona = Convert.ToInt32(nudPersona.Value);
-            int intSignal = Convert.ToInt32(nudSignal.Value);
+            int intProcessor = decimal.ToInt32(nudProcessor.Value);
+            int intSystem = decimal.ToInt32(nudSystem.Value);
+            int intResponse = decimal.ToInt32(nudResponse.Value);
+            int intFirewall = decimal.ToInt32(nudFirewall.Value);
+            int intPersona = decimal.ToInt32(nudPersona.Value);
+            int intSignal = decimal.ToInt32(nudSignal.Value);
 
             // Determine the individual component costs and ratings.
             // Response.
@@ -217,26 +217,26 @@ namespace Chummer
                     break;
             }
 
-            intCost = intResponseCost + intSystemCost + intFirewallCost + intSignalCost;
+            decCost = intResponseCost + intSystemCost + intFirewallCost + intSignalCost;
             if (chkFreeItem.Checked)
-                intCost = 0;
+                decCost = 0;
 
             // Update the labels.
-            lblResponseAvail.Text = strResponseAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-            lblSystemAvail.Text = strSystemAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-            lblFirewallAvail.Text = strFirewallAvail.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-            lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(intCost));
+            lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
+            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             Gear objNexus = new Gear(_objCharacter);
-            objNexus.Name = LanguageManager.Instance.GetString("String_SelectNexus_Nexus") + " (" + LanguageManager.Instance.GetString("String_SelectNexus_Processor") + " " + intProcessor.ToString() + ")";
-            objNexus.Cost = intCost.ToString();
+            objNexus.Name = LanguageManager.GetString("String_SelectNexus_Nexus") + " (" + LanguageManager.GetString("String_SelectNexus_Processor") + " " + intProcessor.ToString() + ")";
+            objNexus.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
             objNexus.Avail = "0";
             objNexus.Category = "Nexus";
             objNexus.Source = "UN";
             objNexus.Page = "50";
 
             Gear objResponse = new Gear(_objCharacter);
-            objResponse.Name = LanguageManager.Instance.GetString("String_Response") + " (" + LanguageManager.Instance.GetString("String_Rating") + " " + intResponse.ToString() + ")";
+            objResponse.Name = LanguageManager.GetString("String_Response") + " (" + LanguageManager.GetString("String_Rating") + " " + intResponse.ToString() + ")";
             objResponse.Category = "Nexus Module";
             objResponse.Cost = "0";
             objResponse.Avail = strResponseAvail;
@@ -245,7 +245,7 @@ namespace Chummer
             objNexus.Children.Add(objResponse);
 
             Gear objSignal = new Gear(_objCharacter);
-            objSignal.Name = LanguageManager.Instance.GetString("String_Signal") + " (" + LanguageManager.Instance.GetString("String_Rating") + " " + intSignal.ToString() + ")";
+            objSignal.Name = LanguageManager.GetString("String_Signal") + " (" + LanguageManager.GetString("String_Rating") + " " + intSignal.ToString() + ")";
             objSignal.Category = "Nexus Module";
             objSignal.Cost = "0";
             objSignal.Avail = "0";
@@ -254,7 +254,7 @@ namespace Chummer
             objNexus.Children.Add(objSignal);
 
             Gear objSystem = new Gear(_objCharacter);
-            objSystem.Name = LanguageManager.Instance.GetString("String_System") + " (" + LanguageManager.Instance.GetString("String_Rating") + " " + intSystem.ToString() + ")";
+            objSystem.Name = LanguageManager.GetString("String_System") + " (" + LanguageManager.GetString("String_Rating") + " " + intSystem.ToString() + ")";
             objSystem.Category = "Nexus Module";
             objSystem.Cost = "0";
             objSystem.Avail = strSystemAvail;
@@ -263,7 +263,7 @@ namespace Chummer
             objNexus.Children.Add(objSystem);
 
             Gear objFirewall = new Gear(_objCharacter);
-            objFirewall.Name = LanguageManager.Instance.GetString("String_Firewall") + " (" + LanguageManager.Instance.GetString("String_Rating") + " " + intFirewall.ToString() + ")";
+            objFirewall.Name = LanguageManager.GetString("String_Firewall") + " (" + LanguageManager.GetString("String_Rating") + " " + intFirewall.ToString() + ")";
             objFirewall.Category = "Nexus Module";
             objFirewall.Cost = "0";
             objFirewall.Avail = strFirewallAvail;
@@ -272,7 +272,7 @@ namespace Chummer
             objNexus.Children.Add(objFirewall);
 
             Gear objPersona = new Gear(_objCharacter);
-            objPersona.Name = LanguageManager.Instance.GetString("String_SelectNexus_PersonaLimit") + " (" + intPersona.ToString() + ")";
+            objPersona.Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit") + " (" + intPersona.ToString() + ")";
             objPersona.Category = "Nexus Module";
             objPersona.Cost = "0";
             objPersona.Avail = "0";

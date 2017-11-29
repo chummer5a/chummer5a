@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace Chummer
         {
             PowerObject = objPower;
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
@@ -71,19 +71,21 @@ namespace Chummer
 
         private void Power_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            switch (propertyChangedEventArgs?.PropertyName)
+            string strPropertyName = propertyChangedEventArgs?.PropertyName;
+            if (strPropertyName == nameof(PowerObject.FreeLevels) || strPropertyName == nameof(PowerObject.TotalRating))
             {
-                case nameof(PowerObject.CharacterObject.MAG.TotalValue):
-                //TODO: For skills - probably needs to be rebound to something more specific?
-                case "Karma":
+                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
+                tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
+                cmdDelete.Enabled = PowerObject.FreeLevels == 0;
+            }
+            // Super hacky solution, but we need all values updated properly if maxima change for any reason
+            if (strPropertyName == nameof(PowerObject.TotalMaximumLevels))
+            {
+                nudRating.Maximum = PowerObject.TotalMaximumLevels;
+            }
+            else if (PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue) || strPropertyName == nameof(PowerObject.CharacterObject.MAGAdept.TotalValue))
+            {
                 PowerObject.ForceEvent(nameof(PowerObject.TotalMaximumLevels));
-                    break;
-                case nameof(PowerObject.FreeLevels):
-                case nameof(PowerObject.TotalRating):
-                    PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
-                    tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
-                    cmdDelete.Enabled = PowerObject.FreeLevels == 0;
-                    break;
             }
         }
 
@@ -99,18 +101,16 @@ namespace Chummer
             Form frmParent = ParentForm;
             if (PowerObject.FreeLevels > 0)
             {
-
-                foreach (Gear objGear in PowerObject.CharacterObject.Gear
-                    .Where(objGear => objGear.Bonded && objGear.InternalId == PowerObject.CharacterObject.Improvements
-                    .First(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == PowerObject.Name && objImprovement.UniqueName == PowerObject.Extra).SourceName))
+                string strImprovementSourceName = PowerObject.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == PowerObject.Name && x.UniqueName == PowerObject.Extra)?.SourceName;
+                Gear objGear = PowerObject.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
+                if (objGear != null)
                 {
                     objGear.Equipped = false;
                     objGear.Extra = string.Empty;
-                    break;
                 }
             }
             PowerObject.Deleting = true;
-            PowerObject.CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, PowerObject.InternalId);
+            ImprovementManager.RemoveImprovements(PowerObject.CharacterObject, Improvement.ImprovementSource.Power, PowerObject.InternalId);
             PowerObject.CharacterObject.Powers.Remove(PowerObject);
             
             if (_objPower.CharacterObject.Created)
@@ -134,8 +134,8 @@ namespace Chummer
             if (frmPowerNotes.DialogResult == DialogResult.OK)
                 _objPower.Notes = frmPowerNotes.Notes;
 
-            string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
-            if (_objPower.Notes != string.Empty)
+            string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
+            if (_objPower.Notes != "")
                 strTooltip += "\n\n" + _objPower.Notes;
             tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
         }
@@ -193,8 +193,7 @@ namespace Chummer
         private void lblPowerName_Click(object sender, EventArgs e)
         {
             string strBook = _objPower.Source + " " + _objPower.Page;
-            CommonFunctions objCommon = new CommonFunctions(_objPower.CharacterObject);
-            objCommon.OpenPDF(strBook);
+            CommonFunctions.OpenPDF(strBook, _objPower.CharacterObject);
         }
 
         private void MoveControls()

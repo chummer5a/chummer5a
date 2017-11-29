@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             if (objLimitModifier != null)
             {
                 txtName.Text = objLimitModifier.Name;
@@ -49,7 +49,7 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnName = txtName.Text;
-            _intBonus = Convert.ToInt32(nudBonus.Value);
+            _intBonus = decimal.ToInt32(nudBonus.Value);
             _strCondition = txtCondition.Text;
             DialogResult = DialogResult.OK;
         }

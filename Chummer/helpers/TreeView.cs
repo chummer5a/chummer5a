@@ -48,13 +48,12 @@ namespace Chummer.helpers
         public void Add(Improvement input, ContextMenuStrip strip)
         {
             TreeNode newNode = new TreeNode();
-            string strName = input.UniqueName;
+            string strName = input.UniqueName + ": ";
             if (input.Value > 0)
-                strName += " [+" + input.Value.ToString() + "]";
-            else
-                strName += " [" + input.Value.ToString() + "]";
-            if (!string.IsNullOrEmpty(input.Exclude))
-                strName += " (" + input.Exclude + ")";
+                strName += "+";
+            strName += input.Value.ToString();
+            if (!string.IsNullOrEmpty(input.Condition))
+                strName += ", " + input.Condition;
             newNode.Text = newNode.Name = strName;
             newNode.Tag = input.SourceName;
             if (!string.IsNullOrEmpty(input.Notes))
@@ -117,7 +116,7 @@ namespace Chummer.helpers
 
             if (!string.IsNullOrEmpty(input.Notes))
                 newNode.ForeColor = Color.SaddleBrown;
-            else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable)
+            else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable || input.OriginSource == QualitySource.Improvement)
                 newNode.ForeColor = SystemColors.GrayText;
             if (!input.Implemented)
                 newNode.ForeColor = Color.Red;
@@ -140,36 +139,30 @@ namespace Chummer.helpers
                 objNode.ForeColor = Color.SaddleBrown;
             objNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
 
+            TreeNode objSpellTypeNode = null;
             switch (input.Category)
             {
                 case "Combat":
-                    Nodes[0].Nodes.Add(objNode);
-                    Nodes[0].Expand();
+                    objSpellTypeNode = Nodes[0];
                     break;
                 case "Detection":
-                    Nodes[1].Nodes.Add(objNode);
-                    Nodes[1].Expand();
+                    objSpellTypeNode = Nodes[1];
                     break;
                 case "Health":
-                    Nodes[2].Nodes.Add(objNode);
-                    Nodes[2].Expand();
+                    objSpellTypeNode = Nodes[2];
                     break;
                 case "Illusion":
-                    Nodes[3].Nodes.Add(objNode);
-                    Nodes[3].Expand();
+                    objSpellTypeNode = Nodes[3];
                     break;
                 case "Manipulation":
-                    Nodes[4].Nodes.Add(objNode);
-                    Nodes[4].Expand();
+                    objSpellTypeNode = Nodes[4];
                     break;
                 case "Rituals":
-                    int intNode = 5;
-                    if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                        intNode = 0;
-                    Nodes[intNode].Nodes.Add(objNode);
-                    Nodes[intNode].Expand();
+                    objSpellTypeNode = Nodes[5];
                     break;
             }
+            objSpellTypeNode.Nodes.Add(objNode);
+            objSpellTypeNode.Expand();
         }
 
         /// <summary>
@@ -178,19 +171,18 @@ namespace Chummer.helpers
         /// <param name="treTree">TreeView to sort.</param>
         public void SortCustom()
         {
-            for (int i = 0; i <= Nodes.Count - 1; i++)
+            SortByName objSort = new SortByName();
+            for (int i = 0; i < Nodes.Count; ++i)
             {
-                List<TreeNode> lstNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in Nodes[i].Nodes)
-                    lstNodes.Add(objNode);
-                Nodes[i].Nodes.Clear();
-                SortByName objSort = new SortByName();
-                lstNodes.Sort(objSort.Compare);
+                TreeNode objLoopNode = Nodes[i];
+                TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
+                TreeNode[] lstNodes = new TreeNode[objLoopNodeChildren.Count];
+                objLoopNodeChildren.CopyTo(lstNodes, 0);
+                objLoopNodeChildren.Clear();
+                Array.Sort(lstNodes, objSort.Compare);
+                objLoopNodeChildren.AddRange(lstNodes);
 
-                foreach (TreeNode objNode in lstNodes)
-                    Nodes[i].Nodes.Add(objNode);
-
-                Nodes[i].Expand();
+                objLoopNode.Expand();
             }
         }
 
@@ -201,31 +193,7 @@ namespace Chummer.helpers
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
         public void ClearNodeBackground(TreeNode objHighlighted)
         {
-            foreach (TreeNode objNode in Nodes)
-            {
-                if (objHighlighted != null)
-                {
-                    if (objNode != objHighlighted)
-                        objNode.BackColor = SystemColors.Window;
-                    ClearNodeBackground(objNode, objHighlighted);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Recursive method to clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
-        /// </summary>
-        /// <param name="objNode">Parent TreeNode to check.</param>
-        /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
-        private void ClearNodeBackground(TreeNode objNode, TreeNode objHighlighted)
-        {
-            foreach (TreeNode objChild in objNode.Nodes)
-            {
-                if (objChild != objHighlighted)
-                    objChild.BackColor = SystemColors.Window;
-                if (objChild.Nodes.Count > 0)
-                    ClearNodeBackground(objChild, objHighlighted);
-            }
+            Nodes.ClearNodeBackground(objHighlighted);
         }
     }
 }

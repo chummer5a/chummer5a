@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -221,9 +221,13 @@ namespace Chummer
         /// <summary>
         /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
         /// </summary>
+        /// <param name="boolIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
+        /// <param name="objXmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
+        /// <param name="objXmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode objXmlParentNode, XmlNode objXmlOperationNode, bool boolIsOrNode = false)
         {
-            if (objXmlParentNode == null || objXmlOperationNode == null)
+            if (objXmlOperationNode == null)
                 return false;
 
             XmlNodeList objXmlNodeList = objXmlOperationNode.SelectNodes("*");
@@ -233,7 +237,7 @@ namespace Chummer
             {
                 bool boolInvert = objXmlOperationChildNode.Attributes?["NOT"] != null;
 
-                bool boolOperationChildNodeResult;
+                bool boolOperationChildNodeResult = boolInvert;
                 if (objXmlOperationChildNode.Name == "OR")
                 {
                     boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, true) != boolInvert;
@@ -242,7 +246,11 @@ namespace Chummer
                 {
                     boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode) != boolInvert;
                 }
-                else
+                else if (objXmlOperationChildNode.Name == "NONE")
+                {
+                    boolOperationChildNodeResult = (objXmlParentNode == null) != boolInvert;
+                }
+                else if (objXmlParentNode != null)
                 {
                     string strOperationType = objXmlOperationChildNode.Attributes?["operation"]?.InnerText ?? "==";
                     XmlNodeList objXmlTargetNodeList = objXmlParentNode.SelectNodes(objXmlOperationChildNode.Name);

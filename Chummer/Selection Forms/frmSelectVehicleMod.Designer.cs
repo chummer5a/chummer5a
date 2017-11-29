@@ -157,9 +157,9 @@
             // lstMod
             // 
             this.lstMod.FormattingEnabled = true;
-            this.lstMod.Location = new System.Drawing.Point(15, 31);
+            this.lstMod.Location = new System.Drawing.Point(15, 44);
             this.lstMod.Name = "lstMod";
-            this.lstMod.Size = new System.Drawing.Size(237, 368);
+            this.lstMod.Size = new System.Drawing.Size(237, 355);
             this.lstMod.TabIndex = 22;
             this.lstMod.SelectedIndexChanged += new System.EventHandler(this.lstMod_SelectedIndexChanged);
             this.lstMod.DoubleClick += new System.EventHandler(this.lstMod_DoubleClick);
@@ -276,6 +276,7 @@
             // 
             // nudMarkup
             // 
+            this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(315, 215);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -283,10 +284,10 @@
             0,
             0});
             this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
+            9999,
             0,
             0,
-            -2147483648});
+            -2147352576});
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 17;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -15,27 +15,27 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
-    public class Power : INotifyPropertyChanged
+    public class Power : INotifyPropertyChanged, INamedItemWithGuidAndNode
     {
         private Guid _guiID;
         private Guid _sourceID = new Guid();
-        private string _strSource = "";
-        private string _strPage = "";
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
         private string _strPointsPerLevel = "0";
-        private string _strAction = "";
-        private decimal _decExtraPointCost;
-        private int _intMaxLevel;
-        private bool _blnDiscountedAdeptWay;
-        private bool _blnDiscountedGeas;
+        private string _strAction = string.Empty;
+        private decimal _decExtraPointCost = 0;
+        private int _intMaxLevel = 0;
+        private bool _blnDiscountedAdeptWay = false;
+        private bool _blnDiscountedGeas = false;
         private XmlNode _nodAdeptWayRequirements;
-        private string _strNotes = "";
-        private bool _blnFree;
-        private int _intFreeLevels;
+        private string _strNotes = string.Empty;
+        private bool _blnFree = false;
+        private int _intFreeLevels = 0;
         private string _strAdeptWayDiscount = "0";
-        private string _strBonusSource = "";
-        private decimal _decFreePoints;
-        private string _strDisplayName;
-        private string _displayPoints;
+        private string _strBonusSource = string.Empty;
+        private decimal _decFreePoints = 0;
+        private string _strDisplayName = string.Empty;
+        private string _displayPoints = string.Empty;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Power(Character objCharacter)
@@ -74,11 +74,11 @@ namespace Chummer
             if (Bonus != null)
                 objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
             else
-                objWriter.WriteElementString("bonus", "");
+                objWriter.WriteElementString("bonus", string.Empty);
             if (_nodAdeptWayRequirements != null)
                 objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXml + "</adeptwayrequires>");
             else
-                objWriter.WriteElementString("adeptwayrequires", "");
+                objWriter.WriteElementString("adeptwayrequires", string.Empty);
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in Enhancements)
             {
@@ -90,25 +90,27 @@ namespace Chummer
             CharacterObject.SourceProcess(_strSource);
         }
 
-        public void Create(XmlNode objNode, ImprovementManager objImprovementManager, int intRating = 1)
+        public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null, bool blnCreateImprovements = true)
         {
             Name = objNode["name"].InnerText;
             _sourceID = Guid.Parse(objNode["id"].InnerText);
-            _strPointsPerLevel = objNode["points"].InnerText;
-            _strAdeptWayDiscount = objNode["adeptway"]?.InnerText ?? "0";
+            objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
+            objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
             LevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
             Rating = intRating;
-            objNode.TryGetField("maxlevels", out _intMaxLevel, CharacterObject.MAG.TotalValue);
-            objNode.TryGetField("discounted", out _blnDiscountedAdeptWay);
-            objNode.TryGetField("discountedgeas", out _blnDiscountedGeas);
-            objNode.TryGetField("bonussource", out _strBonusSource);
-            objNode.TryGetField("freepoints", out _decFreePoints);
-            objNode.TryGetField("extrapointcost", out _decExtraPointCost);
-            objNode.TryGetField("action", out _strAction);
-            objNode.TryGetField("source", out _strSource);
-            objNode.TryGetField("page", out _strPage);
-            objNode.TryGetField("notes", out _strNotes);
+            objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevel);
+            objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
+            objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
+            objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
+            objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints);
+            objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost);
+            objNode.TryGetStringFieldQuickly("action", ref _strAction);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             Bonus = objNode["bonus"];
+            if (objBonusNodeOverride != null)
+                Bonus = objBonusNodeOverride;
             _nodAdeptWayRequirements = objNode["adeptwayrequires"];
             if (objNode.InnerXml.Contains("enhancements"))
             {
@@ -122,18 +124,29 @@ namespace Chummer
                         Enhancements.Add(objEnhancement);
                     }
             }
-            if (Bonus != null && Bonus.HasChildNodes)
+            if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
-                if (
-                    !objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false,
-                        Convert.ToInt32(Rating), DisplayNameShort))
+                string strOldForce = ImprovementManager.ForcedValue;
+                string strOldSelected = ImprovementManager.SelectedValue;
+                ImprovementManager.ForcedValue = Extra;
+                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
                 {
+                    ImprovementManager.ForcedValue = strOldForce;
                     this.Deleting = true;
                     CharacterObject.Powers.Remove(this);
-                    return;
+                    OnPropertyChanged(nameof(TotalRating));
+                    return false;
                 }
-                Extra = objImprovementManager.SelectedValue;
+                Extra = ImprovementManager.SelectedValue;
+                ImprovementManager.SelectedValue = strOldSelected;
+                ImprovementManager.ForcedValue = strOldForce;
             }
+            if (TotalMaximumLevels < Rating)
+            {
+                Rating = TotalMaximumLevels;
+                OnPropertyChanged(nameof(TotalRating));
+            }
+            return true;
         }
 
         /// <summary>
@@ -151,13 +164,13 @@ namespace Chummer
             else
             {
                 string strPowerName = Name;
-                if (strPowerName.Contains("("))
-                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+                if (strPowerName.Contains('('))
+                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
+                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                 if (objXmlPower != null) _sourceID = Guid.Parse(objXmlPower["id"].InnerText);
             }
-            Extra = objNode["extra"].InnerText ?? "";
+            Extra = objNode["extra"].InnerText ?? string.Empty;
             _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
             objNode.TryGetField("action", out _strAction);
             if (objNode["adeptway"] != null)
@@ -165,11 +178,12 @@ namespace Chummer
             else
             {
                 string strPowerName = Name;
-                if (strPowerName.Contains("("))
-                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf("(") - 1);
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+                if (strPowerName.Contains('('))
+                    strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
+                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (objXmlPower != null) _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
+                if (objXmlPower?["adeptway"] != null)
+                    _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
             LevelsEnabled = Convert.ToBoolean(objNode["levels"]?.InnerText);
@@ -189,24 +203,41 @@ namespace Chummer
             {
                 if (objNode["adeptwayrequires"] == null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID + "\"]");
-                    if (objXmlPower != null) _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
+                    XmlNode objXmlPower = MyXmlNode;
+                    if (objXmlPower != null)
+                        _nodAdeptWayRequirements = objXmlPower["adeptwayrequires"];
                 }
                 else
                 {
                     _nodAdeptWayRequirements = objNode["adeptwayrequires"];
                 }
-            } 
-            if (!objNode.InnerXml.Contains("enhancements")) return;
-            XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
-            if (nodEnhancements == null) return;
-            foreach (XmlNode nodEnhancement in nodEnhancements)
+            }
+            if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes"))
             {
-                Enhancement objEnhancement = new Enhancement(CharacterObject);
-                objEnhancement.Load(nodEnhancement);
-                objEnhancement.Parent = this;
-                Enhancements.Add(objEnhancement);
+                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                if (objXmlPower != null)
+                {
+                    int intTemp;
+                    if (int.TryParse(Name.TrimStart("Improved Reflexes", true).Trim(), out intTemp))
+                    {
+                        Create(objXmlPower, intTemp, null, false);
+                        objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                    }
+                }
+            }
+            else
+            {
+                if (!objNode.InnerXml.Contains("enhancements")) return;
+                XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
+                if (nodEnhancements == null) return;
+                foreach (XmlNode nodEnhancement in nodEnhancements)
+                {
+                    Enhancement objEnhancement = new Enhancement(CharacterObject);
+                    objEnhancement.Load(nodEnhancement);
+                    objEnhancement.Parent = this;
+                    Enhancements.Add(objEnhancement);
+                }
             }
         }
 
@@ -214,15 +245,15 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort);
-            objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(Extra));
-            objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString());
-            objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString());
-            objWriter.WriteElementString("rating", LevelsEnabled ? Rating.ToString() : "0");
-            objWriter.WriteElementString("totalpoints", PowerPoints.ToString());
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra));
+            objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
+            objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
+            objWriter.WriteElementString("rating", LevelsEnabled ? Rating.ToString(objCulture) : "0");
+            objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayAction);
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
@@ -252,12 +283,12 @@ namespace Chummer
         /// <summary>
         /// Power's name.
         /// </summary>
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
-        public string Extra { get; set; } = "";
+        public string Extra { get; set; } = string.Empty;
 
         /// <summary>
         /// The Enhancements currently applied to the Power.
@@ -279,12 +310,10 @@ namespace Chummer
                     strReturn = _strDisplayName;
                 }
                 // Get the translated name if applicable.
-                else if (GlobalOptions.Instance.Language != "en-us")
+                else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                        strReturn = objNode?["translate"]?.InnerText ?? strReturn;
-                    _strDisplayName = strReturn;
+                    _strDisplayName = MyXmlNode?["translate"]?.InnerText ?? strReturn;
+                    strReturn = _strDisplayName;
                 }
 
                 return strReturn;
@@ -300,13 +329,14 @@ namespace Chummer
             {
                 string strReturn = DisplayNameShort;
 
-                if (Extra == "") return strReturn;
-                LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+                if (string.IsNullOrEmpty(Extra)) return strReturn;
+                LanguageManager.Load(GlobalOptions.Language, this);
                 // Attempt to retrieve the CharacterAttribute name.
-                if (LanguageManager.Instance.GetString("String_Attribute" + Extra + "Short", false) != "")
-                    strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + Extra + "Short") + ")";
+                string strTranslateName = LanguageManager.GetString("String_Attribute" + Extra + "Short", false);
+                if (!string.IsNullOrEmpty(strTranslateName))
+                    strReturn += " (" + strTranslateName + ")";
                 else
-                    strReturn += " (" + LanguageManager.Instance.TranslateExtra(Extra) + ")";
+                    strReturn += " (" + LanguageManager.TranslateExtra(Extra) + ")";
 
                 return strReturn;
             }
@@ -319,7 +349,7 @@ namespace Chummer
         {
             get
             {
-                decimal decReturn = Convert.ToDecimal(_strPointsPerLevel,GlobalOptions.InvariantCultureInfo);
+                decimal decReturn = Convert.ToDecimal(_strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }
             set
@@ -377,7 +407,7 @@ namespace Chummer
             get { return Math.Min(Rating + FreeLevels, TotalMaximumLevels); }
             set
             {
-                Rating = value - FreeLevels;
+                Rating = Math.Max(value - FreeLevels, 0);
                 OnPropertyChanged();
             }
         }
@@ -389,14 +419,11 @@ namespace Chummer
         {
             get
             {
-                int intReturn = 0;
                 decimal decExtraCost = FreePoints;
-                /*if (!LevelsEnabled)
-                {
-                
-                }
-                //The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
-                else*/ if (Rating == 0 && ExtraPointCost > 0)
+                // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+                int intReturn = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
+                // The power has an extra cost, so free PP from things like Qi Foci have to be charged first. 
+                if (Rating + intReturn == 0 && ExtraPointCost > 0)
                 {
                     decExtraCost -= (PointsPerLevel + ExtraPointCost);
                     if (decExtraCost >= 0)
@@ -417,8 +444,10 @@ namespace Chummer
                     }
 
                 }
-                intReturn += CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
-                return Math.Min(intReturn, CharacterObject.MAG.TotalValue);
+                int intMAG = CharacterObject.MAG.TotalValue;
+                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                    intMAG = CharacterObject.MAGAdept.TotalValue;
+                return Math.Min(intReturn, intMAG);
             }
         }
 
@@ -429,12 +458,12 @@ namespace Chummer
         {
             get
             {
-                decimal decReturn = 0;
                 if (_blnFree || Rating == 0 || !LevelsEnabled && FreeLevels > 0)
                 {
-                    return decReturn;
+                    return 0;
                 }
 
+                decimal decReturn = 0;
                 if (FreeLevels * PointsPerLevel >= FreePoints)
                 {
                     decReturn = Rating * PointsPerLevel;
@@ -446,7 +475,7 @@ namespace Chummer
                     decReturn -= FreePoints;
                 }
                 decReturn -= Discount;
-                return Math.Max(decReturn, 0);
+                return Math.Max(decReturn, 0.0m);
             }            
         }
 
@@ -454,7 +483,10 @@ namespace Chummer
         {
             get
             {
-                return _displayPoints ?? PowerPoints.ToString("G29");
+                if (!string.IsNullOrEmpty(_displayPoints))
+                    return _displayPoints;
+                else
+                    return PowerPoints.ToString("G29");
             }
             set { _displayPoints = value; }
         }
@@ -482,9 +514,8 @@ namespace Chummer
         {
             get
             {
-                int intRating = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra).Sum(objImprovement => objImprovement.Rating);
-                decimal decReturn = (decimal) (intRating * 0.25);
-                return decReturn;
+                int intRating = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
+                return intRating * 0.25m;
             }
         }
 
@@ -510,15 +541,10 @@ namespace Chummer
         {
             get
             {
-                string strReturn = _strPage;
-
                 // Get the translated name if applicable.
-                if (GlobalOptions.Instance.Language == "en-us") return strReturn;
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                strReturn = objNode?["altpage"]?.InnerText;
-
-                return strReturn;
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
+                    return _strPage;
+                return MyXmlNode?["altpage"]?.InnerText ?? _strPage;
             }
             set
             {
@@ -543,7 +569,7 @@ namespace Chummer
         {
             get
             {
-                return Math.Max(_intMaxLevel, 1);
+                return _intMaxLevel;
             }
             set
             {
@@ -552,7 +578,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Power Cost is discounted by 25% from Adept Way.
+        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
         /// </summary>
         public bool DiscountedAdeptWay
         {
@@ -618,27 +644,27 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "";
+                string strReturn = string.Empty;
 
                 switch (_strAction)
                 {
                     case "Auto":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionAutomatic");
+                        strReturn = LanguageManager.GetString("String_ActionAutomatic");
                         break;
                     case "Free":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionFree");
+                        strReturn = LanguageManager.GetString("String_ActionFree");
                         break;
                     case "Simple":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionSimple");
+                        strReturn = LanguageManager.GetString("String_ActionSimple");
                         break;
                     case "Complex":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionComplex");
+                        strReturn = LanguageManager.GetString("String_ActionComplex");
                         break;
                     case "Interrupt":
-                        strReturn = LanguageManager.Instance.GetString("String_ActionInterrupt");
+                        strReturn = LanguageManager.GetString("String_ActionInterrupt");
                         break;
                     case "Special":
-                        strReturn = LanguageManager.Instance.GetString("String_SpellDurationSpecial");
+                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
                         break;
                 }
 
@@ -654,23 +680,31 @@ namespace Chummer
         {
             get
             {
+                if (!LevelsEnabled)
+                    return 1;
                 int intReturn = MaxLevels;
-                if (LevelsEnabled && MaxLevels == 0)
+                if (intReturn == 0)
                 {
-                    intReturn = Math.Max(MaxLevels, CharacterObject.MAG.TotalValue);
+                    int intMAG = CharacterObject.MAG.TotalValue;
+                    if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                        intMAG = CharacterObject.MAGAdept.TotalValue;
+                    intReturn = Math.Max(intReturn, intMAG);
                 }
                 if (Name == "Improved Ability (skill)")
                 {
-                    foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(objSkill => Extra == objSkill.Name || objSkill.IsExoticSkill && Extra == objSkill.DisplayName + " (" + objSkill.Specialization + ")"))
+                    Skill objBoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
+                    if (objBoostedSkill != null)
                     {
-                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        intReturn = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
+                        intReturn = Math.Min(intReturn, (objBoostedSkill.Base + objBoostedSkill.Karma + 1) / 2);
                     }
                 }
-                if (intReturn > CharacterObject.MAG.TotalValue && !CharacterObject.IgnoreRules)
+                if (!CharacterObject.IgnoreRules)
                 {
-                    intReturn = CharacterObject.MAG.TotalValue;
+                    int intMAG = CharacterObject.MAG.TotalValue;
+                    if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                        intMAG = CharacterObject.MAGAdept.TotalValue;
+                    intReturn = Math.Max(intReturn, intMAG);
                 }
                 return intReturn;
             }
@@ -688,24 +722,32 @@ namespace Chummer
                 {
                     return false;
                 }
-                XmlNodeList objXmlRequiredList = _nodAdeptWayRequirements?.SelectNodes("required/oneof/quality");
-                if (objXmlRequiredList != null)
-                    foreach (XmlNode objNode in objXmlRequiredList)
+                if (_nodAdeptWayRequirements != null)
+                {
+                    if (_nodAdeptWayRequirements["magicianswayforbids"] == null)
                     {
-                        if (objNode.Attributes?["extra"] != null)
+                        blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
+                    }
+                    if (!blnReturn)
+                    {
+                        foreach (XmlNode objNode in _nodAdeptWayRequirements.SelectNodes("required/oneof/quality"))
                         {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.Instance.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
-                            if (blnReturn)
-                                break;
-                        }
-                        else
-                        {
-                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText); 
-                            if (blnReturn)
-                                break;
+                            if (objNode.Attributes?["extra"] != null)
+                            {
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
+                                if (blnReturn)
+                                    break;
+                            }
+                            else
+                            {
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText);
+                                if (blnReturn)
+                                    break;
+                            }
                         }
                     }
-                if (blnReturn == false && DiscountedAdeptWay)
+                }
+                if (!blnReturn && DiscountedAdeptWay)
                 {
                     DiscountedAdeptWay = false;
                 }
@@ -716,15 +758,18 @@ namespace Chummer
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-            if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating) && !Deleting)
+            if (Bonus?.InnerXml.Contains("Rating") == true && propertyName == nameof(TotalRating))
             {
-                CharacterObject.ObjImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, InternalId);
-                CharacterObject.ObjImprovementManager.ForcedValue = Extra;
-                CharacterObject.ObjImprovementManager.CreateImprovements(Improvement.ImprovementSource.Power, InternalId, Bonus, false, Convert.ToInt32(Rating), DisplayNameShort);
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
+                if (!Deleting)
+                {
+                    ImprovementManager.ForcedValue = Extra;
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
+                }
             }
         }
 
@@ -736,15 +781,22 @@ namespace Chummer
 
         public string Category { get; set; }
 
+        public XmlNode MyXmlNode
+        {
+            get
+            {
+                return XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+            }
+        }
+
         /// <summary>
         /// ToolTip that shows how the Power is calculating its Modified Rating.
         /// </summary>
         public string ToolTip()
         {
-            string strReturn = "";
-            strReturn += $"Rating ({Rating} x {PointsPerLevel})";
-            string strModifier = CharacterObject.Improvements.Where(objImprovement => objImprovement.Enabled)
-                .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra)
+            string strReturn = $"Rating ({Rating} x {PointsPerLevel})";
+            string strModifier = CharacterObject.Improvements
+                .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled)
                 .Aggregate("", (current, objImprovement) => current + $" + {CharacterObject.GetObjectName(objImprovement)} ({objImprovement.Rating})");
 
             return strReturn + strModifier;
