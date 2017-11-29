@@ -125,7 +125,7 @@
       <filename>Vehicles</filename>
     </sheet>
   </sheets>
-  <sheets lang="de">
+  <sheets lang="de-de">
     <sheet>
       <id>b43dc8a1-976b-4c3d-8261-cbbea9437007</id>
       <name>Dossier</name>
@@ -227,7 +227,7 @@
       <filename>Game Master Summary</filename>
     </sheet>
   </sheets>
-  <sheets lang="fr">
+  <sheets lang="fr-fr">
     <sheet>
       <id>9763ccaf-61f5-4473-b4d9-e5a210073a7b</id>
       <name>Blocs fantaisie</name>
@@ -334,7 +334,7 @@
       <filename>Vehicles</filename>
     </sheet>
   </sheets>
-  <sheets lang="jp">
+  <sheets lang="jp-jp">
     <sheet>
       <id>5c7ad794-6040-4953-ad37-eee9287b66c2</id>
       <name>Calendar</name>
@@ -441,7 +441,7 @@
       <filename>Vehicles</filename>
     </sheet>
 	</sheets>	
-    <sheets lang="zh">
+    <sheets lang="zh-cn">
     <sheet>
       <id>8b16e238-18c6-40e0-85ca-a3a6c1854bd9</id>
       <name>日程表</name>

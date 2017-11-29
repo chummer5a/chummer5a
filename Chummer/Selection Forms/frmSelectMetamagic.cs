@@ -38,7 +38,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         private readonly XmlDocument _objMetatypeDocument;
         private readonly XmlDocument _objCritterDocument;

@@ -29,7 +29,7 @@ namespace Chummer
         private string _strSelectedPower = string.Empty;
         private int _intSelectedRating = 0;
         private static string _strSelectCategory = string.Empty;
-        private double _dblPowerPoints = 0.0;
+        private decimal _decPowerPoints = 0.0m;
         private bool _blnAddAgain = false;
 
         private readonly XmlDocument _objXmlDocument = null;
@@ -483,7 +483,7 @@ namespace Chummer
                 return;
 
             if (nudCritterPowerRating.Enabled)
-                _intSelectedRating = Convert.ToInt32(nudCritterPowerRating.Value);
+                _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
             _strSelectCategory = cboCategory.SelectedValue.ToString();
             _strSelectedPower = trePowers.SelectedNode.Tag.ToString();
 
@@ -492,7 +492,7 @@ namespace Chummer
             {
                 XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 XmlNode objXmlPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
-                _dblPowerPoints = Convert.ToDouble(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
+                _decPowerPoints = Convert.ToDecimal(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
 
             DialogResult = DialogResult.OK;
@@ -556,11 +556,11 @@ namespace Chummer
         /// <summary>
         /// Power Point cost for the Critter Power (only applies to Free Spirits).
         /// </summary>
-        public double PowerPoints
+        public decimal PowerPoints
         {
             get
             {
-                return _dblPowerPoints;
+                return _decPowerPoints;
             }
         }
         #endregion

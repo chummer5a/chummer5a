@@ -137,7 +137,7 @@ namespace Chummer
         {
             // Assemble the DV from the fields.
             string strDamage = cboDVBase.SelectedValue.ToString();
-            if (Convert.ToInt32(nudDVMod.Value) != 0)
+            if (decimal.ToInt32(nudDVMod.Value) != 0)
             {
                 if (nudDVMod.Value < 0)
                     strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
@@ -163,7 +163,7 @@ namespace Chummer
             _objWeapon.Name = txtName.Text;
             _objWeapon.Category = LanguageManager.GetString("Tab_Critter");
             _objWeapon.WeaponType = "Melee";
-            _objWeapon.Reach = Convert.ToInt32(nudReach.Value);
+            _objWeapon.Reach = decimal.ToInt32(nudReach.Value);
             _objWeapon.Damage = strDamage;
             _objWeapon.AP = strAP;
             _objWeapon.Mode = "0";

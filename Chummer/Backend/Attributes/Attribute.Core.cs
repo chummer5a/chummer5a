@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows;
 using System.Xml;
 using Chummer.Datastructures;
+using System.Globalization;
 
 namespace Chummer.Backend.Attributes
 {
@@ -28,7 +29,7 @@ namespace Chummer.Backend.Attributes
         private int _intBase;
         private int _intKarma;
         private string _strAbbrev = string.Empty;
-        public Character _objCharacter;
+        private readonly Character _objCharacter;
 		private string _strDisplayNameShort;
 		private string _strDisplayNameLong;
 		private string _strDisplayNameFormatted;
@@ -116,17 +117,19 @@ namespace Chummer.Backend.Attributes
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
+            if (Abbrev == "MAGAdept" && (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept))
+                return;
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name_english", Abbrev);
             objWriter.WriteElementString("name", DisplayAbbrev);
-            objWriter.WriteElementString("base", Value.ToString());
-            objWriter.WriteElementString("total", TotalValue.ToString());
-            objWriter.WriteElementString("min", TotalMinimum.ToString());
-            objWriter.WriteElementString("max", TotalMaximum.ToString());
-            objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString());
-			objWriter.WriteElementString("bp", CalculatedBP().ToString());
+            objWriter.WriteElementString("base", Value.ToString(objCulture));
+            objWriter.WriteElementString("total", TotalValue.ToString(objCulture));
+            objWriter.WriteElementString("min", TotalMinimum.ToString(objCulture));
+            objWriter.WriteElementString("max", TotalMaximum.ToString(objCulture));
+            objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString(objCulture));
+			objWriter.WriteElementString("bp", CalculatedBP().ToString(objCulture));
 			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
 			objWriter.WriteEndElement();
         }
@@ -142,6 +145,11 @@ namespace Chummer.Backend.Attributes
         }
 
         #region Properties
+
+        public Character CharacterObject
+        {
+            get { return _objCharacter; }
+        }
 
 	    public AttributeCategory Category
 	    {
@@ -227,6 +235,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intBase = value;
+                OnPropertyChanged(nameof(Base));
             }
         }
 
@@ -263,6 +272,7 @@ namespace Chummer.Backend.Attributes
             set
             {
                 _intKarma = value;
+                OnPropertyChanged(nameof(Karma));
             }
         }
 
@@ -567,7 +577,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if ((_objCharacter.MAGEnabled && Abbrev == "MAG" && _objCharacter.EssencePenaltyMAG > 0) || ((_objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0))
+                if ((_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG > 0) || ((_objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0))
                 {
                     return true;
                 }
@@ -629,7 +639,7 @@ namespace Chummer.Backend.Attributes
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
         {
             // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-            if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
                 return 1;
 
             int intMeat = Value + AttributeModifiers;
@@ -660,7 +670,7 @@ namespace Chummer.Backend.Attributes
                     int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
                     // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
                     intLimbTotal += intMeat * intMissingLimbCount;
-                    intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(intLimbTotal, GlobalOptions.CultureInfo) / Convert.ToDecimal(intMaxLimbs, GlobalOptions.CultureInfo)));
+                    intReturn = (intLimbTotal + intMaxLimbs - 1) / intMaxLimbs;
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
@@ -670,7 +680,7 @@ namespace Chummer.Backend.Attributes
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
             if (intReturn < 1)
             {
-                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_strAbbrev == "RES" && _objCharacter.EssencePenalty != 0) || (_strAbbrev == "MAG" && _objCharacter.EssencePenaltyMAG != 0) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
+                if ((_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_strAbbrev == "RES" && _objCharacter.EssencePenalty != 0) || ((Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG != 0) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP")))
                     return 0;
                 else
                     return 1;
@@ -694,7 +704,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
                     return 1;
 
                 int intReturn = MetatypeMinimum + MinimumModifiers;
@@ -706,11 +716,11 @@ namespace Chummer.Backend.Attributes
                         intReturn = 1;
                 }
 
-                if ((_strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                if ((_strAbbrev != "MAG" && _strAbbrev != "MAGAdept" && _strAbbrev != "RES" && _strAbbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                     return intReturn;
 
                 int intEssencePenalty = _objCharacter.EssencePenalty;
-                if (_strAbbrev == "MAG")
+                if (_strAbbrev == "MAG" || _strAbbrev == "MAGAdept")
                     intEssencePenalty = _objCharacter.EssencePenaltyMAG;
                 if (intEssencePenalty == 0)
                     return intReturn;
@@ -755,7 +765,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = 0;
-                if (_strAbbrev == "EDG" || _strAbbrev == "MAG" || _strAbbrev == "RES")
+                if (_strAbbrev == "EDG" || _strAbbrev == "MAG" || _strAbbrev == "MAGAdept" || _strAbbrev == "RES")
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
                 else
                     intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
@@ -788,9 +798,14 @@ namespace Chummer.Backend.Attributes
             get {
                 if (string.IsNullOrWhiteSpace(_strDisplayNameShort))
                 {
-                    string strName = "String_Attribute{0}Short".Replace("{0}", _strAbbrev);
-                    _strDisplayNameShort = LanguageManager.GetString(strName);
-                    return _strDisplayNameShort;
+                    if (_strAbbrev == "MAGAdept")
+                    {
+                        _strDisplayNameShort = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    }
+                    else
+                    {
+                        _strDisplayNameShort = LanguageManager.GetString("String_Attribute" + _strAbbrev + "Short");
+                    }
                 }
                 return _strDisplayNameShort;
                 }
@@ -804,9 +819,14 @@ namespace Chummer.Backend.Attributes
                 //TODO: Is this a terrible idea?
                 if (string.IsNullOrWhiteSpace(_strDisplayNameLong))
                 {
-                    string strName = "String_Attribute{0}Long".Replace("{0}", _strAbbrev);
-                    _strDisplayNameLong = LanguageManager.GetString(strName);
-                    return _strDisplayNameLong;
+                    if (_strAbbrev == "MAGAdept")
+                    {
+                        _strDisplayNameLong = LanguageManager.GetString("String_AttributeMAGLong") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    }
+                    else
+                    {
+                        _strDisplayNameLong = LanguageManager.GetString("String_Attribute" + _strAbbrev + "Long");
+                    }
                 }
                 return _strDisplayNameLong;
             }
@@ -820,8 +840,14 @@ namespace Chummer.Backend.Attributes
                 //TODO: Is this a terrible idea?
                 if (string.IsNullOrWhiteSpace(_strDisplayNameFormatted))
                 {
-                    _strDisplayNameFormatted = DisplayNameLong + " (" + DisplayNameShort + ")";
-                    return _strDisplayNameFormatted;
+                    if (_strAbbrev == "MAGAdept")
+                    {
+                        _strDisplayNameFormatted = LanguageManager.GetString("String_AttributeMAGLong") + " (" + LanguageManager.GetString("String_AttributeMAGShort") + ") (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    }
+                    else
+                    {
+                        _strDisplayNameFormatted = DisplayNameLong + " (" + DisplayNameShort + ")";
+                    }
                 }
                 return _strDisplayNameFormatted;
             }
@@ -1056,7 +1082,7 @@ namespace Chummer.Backend.Attributes
                     strModifier += strCyberlimb;
                 }
                 /*
-                if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
+                if ((_strAbbrev == "RES" || _strAbbrev == "MAG" || _strAbbrev == "MAGAdept" || _strAbbrev == "DEP") && _objCharacter.EssencePenalty != 0)
                 {
                     strModifier += $" + -{_objCharacter.EssencePenalty} ({LanguageManager.GetString("String_AttributeESSLong")})";
                 }
@@ -1066,8 +1092,6 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public Character CharacteObject => _objCharacter;
-
         /// <summary>
         /// Amount of BP/Karma spent on this CharacterAttribute.
         /// </summary>
@@ -1075,7 +1099,7 @@ namespace Chummer.Backend.Attributes
         {
             int intBP = 0;
 
-            if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "RES" && _strAbbrev != "DEP")
+            if (_strAbbrev != "EDG" && _strAbbrev != "MAG" && _strAbbrev != "MAGAdept" && _strAbbrev != "RES" && _strAbbrev != "DEP")
             {
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 {
@@ -1097,7 +1121,7 @@ namespace Chummer.Backend.Attributes
                 int intEssenceLoss = 0;
                 if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                 {
-                    if (_strAbbrev == "MAG")
+                    if (_strAbbrev == "MAG" || _strAbbrev == "MAGAdept")
                         intEssenceLoss = _objCharacter.EssencePenaltyMAG;
                     else
                         intEssenceLoss = _objCharacter.EssencePenalty;
@@ -1129,7 +1153,34 @@ namespace Chummer.Backend.Attributes
             return intBP;
         }
 
-        public int SpentPriorityPoints => Base;
+        public int SpentPriorityPoints
+        {
+            get
+            {
+                int intBase = Base;
+                int intReturn = intBase;
+
+                int intExtra = 0;
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                {
+                    if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCost)
+                            intExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCostMultiplier)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                intReturn += intExtra;
+
+                return Math.Max(intReturn, 0);
+            }
+        }
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
@@ -1141,28 +1192,43 @@ namespace Chummer.Backend.Attributes
         /// <returns>Price in karma</returns>
         public virtual int UpgradeKarmaCost()
         {
+            int intValue = Value;
             int upgrade;
-            if (Value >= TotalMaximum)
+            int intOptionsCost = _objCharacter.Options.KarmaAttribute;
+            if (intValue >= TotalMaximum)
             {
-                upgrade = -1;
+                return -1;
             }
-            else if (Value == 0)
+            else if (intValue == 0)
             {
-                upgrade = _objCharacter.Options.KarmaAttribute;
+                upgrade = intOptionsCost;
             }
             else
             {
-                upgrade = (Value + 1) * _objCharacter.Options.KarmaAttribute;
+                upgrade = (intValue + 1) * intOptionsCost;
             }
             if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
-                upgrade -= (_objCharacter.STR.MetatypeMinimum - 1) * _objCharacter.Options.KarmaAttribute;
+                upgrade -= (MetatypeMinimum - 1) * intOptionsCost;
 
-            if (_strAbbrev == "STR" && _objCharacter.Cyberware.FirstOrDefault(x => x.Name == "Myostatin Inhibitor") != null)
+            int intExtra = 0;
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
             {
-                upgrade -= 2;
+                if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        (objLoopImprovement.Maximum == 0 || intValue <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
+                        intExtra += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
             }
+            if (decMultiplier != 1.0m)
+                upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier));
+            upgrade += intExtra;
 
-            return upgrade;
+            return Math.Max(upgrade, Math.Min(1, intOptionsCost));
 
         }
 
@@ -1171,7 +1237,9 @@ namespace Chummer.Backend.Attributes
             if (Karma == 0)
                 return 0;
 
-            int intTotalBase = TotalBase;
+            int intValue = Value;
+            int intRawTotalBase = TotalBase;
+            int intTotalBase = intRawTotalBase;
             if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                 intTotalBase = 1;
 
@@ -1179,13 +1247,25 @@ namespace Chummer.Backend.Attributes
             // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
             int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
 
-            // Since Myostatin Inhibitor just gives a flat -2 per karma level, its effect can be calculated by simple multiplication
-            if (Abbrev == "STR" && _objCharacter.Cyberware.FirstOrDefault(x => x.Name == "Myostatin Inhibitor") != null)
+            int intExtra = 0;
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
             {
-                intCost -= 2 * Karma;
+                if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
+                        intExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
             }
+            if (decMultiplier != 1.0m)
+                intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier));
+            intCost += intExtra;
 
-            return intCost;
+            return Math.Max(intCost, 0);
         }
 
         public bool CanUpgradeCareer
@@ -1226,6 +1306,7 @@ namespace Chummer.Backend.Attributes
 				case "EDG":
 				case "ESS":
 				case "MAG":
+                case "MAGAdept":
 				case "RES":
 					return AttributeCategory.Special;
 				default:
@@ -1295,7 +1376,10 @@ namespace Chummer.Backend.Attributes
             {
                 if (string.IsNullOrWhiteSpace(_strDisplayAbbrev))
                 {
-                    _strDisplayAbbrev = LanguageManager.GetString($"String_Attribute{Abbrev}Short");
+                    if (Abbrev == "MAGAdept")
+                        _strDisplayAbbrev = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+                    else
+                        _strDisplayAbbrev = LanguageManager.GetString($"String_Attribute{Abbrev}Short");
                 }
                 return _strDisplayAbbrev;
             }
@@ -1308,7 +1392,7 @@ namespace Chummer.Backend.Attributes
             int price = UpgradeKarmaCost();
             string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute")} {_strAbbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
 
-            ExpenseLogEntry entry = new ExpenseLogEntry();
+            ExpenseLogEntry entry = new ExpenseLogEntry(_objCharacter);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
             entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, _strAbbrev);
 

@@ -99,7 +99,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudDiceResult.Value);
+                return decimal.ToInt32(nudDiceResult.Value);
             }
         }
         #endregion

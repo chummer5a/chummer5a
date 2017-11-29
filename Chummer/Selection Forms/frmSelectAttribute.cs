@@ -170,6 +170,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Add Adept MAG to the list of selectable Attributes.
+        /// </summary>
+        public void AddMAGAdept()
+        {
+            ListItem objMAG = new ListItem();
+            objMAG.Value = "MAGAdept";
+            objMAG.Name = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+            _lstAttributes.Add(objMAG);
+            cboAttribute.BeginUpdate();
+            cboAttribute.DataSource = null;
+            cboAttribute.ValueMember = "Value";
+            cboAttribute.DisplayMember = "Name";
+            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.EndUpdate();
+        }
+
+        /// <summary>
         /// Add RES to the list of selectable Attributes.
         /// </summary>
         public void AddRES()

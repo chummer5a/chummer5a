@@ -18,7 +18,7 @@ using System.Web.Script.Serialization;
 
 namespace CrashHandler
 {
-	public class CrashDumper
+	public class CrashDumper : IDisposable
 	{
 		public List<string> FilesList => _filesList;
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
@@ -83,15 +83,16 @@ namespace CrashHandler
 
 		private void AttemptDebug(Process process)
 		{
-			bool sucess = DbgHlp.DebugActiveProcess(new IntPtr(process.Id));
+			bool sucess = SafeNativeMethods.DebugActiveProcess(new IntPtr(process.Id));
 
-			if (sucess)
+            int intLastError = Marshal.GetLastWin32Error();
+            if (sucess)
 			{
 				Attributes["debugger-attached-sucess"] = "True";
 			}
 			else
 			{
-				Attributes["debugger-attached-error"] = new Win32Exception(Marshal.GetLastWin32Error()).Message;
+                Attributes["debugger-attached-error"] = new Win32Exception(intLastError).Message;
 			}
 		}
 
@@ -229,11 +230,11 @@ namespace CrashHandler
 				if (extraInfo)
 				{
 					dtype |= 0;
-					ret = !(DbgHlp.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+					ret = !(SafeNativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
 					
 				}
-				else if (DbgHlp.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+				else if (SafeNativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
@@ -241,11 +242,9 @@ namespace CrashHandler
 					//Might solve the problem if crashhandler stops working on remote (hah)					
 					Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
 					Attributes["debug-debug-thread-id"] = threadId.ToString();
-
 				}
 				else
 				{
-					int errorNo = Marshal.GetLastWin32Error();
 					ret = true;
 				}
 
@@ -288,42 +287,48 @@ namespace CrashHandler
 
 		private byte[] GetZip()
 		{
-			using (MemoryStream mem = new MemoryStream())
-			{
-				using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, true))
-				{
-					foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
-					{
-						archive.CreateEntryFromFile(file, Path.GetFileName(file));
-					}
-				}
-
-				return mem.ToArray();
-			}
-		}
+            byte[] objReturn = null;
+            MemoryStream mem = new MemoryStream();
+            // archive.Dispose() should call mem.Dispose()
+            using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))
+            {
+                foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
+                {
+                    archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                }
+                objReturn = mem.ToArray();
+            }
+            return objReturn;
+        }
 
 		private byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
 		{
 			byte[] encrypted;
-			using (AesManaged managed = new AesManaged())
+            // Create the streams used for encryption.
+            AesManaged managed = null;
+            try
 			{
-				Iv = managed.IV;
+                managed = new AesManaged();
+
+                Iv = managed.IV;
 				Key = managed.Key;
 
 				// Create a decrytor to perform the stream transform.
 				ICryptoTransform encryptor = managed.CreateEncryptor(managed.Key, managed.IV);
 
-				// Create the streams used for encryption.
-				using (MemoryStream msEncrypt = new MemoryStream())
-				{
-					using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-					{
-						csEncrypt.Write(unencrypted, 0, unencrypted.Length);
-					}
-
-					encrypted = msEncrypt.ToArray();
-				}
+                MemoryStream msEncrypt = new MemoryStream();
+                // csEncrypt.Dispose() should call msEncrupt.Dispose()
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    csEncrypt.Write(unencrypted, 0, unencrypted.Length);
+                    encrypted = msEncrypt.ToArray();
+                }
 			}
+            finally
+            {
+                if (managed != null)
+                    managed.Dispose();
+            }
 
 			return encrypted;
 		}
@@ -465,8 +470,40 @@ namespace CrashHandler
 		{
 			return string.Join("", iv.Select(x => x.ToString("X2"))) + ":" + string.Join("", key.Select(x => x.ToString("X2")));
 		}
-	}
 
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _startSendEvent.Dispose();
+                    if (CrashLogWriter != null)
+                        CrashLogWriter.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // Override destructor only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~CrashDumper() {
+        //   Dispose(false);
+        // }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            // Uncomment the following line if the destructor is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
+
+    [Serializable]
     internal class RemoteServiceException : Exception
     {
         public RemoteServiceException(string toString) : base(toString)

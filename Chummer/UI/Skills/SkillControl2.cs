@@ -54,16 +54,15 @@ namespace Chummer.UI.Skills
                 lblCareerRating.Visible = true;
 
                 btnCareerIncrease.Visible = true;
-                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
+                btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudSkill.Visible = false;
                 nudKarma.Visible = false;
                 chkKarma.Visible = false;
 
                 cboSpec.Visible = false;
+                btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
-
-                lblCareerSpec.DataBindings.Add("Text", skill, nameof(skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 lblCareerSpec.Visible = true;
 
                 lblAttribute.Visible = false;  //Was true, cannot think it should be
@@ -226,8 +225,30 @@ namespace Chummer.UI.Skills
             frmCareer parrent = ParentForm as frmCareer;
             if (parrent != null)
             {
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-                        _skill.CharacterObject.Options.KarmaSpecialization);
+                int price = _skill.CharacterObject.Options.KarmaSpecialization;
+
+                int intExtraSpecCost = 0;
+                int intTotalBaseRating = _skill.TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
+                        {
+                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                intExtraSpecCost += objLoopImprovement.Value;
+                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+                price += intExtraSpecCost; //Spec
+
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price.ToString());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;

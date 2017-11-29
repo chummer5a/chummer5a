@@ -139,16 +139,16 @@ namespace Chummer.Backend.Equipment
         /// Core code to Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public override void PrintInner(XmlTextWriter objWriter, bool blnIsCommlink = true)
+        public override void PrintInner(XmlTextWriter objWriter, CultureInfo objCulture, bool blnIsCommlink = true)
         {
-            base.PrintInner(objWriter, true);
+            base.PrintInner(objWriter, objCulture, true);
 
-            objWriter.WriteElementString("attack", GetTotalMatrixAttribute("Attack").ToString());
-            objWriter.WriteElementString("sleaze", GetTotalMatrixAttribute("Sleaze").ToString());
-            objWriter.WriteElementString("dataprocessing", GetTotalMatrixAttribute("Data Processing").ToString());
-            objWriter.WriteElementString("firewall", GetTotalMatrixAttribute("Firewall").ToString());
-            objWriter.WriteElementString("devicerating", GetTotalMatrixAttribute("Device Rating").ToString());
-            objWriter.WriteElementString("processorlimit", ProcessorLimit.ToString());
+            objWriter.WriteElementString("attack", GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("processorlimit", ProcessorLimit.ToString(objCulture));
             objWriter.WriteElementString("active", IsActive.ToString());
             objWriter.WriteElementString("homenode", HomeNode.ToString());
         }

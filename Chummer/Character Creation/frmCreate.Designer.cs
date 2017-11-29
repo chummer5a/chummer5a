@@ -178,6 +178,10 @@ namespace Chummer
             this.tsGearButtonAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsGearAddNexus = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsVehicleAddWeapon = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleAddWeaponWeapon = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleAddWeaponAccessory = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleAddUnderbarrelWeapon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddWeaponMount = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddMod = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddCyberware = new System.Windows.Forms.ToolStripMenuItem();
@@ -185,12 +189,13 @@ namespace Chummer
             this.tsVehicleAddGear = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleSensorAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddNexus = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsVehicleAddWeapon = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsVehicleAddWeaponWeapon = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsVehicleAddWeaponAccessory = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsVehicleAddUnderbarrelWeapon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleName = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsWeaponMount = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsVehicleMountWeapon = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleMountWeaponAdd = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleMountWeaponAccessory = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleMountWeaponUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -228,6 +233,9 @@ namespace Chummer
             this.tsGearAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsGearName = new System.Windows.Forms.ToolStripMenuItem();
             this.tsGearNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsGearAllowRenameAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsGearAllowRenameName = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsGearAllowRenameNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicleWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleAddWeaponAccessoryAlt = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleAddUnderbarrelWeaponAlt = new System.Windows.Forms.ToolStripMenuItem();
@@ -265,6 +273,7 @@ namespace Chummer
             this.cmsGearLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmorLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsArmorLocationAddArmor = new System.Windows.Forms.ToolStripMenuItem();
             this.tsArmorRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsCyberwareGear = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCyberwareGearMenuAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
@@ -593,8 +602,6 @@ namespace Chummer
             this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
             this.lblGearSleazeLabel = new System.Windows.Forms.Label();
             this.lblGearAttackLabel = new System.Windows.Forms.Label();
-            this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
-            this.lblAdeptWayDiscount = new System.Windows.Forms.Label();
             this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
             this.chkCommlinks = new System.Windows.Forms.CheckBox();
             this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
@@ -869,6 +876,8 @@ namespace Chummer
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddAdvancedProgramOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -879,6 +888,7 @@ namespace Chummer
             this.cmsWeapon.SuspendLayout();
             this.cmsGearButton.SuspendLayout();
             this.cmsVehicle.SuspendLayout();
+            this.cmsWeaponMount.SuspendLayout();
             this.mnuCreateMenu.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.cmsGear.SuspendLayout();
@@ -931,7 +941,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).BeginInit();
             this.tabWeapons.SuspendLayout();
             this.tabGear.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).BeginInit();
             this.tabPets.SuspendLayout();
@@ -956,6 +965,7 @@ namespace Chummer
             this.cmsMetamagic.SuspendLayout();
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
+            this.cmsGearAllowRename.SuspendLayout();
             this.SuspendLayout();
             // 
             // StatusStrip
@@ -2167,24 +2177,63 @@ namespace Chummer
             // cmsVehicle
             // 
             this.cmsVehicle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleAddWeapon,
             this.tsVehicleAddWeaponMount,
             this.tsVehicleAddMod,
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
-            this.tsVehicleAddWeapon,
-            this.tsVehicleName,
-            this.tsVehicleNotes});
+            this.tsVehicleName});
             this.cmsVehicle.Name = "cmsWeapon";
-            this.cmsVehicle.Size = new System.Drawing.Size(193, 158);
+            this.cmsVehicle.Size = new System.Drawing.Size(193, 136);
             this.cmsVehicle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+            // 
+            // tsVehicleAddWeapon
+            // 
+            this.tsVehicleAddWeapon.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleAddWeaponWeapon,
+            this.tsVehicleAddWeaponAccessory,
+            this.tsVehicleAddUnderbarrelWeapon});
+            this.tsVehicleAddWeapon.Image = global::Chummer.Properties.Resources.award_star_add;
+            this.tsVehicleAddWeapon.Name = "tsVehicleAddWeapon";
+            this.tsVehicleAddWeapon.Size = new System.Drawing.Size(192, 22);
+            this.tsVehicleAddWeapon.Tag = "Menu_Weapons";
+            this.tsVehicleAddWeapon.Text = "&Weapons";
+            this.tsVehicleAddWeapon.DropDownOpening += new System.EventHandler(this.ContextMenu_DropDownOpening);
+            // 
+            // tsVehicleAddWeaponWeapon
+            // 
+            this.tsVehicleAddWeaponWeapon.Image = global::Chummer.Properties.Resources.award_star_add;
+            this.tsVehicleAddWeaponWeapon.Name = "tsVehicleAddWeaponWeapon";
+            this.tsVehicleAddWeaponWeapon.Size = new System.Drawing.Size(208, 22);
+            this.tsVehicleAddWeaponWeapon.Tag = "Menu_AddWeapon";
+            this.tsVehicleAddWeaponWeapon.Text = "Add &Weapon";
+            this.tsVehicleAddWeaponWeapon.Click += new System.EventHandler(this.tsVehicleAddWeapon_Click);
+            // 
+            // tsVehicleAddWeaponAccessory
+            // 
+            this.tsVehicleAddWeaponAccessory.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsVehicleAddWeaponAccessory.Name = "tsVehicleAddWeaponAccessory";
+            this.tsVehicleAddWeaponAccessory.Size = new System.Drawing.Size(208, 22);
+            this.tsVehicleAddWeaponAccessory.Tag = "Menu_AddAccessory";
+            this.tsVehicleAddWeaponAccessory.Text = "Add &Accessory";
+            this.tsVehicleAddWeaponAccessory.Click += new System.EventHandler(this.tsVehicleAddWeaponAccessory_Click);
+            // 
+            // tsVehicleAddUnderbarrelWeapon
+            // 
+            this.tsVehicleAddUnderbarrelWeapon.Image = global::Chummer.Properties.Resources.award_star2_add;
+            this.tsVehicleAddUnderbarrelWeapon.Name = "tsVehicleAddUnderbarrelWeapon";
+            this.tsVehicleAddUnderbarrelWeapon.Size = new System.Drawing.Size(208, 22);
+            this.tsVehicleAddUnderbarrelWeapon.Tag = "Menu_AddUnderbarrelWeapon";
+            this.tsVehicleAddUnderbarrelWeapon.Text = "Add Underbarrel Weapon";
+            this.tsVehicleAddUnderbarrelWeapon.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
             // 
             // tsVehicleAddWeaponMount
             // 
             this.tsVehicleAddWeaponMount.Image = global::Chummer.Properties.Resources.car_add;
             this.tsVehicleAddWeaponMount.Name = "tsVehicleAddWeaponMount";
             this.tsVehicleAddWeaponMount.Size = new System.Drawing.Size(192, 22);
+            this.tsVehicleAddWeaponMount.Tag = "Menu_AddWeaponMount";
             this.tsVehicleAddWeaponMount.Text = "Add Weapon Mount";
-            this.tsVehicleAddWeaponMount.Visible = false;
             this.tsVehicleAddWeaponMount.Click += new System.EventHandler(this.tsVehicleAddWeaponMount_Click);
             // 
             // tsVehicleAddMod
@@ -2246,46 +2295,6 @@ namespace Chummer
             this.tsVehicleAddNexus.Visible = false;
             this.tsVehicleAddNexus.Click += new System.EventHandler(this.tsVehicleAddNexus_Click);
             // 
-            // tsVehicleAddWeapon
-            // 
-            this.tsVehicleAddWeapon.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleAddWeaponWeapon,
-            this.tsVehicleAddWeaponAccessory,
-            this.tsVehicleAddUnderbarrelWeapon});
-            this.tsVehicleAddWeapon.Image = global::Chummer.Properties.Resources.award_star_add;
-            this.tsVehicleAddWeapon.Name = "tsVehicleAddWeapon";
-            this.tsVehicleAddWeapon.Size = new System.Drawing.Size(192, 22);
-            this.tsVehicleAddWeapon.Tag = "Menu_Weapons";
-            this.tsVehicleAddWeapon.Text = "&Weapons";
-            this.tsVehicleAddWeapon.DropDownOpening += new System.EventHandler(this.ContextMenu_DropDownOpening);
-            // 
-            // tsVehicleAddWeaponWeapon
-            // 
-            this.tsVehicleAddWeaponWeapon.Image = global::Chummer.Properties.Resources.award_star_add;
-            this.tsVehicleAddWeaponWeapon.Name = "tsVehicleAddWeaponWeapon";
-            this.tsVehicleAddWeaponWeapon.Size = new System.Drawing.Size(208, 22);
-            this.tsVehicleAddWeaponWeapon.Tag = "Menu_AddWeapon";
-            this.tsVehicleAddWeaponWeapon.Text = "Add &Weapon";
-            this.tsVehicleAddWeaponWeapon.Click += new System.EventHandler(this.tsVehicleAddWeaponWeapon_Click);
-            // 
-            // tsVehicleAddWeaponAccessory
-            // 
-            this.tsVehicleAddWeaponAccessory.Image = global::Chummer.Properties.Resources.brick_add;
-            this.tsVehicleAddWeaponAccessory.Name = "tsVehicleAddWeaponAccessory";
-            this.tsVehicleAddWeaponAccessory.Size = new System.Drawing.Size(208, 22);
-            this.tsVehicleAddWeaponAccessory.Tag = "Menu_AddAccessory";
-            this.tsVehicleAddWeaponAccessory.Text = "Add &Accessory";
-            this.tsVehicleAddWeaponAccessory.Click += new System.EventHandler(this.tsVehicleAddWeaponAccessory_Click);
-            // 
-            // tsVehicleAddUnderbarrelWeapon
-            // 
-            this.tsVehicleAddUnderbarrelWeapon.Image = global::Chummer.Properties.Resources.award_star2_add;
-            this.tsVehicleAddUnderbarrelWeapon.Name = "tsVehicleAddUnderbarrelWeapon";
-            this.tsVehicleAddUnderbarrelWeapon.Size = new System.Drawing.Size(208, 22);
-            this.tsVehicleAddUnderbarrelWeapon.Tag = "Menu_AddUnderbarrelWeapon";
-            this.tsVehicleAddUnderbarrelWeapon.Text = "Add Underbarrel Weapon";
-            this.tsVehicleAddUnderbarrelWeapon.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
-            // 
             // tsVehicleName
             // 
             this.tsVehicleName.Image = global::Chummer.Properties.Resources.tag_red;
@@ -2299,10 +2308,58 @@ namespace Chummer
             // 
             this.tsVehicleNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsVehicleNotes.Name = "tsVehicleNotes";
-            this.tsVehicleNotes.Size = new System.Drawing.Size(192, 22);
+            this.tsVehicleNotes.Size = new System.Drawing.Size(152, 22);
             this.tsVehicleNotes.Tag = "Menu_Notes";
             this.tsVehicleNotes.Text = "&Notes";
             this.tsVehicleNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
+            // cmsWeaponMount
+            // 
+            this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleMountWeapon,
+            this.tsVehicleNotes});
+            this.cmsWeaponMount.Name = "cmsWeapon";
+            this.cmsWeaponMount.Size = new System.Drawing.Size(153, 70);
+            this.cmsWeaponMount.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+            // 
+            // tsVehicleMountWeapon
+            // 
+            this.tsVehicleMountWeapon.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleMountWeaponAdd,
+            this.tsVehicleMountWeaponAccessory,
+            this.tsVehicleMountWeaponUnderbarrel});
+            this.tsVehicleMountWeapon.Image = global::Chummer.Properties.Resources.award_star_add;
+            this.tsVehicleMountWeapon.Name = "tsVehicleMountWeapon";
+            this.tsVehicleMountWeapon.Size = new System.Drawing.Size(152, 22);
+            this.tsVehicleMountWeapon.Tag = "Menu_Weapons";
+            this.tsVehicleMountWeapon.Text = "&Weapons";
+            // 
+            // tsVehicleMountWeaponAdd
+            // 
+            this.tsVehicleMountWeaponAdd.Image = global::Chummer.Properties.Resources.award_star_add;
+            this.tsVehicleMountWeaponAdd.Name = "tsVehicleMountWeaponAdd";
+            this.tsVehicleMountWeaponAdd.Size = new System.Drawing.Size(208, 22);
+            this.tsVehicleMountWeaponAdd.Tag = "Menu_AddWeapon";
+            this.tsVehicleMountWeaponAdd.Text = "Add &Weapon";
+            this.tsVehicleMountWeaponAdd.Click += new System.EventHandler(this.tsVehicleAddWeapon_Click);
+            // 
+            // tsVehicleMountWeaponAccessory
+            // 
+            this.tsVehicleMountWeaponAccessory.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsVehicleMountWeaponAccessory.Name = "tsVehicleMountWeaponAccessory";
+            this.tsVehicleMountWeaponAccessory.Size = new System.Drawing.Size(208, 22);
+            this.tsVehicleMountWeaponAccessory.Tag = "Menu_AddAccessory";
+            this.tsVehicleMountWeaponAccessory.Text = "Add &Accessory";
+            this.tsVehicleMountWeaponAccessory.Click += new System.EventHandler(this.tsVehicleAddWeaponAccessory_Click);
+            // 
+            // tsVehicleMountWeaponUnderbarrel
+            // 
+            this.tsVehicleMountWeaponUnderbarrel.Image = global::Chummer.Properties.Resources.award_star2_add;
+            this.tsVehicleMountWeaponUnderbarrel.Name = "tsVehicleMountWeaponUnderbarrel";
+            this.tsVehicleMountWeaponUnderbarrel.Size = new System.Drawing.Size(208, 22);
+            this.tsVehicleMountWeaponUnderbarrel.Tag = "Menu_AddUnderbarrelWeapon";
+            this.tsVehicleMountWeaponUnderbarrel.Text = "Add Underbarrel Weapon";
+            this.tsVehicleMountWeaponUnderbarrel.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
             // 
             // mnuCreateMenu
             // 
@@ -2655,7 +2712,7 @@ namespace Chummer
             this.tsGearAddAsPlugin,
             this.tsGearName,
             this.tsGearNotes});
-            this.cmsGear.Name = "cmsWeapon";
+            this.cmsGear.Name = "cmsGear";
             this.cmsGear.Size = new System.Drawing.Size(148, 70);
             this.cmsGear.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
@@ -2686,13 +2743,40 @@ namespace Chummer
             this.tsGearNotes.Text = "&Notes";
             this.tsGearNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
             // 
+            // tsGearAllowRenameAddAsPlugin
+            // 
+            this.tsGearAllowRenameAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsGearAllowRenameAddAsPlugin.Name = "tsGearAllowRenameAddAsPlugin";
+            this.tsGearAllowRenameAddAsPlugin.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameAddAsPlugin.Tag = "Menu_AddAsPlugin";
+            this.tsGearAllowRenameAddAsPlugin.Text = "&Add as Plugin";
+            this.tsGearAllowRenameAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
+            // 
+            // tsGearAllowRenameName
+            // 
+            this.tsGearAllowRenameName.Image = global::Chummer.Properties.Resources.tag_red;
+            this.tsGearAllowRenameName.Name = "tsGearAllowRenameName";
+            this.tsGearAllowRenameName.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameName.Tag = "Menu_NameGear";
+            this.tsGearAllowRenameName.Text = "Name Gear";
+            this.tsGearAllowRenameName.Click += new System.EventHandler(this.tsGearName_Click);
+            // 
+            // tsGearAllowRenameNotes
+            // 
+            this.tsGearAllowRenameNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsGearAllowRenameNotes.Name = "tsGearAllowRenameNotes";
+            this.tsGearAllowRenameNotes.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameNotes.Tag = "Menu_Notes";
+            this.tsGearAllowRenameNotes.Text = "&Notes";
+            this.tsGearAllowRenameNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
+            // 
             // cmsVehicleWeapon
             // 
             this.cmsVehicleWeapon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsVehicleAddWeaponAccessoryAlt,
             this.tsVehicleAddUnderbarrelWeaponAlt,
             this.tsVehicleWeaponNotes});
-            this.cmsVehicleWeapon.Name = "cmsWeapon";
+            this.cmsVehicleWeapon.Name = "cmsVehicleWeapon";
             this.cmsVehicleWeapon.Size = new System.Drawing.Size(209, 70);
             this.cmsVehicleWeapon.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
@@ -3005,10 +3089,20 @@ namespace Chummer
             // cmsArmorLocation
             // 
             this.cmsArmorLocation.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsArmorLocationAddArmor,
             this.tsArmorRenameLocation});
             this.cmsArmorLocation.Name = "cmsGearLocation";
-            this.cmsArmorLocation.Size = new System.Drawing.Size(167, 26);
+            this.cmsArmorLocation.Size = new System.Drawing.Size(167, 48);
             this.cmsArmorLocation.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+            // 
+            // tsArmorLocationAddArmor
+            // 
+            this.tsArmorLocationAddArmor.Image = global::Chummer.Properties.Resources.building_edit;
+            this.tsArmorLocationAddArmor.Name = "tsArmorLocationAddArmor";
+            this.tsArmorLocationAddArmor.Size = new System.Drawing.Size(166, 22);
+            this.tsArmorLocationAddArmor.Tag = "Button_AddArmor";
+            this.tsArmorLocationAddArmor.Text = "&Add Armor";
+            this.tsArmorLocationAddArmor.Click += new System.EventHandler(this.tsArmorLocationAddArmor_Click);
             // 
             // tsArmorRenameLocation
             // 
@@ -4219,11 +4313,9 @@ namespace Chummer
             // cmdAddSpell
             // 
             this.cmdAddSpell.AutoSize = true;
-            this.cmdAddSpell.ContextMenuStrip = this.cmsSpellButton;
             this.cmdAddSpell.Location = new System.Drawing.Point(8, 26);
             this.cmdAddSpell.Name = "cmdAddSpell";
             this.cmdAddSpell.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddSpell.SplitMenuStrip = this.cmsSpellButton;
             this.cmdAddSpell.TabIndex = 140;
             this.cmdAddSpell.Tag = "Button_AddSpell";
             this.cmdAddSpell.Text = "&Add Spell";
@@ -6777,8 +6869,6 @@ namespace Chummer
             this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
             this.tabGear.Controls.Add(this.lblGearSleazeLabel);
             this.tabGear.Controls.Add(this.lblGearAttackLabel);
-            this.tabGear.Controls.Add(this.nudAdeptWayDiscount);
-            this.tabGear.Controls.Add(this.lblAdeptWayDiscount);
             this.tabGear.Controls.Add(this.chkActiveCommlink);
             this.tabGear.Controls.Add(this.chkCommlinks);
             this.tabGear.Controls.Add(this.cmdCreateStackedFocus);
@@ -6902,31 +6992,6 @@ namespace Chummer
             this.lblGearAttackLabel.Tag = "Label_Attack";
             this.lblGearAttackLabel.Text = "Attack:";
             this.lblGearAttackLabel.Visible = false;
-            // 
-            // nudAdeptWayDiscount
-            // 
-            this.nudAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudAdeptWayDiscount.Location = new System.Drawing.Point(571, 552);
-            this.nudAdeptWayDiscount.Maximum = new decimal(new int[] {
-            9000,
-            0,
-            0,
-            0});
-            this.nudAdeptWayDiscount.Name = "nudAdeptWayDiscount";
-            this.nudAdeptWayDiscount.Size = new System.Drawing.Size(48, 20);
-            this.nudAdeptWayDiscount.TabIndex = 147;
-            this.nudAdeptWayDiscount.ValueChanged += new System.EventHandler(this.nudAdeptWayDiscount_ValueChanged);
-            // 
-            // lblAdeptWayDiscount
-            // 
-            this.lblAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblAdeptWayDiscount.AutoSize = true;
-            this.lblAdeptWayDiscount.Location = new System.Drawing.Point(307, 554);
-            this.lblAdeptWayDiscount.Name = "lblAdeptWayDiscount";
-            this.lblAdeptWayDiscount.Size = new System.Drawing.Size(235, 13);
-            this.lblAdeptWayDiscount.TabIndex = 146;
-            this.lblAdeptWayDiscount.Tag = "Label_AdeptWayDiscount";
-            this.lblAdeptWayDiscount.Text = "Bonded Foci Qualifying for Adept Way Discount:";
             // 
             // chkActiveCommlink
             // 
@@ -7052,7 +7117,7 @@ namespace Chummer
             this.treFoci.ShowLines = false;
             this.treFoci.ShowPlusMinus = false;
             this.treFoci.ShowRootLines = false;
-            this.treFoci.Size = new System.Drawing.Size(308, 198);
+            this.treFoci.Size = new System.Drawing.Size(308, 228);
             this.treFoci.TabIndex = 91;
             this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
             this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
@@ -9920,6 +9985,25 @@ namespace Chummer
             this.tsAIProgramNotes.Text = "&Notes";
             this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
             // 
+            // cmsGearAllowRename
+            // 
+            this.cmsGearAllowRename.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsGearAllowRenameAddAsPlugin,
+            this.tsGearAllowRenameName,
+            this.tsGearAllowRenameNotes,
+            this.tsGearAllowRenameExtra});
+            this.cmsGearAllowRename.Name = "cmsGearAllowRename";
+            this.cmsGearAllowRename.Size = new System.Drawing.Size(170, 92);
+            // 
+            // tsGearAllowRenameExtra
+            // 
+            this.tsGearAllowRenameExtra.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsGearAllowRenameExtra.Name = "tsGearAllowRenameExtra";
+            this.tsGearAllowRenameExtra.Size = new System.Drawing.Size(169, 22);
+            this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
+            this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
+            this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
+            // 
             // frmCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -9951,6 +10035,7 @@ namespace Chummer
             this.cmsWeapon.ResumeLayout(false);
             this.cmsGearButton.ResumeLayout(false);
             this.cmsVehicle.ResumeLayout(false);
+            this.cmsWeaponMount.ResumeLayout(false);
             this.mnuCreateMenu.ResumeLayout(false);
             this.mnuCreateMenu.PerformLayout();
             this.toolStrip.ResumeLayout(false);
@@ -10018,7 +10103,6 @@ namespace Chummer
             this.tabWeapons.PerformLayout();
             this.tabGear.ResumeLayout(false);
             this.tabGear.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
             this.tabPets.ResumeLayout(false);
@@ -10051,6 +10135,7 @@ namespace Chummer
             this.cmsMetamagic.ResumeLayout(false);
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
+            this.cmsGearAllowRename.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -10247,7 +10332,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleHandling;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
         private System.Windows.Forms.ToolStripButton tsbPrint;
-        private System.Windows.Forms.ContextMenuStrip cmsVehicle;
+        private System.Windows.Forms.ContextMenuStrip cmsWeaponMount;
+        private System.Windows.Forms.ContextMenuStrip cmsVehicle; 
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddMod;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponMount;
         private System.Windows.Forms.NumericUpDown nudVehicleRating;
@@ -10514,6 +10600,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponDicePool;
         private System.Windows.Forms.Label lblWeaponDicePoolLabel;
         private System.Windows.Forms.ContextMenuStrip cmsArmorLocation;
+        private System.Windows.Forms.ToolStripMenuItem tsArmorLocationAddArmor;
         private System.Windows.Forms.ToolStripMenuItem tsArmorRenameLocation;
         private System.Windows.Forms.Button cmdAddArmorBundle;
         private System.Windows.Forms.Button cmdArmorUnEquipAll;
@@ -10810,8 +10897,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberlimbAGILabel;
         private System.Windows.Forms.TabPage tabSkills;
         private UI.Skills.SkillsTabUserControl tabSkillUc;
-        private System.Windows.Forms.NumericUpDown nudAdeptWayDiscount;
-        private System.Windows.Forms.Label lblAdeptWayDiscount;
         private System.Windows.Forms.Button cmdCreateStackedFocus;
         private System.Windows.Forms.Label lblFoci;
         private System.Windows.Forms.TreeView treFoci;
@@ -10868,6 +10953,15 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialKarmaValue;
         private System.Windows.Forms.Button cmdCyberwareChangeMount;
         private System.Windows.Forms.Button cmdVehicleCyberwareChangeMount;
+        private System.Windows.Forms.ContextMenuStrip cmsGearAllowRename;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameExtra;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameAddAsPlugin;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameName;
+        private System.Windows.Forms.ToolStripMenuItem tsGearAllowRenameNotes;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleMountWeapon;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleMountWeaponAdd;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleMountWeaponAccessory;
+        private System.Windows.Forms.ToolStripMenuItem tsVehicleMountWeaponUnderbarrel;
         private System.Windows.Forms.TabPage tabRelationships;
     }
 }

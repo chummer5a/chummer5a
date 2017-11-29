@@ -83,20 +83,19 @@ namespace Chummer
                     }
                 }
 
-                StringBuilder story = new StringBuilder();
+                string[] story = new string[modules.Count];
                 object storyLock = new object();
                 //Actually "write" the story
-                Parallel.ForEach(modules, objStoryModule =>
+                Parallel.For(0, modules.Count, i =>
                 {
+                    XmlNode objStoryModule = modules[i];
                     StringBuilder objModuleString = new StringBuilder();
                     Write(objModuleString, objStoryModule.InnerText, 5);
-                    objModuleString.Append(Environment.NewLine);
-                    objModuleString.Append(Environment.NewLine);
                     lock (storyLock)
-                        story.Append(objModuleString.ToString());
+                        story[i] = objModuleString.ToString();
                 });
 
-                return story.ToString();
+                return string.Join(Environment.NewLine + Environment.NewLine, story);
             }
 
             return string.Empty;
@@ -195,9 +194,9 @@ namespace Chummer
                     int age;
                     if (int.TryParse(macroPool, out age))
                     {
-                        return (2075 + age - year).ToString();
+                        return (DateTime.UtcNow.Year + 72 + age - year).ToString();
                     }
-                    return (2075 - year).ToString();
+                    return (DateTime.UtcNow.Year + 72 - year).ToString();
                 }
                 return string.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
             }

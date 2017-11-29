@@ -84,6 +84,13 @@ namespace Chummer
                     _lstCategory.Add(objItem);
                 }
             }
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
@@ -150,7 +157,20 @@ namespace Chummer
                 }
                 else
                 {
-                    lblCost.Text = String.Format("{0:###,###,##0.##¥}", Convert.ToDecimal(objXmlQuality["cost"].InnerText));
+                    string strCost = objXmlQuality["cost"].InnerText ?? string.Empty;
+                    decimal decCost = 0.0m;
+                    if (!decimal.TryParse(strCost, out decCost))
+                    {
+                        try
+                        {
+                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost));
+                        }
+                        catch (XPathException)
+                        {
+                            decCost = 0.0m;
+                        }
+                    }
+                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;
@@ -323,53 +343,29 @@ namespace Chummer
         private void BuildQualityList()
         {
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrWhiteSpace(txtSearch.Text))
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-
-                XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
-                foreach (XmlNode objXmlQuality in objXmlQualityList)
-                {
-                    if (_strSelectedLifestyle != "Bolt Hole" && objXmlQuality["name"].InnerText == "Dug a Hole")
-                    {
-                        continue;
-                    }
-                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlQuality["name"].InnerText;
-                        objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
-
-                        if (objXmlQuality["category"] != null)
-                        {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText);
-
-                            if (objFoundItem != null)
-                            {
-                                objItem.Name += " [" + objFoundItem.Name + "]";
-                            }
-                        }
-
-                        lstLifestyleQuality.Add(objItem);
-                    }
-                }
+                strFilter += " and((contains(translate(name, 'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß', 'ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
             }
-            else
-            {
-                string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
 
-                foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
+            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
+            {
+                strFilter += " and category = \"" + cboCategory.SelectedValue.ToString() + "\"";
+            }
+
+            XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]");
+            foreach (XmlNode objXmlQuality in objXmlQualityList)
+            {
+                string strQualityName = objXmlQuality["name"].InnerText;
+                if (strQualityName != "Dug a Hole" || _strSelectedLifestyle == "Bolt Hole")
                 {
-                    if (_strSelectedLifestyle != "Bolt Hole" && objXmlQuality["name"].InnerText == "Dug a Hole")
-                    {
-                        continue;
-                    }
                     if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
                         ListItem objItem = new ListItem();
-                        objItem.Value = objXmlQuality["name"].InnerText;
-                        objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                        objItem.Value = strQualityName;
+                        objItem.Name = objXmlQuality["translate"]?.InnerText ?? strQualityName;
 
                         lstLifestyleQuality.Add(objItem);
                     }
@@ -394,7 +390,7 @@ namespace Chummer
                 return;
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
             _strSelectedQuality = objNode["name"].InnerText;
-            _strSelectCategory = objNode["category"].InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
 
             if (!RequirementMet(objNode, true))
                 return;
@@ -679,11 +675,8 @@ namespace Chummer
                                 {
                                     strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
-
-                                XmlDocument objXmlDocument = new XmlDocument();
-                                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                                XPathExpression xprAttributes = nav.Compile(strAttributes);
-                                if (Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                
+                                if (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                     blnOneOfMet = true;
                                 break;
                             case "skillgrouptotal":
@@ -942,11 +935,8 @@ namespace Chummer
                                 {
                                     strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString());
                                 }
-
-                                XmlDocument objXmlDocument = new XmlDocument();
-                                XPathNavigator nav = objXmlDocument.CreateNavigator();
-                                XPathExpression xprAttributes = nav.Compile(strAttributes);
-                                if (Convert.ToInt32(nav.Evaluate(xprAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                
+                                if (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAttributes)) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
                                     blnFound = true;
                                 break;
                             case "skillgrouptotal":

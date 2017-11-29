@@ -4,6 +4,7 @@
   <xsl:import href="xz.language.xslt"/>
 
   <xsl:import href="Shadowrun 5 set.xslt"/>
+  <xsl:import href="Shadowrun 5 set CSS.xslt"/>
   <xsl:import href="xs.SkillsGroupedByName.xslt"/>
 
   <xsl:variable name="PrintSkillCategoryNames" select="true()"/>

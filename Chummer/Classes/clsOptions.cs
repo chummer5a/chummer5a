@@ -146,8 +146,8 @@ namespace Chummer
 
         private static frmMain _frmMainForm;
         private static readonly RegistryKey _objBaseChummerKey;
-        public static readonly string DefaultLanguage = "en-us";
-        public static readonly string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
+        public const string DefaultLanguage = "en-us";
+        public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
 
         private static bool _blnAutomaticUpdate = false;
         private static bool _blnLiveCustomData = false;
@@ -172,9 +172,6 @@ namespace Chummer
 
         private static XmlDocument _objXmlClipboard = new XmlDocument();
         private static ClipboardContentType _objClipboardContentType = new ClipboardContentType();
-
-        public static readonly GradeList CyberwareGrades = new GradeList();
-        public static readonly GradeList BiowareGrades = new GradeList();
 
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
@@ -274,9 +271,23 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnOmaeAutoLogin, "omaeautologin");
             // Language.
             LoadStringFromRegistry(ref _strLanguage, "language");
-            if (_strLanguage == "en-us2")
+            switch (_strLanguage)
             {
-                _strLanguage = GlobalOptions.DefaultLanguage;
+                case "en-us2":
+                    _strLanguage = GlobalOptions.DefaultLanguage;
+                    break;
+                case "de":
+                    _strLanguage = "de-de";
+                    break;
+                case "fr":
+                    _strLanguage = "fr-fr";
+                    break;
+                case "jp":
+                    _strLanguage = "jp-jp";
+                    break;
+                case "zh":
+                    _strLanguage = "zh-cn";
+                    break;
             }
             // Startup in Fullscreen mode.
             LoadBoolFromRegistry(ref _blnStartupFullscreen, "startupfullscreen");
@@ -403,9 +414,6 @@ namespace Chummer
                     _lstSourcebookInfo.Add(objSource);
                 }
             }
-
-            CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);
-            BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
         }
         #endregion
 
@@ -804,6 +812,9 @@ namespace Chummer
         /// <param name="strFile">Name of the file to add.</param>
         public static void AddToMRUList(string strFile, string strMRUType = "mru")
         {
+            if (string.IsNullOrEmpty(strFile))
+                return;
+
             List<string> strFiles = ReadMRUList(strMRUType);
 
             // Make sure the file doesn't exist in the sticky MRU list if we're adding to base MRU list.
@@ -868,11 +879,11 @@ namespace Chummer
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName))
+                    if (File.Exists(strFileName) && !lstFiles.Contains(strFileName))
                         lstFiles.Add(strFileName);
                 }
             }
-            return lstFiles.Distinct().ToList();
+            return lstFiles;
         }
         #endregion
 

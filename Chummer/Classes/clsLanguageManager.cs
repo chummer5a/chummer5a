@@ -348,7 +348,7 @@ namespace Chummer
             }
 
             // Run through any StatusStrips.
-            foreach (StatusStrip objStrip in objForm.Controls.OfType<StatusStrip>())
+            foreach (ToolStrip objStrip in objForm.Controls.OfType<ToolStrip>())
             {
                 foreach (ToolStripStatusLabel tssLabel in objStrip.Items.OfType<ToolStripStatusLabel>())
                 {
@@ -365,14 +365,14 @@ namespace Chummer
         /// Loads the proper language from the language file for every menu item recursively
         /// </summary>
         /// <param name="objItem"></param>
-        private static void SetMenuItemsRecursively(ToolStripMenuItem objItem)
+        private static void SetMenuItemsRecursively(ToolStripDropDownItem objItem)
         {
             if (objItem.DropDownItems.Count == 0)
                 return; // we have no more drop down items to pull
             if (objItem.Tag != null)
                 objItem.Text = GetString(objItem.Tag.ToString());
 
-            foreach (ToolStripMenuItem objRecursiveItem in objItem.DropDownItems.OfType<ToolStripMenuItem>())
+            foreach (ToolStripDropDownItem objRecursiveItem in objItem.DropDownItems.OfType<ToolStripDropDownItem>())
             {
                 SetMenuItemsRecursively(objRecursiveItem);
                 if (objItem.Tag != null)
@@ -564,6 +564,9 @@ namespace Chummer
                         break;
                     case "MAG":
                         strReturn = GetString("String_AttributeMAGShort");
+                        break;
+                    case "MAGAdept":
+                        strReturn = GetString("String_AttributeMAGShort") + " (" + GetString("String_DescAdept") + ")";
                         break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort");

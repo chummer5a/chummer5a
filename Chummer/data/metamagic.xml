@@ -701,6 +701,71 @@
     <page>131</page>
   </metamagic>
   <!-- End Region -->
+  <!-- Region Dark Terrors -->
+    <metamagic>
+      <id>42f5af49-ade3-43a7-b501-25ae975a574b</id>
+      <name>Spiritual Sacrifice</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Blood Magic</art>
+          <art>Invocation</art>
+          <art>Necromancy</art>
+          <metamagic>Sacrifice</metamagic>                
+        </allof>
+      </required>
+      <source>DTR</source>
+      <page>165</page>
+    </metamagic>
+    <metamagic>
+      <id>0ab2d588-34f5-4204-aee2-b944e5db411a</id>
+      <name>Essence Expansion</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>   
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>165</page>
+    </metamagic>
+    <metamagic>
+      <id>2bd5228e-6698-4905-aecb-45fa5653456c</id>
+      <name>Enhanced Mist Form</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <critterpower>Mist Form</critterpower> 
+        </allof>
+      </required>
+      <source>FA</source>
+      <page>165</page>
+    </metamagic>
+  <!-- End Region -->
   <!-- End Region -->
   </metamagics>
   <arts>

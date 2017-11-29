@@ -630,6 +630,7 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus />
+      <nomission />
       <source>AP</source>
       <page>16</page>
     </quality>
@@ -641,6 +642,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>AP</source>
       <page>17</page>
     </quality>
@@ -1644,6 +1646,15 @@
       <category>Negative</category>
       <bonus>
         <notoriety>1</notoriety>
+        <skillcategorypointcostmultiplier>
+          <name>Social Active</name>
+          <val>200</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacostmultiplier>
+          <name>Social Active</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillgroupcategorydisable>Social Active</skillgroupcategorydisable>
         <uncouth />
       </bonus>
       <source>SR5</source>
@@ -1714,6 +1725,34 @@
       <category>Negative</category>
       <bonus>
         <notoriety>1</notoriety>
+        <skillcategorykarmacostmultiplier>
+          <name>Technical Active</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Technical Active</name>
+          <val>200</val>
+        </skillcategoryspecializationkarmacostmultiplier>
+        <skillgroupcategorykarmacostmultiplier>
+          <name>Technical Active</name>
+          <val>200</val>
+        </skillgroupcategorykarmacostmultiplier>
+        <skillcategorykarmacostmultiplier>
+          <name>Professional</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Professional</name>
+          <val>200</val>
+        </skillcategoryspecializationkarmacostmultiplier>
+        <skillcategorykarmacostmultiplier>
+          <name>Academic</name>
+          <val>200</val>
+        </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Academic</name>
+          <val>200</val>
+        </skillcategoryspecializationkarmacostmultiplier>
         <uneducated />
       </bonus>
       <source>SR5</source>
@@ -1765,7 +1804,154 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+      <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Aeronautics Mechanic)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Animal Handling)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Armorer)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Artisan)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Automotive Mechanic)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Biotechnology)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Chemistry)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Computer)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Cybercombat)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Cybertechnology)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Demolitions)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Electronic Warfare)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (First Aid)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Forgery)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Gunnery)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Hacking)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Hardware)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Industrial Mechanic)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Locksmith)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Medicine)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Nautical Mechanic)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Navigation)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <!-- This deliberately does not have closing parentheses so that all exotic vehicle skills are processed -->
+          <extracontains>Improved Ability (skill) (Pilot Exotic Vehicle</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Pilot Aerospace)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Pilot Aircraft)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Pilot Ground Craft)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Pilot Walker)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Pilot Watercraft)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Software)</extracontains>
+        </focusbindingkarmacost>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1794,7 +1980,13 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Artisan)</extracontains>
+        </focusbindingkarmacost>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1823,7 +2015,28 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Flight)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Gymnastics)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Running)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Swimming)</extracontains>
+        </focusbindingkarmacost>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1926,7 +2139,73 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Disguise)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Diving)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Escape Artist)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Flight)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Free-Fall)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Gymnastics)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Palming)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Perception)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Running)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Sneaking)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Survival)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Swimming)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Tracking)</extracontains>
+        </focusbindingkarmacost>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -1984,7 +2263,48 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Con)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Etiquette)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Impersonation)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Instruction)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Intimidation)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Leadership)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Negotiation)</extracontains>
+        </focusbindingkarmacost>
+        <focusbindingkarmacost>
+          <name>Qi Focus</name>
+          <val>-2</val>
+          <extracontains>Improved Ability (skill) (Performance)</extracontains>
+        </focusbindingkarmacost>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -2047,7 +2367,12 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <focusbindingkarmacost>
+          <name>Weapon Focus</name>
+          <val>-2</val>
+        </focusbindingkarmacost>
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>
@@ -2280,7 +2605,16 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <collegeeducation />
+        <skillcategorypointcostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Academic</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
       </bonus>
       <source>RF</source>
       <page>145</page>
@@ -2504,7 +2838,30 @@
       <karma>2</karma>
       <category>Positive</category>
       <bonus>
-        <jackofalltrades />
+        <knowledgeskillpointcost>
+          <name />
+          <val>-1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </knowledgeskillpointcost>
+        <activeskillpointcost>
+          <name />
+          <val>-1</val>
+          <max>5</max>
+          <condition>career</condition>
+        </activeskillpointcost>
+        <knowledgeskillpointcost>
+          <name />
+          <val>2</val>
+          <min>6</min>
+          <condition>career</condition>
+        </knowledgeskillpointcost>
+        <activeskillpointcost>
+          <name />
+          <val>2</val>
+          <min>6</min>
+          <condition>career</condition>
+        </activeskillpointcost>
       </bonus>
       <source>RF</source>
       <page>147</page>
@@ -2518,6 +2875,7 @@
         <initiative precedence="0">1</initiative>
         <initiativepass precedence="0">1</initiativepass>
         <lightningreflexes />
+        <dodge>1</dodge>
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -2528,7 +2886,20 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <linguist />
+        <skillcategorypointcostmultiplier>
+          <name>Language</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Language</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
+        <skillcategory>
+          <name>Language</name>
+          <bonus>1</bonus>
+        </skillcategory>
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -2541,7 +2912,8 @@
       <bonus>
         <mademan />
         <selectcontact>
-          <mademan />
+          <forceloyalty />
+          <loyalty>3</loyalty>
           <type>group</type>
         </selectcontact>
       </bonus>
@@ -2660,7 +3032,16 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <schoolofhardknocks />
+        <skillcategorypointcostmultiplier>
+          <name>Street</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Street</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -2773,7 +3154,16 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus>
-        <techschool />
+        <skillcategorypointcostmultiplier>
+          <name>Professional</name>
+          <val>50</val>
+        </skillcategorypointcostmultiplier>
+        <skillcategorykarmacost>
+          <name>Professional</name>
+          <val>-1</val>
+          <min>3</min>
+          <condition>career</condition>
+        </skillcategorykarmacost>
       </bonus>
       <source>RF</source>
       <page>150</page>
@@ -3086,6 +3476,7 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3097,6 +3488,7 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3634,6 +4026,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3698,6 +4091,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3710,6 +4104,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3722,6 +4117,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3734,6 +4130,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3746,6 +4143,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -3758,6 +4156,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <nomission />
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -10125,6 +10524,7 @@
         <addcontact>
           <loyalty>3</loyalty>
           <connection>5</connection>
+          <forceloyalty />
           <free />
           <group />
         </addcontact>
@@ -10675,6 +11075,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>54</page>
     </quality>
@@ -10738,6 +11139,7 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>56</page>
     </quality>
@@ -11020,6 +11422,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>57</page>
     </quality>
@@ -11194,6 +11597,7 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -11278,6 +11682,7 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CF</source>
       <page>60</page>
     </quality>
@@ -11334,6 +11739,7 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>HT</source>
       <page>191</page>
     </quality>
@@ -11461,6 +11867,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>R5</source>
       <page>34</page>
     </quality>
@@ -11920,6 +12327,7 @@
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
+      <nomission />
       <source>CA</source>
       <page>151</page>
     </quality>
@@ -12850,7 +13258,7 @@
       </costdiscount>
       <bonus>
         <freespells skill="Spellcasting" />
-        <spellkarmadiscount>-1</spellkarmadiscount>
+        <newspellkarmacost>-1</newspellkarmacost>
       </bonus>
       <required>
 		<allof>

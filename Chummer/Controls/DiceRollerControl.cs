@@ -42,7 +42,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudThreshold.Value);
+                return decimal.ToInt32(nudThreshold.Value);
             }
             set
             {
@@ -57,7 +57,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudGremlins.Value);
+                return decimal.ToInt32(nudGremlins.Value);
             }
             set
             {
@@ -72,7 +72,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudDice.Value);
+                return decimal.ToInt32(nudDice.Value);
             }
             set
             {
@@ -115,7 +115,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudLimit.Value);
+                return decimal.ToInt32(nudLimit.Value);
             }
             set
             {
@@ -244,22 +244,22 @@ namespace Chummer
 
         private void nudDice_ValueChanged(object sender, EventArgs e)
         {
-            NumberOfDice = Convert.ToInt32(nudDice.Value);
+            NumberOfDice = decimal.ToInt32(nudDice.Value);
         }
 
         private void nudThreshold_ValueChanged(object sender, EventArgs e)
         {
-            Threshold = Convert.ToInt32(nudThreshold.Value);
+            Threshold = decimal.ToInt32(nudThreshold.Value);
         }
 
         private void nudGremlins_ValueChanged(object sender, EventArgs e)
         {
-            Gremlins = Convert.ToInt32(nudGremlins.Value);
+            Gremlins = decimal.ToInt32(nudGremlins.Value);
         }
 
         private void nudLimit_ValueChanged(object sender, EventArgs e)
         {
-            Limit = Convert.ToInt32(nudLimit.Value);
+            Limit = decimal.ToInt32(nudLimit.Value);
         }
         #endregion
     }

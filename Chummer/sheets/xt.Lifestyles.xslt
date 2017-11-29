@@ -5,7 +5,7 @@
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:template name="Lifestyles">
 
-    <tr style="font-weight: bold; text-transform: uppercase;">
+    <tr class="title">
       <td width="50%">
         <xsl:value-of select="$lang.Lifestyle"/>
       </td>
@@ -32,9 +32,7 @@
           <xsl:value-of select="baselifestyle"/>
         </td>
         <td style="text-align: center;white-space: nowrap;">
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="totalmonthlycost"/>        
-          </xsl:call-template>
+          <xsl:value-of select="totalmonthlycost"/>
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </td>
         <td style="text-align: center">

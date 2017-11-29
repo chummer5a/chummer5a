@@ -240,6 +240,7 @@
             // 
             // nudMarkup
             // 
+            this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(367, 153);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -247,10 +248,10 @@
             0,
             0});
             this.nudMarkup.Minimum = new decimal(new int[] {
-            99,
+            9999,
             0,
             0,
-            -2147483648});
+            -2147352576});
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 17;
@@ -331,6 +332,7 @@
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
             // frmSelectArmorMod
             // 

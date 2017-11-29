@@ -203,28 +203,28 @@
         <accessory>
           <name>Weapon Commlink</name>
           <gears>
-			<usegear>
-			  <name>Ogre Hammer SWS Assault Cannon (Commlink)</name>
-			  <category>Commlinks</category>
-			  <rating>4</rating>
-			</usegear>
+            <usegear>
+              <name>Ogre Hammer SWS Assault Cannon (Commlink)</name>
+              <category>Commlinks</category>
+              <rating>4</rating>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Flare Compensation</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Low Light</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </usegear>
           </gears>
         </accessory>
       </accessories>
@@ -500,9 +500,11 @@
       <ammo>30(c)</ammo>
       <avail>15F</avail>
       <cost>4500</cost>
-      <underbarrels>
-        <underbarrel>HK XM30 Grenade Launcher</underbarrel>
-      </underbarrels>
+      <addweapon>HK XM30 Grenade Launcher</addweapon>
+      <addweapon>HK XM30 Carbine</addweapon>
+      <addweapon>HK XM30 LMG</addweapon>
+      <addweapon>HK XM30 Shotgun</addweapon>
+      <addweapon>HK XM30 Sniper</addweapon>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -526,9 +528,52 @@
       <page>37</page>
     </weapon>
     <weapon>
+      <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
+      <name>HK XM30 Grenade Launcher</name>
+      <category>Grenade Launchers</category>
+      <hide />
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <spec>Grenade Launchers</spec>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>Grenade</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <ammocategory>Grenade Launchers</ammocategory>
+      <avail>0</avail>
+      <cost>0</cost>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Shock Pad</name>
+        </accessory>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <useskill>Heavy Weapons</useskill>
+      <range>Grenade Launchers</range>
+      <source>RG</source>
+      <page>37</page>
+    </weapon>
+    <weapon>
       <id>cc446f64-1dbd-42dd-8fc4-ca17dc6bcf42</id>
       <name>HK XM30 Carbine</name>
-      <category>Assault Rifles</category>
+      <category>Submachine Guns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Submachine Guns</spec>
@@ -568,7 +613,8 @@
     <weapon>
       <id>1bdda305-3448-4419-871d-42bcd971751b</id>
       <name>HK XM30 LMG</name>
-      <category>Assault Rifles</category>
+      <category>Light Machine Guns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Machine Guns</spec>
@@ -611,7 +657,8 @@
     <weapon>
       <id>146d58e4-d705-41a0-bd92-c1901b71ffc0</id>
       <name>HK XM30 Shotgun</name>
-      <category>Assault Rifles</category>
+      <category>Shotguns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
@@ -645,14 +692,15 @@
       </accessories>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>RG</source>
       <page>37</page>
     </weapon>
     <weapon>
       <id>5d366d23-c0cd-4613-a035-f5a5378dcfa9</id>
       <name>HK XM30 Sniper</name>
-      <category>Assault Rifles</category>
+      <category>Sniper Rifles</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sniper Rifles</spec>
@@ -719,11 +767,11 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-		    <usegear>
-			  <name>Vision Enhancement</name>
-			  <category>Vision Enhancements</category>
-			  <rating>1</rating>
-			</usegear>
+            <usegear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>1</rating>
+            </usegear>
           </gears>
         </accessory>
       </accessories>
@@ -860,17 +908,17 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Flare Compensation</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Low Light</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -1074,14 +1122,14 @@
       <source>SR5</source>
       <page>458</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>ad2ea9ea-74d0-411d-89b7-20702ee4105d</id>
       <name>Retractable Climbing Claws</name>
       <category>Blades</category>
       <hide />
       <type>Melee</type>
       <conceal>-2</conceal>
-	  <spec>Cyber Implants</spec>
+      <spec>Cyber Implants</spec>
       <accuracy>Physical-1</accuracy>
       <reach>0</reach>
       <damage>(STR+1)P</damage>
@@ -1172,10 +1220,10 @@
       <source>SR5</source>
       <page>422</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>a92933cb-0c81-4b54-aeb1-ddc24836775d</id>
       <name>Knife (Survival Kit)</name>
-	  <hide />
+      <hide />
       <category>Blades</category>
       <type>Melee</type>
       <conceal>-2</conceal>
@@ -1248,7 +1296,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>100</cost>
-	  <accessories>
+      <accessories>
         <accessory>
           <name>Survival Knife Bonuses</name>
         </accessory>
@@ -1684,7 +1732,7 @@
       <avail>8R</avail>
       <cost>800</cost>
       <range>Harpoon Gun</range>
-	  <alternaterange>Harpoon Gun (Underwater)</alternaterange>
+      <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <source>RG</source>
       <page>22</page>
     </weapon>
@@ -1799,7 +1847,7 @@
       <avail>6R</avail>
       <cost>200</cost>
       <range>Harpoon Gun</range>
-	  <alternaterange>Harpoon Gun (Underwater)</alternaterange>
+      <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <source>RG</source>
       <page>22</page>
     </weapon>
@@ -2065,7 +2113,7 @@
       <source>SR5</source>
       <page>423</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>dc18811b-eb07-43d8-8d95-d5c468f048f4</id>
       <name>Chakram</name>
       <category>Exotic Melee Weapons</category>
@@ -2232,7 +2280,7 @@
       <source>RG</source>
       <page>24</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>dabbf576-066e-4c41-923b-43229f2defa3</id>
       <name>Horizon BoomerEye</name>
       <category>Gear</category>
@@ -2916,7 +2964,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-	  <allowaccessory>false</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3216,7 +3264,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-	  <allowaccessory>false</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -4755,7 +4803,7 @@
       <id>923ba564-7883-49e8-82a2-415cbfa96685</id>
       <name>Auto-Assault 16</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -4782,7 +4830,7 @@
       <id>31269939-24bb-405a-aa5e-a1b77458a1df</id>
       <name>Cavalier Falchion</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -4823,7 +4871,7 @@
       <id>97cab27f-620b-45d7-8da4-3136c1e69f2b</id>
       <name>Cyber Shotgun</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -4850,7 +4898,7 @@
       <id>c2c0e756-a099-4f9d-b6bb-18f412d670a3</id>
       <name>Defiance T-250</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -4904,7 +4952,7 @@
       <id>622bd915-0e0c-431b-9da5-e0c0c31e2122</id>
       <name>Enfield AS-7</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -4936,7 +4984,7 @@
       <id>76e0ae30-a3cf-4d4f-b278-ad49a10df4d2</id>
       <name>Franchi SPAS-24</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -4971,7 +5019,7 @@
       <id>8818b584-e084-4fcb-94b8-632728015c6f</id>
       <name>Krime Boss</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>3</accuracy>
@@ -4998,7 +5046,7 @@
       <id>228a2a5d-01e5-4f58-90bf-1d61602ad1c5</id>
       <name>Mossberg AM-CMDT</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -5030,7 +5078,7 @@
       <id>62221199-7958-4a76-a538-0c8e0a516608</id>
       <name>PJSS Model 55</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -5062,7 +5110,7 @@
       <id>67f18a4a-e516-4946-984a-5254b3ba850f</id>
       <name>Remington 990</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5097,7 +5145,7 @@
       <id>3af9c1f7-8582-4849-8b1e-b49dd14c207f</id>
       <name>Shiawase Arms Rain</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5129,7 +5177,7 @@
       <id>eaef40ea-c1ff-4f64-a4fe-31720b250860</id>
       <name>Winchester Model 201</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>8</accuracy>
@@ -5156,7 +5204,7 @@
       <id>93869598-2945-412f-8b42-90764ddc1e59</id>
       <name>Winchester Model 2054</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5191,7 +5239,7 @@
       <id>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</id>
       <name>Winchester Model 2066</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5537,11 +5585,11 @@
         <accessory>
           <name>Weapon Commlink</name>
           <gears>
-			<usegear>
-			  <name>Terracotta Arms AM-47 (Commlink)</name>
-			  <category>Commlinks</category>
-			  <rating>5</rating>
-			</usegear>
+            <usegear>
+              <name>Terracotta Arms AM-47 (Commlink)</name>
+              <category>Commlinks</category>
+              <rating>5</rating>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -5551,13 +5599,13 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Low Light</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -6027,14 +6075,14 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Vision Enhancement</name>
-			  <category>Vision Enhancements</category>
-			  <rating>2</rating>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>2</rating>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -6104,14 +6152,14 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Vision Enhancement</name>
-			  <category>Vision Enhancements</category>
-			  <rating>1</rating>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>1</rating>
+            </usegear>
           </gears>
         </accessory>
       </accessories>
@@ -6911,48 +6959,6 @@
     <!-- End Region -->
     <!-- Region Run and Gun -->
     <weapon>
-      <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
-      <name>HK XM30 Grenade Launcher</name>
-      <category>Underbarrel Weapons</category>
-      <hide />
-      <type>Ranged</type>
-      <conceal>6</conceal>
-      <spec>Grenade Launchers</spec>
-      <accuracy>4</accuracy>
-      <reach>0</reach>
-      <damage>Grenade</damage>
-      <ap>-</ap>
-      <mode>SS</mode>
-      <rc>0</rc>
-      <ammo>6(c)</ammo>
-      <ammocategory>Grenade Launchers</ammocategory>
-      <avail>0</avail>
-      <cost>0</cost>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Internal</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
-      <accessories>
-        <accessory>
-          <name>Shock Pad</name>
-        </accessory>
-        <accessory>
-          <name>Imaging Scope</name>
-        </accessory>
-        <accessory>
-          <name>Smartgun System, Internal</name>
-        </accessory>
-      </accessories>
-      <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launchers</range>
-      <source>RG</source>
-      <page>37</page>
-    </weapon>
-    <weapon>
       <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
       <name>Nissan Optiumum II Shotgun</name>
       <category>Underbarrel Weapons</category>
@@ -6988,7 +6994,7 @@
       </accessories>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>RG</source>
       <page>38</page>
     </weapon>
@@ -8172,7 +8178,7 @@
       <avail>8R</avail>
       <cost>1000</cost>
       <accessorymounts />
-	  <range>Medium Crossbows</range>
+      <range>Medium Crossbows</range>
       <source>HT</source>
       <page>182</page>
     </weapon>
@@ -8194,8 +8200,8 @@
       <avail>5R</avail>
       <cost>600</cost>
       <accessorymounts />
-	  <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <range>Shotguns</range>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>HT</source>
       <page>182</page>
     </weapon>
@@ -8332,13 +8338,13 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
-      <accuracy>3</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
-      <damage>10P</damage>
+      <damage>12P(f)</damage>
       <ap>-1</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>10(c)</ammo>
+      <ammo>2(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
       <allowaccessory>false</allowaccessory>
@@ -8346,7 +8352,7 @@
       <accessories />
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB2</source>
       <page>0</page>
     </weapon>
@@ -8357,12 +8363,13 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
       <ap>-4</ap>
       <mode>SA</mode>
       <rc>1</rc>
+      <range>Sniper Rifles</range>
       <ammo>6(m)</ammo>
       <avail>5R</avail>
       <cost>1800</cost>
@@ -8392,7 +8399,7 @@
       <name>HK MP75</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>2</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -8434,10 +8441,10 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>13P</damage>
-      <ap>0</ap>
+      <damage>14P(f)</damage>
+      <ap>+1</ap>
       <mode>SS</mode>
       <rc>1</rc>
       <ammo>1(b)</ammo>
@@ -8447,7 +8454,7 @@
       <accessorymounts />
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB</source>
       <page>0</page>
     </weapon>
@@ -8458,15 +8465,15 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>11P</damage>
-      <ap>-4</ap>
-      <mode>SA</mode>
+      <damage>12P</damage>
+      <ap>-3</ap>
+      <mode>SS</mode>
       <rc>1</rc>
-      <ammo>6(m)</ammo>
-      <avail>5R</avail>
-      <cost>1800</cost>
+      <ammo>1(b)</ammo>
+      <avail>6R</avail>
+      <cost>1550</cost>
       <underbarrels>
         <underbarrel>Mannlicher Dirmingen SX BD: Shotgun Barrel</underbarrel>
         <underbarrel>Mannlicher Dirmingen SX BD: Small Caliber</underbarrel>
@@ -8480,8 +8487,8 @@
         <mount>Under</mount>
       </accessorymounts>
       <useskill>Longarms</useskill>
-      <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <range>Shotguns (slug)</range>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB2</source>
       <page>0</page>
     </weapon>
@@ -8493,19 +8500,19 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>11P</damage>
-      <ap>-4</ap>
+      <damage>6P</damage>
+      <ap>0</ap>
       <mode>SA</mode>
       <rc>1</rc>
-      <ammo>6(m)</ammo>
+      <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
       <allowaccessory>false</allowaccessory>
       <accessorymounts />
       <useskill>Longarms</useskill>
-      <range>Light Pistols</range>
+      <range>Machine Pistols</range>
       <source>SHB2</source>
       <page>0</page>
     </weapon>
@@ -8544,7 +8551,7 @@
       <source>SHB2</source>
       <page>0</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>44d3a69e-643e-42e2-9c68-c7772d27ffa6</id>
       <name>Onotari Arms Troublemaker</name>
       <category>Heavy Pistols</category>
@@ -8576,7 +8583,7 @@
       <source>SHB</source>
       <page>0</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>19187f49-5197-4560-95a4-53d51535b38f</id>
       <name>Altmayr SPX</name>
       <category>Shotguns</category>
@@ -8606,7 +8613,7 @@
       <source>SHB</source>
       <page>0</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>91082bdb-f3d7-432f-ad7a-2aaa3d82fa5f</id>
       <name>Onotari Arms SIG-6</name>
       <category>Submachine Guns</category>
@@ -8631,10 +8638,10 @@
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-		<accessory>Smartgun System, Internal</accessory>
-		<accessory>Folding Stock</accessory>
-		<accessory>Gas-Vent II</accessory>
-	  </accessories>
+        <accessory>Smartgun System, Internal</accessory>
+        <accessory>Folding Stock</accessory>
+        <accessory>Gas-Vent II</accessory>
+      </accessories>
       <useskill>Automatics</useskill>
       <range>Submachine Guns</range>
       <source>SHB</source>
@@ -9110,7 +9117,7 @@
       <id>3011640d-c504-4af1-bbb5-25f42492a7ff</id>
       <name>Cyber Shotgun (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
@@ -10579,7 +10586,7 @@
       <id>ea074ca2-6309-4af9-ba63-1a39223c721a</id>
       <name>Enfield AS-7 (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10595,13 +10602,15 @@
         <mount>Stock</mount>
         <mount>Side</mount>
         <mount>Internal</mount>
-        <mount>Barrel</mount>                
+        <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-        <accessory><name>Laser Sight</name></accessory>
-      </accessories>            
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
+      </accessories>
       <source>2050</source>
       <page>186</page>
     </weapon>
@@ -10609,7 +10618,7 @@
       <id>12dfa7c1-209a-4cb9-ac3d-8012c369177b</id>
       <name>Mossberg CMDT (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10631,12 +10640,12 @@
       </accessorymounts>
       <source>2050</source>
       <page>186</page>
-    </weapon>        
+    </weapon>
     <weapon>
       <id>28952d02-310f-43ab-90f3-1f04374d7231</id>
       <name>Mossberg CMDT/SM (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10657,11 +10666,13 @@
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-        <accessory><name>Smartgun System, Internal</name></accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
       <source>2050</source>
       <page>186</page>
-    </weapon>        
+    </weapon>
     <!-- End SR5 2050 -->
     <!-- End Region -->
     <!-- Region SotA ADL -->
@@ -11003,7 +11014,7 @@
         <accessory>
           <name>Slide Mount</name>
         </accessory>
-		<accessory>
+        <accessory>
           <name>Slide Mount</name>
         </accessory>
       </accessories>
@@ -11036,7 +11047,9 @@
         <mount>Internal</mount>
       </accessorymounts>
       <accessories>
-        <accessory><name>Trigger Removal</name></accessory>
+        <accessory>
+          <name>Trigger Removal</name>
+        </accessory>
         <accessory>
           <name>Electronic Firing</name>
         </accessory>
@@ -11397,7 +11410,7 @@
       </accessorymounts>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SAG</source>
       <page>31</page>
     </weapon>
@@ -11491,7 +11504,7 @@
       <id>59cd61ef-4fb0-45e4-96cf-74c62c2b4fe8</id>
       <name>Altmayr SPX2</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -11511,7 +11524,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-	  <range>Heavy Pistols</range>
+      <range>Heavy Pistols</range>
       <source>SAG</source>
       <page>34</page>
     </weapon>
@@ -11519,7 +11532,7 @@
       <id>37cc0c65-6944-46cd-90e1-43ad35d441e8</id>
       <name>Onotari Arms Pressure KS-X</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>2</conceal>
       <accuracy>4</accuracy>
@@ -11528,7 +11541,7 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>6(s)</ammo>
+      <ammo>6(c)</ammo>
       <avail>12F</avail>
       <cost>1200</cost>
       <accessorymounts>
@@ -11556,7 +11569,7 @@
       <id>a4809028-f1bb-4ba0-b4d5-8b5b6d1d0aed</id>
       <name>PJSS Model 75</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11588,7 +11601,7 @@
       <id>d7d1f16d-9e55-4629-ae3f-f5d3bd57e52f</id>
       <name>PJSS Model 75-III (Shotgun Barrel)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11624,7 +11637,7 @@
       <name>PJSS Model 75-III (Rifle Barrel)</name>
       <hide />
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11695,7 +11708,7 @@
       <category>Clubs</category>
       <type>Melee</type>
       <conceal>0</conceal>
-	  <accuracy>3+number({STRAugmented} >= 5)+number({STRAugmented} >= 7)</accuracy>
+      <accuracy>3+number({STRAugmented} >= 5)+number({STRAugmented} >= 7)</accuracy>
       <reach>2</reach>
       <damage>(STR+2+(2*number(STR >= 5))+(2*number(STR >= 7)))P</damage>
       <ap>-1</ap>
@@ -11866,15 +11879,15 @@
       <rating>0</rating>
       <avail>2</avail>
       <cost>300</cost>
-	  <gears>
-	    <usegear>
-		  <name>Camera, Micro</name>
-		  <category>Vision Devices</category>
-		</usegear>
-		<usegear>
-		  <name>Vision Magnification</name>
-		  <category>Vision Enhancements</category>
-		</usegear>
+      <gears>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
+        <usegear>
+          <name>Vision Magnification</name>
+          <category>Vision Enhancements</category>
+        </usegear>
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
@@ -11890,10 +11903,10 @@
       <avail>2</avail>
       <cost>300</cost>
       <gears>
-		<usegear>
-		  <name>Vision Magnification</name>
-		  <category>Vision Enhancements</category>
-		</usegear>
+        <usegear>
+          <name>Vision Magnification</name>
+          <category>Vision Enhancements</category>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>432</page>
@@ -12054,15 +12067,15 @@
       <rating>0</rating>
       <avail>+2R</avail>
       <cost>Weapon Cost</cost>
-	  <gears>
-	    <usegear>
-		  <name>Laser Range Finder</name>
-		  <category>Sensor Functions</category>
-		</usegear>
-	    <usegear>
-		  <name>Camera, Micro</name>
-		  <category>Vision Devices</category>
-		</usegear>
+      <gears>
+        <usegear>
+          <name>Laser Range Finder</name>
+          <category>Sensor Functions</category>
+        </usegear>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>433</page>
@@ -12086,14 +12099,14 @@
       <avail>4R</avail>
       <cost>200</cost>
       <gears>
-	    <usegear>
-		  <name>Laser Range Finder</name>
-		  <category>Sensor Functions</category>
-		</usegear>
-	    <usegear>
-		  <name>Camera, Micro</name>
-		  <category>Vision Devices</category>
-		</usegear>
+        <usegear>
+          <name>Laser Range Finder</name>
+          <category>Sensor Functions</category>
+        </usegear>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>433</page>
@@ -12829,7 +12842,7 @@
       <page>3</page>
     </accessory>
     <!-- End Region -->
-	<!-- Region Chrome Flesh -->
+    <!-- Region Chrome Flesh -->
     <accessory>
       <id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>
       <name>Cyberimplanted</name>
@@ -13588,10 +13601,10 @@
       <avail>3</avail>
       <cost>500</cost>
       <gears>
-		<usegear>
-		  <name>Vision Magnification</name>
-		  <category>Vision Enhancements</category>
-		</usegear>
+        <usegear>
+          <name>Vision Magnification</name>
+          <category>Vision Enhancements</category>
+        </usegear>
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
@@ -13632,70 +13645,70 @@
       <source>SAG</source>
       <page>35</page>
     </accessory>
-	<accessory>
+    <accessory>
       <id>c50723ab-8354-4b32-a1a8-b3720df0dd2d</id>
       <name>Survival Knife Bonuses</name>
       <mount />
-	  <hide />
+      <hide />
       <rating>0</rating>
       <avail>0</avail>
       <cost>0</cost>
-	  <gears>
-	    <usegear>
-		  <name select="GPS Monitor">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+      <gears>
+        <usegear>
+          <name select="GPS Monitor">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Mini-Multitool">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Mini-Multitool">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Micro-Lighter">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Micro-Lighter">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Hidden Compartment">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Hidden Compartment">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Phosphorescent Blade Coating">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Phosphorescent Blade Coating">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>422</page>
     </accessory>
-	<accessory>
+    <accessory>
       <id>471d2d54-34cc-493c-b888-e27498b28e39</id>
       <name>Survival Knife Wireless Bonuses</name>
       <mount />
-	  <hide />
+      <hide />
       <rating>0</rating>
       <avail>0</avail>
       <cost>0</cost>
-	  <gears>
-		<usegear>
-		  <name select="ARO of Local Maps">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+      <gears>
+        <usegear>
+          <name select="ARO of Local Maps">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Can Make Commcalls">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Can Make Commcalls">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>422</page>

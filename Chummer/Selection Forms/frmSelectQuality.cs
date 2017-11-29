@@ -379,7 +379,7 @@ namespace Chummer
                         bool blnAllowed = false;
                         foreach (ListItem objCategory in _lstCategory)
                         {
-                            if (objXmlMetatype.SelectSingleNode("qualityrestriction/" + objCategory.Value.ToLower() + "/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
+                            if (objXmlMetatype.SelectSingleNode("qualityrestriction/*/quality[. = \"" + objXmlQuality["name"].InnerText + "\"]") != null)
                             {
                                 blnAllowed = true;
                                 break;
@@ -439,7 +439,7 @@ namespace Chummer
             if (objNode == null)
                 return;
             _strSelectedQuality = objNode["name"]?.InnerText;
-            _strSelectCategory = objNode["category"]?.InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
             if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality")))
                 return;

@@ -34,7 +34,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Advanced;
 
-        private readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         private bool _blnSkipRefresh = false;
         private int _intTravelerRdmLP = 0;
@@ -447,7 +447,7 @@ namespace Chummer
                     CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
                             _objLifestyle.FreeGrids);
             lblQualityLp.Text = objQuality.LP.ToString();
-            lblQualityCost.Text = $"{objQuality.Cost:###,###,##0.##¥}";
+            lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page}";
             tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
             cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
@@ -511,13 +511,13 @@ namespace Chummer
             _objLifestyle.Name = txtLifestyleName.Text;
             //_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
             _objLifestyle.Cost = CalculateValues();
-            _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
+            _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            _objLifestyle.Area = Convert.ToInt32(nudArea.Value);
-            _objLifestyle.Comforts = Convert.ToInt32(nudComforts.Value);
-            _objLifestyle.Security = Convert.ToInt32(nudSecurity.Value);
+            _objLifestyle.Area = decimal.ToInt32(nudArea.Value);
+            _objLifestyle.Comforts = decimal.ToInt32(nudComforts.Value);
+            _objLifestyle.Security = decimal.ToInt32(nudSecurity.Value);
             _objLifestyle.TrustFund = chkTrustFund.Checked;
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : Convert.ToInt32(nudRoommates.Value);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
@@ -628,10 +628,10 @@ namespace Chummer
             nudArea.Maximum = intMaxArea;
             nudSecurity.Minimum = intMinSec;
             nudSecurity.Maximum = intMaxSec;
-            int intComfortsValue = Convert.ToInt32(nudComforts.Value);
-            int intAreaValue = Convert.ToInt32(nudArea.Value);
-            int intSecurityValue = Convert.ToInt32(nudSecurity.Value);
-            int intRoommatesValue = Convert.ToInt32(nudRoommates.Value);
+            int intComfortsValue = decimal.ToInt32(nudComforts.Value);
+            int intAreaValue = decimal.ToInt32(nudArea.Value);
+            int intSecurityValue = decimal.ToInt32(nudSecurity.Value);
+            int intRoommatesValue = decimal.ToInt32(nudRoommates.Value);
 
             _blnSkipRefresh = false;
             //set the Labels for current/maximum
@@ -679,7 +679,7 @@ namespace Chummer
             decNuyen += decExtraCostServicesOutings + (decExtraCostServicesOutings * (intMultiplier / 100.0m)); ;
             decNuyen += decExtraCostContracts;
             lblTotalLP.Text = intLP.ToString();
-            lblCost.Text = $"{decNuyen:###,###,##0.##¥}";
+            lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             return decNuyen;
         }

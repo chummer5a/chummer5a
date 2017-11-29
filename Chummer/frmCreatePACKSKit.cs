@@ -124,6 +124,7 @@ namespace Chummer
                 int intWIL = _objCharacter.WIL.Value - (_objCharacter.WIL.MetatypeMinimum - 1);
                 int intEDG = _objCharacter.EDG.Value - (_objCharacter.EDG.MetatypeMinimum - 1);
                 int intMAG = _objCharacter.MAG.Value - (_objCharacter.MAG.MetatypeMinimum - 1);
+                int intMAGAdept = _objCharacter.MAGAdept.Value - (_objCharacter.MAGAdept.MetatypeMinimum - 1);
                 int intDEP = _objCharacter.DEP.Value - (_objCharacter.DEP.MetatypeMinimum - 1);
                 int intRES = _objCharacter.RES.Value - (_objCharacter.RES.MetatypeMinimum - 1);
                 // <attributes>
@@ -138,7 +139,11 @@ namespace Chummer
                 objWriter.WriteElementString("wil", intWIL.ToString());
                 objWriter.WriteElementString("edg", intEDG.ToString());
                 if (_objCharacter.MAGEnabled)
+                {
                     objWriter.WriteElementString("mag", intMAG.ToString());
+                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                        objWriter.WriteElementString("magadept", intMAGAdept.ToString());
+                }
                 if (_objCharacter.RESEnabled)
                     objWriter.WriteElementString("res", intRES.ToString());
                 if (_objCharacter.DEPEnabled)
@@ -212,10 +217,10 @@ namespace Chummer
             // Export Starting Nuyen.
             if (chkStartingNuyen.Checked)
             {
-                int intNuyenBP = Convert.ToInt32(_objCharacter.NuyenBP);
+                decimal decNuyenBP = _objCharacter.NuyenBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intNuyenBP = Convert.ToInt32(Convert.ToDouble(intNuyenBP, GlobalOptions.InvariantCultureInfo) / 2.0);
-                objWriter.WriteElementString("nuyenbp", intNuyenBP.ToString());
+                    decNuyenBP /= 2.0m;
+                objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
             // Export Active Skills.
@@ -691,7 +696,6 @@ namespace Chummer
 
             objWriter.WriteEndDocument();
             objWriter.Close();
-            objStream.Close();
 
             MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;

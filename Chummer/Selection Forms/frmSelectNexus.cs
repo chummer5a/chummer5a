@@ -122,12 +122,12 @@ namespace Chummer
         {
             decimal decCost = 0;
 
-            int intProcessor = Convert.ToInt32(nudProcessor.Value);
-            int intSystem = Convert.ToInt32(nudSystem.Value);
-            int intResponse = Convert.ToInt32(nudResponse.Value);
-            int intFirewall = Convert.ToInt32(nudFirewall.Value);
-            int intPersona = Convert.ToInt32(nudPersona.Value);
-            int intSignal = Convert.ToInt32(nudSignal.Value);
+            int intProcessor = decimal.ToInt32(nudProcessor.Value);
+            int intSystem = decimal.ToInt32(nudSystem.Value);
+            int intResponse = decimal.ToInt32(nudResponse.Value);
+            int intFirewall = decimal.ToInt32(nudFirewall.Value);
+            int intPersona = decimal.ToInt32(nudPersona.Value);
+            int intSignal = decimal.ToInt32(nudSignal.Value);
 
             // Determine the individual component costs and ratings.
             // Response.
@@ -225,7 +225,7 @@ namespace Chummer
             lblResponseAvail.Text = strResponseAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
             lblSystemAvail.Text = strSystemAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
             lblFirewallAvail.Text = strFirewallAvail.CheapReplace("R", () => LanguageManager.GetString("String_AvailRestricted")).CheapReplace("F", () => LanguageManager.GetString("String_AvailForbidden"));
-            lblCost.Text = String.Format("{0:###,###,##0.##¥}", decCost);
+            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             Gear objNexus = new Gear(_objCharacter);
             objNexus.Name = LanguageManager.GetString("String_SelectNexus_Nexus") + " (" + LanguageManager.GetString("String_SelectNexus_Processor") + " " + intProcessor.ToString() + ")";

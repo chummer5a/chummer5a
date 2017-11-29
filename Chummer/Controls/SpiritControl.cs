@@ -55,7 +55,7 @@ namespace Chummer
         {
             // Raise the ServicesOwedChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.ServicesOwed = Convert.ToInt32(nudServices.Value);
+            _objSpirit.ServicesOwed = decimal.ToInt32(nudServices.Value);
             ServicesOwedChanged(this);
         }
 
@@ -70,7 +70,7 @@ namespace Chummer
         {
             // Raise the ForceChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.Force = Convert.ToInt32(nudForce.Value);
+            _objSpirit.Force = decimal.ToInt32(nudForce.Value);
             ForceChanged(this);
         }
 
@@ -159,11 +159,19 @@ namespace Chummer
             if (Path.GetExtension(_objSpirit.FileName) == "chum5")
             {
                 if (!blnUseRelative)
-                    GlobalOptions.MainForm.LoadCharacter(_objSpirit.FileName, false);
+                {
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(_objSpirit.FileName);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
+                }
                 else
                 {
                     string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
-                    GlobalOptions.MainForm.LoadCharacter(strFile, false);
+                    Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                    Cursor = Cursors.Default;
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
                 }
             }
             else
@@ -225,7 +233,7 @@ namespace Chummer
                 return;
             }
 
-            CreateCritter(cboSpiritName.SelectedValue.ToString(), Convert.ToInt32(nudForce.Value));
+            CreateCritter(cboSpiritName.SelectedValue.ToString(), decimal.ToInt32(nudForce.Value));
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -409,7 +417,7 @@ namespace Chummer
         {
             get
             {
-                return Convert.ToInt32(nudForce.Maximum);
+                return decimal.ToInt32(nudForce.Maximum);
             }
             set
             {
@@ -581,7 +589,12 @@ namespace Chummer
                 objCharacter.FileName = strFileName;
             }
             else
+            {
+                objCharacter.Dispose();
                 return;
+            }
+
+            Cursor = Cursors.WaitCursor;
 
             // Code from frmMetatype.
             XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
@@ -765,7 +778,7 @@ namespace Chummer
             {
                 int intRating = 0;
                 if (objXmlGear.Attributes["rating"] != null)
-                    intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
+                    intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0));
                 string strForceValue = string.Empty;
                 if (objXmlGear.Attributes["select"] != null)
                     strForceValue = objXmlGear.Attributes["select"].InnerText;
@@ -784,18 +797,23 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
-                TreeNode objDummy = new TreeNode();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, objDummy, null, null);
+                objWeapon.Create(objXmlWeapon, null, null, null, objCharacter.Weapons);
                 objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
             }
 
             objCharacter.Alias = strCritterName;
             objCharacter.Created = true;
-            objCharacter.Save();
+            if (!objCharacter.Save())
+            {
+                Cursor = Cursors.Default;
+                objCharacter.Dispose();
+                return;
+            }
 
             string strOpenFile = objCharacter.FileName;
+            objCharacter.Dispose();
             objCharacter = null;
 
             // Link the newly-created Critter to the Spirit.
@@ -805,8 +823,10 @@ namespace Chummer
             else
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile"));
             FileNameChanged(this);
-
-            GlobalOptions.MainForm.LoadCharacter(strOpenFile, true);
+            
+            Character objOpenCharacter = frmMain.LoadCharacter(strOpenFile);
+            Cursor = Cursors.Default;
+            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         /// <summary>
@@ -819,18 +839,15 @@ namespace Chummer
         public string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             int intValue = 0;
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
-            XPathExpression xprAttribute = nav.Compile(strIn.Replace("/", " div ").Replace("F", intForce.ToString()).Replace("1D6", intForce.ToString()).Replace("2D6", intForce.ToString()));
-            object xprEvaluateResult = null;
+            string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                xprEvaluateResult = nav.Evaluate(xprAttribute);
+                intValue = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce))));
             }
             catch (XPathException) { }
-            if (xprEvaluateResult != null && xprEvaluateResult.GetType() == typeof(Double))
-                intValue = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(xprEvaluateResult.ToString(),GlobalOptions.InvariantCultureInfo)));
+            catch (OverflowException) { } // Result is text and not a double
+            catch (InvalidCastException) { } // Result is text and not a double
             intValue += intOffset;
             if (intForce > 0)
             {

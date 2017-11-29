@@ -39,14 +39,11 @@ namespace Chummer
             //parse to base math string
             Regex regex = new Regex(string.Join("|", keywords.Keys));
             number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.InvariantCultureInfo));
-
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
+            
             try
             {
-                XPathExpression xprValue = nav.Compile(number);
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                if (float.TryParse(nav.Evaluate(xprValue)?.ToString(), out parsed))
+                if (float.TryParse(CommonFunctions.EvaluateInvariantXPath(number)?.ToString(), out parsed))
                 {
                     return true;
                 }
