@@ -418,16 +418,15 @@ namespace Chummer.Backend.Shared_Methods
                             name = critterPower.DisplayNameShort;
                             return true;
                         }
-                        XmlDocument critterPowers = XmlManager.Load("critterpowers.xml");
-                        nameNode =
-                            critterPowers.SelectSingleNode($"/chummer/powers/power[name = \"{strNodeInnerText}\"]");
-                        name = nameNode["translate"] != null
-                            ? "\n\t" + nameNode["translate"].InnerText
-                            : "\n\t" + strNodeInnerText;
-                        name += $" ({LanguageManager.GetString("Tab_Critter")})";
-                        return false;
                     }
-                    break;
+                    XmlDocument critterPowers = XmlManager.Load("critterpowers.xml");
+                    nameNode =
+                        critterPowers.SelectSingleNode($"/chummer/powers/power[name = \"{strNodeInnerText}\"]");
+                    name = nameNode["translate"] != null
+                        ? "\n\t" + nameNode["translate"].InnerText
+                        : "\n\t" + strNodeInnerText;
+                    name += $" ({LanguageManager.GetString("Tab_Critter")})";
+                    return false;
                 case "bioware":
                 case "cyberware":
                     {

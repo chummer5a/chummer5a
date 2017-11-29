@@ -15521,6 +15521,28 @@
       <cost>2000 * Rating</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <gear>
+      <id>466b1d86-e088-4973-b914-a405ba0829f7</id>
+      <name>NanoScrub</name>
+      <category>Drugs</category>
+      <rating>0</rating>
+      <source>DTR</source>
+      <page>83</page>
+      <avail>16F</avail>
+      <cost>7500</cost>
+    </gear>
+    <gear>
+      <id>a9b847fd-d3ec-46e1-a7b0-e339b4221453</id>
+      <name>Overwriter Nanites</name>
+      <category>Drugs</category>
+      <rating>0</rating>
+      <source>DTR</source>
+      <page>83</page>
+      <avail>14F</avail>
+      <cost>5000</cost>
+    </gear>
+    <!-- End Region -->
     <!-- End Region -->
   </gears>
 </chummer>

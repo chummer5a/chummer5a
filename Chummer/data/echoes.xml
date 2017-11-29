@@ -192,5 +192,12 @@
       <page>165</page>
       <limit>no</limit>
     </echo>
+    <echo>
+      <id>2c5953bf-3680-4ce5-9087-2e1e419937b2</id>
+      <name>Defrag</name>
+      <source>DTR</source>
+      <page>85</page>
+      <limit>no</limit>
+    </echo>
   </echoes>
 </chummer>

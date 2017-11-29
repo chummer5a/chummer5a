@@ -725,6 +725,22 @@
       <page>115</page>
     </tradition>
     <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <tradition>
+      <id>66826a89-61fb-4f4d-99d9-d96c0956b83f</id>
+      <name>Dark Magic</name>
+      <drain>WIL + CHA</drain>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Spirit of Water</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+      <source>DTR</source>
+      <page>165</page>
+    </tradition>
+    <!-- End Region -->
   </traditions>
   <spirits>
     <!--Corebook spirits-->

@@ -215,5 +215,10 @@
       <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
       <code>SFCC</code>
     </book>
+    <book>
+      <id>c74e950e-3554-4a44-9060-5a2840302538</id>
+      <name>Dark Terrors</name>
+      <code>DTR</code>
+    </book>
   </books>
 </chummer>
