@@ -288,6 +288,8 @@ Application Changes:
 - Altered behaviour of the Made Man and Prime Datahaven Membership qualities to unbind forcing the Loyalty to 1/3 from being a Group.
 - Added an option where Essence will not be rounded internally, only for display purposes. Technically, it will always be rounded to 28 decimal places if the option is enabled, as that is the maximum precision of the variable type used to store Essence and Essence costs.
 - Added options for formatting how many decimal places are always displayed for Nuyen and how many places can possibly displayed in total. Chummer5a will always keep track of costs to 28 decimal places' worth of precision regardless of these options. Fixes #2094.
+- Fixed issues regarding Enchantment spells not being properly added or re-added in certain cases.
+- Fixed a bug where PACKS kits containing spells would add them to the wrong categories and would completely ignore Rituals and Enchantments.
 
 Data Changes:
 

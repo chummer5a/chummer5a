@@ -11257,7 +11257,7 @@ namespace Chummer
                             _objCharacter.Spells.Remove(objSpell);
 
                             // Remove the Spell from the Tree.
-                            for (int i = 0; i <= 4; i++)
+                            for (int i = 0; i <= treSpells.Nodes.Count; i++)
                             {
                                 foreach (TreeNode objNode in treSpells.Nodes[i].Nodes)
                                 {
@@ -13233,6 +13233,10 @@ namespace Chummer
                     */
                     treSpells.Nodes[5].Nodes.Add(objNode);
                     treSpells.Nodes[5].Expand();
+                    break;
+                case "Enchantments":
+                    treSpells.Nodes[6].Nodes.Add(objNode);
+                    treSpells.Nodes[6].Expand();
                     break;
             }
 
@@ -24738,8 +24742,6 @@ namespace Chummer
             treMetamagic.SelectedNode.Expand();
 
             int intNode = 5;
-            if (!_objCharacter.MAGEnabled)
-                intNode = 0;
             treSpells.Nodes[intNode].Nodes.Add(objSpellNode);
             treSpells.Nodes[intNode].Expand();
 
