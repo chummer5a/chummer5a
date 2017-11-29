@@ -18112,7 +18112,7 @@ namespace Chummer
             }
             foreach (Gear objChild in objGear.Children.Where(objChild => !objChild.IncludedInParent))
             {
-                CheckRestrictedGear(objGear, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                CheckRestrictedGear(objChild, blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
             strOutAvailItems = strAvailItems;
             intoutRestrictedCount = intRestrictedCount;
