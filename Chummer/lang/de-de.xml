@@ -4284,8 +4284,8 @@
       <text>x neuer Wert</text>
     </string>
     <string>
-      <key>Label_Options_NewRatingTen</key>
-      <text>x neuer Wert) +10</text>
+      <key>Label_Options_NewRatingPlus</key>
+      <text>x neuer Wert) +</text>
     </string>
     <string>
       <key>Label_Options_BPCost</key>

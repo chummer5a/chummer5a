@@ -147,6 +147,7 @@ namespace Chummer
         private int _intKarmaImproveKnowledgeSkill = 1;
         private int _intKarmaImproveSkillGroup = 5;
         private int _intKarmaInitiation = 3;
+        private int _intKarmaInitiationFlat = 10;
         private int _intKarmaJoinGroup = 5;
         private int _intKarmaLeaveGroup = 1;
         private int _intKarmaManeuver = 5;
@@ -525,6 +526,8 @@ namespace Chummer
             objWriter.WriteElementString("karmamaneuver", _intKarmaManeuver.ToString());
             // <karmainitiation />
             objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString());
+            // <karmainitiationflat />
+            objWriter.WriteElementString("karmainitiationflat", _intKarmaInitiationFlat.ToString());
             // <karmametamagic />
             objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString());
             // <karmacomplexformoption />
@@ -883,6 +886,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
                 objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
                 objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+                objXmlNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
                 objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
                 objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
                 objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
@@ -1064,6 +1068,7 @@ namespace Chummer
             LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit");
             LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver");
             LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation");
+            LoadInt32FromRegistry(ref _intKarmaInitiationFlat, "karmainitiationflat");
             LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic");
             LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption");
 
@@ -2789,9 +2794,7 @@ namespace Chummer
         {
             get
             {
-                // TODO: Once new options have been merged, get this implemented
-                return _intKarmaSpecialization;
-                //return _intKarmaKnoSpecialization;
+                return _intKarmaKnoSpecialization;
             }
             set
             {
@@ -3100,7 +3103,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost for a Initiation = 10 + (New Rating x this value).
+        /// Karma cost for an Initiation = KarmaInititationFlat + (New Rating x this value).
         /// </summary>
         public int KarmaInitiation
         {
@@ -3111,6 +3114,21 @@ namespace Chummer
             set
             {
                 _intKarmaInitiation = value;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInititation).
+        /// </summary>
+        public int KarmaInititationFlat
+        {
+            get
+            {
+                return _intKarmaInitiationFlat;
+            }
+            set
+            {
+                _intKarmaInitiationFlat = value;
             }
         }
 

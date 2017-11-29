@@ -174,6 +174,7 @@ namespace Chummer
             _characterOptions.KarmaAttribute = decimal.ToInt32(nudKarmaAttribute.Value);
             _characterOptions.KarmaQuality = decimal.ToInt32(nudKarmaQuality.Value);
             _characterOptions.KarmaSpecialization = decimal.ToInt32(nudKarmaSpecialization.Value);
+            _characterOptions.KarmaKnowledgeSpecialization = decimal.ToInt32(nudKarmaKnowledgeSpecialization.Value);
             _characterOptions.KarmaNewKnowledgeSkill = decimal.ToInt32(nudKarmaNewKnowledgeSkill.Value);
             _characterOptions.KarmaNewActiveSkill = decimal.ToInt32(nudKarmaNewActiveSkill.Value);
             _characterOptions.KarmaNewSkillGroup = decimal.ToInt32(nudKarmaNewSkillGroup.Value);
@@ -193,6 +194,7 @@ namespace Chummer
             _characterOptions.KarmaSpirit = decimal.ToInt32(nudKarmaSpirit.Value);
             _characterOptions.KarmaManeuver = decimal.ToInt32(nudKarmaManeuver.Value);
             _characterOptions.KarmaInitiation = decimal.ToInt32(nudKarmaInitiation.Value);
+            _characterOptions.KarmaInititationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
             _characterOptions.KarmaComplexFormOption = decimal.ToInt32(nudKarmaComplexFormOption.Value);
             _characterOptions.KarmaComplexFormSkillsoft = decimal.ToInt32(nudKarmaComplexFormSkillsoft.Value);
             _characterOptions.KarmaJoinGroup = decimal.ToInt32(nudKarmaJoinGroup.Value);
@@ -498,42 +500,66 @@ namespace Chummer
             cboXSLT.Left = lblXSLT.Left + intWidth + 6;
 
             // Karma fields.
-            nudKarmaSpecialization.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaNewKnowledgeSkill.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaNewActiveSkill.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaNewSkillGroup.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaImproveKnowledgeSkill.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            intWidth = Math.Max(lblKarmaSpecialization.Width, lblKarmaKnowledgeSpecialization.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNewKnowledgeSkill.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNewActiveSkill.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNewSkillGroup.Width);
+            intWidth = Math.Max(intWidth, lblKarmaImproveKnowledgeSkill.Width);
+            intWidth = Math.Max(intWidth, lblKarmaImproveActiveSkill.Width);
+            intWidth = Math.Max(intWidth, lblKarmaImproveSkillGroup.Width);
+            intWidth = Math.Max(intWidth, lblKarmaAttribute.Width);
+            intWidth = Math.Max(intWidth, lblKarmaQuality.Width);
+            intWidth = Math.Max(intWidth, lblKarmaSpell.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNewComplexForm.Width);
+            intWidth = Math.Max(intWidth, lblKarmaImproveComplexForm.Width);
+            intWidth = Math.Max(intWidth, lblKarmaComplexFormOption.Width);
+            intWidth = Math.Max(intWidth, lblKarmaComplexFormSkillsoft.Width);
+            intWidth = Math.Max(intWidth, lblKarmaSpirit.Width);
+            intWidth = Math.Max(intWidth, lblKarmaManeuver.Width);
+            intWidth = Math.Max(intWidth, lblKarmaNuyenPer.Width);
+            intWidth = Math.Max(intWidth, lblKarmaContact.Width);
+            intWidth = Math.Max(intWidth, lblKarmaEnemy.Width);
+            intWidth = Math.Max(intWidth, lblKarmaCarryover.Width);
+            intWidth = Math.Max(intWidth, lblKarmaInitiation.Width);
+
+            nudKarmaSpecialization.Left = lblKarmaSpecialization.Left + intWidth + 6;
+            nudKarmaKnowledgeSpecialization.Left = lblKarmaKnowledgeSpecialization.Left + intWidth + 6;
+            nudKarmaNewKnowledgeSkill.Left = lblKarmaNewKnowledgeSkill.Left + intWidth + 6;
+            nudKarmaNewActiveSkill.Left = lblKarmaNewActiveSkill.Left + intWidth + 6;
+            nudKarmaNewSkillGroup.Left = lblKarmaNewSkillGroup.Left + intWidth + 6;
+            nudKarmaImproveKnowledgeSkill.Left = lblKarmaImproveKnowledgeSkill.Left + intWidth + 6;
             lblKarmaImproveKnowledgeSkillExtra.Left = nudKarmaImproveKnowledgeSkill.Left + nudKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaImproveActiveSkill.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaImproveActiveSkill.Left = lblKarmaImproveActiveSkill.Left + intWidth + 6;
             lblKarmaImproveActiveSkillExtra.Left = nudKarmaImproveActiveSkill.Left + nudKarmaImproveActiveSkill.Width + 6;
-            nudKarmaImproveSkillGroup.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaImproveSkillGroup.Left = lblKarmaImproveSkillGroup.Left + intWidth + 6;
             lblKarmaImproveSkillGroupExtra.Left = nudKarmaImproveSkillGroup.Left + nudKarmaImproveSkillGroup.Width + 6;
-            nudKarmaAttribute.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaAttribute.Left = lblKarmaAttribute.Left + intWidth + 6;
             lblKarmaAttributeExtra.Left = nudKarmaAttribute.Left + nudKarmaAttribute.Width + 6;
-            nudKarmaQuality.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaQuality.Left = lblKarmaQuality.Left + intWidth + 6;
             lblKarmaQualityExtra.Left = nudKarmaQuality.Left + nudKarmaQuality.Width + 6;
-            nudKarmaSpell.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaNewComplexForm.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaImproveComplexForm.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaSpell.Left = lblKarmaSpell.Left + intWidth + 6;
+            nudKarmaNewComplexForm.Left = lblKarmaNewComplexForm.Left + intWidth + 6;
+            nudKarmaImproveComplexForm.Left = lblKarmaImproveComplexForm.Left + intWidth + 6;
             lblKarmaImproveComplexFormExtra.Left = nudKarmaImproveComplexForm.Left + nudKarmaImproveComplexForm.Width + 6;
-            nudKarmaComplexFormOption.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaComplexFormOption.Left = lblKarmaComplexFormOption.Left + intWidth + 6;
             lblKarmaComplexFormOptionExtra.Left = nudKarmaComplexFormOption.Left + nudKarmaComplexFormOption.Width + 6;
-            nudKarmaComplexFormSkillsoft.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaComplexFormSkillsoft.Left = lblKarmaComplexFormSkillsoft.Left + intWidth + 6;
             lblKarmaComplexFormSkillsoftExtra.Left = nudKarmaComplexFormSkillsoft.Left + nudKarmaComplexFormSkillsoft.Width + 6;
-            nudKarmaSpirit.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaSpirit.Left = lblKarmaSpirit.Left + intWidth + 6;
             lblKarmaSpiritExtra.Left = nudKarmaSpirit.Left + nudKarmaSpirit.Width + 6;
-            nudKarmaManeuver.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
-            nudKarmaNuyenPer.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaManeuver.Left = lblKarmaManeuver.Left + intWidth + 6;
+            nudKarmaNuyenPer.Left = lblKarmaNuyenPer.Left + intWidth + 6;
             lblKarmaNuyenPerExtra.Left = nudKarmaNuyenPer.Left + nudKarmaNuyenPer.Width + 6;
-            nudKarmaContact.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaContact.Left = lblKarmaContact.Left + intWidth + 6;
             lblKarmaContactExtra.Left = nudKarmaContact.Left + nudKarmaContact.Width + 6;
-            nudKarmaEnemy.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaEnemy.Left = lblKarmaEnemy.Left + intWidth + 6;
             lblKarmaEnemyExtra.Left = nudKarmaEnemy.Left + nudKarmaEnemy.Width + 6;
-            nudKarmaCarryover.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaCarryover.Left = lblKarmaCarryover.Left + intWidth + 6;
             lblKarmaCarryoverExtra.Left = nudKarmaCarryover.Left + nudKarmaCarryover.Width + 6;
-            nudKarmaInitiation.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            nudKarmaInitiation.Left = lblKarmaInitiation.Left + intWidth + 6;
             lblKarmaInitiationBracket.Left = nudKarmaInitiation.Left - lblKarmaInitiationBracket.Width;
             lblKarmaInitiationExtra.Left = nudKarmaInitiation.Left + nudKarmaInitiation.Width + 6;
+            nudKarmaInitiationFlat.Left = lblKarmaInitiationExtra.Left + lblKarmaInitiationExtra.Width + 6;
 
             intWidth = Math.Max(lblKarmaMetamagic.Width, lblKarmaJoinGroup.Width);
             intWidth = Math.Max(intWidth, lblKarmaLeaveGroup.Width);
@@ -777,6 +803,7 @@ namespace Chummer
             nudKarmaAttribute.Value = _characterOptions.KarmaAttribute;
             nudKarmaQuality.Value = _characterOptions.KarmaQuality;
             nudKarmaSpecialization.Value = _characterOptions.KarmaSpecialization;
+            nudKarmaKnowledgeSpecialization.Value = _characterOptions.KarmaKnowledgeSpecialization;
             nudKarmaNewKnowledgeSkill.Value = _characterOptions.KarmaNewKnowledgeSkill;
             nudKarmaNewActiveSkill.Value = _characterOptions.KarmaNewActiveSkill;
             nudKarmaNewSkillGroup.Value = _characterOptions.KarmaNewSkillGroup;
@@ -797,6 +824,7 @@ namespace Chummer
             nudKarmaSpirit.Value = _characterOptions.KarmaSpirit;
             nudKarmaManeuver.Value = _characterOptions.KarmaManeuver;
             nudKarmaInitiation.Value = _characterOptions.KarmaInitiation;
+            nudKarmaInitiationFlat.Value = _characterOptions.KarmaInititationFlat;
             nudKarmaMetamagic.Value = _characterOptions.KarmaMetamagic;
             nudKarmaJoinGroup.Value = _characterOptions.KarmaJoinGroup;
             nudKarmaLeaveGroup.Value = _characterOptions.KarmaLeaveGroup;
@@ -939,6 +967,7 @@ namespace Chummer
         private void RestoreDefaultKarmaValues()
         {
             nudKarmaSpecialization.Value = 7;
+            nudKarmaKnowledgeSpecialization.Value = 7;
             nudKarmaNewKnowledgeSkill.Value = 1;
             nudKarmaNewActiveSkill.Value = 2;
             nudKarmaNewSkillGroup.Value = 5;
@@ -961,6 +990,7 @@ namespace Chummer
             nudKarmaEnemy.Value = 1;
             nudKarmaCarryover.Value = 7;
             nudKarmaInitiation.Value = 3;
+            nudKarmaInitiationFlat.Value = 10;
             nudKarmaMetamagic.Value = 15;
             nudKarmaJoinGroup.Value = 5;
             nudKarmaLeaveGroup.Value = 1;

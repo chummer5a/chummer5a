@@ -287,17 +287,6 @@ namespace Chummer
                 tabCharacterTabs.TabPages.Remove(tabCritter);
             if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
             {
-                /*
-                // Hide the pieces that only apply to mages or mystic adepts
-                treSpells.Nodes[4].Remove();
-                treSpells.Nodes[3].Remove();
-                treSpells.Nodes[2].Remove();
-                treSpells.Nodes[1].Remove();
-                treSpells.Nodes[0].Remove();
-                lblDrainAttributesLabel.Visible = false;
-                lblDrainAttributes.Visible = false;
-                lblDrainAttributesValue.Visible = false;
-                */
                 lblSpirits.Visible = false;
                 cmdAddSpirit.Visible = false;
                 panSpirits.Visible = false;
@@ -4095,15 +4084,12 @@ namespace Chummer
                     treSpells.Nodes[4].Expand();
                     break;
                 case "Rituals":
-                    /*
-                    int intNode = 5;
-                    if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                        intNode = 0;
-                    treSpells.Nodes[intNode].Nodes.Add(objNode);
-                    treSpells.Nodes[intNode].Expand();
-                    */
                     treSpells.Nodes[5].Nodes.Add(objNode);
                     treSpells.Nodes[5].Expand();
+                    break;
+                case "Enchantments":
+                    treSpells.Nodes[6].Nodes.Add(objNode);
+                    treSpells.Nodes[6].Expand();
                     break;
             }
 
@@ -9224,15 +9210,12 @@ namespace Chummer
                     treSpells.Nodes[4].Expand();
                     break;
                 case "Rituals":
-                    /*
-                    int intNode = 5;
-                    if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                        intNode = 0;
-                    treSpells.Nodes[intNode].Nodes.Add(objNode);
-                    treSpells.Nodes[intNode].Expand();
-                    */
                     treSpells.Nodes[5].Nodes.Add(objNode);
                     treSpells.Nodes[5].Expand();
+                    break;
+                case "Enchantments":
+                    treSpells.Nodes[6].Nodes.Add(objNode);
+                    treSpells.Nodes[6].Expand();
                     break;
             }
 
@@ -18601,21 +18584,24 @@ namespace Chummer
                     switch (objXmlSpell["category"]?.InnerText)
                     {
                         case "Combat":
-                            objCategoryNode = treSpells.Nodes[1];
+                            objCategoryNode = treSpells.Nodes[0];
                             break;
                         case "Detection":
-                            objCategoryNode = treSpells.Nodes[2];
+                            objCategoryNode = treSpells.Nodes[1];
                             break;
                         case "Health":
-                            objCategoryNode = treSpells.Nodes[3];
+                            objCategoryNode = treSpells.Nodes[2];
                             break;
                         case "Illusion":
-                            objCategoryNode = treSpells.Nodes[4];
+                            objCategoryNode = treSpells.Nodes[3];
                             break;
                         case "Manipulation":
-                            objCategoryNode = treSpells.Nodes[5];
+                            objCategoryNode = treSpells.Nodes[4];
                             break;
                         case "Rituals":
+                            objCategoryNode = treSpells.Nodes[5];
+                            break;
+                        case "Enchantments":
                             objCategoryNode = treSpells.Nodes[6];
                             break;
                     }
@@ -19424,7 +19410,7 @@ namespace Chummer
                     decMultiplier -= 0.1m;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= 0.1m;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(10 + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
+                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(_objOptions.KarmaInititationFlat + (_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
 
                 strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
@@ -19436,7 +19422,7 @@ namespace Chummer
                     decMultiplier -= 0.2m;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= 0.1m;
-                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(10 + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
+                intAmount = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(_objOptions.KarmaInititationFlat + (_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation, GlobalOptions.CultureInfo) * decMultiplier));
 
                 strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
             }
@@ -21176,11 +21162,8 @@ namespace Chummer
             treMetamagic.SelectedNode.Nodes.Add(objNode);
             treMetamagic.SelectedNode.Expand();
 
-            int intNode = 5;
-            if (!_objCharacter.MagicianEnabled)
-                intNode = 0;
-            treSpells.Nodes[intNode].Nodes.Add(objSpellNode);
-            treSpells.Nodes[intNode].Expand();
+            treSpells.Nodes[5].Nodes.Add(objSpellNode);
+            treSpells.Nodes[5].Expand();
 
             ScheduleCharacterUpdate();
 

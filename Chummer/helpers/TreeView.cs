@@ -163,7 +163,6 @@ namespace Chummer.helpers
                 case "Enchantments":
                     objSpellTypeNode = Nodes[6];
                     break;
-
             }
             objSpellTypeNode.Nodes.Add(objNode);
             objSpellTypeNode.Expand();

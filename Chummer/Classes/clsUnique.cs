@@ -5678,7 +5678,7 @@ namespace Chummer
         {
             get
             {
-                int intCost = 10 + (_intGrade * _objOptions.KarmaInitiation);
+                int intCost = _objOptions.KarmaInititationFlat + (_intGrade * _objOptions.KarmaInitiation);
                 decimal decMultiplier = 1.0m;
 
                 // Discount for Group.
