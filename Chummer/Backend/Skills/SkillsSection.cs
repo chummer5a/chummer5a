@@ -115,7 +115,7 @@ namespace Chummer.Skills
             //remove skillgroups whose skills did not make the final cut
             for (var i = SkillGroups.Count - 1; i >= 0; i--)
             {
-                if (!SkillGroups[i].GetEnumerable().Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                if (!SkillGroups[i].SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
                 {
                     SkillGroups.RemoveAt(i);
                     i--;
@@ -251,7 +251,7 @@ namespace Chummer.Skills
             //remove skillgroups whose skills did not make the final cut
             for (var i = SkillGroups.Count - 1; i >= 0; i--)
             {
-                if (!SkillGroups[i].GetEnumerable().Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                if (!SkillGroups[i].SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
                 {
                     SkillGroups.RemoveAt(i);
                     i--;

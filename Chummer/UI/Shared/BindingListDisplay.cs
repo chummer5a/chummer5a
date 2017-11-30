@@ -243,7 +243,7 @@ namespace Chummer.UI.Shared
                     _contentList[intNewIndex].Cleanup();
                     _contentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(_contents);
-                    lstToRedraw = _contentList.GetRange(intNewIndex, _contentList.Count - intNewIndex);
+                    lstToRedraw = _contentList;
                     break;
                 //case ListChangedType.ItemMoved:
                 //    break;

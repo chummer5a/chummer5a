@@ -4924,6 +4924,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Mystic Adepts use second MAG attribute for Adept abilities instead of special PP rules</text>
     </string>
     <string>
+      <key>Checkbox_Options_CompensateSkillGroupKarmaDifference</key>
+      <text>Compensate for higher karma costs when raising the rating of the last skill in a skill group</text>
+    </string>
+    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>
@@ -4937,8 +4941,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_Omae_Warning</key>
-      <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.
-Do you want to continue?</text>
+      <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.\nDo you want to continue?</text>
     </string>
     <string>
       <key>Tip_BuildFoci</key>

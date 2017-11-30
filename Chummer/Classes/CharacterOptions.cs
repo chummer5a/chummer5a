@@ -113,6 +113,7 @@ namespace Chummer
         private bool _blnAllowHoverIncrement;
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.00";
+        private bool _blnCompensateSkillGroupKarmaDifference = false;
 
         private readonly XmlDocument _objBookDoc = null;
         private string _strBookXPath = string.Empty;
@@ -437,6 +438,8 @@ namespace Chummer
             objWriter.WriteElementString("allowhoverincrement", AllowHoverIncrement.ToString());
             // <searchincategoryonly />
             objWriter.WriteElementString("searchincategoryonly", SearchInCategoryOnly.ToString());
+            // <compensateskillgroupkarmadifference />
+            objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString());
             // <autobackstory />
             objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
             // <freemartialartspecialization />
@@ -835,6 +838,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowhoverincrement", ref _blnAllowHoverIncrement);
             // Optional Rule: Whether searching in a selection form will limit itself to the current Category that's selected.
             objXmlNode.TryGetBoolFieldQuickly("searchincategoryonly", ref _blnSearchInCategoryOnly);
+            // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+            objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference", ref _blnCompensateSkillGroupKarmaDifference);
             // Optional Rule: Whether Life Modules should automatically create a character back story.
             objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _automaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
@@ -2390,6 +2395,21 @@ namespace Chummer
             set
             {
                 _blnAlternateMetatypeAttributeKarma = value;
+            }
+        }
+
+        /// <summary>
+        /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+        /// </summary>
+        public bool CompensateSkillGroupKarmaDifference
+        {
+            get
+            {
+                return _blnCompensateSkillGroupKarmaDifference;
+            }
+            set
+            {
+                _blnCompensateSkillGroupKarmaDifference = value;
             }
         }
 

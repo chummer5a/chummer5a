@@ -250,6 +250,7 @@ namespace Chummer
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkCompensateSkillGroupKarmaDifference = new System.Windows.Forms.CheckBox();
             this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
             this.chkAllowPointBuySpecializationsOnKarmaSkills = new System.Windows.Forms.CheckBox();
             this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
@@ -2881,6 +2882,7 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkCompensateSkillGroupKarmaDifference);
             this.tabHouseRules.Controls.Add(this.chkMysAdeptSecondMAGAttribute);
             this.tabHouseRules.Controls.Add(this.chkAllowPointBuySpecializationsOnKarmaSkills);
             this.tabHouseRules.Controls.Add(this.chkReverseAttributePriorityOrder);
@@ -2919,6 +2921,20 @@ namespace Chummer
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // chkCompensateSkillGroupKarmaDifference
+            // 
+            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(8, 417);
+            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
+            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
+            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
+    "skill group";
+            this.tipTooltip.SetToolTip(this.chkCompensateSkillGroupKarmaDifference, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
+            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
+            this.chkCompensateSkillGroupKarmaDifference.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkMysAdeptSecondMAGAttribute
             // 
@@ -3743,5 +3759,6 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudKarmaKnowledgeSpecialization;
         private System.Windows.Forms.NumericUpDown nudKarmaInitiationFlat;
         private System.Windows.Forms.CheckBox chkLiveUpdateCleanCharacterFiles;
+        private System.Windows.Forms.CheckBox chkCompensateSkillGroupKarmaDifference;
     }
 }
