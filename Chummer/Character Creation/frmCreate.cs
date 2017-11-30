@@ -15397,7 +15397,7 @@ namespace Chummer
         /// </summary>
         public override bool SaveCharacterAs(bool blnDoCreated = false)
         {
-            return base.SaveCharacter(chkCharacterCreated.Checked);
+            return base.SaveCharacterAs(chkCharacterCreated.Checked);
         }
 
         /// <summary>
@@ -18241,6 +18241,7 @@ namespace Chummer
                     Cursor = Cursors.Default;
                 }
 
+                _blnSkipUpdate = true;
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > _objOptions.KarmaCarryover)
                 {
@@ -18280,15 +18281,15 @@ namespace Chummer
                     _objCharacter.Lifestyles.Add(objLifestyle);
                 }
 
-                // Characters get a +1 bonus to the roll for every 100 Nueyn they have left over, up to a maximum of 3X the number of dice rolled for the Lifestyle.
-                frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(_objCharacter);
-                frmStartingNuyen.Dice = objLifestyle.Dice;
-                frmStartingNuyen.Multiplier = objLifestyle.Multiplier;
-
                 if (_objCharacter.Nuyen > 5000)
                 {
                     _objCharacter.Nuyen = 5000;
                 }
+
+                // Characters get a +1 bonus to the roll for every 100 Nueyn they have left over, up to a maximum of 3X the number of dice rolled for the Lifestyle.
+                frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(_objCharacter);
+                frmStartingNuyen.Dice = objLifestyle.Dice;
+                frmStartingNuyen.Multiplier = objLifestyle.Multiplier;
 
                 frmStartingNuyen.ShowDialog(this);
 

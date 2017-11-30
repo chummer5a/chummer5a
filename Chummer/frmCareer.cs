@@ -542,6 +542,7 @@ namespace Chummer
             }
             else
                 cmdIncreasePowerPoints.Visible = false;
+            cmdIncreasePowerPoints.DataBindings.Add("Enabled", _objCharacter, nameof(Character.CanAffordCareerPP), false, DataSourceUpdateMode.OnPropertyChanged);
 
             // Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
             int i = -1;
@@ -1514,13 +1515,13 @@ namespace Chummer
             {
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
-                // cmdIncreasePowerPoints.Visible = true;
+                cmdIncreasePowerPoints.Visible = _objOptions.MysaddPPCareer;
             }
             else
             {
                 lblMysticAdeptAssignment.Visible = false;
                 lblMysticAdeptMAGAdept.Visible = false;
-                // cmdIncreasePowerPoints.Visible = false;
+                cmdIncreasePowerPoints.Visible = false;
             }
         }
 
@@ -1554,13 +1555,13 @@ namespace Chummer
             {
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
-                // cmdIncreasePowerPoints.Visible = true;
+                cmdIncreasePowerPoints.Visible = _objOptions.MysaddPPCareer;
             }
             else
             {
                 lblMysticAdeptAssignment.Visible = false;
                 lblMysticAdeptMAGAdept.Visible = false;
-                // cmdIncreasePowerPoints.Visible = false;
+                cmdIncreasePowerPoints.Visible = false;
             }
         }
 

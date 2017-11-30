@@ -3991,6 +3991,7 @@ namespace Chummer
             set
             {
                 OnPropertyChanged(ref _intKarma, value);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
         }
 
@@ -8313,6 +8314,18 @@ namespace Chummer
             get { return AdeptEnabled && MagicianEnabled; }
         }
 
+
+        /// <summary>
+        /// Could this character buy Power Points in career mode if the optional/house rule is enabled
+        /// </summary>
+        public bool CanAffordCareerPP
+        {
+            get
+            {
+                return Options.MysaddPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -8416,6 +8429,7 @@ namespace Chummer
             {
                 AttributeImprovementEvent?.Invoke(_lstTransaction);
                 _decCachedEssence = decimal.MinValue;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
             else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))
             {
