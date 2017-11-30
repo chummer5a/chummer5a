@@ -627,7 +627,7 @@ namespace Chummer.Backend.Equipment
                 // Run through the Accessories and add in their availability.
                 foreach (WeaponMountOption wm in WeaponMountOptions)
                 {
-                    string strAccAvail = string.Empty;
+                    string strAccAvail = wm.Avail;
                     int intAccAvail = 0;
 
                     if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
@@ -879,6 +879,11 @@ namespace Chummer.Backend.Equipment
         /// Slots consumed by the WeaponMountOption.
         /// </summary>
         public int Slots => _intSlots;
+
+        /// <summary>
+        /// Availability string of the Mount.
+        /// </summary>
+        public string Avail => _strAvail;
         #endregion
 
         #region Complex Properties

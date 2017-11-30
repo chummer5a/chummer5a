@@ -3247,7 +3247,7 @@ namespace Chummer.Backend.Equipment
                 // Run through the Accessories and add in their availability.
                 foreach (WeaponAccessory objAccessory in _lstAccessories)
                 {
-                    string strAccAvail = string.Empty;
+                    string strAccAvail = objAccessory.Avail;
                     int intAccAvail = 0;
 
                     if (!objAccessory.IncludedInWeapon)
