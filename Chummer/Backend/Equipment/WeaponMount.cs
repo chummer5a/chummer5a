@@ -805,7 +805,7 @@ namespace Chummer.Backend.Equipment
             list.Add(this);
             if (GlobalOptions.Language == "en-us") return;
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-            XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID + "\"]");
+            XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID.ToString() + "\"]");
             if (objModNode != null)
             {
                 objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);

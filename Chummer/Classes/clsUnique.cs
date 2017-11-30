@@ -6354,7 +6354,7 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID + "\"]");
+                return XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID.ToString() + "\"]");
             }
         }
 
