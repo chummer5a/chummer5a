@@ -2838,30 +2838,30 @@
       <karma>2</karma>
       <category>Positive</category>
       <bonus>
-        <knowledgeskillpointcost>
+        <knowledgeskillkarmacost>
           <name />
           <val>-1</val>
           <max>5</max>
           <condition>career</condition>
-        </knowledgeskillpointcost>
-        <activeskillpointcost>
+        </knowledgeskillkarmacost>
+        <activeskillkarmacost>
           <name />
           <val>-1</val>
           <max>5</max>
           <condition>career</condition>
-        </activeskillpointcost>
-        <knowledgeskillpointcost>
+        </activeskillkarmacost>
+        <knowledgeskillkarmacost>
           <name />
           <val>2</val>
           <min>6</min>
           <condition>career</condition>
-        </knowledgeskillpointcost>
-        <activeskillpointcost>
+        </knowledgeskillkarmacost>
+        <activeskillkarmacost>
           <name />
           <val>2</val>
           <min>6</min>
           <condition>career</condition>
-        </activeskillpointcost>
+        </activeskillkarmacost>
       </bonus>
       <source>RF</source>
       <page>147</page>
