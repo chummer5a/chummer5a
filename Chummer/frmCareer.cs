@@ -18670,6 +18670,8 @@ namespace Chummer
             if (File.GetLastWriteTimeUtc(strCharacterFile) <= _objCharacter.FileLastWriteTime)
                 return;
 
+            _blnSkipUpdate = true;
+
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             Cursor = Cursors.WaitCursor;
 
@@ -18788,6 +18790,7 @@ namespace Chummer
                 RefreshSelectedWeapon();
 
             ScheduleCharacterUpdate();
+            _blnSkipUpdate = false;
             // Immediately call character update because we know it's necessary
             UpdateCharacterInfo();
 
