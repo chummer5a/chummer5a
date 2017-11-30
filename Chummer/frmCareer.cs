@@ -18792,6 +18792,7 @@ namespace Chummer
             UpdateCharacterInfo();
 
             _blnIsDirty = false;
+            UpdateWindowTitle(false);
 
             Cursor = Cursors.Default;
 
@@ -20537,7 +20538,7 @@ namespace Chummer
         /// </summary>
         public override void UpdateWindowTitle(bool blnCanSkip = true)
         {
-            UpdateWindowTitle(txtAlias.Text, LanguageManager.GetString("Title_CareerMode"), true);
+            UpdateWindowTitle(txtAlias.Text, LanguageManager.GetString("Title_CareerMode"), blnCanSkip);
         }
 
         /// <summary>
