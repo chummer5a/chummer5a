@@ -850,6 +850,7 @@ namespace Chummer
         {
             GlobalOptions.AutomaticUpdate = chkAutomaticUpdate.Checked;
             GlobalOptions.LiveCustomData = chkLiveCustomData.Checked;
+            GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
             GlobalOptions.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.StartupFullscreen = chkStartupFullscreen.Checked;
@@ -882,6 +883,7 @@ namespace Chummer
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
             objRegistry.SetValue("livecustomdata", chkLiveCustomData.Checked.ToString());
+            objRegistry.SetValue("liveupdatecleancharacterfiles", chkLiveUpdateCleanCharacterFiles.Checked.ToString());
             objRegistry.SetValue("uselogging", chkUseLogging.Checked.ToString());
             objRegistry.SetValue("language", cboLanguage.SelectedValue.ToString());
             objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked.ToString());
@@ -1208,6 +1210,7 @@ namespace Chummer
         {
             chkAutomaticUpdate.Checked = GlobalOptions.AutomaticUpdate;
             chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
+            chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;

@@ -163,6 +163,7 @@ namespace Chummer
         private static bool _blnDronemods = false;
         private static bool _blnDronemodsMaximumPilot = false;
         private static bool _blnPreferNightlyUpdates = false;
+        private static bool _blnLiveUpdateCleanCharacterFiles = false;
 
         // Omae Information.
         private static bool _omaeEnabled = false;
@@ -236,6 +237,8 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
             LoadBoolFromRegistry(ref _blnLiveCustomData, "livecustomdata");
+
+            LoadBoolFromRegistry(ref _blnLiveUpdateCleanCharacterFiles, "liveupdatecleancharacterfiles");
 
             LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
 
@@ -445,6 +448,18 @@ namespace Chummer
             set
             {
                 _blnLiveCustomData = value;
+            }
+        }
+
+        public static bool LiveUpdateCleanCharacterFiles
+        {
+            get
+            {
+                return _blnLiveUpdateCleanCharacterFiles;
+            }
+            set
+            {
+                _blnLiveUpdateCleanCharacterFiles = value;
             }
         }
 

@@ -293,6 +293,7 @@ Application Changes:
 - Added the ability to define custom karma costs for knowledge skill specializations different from active skill ones. Fixes #2113.
 - Added the ability to define a custom flat cost for initiations and submersions instead of it being always set to 10.
 - Fixed a bug where saving a character to a new file when the character's form would be closed due to Chummer wishing to restart itself would end up with Chummer not re-opening the character when it started back up.
+- Added an option where changes to a character's savefile that happen outside of Chummer (e.g. via syncing folders in Dropbox) would make Chummer automatically reload the character's information if the character has no pending changes to be saved. Normally the user would have to watch for changes themselves and if there are any, they would have to close the character and then re-open them to load in any changes.
 
 Data Changes:
 
@@ -522,6 +523,7 @@ New Strings:
 - Label_Options_NuyenDecimalsMaximum
 - Label_Options_NewKnoSpecialization
 - Label_Options_NewRatingPlus
+- Checkbox_Options_LiveUpdateCleanCharacterFiles
 
 Changed Strings:
 - Message_PositiveQualityLimit

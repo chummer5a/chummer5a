@@ -58,6 +58,7 @@ namespace Chummer
         private readonly CharacterOptions _objOptions;
 
         private string _strFileName = string.Empty;
+        private DateTime _dateFileLastWriteTime = DateTime.MinValue;
         private string _strSettingsFileName = "default.xml";
         private bool _blnIgnoreRules = false;
         private int _intKarma = 0;
@@ -932,6 +933,7 @@ namespace Chummer
             }
             objWriter.Close();
 
+            _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
             return blnErrorFree;
         }
 
@@ -956,6 +958,7 @@ namespace Chummer
                 }
             }
             Timekeeper.Finish("load_xml");
+            _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
             Timekeeper.Start("load_char_misc");
             XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
 
@@ -1307,7 +1310,7 @@ namespace Chummer
                         if (objQuality.MyXmlNode?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
                         // Legacy shim
-                        if ((objQuality.Name == "The Artisan's Way" ||
+                        if (LastSavedVersion <= Version.Parse("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
                             objQuality.Name == "The Artist's Way" ||
                             objQuality.Name == "The Athlete's Way" ||
                             objQuality.Name == "The Burnout's Way" ||
@@ -1316,7 +1319,26 @@ namespace Chummer
                             objQuality.Name == "The Speaker's Way" ||
                             objQuality.Name == "The Warrior's Way") && objQuality.Bonus?.HasChildNodes == false)
                         {
-                            _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                            XmlNode objNode = objQuality.MyXmlNode;
+                            if (objNode != null)
+                            {
+                                objQuality.Bonus = objNode["bonus"];
+                                if (objQuality.Bonus != null)
+                                {
+                                    ImprovementManager.ForcedValue = objQuality.Extra;
+                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    {
+                                        objQuality.Extra = ImprovementManager.SelectedValue;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
+                                _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                            }
                         }
                     }
                 }
@@ -1419,6 +1441,8 @@ namespace Chummer
             Timekeeper.Finish("load_char_weapons");
             Timekeeper.Start("load_char_ware");
 
+            // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
+            Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
             // Cyberware/Bioware.
             objXmlNodeList = objXmlDocument.SelectNodes("/character/cyberwares/cyberware");
             foreach (XmlNode objXmlCyberware in objXmlNodeList)
@@ -1429,9 +1453,71 @@ namespace Chummer
                 // Legacy shim
                 if (objCyberware.Name == "Myostatin Inhibitor")
                 {
-                    if (!Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
+                    if (LastSavedVersion <= Version.Parse("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                     {
-                        _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                        XmlNode objNode = objCyberware.MyXmlNode;
+                        if (objNode != null)
+                        {
+                            objCyberware.Bonus = objNode["bonus"];
+                            objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                            objCyberware.PairBonus = objNode["pairbonus"];
+                            if (objCyberware.IsModularCurrentlyEquipped)
+                            {
+                                if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
+                                    ImprovementManager.ForcedValue = objCyberware.Forced;
+                                if (objCyberware.Bonus != null)
+                                {
+                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        objCyberware.Extra = ImprovementManager.SelectedValue;
+                                }
+                                if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                {
+                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                        objCyberware.Extra = ImprovementManager.SelectedValue;
+                                }
+                                if (objCyberware.PairBonus != null)
+                                {
+                                    Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                                    if (objMatchingCyberware != null)
+                                        dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                                    else
+                                        dicPairableCyberwares.Add(objCyberware, 1);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                        }
+                    }
+                }
+            }
+            // Separate Pass for PairBonuses
+            foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
+            {
+                Cyberware objCyberware = objItem.Key;
+                int intCyberwaresCount = objItem.Value;
+                if (!string.IsNullOrEmpty(objCyberware.Location))
+                {
+                    intCyberwaresCount = Math.Min(intCyberwaresCount, Cyberware.DeepCount(x => x.Children, x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra && x.Location != objCyberware.Location && x.IsModularCurrentlyEquipped));
+                }
+                if (intCyberwaresCount > 0)
+                {
+                    foreach (Cyberware objLoopCyberware in Cyberware.DeepWhere(x => x.Children, x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped))
+                    {
+                        if (intCyberwaresCount % 2 == 0)
+                        {
+                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
+                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                            ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                        }
+                        intCyberwaresCount -= 1;
+                        if (intCyberwaresCount <= 0)
+                            break;
                     }
                 }
             }
@@ -1610,7 +1696,7 @@ namespace Chummer
                 }
             }
             // If we have a technomancer quality but no Living Persona commlink, we re-apply its improvements immediately
-            if (objLivingPersonaQuality != null)
+            if (objLivingPersonaQuality != null && LastSavedVersion <= Version.Parse("5.195.1"))
             {
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
 
@@ -3177,6 +3263,17 @@ namespace Chummer
             set
             {
                 _strFileName = value;
+            }
+        }
+
+        /// <summary>
+        /// Name of the file the Character is saved to.
+        /// </summary>
+        public DateTime FileLastWriteTime
+        {
+            get
+            {
+                return _dateFileLastWriteTime;
             }
         }
 

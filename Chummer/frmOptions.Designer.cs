@@ -101,6 +101,7 @@ namespace Chummer
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
+            this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
             this.nudNuyenDecimalsMaximum = new System.Windows.Forms.NumericUpDown();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
             this.nudNuyenDecimalsAlways = new System.Windows.Forms.NumericUpDown();
@@ -1083,6 +1084,7 @@ namespace Chummer
             // tabGlobal
             // 
             this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+            this.tabGlobal.Controls.Add(this.chkLiveUpdateCleanCharacterFiles);
             this.tabGlobal.Controls.Add(this.nudNuyenDecimalsMaximum);
             this.tabGlobal.Controls.Add(this.lblNuyenDecimalsMaximumLabel);
             this.tabGlobal.Controls.Add(this.nudNuyenDecimalsAlways);
@@ -1116,9 +1118,22 @@ namespace Chummer
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
             // 
+            // chkLiveUpdateCleanCharacterFiles
+            // 
+            this.chkLiveUpdateCleanCharacterFiles.AutoSize = true;
+            this.chkLiveUpdateCleanCharacterFiles.Location = new System.Drawing.Point(9, 267);
+            this.chkLiveUpdateCleanCharacterFiles.Name = "chkLiveUpdateCleanCharacterFiles";
+            this.chkLiveUpdateCleanCharacterFiles.Size = new System.Drawing.Size(519, 17);
+            this.chkLiveUpdateCleanCharacterFiles.TabIndex = 33;
+            this.chkLiveUpdateCleanCharacterFiles.Tag = "Checkbox_Options_LiveUpdateCleanCharacterFiles";
+            this.chkLiveUpdateCleanCharacterFiles.Text = "Automatically load changes from open characters\' save files if there are no pendi" +
+    "ng changes to be saved";
+            this.chkLiveUpdateCleanCharacterFiles.UseVisualStyleBackColor = true;
+            this.chkLiveUpdateCleanCharacterFiles.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // nudNuyenDecimalsMaximum
             // 
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 290);
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 307);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -1132,7 +1147,7 @@ namespace Chummer
             // lblNuyenDecimalsMaximumLabel
             // 
             this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(5, 292);
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(5, 317);
             this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
             this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
             this.lblNuyenDecimalsMaximumLabel.TabIndex = 31;
@@ -1141,7 +1156,7 @@ namespace Chummer
             // 
             // nudNuyenDecimalsAlways
             // 
-            this.nudNuyenDecimalsAlways.Location = new System.Drawing.Point(269, 268);
+            this.nudNuyenDecimalsAlways.Location = new System.Drawing.Point(269, 293);
             this.nudNuyenDecimalsAlways.Maximum = new decimal(new int[] {
             28,
             0,
@@ -1155,7 +1170,7 @@ namespace Chummer
             // lblNuyenDecimalsAlwaysLabel
             // 
             this.lblNuyenDecimalsAlwaysLabel.AutoSize = true;
-            this.lblNuyenDecimalsAlwaysLabel.Location = new System.Drawing.Point(5, 270);
+            this.lblNuyenDecimalsAlwaysLabel.Location = new System.Drawing.Point(5, 295);
             this.lblNuyenDecimalsAlwaysLabel.Name = "lblNuyenDecimalsAlwaysLabel";
             this.lblNuyenDecimalsAlwaysLabel.Size = new System.Drawing.Size(248, 13);
             this.lblNuyenDecimalsAlwaysLabel.TabIndex = 29;
@@ -1182,7 +1197,7 @@ namespace Chummer
             this.grpSelectedSourcebook.Controls.Add(this.lblPDFOffset);
             this.grpSelectedSourcebook.Controls.Add(this.nudPDFOffset);
             this.grpSelectedSourcebook.Controls.Add(this.cmdPDFTest);
-            this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 395);
+            this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 420);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
             this.grpSelectedSourcebook.Size = new System.Drawing.Size(392, 80);
             this.grpSelectedSourcebook.TabIndex = 27;
@@ -1259,7 +1274,7 @@ namespace Chummer
             // 
             this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(152, 323);
+            this.cboPDFParameters.Location = new System.Drawing.Point(152, 348);
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
             this.cboPDFParameters.TabIndex = 26;
@@ -1304,7 +1319,7 @@ namespace Chummer
             // lblPDFParametersLabel
             // 
             this.lblPDFParametersLabel.AutoSize = true;
-            this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 328);
+            this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 353);
             this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
             this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
             this.lblPDFParametersLabel.TabIndex = 19;
@@ -1337,7 +1352,7 @@ namespace Chummer
             // 
             // cmdPDFAppPath
             // 
-            this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 359);
+            this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 384);
             this.cmdPDFAppPath.Name = "cmdPDFAppPath";
             this.cmdPDFAppPath.Size = new System.Drawing.Size(27, 23);
             this.cmdPDFAppPath.TabIndex = 11;
@@ -1347,7 +1362,7 @@ namespace Chummer
             // 
             // txtPDFAppPath
             // 
-            this.txtPDFAppPath.Location = new System.Drawing.Point(153, 361);
+            this.txtPDFAppPath.Location = new System.Drawing.Point(153, 386);
             this.txtPDFAppPath.Name = "txtPDFAppPath";
             this.txtPDFAppPath.ReadOnly = true;
             this.txtPDFAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1356,7 +1371,7 @@ namespace Chummer
             // lblPDFAppPath
             // 
             this.lblPDFAppPath.AutoSize = true;
-            this.lblPDFAppPath.Location = new System.Drawing.Point(6, 364);
+            this.lblPDFAppPath.Location = new System.Drawing.Point(6, 389);
             this.lblPDFAppPath.Name = "lblPDFAppPath";
             this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
             this.lblPDFAppPath.TabIndex = 9;
@@ -3727,5 +3742,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaKnowledgeSpecialization;
         private System.Windows.Forms.NumericUpDown nudKarmaKnowledgeSpecialization;
         private System.Windows.Forms.NumericUpDown nudKarmaInitiationFlat;
+        private System.Windows.Forms.CheckBox chkLiveUpdateCleanCharacterFiles;
     }
 }

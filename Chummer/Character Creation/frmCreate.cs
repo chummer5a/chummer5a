@@ -926,11 +926,14 @@ namespace Chummer
 
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
+            if (GlobalOptions.LiveUpdateCleanCharacterFiles)
+                Application.Idle += LiveUpdateFromCharacterFile;
 
             // Clear the Dirty flag which gets set when creating a new Character.
             _blnIsDirty = false;
             UpdateWindowTitle(false);
             RefreshPasteStatus();
+            frmCreate_Resize(sender, e);
             picMugshot_SizeChanged(sender, e);
 
             // Stupid hack to get the MDI icon to show up properly.
@@ -981,6 +984,7 @@ namespace Chummer
             {
                 _blnLoading = true;
                 Application.Idle -= UpdateCharacterInfo;
+                Application.Idle -= LiveUpdateFromCharacterFile;
                 GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
                 GlobalOptions.MainForm.OpenCharacterForms.Remove(this);
                 if (!_blnSkipToolStripRevert)
@@ -13715,6 +13719,152 @@ namespace Chummer
             lblSkillGroupsBP.Text = s;
         }
 
+        public void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
+        {
+            if (_blnIsDirty || _blnLoading || _blnSkipUpdate || _blnRequestCharacterUpdate)
+                return;
+
+            string strCharacterFile = _objCharacter.FileName;
+            if (string.IsNullOrEmpty(strCharacterFile) || !File.Exists(strCharacterFile))
+                return;
+
+            if (File.GetLastWriteTimeUtc(strCharacterFile) <= _objCharacter.FileLastWriteTime)
+                return;
+
+            // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
+            Cursor = Cursors.WaitCursor;
+
+            _objCharacter.Load();
+
+            // Update character information fields.
+            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+            XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            if (objMetatypeNode == null)
+            {
+                objMetatypeDoc = XmlManager.Load("critters.xml");
+                objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            }
+
+            string strMetatype = objMetatypeNode["translate"]?.InnerText ?? _objCharacter.Metatype;
+            string strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
+            string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+
+            if (!string.IsNullOrEmpty(_objCharacter.Metavariant))
+            {
+                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
+
+                strMetatype += objMetatypeNode["translate"] != null
+                    ? " (" + objMetatypeNode["translate"].InnerText + ")"
+                    : " (" + _objCharacter.Metavariant + ")";
+
+                strBook = _objOptions.LanguageBookShort(objMetatypeNode["source"].InnerText);
+                strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+            }
+            lblMetatype.Text = strMetatype;
+            lblMetatypeSource.Text = strBook + " " + strPage;
+            txtCharacterName.Text = _objCharacter.Name;
+            txtSex.Text = _objCharacter.Sex;
+            txtAge.Text = _objCharacter.Age;
+            txtEyes.Text = _objCharacter.Eyes;
+            txtHeight.Text = _objCharacter.Height;
+            txtWeight.Text = _objCharacter.Weight;
+            txtSkin.Text = _objCharacter.Skin;
+            txtHair.Text = _objCharacter.Hair;
+            txtDescription.Text = _objCharacter.Description;
+            txtBackground.Text = _objCharacter.Background;
+            txtConcept.Text = _objCharacter.Concept;
+            txtNotes.Text = _objCharacter.Notes;
+            txtAlias.Text = _objCharacter.Alias;
+            txtPlayerName.Text = _objCharacter.PlayerName;
+
+            // Update various lists
+            RefreshQualities(treQualities, cmsQuality, true);
+            treQualities.SortCustom();
+            nudQualityLevel_UpdateValue(null);
+            UpdateMentorSpirits();
+            RefreshMartialArts();
+            RefreshAIPrograms();
+            RefreshLimitModifiers();
+            RefreshSpells(treSpells, cmsSpell, _objCharacter);
+            PopulateGearList();
+            RefreshContacts();
+            PopulateCyberwareList();
+
+            // Populate Armor.
+            treArmor.Nodes.Clear();
+            // Start by populating Locations.
+            foreach (string strLocation in _objCharacter.ArmorBundles)
+            {
+                TreeNode objLocation = new TreeNode();
+                objLocation.Tag = strLocation;
+                objLocation.Text = strLocation;
+                objLocation.ContextMenuStrip = cmsArmorLocation;
+                treArmor.Nodes.Add(objLocation);
+            }
+            foreach (Armor objArmor in _objCharacter.Armor)
+            {
+                CommonFunctions.CreateArmorTreeNode(objArmor, treArmor, cmsArmor, cmsArmorMod, cmsArmorGear);
+            }
+
+            // Populate Weapons.
+            treWeapons.Nodes.Clear();
+            // Start by populating Locations.
+            foreach (string strLocation in _objCharacter.WeaponLocations)
+            {
+                TreeNode objLocation = new TreeNode();
+                objLocation.Tag = strLocation;
+                objLocation.Text = strLocation;
+                objLocation.ContextMenuStrip = cmsWeaponLocation;
+                treWeapons.Nodes.Add(objLocation);
+            }
+            foreach (Weapon objWeapon in _objCharacter.Weapons)
+            {
+                CommonFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            }
+
+            // Populate Foci.
+            CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
+
+            // Populate Vehicles.
+            treVehicles.Nodes.Clear();
+            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            {
+                CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount);
+            }
+
+            // Selections will be cleared when the lists are rebuilt, but I put these here as a way to also clear out the displayed info on selected items
+            if (treCyberware.SelectedNode != null)
+                RefreshSelectedCyberware();
+            if (treArmor.SelectedNode != null)
+                RefreshSelectedArmor();
+            if (treGear.SelectedNode != null)
+                RefreshSelectedGear();
+            if (treLifestyles.SelectedNode != null)
+                RefreshSelectedLifestyle();
+            if (treVehicles.SelectedNode != null)
+                RefreshSelectedVehicle();
+            if (treWeapons.SelectedNode != null)
+                RefreshSelectedWeapon();
+
+            ScheduleCharacterUpdate();
+            // Immediately call character update because we know it's necessary
+            UpdateCharacterInfo();
+
+            _blnIsDirty = false;
+
+            Cursor = Cursors.Default;
+
+            if (_objCharacter.InternalIdsNeedingReapplyImprovements.Count > 0)
+            {
+                if (MessageBox.Show(LanguageManager.GetString("Message_ImprovementLoadError"),
+                    LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                {
+                    DoReapplyImprovements(_objCharacter.InternalIdsNeedingReapplyImprovements);
+                    _objCharacter.InternalIdsNeedingReapplyImprovements.Clear();
+                }
+            }
+        }
+
         /// <summary>
         /// Update the Character information.
         /// </summary>
@@ -20831,6 +20981,8 @@ namespace Chummer
         /// </summary>
         private void PopulateCyberwareList()
         {
+            treCyberware.Nodes[0].Nodes.Clear();
+            treCyberware.Nodes[1].Nodes.Clear();
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
                 // Populate Cyberware.

@@ -6484,6 +6484,10 @@ Do you want to continue?</text>
       <text>Allow Live Data Updates from customdata Directory</text>
     </string>
     <string>
+      <key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
+      <text>Automatically load changes from open characters' save files if there are no pending changes to be saved</text>
+    </string>
+    <string>
       <key>Checkbox_Options_UseLogging</key>
       <text>Use Debug Logging</text>
     </string>
