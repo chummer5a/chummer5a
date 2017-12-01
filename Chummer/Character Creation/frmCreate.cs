@@ -21963,5 +21963,15 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
+
+        private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
+        {
+            bool toggle = ((ContactControl) panContacts.Controls[0]).Expanded;
+
+            foreach (ContactControl c in panContacts.Controls)
+            {
+                c.ExpansionToggle(!toggle);
+            }
+        }
     }
 }

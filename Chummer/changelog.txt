@@ -526,6 +526,7 @@ New Strings:
 - Label_Options_NewRatingPlus
 - Checkbox_Options_LiveUpdateCleanCharacterFiles
 - Checkbox_Options_CompensateSkillGroupKarmaDifference
+- Button_ContactsExpansionToggle
 
 Changed Strings:
 - Message_PositiveQualityLimit

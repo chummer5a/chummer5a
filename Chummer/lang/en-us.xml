@@ -5412,6 +5412,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>MenuItem_CreateCritter</key>
       <text>Create Critter</text>
     </string>
+    <string>
+      <key>Button_ContactsExpansionToggle</key>
+      <text>&amp;Expand/Collapse All</text>
+    </string>
     <!-- End Region-->
     <!-- Region Omae -->
     <string>

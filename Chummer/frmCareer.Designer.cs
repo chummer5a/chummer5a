@@ -1149,6 +1149,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmdContactsExpansionToggle = new System.Windows.Forms.Button();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -13057,6 +13058,7 @@ namespace Chummer
             // tabContacts
             // 
             this.tabContacts.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabContacts.Controls.Add(this.cmdContactsExpansionToggle);
             this.tabContacts.Controls.Add(this.panContacts);
             this.tabContacts.Controls.Add(this.cmdAddContact);
             this.tabContacts.Controls.Add(this.lblContactArchtypeLabel);
@@ -13615,6 +13617,18 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(123, 22);
             this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
+            // 
+            // cmdContactsExpansionToggle
+            // 
+            this.cmdContactsExpansionToggle.AutoSize = true;
+            this.cmdContactsExpansionToggle.Location = new System.Drawing.Point(88, 6);
+            this.cmdContactsExpansionToggle.Name = "cmdContactsExpansionToggle";
+            this.cmdContactsExpansionToggle.Size = new System.Drawing.Size(112, 23);
+            this.cmdContactsExpansionToggle.TabIndex = 50;
+            this.cmdContactsExpansionToggle.Tag = "";
+            this.cmdContactsExpansionToggle.Text = "&Expand/Collapse All";
+            this.cmdContactsExpansionToggle.UseVisualStyleBackColor = true;
+            this.cmdContactsExpansionToggle.Click += new System.EventHandler(this.cmdContactsExpansionToggle_Click);
             // 
             // frmCareer
             // 
@@ -14870,5 +14884,6 @@ namespace Chummer
         private ToolStripMenuItem tsVehicleWeaponMountAddUnderbarrel;
         private ToolStripMenuItem tsVehicleWeaponMountNotes;
         private ToolStripMenuItem tsVehicleAddWeaponMount;
+        private Button cmdContactsExpansionToggle;
     }
 }

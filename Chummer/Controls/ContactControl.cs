@@ -31,7 +31,8 @@ namespace Chummer
         private string _strContactRole;
         private bool _blnEnemy = false;
         private bool _loading = true;
-        private int _intOldHeight = 23;
+        private int _intLowHeight = 23;
+        private int _intFullHeight = 147;
 
         // Events.
         public Action<object> ConnectionRatingChanged;
@@ -104,20 +105,7 @@ namespace Chummer
         
         private void cmdExpand_Click(object sender, EventArgs e)
         {
-            if (Height > _intOldHeight)
-            {
-                int intTemp = _intOldHeight;
-                _intOldHeight = Height;
-                Height = intTemp;
-                cmdExpand.Image = Properties.Resources.Expand;
-            }
-            else
-            {
-                int intTemp = Height;
-                Height = _intOldHeight;
-                _intOldHeight = intTemp;
-                cmdExpand.Image = Properties.Resources.Collapse;
-            }
+            ExpansionToggle(!Expanded);
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
@@ -645,6 +633,8 @@ namespace Chummer
                 _objContact.IsGroup = value;
             }
         }
+
+        public bool Expanded => Height > _intLowHeight;
         #endregion
 
         #region Methods
@@ -874,6 +864,20 @@ namespace Chummer
             lblType.Left = cboType.Left - 7 - lblType.Width;
             lblPreferredPayment.Left = cboPreferredPayment.Left - 7 - lblPreferredPayment.Width;
             lblHobbiesVice.Left = cboHobbiesVice.Left - 7 - lblHobbiesVice.Width;
+        }
+
+        public void ExpansionToggle(bool expand = false)
+        {
+            if (expand)
+            {
+                Height = _intFullHeight;
+                cmdExpand.Image = Properties.Resources.Expand;
+            }
+            else
+            {
+                Height = _intLowHeight;
+                cmdExpand.Image = Properties.Resources.Collapse;
+            }
         }
         #endregion
     }
