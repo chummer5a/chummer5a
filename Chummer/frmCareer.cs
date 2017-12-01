@@ -14314,7 +14314,7 @@ namespace Chummer
             string strPage = objQuality.Page;
             lblQualitySource.Text = strBook + " " + strPage;
             tipTooltip.SetToolTip(lblQualitySource, _objOptions.LanguageBookLong(objQuality.Source) + " " + LanguageManager.GetString("String_Page") + " " + objQuality.Page);
-            lblQualityBP.Text = (objQuality.BP * _objOptions.KarmaQuality).ToString() + " " + LanguageManager.GetString("String_Karma");
+            lblQualityBP.Text = (objQuality.BP * objQuality.Levels * _objOptions.KarmaQuality).ToString() + " " + LanguageManager.GetString("String_Karma");
         }
 #endregion
 
