@@ -281,7 +281,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            SelectedValue = frmPickItem.SelectedItem;
+            SelectedValue = frmPickItem.SelectedName;
             if (_blnConcatSelectedValue)
                 SourceName += " (" + SelectedValue + ")";
 
@@ -290,7 +290,7 @@ namespace Chummer.Classes
 
             // Create the Improvement.
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
+            CreateImprovement(frmPickItem.SelectedName, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Restricted, _strUnique);
         }
 
