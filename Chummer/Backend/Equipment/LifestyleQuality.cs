@@ -258,7 +258,7 @@ namespace Chummer.Backend.Equipment
                              });
                     var frmSelect = new frmSelectItem
                     {
-                        DropdownItems = lstQualities,
+                        GeneralItems = lstQualities,
                         Description =
                         LanguageManager.GetString("String_CannotFindLifestyleQuality").Replace("{0}", _strName)
                     };

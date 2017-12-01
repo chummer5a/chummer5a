@@ -498,7 +498,9 @@ namespace Chummer
         {
             get
             {
-                return cboAmmo.SelectedValue.ToString();
+                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList || cboAmmo.SelectedValue != null)
+                    return cboAmmo.SelectedValue.ToString();
+                return cboAmmo.Text;
             }
         }
 
