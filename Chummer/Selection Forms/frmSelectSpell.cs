@@ -744,7 +744,7 @@ namespace Chummer
                     }
                     else if (strDV.Contains('+'))
                     {
-                        intPos = strDV.IndexOf('-');
+                        intPos = strDV.IndexOf('+');
                         string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                         strDV = strDV.Substring(0, intPos);
                         int intAfter = Convert.ToInt32(strAfter);
