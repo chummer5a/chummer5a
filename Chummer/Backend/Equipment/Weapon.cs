@@ -3254,7 +3254,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
                         {
-                            strAccAvail += objAccessory.TotalAvail;
+                            strAccAvail = objAccessory.TotalAvail;
                             if (strAccAvail.EndsWith('F'))
                                 strAvail = "F";
                             if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
