@@ -432,6 +432,17 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
+            if (WeaponMounts.Count > 0)
+            {
+                TreeNode mountsNode = new TreeNode();
+                mountsNode.Tag = "String_WeaponMounts";
+                mountsNode.Text = LanguageManager.GetString("String_WeaponMounts");
+                objNode.Nodes.Add(mountsNode);
+                // Weapon Mounts
+                foreach (WeaponMount wm in WeaponMounts)
+                    CommonFunctions.CreateWeaponMountTreeNode(wm, mountsNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleGear, cmsVehicleWeaponMount);
+            }
             UpdateDealerConnectionDiscount();
         }
 
