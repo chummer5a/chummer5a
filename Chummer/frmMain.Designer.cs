@@ -27,8 +27,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.DoubleBuffered = true;
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,7 +152,7 @@
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
+            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add1;
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
@@ -165,7 +163,7 @@
             // 
             // mnuNewCritter
             // 
-            this.mnuNewCritter.Image = ((System.Drawing.Image)(resources.GetObject("mnuNewCritter.Image")));
+            this.mnuNewCritter.Image = global::Chummer.Properties.Resources.bug_add;
             this.mnuNewCritter.ImageTransparentColor = System.Drawing.Color.Black;
             this.mnuNewCritter.Name = "mnuNewCritter";
             this.mnuNewCritter.Size = new System.Drawing.Size(195, 22);
@@ -175,7 +173,7 @@
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
+            this.openToolStripMenuItem.Image = global::Chummer.Properties.Resources.folder_page;
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -197,7 +195,7 @@
             // 
             // printToolStripMenuItem
             // 
-            this.printToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printToolStripMenuItem.Image")));
+            this.printToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer;
             this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
@@ -207,7 +205,7 @@
             // 
             // mnuFilePrintMultiple
             // 
-            this.mnuFilePrintMultiple.Image = global::Chummer.Properties.Resources.printer;
+            this.mnuFilePrintMultiple.Image = global::Chummer.Properties.Resources.printer_add;
             this.mnuFilePrintMultiple.ImageTransparentColor = System.Drawing.Color.Black;
             this.mnuFilePrintMultiple.Name = "mnuFilePrintMultiple";
             this.mnuFilePrintMultiple.Size = new System.Drawing.Size(195, 22);
@@ -217,6 +215,7 @@
             // 
             // printSetupToolStripMenuItem
             // 
+            this.printSetupToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer_empty;
             this.printSetupToolStripMenuItem.Name = "printSetupToolStripMenuItem";
             this.printSetupToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.printSetupToolStripMenuItem.Text = "Print Setup";
@@ -434,6 +433,7 @@
             // 
             // exitToolStripMenuItem
             // 
+            this.exitToolStripMenuItem.Image = global::Chummer.Properties.Resources.door_out;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.exitToolStripMenuItem.Tag = "Menu_Main_Exit";
@@ -480,7 +480,7 @@
             // 
             // mnuToolsUpdate
             // 
-            this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.server_lightning;
+            this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.database_refresh;
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
             this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
@@ -562,6 +562,7 @@
             // 
             // mnuHelpRevisionHistory
             // 
+            this.mnuHelpRevisionHistory.Image = global::Chummer.Properties.Resources.report;
             this.mnuHelpRevisionHistory.Name = "mnuHelpRevisionHistory";
             this.mnuHelpRevisionHistory.Size = new System.Drawing.Size(200, 22);
             this.mnuHelpRevisionHistory.Tag = "Menu_Main_RevisionHistory";
@@ -570,6 +571,7 @@
             // 
             // mnuHelpDumpshock
             // 
+            this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug;
             this.mnuHelpDumpshock.Name = "mnuHelpDumpshock";
             this.mnuHelpDumpshock.Size = new System.Drawing.Size(200, 22);
             this.mnuHelpDumpshock.Tag = "Menu_Main_IssueTracker";
@@ -578,6 +580,7 @@
             // 
             // aboutToolStripMenuItem
             // 
+            this.aboutToolStripMenuItem.Image = global::Chummer.Properties.Resources.information;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.aboutToolStripMenuItem.Tag = "Menu_Main_About";
@@ -606,7 +609,7 @@
             // newToolStripButton
             // 
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.newToolStripButton.Image = global::Chummer.Properties.Resources.page;
+            this.newToolStripButton.Image = global::Chummer.Properties.Resources.user_add;
             this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -677,6 +680,14 @@
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Visible = false;
             // 
+            // toolTip
+            // 
+            this.toolTip.AllowLinksHandling = true;
+            this.toolTip.BaseStylesheet = null;
+            this.toolTip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.toolTip.OwnerDraw = true;
+            this.toolTip.TooltipCssClass = "htmltooltip";
+            // 
             // tabForms
             // 
             this.tabForms.Dock = System.Windows.Forms.DockStyle.Top;
@@ -697,6 +708,7 @@
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
