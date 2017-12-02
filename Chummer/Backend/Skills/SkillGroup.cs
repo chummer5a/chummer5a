@@ -23,8 +23,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                    (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                if (IsDisabled)
                     return 0;
                 return _skillFromSp + FreeBase();
             }
@@ -53,8 +52,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                    (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                if (IsDisabled)
                     return 0;
                 return _skillFromKarma + FreeLevels();
             }
@@ -87,8 +85,7 @@ namespace Chummer.Skills
         {
             get
             {
-                if (_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                    (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                if (IsDisabled)
                     return false;
                 return _character.BuildMethod.HaveSkillPoints() && !_affectedSkills.Any(x => x.Ibase > 0);
             }
@@ -102,13 +99,30 @@ namespace Chummer.Skills
         {
             get
             {
-                if (_character.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                    (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                if (IsDisabled)
                     return false;
                 int high = _affectedSkills.Max(x => x.Ibase);
                 bool ret = _affectedSkills.Any(x => x.Ibase + x.Ikarma < high);
 
                 return !ret;
+            }
+        }
+
+        private bool _blnCachedGroupEnabledIsCached = false;
+        private bool _blnCachedGroupEnabled = false;
+        public bool IsDisabled
+        {
+            get
+            {
+                if (!_blnCachedGroupEnabledIsCached)
+                {
+                    _blnCachedGroupEnabled = _character.Improvements.Any(x =>
+                        ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
+                        (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName)))
+                        && x.Enabled);
+                    _blnCachedGroupEnabledIsCached = true;
+                }
+                return _blnCachedGroupEnabled;
             }
         }
 
@@ -449,17 +463,20 @@ namespace Chummer.Skills
             {
                 OnPropertyChanged(nameof(FreeBase));
             }
-            if (blnHasSkillGroupLevel || blnHasSkillGroupBase)
-            {
-                OnPropertyChanged(nameof(Karma));
-                OnPropertyChanged(nameof(Base));
-            }
             if (improvements.Any(x => (x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
                     (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))))
             {
+                _blnCachedGroupEnabledIsCached = false;
                 OnPropertyChanged(nameof(Rating));
                 OnPropertyChanged(nameof(BaseUnbroken));
                 OnPropertyChanged(nameof(KarmaUnbroken));
+                OnPropertyChanged(nameof(Karma));
+                OnPropertyChanged(nameof(Base));
+            }
+            else if (blnHasSkillGroupLevel || blnHasSkillGroupBase)
+            {
+                OnPropertyChanged(nameof(Karma));
+                OnPropertyChanged(nameof(Base));
             }
         }
         private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)

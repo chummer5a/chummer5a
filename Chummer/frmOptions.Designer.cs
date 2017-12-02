@@ -1134,7 +1134,7 @@ namespace Chummer
             // 
             // nudNuyenDecimalsMaximum
             // 
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 307);
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(269, 315);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
