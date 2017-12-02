@@ -266,7 +266,7 @@ namespace Chummer
     /// </summary>
     public class ExpenseLogEntry
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;
         private DateTime _datDate = new DateTime();
         private decimal _decAmount = 0;

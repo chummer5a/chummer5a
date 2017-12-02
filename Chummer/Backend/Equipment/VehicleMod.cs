@@ -71,7 +71,8 @@ namespace Chummer.Backend.Equipment
             if (objParent == null) throw new ArgumentNullException(nameof(objParent));
             Parent = objParent;
             if (objXmlMod == null) Utils.BreakIfDebug();
-            objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlMod.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
@@ -238,7 +239,8 @@ namespace Chummer.Backend.Equipment
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             }
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
             objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
@@ -405,7 +407,11 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _strName = value;
+                if (_strName != value)
+                {
+                    _objCachedMyXmlNode = null;
+                    _strName = value;
+                }
             }
         }
 
@@ -1235,11 +1241,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion

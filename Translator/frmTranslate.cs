@@ -362,8 +362,7 @@ namespace Translator
                         strName = childNode.InnerText;
                         if (childNode.Attributes?["translate"] != null)
                             strTranslated = childNode.Attributes["translate"].InnerText;
-                        if (childNode.Attributes?["translated"] != null)
-                            blnTranslated = Convert.ToBoolean(childNode.Attributes["translated"].InnerText);
+                        blnTranslated = childNode.Attributes["translated"]?.InnerText == System.Boolean.TrueString;
                     }
                     else
                     {
@@ -375,8 +374,9 @@ namespace Translator
                         if (xmlNodeLocal != null)
                             strSource = xmlNodeLocal["source"]?.InnerText;
                         strTranslated = childNode["translate"]?.InnerText;
-                        blnTranslated = childNode.Attributes?["translated"] != null
-                            ? Convert.ToBoolean(childNode.Attributes["translated"].InnerText)
+                        XmlNode xmlNodeAttributesTranslated = childNode.Attributes?["translated"];
+                        blnTranslated = xmlNodeAttributesTranslated != null
+                            ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
                             : strName != strTranslated;
                     }
                     if ((!chkOnlyTranslation.Checked || strName != strTranslated) && chkOnlyTranslation.Checked)
@@ -437,8 +437,9 @@ namespace Translator
                     if (xmlNodeLocal != null)
                     {
                         strTranslated = xmlNodeLocal["text"]?.InnerText;
-                        blnTranslated = xmlNodeEnglish.Attributes?["translated"] != null
-                            ? Convert.ToBoolean(xmlNodeEnglish.Attributes["translated"].InnerText)
+                        XmlNode xmlNodeAttributesTranslated = xmlNodeEnglish.Attributes?["translated"];
+                        blnTranslated = xmlNodeAttributesTranslated != null
+                            ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
                             : strEnglish != strTranslated;
                     }
                     if (chkOnlyTranslation.Checked && (strEnglish == strTranslated || string.IsNullOrWhiteSpace(strTranslated)) || !chkOnlyTranslation.Checked)

@@ -102,7 +102,7 @@ namespace Chummer
                     {
                         if (objNode["key"] != null && objNode["text"] != null)
                         {
-                            if (!_objDictionary.TryAdd(objNode["key"].InnerText, objNode["text"].InnerText))
+                            if (!_objDictionary.TryAdd(objNode["key"].InnerText, objNode["text"].InnerText.Replace("\\n", "\n")))
                             {
                                 Utils.BreakIfDebug();
                             }
@@ -181,7 +181,7 @@ namespace Chummer
                             {
                                 string strKey = objNode["key"].InnerText;
                                 if (_objDictionary.ContainsKey(strKey))
-                                    _objDictionary[strKey] = objNode["text"].InnerText;
+                                    _objDictionary[strKey] = objNode["text"].InnerText.Replace("\\n", "\n");
                             }
                         }
                     }
@@ -390,7 +390,7 @@ namespace Chummer
             string strReturn;
             if (_objDictionary.TryGetValue(strKey, out strReturn))
             {
-                return strReturn.Replace("\\n", "\n");
+                return strReturn;
             }
             if (!blnReturnError)
             {

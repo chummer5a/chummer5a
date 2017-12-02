@@ -15,8 +15,8 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class Cyberware : INamedParentWithGuidAndNode<Cyberware>
     {
-        private Guid _sourceID = new Guid();
-        private Guid _guiID = new Guid();
+        private Guid _sourceID = Guid.Empty;
+        private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strLimbSlot = string.Empty;
@@ -38,8 +38,8 @@ namespace Chummer.Backend.Equipment
         private bool _blnSuite = false;
         private string _strLocation = string.Empty;
         private string _strExtra = string.Empty;
-        private Guid _guiWeaponID = new Guid();
-        private Guid _guiVehicleID = new Guid();
+        private Guid _guiWeaponID = Guid.Empty;
+        private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade = new Grade();
         private BindingList<Cyberware> _objChildren = new BindingList<Cyberware>();
         private List<Gear> _lstGear = new List<Gear>();
@@ -128,12 +128,14 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
-            objXmlCyberware.TryGetField("id", Guid.TryParse, out _sourceID);
+            if (objXmlCyberware.TryGetField("id", Guid.TryParse, out _sourceID))
+                _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
 
             _objImprovementSource = objSource;
+            _objCachedMyXmlNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             objXmlCyberware.TryGetStringFieldQuickly("minrating", ref _strMinRating);
 
@@ -646,7 +648,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID);
+            if (objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+                _objCachedMyXmlNode = null;
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -657,7 +660,10 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objNode["improvementsource"] != null)
+            {
                 _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objCachedMyXmlNode = null;
+            }
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objNode.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
@@ -990,6 +996,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                if (_objImprovementSource != value)
+                    _objCachedMyXmlNode = null;
                 _objImprovementSource = value;
             }
         }
@@ -1841,24 +1849,26 @@ namespace Chummer.Backend.Equipment
             set { _blnPrototypeTranshuman = value; }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                XmlNode objReturn = null;
+                if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
+                    return _objCachedMyXmlNode;
                 XmlDocument objDoc = null;
                 if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
                 {
                     objDoc = XmlManager.Load("bioware.xml");
                     if (objDoc != null)
                     {
-                        objReturn = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
-                        if (objReturn == null)
+                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                        if (_objCachedMyXmlNode == null)
                         {
-                            objReturn = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
-                            if (objReturn != null)
+                            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
+                            if (_objCachedMyXmlNode != null)
                             {
-                                objReturn.TryGetField("id", Guid.TryParse, out _sourceID);
+                                _objCachedMyXmlNode.TryGetField("id", Guid.TryParse, out _sourceID);
                             }
                         }
                     }
@@ -1868,18 +1878,18 @@ namespace Chummer.Backend.Equipment
                     objDoc = XmlManager.Load("cyberware.xml");
                     if (objDoc != null)
                     {
-                        objReturn = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
-                        if (objReturn == null)
+                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                        if (_objCachedMyXmlNode == null)
                         {
-                            objReturn = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
-                            if (objReturn != null)
+                            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
+                            if (_objCachedMyXmlNode != null)
                             {
-                                objReturn.TryGetField("id", Guid.TryParse, out _sourceID);
+                                _objCachedMyXmlNode.TryGetField("id", Guid.TryParse, out _sourceID);
                             }
                         }
                     }
                 }
-                return objReturn;
+                return _objCachedMyXmlNode;
             }
         }
         #endregion

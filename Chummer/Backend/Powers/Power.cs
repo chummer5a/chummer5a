@@ -18,7 +18,7 @@ namespace Chummer
     public class Power : INotifyPropertyChanged, INamedItemWithGuidAndNode
     {
         private Guid _guiID;
-        private Guid _sourceID = new Guid();
+        private Guid _sourceID = Guid.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strPointsPerLevel = "0";
@@ -94,9 +94,10 @@ namespace Chummer
         {
             Name = objNode["name"].InnerText;
             _sourceID = Guid.Parse(objNode["id"].InnerText);
+            _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
-            LevelsEnabled = Convert.ToBoolean(objNode["levels"].InnerText);
+            LevelsEnabled = objNode["levels"]?.InnerText == System.Boolean.TrueString;
             Rating = intRating;
             objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevel);
             objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
@@ -160,6 +161,7 @@ namespace Chummer
             if (objNode["id"] != null)
             {
                 _sourceID = Guid.Parse(objNode["id"].InnerText);
+                _objCachedMyXmlNode = null;
             }
             else
             {
@@ -168,7 +170,11 @@ namespace Chummer
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (objXmlPower != null) _sourceID = Guid.Parse(objXmlPower["id"].InnerText);
+                if (objXmlPower != null)
+                {
+                    _sourceID = Guid.Parse(objXmlPower["id"].InnerText);
+                    _objCachedMyXmlNode = null;
+                }
             }
             Extra = objNode["extra"].InnerText ?? string.Empty;
             _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
@@ -186,7 +192,7 @@ namespace Chummer
                     _strAdeptWayDiscount = objXmlPower["adeptway"].InnerText;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
-            LevelsEnabled = Convert.ToBoolean(objNode["levels"]?.InnerText);
+            LevelsEnabled = objNode["levels"]?.InnerText == System.Boolean.TrueString;
             objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevel);
             objNode.TryGetInt32FieldQuickly("freelevels", ref _intFreeLevels);
@@ -781,11 +787,14 @@ namespace Chummer
 
         public string Category { get; set; }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
 

@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
-        private Guid _guiWeaponID = new Guid();
+        private Guid _guiWeaponID = Guid.Empty;
         private List<Gear> _objChildren = new List<Gear>();
         private string _strNotes = string.Empty;
         private string _strLocation = string.Empty;
@@ -88,9 +88,12 @@ namespace Chummer.Backend.Equipment
                 return;
             _strForcedValue = strForceValue;
             XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-            objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid);
-            objXmlGear.TryGetStringFieldQuickly("name", ref _strName);
-            objXmlGear.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (objXmlGear.TryGetStringFieldQuickly("id", ref _SourceGuid))
+                _objCachedMyXmlNode = null;
+            if (objXmlGear.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            if (objXmlGear.TryGetStringFieldQuickly("category", ref _strCategory))
+                _objCachedMyXmlNode = null;
             objXmlGear.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlGear.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objXmlGear.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
@@ -142,6 +145,7 @@ namespace Chummer.Backend.Equipment
                     if (frmPickText.DialogResult != DialogResult.Cancel)
                     {
                         _strAltName = _strName = frmPickText.SelectedValue;
+                        _objCachedMyXmlNode = null;
                     }
                 }
                 else
@@ -150,6 +154,7 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strCustomName))
                         strCustomName = LanguageManager.TranslateExtra(_strForcedValue);
                     _strAltName = _strName = strCustomName;
+                    _objCachedMyXmlNode = null;
                 }
             }
             // Check for a Variable Cost.
@@ -559,6 +564,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWeaponNodes">List of TreeNodes for the Weapons created by the copied item.</param>
         public void Copy(Gear objGear, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
         {
+            _objCachedMyXmlNode = objGear.MyXmlNode;
             _SourceGuid = objGear._SourceGuid;
             _blnAllowRename = objGear.AllowRename;
             _strName = objGear.Name;
@@ -720,9 +726,12 @@ namespace Chummer.Backend.Equipment
         public virtual void Load(XmlNode objNode, bool blnCopy = false)
         {
             _guiID = Guid.Parse(objNode["guid"].InnerText);
-            objNode.TryGetStringFieldQuickly("id", ref _SourceGuid);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
+                _objCachedMyXmlNode = null;
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            if (objNode.TryGetStringFieldQuickly("category", ref _strCategory))
+                _objCachedMyXmlNode = null;
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
@@ -1075,6 +1084,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
                 _strName = value;
             }
         }
@@ -1119,6 +1130,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                if (_strCategory != value)
+                    _objCachedMyXmlNode = null;
                 _strCategory = value;
             }
         }
@@ -1683,20 +1696,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                XmlNode objReturn = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
-                if (objReturn == null)
+                if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
+                    return _objCachedMyXmlNode;
+                _objCachedMyXmlNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
+                if (_objCachedMyXmlNode == null)
                 {
-                    objReturn = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
-                    if (objReturn == null)
+                    _objCachedMyXmlNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
+                    if (_objCachedMyXmlNode == null)
                     {
-                        objReturn = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
+                        _objCachedMyXmlNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
                     }
                 }
-                return objReturn;
+                return _objCachedMyXmlNode;
             }
         }
         #endregion

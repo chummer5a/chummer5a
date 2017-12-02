@@ -58,7 +58,6 @@
             this.textBoxDescription.Location = new System.Drawing.Point(195, 172);
             this.textBoxDescription.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.textBoxDescription.Multiline = true;
-            this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.ReadOnly = true;
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -66,6 +65,7 @@
             this.textBoxDescription.TabIndex = 23;
             this.textBoxDescription.TabStop = false;
             this.textBoxDescription.Text = "Description";
+            this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
             // labelCompanyName
             // 
@@ -162,13 +162,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDisclaimer.Location = new System.Drawing.Point(192, 274);
             this.txtDisclaimer.Multiline = true;
-            this.txtDisclaimer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             this.txtDisclaimer.Name = "txtDisclaimer";
             this.txtDisclaimer.ReadOnly = true;
             this.txtDisclaimer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDisclaimer.Size = new System.Drawing.Size(379, 127);
             this.txtDisclaimer.TabIndex = 25;
             this.txtDisclaimer.Text = "Disclaimer";
+            this.txtDisclaimer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
             // frmAbout
             // 

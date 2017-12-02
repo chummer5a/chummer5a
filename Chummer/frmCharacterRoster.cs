@@ -196,7 +196,7 @@ namespace Chummer
                 objCache.PlayerName = objXmlSourceNode["player"]?.InnerText;
                 objCache.CharacterName = objXmlSourceNode["name"]?.InnerText;
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
-                objCache.Created = Convert.ToBoolean(objXmlSourceNode["created"]?.InnerText);
+                objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
                 objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
                 string strMugshotBase64 = objXmlSourceNode["mugshot"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
@@ -221,7 +221,7 @@ namespace Chummer
                 }
             }
             objCache.FilePath = strFile;
-            objCache.FileName = strFile.Substring(strFile.LastIndexOf('\\') + 1);
+            objCache.FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             TreeNode objNode = new TreeNode();
 
             objNode.Text = CalculatedName(objCache);
@@ -244,11 +244,14 @@ namespace Chummer
             string strName = objCache.CharacterAlias;
             if (string.IsNullOrEmpty(strName))
             {
-                strName = string.IsNullOrEmpty(objCache.CharacterName) ? LanguageManager.GetString("String_UnnamedCharacter") : objCache.CharacterName;
+                strName = objCache.CharacterName;
+                if (string.IsNullOrEmpty(strName))
+                    strName = LanguageManager.GetString("String_UnnamedCharacter");
             }
-            string strBuildMethod = LanguageManager.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
-            bool blnCreated = objCache.Created;
-            string strCreated = LanguageManager.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");
+            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, false);
+            if (string.IsNullOrEmpty(strBuildMethod))
+                strBuildMethod = "Unknown build method";
+            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode");
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             return strReturn;
         }
@@ -498,10 +501,10 @@ namespace Chummer
             internal string PlayerName { get; set; }
             internal string CharacterName { get; set; }
             internal string CharacterAlias { get; set; }
+            internal string BuildMethod { get; set; }
+            internal string Essence { get; set; }
             internal Image Mugshot { get; set; }
-            public string BuildMethod { get; internal set; }
-            public bool Created { get; internal set; }
-            public string Essence { get; internal set; }
+            internal bool Created { get; set; }
         }
         #endregion
     }

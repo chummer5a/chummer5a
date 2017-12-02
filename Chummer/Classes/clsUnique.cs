@@ -26,6 +26,7 @@ using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
  using Chummer.Skills;
+using System.Text;
 
 namespace Chummer
 {
@@ -230,8 +231,11 @@ namespace Chummer
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _stage);
             }
 
-            if(objXmlQuality["id"] != null)
+            if (objXmlQuality["id"] != null)
+            {
                 _qualiyGuid = Guid.Parse(objXmlQuality["id"].InnerText);
+                _objCachedMyXmlNode = null;
+            }
 
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
@@ -439,8 +443,11 @@ namespace Chummer
             {
                 XmlNode objNewNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
                 if (objNewNode != null)
-                    objNewNode.TryGetField("id", Guid.TryParse, out _qualiyGuid);
+                    if (objNewNode.TryGetField("id", Guid.TryParse, out _qualiyGuid))
+                        _objCachedMyXmlNode = null;
             }
+            else
+                _objCachedMyXmlNode = null;
 
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
@@ -748,11 +755,14 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
 
@@ -1041,13 +1051,14 @@ namespace Chummer
             if (objNode == null)
                 return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiId);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
             objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
             objNode.TryGetInt32FieldQuickly("force", ref _intForce);
             objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
             if (objNode["type"] != null)
-            _objEntityType = ConvertToSpiritType(objNode["type"].InnerText);
+                EntityType = ConvertToSpiritType(objNode["type"].InnerText);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -1170,9 +1181,6 @@ namespace Chummer
             objWriter.WriteElementString("bound", _blnBound.ToString());
             objWriter.WriteElementString("type", _objEntityType.ToString());
 
-
-
-
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -1211,7 +1219,14 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                {
+                    _objCachedMyXmlNode = null;
+                    _strName = value;
+                }
+            }
         }
 
         /// <summary>
@@ -1256,7 +1271,14 @@ namespace Chummer
         public SpiritType EntityType
         {
             get => _objEntityType;
-            set => _objEntityType = value;
+            set
+            {
+                if (_objEntityType != value)
+                {
+                    _objCachedMyXmlNode = null;
+                    _objEntityType = value;
+                }
+            }
         }
 
         /// <summary>
@@ -1294,11 +1316,14 @@ namespace Chummer
             set => _guiId = Guid.Parse(value);
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml")?.SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load(_objEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml")?.SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -1350,19 +1375,19 @@ namespace Chummer
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
         public void Create(XmlNode objXmlSpellNode, TreeNode objNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
-            objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             _blnExtended = blnExtended;
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
-                XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
+                XmlNode objSpellNode = MyXmlNode;
                 if (objSpellNode != null)
                 {
                     objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+                objSpellNode = XmlManager.Load("spells.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
 
@@ -1472,7 +1497,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -1498,15 +1524,14 @@ namespace Chummer
 
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
-                XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + _strName + "\"]");
+                XmlNode objSpellNode = MyXmlNode;
                 if (objSpellNode != null)
                 {
                     objSpellNode.TryGetStringFieldQuickly("translate", ref _strAltName);
                     objSpellNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
                 }
 
-                objSpellNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
+                objSpellNode = XmlManager.Load("spells.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
                 _strAltCategory = objSpellNode?.Attributes?["translate"]?.InnerText;
             }
         }
@@ -1556,7 +1581,14 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                {
+                    _objCachedMyXmlNode = null;
+                    _strName = value;
+                }
+            }
         }
 
         /// <summary>
@@ -1584,8 +1616,7 @@ namespace Chummer
         {
             get
             {
-                string strReturn = string.Empty;
-                bool blnExtendedFound = false;
+                StringBuilder objReturn = new StringBuilder();
 
                 string[] strDescriptorsIn = _strDescriptors.Split(',');
                 foreach (string strDescriptor in strDescriptorsIn)
@@ -1593,104 +1624,105 @@ namespace Chummer
                     switch (strDescriptor.Trim())
                     {
                         case "Active":
-                            strReturn += LanguageManager.GetString("String_DescActive") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescActive"));
                             break;
                         case "Adept":
-                            strReturn += LanguageManager.GetString("String_DescAdept") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescAdept"));
                             break;
                         case "Alchemical Preparation":
-                            strReturn += LanguageManager.GetString("String_DescAlchemicalPreparation") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
                             break;
                         case "Anchored":
-                            strReturn += LanguageManager.GetString("String_DescAnchored") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescAnchored"));
                             break;
                         case "Area":
-                            strReturn += LanguageManager.GetString("String_DescArea") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescArea"));
                             break;
                         case "Blood":
-                            strReturn += LanguageManager.GetString("String_DescBlood") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescBlood"));
                             break;
                         case "Contractual":
-                            strReturn += LanguageManager.GetString("String_DescContractual") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescContractual"));
                             break;
                         case "Direct":
-                            strReturn += LanguageManager.GetString("String_DescDirect") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescDirect"));
                             break;
                         case "Directional":
-                            strReturn += LanguageManager.GetString("String_DescDirectional") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescDirectional"));
                             break;
                         case "Elemental":
-                            strReturn += LanguageManager.GetString("String_DescElemental") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescElemental")) ;
                             break;
                         case "Environmental":
-                            strReturn += LanguageManager.GetString("String_DescEnvironmental") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescEnvironmental"));
                             break;
                         case "Geomancy":
-                            strReturn += LanguageManager.GetString("String_DescGeomancy") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescGeomancy"));
                             break;
                         case "Indirect":
-                            strReturn += LanguageManager.GetString("String_DescIndirect") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescIndirect"));
                             break;
                         case "Mana":
-                            strReturn += LanguageManager.GetString("String_DescMana") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescMana"));
                             break;
                         case "Material Link":
-                            strReturn += LanguageManager.GetString("String_DescMaterialLink") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescMaterialLink"));
                             break;
                         case "Mental":
-                            strReturn += LanguageManager.GetString("String_DescMental") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescMental"));
                             break;
                         case "Minion":
-                            strReturn += LanguageManager.GetString("String_DescMinion") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescMinion"));
                             break;
                         case "Multi-Sense":
-                            strReturn += LanguageManager.GetString("String_DescMultiSense") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescMultiSense"));
                             break;
                         case "Negative":
-                            strReturn += LanguageManager.GetString("String_DescNegative") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescNegative"));
                             break;
                         case "Obvious":
-                            strReturn += LanguageManager.GetString("String_DescObvious") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescObvious"));
                             break;
                         case "Organic Link":
-                            strReturn += LanguageManager.GetString("String_DescOrganicLink") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescOrganicLink"));
                             break;
                         case "Passive":
-                            strReturn += LanguageManager.GetString("String_DescPassive") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescPassive"));
                             break;
                         case "Physical":
-                            strReturn += LanguageManager.GetString("String_DescPhysical") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescPhysical"));
                             break;
                         case "Psychic":
-                            strReturn += LanguageManager.GetString("String_DescPsychic") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescPsychic"));
                             break;
                         case "Realistic":
-                            strReturn += LanguageManager.GetString("String_DescRealistic") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescRealistic"));
                             break;
                         case "Single-Sense":
-                            strReturn += LanguageManager.GetString("String_DescSingleSense") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescSingleSense"));
                             break;
                         case "Touch":
-                            strReturn += LanguageManager.GetString("String_DescTouch") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescTouch"));
                             break;
                         case "Spell":
-                            strReturn += LanguageManager.GetString("String_DescSpell") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescSpell"));
                             break;
                         case "Spotter":
-                            strReturn += LanguageManager.GetString("String_DescSpotter") + ", ";
+                            objReturn.Append(LanguageManager.GetString("String_DescSpotter"));
                             break;
                     }
+                    objReturn.Append(", ");
                 }
 
                 // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
-                if (_blnExtended && !blnExtendedFound)
-                    strReturn += LanguageManager.GetString("String_DescExtendedArea") + ", ";
+                if (_blnExtended)
+                    objReturn.Append(LanguageManager.GetString("String_DescExtendedArea") + ", ");
 
                 // Remove the trailing comma.
-                if (!string.IsNullOrEmpty(strReturn))
-                    strReturn = strReturn.Substring(0, strReturn.Length - 2);
+                if (objReturn.Length >= 2)
+                    objReturn.Length -= 2;
 
-                return strReturn;
+                return objReturn.ToString();
             }
         }
 
@@ -2207,11 +2239,14 @@ namespace Chummer
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("spells.xml")?.SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("spells.xml")?.SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -2344,7 +2379,7 @@ namespace Chummer
         {
             _guiID = Guid.Parse(objNode["guid"].InnerText);
             _guiGearId = Guid.Parse(objNode["gearid"].InnerText);
-            _blnBonded = Convert.ToBoolean(objNode["bonded"].InnerText);
+            _blnBonded = objNode["bonded"]?.InnerText == System.Boolean.TrueString;
             XmlNodeList nodGears = objNode.SelectNodes("gears/gear");
             foreach (XmlNode nodGear in nodGears)
             {
@@ -2544,7 +2579,8 @@ namespace Chummer
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlMetamagicNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
-            objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
@@ -2564,7 +2600,10 @@ namespace Chummer
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
+                    _objCachedMyXmlNode = null;
+                }
             }
 
             LanguageManager.Load(GlobalOptions.Language, null);
@@ -2606,7 +2645,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("paidwithkarma", ref _blnPaidWithKarma);
@@ -2614,10 +2654,10 @@ namespace Chummer
 
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-            _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            }
+        }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -2659,7 +2699,14 @@ namespace Chummer
         public Improvement.ImprovementSource SourceType
         {
             get => _objImprovementSource;
-            set => _objImprovementSource = value;
+            set
+            {
+                if (_objImprovementSource != value)
+                {
+                    _objCachedMyXmlNode = null;
+                    _objImprovementSource = value;
+                }
+            }
         }
 
         /// <summary>
@@ -2668,7 +2715,14 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                {
+                    _objCachedMyXmlNode = null;
+                    _strName = value;
+                }
+            }
         }
 
         /// <summary>
@@ -2759,16 +2813,18 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
+                if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
+                    return _objCachedMyXmlNode;
                 if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
-                {
-                    return XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
-                }
+                    _objCachedMyXmlNode = XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
                 else
-                    return XmlManager.Load("echoes.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                    _objCachedMyXmlNode = XmlManager.Load("echoes.xml")?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -2805,7 +2861,8 @@ namespace Chummer
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
-            objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
@@ -2855,7 +2912,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
@@ -2864,7 +2922,7 @@ namespace Chummer
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            }
+        }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -2914,7 +2972,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -2994,11 +3057,14 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/arts/art[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("metamagic.xml")?.SelectSingleNode("/chummer/arts/art[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -3036,7 +3102,8 @@ namespace Chummer
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
         {
-            objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
@@ -3050,7 +3117,10 @@ namespace Chummer
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
+                    _objCachedMyXmlNode = null;
+                }
             }
 
             objNode.Text = LanguageManager.GetString("Label_Enhancement") + " " + DisplayName;
@@ -3086,7 +3156,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
@@ -3145,7 +3216,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -3234,11 +3310,14 @@ namespace Chummer
             set => _objParent = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -3276,7 +3355,8 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlComplexFormNode, TreeNode objNode, string strExtra = "")
         {
-            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -3326,7 +3406,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -3368,7 +3449,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -3483,11 +3569,14 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("complexforms.xml")?.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("complexforms.xml")?.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -3525,7 +3614,8 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlProgramNode, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
-            objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             _strRequiresProgram = LanguageManager.GetString("String_None");
             _boolCanDelete = boolCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
@@ -3548,14 +3638,14 @@ namespace Chummer
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
-            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
-            {
+        {
             objWriter.WriteStartElement("aiprogram");
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("name", _strName);
@@ -3567,7 +3657,7 @@ namespace Chummer
             objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram ? "true" : "false");
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
-            }
+        }
 
         /// <summary>
         /// Load the Program from the XmlNode.
@@ -3576,7 +3666,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -3621,7 +3712,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -3754,11 +3850,14 @@ namespace Chummer
         /// </summary>
         public bool IsAdvancedProgram => _boolIsAdvancedProgram;
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -3791,10 +3890,11 @@ namespace Chummer
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         public void Create(XmlNode objXmlArtNode, TreeNode objNode)
         {
-            objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
-            _blnIsQuality = objXmlArtNode["isquality"] != null && Convert.ToBoolean(objXmlArtNode["isquality"].InnerText);
+            _blnIsQuality = objXmlArtNode["isquality"].InnerText == System.Boolean.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
             {
@@ -3836,9 +3936,10 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
@@ -3889,7 +3990,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         public string InternalId => _guiID.ToString();
@@ -3987,11 +4093,14 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -4023,7 +4132,8 @@ namespace Chummer
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         public void Create(XmlNode objXmlAdvantageNode, TreeNode objNode)
         {
-            objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlAdvantageNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -4062,9 +4172,10 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -4099,7 +4210,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -4143,11 +4259,14 @@ namespace Chummer
             set => _strPage = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/techniques/technique[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/techniques/technique[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -4178,7 +4297,8 @@ namespace Chummer
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         public void Create(XmlNode objXmlManeuverNode, TreeNode objNode)
         {
-            objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -4208,9 +4328,10 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -4245,7 +4366,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -4324,11 +4450,14 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("martialarts.xml")?.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -5083,7 +5212,8 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlPowerNode, TreeNode objNode, int intRating = 0, string strForcedValue = "")
         {
-            objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             _intRating = intRating;
             _nodBonus = objXmlPowerNode["bonus"];
             // If the piece grants a bonus, pass the information to the Improvement Manager.
@@ -5158,7 +5288,8 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -5236,7 +5367,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -5536,11 +5672,14 @@ namespace Chummer
             set => _intKarma = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("critterpowers.xml")?.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml")?.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -6044,6 +6183,7 @@ namespace Chummer
         {
             _blnMentorMask = blnMentorMask;
             _eMentorType = eMentorType;
+            _objCachedMyXmlNode = null;
             objXmlMentor.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
@@ -6187,9 +6327,13 @@ namespace Chummer
         public virtual void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             if (objNode["mentortype"] != null)
+            {
                 _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerText);
+                _objCachedMyXmlNode = null;
+            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -6248,7 +6392,12 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
         }
 
         /// <summary>
@@ -6347,6 +6496,7 @@ namespace Chummer
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         /// <summary>
         /// Xml Node containing info of this mentor spirit.
         /// </summary>
@@ -6354,7 +6504,9 @@ namespace Chummer
         {
             get
             {
-                return XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID.ToString() + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = \"" + _sourceID.ToString() + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
 

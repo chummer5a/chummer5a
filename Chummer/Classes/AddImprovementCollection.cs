@@ -391,7 +391,7 @@ namespace Chummer.Classes
             else if (strNodeOuterXml.Contains("limittoattribute"))
                 frmPickSkill.LinkedAttribute = bonusNode.Attributes?["limittoattribute"].InnerText;
 
-            bool useKnowledge = Convert.ToBoolean(bonusNode.Attributes?["knowledgeskills"]?.InnerText);
+            bool useKnowledge = bonusNode.Attributes?["knowledgeskills"]?.InnerText == System.Boolean.TrueString;
             frmPickSkill.ShowKnowledgeSkills = useKnowledge;
 
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -1132,10 +1132,7 @@ namespace Chummer.Classes
                 frmPickSpell.Opacity = 0;
             }
 
-            if (bonusNode.Attributes["ignorerequirements"] != null)
-            {
-                frmPickSpell.IgnoreRequirements = Convert.ToBoolean(bonusNode.Attributes["ignorerequirements"].InnerText);
-            }
+            frmPickSpell.IgnoreRequirements = bonusNode.Attributes["ignorerequirements"]?.InnerText == System.Boolean.TrueString;
 
             frmPickSpell.ShowDialog();
 
@@ -3210,8 +3207,7 @@ namespace Chummer.Classes
                     Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
                     int intLevels = 0;
-                    if (objNode["ignorerating"] != null)
-                        frmPickPower.IgnoreLimits = Convert.ToBoolean(objNode["ignorerating"].InnerText);
+                    frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == System.Boolean.TrueString;
                     if (objNode["val"] != null)
                         intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
                     if (objNode["pointsperlevel"] != null)

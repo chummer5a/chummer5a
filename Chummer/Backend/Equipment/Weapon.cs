@@ -17,8 +17,8 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class Weapon : INamedParentWithGuidAndNode<Weapon>
     {
-        private Guid _sourceID = new Guid();
-        private Guid _guiID = new Guid();
+        private Guid _sourceID = Guid.Empty;
+        private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
@@ -35,10 +35,10 @@ namespace Chummer.Backend.Equipment
         //private int _intAmmoRemaining2 = 0;
         //private int _intAmmoRemaining3 = 0;
         //private int _intAmmoRemaining4 = 0;
-        //private Guid _guiAmmoLoaded = new Guid();
-        //private Guid _guiAmmoLoaded2 = new Guid();
-        //private Guid _guiAmmoLoaded3 = new Guid();
-        //private Guid _guiAmmoLoaded4 = new Guid();
+        //private Guid _guiAmmoLoaded = Guid.Empty;
+        //private Guid _guiAmmoLoaded2 = Guid.Empty;
+        //private Guid _guiAmmoLoaded3 = Guid.Empty;
+        //private Guid _guiAmmoLoaded4 = Guid.Empty;
         private int _intActiveAmmoSlot = 1;
         private string _strAvail = string.Empty;
         private decimal _decCost = 0;
@@ -92,7 +92,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         public void Create(XmlNode objXmlWeapon, List<TreeNode> lstNodes, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, List<Weapon> objWeapons, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
-            objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID);
+            if (objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID))
+                _objCachedMyXmlNode = null;
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlWeapon.TryGetStringFieldQuickly("type", ref _strType);
@@ -510,11 +511,13 @@ namespace Chummer.Backend.Equipment
                 if (objWeaponNode != null)
                 {
                     _sourceID = Guid.Parse(objWeaponNode["id"].InnerText);
+                    _objCachedMyXmlNode = null;
                 }
             }
             else
             {
                 _sourceID = Guid.Parse(objNode["sourceid"].InnerText);
+                _objCachedMyXmlNode = null;
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (_strCategory == "Hold-Outs")
@@ -535,6 +538,7 @@ namespace Chummer.Backend.Equipment
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
                     _sourceID = Guid.Parse(objNewOsmiumMaceNode["id"].InnerText);
+                    _objCachedMyXmlNode = objNewOsmiumMaceNode;
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("damage", ref _strDamage);
                 }
@@ -553,7 +557,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (!objNode.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory))
-                _blnAllowAccessory = Convert.ToBoolean(MyXmlNode?["allowaccessory"]?.InnerText ?? "True");
+                _blnAllowAccessory = MyXmlNode?["allowaccessory"]?.InnerText != System.Boolean.FalseString;
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
@@ -1394,11 +1398,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion

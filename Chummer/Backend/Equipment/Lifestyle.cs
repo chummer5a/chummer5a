@@ -86,7 +86,9 @@ namespace Chummer.Backend.Equipment
 
                 if (System.Diagnostics.Debugger.IsAttached)
                     System.Diagnostics.Debugger.Break();
-            }             
+            }
+            else
+                _objCachedMyXmlNode = null;
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID;
@@ -300,6 +302,8 @@ namespace Chummer.Backend.Equipment
                     throw new InvalidOperationException("Source ID can only be set once");
                 }
 
+                if (_sourceID != value)
+                    _objCachedMyXmlNode = null;
                 _sourceID = value;
             }
         }
@@ -674,11 +678,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml")?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion

@@ -334,7 +334,7 @@ namespace Chummer.Skills
                     }
                     else
                     {
-                        nodesToChange[i].InnerText = new Guid().ToString(); //This creates 00.. guid in default formatting
+                        nodesToChange[i].InnerText = Guid.Empty.ToString(); //This creates 00.. guid in default formatting
                     }
                 }
             }

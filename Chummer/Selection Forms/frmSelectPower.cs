@@ -120,7 +120,7 @@ namespace Chummer
             XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + lstPowers.SelectedValue + "\"]");
 
             lblPowerPoints.Text = objXmlPower["points"].InnerText;
-            if (Convert.ToBoolean(objXmlPower["levels"].InnerText))
+            if (objXmlPower["levels"]?.InnerText == System.Boolean.TrueString)
             {
                 lblPowerPoints.Text += $" / {LanguageManager.GetString("Label_Power_Level")}";
             }

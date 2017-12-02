@@ -95,7 +95,8 @@ namespace Chummer.Backend.Equipment
         {
             _objParentLifestyle = objParentLifestyle;
             _SourceGuid = Guid.Parse(objXmlLifestyleQuality["id"].InnerText);
-            objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
@@ -191,7 +192,8 @@ namespace Chummer.Backend.Equipment
         {
             ParentLifestyle = objParentLifestyle;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             if (!objNode.TryGetField("id", Guid.TryParse, out _SourceGuid))
             {
                 MyXmlNode?.TryGetField("id", Guid.TryParse, out _SourceGuid);
@@ -357,6 +359,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
                 _strName = value;
             }
         }
@@ -694,11 +698,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int AreaMinimum { get; set; }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml")?.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
 #endregion

@@ -14,9 +14,9 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class Armor : INamedItemWithGuidAndNode
     {
-        private Guid _sourceID = new Guid();
-        private Guid _guiID = new Guid();
-        private Guid _guiWeaponID = new Guid();
+        private Guid _sourceID = Guid.Empty;
+        private Guid _guiID = Guid.Empty;
+        private Guid _guiWeaponID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strA = "0";
@@ -65,7 +65,8 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
             objXmlArmorNode.TryGetField("id", Guid.TryParse, out _sourceID);
-            objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strA);
             objXmlArmorNode.TryGetStringFieldQuickly("armoroverride", ref _strO);
@@ -438,7 +439,8 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             }
 
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             if (objNode["sourceid"] == null)
             {
                 XmlNode objArmorNode = MyXmlNode;
@@ -590,6 +592,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
                 _strName = value;
             }
         }
@@ -1417,11 +1421,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion

@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class ArmorMod : INamedItemWithGuidAndNode
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strArmorCapacity = "[0]";
@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludedInArmor = false;
         private bool _blnEquipped = true;
         private string _strExtra = string.Empty;
-        private Guid _guiWeaponID = new Guid();
+        private Guid _guiWeaponID = Guid.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
@@ -78,7 +78,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
         public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorGear, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, bool blnSkipCost = false, bool blnSkipSelectForms = false)
         {
-            objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objXmlArmorNode.TryGetStringFieldQuickly("gearcapacity", ref _strGearCapacity);
@@ -311,7 +312,8 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.Parse(objNode["guid"].InnerText);
             }
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("armor", ref _intA);
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
@@ -484,6 +486,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
                 _strName = value;
             }
         }
@@ -1058,11 +1062,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
