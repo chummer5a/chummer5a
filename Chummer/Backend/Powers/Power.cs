@@ -252,7 +252,7 @@ namespace Chummer
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
-            objWriter.WriteElementString("rating", LevelsEnabled ? Rating.ToString(objCulture) : "0");
+            objWriter.WriteElementString("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
             objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayAction);
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(_strSource));
