@@ -411,6 +411,8 @@ namespace Chummer
                         strFileName.StartsWith("override") ||
                         strFileName.StartsWith("amend") ||
                         strFilePath.Contains("customdata") ||
+                        strFilePath.Contains("saves") ||
+                        strFilePath.Contains("settings") ||
                         (strFilePath.Contains("sheets") && strTopLevelFolder != "de" && strTopLevelFolder != "fr" && strTopLevelFolder != "jp" && strTopLevelFolder != "zh") ||
                         (strTopLevelFolder == "lang" && strFileName != "de.xml" && strFileName != "fr.xml" && strFileName != "jp.xml" && strFileName != "zh.xml" && strFileName != "de_data.xml" && strFileName != "fr_data.xml" && strFileName != "jp_data.xml" && strFileName != "zh_data.xml"))
                         lstFilesToNotDelete.Add(strFileToDelete);
@@ -431,7 +433,7 @@ namespace Chummer
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
                             entry.ExtractToFile(strLoopPath, true);
-                            lstFilesToDelete.Remove(strLoopPath);
+                            lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
                         }
                         catch (UnauthorizedAccessException)
                         {

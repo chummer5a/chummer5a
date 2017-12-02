@@ -2053,7 +2053,7 @@ namespace Chummer
             this.lblKarmaKnowledgeSpecialization.Name = "lblKarmaKnowledgeSpecialization";
             this.lblKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(175, 13);
             this.lblKarmaKnowledgeSpecialization.TabIndex = 119;
-            this.lblKarmaKnowledgeSpecialization.Tag = "Label_Options_NewSpecialization";
+            this.lblKarmaKnowledgeSpecialization.Tag = "Label_Options_NewKnoSpecialization";
             this.lblKarmaKnowledgeSpecialization.Text = "New Knowledge Skill Specialization";
             // 
             // nudKarmaKnowledgeSpecialization
