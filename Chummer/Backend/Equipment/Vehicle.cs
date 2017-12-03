@@ -2433,13 +2433,6 @@ namespace Chummer.Backend.Equipment
                     if (intSlots > 0)
                         intProtection -= intSlots;
                 }
-                foreach (WeaponMount wm in WeaponMounts.AsParallel().Where(wm => !wm.IncludedInVehicle && wm.Installed))
-                {
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = wm.CalculatedSlots;
-                    if (intSlots > 0)
-                        intProtection -= intSlots;
-                }
                 return intProtection;
             }
         }
@@ -2466,6 +2459,13 @@ namespace Chummer.Backend.Equipment
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
+                    if (intSlots > 0)
+                        intWeaponsmod -= intSlots;
+                }
+                foreach (WeaponMount wm in WeaponMounts.AsParallel().Where(wm => !wm.IncludedInVehicle && wm.Installed))
+                {
+                    // Subtract the Modification's Slots from the Vehicle's base Body.
+                    int intSlots = wm.CalculatedSlots;
                     if (intSlots > 0)
                         intWeaponsmod -= intSlots;
                 }
