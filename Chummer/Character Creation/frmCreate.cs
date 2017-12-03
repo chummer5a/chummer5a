@@ -6060,6 +6060,7 @@ namespace Chummer
             RefreshAIPrograms();
             RefreshLimitModifiers();
             RefreshContacts();
+            PopulateCyberwareList();
             RefreshSelectedCyberware();
             RefreshSpells(treSpells, cmsSpell, _objCharacter);
             PopulateGearList();
@@ -14364,75 +14365,83 @@ namespace Chummer
             {
                 // Locate the piece of Gear.
                 Gear objGear = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware.GetAllDescendants(x => x.Children));
-
-                if (objGear.IncludedInParent)
-                    cmdDeleteCyberware.Enabled = false;
-                lblCyberwareName.Text = objGear.DisplayNameShort;
-                lblCyberwareCategory.Text = objGear.DisplayCategory;
-                lblCyberwareAvail.Text = objGear.TotalAvail(true);
-                lblCyberwareCost.Text = objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
-                lblCyberwareEssence.Text = "0";
-                cboCyberwareGrade.Enabled = false;
-                string strBook = _objOptions.LanguageBookShort(objGear.Source);
-                string strPage = objGear.Page;
-                lblCyberwareSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") + " " + objGear.Page);
-
-                if (objGear.GetType() == typeof(Commlink))
+                if (objGear != null)
                 {
-                    Commlink objCommlink = (Commlink)objGear;
-                    lblCyberDeviceRating.Text = objCommlink.GetTotalMatrixAttribute("Device Rating").ToString();
-                    lblCyberAttack.Text = objCommlink.GetTotalMatrixAttribute("Attack").ToString();
-                    lblCyberSleaze.Text = objCommlink.GetTotalMatrixAttribute("Sleaze").ToString();
-                    lblCyberDataProcessing.Text = objCommlink.GetTotalMatrixAttribute("Data Processing").ToString();
-                    lblCyberFirewall.Text = objCommlink.GetTotalMatrixAttribute("Firewall").ToString();
+                    if (objGear.IncludedInParent)
+                        cmdDeleteCyberware.Enabled = false;
+                    lblCyberwareName.Text = objGear.DisplayNameShort;
+                    lblCyberwareCategory.Text = objGear.DisplayCategory;
+                    lblCyberwareAvail.Text = objGear.TotalAvail(true);
+                    lblCyberwareCost.Text =
+                        objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" +
+                                                objGear.CapacityRemaining.ToString("#,0.##",
+                                                    GlobalOptions.CultureInfo) + " " +
+                                                LanguageManager.GetString("String_Remaining") + ")";
+                    lblCyberwareEssence.Text = "0";
+                    cboCyberwareGrade.Enabled = false;
+                    string strBook = _objOptions.LanguageBookShort(objGear.Source);
+                    string strPage = objGear.Page;
+                    lblCyberwareSource.Text = strBook + " " + strPage;
+                    tipTooltip.SetToolTip(lblCyberwareSource,
+                        _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.GetString("String_Page") +
+                        " " + objGear.Page);
 
-                    lblCyberDeviceRating.Visible = true;
-                    lblCyberAttack.Visible = true;
-                    lblCyberSleaze.Visible = true;
-                    lblCyberDataProcessing.Visible = true;
-                    lblCyberFirewall.Visible = true;
-                    lblCyberDeviceRatingLabel.Visible = true;
-                    lblCyberAttackLabel.Visible = true;
-                    lblCyberSleazeLabel.Visible = true;
-                    lblCyberDataProcessingLabel.Visible = true;
-                    lblCyberFirewallLabel.Visible = true;
-                }
-                else
-                {
-                    lblCyberDeviceRating.Visible = false;
-                    lblCyberAttack.Visible = false;
-                    lblCyberSleaze.Visible = false;
-                    lblCyberDataProcessing.Visible = false;
-                    lblCyberFirewall.Visible = false;
-                    lblCyberDeviceRatingLabel.Visible = false;
-                    lblCyberAttackLabel.Visible = false;
-                    lblCyberSleazeLabel.Visible = false;
-                    lblCyberDataProcessingLabel.Visible = false;
-                    lblCyberFirewallLabel.Visible = false;
-                }
+                    if (objGear.GetType() == typeof(Commlink))
+                    {
+                        Commlink objCommlink = (Commlink) objGear;
+                        lblCyberDeviceRating.Text = objCommlink.GetTotalMatrixAttribute("Device Rating").ToString();
+                        lblCyberAttack.Text = objCommlink.GetTotalMatrixAttribute("Attack").ToString();
+                        lblCyberSleaze.Text = objCommlink.GetTotalMatrixAttribute("Sleaze").ToString();
+                        lblCyberDataProcessing.Text = objCommlink.GetTotalMatrixAttribute("Data Processing").ToString();
+                        lblCyberFirewall.Text = objCommlink.GetTotalMatrixAttribute("Firewall").ToString();
 
-                if (objGear.MaxRating > 0)
-                {
-                    if (objGear.MinRating > 0)
-                        nudCyberwareRating.Minimum = objGear.MinRating;
-                    else if (objGear.MinRating == 0 && objGear.Name.Contains("Credstick,"))
+                        lblCyberDeviceRating.Visible = true;
+                        lblCyberAttack.Visible = true;
+                        lblCyberSleaze.Visible = true;
+                        lblCyberDataProcessing.Visible = true;
+                        lblCyberFirewall.Visible = true;
+                        lblCyberDeviceRatingLabel.Visible = true;
+                        lblCyberAttackLabel.Visible = true;
+                        lblCyberSleazeLabel.Visible = true;
+                        lblCyberDataProcessingLabel.Visible = true;
+                        lblCyberFirewallLabel.Visible = true;
+                    }
+                    else
+                    {
+                        lblCyberDeviceRating.Visible = false;
+                        lblCyberAttack.Visible = false;
+                        lblCyberSleaze.Visible = false;
+                        lblCyberDataProcessing.Visible = false;
+                        lblCyberFirewall.Visible = false;
+                        lblCyberDeviceRatingLabel.Visible = false;
+                        lblCyberAttackLabel.Visible = false;
+                        lblCyberSleazeLabel.Visible = false;
+                        lblCyberDataProcessingLabel.Visible = false;
+                        lblCyberFirewallLabel.Visible = false;
+                    }
+
+                    if (objGear.MaxRating > 0)
+                    {
+                        if (objGear.MinRating > 0)
+                            nudCyberwareRating.Minimum = objGear.MinRating;
+                        else if (objGear.MinRating == 0 && objGear.Name.Contains("Credstick,"))
+                            nudCyberwareRating.Minimum = 0;
+                        else
+                            nudCyberwareRating.Minimum = 1;
+                        nudCyberwareRating.Maximum = objGear.MaxRating;
+                        nudCyberwareRating.Value = objGear.Rating;
+                        if (nudCyberwareRating.Minimum == nudCyberwareRating.Maximum)
+                            nudCyberwareRating.Enabled = false;
+                        else
+                            nudCyberwareRating.Enabled = true;
+                    }
+                    else
+                    {
                         nudCyberwareRating.Minimum = 0;
-                    else
-                        nudCyberwareRating.Minimum = 1;
-                    nudCyberwareRating.Maximum = objGear.MaxRating;
-                    nudCyberwareRating.Value = objGear.Rating;
-                    if (nudCyberwareRating.Minimum == nudCyberwareRating.Maximum)
+                        nudCyberwareRating.Maximum = 0;
                         nudCyberwareRating.Enabled = false;
-                    else
-                        nudCyberwareRating.Enabled = true;
-                }
-                else
-                {
-                    nudCyberwareRating.Minimum = 0;
-                    nudCyberwareRating.Maximum = 0;
-                    nudCyberwareRating.Enabled = false;
+                    }
                 }
             }
             _blnSkipRefresh = false;
@@ -20986,6 +20995,9 @@ namespace Chummer
         /// </summary>
         private void PopulateCyberwareList()
         {
+            if (treCyberware.Nodes[0].Nodes.Count + treCyberware.Nodes[1].Nodes.Count ==
+                _objCharacter.Cyberware.Count)
+                return;
             treCyberware.Nodes[0].Nodes.Clear();
             treCyberware.Nodes[1].Nodes.Clear();
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)

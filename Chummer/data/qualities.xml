@@ -15935,5 +15935,23 @@
           <page>189</page>
       </quality>      
     <!-- End Region -->
+    <!-- Region The Seattle Gauntlet-->
+    <quality>
+      <id>ab862f1f-5ed3-4976-a781-bf63565faf26</id>
+      <name>Busted Cyberware</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus>
+        <addware>
+          <name>Busted Ware</name>
+          <grade>None</grade>
+          <type>Cyberware</type>
+        </addware>
+        <selecttext />
+      </bonus>
+      <source>TCT</source>
+      <page>188</page>
+    </quality>
+    <!-- End Region -->
   </qualities>
 </chummer>

@@ -11721,6 +11721,63 @@
       <page>185</page>
     </weapon>
     <!-- End Region -->
+    <!-- Region The Seattle Gambit -->
+    <weapon>
+      <id>4189afe7-ec22-40f7-9e5d-fef42b9c9a00</id>
+      <name>Halloweener Barbecue Lighter</name>
+      <category>Flamethrowers</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>4</accuracy>
+      <damage>6P</damage>
+      <ap>-6</ap>
+      <mode>SA/BF/FA</mode>
+      <rc>0</rc>
+      <ammo>12(c)</ammo>
+      <avail>8F</avail>
+      <cost>1200</cost>
+      <source>TSG</source>
+      <page>29</page>
+    </weapon>
+    <weapon>
+      <id>8d9b4142-ba34-4ba8-96a0-27fc0889a225</id>
+      <name>Halloweener Molotov Cocktail</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>9P (-3/m)</damage>
+      <ap>-6</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>4F</avail>
+      <cost>50</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Standard Grenade</range>
+      <source>TSG</source>
+      <page>29</page>
+    </weapon>
+    <weapon>
+      <id>9d8d3d16-2964-4513-bed5-a25788872ae7</id>
+      <name>Rocket: Incendiary</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>10P (-1/m)</damage>
+      <ap>-6</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12F</avail>
+      <cost>1900</cost>
+      <source>TSG</source>
+      <page>29</page>
+    </weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->
@@ -13354,7 +13411,7 @@
       <page>197</page>
     </accessory>
     <!-- End Region -->
-    <!-- Shadowrun 2050 SR5 -->
+    <!-- Region Shadowrun 2050 SR5 -->
     <accessory>
       <id>0c2e21a0-4f1d-409d-a33e-cb3d5f0b0897</id>
       <name>Tripod (2050)</name>

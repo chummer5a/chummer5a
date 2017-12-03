@@ -293,6 +293,7 @@ namespace Chummer
             MagiciansWayDiscount,
             BurnoutsWay,
             ContactForceLoyalty,
+            FreeWare,
             NumImprovementTypes // <- This one should always be the last defined enum
         }
 
@@ -1527,6 +1528,17 @@ namespace Chummer
                         foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
                             bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
+                        }
+                        break;
+                    case Improvement.ImprovementType.FreeWare:
+                        Cyberware cy = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                        if (cy != null)
+                        {
+                            RemoveImprovements(objCharacter,cy.SourceType == Improvement.ImprovementSource.Cyberware
+                                    ? Improvement.ImprovementSource.Cyberware
+                                    : Improvement.ImprovementSource.Bioware,
+                                cy.InternalId);
+                            objCharacter.Cyberware.Remove(cy);
                         }
                         break;
                 }

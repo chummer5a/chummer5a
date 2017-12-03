@@ -287,6 +287,20 @@
       </weaponbonus>
     </gear>
     <gear>
+      <id>0dbcca24-c152-47c5-bae2-8feadff22321</id>
+      <name>Ammo: Stick-n-Shock Flechette Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>TVG</source>
+      <page>29</page>
+      <avail>6R</avail>
+      <cost>110</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>S(e)</damagetype>
+      </weaponbonus>
+    </gear>
+    <gear>
       <id>0c8d16cb-6e96-4d95-8454-104a36091cf9</id>
       <name>Ammo: Gel Rounds</name>
       <category>Ammunition</category>
@@ -1185,6 +1199,17 @@
       <avail>18F</avail>
       <addweapon>Rocket: High Explosive</addweapon>
       <cost>2100</cost>
+    </gear>
+    <gear>
+      <id>413366b8-0ef5-4998-bfce-9ba29db761a9</id>
+      <name>Rocket: Incendiary</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>TSG</source>
+      <page>19</page>
+      <avail>12F</avail>
+      <addweapon>Rocket: Incendiary</addweapon>
+      <cost>1900</cost>
     </gear>
     <gear>
       <id>a42b7377-5a2e-456d-b729-8783873465f0</id>
@@ -13864,6 +13889,17 @@
       <addweapon>Grenade: Shock (2050)</addweapon>
       <cost>30</cost>
       <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
+      <name>Halloweener Molotov Cocktail</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>TSG</source>
+      <page>29</page>
+      <avail>4F</avail>
+      <addweapon>Halloweener Molotov Cocktail</addweapon>
+      <cost>50</cost>
     </gear>
     <!-- Ammo -->
     <gear>

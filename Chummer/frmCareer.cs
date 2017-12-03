@@ -6916,6 +6916,7 @@ namespace Chummer
             RefreshAIPrograms();
             RefreshLimitModifiers();
             RefreshContacts();
+            PopulateCyberware();
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             _blnIsDirty = true;
             UpdateWindowTitle();

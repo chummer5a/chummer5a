@@ -5256,6 +5256,65 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BurnoutsWay, _strUnique);
         }
+
+        // Add a specific Cyber/Bioware to the Character.
+        public void addware(XmlNode bonusNode)
+        {
+            Log.Info("addware");
+
+            Log.Info("addware = " + bonusNode.OuterXml.ToString());
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Adding ware");
+            XmlNode node = bonusNode["type"].InnerText == "bioware"
+                ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = \"" + bonusNode["name"].InnerText + "\"]")
+                : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + bonusNode["name"].InnerText + "\"]");
+
+            if (node == null)
+                return;
+            int intRating = 1;
+            if (bonusNode["rating"] != null)
+                intRating = Convert.ToInt32(bonusNode["rating"].InnerText);
+
+            // Create the new piece of ware.
+            Cyberware objCyberware = new Cyberware(_objCharacter);
+            List<Weapon> objWeapons = new List<Weapon>();
+            TreeNode objNode = new TreeNode();
+            List<TreeNode> objWeaponNodes = new List<TreeNode>();
+            List<Vehicle> objVehicles = new List<Vehicle>();
+            List<TreeNode> objVehicleNodes = new List<TreeNode>();
+
+            Grade g = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter.Options);
+            objCyberware.Create(node, _objCharacter, g,
+                bonusNode["type"].InnerText == "bioware"
+                    ? Improvement.ImprovementSource.Bioware
+                    : Improvement.ImprovementSource.Cyberware, intRating, objNode, objWeapons, objWeaponNodes,
+                objVehicles, objVehicleNodes, true, true, string.Empty);
+
+
+            if (objCyberware.InternalId == Guid.Empty.ToString())
+                return;
+
+            objCyberware.Cost = "0";
+            // Create any Weapons that came with this ware.
+            foreach (Weapon objWeapon in objWeapons)
+                _objCharacter.Weapons.Add(objWeapon);
+
+            objCyberware.ParentID = SourceName;
+
+            _objCharacter.Cyberware.Add(objCyberware);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(objCyberware.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.FreeWare,
+                _strUnique);
+        }
         #endregion
     }
 

@@ -529,6 +529,8 @@ namespace Chummer
                     return objImprovementAdder.magicianswaydiscount;
                 case "BURNOUTSWAY":
                     return objImprovementAdder.burnoutsway;
+                case "ADDWARE":
+                    return objImprovementAdder.addware;
                 // No method matches, return a null pointer
                 default:
                     return null;

@@ -220,5 +220,10 @@
       <name>Dark Terrors</name>
       <code>DTR</code>
     </book>
+    <book>
+      <id>42d5ed10-66e8-47de-8685-851fdfdcae35</id>
+      <name>The Seattle Gauntlet</name>
+      <code>TSG</code>
+    </book>
   </books>
 </chummer>

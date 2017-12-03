@@ -450,6 +450,7 @@ Data Changes:
 - Fixed Hobgoblin having a BOD of 1/6 instead of 3/8 and a CHA of 2/7 instead of 1/5. Fixes #2100.
 - Fixed Centaurs having a Walk multiplier of x2 instead of x1.
 - Fixed the cost of Indoor Arboretum and Railway Pass. Fixes #2104.
+- Added content from The Seattle Gauntlet Enhanced Fiction novel.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
