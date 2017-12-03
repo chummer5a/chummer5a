@@ -1585,7 +1585,7 @@
       <action>Simple</action>
       <adeptway>0.5</adeptway>
       <bonus>
-        <selectspell ignorerequirements ="true" />
+        <selectspell ignorerequirements ="True" />
         <unlockskills name="Spellcasting">Name</unlockskills>
       </bonus>
     </power>

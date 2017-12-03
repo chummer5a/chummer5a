@@ -162,11 +162,13 @@ namespace Translator
                     {
                         objAttrib = xmlNodeLocal.Attributes["translated"];
                         if (objAttrib == null)
+                        {
                             objAttrib = _objDataDoc.CreateAttribute("translated");
+                            objAttrib.InnerText = bool.TrueString;
+                            xmlNodeLocal.Attributes.Append(objAttrib);
+                        }
                         else
-                            objAttrib.InnerText = System.Boolean.TrueString;
-                        objAttrib.InnerText = System.Boolean.TrueString;
-                        xmlNodeLocal.Attributes.Append(objAttrib);
+                            objAttrib.InnerText = bool.TrueString;
                     }
                 }
             }
@@ -191,7 +193,7 @@ namespace Translator
                     {
                         itemOf = _objDataDoc.CreateAttribute("translated");
                         itemOf.InnerText = System.Boolean.TrueString;
-                        xmlNodeLocal.Attributes?.Append(itemOf);
+                        xmlNodeLocal.Attributes.Append(itemOf);
                     }
                     else
                     {
@@ -362,7 +364,7 @@ namespace Translator
                         strName = childNode.InnerText;
                         if (childNode.Attributes?["translate"] != null)
                             strTranslated = childNode.Attributes["translate"].InnerText;
-                        blnTranslated = childNode.Attributes["translated"]?.InnerText == System.Boolean.TrueString;
+                        blnTranslated = strTranslated == System.Boolean.TrueString;
                     }
                     else
                     {

@@ -1881,7 +1881,7 @@
       <avail>12</avail>
       <cost>2000</cost>
 	  <bonus>
-		<selectskill maximumrating="0" knowledgeskills="true">
+		<selectskill maximumrating="0" knowledgeskills="True">
 		  <val>1</val>
 		  <applytorating>yes</applytorating>
 		</selectskill>
