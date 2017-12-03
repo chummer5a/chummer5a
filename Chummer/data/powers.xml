@@ -25,7 +25,7 @@
       <id>8caaadf4-75b4-4535-928a-5648d395c13a</id>
       <name>Adrenaline Boost</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -35,7 +35,7 @@
       <id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
       <name>Astral Perception</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -58,7 +58,7 @@
       <id>ddcca815-d6fe-41ed-b174-2e7255320f17</id>
       <name>Attribute Boost</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>4</limit>
       <source>SR5</source>
       <page>309</page>
@@ -76,7 +76,7 @@
       <id>76337564-7688-497f-84f9-302c6ece10fe</id>
       <name>Combat Sense</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -98,7 +98,7 @@
       <id>dbf16604-164c-485c-96c8-fe3136cd5caa</id>
       <name>Critical Strike</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SR5</source>
       <page>309</page>
@@ -124,7 +124,7 @@
       <id>980d6575-c28f-4076-9b36-881cea018335</id>
       <name>Danger Sense</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -133,7 +133,7 @@
       <id>974d2aba-1772-474b-aaff-c84a12766e5f</id>
       <name>Enhanced Perception</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -165,7 +165,7 @@
       <id>e009da31-0301-4604-b13f-49b071aa25a1</id>
       <name>Enhanced Accuracy (skill)</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SR5</source>
       <page>309</page>
@@ -180,7 +180,7 @@
       <id>75821fb7-a180-4012-aa16-daa92ac3bb63</id>
       <name>Improved Ability (skill)</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>100</limit>
       <source>SR5</source>
       <page>309</page>
@@ -215,7 +215,7 @@
       <id>901d2af5-246a-447a-a8e2-b2e8c10593df</id>
       <name>Improved Physical Attribute</name>
       <points>1</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>12</limit>
       <source>SR5</source>
       <page>309</page>
@@ -241,7 +241,7 @@
       <id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
       <name>Improved Potential (Social)</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -263,7 +263,7 @@
       <id>2a7abc86-aa01-4127-b4b1-f73b49a2b5db</id>
       <name>Improved Potential (Mental)</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -285,7 +285,7 @@
       <id>d9b811f4-aa64-46fb-b67d-2995134eda4e</id>
       <name>Improved Potential (Physical)</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -307,7 +307,7 @@
       <id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
       <name>Improved Reflexes</name>
       <points>1</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -330,7 +330,7 @@
       <id>1376c13b-9a01-4873-b935-5b7d91e03785</id>
       <name>Improved Sense</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SR5</source>
       <page>310</page>
@@ -342,7 +342,7 @@
       <id>23636777-44df-44f1-8742-db29dc3c4fdf</id>
       <name>Killing Hands</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -369,7 +369,7 @@
       <id>f1e8a618-ba12-4972-91f0-974500387893</id>
       <name>Kinesics</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
 	    <bonus>
 		    <judgeintentionsdefense>Rating</judgeintentionsdefense>
@@ -381,7 +381,7 @@
       <id>ce7df757-792e-4fac-a86e-6b587586deb2</id>
       <name>Light Body</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -390,7 +390,7 @@
       <id>c152dcba-8bb7-4a2a-86bb-6f854ea53b55</id>
       <name>Missile Parry</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -400,7 +400,7 @@
       <id>da5f9389-a5fd-48ed-8825-8852ff5c56a8</id>
       <name>Mystic Armor</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -421,7 +421,7 @@
       <id>98b59b41-6a91-4abc-a6d2-e8debaa3b5aa</id>
       <name>Natural Immunity</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
 	  <bonus>
 		<toxincontactresist>1</toxincontactresist>
@@ -440,7 +440,7 @@
       <id>545a4bec-c144-42a1-b553-6d6c0c91f07f</id>
       <name>Pain Resistance</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -467,7 +467,7 @@
       <id>4676b6f7-120d-4344-81ac-5922445a521b</id>
       <name>Rapid Healing</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -489,7 +489,7 @@
       <id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
       <name>Spell Resistance</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -502,7 +502,7 @@
       <id>3f3fcdbc-c046-4a95-bd46-511a76d75b56</id>
       <name>Traceless Walk</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -520,7 +520,7 @@
       <id>71692391-e01f-4902-98f0-abbbf5431680</id>
       <name>Voice Control</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>20</limit>
       <source>SR5</source>
       <page>311</page>
@@ -542,7 +542,7 @@
       <id>bfd1e09c-5765-423b-b079-f5d8e794485a</id>
       <name>Wall Running</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
@@ -563,7 +563,7 @@
       <id>0099ad65-bcc1-47a5-a241-02f621e7c33a</id>
       <name>Analytics</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -582,7 +582,7 @@
       <id>870edcf8-cb19-4e15-948c-1b3bf80ac651</id>
       <name>Animal Empathy</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -597,7 +597,7 @@
       <id>80577dac-7697-4da9-87fd-d4442dc34560</id>
       <name>Berserk</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -616,7 +616,7 @@
       <id>59455eae-beb5-45fc-b19d-dc3aff65335d</id>
       <name>Berserker's Rage</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -639,7 +639,7 @@
       <id>f3df89bb-71f6-41d8-a86d-4bde1ab74352</id>
       <name>Blind Fighting</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -658,7 +658,7 @@
       <id>42baa818-50ca-4c6b-b316-780a51df9c97</id>
       <name>Cloak</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
 	  <bonus>
 		<detectionspellresist>Rating</detectionspellresist>
@@ -670,7 +670,7 @@
       <id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
       <name>Cool Resolve</name>
       <points>1</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
@@ -726,7 +726,7 @@
       <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
       <name>Authoritative Tone</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>170</page>
@@ -746,7 +746,7 @@
       <id>6770cfab-8c1a-4c6d-add7-f7d96220e9b0</id>
       <name>Counterstrike</name>
       <points>1</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>170</page>
@@ -765,7 +765,7 @@
       <id>1eb8d3fa-2a67-4b71-a9de-dfbf5236eeda</id>
       <name>Elemental Body</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SG</source>
       <page>170</page>
@@ -784,7 +784,7 @@
       <id>3d27c3bb-9cca-45c2-b8b1-6225a236069b</id>
       <name>Elemental Strike</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SG</source>
       <page>170</page>
@@ -811,7 +811,7 @@
       <id>eb323003-4112-42ad-955a-00211e43e6d1</id>
       <name>Elemental Weapon</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SG</source>
       <page>170</page>
@@ -832,7 +832,7 @@
       <id>6680b68d-77df-4fe4-a722-30464dd3c646</id>
       <name>Empathic Healing</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -843,7 +843,7 @@
       <id>fbd06bae-b3ba-4514-8d90-870eff1c336b</id>
       <name>Facial Sculpt</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -859,7 +859,7 @@
       <id>438fb5de-9c09-4421-a6a8-c3d68ba8aada</id>
       <name>Flexibility</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -869,7 +869,7 @@
       <id>88bf5626-6cf8-4dcc-bfc0-8abc889cdf4e</id>
       <name>Freefall</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -878,7 +878,7 @@
       <id>c59c1bb0-9b3e-41be-9079-8982b451fe45</id>
       <name>Hang Time</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -894,7 +894,7 @@
       <id>da59618c-059d-4cc5-adb5-c61e6049378c</id>
       <name>Inertia Strike</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -905,7 +905,7 @@
       <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
       <name>Keratin Control</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>1</page>
@@ -916,7 +916,7 @@
       <id>e1e242c3-cb63-476f-9868-90c311b36383</id>
       <name>Kinesics Mastery</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -939,7 +939,7 @@
       <id>44f0bbba-184a-4e76-93de-19862ac6607b</id>
       <name>Linguistics</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -951,7 +951,7 @@
       <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
       <name>Living Focus</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>1</page>
@@ -961,7 +961,7 @@
       <id>d20f0441-a290-4732-829f-3138d446aad4</id>
       <name>Magic Sense</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -979,7 +979,7 @@
       <id>2149818a-22b0-4267-83d6-7b3c27d4ee69</id>
       <name>Melanin Control</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -989,7 +989,7 @@
       <id>ecd611b4-dda6-4683-b7a9-850a469a3274</id>
       <name>Metabolic Control</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -1007,7 +1007,7 @@
       <id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
       <name>Missile Mastery</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -1032,7 +1032,7 @@
       <id>930ace31-a2a2-4616-8dfb-1074e4be76c9</id>
       <name>Motion Sense</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
@@ -1051,7 +1051,7 @@
       <id>d1279546-69a6-4c35-9b3d-0211138050e8</id>
       <name>Nerve Strike</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -1069,7 +1069,7 @@
       <id>1ec402f1-6139-4f94-8e86-92aa463bf536</id>
       <name>Nimble Fingers</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -1091,7 +1091,7 @@
       <id>adda6c9c-703b-4361-a4dd-d7ebfd3c138d</id>
       <name>Pain Relief</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -1101,7 +1101,7 @@
       <id>70311f5c-a019-47b9-be21-e9a8d270e32e</id>
       <name>Penetrating Strike</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -1114,7 +1114,7 @@
       <id>941225f2-148b-484e-a2b2-0a32cc7debe1</id>
       <name>Plague Cloud</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -1125,7 +1125,7 @@
       <id>832a418d-4d55-433c-8230-4b04f05ba6d9</id>
       <name>Rapid Draw</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
@@ -1143,7 +1143,7 @@
       <id>11f3fa59-e06d-4816-87a9-b74664d1ae9a</id>
       <name>Riposte</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1154,7 +1154,7 @@
       <id>c0d647dd-4f66-42a6-9040-202b1bba4b71</id>
       <name>Skate</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1173,7 +1173,7 @@
       <id>1dc0b5c6-94a8-4598-a017-f6399d9175da</id>
       <name>Smashing Blow</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1183,7 +1183,7 @@
       <id>24bc482d-9ce3-4d0a-bd43-31311b6716d6</id>
       <name>Spirit Claw</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1193,7 +1193,7 @@
       <id>6145977c-5825-4358-b0db-1d189cd9d402</id>
       <name>Spirit Ram</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1211,7 +1211,7 @@
       <id>02eb1616-9361-47a8-acc8-030566d9a0ea</id>
       <name>Stillness</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1221,7 +1221,7 @@
       <id>772e0298-8abf-42b7-9734-359cadcb8d1e</id>
       <name>Sustenance</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -1230,7 +1230,7 @@
       <id>bf425bd4-f112-4218-b729-2e8bb32f3b2b</id>
       <name>Temperature Tolerance</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
 	  <bonus>
 		<firearmor>Rating</firearmor>
@@ -1243,7 +1243,7 @@
       <id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
       <name>Three-Dimensional Memory</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
@@ -1263,7 +1263,7 @@
       <id>6ed1a784-1097-4db8-b179-e4198493c2f0</id>
       <name>Toxic Strike</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SG</source>
       <page>176</page>
@@ -1284,7 +1284,7 @@
       <id>0f0a55a8-5c39-4568-a15d-219b3664b10f</id>
       <name>Feign Illness</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
@@ -1294,7 +1294,7 @@
       <id>ca35c065-86ab-4aa8-a52f-ae37cc69648c</id>
       <name>Feign Death</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
@@ -1304,7 +1304,7 @@
       <id>d890df94-b4f0-4b56-8289-7e1cfac2a95d</id>
       <name>Transmit Damage</name>
       <points>1</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
@@ -1316,7 +1316,7 @@
       <id>b6982580-fb86-4ac8-9312-98459ecbe811</id>
       <name>Light Touch</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>100</limit>
       <source>SS</source>
       <page>191</page>
@@ -1325,7 +1325,7 @@
       <id>60ac2e3a-d24a-459c-b8a4-cf648f0de447</id>
       <name>Mimic</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>6</limit>
       <source>SS</source>
       <page>191</page>
@@ -1334,7 +1334,7 @@
       <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
       <name>Commanding Voice</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
@@ -1346,7 +1346,7 @@
       <id>89f8d4a8-a769-4a3c-9009-f0371e42daf8</id>
       <name>Demara</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1356,7 +1356,7 @@
       <id>57e7de72-6155-486b-9269-caebedfb34fe</id>
       <name>Eidetic Sense Memory</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1366,7 +1366,7 @@
       <id>51755f26-c5d4-461d-bd59-496a45b03e6b</id>
       <name>Enthralling Performance</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1376,7 +1376,7 @@
       <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
       <name>Heightened Concentration</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1393,7 +1393,7 @@
       <id>d75638f3-be99-4f65-b61f-ea8b4b249f92</id>
       <name>Indomitable Will</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1402,7 +1402,7 @@
       <id>bde8c111-b429-4283-87ca-9d3a2afc0215</id>
       <name>Iron Gut</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1414,7 +1414,7 @@
       <id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
       <name>Iron Lungs</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
 	  <bonus>
 		<fatigueresist>Rating</fatigueresist>
@@ -1426,7 +1426,7 @@
       <id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
       <name>Iron Will</name>
       <points>.5</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
@@ -1439,7 +1439,7 @@
       <id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
       <name>Keratin Control</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1449,7 +1449,7 @@
       <id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
       <name>Living Focus</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1460,7 +1460,7 @@
       <id>29761d0e-072e-48a9-afc6-6154af8b2262</id>
       <name>Maintain Warmth</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1469,7 +1469,7 @@
       <id>35a76113-84fb-4f9d-b47d-f7fb491e6285</id>
       <name>Memory Displacement</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1479,7 +1479,7 @@
       <id>57cea4cd-754b-4fcd-8711-75721b1edc15</id>
       <name>Piercing Senses</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1492,7 +1492,7 @@
       <id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
       <name>Power Swimming</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
 	  <includeinlimit>
         <name>Power Swimming (Elf or Troll)</name>
@@ -1521,7 +1521,7 @@
       <id>639a2d7f-9018-4016-a61c-b7f83ebcd9b9</id>
       <name>Power Swimming (Elf or Troll)</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
 	  <includeinlimit>
         <name>Power Swimming</name>
@@ -1550,7 +1550,7 @@
       <id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
       <name>Rooting</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1560,7 +1560,7 @@
       <id>300edbf6-1943-4f4e-87eb-7379ccef8ed5</id>
       <name>Supernatural Toughness</name>
       <points>1</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
@@ -1578,7 +1578,7 @@
       <id>87f0f97d-cbcf-4427-9259-baf376c9f55a</id>
       <name>Adept Spell</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
@@ -1593,7 +1593,7 @@
       <id>9646a0b8-ab39-4499-85cf-1ffd9983d0a5</id>
       <name>Adept Accident</name>
       <points>.5</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
@@ -1603,7 +1603,7 @@
       <id>c2ea9046-647d-4104-871a-24b3ee1fecfa</id>
       <name>Focused Archery</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
@@ -1613,7 +1613,7 @@
       <id>857fcf19-78ce-427a-a1e8-077e52aab759</id>
       <name>Kiai</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
@@ -1623,7 +1623,7 @@
       <id>3c0862c4-1070-44dd-8866-0ba89276246b</id>
       <name>Master Archer</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>HT</source>
       <page>191</page>
@@ -1641,7 +1641,7 @@
       <id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
       <name>Precision Throwing</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
@@ -1656,7 +1656,7 @@
       <id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
       <name>Body Sculpt</name>
       <points>1</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>BLB</source>
       <page>160</page>
@@ -1672,7 +1672,7 @@
       <id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
       <name>Lie Detector</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>CA</source>
       <page>153</page>
@@ -1684,7 +1684,7 @@
       <id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
       <name>Osmosis</name>
       <points>.25</points>
-      <levels>true</levels>
+      <levels>True</levels>
       <limit>6</limit>
       <source>CA</source>
       <page>153</page>
@@ -1698,7 +1698,7 @@
       <id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
       <name>Ventriloquism</name>
       <points>.25</points>
-      <levels>false</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>CA</source>
       <page>153</page>

@@ -62,7 +62,7 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>250</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>True</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>438</page>

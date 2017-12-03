@@ -879,6 +879,7 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmdSwapContactOrder = new System.Windows.Forms.Button();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -2647,7 +2648,7 @@ namespace Chummer
             this.tsbSeparator,
             this.tsbCopy,
             this.tsbPaste});
-            this.toolStrip.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1066, 25);
             this.toolStrip.TabIndex = 53;
@@ -8886,6 +8887,7 @@ namespace Chummer
             // tabContacts
             // 
             this.tabContacts.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabContacts.Controls.Add(this.cmdSwapContactOrder);
             this.tabContacts.Controls.Add(this.cmdContactsExpansionToggle);
             this.tabContacts.Controls.Add(this.lblContactPoints);
             this.tabContacts.Controls.Add(this.lblContactPoints_Label);
@@ -8916,15 +8918,16 @@ namespace Chummer
             // lblContactPoints
             // 
             this.lblContactPoints.AutoSize = true;
-            this.lblContactPoints.Location = new System.Drawing.Point(288, 11);
+            this.lblContactPoints.Location = new System.Drawing.Point(480, 11);
             this.lblContactPoints.Name = "lblContactPoints";
-            this.lblContactPoints.Size = new System.Drawing.Size(0, 13);
+            this.lblContactPoints.Size = new System.Drawing.Size(19, 13);
             this.lblContactPoints.TabIndex = 48;
+            this.lblContactPoints.Text = "[0]";
             // 
             // lblContactPoints_Label
             // 
             this.lblContactPoints_Label.AutoSize = true;
-            this.lblContactPoints_Label.Location = new System.Drawing.Point(206, 11);
+            this.lblContactPoints_Label.Location = new System.Drawing.Point(324, 11);
             this.lblContactPoints_Label.Name = "lblContactPoints_Label";
             this.lblContactPoints_Label.Size = new System.Drawing.Size(156, 13);
             this.lblContactPoints_Label.TabIndex = 47;
@@ -10020,6 +10023,18 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
+            // cmdSwapContactOrder
+            // 
+            this.cmdSwapContactOrder.AutoSize = true;
+            this.cmdSwapContactOrder.Location = new System.Drawing.Point(206, 6);
+            this.cmdSwapContactOrder.Name = "cmdSwapContactOrder";
+            this.cmdSwapContactOrder.Size = new System.Drawing.Size(87, 23);
+            this.cmdSwapContactOrder.TabIndex = 50;
+            this.cmdSwapContactOrder.Tag = "";
+            this.cmdSwapContactOrder.Text = "&Swap Ordering";
+            this.cmdSwapContactOrder.UseVisualStyleBackColor = true;
+            this.cmdSwapContactOrder.Click += new System.EventHandler(this.cmdSwapContactOrder_Click);
+            // 
             // frmCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10980,5 +10995,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsVehicleMountWeaponUnderbarrel;
         private System.Windows.Forms.TabPage tabRelationships;
         private System.Windows.Forms.Button cmdContactsExpansionToggle;
+        private System.Windows.Forms.Button cmdSwapContactOrder;
     }
 }

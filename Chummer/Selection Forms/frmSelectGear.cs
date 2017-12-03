@@ -126,7 +126,7 @@ namespace Chummer
 
                 if (objXmlCategory.Attributes["show"] != null)
                 {
-                    if (objXmlCategory.Attributes["show"].InnerText == "false")
+                    if (objXmlCategory.Attributes["show"].InnerText == Boolean.FalseString)
                     {
                         string[] strAllowed = _strAllowedCategories.Split(',');
                         foreach (string strAllowedMount in strAllowed)

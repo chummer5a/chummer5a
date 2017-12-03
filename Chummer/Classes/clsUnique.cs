@@ -3654,7 +3654,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram ? "true" : "false");
+            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram ? bool.TrueString : bool.FalseString);
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -3675,7 +3675,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (objNode["isadvancedprogram"] != null)
             {
-                _boolIsAdvancedProgram = objNode["isadvancedprogram"].InnerText == "true";
+                _boolIsAdvancedProgram = objNode["isadvancedprogram"].InnerText == bool.TrueString;
             }
         }
 

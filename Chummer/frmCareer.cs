@@ -25630,5 +25630,12 @@ namespace Chummer
                 c.ExpansionToggle(!toggle);
             }
         }
+
+        private void cmdSwapContactOrder_Click(object sender, EventArgs e)
+        {
+            panContacts.FlowDirection = panContacts.FlowDirection == FlowDirection.LeftToRight
+                ? FlowDirection.TopDown
+                : FlowDirection.LeftToRight;
+        }
     }
 }

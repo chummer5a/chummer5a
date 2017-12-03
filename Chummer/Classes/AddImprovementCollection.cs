@@ -4615,7 +4615,7 @@ namespace Chummer.Classes
                     Quality objAddQuality = new Quality(_objCharacter);
                     objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue, _strFriendlyName);
 
-                    if (objXmlAddQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != "true")
+                    if (objXmlAddQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
                     {
                         objAddQuality.BP = 0;
                         objAddQuality.ContributeToLimit = false;
@@ -4669,7 +4669,7 @@ namespace Chummer.Classes
 
             strForceValue = objXmlBonusQuality?.Attributes?["select"].InnerText;
             objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
-            if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != "true")
+            if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
             {
                 objAddQuality.BP = 0;
                 objAddQuality.ContributeToLimit = false;

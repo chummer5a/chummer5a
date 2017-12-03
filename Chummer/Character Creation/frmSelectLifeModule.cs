@@ -155,7 +155,7 @@ namespace Chummer
                 //Select any node that have an id node equal to tag
                 String selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
-                //if it contains >selectable>true</selectable>, yes or </selectable>
+                //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
                 blnSelectAble = (node != null &&
                                  (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));

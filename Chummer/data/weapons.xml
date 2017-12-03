@@ -1671,7 +1671,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>10</ammo>
-      <requireammo>false</requireammo>
+      <requireammo>False</requireammo>
       <avail>6R</avail>
       <cost>750</cost>
       <source>SR5</source>
@@ -1710,7 +1710,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>3</ammo>
-      <requireammo>false</requireammo>
+      <requireammo>False</requireammo>
       <avail>6R</avail>
       <cost>0</cost>
       <source>DT</source>
@@ -2964,7 +2964,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3264,7 +3264,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3432,7 +3432,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3528,7 +3528,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Clubs</useskill>
       <source>RG</source>
       <page>22</page>
@@ -4193,7 +4193,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -4409,7 +4409,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -4885,7 +4885,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -6421,7 +6421,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -6729,7 +6729,7 @@
       <rc>0</rc>
       <ammo>10</ammo>
       <cost>0</cost>
-      <requireammo>false</requireammo>
+      <requireammo>False</requireammo>
       <source>SR5</source>
       <page>424</page>
     </weapon>
@@ -6862,7 +6862,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>SR5</source>
       <page>132</page>
     </weapon>
@@ -7082,7 +7082,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>113</page>
@@ -7103,7 +7103,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>113</page>
@@ -7124,7 +7124,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>113</page>
@@ -7145,7 +7145,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>112</page>
@@ -7166,7 +7166,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7187,7 +7187,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7208,7 +7208,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7229,7 +7229,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7250,7 +7250,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>118</page>
@@ -7271,7 +7271,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>105</page>
@@ -7292,7 +7292,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>137</page>
@@ -7313,7 +7313,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>105</page>
@@ -7334,7 +7334,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>105</page>
@@ -7360,7 +7360,7 @@
       <avail>12R</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>CF</source>
       <page>92</page>
@@ -7382,7 +7382,7 @@
       <avail>12F</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Tasers</range>
       <source>CF</source>
@@ -7405,7 +7405,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>91</page>
@@ -7427,7 +7427,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>91</page>
@@ -7449,7 +7449,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>91</page>
@@ -7472,7 +7472,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7493,7 +7493,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7514,7 +7514,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>122</page>
@@ -7535,7 +7535,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7556,7 +7556,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7577,7 +7577,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7598,7 +7598,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7619,7 +7619,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7640,7 +7640,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7661,7 +7661,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7682,7 +7682,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>90</page>
@@ -7816,7 +7816,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -7839,7 +7839,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -7862,7 +7862,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -8154,7 +8154,7 @@
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <source>HT</source>
       <page>178</page>
@@ -8347,7 +8347,7 @@
       <ammo>2(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <accessories />
       <useskill>Longarms</useskill>
@@ -8450,7 +8450,7 @@
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
@@ -8509,7 +8509,7 @@
       <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <useskill>Longarms</useskill>
       <range>Machine Pistols</range>
@@ -8867,7 +8867,7 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>120</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9021,7 +9021,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9043,7 +9043,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9065,7 +9065,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9087,7 +9087,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9109,7 +9109,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9131,7 +9131,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>

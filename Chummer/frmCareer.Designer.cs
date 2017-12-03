@@ -1150,6 +1150,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmdSwapContactOrder = new System.Windows.Forms.Button();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -4089,7 +4090,7 @@ namespace Chummer
             this.tsbPrint,
             this.tsbSeparator,
             this.tsbCopy});
-            this.toolStrip.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1066, 25);
             this.toolStrip.TabIndex = 53;
@@ -13060,6 +13061,7 @@ namespace Chummer
             // tabContacts
             // 
             this.tabContacts.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabContacts.Controls.Add(this.cmdSwapContactOrder);
             this.tabContacts.Controls.Add(this.cmdContactsExpansionToggle);
             this.tabContacts.Controls.Add(this.panContacts);
             this.tabContacts.Controls.Add(this.cmdAddContact);
@@ -13631,6 +13633,18 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(123, 22);
             this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
+            // 
+            // cmdSwapContactOrder
+            // 
+            this.cmdSwapContactOrder.AutoSize = true;
+            this.cmdSwapContactOrder.Location = new System.Drawing.Point(206, 6);
+            this.cmdSwapContactOrder.Name = "cmdSwapContactOrder";
+            this.cmdSwapContactOrder.Size = new System.Drawing.Size(87, 23);
+            this.cmdSwapContactOrder.TabIndex = 51;
+            this.cmdSwapContactOrder.Tag = "";
+            this.cmdSwapContactOrder.Text = "&Swap Ordering";
+            this.cmdSwapContactOrder.UseVisualStyleBackColor = true;
+            this.cmdSwapContactOrder.Click += new System.EventHandler(this.cmdSwapContactOrder_Click);
             // 
             // frmCareer
             // 
@@ -14887,5 +14901,6 @@ namespace Chummer
         private ToolStripMenuItem tsVehicleWeaponMountNotes;
         private ToolStripMenuItem tsVehicleAddWeaponMount;
         private Button cmdContactsExpansionToggle;
+        private Button cmdSwapContactOrder;
     }
 }
