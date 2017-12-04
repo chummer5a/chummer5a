@@ -56,27 +56,27 @@ namespace Chummer
             TreeNode objWatchNode = null;
             if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
-                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath);
-                //Make sure we're not loading a character that was already loaded by the MRU list.
-                if (objFiles.Length > 0)
+                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5");
+                for (int i = 0; i < objFiles.Length; ++i)
                 {
-                    foreach (string strFile in objFiles.Where(strFile => strFile.EndsWith(".chum5")))
+                    string strFile = objFiles[i];
+                    // Make sure we're not loading a character that was already loaded by the MRU list.
+                    if (lstFavorites.Contains(strFile) || lstRecents.Contains(strFile))
+                        continue;
+                    int intCachedCharacterIndex = _lstCharacterCache.FindIndex(x => x.FilePath == strFile);
+                    if (intCachedCharacterIndex != -1)
                     {
-                        CharacterCache objCachedCharacter = _lstCharacterCache.FirstOrDefault(x => x.FilePath == strFile);
-                        if (objCachedCharacter != null)
+                        foreach (TreeNode rootNode in treCharacterList.Nodes)
                         {
-                            foreach (TreeNode rootNode in treCharacterList.Nodes)
+                            foreach (TreeNode objChildNode in rootNode.Nodes)
                             {
-                                foreach (TreeNode objChildNode in rootNode.Nodes)
-                                {
-                                    if (Convert.ToInt32(objChildNode.Tag) == _lstCharacterCache.IndexOf(objCachedCharacter))
-                                        goto CharacterAlreadyLoaded;
-                                }
+                                if (Convert.ToInt32(objChildNode.Tag) == intCachedCharacterIndex)
+                                    goto CharacterAlreadyLoaded;
                             }
                         }
-                        lstWatch.Add(strFile);
-                        CharacterAlreadyLoaded:;
                     }
+                    lstWatch.Add(strFile);
+                    CharacterAlreadyLoaded:;
                 }
             }
             if (lstWatch.Count > 0)
