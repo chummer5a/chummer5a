@@ -297,6 +297,8 @@ Application Changes:
 - Added a houserule where increasing the rating of a skill in a skill group when all the other skills have a higher rating compensates for the karma difference between increasing a skill group rating and increasing the rating of all skills in the skill group.
 - Any and all GitHub contributors of past, present, and future are now immortalized in a list on the About screen.
 - Moved Complex Form Context Menu Strip into the treenodes for each complex form to bring it back into line with the usual standard, removed it from the button.
+- Fixed a crash when moving characters between the "Favorites" and "Recent" lists in the character roster.
+- The "Favorites" list will now be shown in the character roster even when it is empty so that characters can immediately be moved to it.
 
 Data Changes:
 

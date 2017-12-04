@@ -91,7 +91,7 @@ namespace Chummer
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
             tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 
-            GlobalOptions.MRUChanged += PopulateMRU;
+            GlobalOptions.MRUChanged += DoNothing;
             GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
             GlobalOptions.MainForm.OpenCharacterForms.Add(this);
             LanguageManager.Load(GlobalOptions.Language, this);
@@ -1168,7 +1168,7 @@ namespace Chummer
                 _objCharacter.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
                 _objCharacter.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
-                GlobalOptions.MRUChanged -= PopulateMRU;
+                GlobalOptions.MRUChanged -= DoNothing;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -22827,7 +22827,7 @@ namespace Chummer
         /// <summary>
         /// Dummy method to trap the Options MRUChanged Event.
         /// </summary>
-        public void PopulateMRU()
+        public void DoNothing()
         {
         }
 

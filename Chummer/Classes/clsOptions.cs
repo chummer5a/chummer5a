@@ -825,7 +825,7 @@ namespace Chummer
         /// Add a file to the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to add.</param>
-        public static void AddToMRUList(string strFile, string strMRUType = "mru")
+        public static void AddToMRUList(string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, int intIndex = 0)
         {
             if (string.IsNullOrEmpty(strFile))
                 return;
@@ -839,46 +839,126 @@ namespace Chummer
                 if (strStickyFiles.Contains(strFile))
                     return;
             }
+            int i = intIndex;
             // Make sure the file does not already exist in the MRU list.
-            if (strFiles.Contains(strFile))
-                strFiles.Remove(strFile);
+            int intOldIndex = strFiles.IndexOf(strFile);
+            if (intOldIndex != -1)
+            {
+                if (intOldIndex == intIndex)
+                    return;
+                strFiles.RemoveAt(intOldIndex);
+                if (i > intOldIndex)
+                    i = intOldIndex;
+            }
 
-            strFiles.Insert(0, strFile);
+            strFiles.Insert(intIndex, strFile);
 
             if (strFiles.Count > 10)
                 strFiles.RemoveRange(10, strFiles.Count - 10);
 
-            int i = 0;
             foreach (string strItem in strFiles)
             {
                 i++;
                 _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
             }
-            MRUChanged?.Invoke();
+            if (blnDoMRUChanged && MRUChanged != null)
+                MRUChanged.Invoke();
         }
 
         /// <summary>
         /// Remove a file from the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to remove.</param>
-        public static void RemoveFromMRUList([NotNull] string strFile, string strMRUType = "mru")
+        public static void RemoveFromMRUList([NotNull] string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true)
         {
             List<string> strFiles = ReadMRUList(strMRUType);
 
-            if (strFile.Contains(strFile))
+            int intFileIndex = strFiles.IndexOf(strFile);
+            if (intFileIndex != -1)
             {
-                strFiles.Remove(strFile);
+                strFiles.RemoveAt(intFileIndex);
+                for (int i = intFileIndex; i < 10; i++)
+                {
+                    if (i < strFiles.Count)
+                        _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
+                    else
+                        _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
+                }
+                if (blnDoMRUChanged && MRUChanged != null)
+                    MRUChanged.Invoke();
             }
-            for (int i = 0; i < 10; i++)
+        }
+
+        /// <summary>
+        /// Add a list of files to the beginning of the most recently used characters.
+        /// </summary>
+        /// <param name="lstFilesToAdd">Names of the files to add (files added in reverse order).</param>
+        public static void AddToMRUList(List<string> lstFilesToAdd, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        {
+            bool blnAnyChange = false;
+            List<string> strFiles = ReadMRUList(strMRUType);
+            List<string> strStickyFiles = strMRUType == "mru" ? ReadMRUList("stickymru") : null;
+            foreach (string strFile in lstFilesToAdd)
             {
-                if (_objBaseChummerKey.GetValue(strMRUType + i.ToString()) != null)
-                    _objBaseChummerKey.DeleteValue(strMRUType + i.ToString());
+                if (string.IsNullOrEmpty(strFile))
+                    continue;
+                // Make sure the file doesn't exist in the sticky MRU list if we're adding to base MRU list.
+                if (strStickyFiles?.Contains(strFile) == true)
+                    continue;
+
+                blnAnyChange = true;
+
+                // Make sure the file does not already exist in the MRU list.
+                if (strFiles.Contains(strFile))
+                    strFiles.Remove(strFile);
+
+                strFiles.Insert(0, strFile);
             }
-            for (int i = 0; i < strFiles.Count; i++)
+
+            if (strFiles.Count > 10)
+                strFiles.RemoveRange(10, strFiles.Count - 10);
+
+            if (blnAnyChange)
             {
-                _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
+                int i = 0;
+                foreach (string strItem in strFiles)
+                {
+                    i++;
+                    _objBaseChummerKey.SetValue(strMRUType + i.ToString(), strItem);
+                }
+                if (blnDoMRUChanged && MRUChanged != null)
+                    MRUChanged.Invoke();
             }
-            MRUChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Remove a list of files from the most recently used characters.
+        /// </summary>
+        /// <param name="lstFilesToRemove">Names of the files to remove.</param>
+        public static void RemoveFromMRUList(List<string> lstFilesToRemove, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        {
+            List<string> strFiles = ReadMRUList(strMRUType);
+            bool blnAnyChange = false;
+            foreach (string strFile in lstFilesToRemove)
+            {
+                if (strFiles.Contains(strFile))
+                {
+                    strFiles.Remove(strFile);
+                    blnAnyChange = true;
+                }
+            }
+            if (blnAnyChange)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (i < strFiles.Count)
+                        _objBaseChummerKey.SetValue(strMRUType + (i + 1).ToString(), strFiles[i]);
+                    else
+                        _objBaseChummerKey.DeleteValue(strMRUType + (i + 1).ToString(), false);
+                }
+                if (blnDoMRUChanged && MRUChanged != null)
+                    MRUChanged.Invoke();
+            }
         }
 
         /// <summary>

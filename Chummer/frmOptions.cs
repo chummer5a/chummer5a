@@ -387,7 +387,11 @@ namespace Chummer
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
-
+                if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
+                {
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
+                    openFileDialog.FileName = Path.GetFileName(txtPDFAppPath.Text);
+                }
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                     txtPDFAppPath.Text = openFileDialog.FileName;
             }
@@ -399,7 +403,11 @@ namespace Chummer
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
-
+                if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
+                {
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
+                    openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
+                }
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     UpdateSourcebookInfoPath(openFileDialog.FileName);

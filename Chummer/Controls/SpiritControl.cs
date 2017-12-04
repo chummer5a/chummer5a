@@ -213,7 +213,11 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
-
+            if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
+                openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
+            }
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 _objSpirit.FileName = openFileDialog.FileName;

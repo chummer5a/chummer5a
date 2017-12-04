@@ -23,7 +23,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
 
-            GlobalOptions.MRUChanged += MruChanged;
+            GlobalOptions.MRUChanged += PopulateCharacterList;
             treCharacterList.ItemDrag += treCharacterList_ItemDrag;
             treCharacterList.DragEnter += treCharacterList_DragEnter;
             treCharacterList.DragDrop += treCharacterList_DragDrop;
@@ -32,7 +32,7 @@ namespace Chummer
             MoveControls();
         }
 
-        private void MruChanged()
+        private void PopulateCharacterList()
         {
             //TODO: Cheaper way to do this than rebuilding the list every time?
             treCharacterList.Nodes.Clear();
@@ -43,11 +43,7 @@ namespace Chummer
         private void LoadCharacters()
         {
             List<string> lstFavorites = GlobalOptions.ReadMRUList("stickymru");
-            TreeNode objFavouriteNode = null;
-            if (lstFavorites.Count > 0)
-            {
-                objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) { Tag = "Favourite" };
-            }
+            TreeNode objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) { Tag = "Favourite" };
 
             List<string> lstRecents = GlobalOptions.ReadMRUList();
             TreeNode objRecentNode = null;
@@ -97,6 +93,7 @@ namespace Chummer
             Parallel.Invoke(
                 () => {
                     if (objFavouriteNode != null)
+                    {
                         Parallel.For(0, lstFavorites.Count, i =>
                         {
                             string strFile = lstFavorites[i];
@@ -105,15 +102,17 @@ namespace Chummer
                                 lstFavoritesNodes[i] = objNode;
                         });
 
-                    for(int i = 0; i < lstFavoritesNodes.Length; i++)
-                    {
-                        TreeNode objNode = lstFavoritesNodes[i];
-                        if (objNode != null)
-                            objFavouriteNode.Nodes.Add(objNode);
+                        for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                        {
+                            TreeNode objNode = lstFavoritesNodes[i];
+                            if (objNode != null)
+                                objFavouriteNode.Nodes.Add(objNode);
+                        }
                     }
                 },
                 () => {
                     if (objRecentNode != null)
+                    {
                         Parallel.For(0, lstRecents.Count, i =>
                         {
                             string strFile = lstRecents[i];
@@ -122,16 +121,18 @@ namespace Chummer
                                 lstRecentsNodes[i] = objNode;
                         });
 
-                    for (int i = 0; i < lstRecentsNodes.Length; i++)
-                    {
-                        TreeNode objNode = lstRecentsNodes[i];
-                        if (objNode != null)
-                            objRecentNode.Nodes.Add(objNode);
+                        for (int i = 0; i < lstRecentsNodes.Length; i++)
+                        {
+                            TreeNode objNode = lstRecentsNodes[i];
+                            if (objNode != null)
+                                objRecentNode.Nodes.Add(objNode);
+                        }
                     }
                 },
                 () =>
                 {
                     if (objWatchNode != null)
+                    {
                         Parallel.For(0, lstWatch.Count, i =>
                         {
                             string strFile = lstWatch[i];
@@ -140,15 +141,15 @@ namespace Chummer
                                 lstWatchNodes[i] = objNode;
                         });
 
-                    for (int i = 0; i < lstWatchNodes.Length; i++)
-                    {
-                        TreeNode objNode = lstWatchNodes[i];
-                        if (objNode != null)
-                            objWatchNode.Nodes.Add(objNode);
+                        for (int i = 0; i < lstWatchNodes.Length; i++)
+                        {
+                            TreeNode objNode = lstWatchNodes[i];
+                            if (objNode != null)
+                                objWatchNode.Nodes.Add(objNode);
+                        }
                     }
                 });
-            if (objFavouriteNode != null)
-                treCharacterList.Nodes.Add(objFavouriteNode);
+            treCharacterList.Nodes.Add(objFavouriteNode);
             if (objRecentNode != null)
                 treCharacterList.Nodes.Add(objRecentNode);
             if (objWatchNode != null)
@@ -364,9 +365,12 @@ namespace Chummer
         private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             CharacterCache objCache = null;
-            if (treCharacterList.SelectedNode.Level > 0)
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
-                objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
+                int intIndex = Convert.ToInt32(objSelectedNode.Tag);
+                if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
+                    objCache = _lstCharacterCache[intIndex];
             }
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
@@ -374,20 +378,32 @@ namespace Chummer
 
         private void treCharacterList_DoubleClick(object sender, EventArgs e)
         {
-            if (treCharacterList.SelectedNode.Level > 0)
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
-                CharacterCache objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-                Cursor = Cursors.WaitCursor;
-                Character objOpenCharacter = frmMain.LoadCharacter(objCache.FilePath);
-                Cursor = Cursors.Default;
-                GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                int intIndex = Convert.ToInt32(objSelectedNode.Tag);
+                if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
+                {
+                    string strFile = _lstCharacterCache[intIndex]?.FilePath;
+                    if (!string.IsNullOrEmpty(strFile))
+                    {
+                        Cursor = Cursors.WaitCursor;
+                        Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                        Cursor = Cursors.Default;
+                        GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    }
+                }
             }
         }
         private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && treCharacterList.SelectedNode?.Level > 0)
+            if (e.KeyCode == Keys.Delete)
             {
-                RemoveSelected(treCharacterList.SelectedNode);
+                TreeNode objSelectedNode = treCharacterList.SelectedNode;
+                if (objSelectedNode != null && objSelectedNode.Level > 0)
+                {
+                    RemoveSelected(objSelectedNode);
+                }
             }
         }
 
@@ -402,10 +418,15 @@ namespace Chummer
             if (treSenderView == null)
                 return;
             Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = treSenderView.GetNodeAt(pt).Parent;
-            if (objNode.Tag.ToString() != "Watch")
+            TreeNode objNode = treSenderView.GetNodeAt(pt);
+            if (objNode != null)
             {
-                objNode.BackColor = SystemColors.ControlDark;
+                if (objNode.Parent != null)
+                    objNode = objNode.Parent;
+                if (objNode.Tag.ToString() != "Watch")
+                {
+                    objNode.BackColor = SystemColors.ControlDark;
+                }
             }
 
             // Clear the background colour for all other Nodes.
@@ -429,35 +450,30 @@ namespace Chummer
                 if (nodDestinationNode.Tag.ToString() != "Watch")
                 {
                     TreeNode nodNewNode = e.Data.GetData("System.Windows.Forms.TreeNode") as TreeNode;
-                    int intCharacterIndex;
-                    CharacterCache objCache = null;
                     if (nodNewNode == null)
                         return;
-                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
-                        objCache = _lstCharacterCache[intCharacterIndex];
 
-                    if (objCache == null)
+                    if (nodNewNode.Level == 0 || nodNewNode.Parent == nodDestinationNode)
                         return;
-                    switch (nodDestinationNode.Tag.ToString())
+                    int intCharacterIndex;
+                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
                     {
-                        case "Recent":
-                            GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru");
-                            GlobalOptions.AddToMRUList(objCache.FilePath);
-                            break;
-                        case "Favourite":
-                            GlobalOptions.RemoveFromMRUList(objCache.FilePath);
-                            GlobalOptions.AddToMRUList(objCache.FilePath, "stickymru");
-                            break;
-                        default:
+                        CharacterCache objCache = _lstCharacterCache[intCharacterIndex];
+
+                        if (objCache == null)
                             return;
+                        switch (nodDestinationNode.Tag.ToString())
+                        {
+                            case "Recent":
+                                GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru", false);
+                                GlobalOptions.AddToMRUList(objCache.FilePath);
+                                break;
+                            case "Favourite":
+                                GlobalOptions.RemoveFromMRUList(objCache.FilePath, "mru", false);
+                                GlobalOptions.AddToMRUList(objCache.FilePath, "stickymru");
+                                break;
+                        }
                     }
-                    TreeNode nodClonedNewNode = nodNewNode.Clone() as TreeNode;
-                    if (nodClonedNewNode != null)
-                    {
-                        nodDestinationNode.Nodes.Add(nodClonedNewNode);
-                        nodDestinationNode.Expand();
-                    }
-                    nodNewNode.Remove();
                 }
             }
         }
@@ -469,10 +485,20 @@ namespace Chummer
 
         private void RemoveSelected(TreeNode sender)
         {
-            CharacterCache objCache = _lstCharacterCache[Convert.ToInt32(treCharacterList.SelectedNode.Tag)];
-            GlobalOptions.RemoveFromMRUList(objCache.FilePath);
-            GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru");
-            sender.Remove();
+            if (sender != null)
+            {
+                int intIndex = Convert.ToInt32(sender.Tag);
+                if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
+                {
+                    string strFile = _lstCharacterCache[intIndex]?.FilePath;
+                    if (!string.IsNullOrEmpty(strFile))
+                    {
+                        GlobalOptions.RemoveFromMRUList(strFile, "mru", false);
+                        GlobalOptions.RemoveFromMRUList(strFile, "stickymru");
+                    }
+                }
+                sender.Remove();
+            }
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)

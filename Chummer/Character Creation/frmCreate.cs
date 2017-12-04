@@ -109,7 +109,7 @@ namespace Chummer
             nudMysticAdeptMAGMagician.DataBindings.Add("Value", this._objCharacter, nameof(_objCharacter.MysticAdeptPowerPoints), false,
                             DataSourceUpdateMode.OnPropertyChanged);
 
-            GlobalOptions.MRUChanged += PopulateMRU;
+            GlobalOptions.MRUChanged += DoNothing;
 
             LanguageManager.Load(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
@@ -1004,7 +1004,7 @@ namespace Chummer
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 _objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
                 _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
-                GlobalOptions.MRUChanged -= PopulateMRU;
+                GlobalOptions.MRUChanged -= DoNothing;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -19360,7 +19360,7 @@ namespace Chummer
         /// <summary>
         /// Dummy method to trap the Options MRUChanged Event.
         /// </summary>
-        public void PopulateMRU()
+        public void DoNothing()
         {
         }
 
