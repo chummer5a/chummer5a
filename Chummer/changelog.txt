@@ -456,6 +456,7 @@ Data Changes:
 - Fixed the cost of Indoor Arboretum and Railway Pass. Fixes #2104.
 - Added content from The Seattle Gauntlet Enhanced Fiction novel.
 - Added missing entries for Magecuff and Magemask from Street Grimoire.
+- Added missing damage resistance bonus to the Bear mentor spirit.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
