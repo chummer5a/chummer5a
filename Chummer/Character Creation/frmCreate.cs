@@ -4364,7 +4364,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             ComplexForm objProgram = new ComplexForm(_objCharacter);
-            objProgram.Create(objXmlProgram, objNode, strExtra);
+            objProgram.Create(objXmlProgram, objNode, cmsComplexForm, strExtra);
             if (objProgram.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -18604,7 +18604,7 @@ namespace Chummer
 
                     TreeNode objNode = new TreeNode();
                     ComplexForm objProgram = new ComplexForm(_objCharacter);
-                    objProgram.Create(objXmlProgramNode, objNode, strForceValue);
+                    objProgram.Create(objXmlProgramNode, objNode, cmsComplexForm, strForceValue);
 
                     treComplexForms.Nodes[0].Nodes.Add(objNode);
                     treComplexForms.Nodes[0].Expand();

@@ -496,7 +496,7 @@ namespace Chummer
             this.cmdAddSprite = new System.Windows.Forms.Button();
             this.lblSprites = new System.Windows.Forms.Label();
             this.panSprites = new System.Windows.Forms.Panel();
-            this.cmdAddComplexForm = new SplitButton();
+            this.cmdAddComplexForm = new System.Windows.Forms.Button();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
             this.cmdAddAIProgram = new System.Windows.Forms.Button();
             this.lblAIProgramsRequires = new System.Windows.Forms.Label();
@@ -2200,6 +2200,7 @@ namespace Chummer
             // 
             this.tsAddComplexFormOption.Image = global::Chummer.Properties.Resources.plugin_add;
             this.tsAddComplexFormOption.Name = "tsAddComplexFormOption";
+            this.tsAddComplexFormOption.Enabled = false;
             this.tsAddComplexFormOption.Size = new System.Drawing.Size(136, 22);
             this.tsAddComplexFormOption.Tag = "Menu_AddOption";
             this.tsAddComplexFormOption.Text = "&Add Option";
@@ -6027,7 +6028,6 @@ namespace Chummer
             this.cmdAddComplexForm.Location = new System.Drawing.Point(8, 25);
             this.cmdAddComplexForm.Name = "cmdAddComplexForm";
             this.cmdAddComplexForm.Size = new System.Drawing.Size(123, 23);
-            this.cmdAddComplexForm.SplitMenuStrip = this.cmsComplexForm;
             this.cmdAddComplexForm.TabIndex = 105;
             this.cmdAddComplexForm.Tag = "Button_AddComplexForm";
             this.cmdAddComplexForm.Text = "Add Complex Form";
@@ -14265,7 +14265,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddSprite;
         private System.Windows.Forms.Label lblSprites;
         private System.Windows.Forms.Panel panSprites;
-        private SplitButton cmdAddComplexForm;
+        private System.Windows.Forms.Button cmdAddComplexForm;
         private System.Windows.Forms.TabPage tabCritter;
         private System.Windows.Forms.CheckBox chkCritterPowerCount;
         private System.Windows.Forms.Label lblCritterPowerPointCost;

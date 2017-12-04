@@ -903,7 +903,7 @@ namespace Chummer
                         XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
                         TreeNode objNode = new TreeNode();
                         ComplexForm objProgram = new ComplexForm(_objCharacter);
-                        objProgram.Create(objXmlProgram, objNode, strForceValue);
+                        objProgram.Create(objXmlProgram, objNode, null, strForceValue);
                         _objCharacter.ComplexForms.Add(objProgram);
                     }
 

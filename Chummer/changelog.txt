@@ -296,6 +296,7 @@ Application Changes:
 - Added an option where changes to a character's savefile that happen outside of Chummer (e.g. via syncing folders in Dropbox) would make Chummer automatically reload the character's information if the character has no pending changes to be saved. Normally the user would have to watch for changes themselves and if there are any, they would have to close the character and then re-open them to load in any changes.
 - Added a houserule where increasing the rating of a skill in a skill group when all the other skills have a higher rating compensates for the karma difference between increasing a skill group rating and increasing the rating of all skills in the skill group.
 - Any and all GitHub contributors of past, present, and future are now immortalized in a list on the About screen.
+- Moved Complex Form Context Menu Strip into the treenodes for each complex form to bring it back into line with the usual standard, removed it from the button.
 
 Data Changes:
 

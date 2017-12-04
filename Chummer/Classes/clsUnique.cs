@@ -3353,7 +3353,7 @@ namespace Chummer
         /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlComplexFormNode, TreeNode objNode, string strExtra = "")
+        public void Create(XmlNode objXmlComplexFormNode, TreeNode objNode, ContextMenuStrip cms, string strExtra = "")
         {
             if (objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -3377,6 +3377,7 @@ namespace Chummer
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
+            objNode.ContextMenuStrip = cms;
         }
 
         /// <summary>
