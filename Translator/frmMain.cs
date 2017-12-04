@@ -29,9 +29,9 @@ namespace Translator
                 MessageBox.Show("You must provide a language name.");
                 return;
             }
-            if (txtLanguageCode.Text.Length != 2)
+            if (txtLanguageCode.Text.Length != 5)
             {
-                MessageBox.Show("You must provide a two character language abbreviation.");
+                MessageBox.Show("You must provide a five character language abbreviation.");
                 return;
             }
             string lower = txtLanguageCode.Text.ToLower();
