@@ -112,13 +112,16 @@ namespace Chummer.Skills
                     }
                 }
             }
-            //remove skillgroups whose skills did not make the final cut
-            for (var i = SkillGroups.Count - 1; i >= 0; i--)
+            if (!_character.Created)
             {
-                if (!SkillGroups[i].SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                // zero out any skillgroups whose skills did not make the final cut
+                foreach (SkillGroup objSkillGroup in SkillGroups)
                 {
-                    SkillGroups.RemoveAt(i);
-                    i--;
+                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                    {
+                        objSkillGroup.Base = 0;
+                        objSkillGroup.Karma = 0;
+                    }
                 }
             }
         }
@@ -247,14 +250,17 @@ namespace Chummer.Skills
             //As some didn't they crashed on loading skills. 
             //After this have run, it won't (for the crash i'm aware)
             //TODO: Move it to the other side of the if someday?
-
-            //remove skillgroups whose skills did not make the final cut
-            for (var i = SkillGroups.Count - 1; i >= 0; i--)
+            
+            if (!_character.Created)
             {
-                if (!SkillGroups[i].SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                // zero out any skillgroups whose skills did not make the final cut
+                foreach (SkillGroup objSkillGroup in SkillGroups)
                 {
-                    SkillGroups.RemoveAt(i);
-                    i--;
+                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                    {
+                        objSkillGroup.Base = 0;
+                        objSkillGroup.Karma = 0;
+                    }
                 }
             }
 

@@ -332,6 +332,8 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(0, 15),
             };
+            _groups.Filter(x => x.SkillList.Any(y => _character.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+
             sw.TaskEnd("_groups");
 
             splitSkills.Panel1.Controls.Add(_groups);
