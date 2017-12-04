@@ -31,8 +31,8 @@ namespace Chummer
         private string _strContactRole;
         private bool _blnEnemy = false;
         private bool _loading = true;
-        private int _intLowHeight = 23;
-        private int _intFullHeight = 147;
+        private int _intLowHeight = 25;
+        private int _intFullHeight = 156;
 
         // Events.
         public Action<object> ConnectionRatingChanged;
