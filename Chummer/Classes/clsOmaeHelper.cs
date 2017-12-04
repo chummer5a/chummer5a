@@ -248,8 +248,8 @@ namespace Chummer
 
             foreach (string strFile in lstFiles)
             {
-                string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split('\\');
-                string strPackFile = "/" + strPath[strPath.Length - 2] + "/" + strPath[strPath.Length - 1] + "/" + Path.GetFileName(strFile).Replace(' ', '_');
+                string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split(Path.DirectorySeparatorChar);
+                string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + Path.GetFileName(strFile).Replace(' ', '_');
                 if (strPackFile.StartsWith("/saves"))
                     strPackFile = strPackFile.Replace("/saves", string.Empty);
                 Uri objUri = new Uri(strPackFile, UriKind.Relative);

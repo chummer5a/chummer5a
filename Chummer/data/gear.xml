@@ -8430,6 +8430,26 @@
       <cost>Rating * 400</cost>
     </gear>
     <gear>
+      <id>c5cb8fca-2af8-43fe-b3ea-d8218d13f330</id>
+      <name>Magecuff</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>SG</source>
+      <page>215</page>
+      <avail>5</avail>
+      <cost>1000</cost>
+    </gear>
+    <gear>
+      <id>e78d376c-76e0-479e-b2c1-9b094d89f0c1</id>
+      <name>Magemask</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>SG</source>
+      <page>215</page>
+      <avail>2R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
       <id>27a48b54-af7d-4374-b41c-a4f9dd234af5</id>
       <name>Quicksilver Camera</name>
       <category>Magical Supplies</category>

@@ -614,6 +614,8 @@ namespace Chummer
         /// <param name="lstBooks">List of books.</param>
         public static void Verify(string strLanguage, List<string> lstBooks)
         {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return;
             XmlDocument objLanguageDoc = new XmlDocument();
             string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
             string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");

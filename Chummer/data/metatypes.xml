@@ -428,7 +428,7 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Elongated Limbs</quality>
-              <quality removable="true">Celerity</quality>
+              <quality removable="True">Celerity</quality>
             </positive>
           </qualities>
           <bonus />
@@ -675,7 +675,7 @@
           </bonus>
           <qualities>
             <positive>
-              <quality removable="true">Celerity</quality>
+              <quality removable="True">Celerity</quality>
               <quality>Resistance to Pathogens/Toxins</quality>
               <quality>Thermographic Vision</quality>
             </positive>
@@ -1568,7 +1568,7 @@
           <quality>Astral Perception</quality>
         </positive>
         <negative>
-          <quality removable="true">Uneducated</quality>
+          <quality removable="True">Uneducated</quality>
         </negative>
       </qualities>
       <powers>
@@ -1639,7 +1639,7 @@
       </bonus>
       <qualities>
         <negative>
-          <quality removable="true">Uneducated</quality>
+          <quality removable="True">Uneducated</quality>
         </negative>
       </qualities>
       <powers>

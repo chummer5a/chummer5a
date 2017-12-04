@@ -220,7 +220,7 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + "\\" + AppDomain.CurrentDomain.FriendlyName,
+                FileName = Application.StartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();

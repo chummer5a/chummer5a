@@ -306,7 +306,7 @@ namespace Chummer
 
             stringBuilder.Clear();
             stringBuilder.Append(pre);
-            string[] classPath = file.Split(new char[] {'\\', '/'});
+            string[] classPath = file.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
             stringBuilder.Append(classPath[classPath.Length - 1]);
             stringBuilder.Append(".");
             stringBuilder.Append(method);

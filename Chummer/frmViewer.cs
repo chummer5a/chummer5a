@@ -53,15 +53,15 @@ namespace Chummer
             }
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
-                if (!_strSelectedSheet.Contains('\\'))
+                if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
                     _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
-                else if (_strSelectedSheet.IndexOf('-') == -1 || _strSelectedSheet.IndexOf('-') > _strSelectedSheet.IndexOf('\\'))
+                else if (_strSelectedSheet.IndexOf('-') == -1 || _strSelectedSheet.IndexOf('-') > _strSelectedSheet.IndexOf(Path.DirectorySeparatorChar))
                 {
-                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet.Substring(_strSelectedSheet.IndexOf('\\') + 1));
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet.Substring(_strSelectedSheet.IndexOf(Path.DirectorySeparatorChar) + 1));
                 }
             }
-            else if (_strSelectedSheet.Contains('\\'))
-                _strSelectedSheet = _strSelectedSheet.Substring(_strSelectedSheet.LastIndexOf('\\') + 1, _strSelectedSheet.Length - 1 - _strSelectedSheet.LastIndexOf('\\'));
+            else if (_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
+                _strSelectedSheet = _strSelectedSheet.Substring(_strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
@@ -594,8 +594,8 @@ namespace Chummer
                 return;
             string strOldSelected = _strSelectedSheet;
             // Strip away the language prefix
-            if (strOldSelected.Contains('\\'))
-                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf('\\') + 1, strOldSelected.Length - 1 - strOldSelected.LastIndexOf('\\'));
+            if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             _blnLoading = true;
             PopulateXsltList();
             string strNewLanguage = cboLanguage.SelectedValue.ToString();

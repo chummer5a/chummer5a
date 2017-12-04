@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -85,7 +85,7 @@ namespace ChummerDataViewer.Model
 
 			Progress = CrashReportProcessingProgress.Downloading;
 
-			string file = PersistentState.Database.GetKey("crashdumps_zip_folder") +  "\\" +  Guid + ".zip";
+			string file = PersistentState.Database.GetKey("crashdumps_zip_folder") + Path.DirectorySeparatorChar +  Guid + ".zip";
 			_worker = worker;
 			_worker.Enqueue(Guid, WebFileLocation, _key, file);
 
