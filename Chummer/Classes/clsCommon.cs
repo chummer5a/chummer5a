@@ -1978,7 +1978,7 @@ namespace Chummer
 
             string strLocation = string.Empty;
             // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.Locations)
+            foreach (string strCharacterLocation in objCharacter.GearLocations)
             {
                 if (strCharacterLocation == treGear.SelectedNode.Tag.ToString())
                 {
@@ -1986,12 +1986,12 @@ namespace Chummer
                     break;
                 }
             }
-            objCharacter.Locations.Remove(strLocation);
+            objCharacter.GearLocations.Remove(strLocation);
 
-            if (intNewIndex - 1 > objCharacter.Locations.Count)
-                objCharacter.Locations.Add(strLocation);
+            if (intNewIndex - 1 > objCharacter.GearLocations.Count)
+                objCharacter.GearLocations.Add(strLocation);
             else
-                objCharacter.Locations.Insert(intNewIndex - 1, strLocation);
+                objCharacter.GearLocations.Insert(intNewIndex - 1, strLocation);
 
             TreeNode nodOldNode = treGear.SelectedNode;
             treGear.Nodes.Remove(nodOldNode);
@@ -2084,7 +2084,7 @@ namespace Chummer
 
             string strLocation = string.Empty;
             // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.ArmorBundles)
+            foreach (string strCharacterLocation in objCharacter.ArmorLocations)
             {
                 if (strCharacterLocation == treArmor.SelectedNode.Tag.ToString())
                 {
@@ -2092,12 +2092,12 @@ namespace Chummer
                     break;
                 }
             }
-            objCharacter.ArmorBundles.Remove(strLocation);
+            objCharacter.ArmorLocations.Remove(strLocation);
 
-            if (intNewIndex - 1 > objCharacter.ArmorBundles.Count)
-                objCharacter.ArmorBundles.Add(strLocation);
+            if (intNewIndex - 1 > objCharacter.ArmorLocations.Count)
+                objCharacter.ArmorLocations.Add(strLocation);
             else
-                objCharacter.ArmorBundles.Insert(intNewIndex - 1, strLocation);
+                objCharacter.ArmorLocations.Insert(intNewIndex - 1, strLocation);
 
             TreeNode nodOldNode = treArmor.SelectedNode;
             treArmor.Nodes.Remove(nodOldNode);
@@ -2167,7 +2167,7 @@ namespace Chummer
                     break;
                 }
             }
-            objCharacter.Locations.Remove(strLocation);
+            objCharacter.GearLocations.Remove(strLocation);
 
             if (intNewIndex - 1 > objCharacter.WeaponLocations.Count)
                 objCharacter.WeaponLocations.Add(strLocation);
