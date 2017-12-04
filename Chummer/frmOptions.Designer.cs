@@ -114,7 +114,7 @@ namespace Chummer
             this.lblPDFOffset = new System.Windows.Forms.Label();
             this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
             this.cmdPDFTest = new System.Windows.Forms.Button();
-            this.cboPDFParameters = new Chummer.helpers.ComboBox();
+            this.cboPDFParameters = new System.Windows.Forms.ComboBox();
             this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
             this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
             this.chkLifeModule = new System.Windows.Forms.CheckBox();
@@ -3720,7 +3720,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCharacterRosterLabel;
         private System.Windows.Forms.Button cmdCharacterRoster;
         private System.Windows.Forms.TextBox txtCharacterRosterPath;
-        private helpers.ComboBox cboPDFParameters;
+        private System.Windows.Forms.ComboBox cboPDFParameters;
         private System.Windows.Forms.GroupBox grpSelectedSourcebook;
         private System.Windows.Forms.CheckBox chkMysAdPp;
         private System.Windows.Forms.NumericUpDown nudKarmaNewAIAdvancedProgram;

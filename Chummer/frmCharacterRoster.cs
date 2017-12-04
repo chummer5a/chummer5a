@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using TheArtOfDev.HtmlRenderer.WinForms;
-using TreeView = Chummer.helpers.TreeView;
 
 namespace Chummer
 {

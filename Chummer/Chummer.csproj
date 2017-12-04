@@ -141,7 +141,6 @@
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
-    <Compile Include="Backend\Extensions\TreeNodeCollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
@@ -227,11 +226,10 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\Button.cs">
+    <Compile Include="helpers\ButtonWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\Guid.cs" />
-    <Compile Include="helpers\Label.cs">
+    <Compile Include="helpers\LabelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="helpers\NumericUpDownEx.cs">
@@ -313,12 +311,6 @@
     </Compile>
     <Compile Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="helpers\ComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="helpers\TreeView.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Selection Forms\frmSelectOptionalPower.cs">
       <SubType>Form</SubType>

@@ -255,11 +255,10 @@ namespace Chummer
                 // More than one Weapon can be added, so loop through all occurrences.
                 if (objXmlWeaponDocument != null)
                 {
-                    string strLoopID = string.Empty;
                     foreach (XmlNode objXmlAddWeapon in objXmlQuality.SelectNodes("addweapon"))
                     {
-                        strLoopID = objXmlAddWeapon.InnerText;
-                        var objXmlWeapon = helpers.Guid.IsGuid(strLoopID)
+                        string strLoopID = objXmlAddWeapon.InnerText;
+                        XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 

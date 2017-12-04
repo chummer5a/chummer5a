@@ -56,7 +56,7 @@ namespace Chummer
             this.lblEssenceLabel = new System.Windows.Forms.Label();
             this.lblFilePath = new System.Windows.Forms.Label();
             this.lblFilePathLabel = new System.Windows.Forms.Label();
-            this.treCharacterList = new Chummer.helpers.TreeView();
+            this.treCharacterList = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -417,7 +417,7 @@ namespace Chummer
 
         #endregion
 
-        private Chummer.helpers.TreeView treCharacterList;
+        private System.Windows.Forms.TreeView treCharacterList;
         private System.Windows.Forms.PictureBox picMugshot;
         private System.Windows.Forms.TabControl tabCharacterText;
         private System.Windows.Forms.TabPage panCharacterBio;

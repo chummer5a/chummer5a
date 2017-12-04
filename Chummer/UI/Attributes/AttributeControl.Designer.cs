@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Attributes
+namespace Chummer.UI.Attributes
 {
     partial class AttributeControl
     {
@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cmdImproveATT = new Chummer.helpers.Button();
-            this.lblValue = new Chummer.helpers.Label();
-            this.lblName = new Chummer.helpers.Label();
-            this.lblLimits = new Chummer.helpers.Label();
-            this.cmdBurnEdge = new Chummer.helpers.Button();
+            this.cmdImproveATT = new ButtonWithToolTip();
+            this.lblValue = new LabelWithToolTip();
+            this.lblName = new LabelWithToolTip();
+            this.lblLimits = new LabelWithToolTip();
+            this.cmdBurnEdge = new ButtonWithToolTip();
             this.nudKarma = new Chummer.helpers.NumericUpDownEx();
             this.nudBase = new Chummer.helpers.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
@@ -141,12 +141,12 @@
 
         #endregion
 
-        private Chummer.helpers.Button cmdImproveATT;
-        internal Chummer.helpers.Label lblValue;
-        internal Chummer.helpers.Label lblName;
-        internal Chummer.helpers.Label lblLimits;
+        private ButtonWithToolTip cmdImproveATT;
+        internal LabelWithToolTip lblValue;
+        internal LabelWithToolTip lblName;
+        internal LabelWithToolTip lblLimits;
         internal Chummer.helpers.NumericUpDownEx nudKarma;
         internal Chummer.helpers.NumericUpDownEx nudBase;
-        private Chummer.helpers.Button cmdBurnEdge;
+        private ButtonWithToolTip cmdBurnEdge;
     }
 }

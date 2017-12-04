@@ -118,7 +118,7 @@ namespace Chummer
         /// <param name="lblStun"></param>
         /// <param name="tipTooltip"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip)
+        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, ToolTip tipTooltip)
         {
             // Condition Monitor.
             int intCMPhysical = _objCharacter.PhysicalCM;
@@ -151,7 +151,7 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         /// <param name="objImprovementManager"></param>
         /// <param name="lblCMArmor"></param>
-        protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, Label lblCMArmor = null)
+        protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, Label lblCMArmor = null)
         {
             // Armor Ratings.
             int intTotalArmorRating = _objCharacter.TotalArmorRating;
@@ -192,7 +192,7 @@ namespace Chummer
         /// <param name="lblSocial"></param>
         /// <param name="lblAstral"></param>
         /// <param name="tipTooltip"></param>
-        protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, HtmlToolTip tipTooltip)
+        protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, ToolTip tipTooltip)
         {
             lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
             lblMental.Text = _objCharacter.LimitMental.ToString();
@@ -310,7 +310,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treSpells">Treenode that will be cleared and populated.</param>
         /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
-        protected void RefreshSpells(helpers.TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
+        protected static void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
         {
             //Clear the default nodes of entries.
             foreach (TreeNode objNode in treSpells.Nodes)
@@ -320,7 +320,7 @@ namespace Chummer
             //Add the Spells that exist.
             foreach (Spell s in _objCharacter.Spells)
             {
-                treSpells.Add(s, cmsSpell, _objCharacter);
+                treSpells.Add(s, cmsSpell);
             }
         }
 
