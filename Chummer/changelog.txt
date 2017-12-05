@@ -535,6 +535,8 @@ New Strings:
 - Checkbox_Options_LiveUpdateCleanCharacterFiles
 - Checkbox_Options_CompensateSkillGroupKarmaDifference
 - Button_ContactsExpansionToggle
+- String_Loading_Characters
+- String_Generating_Sheet
 
 Changed Strings:
 - Message_PositiveQualityLimit
