@@ -492,20 +492,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Name of the item that was selected.
+        /// Internal ID of the item that was selected.
         /// </summary>
         public string SelectedItem
         {
             get
             {
-                if (cboAmmo.SelectedValue != null)
-                {
+                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList || cboAmmo.SelectedValue != null)
                     return cboAmmo.SelectedValue.ToString();
-                }
-                else
-                {
-                    return cboAmmo.Text;
-                }
+                return cboAmmo.Text;
             }
         }
 
@@ -516,14 +511,7 @@ namespace Chummer
         {
             get
             {
-                if (cboAmmo.SelectedText != null)
-                {
-                    return cboAmmo.SelectedText.ToString();
-                }
-                else
-                {
-                    return cboAmmo.Text;
-                }
+                return cboAmmo.Text;
             }
         }
 

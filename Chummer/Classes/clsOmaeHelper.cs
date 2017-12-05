@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -177,14 +177,15 @@ namespace Chummer
         /// </summary>
         public byte[] Compress(byte[] raw)
         {
-            using (MemoryStream memory = new MemoryStream())
+            byte[] arrReturn = null;
+            MemoryStream memory = new MemoryStream();
+            // gzip.Dispose() should call memory.Dispose()
+            using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
             {
-                using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
-                {
-                    gzip.Write(raw, 0, raw.Length);
-                }
-                return memory.ToArray();
+                gzip.Write(raw, 0, raw.Length);
+                arrReturn = memory.ToArray();
             }
+            return arrReturn;
         }
 
         /// <summary>
@@ -247,8 +248,8 @@ namespace Chummer
 
             foreach (string strFile in lstFiles)
             {
-                string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split('\\');
-                string strPackFile = "/" + strPath[strPath.Length - 2] + "/" + strPath[strPath.Length - 1] + "/" + Path.GetFileName(strFile).Replace(' ', '_');
+                string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split(Path.DirectorySeparatorChar);
+                string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + Path.GetFileName(strFile).Replace(' ', '_');
                 if (strPackFile.StartsWith("/saves"))
                     strPackFile = strPackFile.Replace("/saves", string.Empty);
                 Uri objUri = new Uri(strPackFile, UriKind.Relative);
@@ -273,7 +274,7 @@ namespace Chummer
 
             foreach (PackagePart objPart in objPackage.GetParts())
             {
-                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace("/", string.Empty));
+                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().FastEscape('/'));
                 strTarget = strTarget.Replace("\\override", Path.DirectorySeparatorChar + "override" + strPrefix);
                 strTarget = strTarget.Replace("\\custom", Path.DirectorySeparatorChar + "custom" + strPrefix);
 
@@ -305,7 +306,7 @@ namespace Chummer
 
             foreach (PackagePart objPart in objPackage.GetParts())
             {
-                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace("/", string.Empty).Replace('_', ' '));
+                string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().FastEscape('/').Replace('_', ' '));
 
                 Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
                 Stream objDestination = File.OpenWrite(strTarget);

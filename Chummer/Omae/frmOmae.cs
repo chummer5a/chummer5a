@@ -143,17 +143,7 @@ namespace Chummer
         /// <param name="strValue">File name to parse.</param>
         private string FileSafe(string strValue)
         {
-            string strReturn = strValue;
-            strReturn = strReturn.Replace(" ", "_");
-            strReturn = strReturn.Replace("\\", string.Empty);
-            strReturn = strReturn.Replace("/", string.Empty);
-            strReturn = strReturn.Replace(":", string.Empty);
-            strReturn = strReturn.Replace("*", string.Empty);
-            strReturn = strReturn.Replace("?", string.Empty);
-            strReturn = strReturn.Replace("<", string.Empty);
-            strReturn = strReturn.Replace(">", string.Empty);
-            strReturn = strReturn.Replace("|", string.Empty);
-            return strReturn;
+            return strValue.FastEscape(" _/:*?<>|\\".ToCharArray());
         }
 
         private void MoveControls()
@@ -183,13 +173,11 @@ namespace Chummer
                 objService.GetCharacterTypes().WriteTo(objWriter);
                 // Flush the output.
                 objWriter.Flush();
-                objStream.Flush();
 
                 XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                 // Close everything now that we're done.
                 objWriter.Close();
-                objStream.Close();
 
                 // Stuff all of the items into a ListItem List.
                 foreach (XmlNode objNode in objXmlDocument.SelectNodes("/types/type"))
@@ -302,7 +290,12 @@ namespace Chummer
                         bytFile = _objOmaeHelper.Decompress(bytFile);
                         File.WriteAllBytes(strFullPath, bytFile);
                         if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            _frmMain.LoadCharacter(strFullPath);
+                        {
+                            Cursor = Cursors.WaitCursor;
+                            Character objOpenCharacter = frmMain.LoadCharacter(strFullPath);
+                            Cursor = Cursors.Default;
+                            _frmMain.OpenCharacter(objOpenCharacter);
+                        }
                     }
                     catch (EndpointNotFoundException)
                     {
@@ -518,12 +511,12 @@ namespace Chummer
         private void cmdRegister_Click(object sender, EventArgs e)
         {
             // Make sure User Name and Password are provided.
-            if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtUserName.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_ChooseUsername"), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (string.IsNullOrEmpty(txtPassword.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtPassword.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_ChoosePassword"), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -557,12 +550,12 @@ namespace Chummer
         private void cmdLogin_Click(object sender, EventArgs e)
         {
             // Make sure User Name and Password are provided.
-            if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtUserName.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterUsername"), LanguageManager.GetString("MessageTitle_Omae_ChooseUsername"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if (string.IsNullOrEmpty(txtPassword.Text.Trim()))
+            if (string.IsNullOrWhiteSpace(txtPassword.Text))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_EnterPassword"), LanguageManager.GetString("MessageTitle_Omae_ChoosePassword"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -693,13 +686,11 @@ namespace Chummer
                                                   cboFilterQuality3.Text).WriteTo(objWriter);
                     // Flush the output.
                     objWriter.Flush();
-                    objStream.Flush();
 
                     XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
-                    objStream.Close();
 
                     if (objXmlDocument.SelectNodes("/characters/character").Count == 0)
                     {
@@ -733,7 +724,7 @@ namespace Chummer
             }
 
             // Search for data.
-            if (_objMode == OmaeMode.Data)
+            else if (_objMode == OmaeMode.Data)
             {
                 try
                 {
@@ -743,13 +734,11 @@ namespace Chummer
                     objService.FetchDataFiles(Convert.ToInt32(cboSortOrder.SelectedValue), string.Empty, txtFilterUser.Text).WriteTo(objWriter);
                     // Flush the output.
                     objWriter.Flush();
-                    objStream.Flush();
 
                     XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
-                    objStream.Close();
 
                     if (objXmlDocument.SelectNodes("/datas/data").Count == 0)
                     {
@@ -783,7 +772,7 @@ namespace Chummer
             }
 
             // Search for character sheets.
-            if (_objMode == OmaeMode.Sheets)
+            else if (_objMode == OmaeMode.Sheets)
             {
                 try
                 {
@@ -793,13 +782,11 @@ namespace Chummer
                     objService.FetchSheets(Convert.ToInt32(cboSortOrder.SelectedValue), txtFilterUser.Text).WriteTo(objWriter);
                     // Flush the output.
                     objWriter.Flush();
-                    objStream.Flush();
 
                     XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
-                    objStream.Close();
 
                     if (objXmlDocument.SelectNodes("/sheets/sheet").Count == 0)
                     {

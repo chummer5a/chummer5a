@@ -4,9 +4,10 @@
   <xsl:import href="xz.language.xslt"/>
 
   <xsl:import href="Shadowrun 5 set.xslt"/>
+  <xsl:import href="Shadowrun 5 set CSS.xslt"/>
   <xsl:import href="xs.SkillsGroupedAssorted.xslt"/>
 
   <!-- Set global control variables -->
   <xsl:variable name="CorePrint" select="true()"/>
-  <xsl:variable name="PrintSkillCategoryNames" select="False"/>
+  <xsl:variable name="PrintSkillCategoryNames" select="false()"/>
 </xsl:stylesheet>

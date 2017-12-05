@@ -29,9 +29,9 @@ namespace Translator
                 MessageBox.Show("You must provide a language name.");
                 return;
             }
-            if (txtLanguageCode.Text.Length != 2)
+            if (txtLanguageCode.Text.Length != 5)
             {
-                MessageBox.Show("You must provide a two character language abbreviation.");
+                MessageBox.Show("You must provide a five character language abbreviation.");
                 return;
             }
             string lower = txtLanguageCode.Text.ToLower();
@@ -126,12 +126,11 @@ namespace Translator
             cboLanguages.Items.Clear();
             foreach (string str in Directory.EnumerateFiles(string.Concat(_strPath, "lang"), "*.xml"))
             {
-                if (new FileInfo(str).Name.Length != 6)
-                    continue;
-                var xmlDocument = new XmlDocument();
+                XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(str);
-                string innerText = xmlDocument.SelectSingleNode("/chummer/name")?.InnerText;
-                if (innerText != null) cboLanguages.Items.Add(innerText);
+                string strInnerText = xmlDocument.SelectSingleNode("/chummer/name")?.InnerText;
+                if (!string.IsNullOrEmpty(strInnerText))
+                    cboLanguages.Items.Add(strInnerText);
             }
         }
 

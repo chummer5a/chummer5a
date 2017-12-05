@@ -48,28 +48,36 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
             List<ListItem> lstAdvantage = new List<ListItem>();
 
             // Populate the Martial Art Advantage list.
-            XmlNodeList objXmlAdvantageList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]/techniques/technique");
+            XmlNode objMartialArtNode = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]");
+            if (objMartialArtNode["alltechniques"] != null)
+                objMartialArtNode = _objXmlDocument.SelectSingleNode("/chummer");
+            XmlNodeList objXmlAdvantageList = objMartialArtNode.SelectNodes("techniques/technique");
             foreach (XmlNode objXmlAdvantage in objXmlAdvantageList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlAdvantage["name"].InnerText;
-                objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? objXmlAdvantage["name"].InnerText;
-
-                bool blnIsNew = true;
+                string strAdvantageName = objXmlAdvantage["name"].InnerText;
                 foreach (MartialArt objMartialArt in _objCharacter.MartialArts.Where(objMartialArt => objMartialArt.Name == _strMartialArt))
                 {
-                    blnIsNew = objMartialArt.Advantages.All(advantage => advantage.Name != objItem.Value);
+                    if (objMartialArt.Advantages.Any(advantage => advantage.Name == strAdvantageName))
+                    {
+                        goto NotNewAdvantage;
+                    }
                 }
 
-                if (blnIsNew)
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = strAdvantageName;
+                    objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
                     lstAdvantage.Add(objItem);
+                }
+                NotNewAdvantage:;
             }
             SortListItem objSort = new SortListItem();
             lstAdvantage.Sort(objSort.Compare);

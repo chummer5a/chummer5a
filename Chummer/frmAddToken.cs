@@ -65,14 +65,12 @@ namespace Chummer
         {
             if (File.Exists(fileName) && fileName.EndsWith("chum5"))
             {
-                bool blnLoaded = false;
+                Cursor = Cursors.WaitCursor;
                 Character objCharacter = new Character();
                 objCharacter.FileName = fileName;
-                blnLoaded = objCharacter.Load();
-
-                if (!blnLoaded)
+                if (!objCharacter.Load())
                 {
-                    ;   // TODO edward setup error page
+                    Cursor = Cursors.Default;   // TODO edward setup error page
                     return; // we obviously cannot init
                 }
 
@@ -80,6 +78,7 @@ namespace Chummer
                 txtName.Text = objCharacter.Name;
                 nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
                 _character = objCharacter;
+                Cursor = Cursors.Default;
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 
+[assembly: CLSCompliant(true)]
 namespace Translator
 {
     internal static class Program

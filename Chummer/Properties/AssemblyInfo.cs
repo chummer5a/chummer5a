@@ -26,11 +26,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Chummer")]
 [assembly: AssemblyDescription("Character generator for Shadowrun 5th Edition")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Chummer for 4th edition by Keith Rudolph.\n\r" +
+[assembly: AssemblyCompany("Original Chummer for 4th edition by Keith Rudolph.\n\r" +
                            "Chummer5 update by Adam Schmidt: srchummer5@gmail.com\n\r" +
                            "Chummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\r" +
-                           "Additional 5a updates by Johannes Elgaard: joha4270@gmail.com\n\r" +
-                           "Data files for Run Faster & Data Tails by reddit/u/Iridios")]
+                           "Additional 5a updates by Johannes Elgaard: joha4270@gmail.com")]
 [assembly: AssemblyProduct("Chummer")]
 [assembly: AssemblyCopyright("Copyright © Keith Rudolph 2013")]
 [assembly: AssemblyTrademark("")]

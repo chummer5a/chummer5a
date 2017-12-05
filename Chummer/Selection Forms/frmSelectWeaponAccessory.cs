@@ -62,12 +62,19 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
             BuildAccessoryList();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -96,7 +103,6 @@ namespace Chummer
             if (objXmlAccessoryList != null)
                 foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
                 {
-                    bool boolCanAdd = true;
                     if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                     {
                         if (strAllowed.Length > 1)
@@ -105,10 +111,8 @@ namespace Chummer
                             {
                                 if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
                                 {
-                                    boolCanAdd = false;
+                                    goto NextItem;
                                 }
-                                if (boolCanAdd)
-                                    break;
                             }
                         }
                     }
@@ -118,7 +122,7 @@ namespace Chummer
                         // Assumes topmost parent is an AND node
                         if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
                     if (objXmlAccessory["required"]?["weapondetails"] != null)
@@ -126,7 +130,7 @@ namespace Chummer
                         // Assumes topmost parent is an AND node
                         if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
 
@@ -143,7 +147,7 @@ namespace Chummer
 
                         if (_lstAccessories.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
                         {
-                            goto NextItem;
+                            continue;
                         }
                     }
 
@@ -158,17 +162,19 @@ namespace Chummer
                             objRequiredAccessory.Add(node.InnerText);
                         }
 
-                        boolCanAdd = _lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name));
+                        if (!_lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                        {
+                            continue;
+                        }
                     }
 
-                    boolCanAdd = Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, Convert.ToInt32(nudRating.Value), 0, boolCanAdd);
-
-                    if (!boolCanAdd)
-                        continue;
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlAccessory["name"]?.InnerText;
-                    objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
-                    lstAccessories.Add(objItem);
+                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
+                    {
+                        ListItem objItem = new ListItem();
+                        objItem.Value = objXmlAccessory["name"]?.InnerText;
+                        objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
+                        lstAccessories.Add(objItem);
+                    }
                     NextItem:;
                 }
 
@@ -230,7 +236,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
 
         private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
@@ -437,6 +443,10 @@ namespace Chummer
                 nudRating.Visible = true;
                 lblRatingLabel.Visible = true;
                 nudRating.Maximum = intMaxRating;
+                while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
             }
             else
             {
@@ -517,7 +527,6 @@ namespace Chummer
             if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
                 && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
                 cboExtraMount.SelectedIndex += 1;
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = string.Empty;
@@ -529,23 +538,24 @@ namespace Chummer
                     strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                    if (strAvail == "R")
+                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                    else if (strAvail == "F")
+                        strAvail = LanguageManager.GetString("String_AvailForbidden");
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
                 try
                 {
-                    XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)));
-                    int intTmp;
-                    if (int.TryParse(nav.Evaluate(xprAvail)?.ToString(), out intTmp))
-                        lblAvail.Text = intTmp.ToString() + strAvail;
+                    lblAvail.Text = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo)))).ToString() + strAvail;
                 }
                 catch (XPathException)
                 {
+                    lblAvail.Text = strAvailExpr + strAvail;
                 }
             }
             else
                 lblAvail.Text = string.Empty;
-            lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.GetString("String_AvailRestricted")).Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             if (!chkFreeItem.Checked)
             {
                 string strCost = "0";
@@ -556,22 +566,22 @@ namespace Chummer
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    strCost = strCost.Replace("Variable", string.Empty).Trim("()".ToCharArray());
-                    if (strCost.Contains("-"))
+                    strCost = strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
                         decimal.TryParse(strValues[0], out decMin);
                         decimal.TryParse(strValues[1], out decMax);
                     }
                     else
-                        decimal.TryParse(strCost.Replace("+", string.Empty), out decMin);
+                        decimal.TryParse(strCost.FastEscape('+'), out decMin);
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = $"{decMin:###,###,##0.##¥+}";
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                     }
                     else
-                        lblCost.Text = $"{decMin:###,###,##0.##} - {decMax:###,###,##0.##¥}";
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }
@@ -580,8 +590,7 @@ namespace Chummer
                     decimal decCost = 0.0m;
                     try
                     {
-                        XPathExpression xprCost = nav.Compile(strCost);
-                        decCost = Convert.ToDecimal(nav.Evaluate(xprCost), GlobalOptions.InvariantCultureInfo);
+                        decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                     }
                     catch (XPathException)
                     {
@@ -590,13 +599,13 @@ namespace Chummer
                     // Apply any markup.
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                    lblCost.Text = $"{decCost:###,###,##0.##¥}";
+                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
                 }
             }
             else
             {
-                lblCost.Text = $"{0:###,###,##0.##¥}";
+                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
 

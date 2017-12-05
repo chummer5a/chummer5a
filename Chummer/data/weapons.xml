@@ -68,7 +68,6 @@
       <ammo>10(c) + energy</ammo>
       <avail>24F</avail>
       <cost>26000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -103,7 +102,6 @@
       <ammo>12(c)</ammo>
       <avail>18F</avail>
       <cost>24500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -130,7 +128,6 @@
       <ammo>4(m)</ammo>
       <avail>20F</avail>
       <cost>23000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -165,7 +162,6 @@
       <ammo>6(m)</ammo>
       <avail>20F</avail>
       <cost>21000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -192,7 +188,6 @@
       <ammo>6(c)</ammo>
       <avail>20F</avail>
       <cost>32000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -208,28 +203,28 @@
         <accessory>
           <name>Weapon Commlink</name>
           <gears>
-			<usegear>
-			  <name>Ogre Hammer SWS Assault Cannon (Commlink)</name>
-			  <category>Commlinks</category>
-			  <rating>4</rating>
-			</usegear>
+            <usegear>
+              <name>Ogre Hammer SWS Assault Cannon (Commlink)</name>
+              <category>Commlinks</category>
+              <rating>4</rating>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Flare Compensation</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Low Light</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </usegear>
           </gears>
         </accessory>
       </accessories>
@@ -251,7 +246,6 @@
       <ammo>15(c)</ammo>
       <avail>20F</avail>
       <cost>43000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -283,7 +277,6 @@
       <ammo>38(c)</ammo>
       <avail>4R</avail>
       <cost>950</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -313,7 +306,6 @@
       <underbarrels>
         <underbarrel>AK-98 Grenade Launcher</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -343,7 +335,6 @@
       <underbarrels>
         <underbarrel>Ares Alpha Grenade Launcher</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -375,7 +366,6 @@
       <ammo>50(c)</ammo>
       <avail>11F</avail>
       <cost>2400</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -410,7 +400,6 @@
       <ammo>36(c)</ammo>
       <avail>11R</avail>
       <cost>2250</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -451,7 +440,6 @@
       <ammo>40(c)</ammo>
       <avail>4R</avail>
       <cost>550</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -478,7 +466,6 @@
       <ammo>35(c)</ammo>
       <avail>8R</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -513,10 +500,11 @@
       <ammo>30(c)</ammo>
       <avail>15F</avail>
       <cost>4500</cost>
-      <underbarrels>
-        <underbarrel>HK XM30 Grenade Launcher</underbarrel>
-      </underbarrels>
-      <allowaccessory>true</allowaccessory>
+      <addweapon>HK XM30 Grenade Launcher</addweapon>
+      <addweapon>HK XM30 Carbine</addweapon>
+      <addweapon>HK XM30 LMG</addweapon>
+      <addweapon>HK XM30 Shotgun</addweapon>
+      <addweapon>HK XM30 Sniper</addweapon>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -540,9 +528,52 @@
       <page>37</page>
     </weapon>
     <weapon>
+      <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
+      <name>HK XM30 Grenade Launcher</name>
+      <category>Grenade Launchers</category>
+      <hide />
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <spec>Grenade Launchers</spec>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>Grenade</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <ammocategory>Grenade Launchers</ammocategory>
+      <avail>0</avail>
+      <cost>0</cost>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Shock Pad</name>
+        </accessory>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <useskill>Heavy Weapons</useskill>
+      <range>Grenade Launchers</range>
+      <source>RG</source>
+      <page>37</page>
+    </weapon>
+    <weapon>
       <id>cc446f64-1dbd-42dd-8fc4-ca17dc6bcf42</id>
       <name>HK XM30 Carbine</name>
-      <category>Assault Rifles</category>
+      <category>Submachine Guns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Submachine Guns</spec>
@@ -555,7 +586,6 @@
       <ammo>30(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -583,7 +613,8 @@
     <weapon>
       <id>1bdda305-3448-4419-871d-42bcd971751b</id>
       <name>HK XM30 LMG</name>
-      <category>Assault Rifles</category>
+      <category>Light Machine Guns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Machine Guns</spec>
@@ -596,7 +627,6 @@
       <ammo>100(belt)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -627,7 +657,8 @@
     <weapon>
       <id>146d58e4-d705-41a0-bd92-c1901b71ffc0</id>
       <name>HK XM30 Shotgun</name>
-      <category>Assault Rifles</category>
+      <category>Shotguns</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
@@ -640,7 +671,6 @@
       <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -662,14 +692,15 @@
       </accessories>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>RG</source>
       <page>37</page>
     </weapon>
     <weapon>
       <id>5d366d23-c0cd-4613-a035-f5a5378dcfa9</id>
       <name>HK XM30 Sniper</name>
-      <category>Assault Rifles</category>
+      <category>Sniper Rifles</category>
+      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sniper Rifles</spec>
@@ -682,7 +713,6 @@
       <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -725,7 +755,6 @@
       <ammo>25(d)</ammo>
       <avail>10R</avail>
       <cost>1300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -738,11 +767,11 @@
         <accessory>
           <name>Imaging Scope</name>
           <gears>
-		    <usegear>
-			  <name>Vision Enhancement</name>
-			  <category>Vision Enhancements</category>
-			  <rating>1</rating>
-			</usegear>
+            <usegear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>1</rating>
+            </usegear>
           </gears>
         </accessory>
       </accessories>
@@ -767,7 +796,6 @@
       <underbarrels>
         <underbarrel>Nissan Optiumum II Shotgun</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -802,7 +830,6 @@
       <ammo>32(c)</ammo>
       <avail>4R</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -834,7 +861,6 @@
       <ammo>6x20(ml)</ammo>
       <avail>10F</avail>
       <cost>1900</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -869,7 +895,6 @@
       <ammo>18(c)</ammo>
       <avail>8R</avail>
       <cost>2800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -883,17 +908,17 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Flare Compensation</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Low Light</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -918,7 +943,6 @@
       <ammo>60(c)</ammo>
       <avail>14F</avail>
       <cost>2600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -957,7 +981,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>19</page>
     </weapon>
@@ -977,7 +1000,6 @@
       <ammo>0</ammo>
       <avail>12R</avail>
       <cost>4000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -997,7 +1019,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1017,7 +1038,6 @@
       <ammo>0</ammo>
       <avail>7R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -1037,7 +1057,6 @@
       <ammo>0</ammo>
       <avail>5R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -1056,7 +1075,6 @@
       <ammo>0</ammo>
       <avail>7R</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1078,7 +1096,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>458</page>
@@ -1101,10 +1118,31 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>458</page>
+    </weapon>
+    <weapon>
+      <id>ad2ea9ea-74d0-411d-89b7-20702ee4105d</id>
+      <name>Retractable Climbing Claws</name>
+      <category>Blades</category>
+      <hide />
+      <type>Melee</type>
+      <conceal>-2</conceal>
+      <spec>Cyber Implants</spec>
+      <accuracy>Physical-1</accuracy>
+      <reach>0</reach>
+      <damage>(STR+1)P</damage>
+      <ap>-3</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <cyberware>yes</cyberware>
+      <useskill>Unarmed Combat</useskill>
+      <source>CF</source>
+      <page>86</page>
     </weapon>
     <weapon>
       <id>cae4ffe9-cf22-4917-92b1-57be89741f07</id>
@@ -1122,7 +1160,6 @@
       <ammo>0</ammo>
       <avail>14R</avail>
       <cost>4500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>18</page>
     </weapon>
@@ -1142,7 +1179,6 @@
       <ammo>0</ammo>
       <avail>9R</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>18</page>
     </weapon>
@@ -1162,7 +1198,6 @@
       <ammo>0</ammo>
       <avail>9R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1182,14 +1217,13 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>10</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>a92933cb-0c81-4b54-aeb1-ddc24836775d</id>
       <name>Knife (Survival Kit)</name>
-	  <hide />
+      <hide />
       <category>Blades</category>
       <type>Melee</type>
       <conceal>-2</conceal>
@@ -1203,7 +1237,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1222,7 +1255,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1244,7 +1276,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>458</page>
@@ -1265,8 +1296,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
-	  <accessories>
+      <accessories>
         <accessory>
           <name>Survival Knife Bonuses</name>
         </accessory>
@@ -1293,7 +1323,6 @@
       <ammo>0</ammo>
       <avail>5R</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1313,7 +1342,6 @@
       <ammo>0</ammo>
       <avail>14R</avail>
       <cost>1250</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>19</page>
     </weapon>
@@ -1333,7 +1361,6 @@
       <ammo>0</ammo>
       <avail>14R</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>19</page>
     </weapon>
@@ -1353,7 +1380,6 @@
       <ammo>1</ammo>
       <avail>1</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1374,7 +1400,6 @@
       <ammo>1</ammo>
       <avail>10</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1395,7 +1420,6 @@
       <ammo>1</ammo>
       <avail>2</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1416,7 +1440,6 @@
       <ammo>1</ammo>
       <avail>3</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1437,7 +1460,6 @@
       <ammo>1</ammo>
       <avail>4</avail>
       <cost>400</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1458,7 +1480,6 @@
       <ammo>1</ammo>
       <avail>5</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1479,7 +1500,6 @@
       <ammo>1</ammo>
       <avail>6</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1500,7 +1520,6 @@
       <ammo>1</ammo>
       <avail>7</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1521,7 +1540,6 @@
       <ammo>1</ammo>
       <avail>8</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1542,7 +1560,6 @@
       <ammo>1</ammo>
       <avail>9</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -1562,7 +1579,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1582,7 +1598,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1601,7 +1616,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -1621,7 +1635,6 @@
       <ammo>0</ammo>
       <avail>2</avail>
       <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1641,7 +1654,6 @@
       <ammo>0</ammo>
       <avail>3</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1659,10 +1671,9 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>10</ammo>
-      <requireammo>false</requireammo>
+      <requireammo>False</requireammo>
       <avail>6R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1682,7 +1693,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>422</page>
     </weapon>
@@ -1700,10 +1710,9 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>3</ammo>
-      <requireammo>false</requireammo>
+      <requireammo>False</requireammo>
       <avail>6R</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <source>DT</source>
       <page>62</page>
     </weapon>
@@ -1722,9 +1731,8 @@
       <ammo>5(m)</ammo>
       <avail>8R</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Harpoon Gun</range>
-	  <alternaterange>Harpoon Gun (Underwater)</alternaterange>
+      <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <source>RG</source>
       <page>22</page>
     </weapon>
@@ -1743,7 +1751,6 @@
       <ammo>5(m)</ammo>
       <avail>0</avail>
       <cost>50</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Shuriken</range>
       <source>RG</source>
       <page>23</page>
@@ -1763,7 +1770,6 @@
       <ammo>4</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Heavy Crossbows</range>
       <source>SR5</source>
       <page>424</page>
@@ -1783,7 +1789,6 @@
       <ammo>4</ammo>
       <avail>2</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Light Crossbows</range>
       <source>SR5</source>
       <page>424</page>
@@ -1803,7 +1808,6 @@
       <ammo>4</ammo>
       <avail>4R</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Medium Crossbows</range>
       <source>SR5</source>
       <page>424</page>
@@ -1823,7 +1827,6 @@
       <ammo>5(m)</ammo>
       <avail>6R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Heavy Pistols</range>
       <source>RG</source>
       <page>23</page>
@@ -1843,9 +1846,8 @@
       <ammo>1</ammo>
       <avail>6R</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Harpoon Gun</range>
-	  <alternaterange>Harpoon Gun (Underwater)</alternaterange>
+      <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <source>RG</source>
       <page>22</page>
     </weapon>
@@ -1866,7 +1868,6 @@
       <ammo>0</ammo>
       <avail>12R</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>438</page>
     </weapon>
@@ -1886,7 +1887,6 @@
       <ammo>0</ammo>
       <avail>10R</avail>
       <cost>3500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>103</page>
     </weapon>
@@ -1906,7 +1906,6 @@
       <ammo>0</ammo>
       <avail>18R</avail>
       <cost>10000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>104</page>
     </weapon>
@@ -1926,7 +1925,6 @@
       <ammo>0</ammo>
       <avail>10R</avail>
       <cost>15000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>104</page>
     </weapon>
@@ -1946,7 +1944,6 @@
       <ammo>0</ammo>
       <avail>10R</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>103</page>
     </weapon>
@@ -1966,7 +1963,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>20000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>104</page>
     </weapon>
@@ -1986,7 +1982,6 @@
       <ammo>0</ammo>
       <avail>8</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>448</page>
     </weapon>
@@ -2007,7 +2002,6 @@
       <ammo>0</ammo>
       <avail>10R</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>438</page>
     </weapon>
@@ -2026,7 +2020,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>21</page>
     </weapon>
@@ -2045,7 +2038,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>7500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>21</page>
     </weapon>
@@ -2064,7 +2056,6 @@
       <ammo>0</ammo>
       <avail>6</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -2083,7 +2074,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>50</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -2102,7 +2092,6 @@
       <ammo>0</ammo>
       <avail>18F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -2121,11 +2110,10 @@
       <ammo>0</ammo>
       <avail>12F</avail>
       <cost>10000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>423</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>dc18811b-eb07-43d8-8d95-d5c468f048f4</id>
       <name>Chakram</name>
       <category>Exotic Melee Weapons</category>
@@ -2140,7 +2128,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>20</page>
     </weapon>
@@ -2160,7 +2147,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SS</source>
       <page>178</page>
     </weapon>
@@ -2181,7 +2167,6 @@
       <ammo>1(ml)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Light Crossbows</range>
       <source>SR5</source>
       <page>449</page>
@@ -2203,7 +2188,6 @@
       <ammo>10</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Tasers</range>
       <source>RG</source>
       <page>104</page>
@@ -2225,7 +2209,6 @@
       <ammo>1(ml)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Tasers</range>
       <source>SR5</source>
       <page>449</page>
@@ -2245,7 +2228,6 @@
       <ammo>6(c)</ammo>
       <avail>12F</avail>
       <cost>10000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Under</mount>
       </accessorymounts>
@@ -2273,7 +2255,6 @@
       <ammo>4(c)</ammo>
       <avail>16F</avail>
       <cost>2200</cost>
-      <allowaccessory>true</allowaccessory>
       <range>Flamethrowers</range>
       <source>RG</source>
       <page>50</page>
@@ -2294,13 +2275,12 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>50</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Aerodynamic Grenade</range>
       <source>RG</source>
       <page>24</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>dabbf576-066e-4c41-923b-43229f2defa3</id>
       <name>Horizon BoomerEye</name>
       <category>Gear</category>
@@ -2316,7 +2296,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>50</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Aerodynamic Grenade</range>
       <source>RG</source>
@@ -2339,7 +2318,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Thrown Knife</range>
       <source>RG</source>
@@ -2360,7 +2338,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2381,7 +2358,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>125</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2402,7 +2378,6 @@
       <ammo>0</ammo>
       <avail>11F</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2424,7 +2399,6 @@
       <ammo>0</ammo>
       <avail>4R</avail>
       <cost>40</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2446,7 +2420,6 @@
       <ammo>0</ammo>
       <avail>11F</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2468,7 +2441,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>RG</source>
@@ -2490,7 +2462,6 @@
       <ammo>0</ammo>
       <avail>6</avail>
       <cost>25</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>HT</source>
@@ -2512,7 +2483,6 @@
       <ammo>0</ammo>
       <avail>4R</avail>
       <cost>40</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2534,7 +2504,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>SR5</source>
@@ -2556,7 +2525,6 @@
       <ammo>0</ammo>
       <avail>6</avail>
       <cost>125</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Aerodynamic Grenade</range>
       <source>RG</source>
@@ -2579,7 +2547,6 @@
       <ammo>0</ammo>
       <avail>6</avail>
       <cost>125</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Aerodynamic Grenade</range>
       <source>RG</source>
@@ -2601,9 +2568,8 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2623,9 +2589,8 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>125</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2645,9 +2610,8 @@
       <ammo>0</ammo>
       <avail>11F</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2667,9 +2631,8 @@
       <ammo>0</ammo>
       <avail>4R</avail>
       <cost>40</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2689,9 +2652,8 @@
       <ammo>0</ammo>
       <avail>11F</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2711,9 +2673,8 @@
       <ammo>0</ammo>
       <avail>4R</avail>
       <cost>40</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2733,9 +2694,8 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>SR5</source>
       <page>435</page>
     </weapon>
@@ -2754,7 +2714,6 @@
       <ammo>0</ammo>
       <avail>18F</avail>
       <cost>2800</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>436</page>
     </weapon>
@@ -2773,7 +2732,6 @@
       <ammo>0</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>436</page>
     </weapon>
@@ -2792,7 +2750,6 @@
       <ammo>0</ammo>
       <avail>18F</avail>
       <cost>2100</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>436</page>
     </weapon>
@@ -2811,7 +2768,6 @@
       <ammo>0</ammo>
       <avail>6</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Thrown Knife</range>
       <source>RG</source>
@@ -2832,7 +2788,6 @@
       <ammo>0</ammo>
       <avail>18F</avail>
       <cost>2800</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>436</page>
     </weapon>
@@ -2851,7 +2806,6 @@
       <ammo>0</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>436</page>
     </weapon>
@@ -2870,7 +2824,6 @@
       <ammo>0</ammo>
       <avail>18F</avail>
       <cost>2100</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>436</page>
     </weapon>
@@ -2890,7 +2843,6 @@
       <ammo>0</ammo>
       <avail>4R</avail>
       <cost>25</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Shuriken</range>
       <source>SR5</source>
@@ -2912,7 +2864,6 @@
       <ammo>0</ammo>
       <avail>8R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Shuriken</range>
       <source>RG</source>
@@ -2934,7 +2885,6 @@
       <ammo>0</ammo>
       <avail>4R</avail>
       <cost>25</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Thrown Knife</range>
       <source>SR5</source>
@@ -2955,7 +2905,6 @@
       <ammo>8(m)</ammo>
       <avail>8F</avail>
       <cost>3200</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -2987,7 +2936,6 @@
       <ammo>12(c)</ammo>
       <avail>10F</avail>
       <cost>5000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -3016,7 +2964,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3041,7 +2989,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>16300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -3075,7 +3022,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -3115,7 +3061,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>16000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -3152,7 +3097,6 @@
       <ammo>15(c)</ammo>
       <avail>5R</avail>
       <cost>725</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3183,7 +3127,6 @@
       <ammo>30(c)</ammo>
       <avail>8F</avail>
       <cost>380</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3214,7 +3157,6 @@
       <ammo>10(c)</ammo>
       <avail>4R</avail>
       <cost>640</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3245,7 +3187,6 @@
       <ammo>7(cy)</ammo>
       <avail>3R</avail>
       <cost>225</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3271,7 +3212,6 @@
       <ammo>7(cy)</ammo>
       <avail>6R</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3297,7 +3237,6 @@
       <ammo>14(c)</ammo>
       <avail>7R</avail>
       <cost>425</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3325,7 +3264,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3350,7 +3289,6 @@
       <ammo>10(c)</ammo>
       <avail>7R</avail>
       <cost>550</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3387,7 +3325,6 @@
       <ammo>10(c)</ammo>
       <avail>16F</avail>
       <cost>1050</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3413,7 +3350,6 @@
       <ammo>8(m)</ammo>
       <avail>6R</avail>
       <cost>250</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3439,7 +3375,6 @@
       <ammo>6(cy)</ammo>
       <avail>4R</avail>
       <cost>400</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3465,7 +3400,6 @@
       <ammo>12(c)</ammo>
       <avail>6R</avail>
       <cost>870</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -3498,7 +3432,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -3522,7 +3456,6 @@
       <ammo>4(c)</ammo>
       <avail>5R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>425</page>
     </weapon>
@@ -3541,7 +3474,6 @@
       <ammo>4(c)</ammo>
       <avail>3R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>30</page>
     </weapon>
@@ -3560,7 +3492,6 @@
       <ammo>6(c)</ammo>
       <avail>4R</avail>
       <cost>120</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>425</page>
     </weapon>
@@ -3579,7 +3510,6 @@
       <ammo>2(b)</ammo>
       <avail>4R</avail>
       <cost>180</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>425</page>
     </weapon>
@@ -3598,7 +3528,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Clubs</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3637,7 +3567,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>10</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3657,7 +3586,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3677,7 +3605,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Blades</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3697,7 +3624,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>20</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3717,7 +3643,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <spec>Hammers</spec>
       <source>RG</source>
@@ -3738,7 +3663,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3758,7 +3682,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>45</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <spec>Staves</spec>
       <source>RG</source>
@@ -3779,7 +3702,6 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3799,7 +3721,6 @@
       <ammo>0</ammo>
       <avail>1</avail>
       <cost>40</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Clubs</useskill>
       <spec>Hammers</spec>
       <source>RG</source>
@@ -3820,7 +3741,6 @@
       <ammo>Internal source</ammo>
       <avail>24F</avail>
       <cost>35000</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <accessorymounts>
         <mount>Top</mount>
@@ -3850,7 +3770,6 @@
       <ammo>2x10(c) or Internal source</ammo>
       <avail>18F</avail>
       <cost>16000</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <accessorymounts>
         <mount>Top</mount>
@@ -3875,7 +3794,6 @@
       <ammo>10(c) or Internal source</ammo>
       <avail>14F</avail>
       <cost>7500</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <accessorymounts>
         <mount>Top</mount>
@@ -3901,7 +3819,6 @@
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>6000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -3940,7 +3857,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>12F</avail>
       <cost>5800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -3979,7 +3895,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>11F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4012,7 +3927,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4054,7 +3968,6 @@
       <ammo>16(c)</ammo>
       <avail>3R</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4080,7 +3993,6 @@
       <ammo>16(c)</ammo>
       <avail>6F</avail>
       <cost>1250</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4114,7 +4026,6 @@
       <ammo>21(c)</ammo>
       <avail>7R</avail>
       <cost>210</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4146,7 +4057,6 @@
       <ammocategory>Heavy Pistols</ammocategory>
       <avail>5R</avail>
       <cost>250</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4173,7 +4083,6 @@
       <ammo>11(c)</ammo>
       <avail>4R</avail>
       <cost>320</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4199,7 +4108,6 @@
       <ammo>5(cy)</ammo>
       <avail>4R</avail>
       <cost>180</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4225,7 +4133,6 @@
       <ammo>18(c)</ammo>
       <avail>10R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4251,7 +4158,6 @@
       <ammo>30(c)</ammo>
       <avail>6R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4287,7 +4193,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -4312,7 +4218,6 @@
       <ammo>18(c)</ammo>
       <avail>4R</avail>
       <cost>270</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4344,7 +4249,6 @@
       <ammo>12(c)</ammo>
       <avail>14R</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4371,7 +4275,6 @@
       <ammo>6(cy)</ammo>
       <avail>3R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -4402,7 +4305,6 @@
       <ammo>40(c)</ammo>
       <avail>9R</avail>
       <cost>830</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4437,7 +4339,6 @@
       <ammo>20(c)</ammo>
       <avail>8R</avail>
       <cost>775</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4475,7 +4376,6 @@
       <ammo>35(c)</ammo>
       <avail>6R</avail>
       <cost>270</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4509,7 +4409,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -4534,7 +4434,6 @@
       <ammo>20(c)</ammo>
       <avail>8R</avail>
       <cost>850</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4566,7 +4465,6 @@
       <ammo>12(c)</ammo>
       <avail>7R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4638,7 +4536,6 @@
       <ammo>15(c)</ammo>
       <avail>6R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4670,7 +4567,6 @@
       <ammo>30(c)</ammo>
       <avail>8R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4702,7 +4598,6 @@
       <ammo>15(c)</ammo>
       <avail>7R</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4737,7 +4632,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4777,7 +4671,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>12F</avail>
       <cost>7000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4806,7 +4699,6 @@
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4845,7 +4737,6 @@
       <ammo>1(ml)</ammo>
       <avail>10F</avail>
       <cost>1200</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SR5</source>
       <page>431</page>
     </weapon>
@@ -4864,7 +4755,6 @@
       <ammo>4x2(m)</ammo>
       <avail>20F</avail>
       <cost>14000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>47</page>
     </weapon>
@@ -4883,7 +4773,6 @@
       <ammo>4(m)</ammo>
       <avail>19F</avail>
       <cost>7500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>RG</source>
       <page>46</page>
     </weapon>
@@ -4902,7 +4791,6 @@
       <ammo>2(ml)</ammo>
       <avail>18F</avail>
       <cost>14000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -4915,7 +4803,7 @@
       <id>923ba564-7883-49e8-82a2-415cbfa96685</id>
       <name>Auto-Assault 16</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -4927,7 +4815,6 @@
       <ammo>10(c) or 32(d)</ammo>
       <avail>18F</avail>
       <cost>1800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4943,7 +4830,7 @@
       <id>31269939-24bb-405a-aa5e-a1b77458a1df</id>
       <name>Cavalier Falchion</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -4955,7 +4842,6 @@
       <ammo>8(m)</ammo>
       <avail>9R</avail>
       <cost>1200</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -4985,7 +4871,7 @@
       <id>97cab27f-620b-45d7-8da4-3136c1e69f2b</id>
       <name>Cyber Shotgun</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -4999,7 +4885,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -5012,7 +4898,7 @@
       <id>c2c0e756-a099-4f9d-b6bb-18f412d670a3</id>
       <name>Defiance T-250</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5024,7 +4910,6 @@
       <ammo>5(m)</ammo>
       <avail>4R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5051,7 +4936,6 @@
       <ammo>5(m)</ammo>
       <avail>3R</avail>
       <cost>475</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5068,7 +4952,7 @@
       <id>622bd915-0e0c-431b-9da5-e0c0c31e2122</id>
       <name>Enfield AS-7</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5080,7 +4964,6 @@
       <ammo>10(c) or 24(d)</ammo>
       <avail>12F</avail>
       <cost>1100</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5101,7 +4984,7 @@
       <id>76e0ae30-a3cf-4d4f-b278-ad49a10df4d2</id>
       <name>Franchi SPAS-24</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5113,7 +4996,6 @@
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1050</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5137,7 +5019,7 @@
       <id>8818b584-e084-4fcb-94b8-632728015c6f</id>
       <name>Krime Boss</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>3</accuracy>
@@ -5149,7 +5031,6 @@
       <ammo>15(d)</ammo>
       <avail>11R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5165,7 +5046,7 @@
       <id>228a2a5d-01e5-4f58-90bf-1d61602ad1c5</id>
       <name>Mossberg AM-CMDT</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -5177,7 +5058,6 @@
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1400</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5198,7 +5078,7 @@
       <id>62221199-7958-4a76-a538-0c8e0a516608</id>
       <name>PJSS Model 55</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -5210,7 +5090,6 @@
       <ammo>2(b)</ammo>
       <avail>9R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5231,7 +5110,7 @@
       <id>67f18a4a-e516-4946-984a-5254b3ba850f</id>
       <name>Remington 990</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5243,7 +5122,6 @@
       <ammo>8(c)</ammo>
       <avail>6R</avail>
       <cost>950</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5267,7 +5145,7 @@
       <id>3af9c1f7-8582-4849-8b1e-b49dd14c207f</id>
       <name>Shiawase Arms Rain</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5279,7 +5157,6 @@
       <ammo>5(ml)</ammo>
       <avail>4R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5300,7 +5177,7 @@
       <id>eaef40ea-c1ff-4f64-a4fe-31720b250860</id>
       <name>Winchester Model 201</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>8</accuracy>
@@ -5312,7 +5189,6 @@
       <ammo>2(b)</ammo>
       <avail>8R</avail>
       <cost>1300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5328,7 +5204,7 @@
       <id>93869598-2945-412f-8b42-90764ddc1e59</id>
       <name>Winchester Model 2054</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5340,7 +5216,6 @@
       <ammo>7(m)</ammo>
       <avail>6R</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5364,7 +5239,7 @@
       <id>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</id>
       <name>Winchester Model 2066</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -5376,7 +5251,6 @@
       <ammo>5(m)</ammo>
       <avail>4R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5403,7 +5277,6 @@
       <ammo>14(c)</ammo>
       <avail>10F</avail>
       <cost>17500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5438,7 +5311,6 @@
       <ammo>14(c)</ammo>
       <avail>20F</avail>
       <cost>38500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5476,7 +5348,6 @@
       <ammo>20(c)</ammo>
       <avail>12F</avail>
       <cost>10300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5511,7 +5382,6 @@
       <ammo>25(c)</ammo>
       <avail>13F</avail>
       <cost>12500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5543,7 +5413,6 @@
       <ammo>5(m)</ammo>
       <avail>2R</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5575,7 +5444,6 @@
       <ammo>15(c)</ammo>
       <avail>16F</avail>
       <cost>28000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5613,7 +5481,6 @@
       <ammo>5(m)</ammo>
       <avail>4R</avail>
       <cost>2100</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -5643,7 +5510,6 @@
       <ammo>8(m)</ammo>
       <avail>4R</avail>
       <cost>1300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5678,7 +5544,6 @@
       <ammo>10(c)</ammo>
       <avail>6R</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5705,7 +5570,6 @@
       <ammo>18(c)</ammo>
       <avail>14F</avail>
       <cost>35000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5721,11 +5585,11 @@
         <accessory>
           <name>Weapon Commlink</name>
           <gears>
-			<usegear>
-			  <name>Terracotta Arms AM-47 (Commlink)</name>
-			  <category>Commlinks</category>
-			  <rating>5</rating>
-			</usegear>
+            <usegear>
+              <name>Terracotta Arms AM-47 (Commlink)</name>
+              <category>Commlinks</category>
+              <rating>5</rating>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -5735,13 +5599,13 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Low Light</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -5769,7 +5633,6 @@
       <ammo>20(c)</ammo>
       <avail>7R</avail>
       <cost>950</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5796,7 +5659,6 @@
       <ammo>10(c)</ammo>
       <avail>16R</avail>
       <cost>8000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5823,7 +5685,6 @@
       <ammo>1(ml)</ammo>
       <avail>4</avail>
       <cost>15</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Tasers</range>
       <source>RG</source>
@@ -5844,7 +5705,6 @@
       <ammo>1</ammo>
       <avail>6</avail>
       <cost>75</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Shuriken</range>
       <source>RG</source>
@@ -5865,7 +5725,6 @@
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Barrel</mount>
@@ -5892,7 +5751,6 @@
       <ammo>Special</ammo>
       <avail>11R</avail>
       <cost>5000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5919,7 +5777,6 @@
       <ammo>1(b)</ammo>
       <avail>6R</avail>
       <cost>150</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Tasers</range>
       <source>RG</source>
@@ -5940,7 +5797,6 @@
       <ammo>1</ammo>
       <avail>18F</avail>
       <cost>4000</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Shuriken</range>
       <source>RG</source>
@@ -5961,7 +5817,6 @@
       <ammo>1(b)</ammo>
       <avail>9R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Tasers</range>
       <source>RG</source>
@@ -5982,7 +5837,6 @@
       <ammo>5(c)</ammo>
       <avail>4R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Stock</mount>
@@ -6008,7 +5862,6 @@
       <ammo>6(m)</ammo>
       <avail>6R</avail>
       <cost>1200</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -6035,7 +5888,6 @@
       <ammo>4(b)</ammo>
       <avail>9</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Light Pistols</range>
       <source>RG</source>
@@ -6056,7 +5908,6 @@
       <ammo>2(b)</ammo>
       <avail>9</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Light Pistols</range>
       <source>RG</source>
@@ -6077,7 +5928,6 @@
       <ammo>1(b)</ammo>
       <avail>10R</avail>
       <cost>1250</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Tasers</range>
       <source>RG</source>
@@ -6098,7 +5948,6 @@
       <ammo>8(c)</ammo>
       <avail>3R</avail>
       <cost>1100</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6130,7 +5979,6 @@
       <ammo>6(m)</ammo>
       <avail>5R</avail>
       <cost>1100</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6162,7 +6010,6 @@
       <ammo>4(m)</ammo>
       <avail>6R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6189,7 +6036,6 @@
       <ammo>10(c)</ammo>
       <avail>3R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6216,7 +6062,6 @@
       <ammo>5(m)</ammo>
       <avail>6R</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6230,14 +6075,14 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Vision Enhancement</name>
-			  <category>Vision Enhancements</category>
-			  <rating>2</rating>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>2</rating>
+            </usegear>
           </gears>
         </accessory>
         <accessory>
@@ -6263,7 +6108,6 @@
       <ammo>5(m)</ammo>
       <avail>4R</avail>
       <cost>3600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6295,7 +6139,6 @@
       <ammo>20(c)</ammo>
       <avail>6R</avail>
       <cost>1700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6309,14 +6152,14 @@
           <name>Imaging Scope</name>
           <gears>
             <usegear>
-			  <name>Image Link</name>
-			  <category>Vision Enhancements</category>
-			</usegear>
-			<usegear>
-			  <name>Vision Enhancement</name>
-			  <category>Vision Enhancements</category>
-			  <rating>1</rating>
-			</usegear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </usegear>
+            <usegear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>1</rating>
+            </usegear>
           </gears>
         </accessory>
       </accessories>
@@ -6338,7 +6181,6 @@
       <ammo>1(cb)</ammo>
       <avail>4R</avail>
       <cost>850</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6370,7 +6212,6 @@
       <ammo>7(m)</ammo>
       <avail>4R</avail>
       <cost>1800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6402,7 +6243,6 @@
       <ammo>15(m)</ammo>
       <avail>4R</avail>
       <cost>650</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6435,7 +6275,6 @@
       <ammo>30(c)</ammo>
       <avail>14F</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6469,7 +6308,6 @@
       <ammo>50(d)</ammo>
       <avail>7R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6512,7 +6350,6 @@
       <ammo>32(c)</ammo>
       <avail>6R</avail>
       <cost>400</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6546,7 +6383,6 @@
       <ammo>32(c)</ammo>
       <avail>5R</avail>
       <cost>660</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6585,7 +6421,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -6609,7 +6445,6 @@
       <ammo>50(c)</ammo>
       <avail>11F</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6643,7 +6478,6 @@
       <ammo>28(c)</ammo>
       <avail>8R</avail>
       <cost>730</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6680,7 +6514,6 @@
       <ammo>36(c)</ammo>
       <avail>16F</avail>
       <cost>2300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6714,7 +6547,6 @@
       <ammo>32(c)</ammo>
       <avail>6R</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6751,7 +6583,6 @@
       <ammo>30(c)</ammo>
       <avail>6R</avail>
       <cost>425</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -6777,7 +6608,6 @@
       <ammo>30(c)</ammo>
       <avail>6R</avail>
       <cost>875</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6811,7 +6641,6 @@
       <ammo>24(c)</ammo>
       <avail>4R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -6845,7 +6674,6 @@
       <ammo>6(m)</ammo>
       <avail>0</avail>
       <cost>275</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Stock</mount>
@@ -6877,7 +6705,6 @@
       <underbarrels>
         <underbarrel>Defiance EX Shocker (Melee Contacts)</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Stock</mount>
@@ -6902,7 +6729,7 @@
       <rc>0</rc>
       <ammo>10</ammo>
       <cost>0</cost>
-      <requireammo>false</requireammo>
+      <requireammo>False</requireammo>
       <source>SR5</source>
       <page>424</page>
     </weapon>
@@ -6921,7 +6748,6 @@
       <ammo>3(m)</ammo>
       <avail>0</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Stock</mount>
@@ -6953,7 +6779,6 @@
       <ammo>4(m)</ammo>
       <avail>0</avail>
       <cost>180</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Stock</mount>
@@ -6977,7 +6802,6 @@
       <ammo>0</ammo>
       <avail>2R</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>422</page>
@@ -6997,7 +6821,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>550</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>423</page>
@@ -7020,7 +6843,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>SR5</source>
       <page>458</page>
@@ -7040,7 +6862,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>SR5</source>
       <page>132</page>
     </weapon>
@@ -7061,7 +6883,6 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -7092,7 +6913,6 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -7123,7 +6943,6 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -7139,49 +6958,6 @@
     </weapon>
     <!-- End Region -->
     <!-- Region Run and Gun -->
-    <weapon>
-      <id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
-      <name>HK XM30 Grenade Launcher</name>
-      <category>Underbarrel Weapons</category>
-      <hide />
-      <type>Ranged</type>
-      <conceal>6</conceal>
-      <spec>Grenade Launchers</spec>
-      <accuracy>4</accuracy>
-      <reach>0</reach>
-      <damage>Grenade</damage>
-      <ap>-</ap>
-      <mode>SS</mode>
-      <rc>0</rc>
-      <ammo>6(c)</ammo>
-      <ammocategory>Grenade Launchers</ammocategory>
-      <avail>0</avail>
-      <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Internal</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
-      <accessories>
-        <accessory>
-          <name>Shock Pad</name>
-        </accessory>
-        <accessory>
-          <name>Imaging Scope</name>
-        </accessory>
-        <accessory>
-          <name>Smartgun System, Internal</name>
-        </accessory>
-      </accessories>
-      <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launchers</range>
-      <source>RG</source>
-      <page>37</page>
-    </weapon>
     <weapon>
       <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
       <name>Nissan Optiumum II Shotgun</name>
@@ -7200,7 +6976,6 @@
       <ammocategory>Shotguns</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -7219,7 +6994,7 @@
       </accessories>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>RG</source>
       <page>38</page>
     </weapon>
@@ -7241,7 +7016,6 @@
       <ammo>15(c)</ammo>
       <avail>6R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -7267,7 +7041,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SASS</source>
       <page>31</page>
     </weapon>
@@ -7287,7 +7060,6 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>SASS</source>
       <page>31</page>
     </weapon>
@@ -7310,7 +7082,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>113</page>
@@ -7331,7 +7103,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>113</page>
@@ -7352,7 +7124,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>113</page>
@@ -7373,7 +7145,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>112</page>
@@ -7394,7 +7166,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7415,7 +7187,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7436,7 +7208,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7457,7 +7229,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>115</page>
@@ -7478,7 +7250,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>118</page>
@@ -7499,7 +7271,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>105</page>
@@ -7520,7 +7292,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>137</page>
@@ -7541,7 +7313,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>105</page>
@@ -7562,7 +7334,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>RF</source>
       <page>105</page>
@@ -7588,7 +7360,7 @@
       <avail>12R</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>CF</source>
       <page>92</page>
@@ -7610,7 +7382,7 @@
       <avail>12F</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Tasers</range>
       <source>CF</source>
@@ -7633,7 +7405,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>91</page>
@@ -7655,7 +7427,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>91</page>
@@ -7677,7 +7449,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>91</page>
@@ -7700,7 +7472,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7721,7 +7493,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7742,7 +7514,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>122</page>
@@ -7763,7 +7535,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7784,7 +7556,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7805,7 +7577,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7826,7 +7598,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7847,7 +7619,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7868,7 +7640,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7889,7 +7661,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>121</page>
@@ -7897,7 +7669,7 @@
     <weapon>
       <id>b6989b15-0ddb-4d0d-b178-312560e8bce2</id>
       <name>Raptor Foot</name>
-      <category>Bio-Weapon</category>
+      <category>Cyberweapon</category>
       <hide />
       <type>Melee</type>
       <conceal>0</conceal>
@@ -7910,7 +7682,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>CF</source>
       <page>90</page>
@@ -7918,7 +7690,7 @@
     <weapon>
       <id>7daa50cc-67d5-43d1-b779-28d444a9d519</id>
       <name>Grapple Fist</name>
-      <category>Bio-Weapon</category>
+      <category>Cyberweapon</category>
       <hide />
       <type>Ranged</type>
       <conceal>0</conceal>
@@ -7957,7 +7729,6 @@
       <ammo>1(b)</ammo>
       <avail>15F</avail>
       <cost>10000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -7983,7 +7754,6 @@
       <ammo>0</ammo>
       <avail>6R</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <source>HT</source>
       <page>179</page>
     </weapon>
@@ -8003,14 +7773,13 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>75</cost>
-      <allowaccessory>true</allowaccessory>
       <source>HT</source>
       <page>179</page>
     </weapon>
     <weapon>
       <id>d036885b-4238-4ed7-ae9d-5dba97071e19</id>
       <name>Foot Blade</name>
-      <category>Blades</category>
+      <category>Cyberweapon</category>
       <hide />
       <type>Melee</type>
       <conceal>0</conceal>
@@ -8025,7 +7794,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -8033,10 +7801,10 @@
     <weapon>
       <id>7b928bc3-c44e-4002-b8ac-17a2bdd01d5a</id>
       <name>Bone Spike I</name>
-      <category>Blades</category>
+      <category>Bio-Weapon</category>
       <hide />
       <type>Melee</type>
-      <conceal>0</conceal>
+      <conceal>-10</conceal>
       <spec>Cyber Implants</spec>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
@@ -8048,7 +7816,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -8056,7 +7824,7 @@
     <weapon>
       <id>2ef46f42-8890-48fd-bb94-67c34c12f0fb</id>
       <name>Bone Spike II</name>
-      <category>Blades</category>
+      <category>Bio-Weapon</category>
       <hide />
       <type>Melee</type>
       <conceal>0</conceal>
@@ -8071,7 +7839,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -8079,7 +7847,7 @@
     <weapon>
       <id>3babb9d3-a3bb-4c8f-96ce-73f27b6ec7a6</id>
       <name>Bone Spike III</name>
-      <category>Blades</category>
+      <category>Bio-Weapon</category>
       <hide />
       <type>Melee</type>
       <conceal>0</conceal>
@@ -8094,7 +7862,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>185</page>
@@ -8115,7 +7883,6 @@
       <ammo>0</ammo>
       <avail>14R</avail>
       <cost>1250</cost>
-      <allowaccessory>true</allowaccessory>
       <source>HT</source>
       <page>180</page>
     </weapon>
@@ -8135,7 +7902,6 @@
       <ammo>0</ammo>
       <avail>16R</avail>
       <cost>2350</cost>
-      <allowaccessory>true</allowaccessory>
       <source>HT</source>
       <page>183</page>
     </weapon>
@@ -8145,7 +7911,7 @@
       <category>Blades</category>
       <type>Melee</type>
       <conceal>4</conceal>
-      <spec>Swords</spec>
+      <spec>Axes</spec>
       <accuracy>5</accuracy>
       <reach>1</reach>
       <damage>(STR+2)P</damage>
@@ -8155,7 +7921,6 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>250</cost>
-      <allowaccessory>true</allowaccessory>
       <source>HT</source>
       <page>179</page>
     </weapon>
@@ -8175,7 +7940,6 @@
       <ammo>0</ammo>
       <avail>6F</avail>
       <cost>40</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Aerodynamic Grenade</range>
       <source>HT</source>
@@ -8197,7 +7961,6 @@
       <ammo>1</ammo>
       <avail>12</avail>
       <cost>1200</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Archery</useskill>
       <source>HT</source>
       <page>179</page>
@@ -8218,7 +7981,6 @@
       <ammo>20(c)</ammo>
       <avail>7F</avail>
       <cost>320</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -8243,7 +8005,6 @@
       <ammo>2(c)</ammo>
       <avail>8F</avail>
       <cost>775</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Flamethrowers</range>
       <source>HT</source>
@@ -8265,7 +8026,6 @@
       <ammo>6(ml)</ammo>
       <avail>14R</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Exotic Ranged Weapon</useskill>
       <range>Light Pistols</range>
       <source>HT</source>
@@ -8286,7 +8046,6 @@
       <ammo>10(c)</ammo>
       <avail>20F</avail>
       <cost>19000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -8311,7 +8070,6 @@
       <ammo>0</ammo>
       <avail>2</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>HT</source>
       <page>179</page>
@@ -8332,7 +8090,6 @@
       <ammo>16(c)</ammo>
       <avail>5R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -8363,7 +8120,6 @@
       <ammo>9(cy)</ammo>
       <avail>8R</avail>
       <cost>1080</cost>
-      <allowaccessory>true</allowaccessory>
       <underbarrels>
         <underbarrel>Lemat 2072 (Shotgun Barrel)</underbarrel>
       </underbarrels>
@@ -8398,7 +8154,7 @@
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <source>HT</source>
       <page>178</page>
@@ -8421,9 +8177,8 @@
       <ammo>1</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
-	  <range>Medium Crossbows</range>
+      <range>Medium Crossbows</range>
       <source>HT</source>
       <page>182</page>
     </weapon>
@@ -8444,10 +8199,9 @@
       <ammo>4(m)</ammo>
       <avail>5R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
-	  <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <range>Shotguns</range>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>HT</source>
       <page>182</page>
     </weapon>
@@ -8469,7 +8223,6 @@
       <ammo>5(c) or external source</ammo>
       <avail>16F</avail>
       <cost>22000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
       <source>HT</source>
       <page>182</page>
@@ -8533,7 +8286,6 @@
       <ammo>10(c) or Internal source</ammo>
       <avail>16F</avail>
       <cost>1000000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -8561,7 +8313,6 @@
       <ammo>16(c)</ammo>
       <avail>5R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -8587,21 +8338,21 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
-      <accuracy>3</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
-      <damage>10P</damage>
+      <damage>12P(f)</damage>
       <ap>-1</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>10(c)</ammo>
+      <ammo>2(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <accessories />
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB2</source>
       <page>0</page>
     </weapon>
@@ -8612,19 +8363,19 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
       <ap>-4</ap>
       <mode>SA</mode>
       <rc>1</rc>
+      <range>Sniper Rifles</range>
       <ammo>6(m)</ammo>
       <avail>5R</avail>
       <cost>1800</cost>
       <underbarrels>
         <underbarrel>Mannlicher Marpingen Pro D (Shotgun Barrels)</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8648,7 +8399,7 @@
       <name>HK MP75</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>2</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -8658,7 +8409,6 @@
       <ammo>30(c)</ammo>
       <avail>12F</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8691,20 +8441,20 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Shotguns</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>13P</damage>
-      <ap>0</ap>
+      <damage>14P(f)</damage>
+      <ap>+1</ap>
       <mode>SS</mode>
       <rc>1</rc>
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB</source>
       <page>0</page>
     </weapon>
@@ -8715,20 +8465,19 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>11P</damage>
-      <ap>-4</ap>
-      <mode>SA</mode>
+      <damage>12P</damage>
+      <ap>-3</ap>
+      <mode>SS</mode>
       <rc>1</rc>
-      <ammo>6(m)</ammo>
-      <avail>5R</avail>
-      <cost>1800</cost>
+      <ammo>1(b)</ammo>
+      <avail>6R</avail>
+      <cost>1550</cost>
       <underbarrels>
         <underbarrel>Mannlicher Dirmingen SX BD: Shotgun Barrel</underbarrel>
         <underbarrel>Mannlicher Dirmingen SX BD: Small Caliber</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8738,8 +8487,8 @@
         <mount>Under</mount>
       </accessorymounts>
       <useskill>Longarms</useskill>
-      <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <range>Shotguns (slug)</range>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB2</source>
       <page>0</page>
     </weapon>
@@ -8751,19 +8500,19 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <spec>Sporting Rifles</spec>
-      <accuracy>3</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>11P</damage>
-      <ap>-4</ap>
+      <damage>6P</damage>
+      <ap>0</ap>
       <mode>SA</mode>
       <rc>1</rc>
-      <ammo>6(m)</ammo>
+      <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <useskill>Longarms</useskill>
-      <range>Light Pistols</range>
+      <range>Machine Pistols</range>
       <source>SHB2</source>
       <page>0</page>
     </weapon>
@@ -8783,7 +8532,6 @@
       <ammo>16(c)</ammo>
       <avail>7R</avail>
       <cost>325</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -8803,7 +8551,7 @@
       <source>SHB2</source>
       <page>0</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>44d3a69e-643e-42e2-9c68-c7772d27ffa6</id>
       <name>Onotari Arms Troublemaker</name>
       <category>Heavy Pistols</category>
@@ -8819,7 +8567,6 @@
       <ammo>18(c)</ammo>
       <avail>8R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -8836,7 +8583,7 @@
       <source>SHB</source>
       <page>0</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>19187f49-5197-4560-95a4-53d51535b38f</id>
       <name>Altmayr SPX</name>
       <category>Shotguns</category>
@@ -8852,7 +8599,6 @@
       <ammo>8(m)</ammo>
       <avail>4R</avail>
       <cost>475</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8863,11 +8609,11 @@
       </accessorymounts>
       <accessories />
       <useskill>Longarms</useskill>
-      <range>Shotguns</range>
+      <range>Heavy Pistols</range>
       <source>SHB</source>
       <page>0</page>
     </weapon>
-	<weapon>
+    <weapon>
       <id>91082bdb-f3d7-432f-ad7a-2aaa3d82fa5f</id>
       <name>Onotari Arms SIG-6</name>
       <category>Submachine Guns</category>
@@ -8883,7 +8629,6 @@
       <ammo>16(c) or 32(c)</ammo>
       <avail>7R</avail>
       <cost>780</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8893,10 +8638,10 @@
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-		<accessory>Smartgun System, Internal</accessory>
-		<accessory>Folding Stock</accessory>
-		<accessory>Gas-Vent II</accessory>
-	  </accessories>
+        <accessory>Smartgun System, Internal</accessory>
+        <accessory>Folding Stock</accessory>
+        <accessory>Gas-Vent II</accessory>
+      </accessories>
       <useskill>Automatics</useskill>
       <range>Submachine Guns</range>
       <source>SHB</source>
@@ -8920,7 +8665,6 @@
       <ammo>0</ammo>
       <avail>8</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <source>CA</source>
       <page>132</page>
     </weapon>
@@ -8940,7 +8684,6 @@
       <ammo>6(c)</ammo>
       <avail>8R</avail>
       <cost>325</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -8975,7 +8718,6 @@
       <ammo>8(ML)x4</ammo>
       <avail>10R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9006,7 +8748,6 @@
       <ammo>12(c)</ammo>
       <avail>9R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9042,7 +8783,6 @@
       <ammo>1(b)</ammo>
       <avail>6R</avail>
       <cost>325</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9064,7 +8804,6 @@
       <ammo>0</ammo>
       <avail>9F</avail>
       <cost>220</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9086,7 +8825,6 @@
       <ammo>1(c)</ammo>
       <avail>3</avail>
       <cost>45</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9108,7 +8846,6 @@
       <ammo>1(c)</ammo>
       <avail>4F</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9130,7 +8867,7 @@
       <ammo>0</ammo>
       <avail>4</avail>
       <cost>120</cost>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9152,7 +8889,6 @@
       <ammo>0</ammo>
       <avail>5</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts />
       <accessories />
       <source>CA</source>
@@ -9175,7 +8911,6 @@
       <ammo>0</ammo>
       <avail>14R</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <source>CA</source>
       <page>137</page>
     </weapon>
@@ -9198,7 +8933,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -9221,7 +8955,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -9244,7 +8977,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -9267,7 +8999,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>true</allowaccessory>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -9290,7 +9021,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9312,7 +9043,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>falsye</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9334,7 +9065,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9356,7 +9087,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9378,7 +9109,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9386,7 +9117,7 @@
       <id>3011640d-c504-4af1-bbb5-25f42492a7ff</id>
       <name>Cyber Shotgun (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <hide />
       <type>Ranged</type>
       <conceal>-6</conceal>
@@ -9400,7 +9131,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>yes</cyberware>
-      <allowaccessory>false</allowaccessory>
+      <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
     </weapon>
@@ -9419,7 +9150,6 @@
       <ammo>4(m)</ammo>
       <avail>3R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9447,7 +9177,6 @@
       <ammo>6(c)</ammo>
       <avail>4R</avail>
       <cost>100</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>184</page>
     </weapon>
@@ -9466,7 +9195,6 @@
       <ammo>4(c)</ammo>
       <avail>2R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>184</page>
     </weapon>
@@ -9485,7 +9213,6 @@
       <ammo>2(b)</ammo>
       <avail>3R</avail>
       <cost>200</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>184</page>
     </weapon>
@@ -9505,7 +9232,6 @@
       <ammo>16(c)</ammo>
       <avail>3R</avail>
       <cost>475</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9531,7 +9257,6 @@
       <ammo>20(c)</ammo>
       <avail>5R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9562,7 +9287,6 @@
       <ammo>12(c)</ammo>
       <avail>4R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9588,7 +9312,6 @@
       <ammo>11(c)</ammo>
       <avail>4R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9614,7 +9337,6 @@
       <ammo>10(c)</ammo>
       <avail>6R</avail>
       <cost>400</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9645,7 +9367,6 @@
       <ammo>22(c)</ammo>
       <avail>6R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9676,7 +9397,6 @@
       <ammo>40(c)</ammo>
       <avail>5F</avail>
       <cost>950</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9704,7 +9424,6 @@
       <ammo>35(c)</ammo>
       <avail>6R</avail>
       <cost>270</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9737,7 +9456,6 @@
       <ammo>15(c)</ammo>
       <avail>4R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9763,7 +9481,6 @@
       <ammo>30(c)</ammo>
       <avail>5R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9794,7 +9511,6 @@
       <ammo>10(c)</ammo>
       <avail>3R</avail>
       <cost>450</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9820,7 +9536,6 @@
       <ammo>16(c)</ammo>
       <avail>4R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9851,7 +9566,6 @@
       <ammo>8(m)</ammo>
       <avail>4R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9877,7 +9591,6 @@
       <ammo>6(cy)</ammo>
       <avail>3R</avail>
       <cost>300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -9902,7 +9615,6 @@
       <ammo>30(c)</ammo>
       <avail>5F</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9934,7 +9646,6 @@
       <ammo>35(c)</ammo>
       <avail>5F</avail>
       <cost>900</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9969,7 +9680,6 @@
       <ammo>28(c)</ammo>
       <avail>4F</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10007,7 +9717,6 @@
       <ammo>32(c)</ammo>
       <avail>4F</avail>
       <cost>950</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -10043,7 +9752,6 @@
       <ammo>24(c)</ammo>
       <avail>4F</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -10076,7 +9784,6 @@
       <ammo>22(c)</ammo>
       <avail>3F</avail>
       <cost>500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10106,7 +9813,6 @@
       <underbarrels>
         <underbarrel>AK-98 Grenade Launcher</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10136,7 +9842,6 @@
       <underbarrels>
         <underbarrel>Colt M22A2 Grenade Launcher (2050)</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10165,7 +9870,6 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
       <range>Grenade Launchers</range>
       <source>2050</source>
@@ -10197,7 +9901,6 @@
           <name>Gas-Vent 2 System</name>
         </accessory>
       </accessories>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10224,7 +9927,6 @@
       <ammo>6(m)</ammo>
       <avail>12F</avail>
       <cost>4000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10259,7 +9961,6 @@
       <ammo>5(m)</ammo>
       <avail>3R</avail>
       <cost>600</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10290,7 +9991,6 @@
       <ammo>5(m)</ammo>
       <avail>3R</avail>
       <cost>800</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10321,7 +10021,6 @@
       <ammo>5(m)</ammo>
       <avail>3R</avail>
       <cost>1300</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10356,7 +10055,6 @@
       <ammo>10(m)</ammo>
       <avail>12F</avail>
       <cost>6500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10394,7 +10092,6 @@
         <underbarrel>Styre AUG-CSL Assault Rifles (2050)</underbarrel>
         <underbarrel>Styre AUG-CSL LMG (2050)</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10422,7 +10119,6 @@
       <ammo>40(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10455,7 +10151,6 @@
       <ammo>40(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10488,7 +10183,6 @@
       <ammo>40(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10521,7 +10215,6 @@
       <ammo>40(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10554,7 +10247,6 @@
       <ammo>0</ammo>
       <avail>5F</avail>
       <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>2050</source>
@@ -10576,9 +10268,8 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10597,7 +10288,6 @@
       <ammo>0</ammo>
       <avail>4F</avail>
       <cost>45</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>2050</source>
@@ -10618,9 +10308,8 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10639,7 +10328,6 @@
       <ammo>0</ammo>
       <avail>4F</avail>
       <cost>35</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>2050</source>
@@ -10660,9 +10348,8 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10681,7 +10368,6 @@
       <ammo>0</ammo>
       <avail>3R</avail>
       <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Throwing Weapons</useskill>
       <range>Standard Grenade</range>
       <source>2050</source>
@@ -10702,9 +10388,8 @@
       <ammo>0</ammo>
       <avail>3R</avail>
       <cost>60</cost>
-      <allowaccessory>true</allowaccessory>
       <useskill>Heavy Weapons</useskill>
-      <range>Grenade Launcher</range>
+      <range>Grenade Launchers</range>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10723,7 +10408,6 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10742,7 +10426,6 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10761,7 +10444,6 @@
       <ammo>0</ammo>
       <avail>8F</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10780,7 +10462,6 @@
       <ammo>0</ammo>
       <avail>12F</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10799,7 +10480,6 @@
       <ammo>0</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10818,7 +10498,6 @@
       <ammo>0</ammo>
       <avail>12F</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>191</page>
     </weapon>
@@ -10837,7 +10516,6 @@
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>12000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>196</page>
     </weapon>
@@ -10856,7 +10534,6 @@
       <ammo>6(b)</ammo>
       <avail>12F</avail>
       <cost>15000</cost>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>196</page>
     </weapon>
@@ -10876,7 +10553,6 @@
       <avail>15R</avail>
       <cost>20000</cost>
       <range>Submachine Guns</range>
-      <allowaccessory>true</allowaccessory>
       <source>2050</source>
       <page>196</page>
     </weapon>
@@ -10895,7 +10571,6 @@
       <ammo>5(m)</ammo>
       <avail>3R</avail>
       <cost>750</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10911,7 +10586,7 @@
       <id>ea074ca2-6309-4af9-ba63-1a39223c721a</id>
       <name>Enfield AS-7 (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10923,18 +10598,19 @@
       <ammo>10(c) or 24(d)</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
         <mount>Internal</mount>
-        <mount>Barrel</mount>                
+        <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-        <accessory><name>Laser Sight</name></accessory>
-      </accessories>            
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
+      </accessories>
       <source>2050</source>
       <page>186</page>
     </weapon>
@@ -10942,7 +10618,7 @@
       <id>12dfa7c1-209a-4cb9-ac3d-8012c369177b</id>
       <name>Mossberg CMDT (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10954,7 +10630,6 @@
       <ammo>8(c)</ammo>
       <avail>8F</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10965,12 +10640,12 @@
       </accessorymounts>
       <source>2050</source>
       <page>186</page>
-    </weapon>        
+    </weapon>
     <weapon>
       <id>28952d02-310f-43ab-90f3-1f04374d7231</id>
       <name>Mossberg CMDT/SM (2050)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -10982,7 +10657,6 @@
       <ammo>8(c)</ammo>
       <avail>12F</avail>
       <cost>1900</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10992,11 +10666,13 @@
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-        <accessory><name>Smartgun System, Internal</name></accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
       </accessories>
       <source>2050</source>
       <page>186</page>
-    </weapon>        
+    </weapon>
     <!-- End SR5 2050 -->
     <!-- End Region -->
     <!-- Region SotA ADL -->
@@ -11015,7 +10691,6 @@
       <ammo>4(s)</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessories>
         <accessory>
           <name rating="4">Ceramic/Plasteel Components</name>
@@ -11040,7 +10715,6 @@
       <ammo>6(cy)</ammo>
       <avail>5R</avail>
       <cost>725</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11074,7 +10748,6 @@
       <ammo>12(c)</ammo>
       <avail>11R</avail>
       <cost>890</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11111,7 +10784,6 @@
       <ammo>10(c)</ammo>
       <avail>16F</avail>
       <cost>2400</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11137,7 +10809,6 @@
       <ammo>18(c)</ammo>
       <avail>10R</avail>
       <cost>925</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11170,7 +10841,6 @@
       <ammo>28(c)</ammo>
       <avail>6R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11204,7 +10874,6 @@
       <ammo>28(c)</ammo>
       <avail>6R</avail>
       <cost>700</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11253,7 +10922,6 @@
       <ammo>24(c)</ammo>
       <avail>15F</avail>
       <cost>1500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11293,7 +10961,6 @@
       <ammo>24(c)</ammo>
       <avail>15F</avail>
       <cost>2000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11333,7 +11000,6 @@
       <ammo>30(c)</ammo>
       <avail>9F</avail>
       <cost>850</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11348,7 +11014,7 @@
         <accessory>
           <name>Slide Mount</name>
         </accessory>
-		<accessory>
+        <accessory>
           <name>Slide Mount</name>
         </accessory>
       </accessories>
@@ -11373,7 +11039,6 @@
       <underbarrels>
         <underbarrel>HK Urban Enforcer Microgrenade Launcher</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11382,7 +11047,9 @@
         <mount>Internal</mount>
       </accessorymounts>
       <accessories>
-        <accessory><name>Trigger Removal</name></accessory>
+        <accessory>
+          <name>Trigger Removal</name>
+        </accessory>
         <accessory>
           <name>Electronic Firing</name>
         </accessory>
@@ -11416,7 +11083,6 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11450,7 +11116,6 @@
         <underbarrel>Steyr AUG-CSL III (LMG)</underbarrel>
         <underbarrel>Steyr AUG-CSL III (Sniper Rifle)</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11490,7 +11155,6 @@
       <ammo>36(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11532,7 +11196,6 @@
       <ammo>50(m)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11574,7 +11237,6 @@
       <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11617,7 +11279,6 @@
       <underbarrels>
         <underbarrel>HK G12A4 Grenade Launcher</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11672,7 +11333,6 @@
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11704,7 +11364,6 @@
       <underbarrels>
         <underbarrel>Steyr UCR Underbarrel Shotgun</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11741,7 +11400,6 @@
       <ammocategory>Shotguns</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11752,7 +11410,7 @@
       </accessorymounts>
       <useskill>Longarms</useskill>
       <range>Shotguns</range>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SAG</source>
       <page>31</page>
     </weapon>
@@ -11772,7 +11430,6 @@
       <ammocategory>Assault Rifles</ammocategory>
       <avail>10F</avail>
       <cost>8500</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11808,7 +11465,6 @@
       <ammo>10(s)</ammo>
       <avail>18F</avail>
       <cost>45000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11848,7 +11504,7 @@
       <id>59cd61ef-4fb0-45e4-96cf-74c62c2b4fe8</id>
       <name>Altmayr SPX2</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -11860,7 +11516,6 @@
       <ammo>8(m)</ammo>
       <avail>4R</avail>
       <cost>475</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11869,6 +11524,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <range>Heavy Pistols</range>
       <source>SAG</source>
       <page>34</page>
     </weapon>
@@ -11876,7 +11532,7 @@
       <id>37cc0c65-6944-46cd-90e1-43ad35d441e8</id>
       <name>Onotari Arms Pressure KS-X</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>2</conceal>
       <accuracy>4</accuracy>
@@ -11885,10 +11541,9 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>6(s)</ammo>
+      <ammo>6(c)</ammo>
       <avail>12F</avail>
       <cost>1200</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11914,7 +11569,7 @@
       <id>a4809028-f1bb-4ba0-b4d5-8b5b6d1d0aed</id>
       <name>PJSS Model 75</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11926,7 +11581,6 @@
       <ammo>2(b)</ammo>
       <avail>8R</avail>
       <cost>1200</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11947,7 +11601,7 @@
       <id>d7d1f16d-9e55-4629-ae3f-f5d3bd57e52f</id>
       <name>PJSS Model 75-III (Shotgun Barrel)</name>
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11962,7 +11616,6 @@
       <underbarrels>
         <underbarrel>PJSS Model 75-III (Rifle Barrel)</underbarrel>
       </underbarrels>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11984,7 +11637,7 @@
       <name>PJSS Model 75-III (Rifle Barrel)</name>
       <hide />
       <category>Shotguns</category>
-	  <alternaterange>Shotguns (flechette)</alternaterange>
+      <alternaterange>Shotguns (flechette)</alternaterange>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
@@ -11996,7 +11649,6 @@
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
       <accessories>
         <accessory>
           <name>Shock Pad</name>
@@ -12020,7 +11672,6 @@
       <ammo>20(c)</ammo>
       <avail>22F</avail>
       <cost>50000</cost>
-      <allowaccessory>true</allowaccessory>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -12053,60 +11704,78 @@
     <!-- Region The Complete Trog -->
     <weapon>
       <id>78beeb28-9ae6-418d-97bb-1d45ac19cee8</id>
-      <name>Osmium Mace (STR 4-)</name>
+      <name>Osmium Mace</name>
       <category>Clubs</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>3</accuracy>
+      <accuracy>3+number({STRAugmented} >= 5)+number({STRAugmented} >= 7)</accuracy>
       <reach>2</reach>
-      <damage>(STR+2)P</damage>
+      <damage>(STR+2+(2*number(STR >= 5))+(2*number(STR >= 7)))P</damage>
       <ap>-1</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
       <avail>14R</avail>
       <cost>5500</cost>
-      <allowaccessory>true</allowaccessory>
       <source>TCT</source>
       <page>185</page>
     </weapon>
+    <!-- End Region -->
+    <!-- Region The Seattle Gambit -->
     <weapon>
-      <id>9b3dfd78-eb44-48ae-9935-a1737f0aea39</id>
-      <name>Osmium Mace (STR 5+)</name>
-      <category>Clubs</category>
-      <type>Melee</type>
+      <id>4189afe7-ec22-40f7-9e5d-fef42b9c9a00</id>
+      <name>Halloweener Barbecue Lighter</name>
+      <category>Flamethrowers</category>
+      <type>Ranged</type>
       <conceal>0</conceal>
       <accuracy>4</accuracy>
-      <reach>2</reach>
-      <damage>(STR+4)P</damage>
-      <ap>-1</ap>
-      <mode>0</mode>
+      <damage>6P</damage>
+      <ap>-6</ap>
+      <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>0</ammo>
-      <avail>14R</avail>
-      <cost>5500</cost>
-      <allowaccessory>true</allowaccessory>
-      <source>TCT</source>
-      <page>185</page>
+      <ammo>12(c)</ammo>
+      <avail>8F</avail>
+      <cost>1200</cost>
+      <source>TSG</source>
+      <page>29</page>
     </weapon>
     <weapon>
-      <id>c3123adb-1f5c-4209-8c5a-21ebdd2f44ec</id>
-      <name>Osmium Mace (STR 7+)</name>
-      <category>Clubs</category>
-      <type>Melee</type>
+      <id>8d9b4142-ba34-4ba8-96a0-27fc0889a225</id>
+      <name>Halloweener Molotov Cocktail</name>
+      <category>Gear</category>
+      <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>5</accuracy>
-      <reach>2</reach>
-      <damage>(STR+6)P</damage>
-      <ap>-1</ap>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>9P (-3/m)</damage>
+      <ap>-6</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>14R</avail>
-      <cost>30</cost>
-      <allowaccessory>true</allowaccessory>
-      <source>TCT</source>
-      <page>185</page>
+      <avail>4F</avail>
+      <cost>50</cost>
+      <useskill>Throwing Weapons</useskill>
+      <range>Standard Grenade</range>
+      <source>TSG</source>
+      <page>29</page>
+    </weapon>
+    <weapon>
+      <id>9d8d3d16-2964-4513-bed5-a25788872ae7</id>
+      <name>Rocket: Incendiary</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>10P (-1/m)</damage>
+      <ap>-6</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12F</avail>
+      <cost>1900</cost>
+      <source>TSG</source>
+      <page>29</page>
     </weapon>
     <!-- End Region -->
   </weapons>
@@ -12267,15 +11936,15 @@
       <rating>0</rating>
       <avail>2</avail>
       <cost>300</cost>
-	  <gears>
-	    <usegear>
-		  <name>Camera, Micro</name>
-		  <category>Vision Devices</category>
-		</usegear>
-		<usegear>
-		  <name>Vision Magnification</name>
-		  <category>Vision Enhancements</category>
-		</usegear>
+      <gears>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
+        <usegear>
+          <name>Vision Magnification</name>
+          <category>Vision Enhancements</category>
+        </usegear>
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
@@ -12291,10 +11960,10 @@
       <avail>2</avail>
       <cost>300</cost>
       <gears>
-		<usegear>
-		  <name>Vision Magnification</name>
-		  <category>Vision Enhancements</category>
-		</usegear>
+        <usegear>
+          <name>Vision Magnification</name>
+          <category>Vision Enhancements</category>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>432</page>
@@ -12455,15 +12124,15 @@
       <rating>0</rating>
       <avail>+2R</avail>
       <cost>Weapon Cost</cost>
-	  <gears>
-	    <usegear>
-		  <name>Laser Range Finder</name>
-		  <category>Sensor Functions</category>
-		</usegear>
-	    <usegear>
-		  <name>Camera, Micro</name>
-		  <category>Vision Devices</category>
-		</usegear>
+      <gears>
+        <usegear>
+          <name>Laser Range Finder</name>
+          <category>Sensor Functions</category>
+        </usegear>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>433</page>
@@ -12487,14 +12156,14 @@
       <avail>4R</avail>
       <cost>200</cost>
       <gears>
-	    <usegear>
-		  <name>Laser Range Finder</name>
-		  <category>Sensor Functions</category>
-		</usegear>
-	    <usegear>
-		  <name>Camera, Micro</name>
-		  <category>Vision Devices</category>
-		</usegear>
+        <usegear>
+          <name>Laser Range Finder</name>
+          <category>Sensor Functions</category>
+        </usegear>
+        <usegear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>433</page>
@@ -13742,7 +13411,7 @@
       <page>197</page>
     </accessory>
     <!-- End Region -->
-    <!-- Shadowrun 2050 SR5 -->
+    <!-- Region Shadowrun 2050 SR5 -->
     <accessory>
       <id>0c2e21a0-4f1d-409d-a33e-cb3d5f0b0897</id>
       <name>Tripod (2050)</name>
@@ -13989,10 +13658,10 @@
       <avail>3</avail>
       <cost>500</cost>
       <gears>
-		<usegear>
-		  <name>Vision Magnification</name>
-		  <category>Vision Enhancements</category>
-		</usegear>
+        <usegear>
+          <name>Vision Magnification</name>
+          <category>Vision Enhancements</category>
+        </usegear>
       </gears>
       <allowgear>
         <gearcategory>Vision Enhancements</gearcategory>
@@ -14033,70 +13702,70 @@
       <source>SAG</source>
       <page>35</page>
     </accessory>
-	<accessory>
+    <accessory>
       <id>c50723ab-8354-4b32-a1a8-b3720df0dd2d</id>
       <name>Survival Knife Bonuses</name>
       <mount />
-	  <hide />
+      <hide />
       <rating>0</rating>
       <avail>0</avail>
       <cost>0</cost>
-	  <gears>
-	    <usegear>
-		  <name select="GPS Monitor">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+      <gears>
+        <usegear>
+          <name select="GPS Monitor">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Mini-Multitool">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Mini-Multitool">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Micro-Lighter">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Micro-Lighter">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Hidden Compartment">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Hidden Compartment">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Phosphorescent Blade Coating">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Phosphorescent Blade Coating">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>422</page>
     </accessory>
-	<accessory>
+    <accessory>
       <id>471d2d54-34cc-493c-b888-e27498b28e39</id>
       <name>Survival Knife Wireless Bonuses</name>
       <mount />
-	  <hide />
+      <hide />
       <rating>0</rating>
       <avail>0</avail>
       <cost>0</cost>
-	  <gears>
-		<usegear>
-		  <name select="ARO of Local Maps">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+      <gears>
+        <usegear>
+          <name select="ARO of Local Maps">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
-		<usegear>
-		  <name select="Can Make Commcalls">Custom Item</name>
-		  <category>Custom</category>
-		  <source>SR5</source>
+        </usegear>
+        <usegear>
+          <name select="Can Make Commcalls">Custom Item</name>
+          <category>Custom</category>
+          <source>SR5</source>
           <page>422</page>
-		</usegear>
+        </usegear>
       </gears>
       <source>SR5</source>
       <page>422</page>

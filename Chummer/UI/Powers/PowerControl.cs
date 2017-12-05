@@ -83,7 +83,7 @@ namespace Chummer
             {
                 nudRating.Maximum = PowerObject.TotalMaximumLevels;
             }
-            else if (strPropertyName == "Karma" || PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue))
+            else if (PowerObject.Name == "Improved Ability (skill)" || strPropertyName == nameof(PowerObject.CharacterObject.MAG.TotalValue) || strPropertyName == nameof(PowerObject.CharacterObject.MAGAdept.TotalValue))
             {
                 PowerObject.ForceEvent(nameof(PowerObject.TotalMaximumLevels));
             }
@@ -101,14 +101,12 @@ namespace Chummer
             Form frmParent = ParentForm;
             if (PowerObject.FreeLevels > 0)
             {
-
-                foreach (Gear objGear in PowerObject.CharacterObject.Gear
-                    .Where(objGear => objGear.Bonded && objGear.InternalId == PowerObject.CharacterObject.Improvements
-                    .First(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == PowerObject.Name && objImprovement.UniqueName == PowerObject.Extra).SourceName))
+                string strImprovementSourceName = PowerObject.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == PowerObject.Name && x.UniqueName == PowerObject.Extra)?.SourceName;
+                Gear objGear = PowerObject.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
+                if (objGear != null)
                 {
                     objGear.Equipped = false;
                     objGear.Extra = string.Empty;
-                    break;
                 }
             }
             PowerObject.Deleting = true;
@@ -137,7 +135,7 @@ namespace Chummer
                 _objPower.Notes = frmPowerNotes.Notes;
 
             string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
-            if (_objPower.Notes != string.Empty)
+            if (_objPower.Notes != "")
                 strTooltip += "\n\n" + _objPower.Notes;
             tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
         }
@@ -195,8 +193,7 @@ namespace Chummer
         private void lblPowerName_Click(object sender, EventArgs e)
         {
             string strBook = _objPower.Source + " " + _objPower.Page;
-            CommonFunctions objCommon = new CommonFunctions(_objPower.CharacterObject);
-            objCommon.OpenPDF(strBook);
+            CommonFunctions.OpenPDF(strBook, _objPower.CharacterObject);
         }
 
         private void MoveControls()

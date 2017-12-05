@@ -22,6 +22,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -55,7 +56,7 @@ namespace Chummer
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -79,8 +80,7 @@ namespace Chummer
             if (cboLifestyle.SelectedIndex == -1)
                 cboLifestyle.SelectedIndex = 0;
             cboLifestyle.EndUpdate();
-
-
+            
             // Fill the Options list.
             foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
             {
@@ -105,7 +105,19 @@ namespace Chummer
                 else
                 {
                     string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
-                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{strCost}¥]";
+                    decimal decCost = 0.0m;
+                    if (!decimal.TryParse(strCost, out decCost))
+                    {
+                        try
+                        {
+                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost));
+                        }
+                        catch (XPathException)
+                        {
+                            decCost = 0.0m;
+                        }
+                    }
+                    nodOption.Text = $"{objXmlOption["translate"]?.InnerText ?? strOptionName} [{decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)}¥]";
                 }
                 treQualities.Nodes.Add(nodOption);
             }
@@ -252,8 +264,8 @@ namespace Chummer
             _objLifestyle.LifestyleName = cboLifestyle.SelectedValue.ToString();
             _objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
             _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : Convert.ToInt32(nudRoommates.Value);
-            _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
+            _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.LifestyleQualities.Clear();
             _objLifestyle.StyleType = _objType;
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
@@ -308,7 +320,21 @@ namespace Chummer
                 {
                     XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     if (!string.IsNullOrEmpty(objXmlQuality["cost"]?.InnerText))
-                        decCost += Convert.ToDecimal(objXmlQuality["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    {
+                        decimal decLoopCost = 0.0m;
+                        if (!decimal.TryParse(objXmlQuality["cost"].InnerText, out decLoopCost))
+                        {
+                            try
+                            {
+                                decLoopCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objXmlQuality["cost"].InnerText));
+                            }
+                            catch (XPathException)
+                            {
+                                decLoopCost = 0.0m;
+                            }
+                        }
+                        decCost += decLoopCost;
+                    }
                 }
             }
 
@@ -333,13 +359,13 @@ namespace Chummer
             decBaseCost += decBaseCost * baseMultiplier;
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
+            lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             if (nudPercentage.Value != 100)
             {
                 decimal decDiscount = decNuyen;
-                decDiscount = decDiscount * (nudPercentage.Value /100);
-                lblCost.Text += " (" + $"{decDiscount:###,###,##0.##¥}" + ")";
+                decDiscount = decDiscount * (nudPercentage.Value / 100);
+                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥' + ")";
             }
-            lblCost.Text = $"{decNuyen:###,###,##0.##¥}";
             return decNuyen;
         }
 
@@ -387,7 +413,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

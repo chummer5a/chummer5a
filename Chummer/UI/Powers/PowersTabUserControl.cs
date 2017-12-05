@@ -31,7 +31,6 @@ namespace Chummer.UI.Powers
             CalculatePowerPoints();
         }
 
-        private bool _loadCalled;
         private bool _initialized;
         private Character _character;
         private List<Tuple<string, Predicate<Power>>> _dropDownList;
@@ -50,15 +49,12 @@ namespace Chummer.UI.Powers
 
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
-            _loadCalled = true;
             RealLoad();
         }
 
         private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
         {
-            if (_initialized) return;
-
-            if (!(_character != null && _loadCalled)) return;
+            if (_initialized || _character == null) return;
 
             _initialized = true;  //Only do once
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
@@ -70,7 +66,8 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            //this.SuspendLayout();
+            this.SuspendLayout();
+            DoubleBuffered = true;
             MakePowerDisplays();
 
             parts.TaskEnd("MakePowerDisplay()");
@@ -108,11 +105,11 @@ namespace Chummer.UI.Powers
             parts.TaskEnd("visible");
             Panel1_Resize();
             parts.TaskEnd("resize");
+            //this.Update();
+            this.ResumeLayout(true);
+            //this.PerformLayout();
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-            //this.Update();
-            //this.ResumeLayout(true);
-            //this.PerformLayout();
         }
 
         private List<Tuple<string, IComparer<Power>>> GenerateSortList()
@@ -173,11 +170,11 @@ namespace Chummer.UI.Powers
 
         private void Panel1_Resize()
         {
-            int height = pnlPowers.Height;
-            const int intWidth = 255;
-            if (_powers == null) return;
-            _powers.Height = height - _powers.Top;
-            _powers.Size = new Size(pnlPowers.Width - (intWidth+10), pnlPowers.Height - 39);
+            if (_powers != null)
+            {
+                _powers.Height = pnlPowers.Height - _powers.Top;
+                _powers.Width = pnlPowers.Width - _powers.Left;
+            }
         }
 
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,7 +186,6 @@ namespace Chummer.UI.Powers
             {
                 csender.DropDownStyle = ComboBoxStyle.DropDown;
                 _searchMode = true;
-                
             }
             else
             {
@@ -253,10 +249,13 @@ namespace Chummer.UI.Powers
             get
             {
                 int intMAG;
-                if (ObjCharacter.AdeptEnabled && ObjCharacter.MagicianEnabled)
+                if (ObjCharacter.IsMysticAdept)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = ObjCharacter.MysticAdeptPowerPoints;
+                    if (ObjCharacter.Options.MysAdeptSecondMAGAttribute)
+                        intMAG = ObjCharacter.MAGAdept.TotalValue;
+                    else
+                        intMAG = ObjCharacter.MysticAdeptPowerPoints;
                 }
                 else
                 {
@@ -275,7 +274,7 @@ namespace Chummer.UI.Powers
         {
             get
             {
-                return PowerPointsTotal - ObjCharacter.Powers.Sum(objPower => objPower.PowerPoints);
+                return PowerPointsTotal - ObjCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
             }
         }
 

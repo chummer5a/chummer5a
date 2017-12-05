@@ -53,7 +53,7 @@ namespace Chummer
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -264,7 +264,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

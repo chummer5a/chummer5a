@@ -420,9 +420,7 @@
         <td style="white-space: nowrap;"><strong><xsl:value-of select="karma" /></strong></td>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.Nuyen" /></td>
         <td style="white-space: nowrap;"><strong>
-        <xsl:call-template name="fnx-fmt-nmbr">
-          <xsl:with-param name="nmbr" select="nuyen"/>
-        </xsl:call-template>
+          <xsl:value-of select="nuyen"/>
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </strong></td></tr>
       <tr>
@@ -531,7 +529,16 @@
           <td style="white-space: nowrap;"><strong><xsl:value-of select="attributes/attribute[name_english = 'MAG']/base" />
                     <xsl:if test="attributes/attribute[name_english = 'MAG']/total != attributes/attribute[name_english = 'MAG']/base">
                       (<xsl:value-of select="attributes/attribute[name_english = 'MAG']/total" />)
-                    </xsl:if></strong></td><td colspan="2" /></tr>
+                    </xsl:if>
+            <xsl:if test="attributes/attribute[name_english = 'MAGAdept']">
+              | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/base"/>
+              <xsl:if test="attributes/attribute[name_english = 'MAGAdept']/total != attributes/attribute[name_english = 'MAGAdept']/base">
+                (<xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/total"/>)
+              </xsl:if>
+            </xsl:if>
+          </strong></td>
+          <td colspan="2" />
+        </tr>
       </xsl:if>
       <xsl:if test="resenabled = 'True'">
         <tr>
@@ -978,15 +985,46 @@
     </tr>
     <tr>
       <td colspan="7">
-        <xsl:if test="ranges/short!='' or ranges/medium!='' or ranges/long!='' or ranges/extreme!=''">
-          <table style="border-style:solid;border-width:1px;border-color:lightgrey;">
-            <tr><td>Short</td><td>Medium</td><td>Long</td><td>Extreme</td></tr>
+        <xsl:if test="ranges/name != '' or alternateranges/name != ''">
+          <table style="border-style:solid; border-width:1px; border-color:lightgrey; width:100%; cellpadding: 2; cellspacing: 0;">
             <tr>
-              <td><xsl:value-of select="ranges/short" /></td>
-              <td><xsl:value-of select="ranges/medium" /></td>
-              <td><xsl:value-of select="ranges/long" /></td>
-              <td><xsl:value-of select="ranges/extreme" /></td>
+              <th style="text-align: center; vertical-align: middle; width: 36%;">
+                <xsl:value-of select="$lang.Range"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.S"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.M"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.L"/>
+              </th>
+              <th style="text-align: center; vertical-align: middle; width: 16%;">
+                <xsl:value-of select="$lang.E"/>
+              </th>
             </tr>
+            <xsl:for-each select="ranges | alternateranges">
+              <xsl:if test="name != ''">
+                <tr>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="name"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="short"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="medium"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="long"/>
+                  </td>
+                  <td style="text-align: center; vertical-align: middle;">
+                    <xsl:value-of select="extreme"/>
+                  </td>
+                </tr>
+              </xsl:if>
+            </xsl:for-each>
           </table>
         </xsl:if>
       </td>
@@ -995,7 +1033,9 @@
       <tr><td colspan="8"><ul>
       <xsl:if test="count(underbarrel/weapon[type='Ranged']) &gt; 0">
         <li><table>
-          <tr class="smallheader"><td>Underbarrel Weapon</td><td><xsl:value-of select="$lang.DV"/></td><td><xsl:value-of select="$lang.AP"/></td><td><xsl:value-of select="$lang.Mode"/></td><td><xsl:value-of select="$lang.RC"/></td><td><xsl:value-of select="$lang.Ammo"/></td><td><xsl:value-of select="$lang.Accuracy"/></td><td><xsl:value-of select="$lang.Pool"/></td></tr>
+          <tr class="smallheader"><td>
+            <xsl:value-of select="$lang.Under"/>
+          </td><td><xsl:value-of select="$lang.DV"/></td><td><xsl:value-of select="$lang.AP"/></td><td><xsl:value-of select="$lang.Mode"/></td><td><xsl:value-of select="$lang.RC"/></td><td><xsl:value-of select="$lang.Ammo"/></td><td><xsl:value-of select="$lang.Accuracy"/></td><td><xsl:value-of select="$lang.Pool"/></td></tr>
           <xsl:for-each select="underbarrel/weapon[type='Ranged']">
             <xsl:sort select="name" />
             <xsl:call-template name="print_ranged_weapon_stats" />
@@ -1004,7 +1044,10 @@
       </xsl:if>
       <xsl:if test="count(underbarrel/weapon[type='Melee']) &gt; 0">
         <li><table>
-          <tr class="smallheader"><td>Underbarrel Weapon</td><td><xsl:value-of select="$lang.DV"/></td><td><xsl:value-of select="$lang.AP"/></td><td><xsl:value-of select="$lang.Mode"/></td><td><xsl:value-of select="$lang.RC"/></td><td><xsl:value-of select="$lang.Ammo"/></td><td><xsl:value-of select="$lang.Accuracy"/></td><td><xsl:value-of select="$lang.Pool"/></td></tr>
+          <tr class="smallheader">
+            <td>
+              <xsl:value-of select="$lang.Under"/>
+            </td><td><xsl:value-of select="$lang.DV"/></td><td><xsl:value-of select="$lang.AP"/></td><td><xsl:value-of select="$lang.Mode"/></td><td><xsl:value-of select="$lang.RC"/></td><td><xsl:value-of select="$lang.Ammo"/></td><td><xsl:value-of select="$lang.Accuracy"/></td><td><xsl:value-of select="$lang.Pool"/></td></tr>
           <xsl:for-each select="underbarrel/weapon[type='Melee']">
             <xsl:sort select="name" />
             <xsl:call-template name="print_melee_weapon_stats" />

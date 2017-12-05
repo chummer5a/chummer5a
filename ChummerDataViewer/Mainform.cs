@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -70,7 +70,7 @@ namespace ChummerDataViewer
 				_crashReports.Add(crashReport);
 			}
 			
-			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader), true)
+			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader))
 			{
 				Anchor  = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left,
 				Location = new Point(12, 69),

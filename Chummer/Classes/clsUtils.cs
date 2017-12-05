@@ -34,19 +34,16 @@ namespace Chummer
     {
         //someday this should parse into an abstract syntax tree, but this hack
         //have worked for a few years, and will work a few years more
-        public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords )
+        public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords)
         {
             //parse to base math string
             Regex regex = new Regex(string.Join("|", keywords.Keys));
             number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.InvariantCultureInfo));
-
-            XmlDocument objXmlDocument = new XmlDocument();
-            XPathNavigator nav = objXmlDocument.CreateNavigator();
+            
             try
             {
-                XPathExpression xprValue = nav.Compile(number);
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                if (float.TryParse(nav.Evaluate(xprValue)?.ToString(), out parsed))
+                if (float.TryParse(CommonFunctions.EvaluateInvariantXPath(number)?.ToString(), out parsed))
                 {
                     return true;
                 }
@@ -71,59 +68,150 @@ namespace Chummer
             return Process.GetCurrentProcess().ProcessName == "devenv";
         }
 
-        public static Version GitVersion()
+        private static Version _objCachedGitVersion = null;
+        public static Version CachedGitVersion
         {
-            Version verLatestVersion = new Version();
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
+            get
+            {
+                return _objCachedGitVersion;
+            }
+            set
+            {
+                _objCachedGitVersion = value;
+            }
+        }
+        public static void DoCacheGitVersion(object sender, EventArgs e)
+        {
+            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+            if (GlobalOptions.PreferNightlyBuilds)
+            {
+                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
+            }
+            HttpWebRequest request = null;
+            try
+            {
+                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                request = objTemp as HttpWebRequest;
+            }
+            catch (System.Security.SecurityException)
+            {
+                CachedGitVersion = null;
+                return;
+            }
+            if (request == null)
+            {
+                CachedGitVersion = null;
+                return;
+            }
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             request.Accept = "application/json";
             // Get the response.
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response = null;
+            try
+            {
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (WebException)
+            {
+            }
 
             // Get the stream containing content returned by the server.
-            Stream dataStream = response.GetResponseStream();
+            Stream dataStream = response?.GetResponseStream();
+            if (dataStream == null)
+            {
+                CachedGitVersion = null;
+                return;
+            }
+            Version verLatestVersion = null;
             // Open the stream using a StreamReader for easy access.
             StreamReader reader = new StreamReader(dataStream);
             // Read the content.
 
             string responseFromServer = reader.ReadToEnd();
-            string[] stringSeparators = { "," };
+            string[] stringSeparators = new string[] { "," };
             string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string line in result.Where(line => line.Contains("tag_name")))
+            string line = result.FirstOrDefault(x => x.Contains("tag_name"));
+            if (!string.IsNullOrEmpty(line))
             {
-                string strVersion = line.Split(':')[1];
-                strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
-                strVersion = strVersion + ".0";
-                Version.TryParse(strVersion, out verLatestVersion);
-                break;
+                string strVersion = line.Substring(line.IndexOf(':') + 1);
+                if (strVersion.Contains('}'))
+                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
+                strVersion = strVersion.FastEscape('\"');
+                // Adds zeroes if minor and/or build version are missing
+                while (strVersion.Count(x => x == '.') < 2)
+                {
+                    strVersion = strVersion + ".0";
+                }
+                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
             }
             // Cleanup the streams and the response.
             reader.Close();
             dataStream.Close();
             response.Close();
 
-            return verLatestVersion;
+            CachedGitVersion = verLatestVersion;
+            return;
         }
 
         public static int GitUpdateAvailable()
         {
             Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
-            int intResult = GitVersion().CompareTo(verCurrentversion);
+            int intResult = CachedGitVersion?.CompareTo(verCurrentversion) ?? 0;
             return intResult;
         }
-        
+
+        /// <summary>
+        /// Restarts Chummer5a.
+        /// </summary>
+        /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         public static void RestartApplication(string strText = "Message_Options_Restart")
         {
-            string text = LanguageManager.GetString(strText);
-            string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
+            if (!string.IsNullOrEmpty(strText))
+            {
+                string text = LanguageManager.GetString(strText);
+                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
 
-            if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
+                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+            }
+            // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
+            // Cannot use foreach because saving a character as created removes the current form and adds a new one
+            for (int i = 0; i < GlobalOptions.MainForm.OpenCharacterForms.Count; ++i)
+            {
+                CharacterShared objOpenCharacterForm = GlobalOptions.MainForm.OpenCharacterForms[i];
+                if (objOpenCharacterForm.IsDirty)
+                {
+                    string strCharacterName = objOpenCharacterForm.CharacterObject.Alias;
+                    if (string.IsNullOrWhiteSpace(strCharacterName))
+                        strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
+                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (objResult == DialogResult.Yes)
+                    {
+                        // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                        bool blnResult = objOpenCharacterForm.SaveCharacter();
+                        if (!blnResult)
+                            return;
+                        // We saved a character as created, which closed the current form and added a new one
+                        // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
+                        else if (!GlobalOptions.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                            i -= 1;
+                    }
+                    else if (objResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+            }
+            Log.Info("Restart Chummer");
+            GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            arguments += GlobalOptions.MainForm.OpenCharacters.Aggregate(arguments, (current, objCharacter) => current + ("\"" + objCharacter.FileName +"\"" + " "));
+            foreach (Character objOpenCharacter in GlobalOptions.MainForm.OpenCharacters)
+            {
+                arguments += "\"" + objOpenCharacter.FileName + "\" ";
+            }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
             foreach (Form objForm in GlobalOptions.MainForm.MdiChildren)
@@ -132,7 +220,7 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + "\\" + AppDomain.CurrentDomain.FriendlyName,
+                FileName = Application.StartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();

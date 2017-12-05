@@ -191,7 +191,6 @@ namespace Chummer
 
             objWriter.WriteEndDocument();
             objWriter.Close();
-            objStream.Close();
 
             MessageBox.Show(LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;

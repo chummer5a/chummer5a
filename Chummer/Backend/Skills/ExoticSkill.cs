@@ -20,19 +20,15 @@ namespace Chummer.Skills
 
             if (exotic != null)
             {
-                List<Tuple<string, string>> elem = new List<Tuple<string, string>>();
-
                 foreach (XmlNode objLoopNode in exotic)
                 {
                     string strLoopName = string.Empty;
                     if (objLoopNode.TryGetStringFieldQuickly("name", ref strLoopName))
                     {
                         string strLoopTranslate = objLoopNode.Attributes?["translate"]?.InnerText ?? strLoopName;
-                        elem.Add(new Tuple<string, string>(strLoopName, strLoopTranslate));
+                        _specificTranslator.Add(strLoopName, strLoopTranslate);
                     }
                 }
-
-                _specificTranslator.AddRange(elem);
             }
         }
 
@@ -57,7 +53,7 @@ namespace Chummer.Skills
 
         public override int CurrentSpCost()
         {
-            return BasePoints;
+            return Math.Max(BasePoints, 0);
         }
 
         /// <summary>
@@ -66,7 +62,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            return RangeCost(Base + FreeKarma(), TotalBaseRating);
+            return Math.Max(RangeCost(Base + FreeKarma(), TotalBaseRating), 0);
         }
 
         public override bool IsExoticSkill

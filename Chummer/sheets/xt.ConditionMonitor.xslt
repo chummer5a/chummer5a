@@ -100,7 +100,7 @@
       overflow: hidden;
       }
       .conditionmonitorboxnotused {
-      border: solid 0.0em red;
+      border:solid 0.0em #ffffff;
       padding: 0.1em 0.1em 0.1em 0.1em;
       margin: 0;
       border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;

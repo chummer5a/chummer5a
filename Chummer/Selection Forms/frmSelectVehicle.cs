@@ -59,12 +59,19 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
-            chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}",
-                    _objCharacter.MaximumAvailability.ToString());
-            chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            if (_objCharacter.Created)
+            {
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+            }
 
             // Populate the Vehicle Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
@@ -138,7 +145,7 @@ namespace Chummer
             XmlNodeList objXmlVehicleList = _objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
                     objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
@@ -181,7 +188,7 @@ namespace Chummer
 
             string strSelectedCategoryPath = string.Empty;
             // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
+            if (cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString() != "Show All" && _objCharacter.Options.SearchInCategoryOnly))
             {
                 strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
             }
@@ -206,7 +213,7 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter,chkHideOverAvailLimit.Checked))
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
                     ListItem objItem = new ListItem {Value = objXmlVehicle["name"]?.InnerText};
                     objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
@@ -419,28 +426,28 @@ namespace Chummer
             lblVehicleSeats.Text = objXmlVehicle["seats"]?.InnerText;
             lblVehicleSensor.Text = objXmlVehicle["sensor"]?.InnerText;
 
-            string strAvail = objXmlVehicle["avail"]?.InnerText;
+            string strAvail = objXmlVehicle["avail"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strAvail))
             {
                 if (chkUsedVehicle.Checked)
                 {
                     string strSuffix = string.Empty;
-                    if (strAvail.Contains("R") || strAvail.Contains("F"))
+                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
                     {
                         strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-                        strAvail = strAvail.Replace(strSuffix, string.Empty);
+                        // Translate the Avail string.
+                        if (strSuffix == "R")
+                            strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        else if (strSuffix == "F")
+                            strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        strAvail = strAvail.Substring(0, strAvail.Length - 1);
                     }
                     int intTmp;
                     if (int.TryParse(strAvail, out intTmp))
                         strAvail = (intTmp + 4).ToString() + strSuffix;
                 }
-                lblVehicleAvail.Text = strAvail.Replace("R", LanguageManager.GetString("String_AvailRestricted"))
-                        .Replace("F", LanguageManager.GetString("String_AvailForbidden"));
             }
-            else
-            {
-                lblVehicleAvail.Text = string.Empty;
-            }
+            lblVehicleAvail.Text = strAvail;
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
             if (objXmlVehicle["cost"]?.InnerText.StartsWith("Variable") == true)
@@ -465,7 +472,7 @@ namespace Chummer
                     }
                 }
 
-                lblVehicleCost.Text = $"{decCost:###,###,##0.##¥}";
+                lblVehicleCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
             }
 
@@ -500,7 +507,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = objXmlVehicle["category"]?.InnerText;
+            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlVehicle["category"]?.InnerText;
             _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
             _decMarkup = nudMarkup.Value;
 
@@ -552,7 +559,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

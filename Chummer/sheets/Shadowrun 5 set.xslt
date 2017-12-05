@@ -54,94 +54,7 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <style type="text/css">
-          * {
-          font-family: segoe, tahoma, 'trebuchet ms', arial;
-          font-size: 8.25pt;
-          margin: 0;
-          text-align: left;
-          vertical-align: top;
-          }
-          html {
-          height: 100%;
-          margin: 0em;  /* this affects the margin on the html before sending to printer */
-          }
-          .tablestyle {
-          border-collapse: collapse;
-          border-color: #1c4a2d;
-          border-style: solid;
-          border-width: 0.5mm;
-          cellpadding: 2;
-          cellspacing: 0;
-          width: 100%;
-          }
-          .attributecell p {
-          padding: 0.25em;
-          margin: 0.25em;
-          border: solid 0.0625em #1c4a2d;
-          text-transform: uppercase;
-          }
-          .indent {
-          padding-left: 2mm;
-          }
-          .notesrow {
-          text-align: justify;
-          }
-          .notesrow2 {
-          padding-left: 2mm;
-          padding-right: 2mm;
-          text-align: justify;
-          }
-          th {
-          text-align: center;
-          text-transform: uppercase;
-          }
-          .title {
-          font-weight: bold;
-          text-transform: uppercase;
-          }
-          .upper {
-          text-transform: uppercase;
-          }
-          .block {
-          bottom-padding: 0;
-          page-break-inside: avoid;
-          margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
-          }
-          .mugshot {
-          width: auto;
-          max-width: 100%;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-          .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          }
-        </style>
-        <!--[if IE]
-        <style type="text/css">
-        .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-        </style>
-        -->
-        <style media="print">
-          @page {
-          size: auto;
-          margin-top: 0.5in;
-          margin-left: 0.5in;
-          margin-right: 0.5in;
-          margin-bottom: 0.5in;
-          }
-        </style>
+        <xsl:call-template name="Shadowrun5CSS" />
       </head>
       <body>
         <div class="block" style="width: 100%; text-align: center; vertical-align: center; border-bottom: thick solid #1c4a2d; margin: 0; padding-top: 0.9em; padding-bottom: 0.1em; font-weight: bold; font-variant: small-caps; font-size: 17pt; letter-spacing: 0.05em; text-shadow: 0 0 0.05em #fffff, 0 0 0.1em #1c4a2d;">
@@ -167,7 +80,7 @@
               <div class="block" id="PersonalDataBlock" style="line-height: 12pt">
             <table class="tablestyle" style="max-width: 100%;">
               <tr>
-                <td width="10%" class="title">
+                <td width="16.67%" class="title">
                   <xsl:value-of select="$lang.Name"/>:
                 </td>
                 <td colspan="5">
@@ -184,123 +97,123 @@
                     </xsl:otherwise>
                   </xsl:choose>
                 </td>
-                <td width="10%" class="title">
-                  <xsl:value-of select="$lang.Player"/>:
-                </td>
-                <td colspan="3"><xsl:value-of select="playername"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="title">
+                  <xsl:value-of select="$lang.Player"/>:
+                </td>
+                <td colspan="5">
+                  <xsl:value-of select="playername"/>
+                </td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Metatype"/>:
                 </td>
                 <td colspan="3">
                   <xsl:value-of select="metatype"/>
                   <xsl:if test="metavariant != ''"> (<xsl:value-of select="metavariant"/>)</xsl:if>
                 </td>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Age"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="age"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="age"/></td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Sex"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="sex"/></td>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Nuyen"/>:
-                </td>
-                <td width="10%">
-                  <xsl:call-template name="fnx-fmt-nmbr">
-                    <xsl:with-param name="nmbr" select="nuyen"/>
-                  </xsl:call-template><xsl:value-of select="$lang.NuyenSymbol"/>
-                </td>
-              </tr>
-              <tr>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="sex"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Height"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="height"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="height"/></td>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Weight"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="weight"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="weight"/></td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Hair"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="hair"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="hair"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Eyes"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="eyes"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="eyes"/></td>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Skin"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="skin"/></td>
+                <td width="16.67%"><xsl:value-of select="skin"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Karma"/>:
-                </td>
-                <td width="10%"><xsl:value-of select="karma"/></td>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Career"/>
-                  <xsl:text> </xsl:text>
-                  <xsl:value-of select="$lang.Karma"/>:
-                </td>
-                <td width="10%"><xsl:value-of select="totalkarma"/></td>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.StreetCred"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="totalstreetcred"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="totalstreetcred"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Notoriety"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="totalnotoriety"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="totalnotoriety"/></td>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.PublicAwareness"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="totalpublicawareness"/></td>
+                <td width="16.67%"><xsl:value-of select="totalpublicawareness"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Composure"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="composure"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="composure"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.JudgeIntentions"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="judgeintentions"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="judgeintentions"/></td>
+                <td width="16.66%" class="upper">
+                  <xsl:value-of select="$lang.Memory"/>:
+                </td>
+                <td width="16.67%"><xsl:value-of select="memory"/></td>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.LiftCarry"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="liftandcarry"/></td>
-                <td width="10%" class="upper">
+                <td width="16.67%"><xsl:value-of select="liftandcarry"/></td>
+                <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.LiftCarry"/>
                   <xsl:text> </xsl:text>
                   <xsl:value-of select="$lang.Weight"/>:
                 </td>
-                <td width="10%">
-                  <xsl:value-of select="liftweight"/> kg/<xsl:value-of
+                <td width="16.67%">
+                  <xsl:value-of select="liftweight"/> kg / <xsl:value-of
                     select="carryweight"/> kg
                 </td>
-                <td width="10%" class="upper">
+                <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.PrimaryArm"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="primaryarm"/></td>
+                <td width="16.67%"><xsl:value-of select="primaryarm"/></td>
               </tr>
               <tr>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Memory"/>:
+                <xsl:call-template name="MovementRate"/>
+              </tr>
+              <tr>
+                <td width="16.66%" class="upper">
+                  <xsl:value-of select="$lang.Nuyen"/>:
                 </td>
-                <td width="10%"><xsl:value-of select="memory"/></td>
-                <td width="10%"/>
-                <td width="10%"/>
-                <td width="10%" class="upper">
-                  <xsl:value-of select="$lang.Movement"/>:
+                <td width="16.67%" style="white-space: nowrap;">
+                  <xsl:value-of select="nuyen"/><xsl:value-of select="$lang.NuyenSymbol"/>
                 </td>
-                <td colspan="4">
-                  <xsl:call-template name="MovementRate"/>
+                <td width="16.67%" class="upper">
+                  <xsl:value-of select="$lang.Karma"/>:
                 </td>
-                <td width="10%"/>
+                <td width="16.67%"><xsl:value-of select="karma"/></td>
+                <td width="16.66%" class="upper">
+                  <xsl:value-of select="$lang.Career"/>
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="$lang.Karma"/>:
+                </td>
+                <td width="16.67%"><xsl:value-of select="totalkarma"/></td>
               </tr>
             </table>
           </div>
@@ -478,6 +391,12 @@
                         <xsl:value-of select="attributes/attribute[name_english = 'MAG']/base"/>
                         <xsl:if test="attributes/attribute[name_english = 'MAG']/total != attributes/attribute[name_english = 'MAG']/base">
                           (<xsl:value-of select="attributes/attribute[name_english = 'MAG']/total"/>)
+                        </xsl:if>
+                        <xsl:if test="attributes/attribute[name_english = 'MAGAdept']">
+                          | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/base"/>
+                          <xsl:if test="attributes/attribute[name_english = 'MAGAdept']/total != attributes/attribute[name_english = 'MAGAdept']/base">
+                            (<xsl:value-of select="attributes/attribute[name_english = 'MAGAdept']/total"/>)
+                          </xsl:if>
                         </xsl:if>
                       </xsl:when>
                       <xsl:when test="resenabled = 'True'">
@@ -675,10 +594,10 @@
                   <div class="block" id="CMBlock">
                     <table class="tablestyle">
                       <tr>
-                        <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                        <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
                           <xsl:value-of select="$lang.PhysicalTrack"/>
                         </td>
-                        <td width="50%" style="font-weight: bold; text-transform: uppercase; padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
+                        <td width="50%" class="title" style="padding: 0.5em 0.5em 0.5em 0.5em; min-height: 2.25em; text-align: center; vertical-align: middle;">
                           <xsl:value-of select="$lang.StunTrack"/>
                         </td>
                       </tr>
@@ -1696,6 +1615,29 @@
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="rating"/>
               </xsl:if>
+              <xsl:if test="gears/gear">
+                (
+                <xsl:for-each select="gears/gear">
+                  <xsl:sort select="name"/>
+                  <xsl:value-of select="name"/>
+                  <xsl:if test="rating != 0">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.Rating"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="rating"/>
+                  </xsl:if>
+                  <xsl:if test="children/gear">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.with"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="gearplugin">
+                      <xsl:with-param name="gear" select="."/>
+                    </xsl:call-template>
+                  </xsl:if>
+                  <xsl:if test="last() &gt; 1">; </xsl:if>
+                </xsl:for-each>
+                )
+              </xsl:if>
               <xsl:if test="last() &gt; 1">; </xsl:if>
             </xsl:for-each>
           </td>
@@ -2628,7 +2570,7 @@
             </tr>
             <xsl:call-template name="Expenses">
               <xsl:with-param name="type" select="'Nuyen'" />
-              <xsl:with-param name="sfx" select="' '" />
+              <xsl:with-param name="sfx" select="$lang.NuyenSymbol" />
             </xsl:call-template>
           </table>
           <xsl:call-template name="RowSummary">

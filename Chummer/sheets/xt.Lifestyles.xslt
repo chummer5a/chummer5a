@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Character contacts -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:template name="Lifestyles">
 
-    <tr style="font-weight: bold; text-transform: uppercase;">
+    <tr class="title">
       <td width="50%">
         <xsl:value-of select="$lang.Lifestyle"/>
       </td>
@@ -31,10 +31,8 @@
         <td style="text-align: center">
           <xsl:value-of select="baselifestyle"/>
         </td>
-        <td style="text-align: center">
-          <xsl:call-template name="fnx-fmt-nmbr">
-            <xsl:with-param name="nmbr" select="totalmonthlycost"/>        
-          </xsl:call-template>
+        <td style="text-align: center;white-space: nowrap;">
+          <xsl:value-of select="totalmonthlycost"/>
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </td>
         <td style="text-align: center">

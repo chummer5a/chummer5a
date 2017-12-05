@@ -53,6 +53,7 @@ namespace Chummer
             // 
             this.cmdUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdUpdate.Enabled = false;
             this.cmdUpdate.Location = new System.Drawing.Point(12, 514);
             this.cmdUpdate.Name = "cmdUpdate";
             this.cmdUpdate.Size = new System.Drawing.Size(105, 31);
@@ -104,10 +105,10 @@ namespace Chummer
             this.lblUpdaterStatus.AutoSize = true;
             this.lblUpdaterStatus.Location = new System.Drawing.Point(96, 488);
             this.lblUpdaterStatus.Name = "lblUpdaterStatus";
-            this.lblUpdaterStatus.Size = new System.Drawing.Size(61, 13);
+            this.lblUpdaterStatus.Size = new System.Drawing.Size(119, 13);
             this.lblUpdaterStatus.TabIndex = 106;
-            this.lblUpdaterStatus.Tag = "";
-            this.lblUpdaterStatus.Text = "[0.000.000]";
+            this.lblUpdaterStatus.Tag = "String_Checking_For_Update";
+            this.lblUpdaterStatus.Text = "Checking for Updates...";
             // 
             // frmUpdate
             // 
@@ -122,6 +123,7 @@ namespace Chummer
             this.Controls.Add(this.webNotes);
             this.Name = "frmUpdate";
             this.Text = "Chummer Updater";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmUpdate_FormClosing);
             this.Load += new System.EventHandler(this.frmUpdate_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

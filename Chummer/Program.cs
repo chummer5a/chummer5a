@@ -28,6 +28,7 @@ using System.Linq;
 ﻿using Chummer.Backend.Debugging;
 ﻿using Chummer.Debugging;
 
+[assembly: CLSCompliant(true)]
 namespace Chummer
 {
     static class Program

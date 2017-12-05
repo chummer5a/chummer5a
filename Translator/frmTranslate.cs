@@ -162,11 +162,13 @@ namespace Translator
                     {
                         objAttrib = xmlNodeLocal.Attributes["translated"];
                         if (objAttrib == null)
+                        {
                             objAttrib = _objDataDoc.CreateAttribute("translated");
+                            objAttrib.InnerText = bool.TrueString;
+                            xmlNodeLocal.Attributes.Append(objAttrib);
+                        }
                         else
-                            objAttrib.InnerText = System.Boolean.TrueString;
-                        objAttrib.InnerText = System.Boolean.TrueString;
-                        xmlNodeLocal.Attributes.Append(objAttrib);
+                            objAttrib.InnerText = bool.TrueString;
                     }
                 }
             }
@@ -191,7 +193,7 @@ namespace Translator
                     {
                         itemOf = _objDataDoc.CreateAttribute("translated");
                         itemOf.InnerText = System.Boolean.TrueString;
-                        xmlNodeLocal.Attributes?.Append(itemOf);
+                        xmlNodeLocal.Attributes.Append(itemOf);
                     }
                     else
                     {
@@ -324,7 +326,7 @@ namespace Translator
         private void LoadLanguageFiles()
         {
             // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            _strCode = Language.Substring(Language.IndexOf("(") + 1, 2);
+            _strCode = Language.Substring(Language.IndexOf('(') + 1, 5);
             _objTranslationDoc.Load(string.Concat(_strPath, "lang\\", _strCode, ".xml"));
             _objDataDoc.Load(string.Concat(_strPath, "lang\\", _strCode, "_data.xml"));
         }
@@ -362,8 +364,7 @@ namespace Translator
                         strName = childNode.InnerText;
                         if (childNode.Attributes?["translate"] != null)
                             strTranslated = childNode.Attributes["translate"].InnerText;
-                        if (childNode.Attributes?["translated"] != null)
-                            blnTranslated = Convert.ToBoolean(childNode.Attributes["translated"].InnerText);
+                        blnTranslated = strTranslated == System.Boolean.TrueString;
                     }
                     else
                     {
@@ -375,8 +376,9 @@ namespace Translator
                         if (xmlNodeLocal != null)
                             strSource = xmlNodeLocal["source"]?.InnerText;
                         strTranslated = childNode["translate"]?.InnerText;
-                        blnTranslated = childNode.Attributes?["translated"] != null
-                            ? Convert.ToBoolean(childNode.Attributes["translated"].InnerText)
+                        XmlNode xmlNodeAttributesTranslated = childNode.Attributes?["translated"];
+                        blnTranslated = xmlNodeAttributesTranslated != null
+                            ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
                             : strName != strTranslated;
                     }
                     if ((!chkOnlyTranslation.Checked || strName != strTranslated) && chkOnlyTranslation.Checked)
@@ -437,8 +439,9 @@ namespace Translator
                     if (xmlNodeLocal != null)
                     {
                         strTranslated = xmlNodeLocal["text"]?.InnerText;
-                        blnTranslated = xmlNodeEnglish.Attributes?["translated"] != null
-                            ? Convert.ToBoolean(xmlNodeEnglish.Attributes["translated"].InnerText)
+                        XmlNode xmlNodeAttributesTranslated = xmlNodeEnglish.Attributes?["translated"];
+                        blnTranslated = xmlNodeAttributesTranslated != null
+                            ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
                             : strEnglish != strTranslated;
                     }
                     if (chkOnlyTranslation.Checked && (strEnglish == strTranslated || string.IsNullOrWhiteSpace(strTranslated)) || !chkOnlyTranslation.Checked)

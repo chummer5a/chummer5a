@@ -50,7 +50,7 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -65,7 +65,9 @@ namespace Chummer
             foreach (XmlNode objXmlArt in objArtList)
             {
                 XmlNode objXmlQuality = objXmlArt["quality"];
-                if ((_blnShowQualities && objXmlQuality != null) || (!_blnShowQualities && objXmlQuality == null))
+                if (_blnShowQualities != (objXmlQuality != null))
+                    continue;
+                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = objXmlArt["name"].InnerText;
@@ -189,7 +191,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

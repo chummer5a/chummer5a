@@ -91,12 +91,13 @@ namespace Chummer
     /// </summary>
     public class SortByName : IComparer
     {
+        private static readonly char[] chrBrackets = { '[', ']' };
         public int Compare(object objX, object objY)
         {
             TreeNode tx = objX as TreeNode;
             TreeNode ty = objY as TreeNode;
 
-            return string.Compare(tx.Text.Replace("[", string.Empty).Replace("]", string.Empty), ty.Text.Replace("[", string.Empty).Replace("]", string.Empty));
+            return string.Compare(tx.Text.FastEscape(chrBrackets), ty.Text.FastEscape(chrBrackets));
         }
     }
 
@@ -142,6 +143,7 @@ namespace Chummer
             _objObjectCompare = new CaseInsensitiveComparer();
         }
 
+        private static readonly char[] chrCurrencyTrim = { '¥', ',', ' ' };
         public int Compare(object x, object y)
         {
             int compareResult;
@@ -151,12 +153,14 @@ namespace Chummer
             ListViewItem listviewY = (ListViewItem)y;
 
             // Compare the two items
+            string strX = listviewX.SubItems[_intColumnToSort].Text;
+            string strY = listviewY.SubItems[_intColumnToSort].Text;
             if (_intColumnToSort == 0)
-                compareResult = DateTime.Compare(DateTime.Parse(listviewX.SubItems[_intColumnToSort].Text), DateTime.Parse(listviewY.SubItems[_intColumnToSort].Text));
+                compareResult = DateTime.Compare(DateTime.Parse(strX), DateTime.Parse(strY));
             else if (_intColumnToSort == 1)
-                compareResult = _objObjectCompare.Compare(Convert.ToInt32(listviewX.SubItems[_intColumnToSort].Text.Replace("¥", string.Empty).Replace(",", string.Empty).Replace(" ", string.Empty)), Convert.ToInt32(listviewY.SubItems[_intColumnToSort].Text.Replace("¥", string.Empty).Replace(",", string.Empty).Replace(" ", string.Empty)));
+                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape(chrCurrencyTrim)), Convert.ToInt32(strY.FastEscape(chrCurrencyTrim)));
             else
-                compareResult = _objObjectCompare.Compare(listviewX.SubItems[_intColumnToSort].Text, listviewY.SubItems[_intColumnToSort].Text);
+                compareResult = _objObjectCompare.Compare(strX, strY);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)

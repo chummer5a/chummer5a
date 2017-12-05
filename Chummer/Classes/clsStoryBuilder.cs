@@ -19,7 +19,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer
@@ -81,19 +83,19 @@ namespace Chummer
                     }
                 }
 
-                StringBuilder story = new StringBuilder();
-                //Acctualy "write" the story
-                foreach (XmlNode module in modules)
+                string[] story = new string[modules.Count];
+                object storyLock = new object();
+                //Actually "write" the story
+                Parallel.For(0, modules.Count, i =>
                 {
-                    if (module["story"] != null)
-                    {
-                        Write(story, module["story"].InnerText, 5);
-                        story.Append(Environment.NewLine);
-                        story.Append(Environment.NewLine);
-                    }
-                }
+                    XmlNode objStoryModule = modules[i];
+                    StringBuilder objModuleString = new StringBuilder();
+                    Write(objModuleString, objStoryModule.InnerText, 5);
+                    lock (storyLock)
+                        story[i] = objModuleString.ToString();
+                });
 
-                return story.ToString();
+                return string.Join(Environment.NewLine + Environment.NewLine, story);
             }
 
             return string.Empty;
@@ -106,7 +108,7 @@ namespace Chummer
             int startingLength = story.Length;
 
             String[] words;
-            if (innerText.StartsWith("$") && innerText.IndexOf(" ") < 0)
+            if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
                 words = Macro(innerText).Split(" \n\r\t".ToCharArray());
             }
@@ -124,7 +126,7 @@ namespace Chummer
                     story.Append('$');
                     mfix = true;
                 }
-                else if (trim.StartsWith("$"))
+                else if (trim.StartsWith('$'))
                 {
                     //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
                     Write(story, trim, --levels);
@@ -154,11 +156,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            String endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
-            String macroName, macroPool;
-            if (endString.Contains("_"))
+            string endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
+            string macroName, macroPool;
+            if (endString.Contains('_'))
             {
-                String[] split = endString.Split('_');
+                string[] split = endString.Split('_');
                 macroName = split[0];
                 macroPool = split[1];
             }
@@ -192,16 +194,16 @@ namespace Chummer
                     int age;
                     if (int.TryParse(macroPool, out age))
                     {
-                        return (2075 + age - year).ToString();
+                        return (DateTime.UtcNow.Year + 72 + age - year).ToString();
                     }
-                    return (2075 - year).ToString();
+                    return (DateTime.UtcNow.Year + 72 - year).ToString();
                 }
-                return String.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
+                return string.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
             }
 
             //Did not meet predefined macros, check user defined
             
-            String searchString = "/chummer/storybuilder/macros/" + macroName;
+            string searchString = "/chummer/storybuilder/macros/" + macroName;
             XmlDocument objXmlLifeModulesDocument = XmlManager.Load("lifemodules.xml");
 
             if (objXmlLifeModulesDocument != null)

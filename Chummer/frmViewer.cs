@@ -27,6 +27,7 @@ using System.ComponentModel;
  using System.Linq;
 using Codaxy.WkHtmlToPdf;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -34,14 +35,33 @@ namespace Chummer
     {
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXML = new XmlDocument();
-        private string _strSelectedSheet = "Shadowrun 5";
+        private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading = false;
+        private CultureInfo objPrintCulture = GlobalOptions.CultureInfo;
+        private BackgroundWorker _workerRefresher = new BackgroundWorker();
+
         #region Control Events
         public frmViewer()
         {
-            _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
+            _workerRefresher.WorkerSupportsCancellation = true;
+            _workerRefresher.WorkerReportsProgress = false;
+            _workerRefresher.DoWork += AsyncRefresh;
+            _workerRefresher.RunWorkerCompleted += FinishRefresh;
             if (_strSelectedSheet.StartsWith("Shadowrun 4"))
-                _strSelectedSheet = "Shadowrun 5 (Rating greater 0)";
+            {
+                _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+            }
+            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            {
+                if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
+                else if (_strSelectedSheet.IndexOf('-') == -1 || _strSelectedSheet.IndexOf('-') > _strSelectedSheet.IndexOf(Path.DirectorySeparatorChar))
+                {
+                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet.Substring(_strSelectedSheet.IndexOf(Path.DirectorySeparatorChar) + 1));
+                }
+            }
+            else if (_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
+                _strSelectedSheet = _strSelectedSheet.Substring(_strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
@@ -50,6 +70,24 @@ namespace Chummer
 
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
+            ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
+            {
+                cmsPrintButton,
+                cmsSaveButton
+            };
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    {
+                        if (objItem.Tag != null)
+                        {
+                            objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                        }
+                    }
+                }
+            }
             MoveControls();
         }
 
@@ -57,13 +95,20 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
+            PopulateLanguageList();
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-            if (string.IsNullOrEmpty(cboXSLT.Text))
-                cboXSLT.SelectedValue = "Shadowrun 5 (Rating greater 0)";
-            cboXSLT.EndUpdate();
+            if (cboXSLT.SelectedIndex == -1)
+            {
+                if (cboLanguage.SelectedValue.ToString() == GlobalOptions.DefaultLanguage)
+                    cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                else
+                    _strSelectedSheet = Path.Combine(cboLanguage.SelectedValue.ToString(), GlobalOptions.DefaultCharacterSheetDefaultValue);
+                if (cboXSLT.SelectedIndex == -1)
+                    cboXSLT.SelectedIndex = 0;
+            }
             GenerateOutput();
             _blnLoading = false;
         }
@@ -73,7 +118,7 @@ namespace Chummer
             // Re-generate the output when a new sheet is selected.
             if (!_blnLoading)
             {
-                _strSelectedSheet = cboXSLT.SelectedValue.ToString();
+                _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
                 GenerateOutput();
             }
         }
@@ -220,15 +265,18 @@ namespace Chummer
         /// </summary>
         public void RefreshView()
         {
-            // Create a delegate to handle refreshing the window.
-            MethodInvoker objRefreshDelegate = AsyncRefresh;
-            objRefreshDelegate.BeginInvoke(null, null);
+            if (_workerRefresher.IsBusy)
+            {
+                _workerRefresher.CancelAsync();
+            }
+            Cursor = Cursors.WaitCursor;
+            _workerRefresher.RunWorkerAsync();
         }
 
         /// <summary>
         /// Update the contents of the Viewer window.
         /// </summary>
-        private void AsyncRefresh()
+        private void AsyncRefresh(object sender, EventArgs e)
         {
             // Write the Character information to a MemoryStream so we don't need to create any files.
             MemoryStream objStream = new MemoryStream();
@@ -242,9 +290,9 @@ namespace Chummer
 
             foreach (Character objCharacter in _lstCharacters)
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter);
+                objCharacter.PrintToStream(objStream, objWriter, objPrintCulture);
 #else
-                objCharacter.PrintToStream(objWriter);
+                objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
 #endif
 
             // </characters>
@@ -253,7 +301,6 @@ namespace Chummer
             // Finish the document and flush the Writer and Stream.
             objWriter.WriteEndDocument();
             objWriter.Flush();
-            objStream.Flush();
 
             // Read the stream.
             StreamReader objReader = new StreamReader(objStream);
@@ -265,10 +312,14 @@ namespace Chummer
             objCharacterXML.LoadXml(strXML);
 
             objWriter.Close();
-            objStream.Close();
 
             _objCharacterXML = objCharacterXML;
             GenerateOutput();
+        }
+
+        private void FinishRefresh(object sender, EventArgs e)
+        {
+            Cursor = Cursors.Default;
         }
 
         private void MoveControls()
@@ -337,61 +388,40 @@ namespace Chummer
             {
                 OutputFilePath = strSaveFile
             });
-
-            Uri uriPath = new Uri(strSaveFile);
-            string strParams = GlobalOptions.PDFParameters;
-            strParams = strParams.Replace("{page}", 1.ToString());
-            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
-            ProcessStartInfo objProgress = new ProcessStartInfo
+            if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
             {
-                FileName = GlobalOptions.PDFAppPath,
-                Arguments = strParams
-            };
-            Process.Start(objProgress);
+                Uri uriPath = new Uri(strSaveFile);
+                string strParams = GlobalOptions.PDFParameters;
+                strParams = strParams.Replace("{page}", "1");
+                strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+                strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+                ProcessStartInfo objProgress = new ProcessStartInfo
+                {
+                    FileName = GlobalOptions.PDFAppPath,
+                    Arguments = strParams
+                };
+                Process.Start(objProgress);
+            }
         }
-        private List<ListItem> GetXslFilesFromSheetsDirectory()
+
+        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            var items = new List<ListItem>();
+            List<ListItem> lstSheets = new List<ListItem>();
 
+            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+            XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
             XmlDocument manifest = XmlManager.Load("sheets.xml");
-            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='en-us']/sheet");
-
+            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
             {
                 ListItem objItem = new ListItem();
-                objItem.Value = sheet["filename"].InnerText;
+                objItem.Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
                 objItem.Name = sheet["name"].InnerText;
 
-                items.Add(objItem);
+                lstSheets.Add(objItem);
             }
 
-            return items;
-        }
-
-        private List<ListItem> GetXslFilesFromLanguageDirectory()
-        {
-            var items = new List<ListItem>();
-
-            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            if (GlobalOptions.Language != "en-us")
-            {
-                XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
-                XmlDocument manifest = XmlManager.Load("sheets.xml");
-                XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{GlobalOptions.Language}']/sheet");
-                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-
-                foreach (XmlNode sheet in sheets)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = Path.Combine(GlobalOptions.Language, sheet["filename"].InnerText);
-                    objItem.Name = strLanguage + ": " + sheet["name"].InnerText;
-
-                    items.Add(objItem);
-                }
-            }
-
-            return items;
+            return lstSheets;
         }
 
         private List<ListItem> GetXslFilesFromOmaeDirectory()
@@ -435,8 +465,7 @@ namespace Chummer
         {
             List<ListItem> lstFiles = new List<ListItem>();
 
-            lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
-            lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
+            lstFiles.AddRange(GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue.ToString()));
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
@@ -448,9 +477,58 @@ namespace Chummer
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
-#endregion
 
-#region Properties
+        private void PopulateLanguageList()
+        {
+            List<ListItem> lstLanguages = new List<ListItem>();
+            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+            foreach (string filePath in languageFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+
+                try
+                {
+                    xmlDocument.Load(filePath);
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                if (node == null)
+                    continue;
+
+                string languageName = node.InnerText;
+
+                if (GetXslFilesFromLocalDirectory(Path.GetFileNameWithoutExtension(filePath).ToString()).Count > 0)
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = Path.GetFileNameWithoutExtension(filePath);
+                    objItem.Name = languageName;
+
+                    lstLanguages.Add(objItem);
+                }
+            }
+
+            SortListItem objSort = new SortListItem();
+            lstLanguages.Sort(objSort.Compare);
+
+            cboLanguage.BeginUpdate();
+            cboLanguage.ValueMember = "Value";
+            cboLanguage.DisplayMember = "Name";
+            cboLanguage.DataSource = lstLanguages;
+            cboLanguage.SelectedValue = GlobalOptions.Language;
+            if (cboLanguage.SelectedIndex == -1)
+                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+            cboLanguage.EndUpdate();
+        }
+        #endregion
+
+        #region Properties
         /// <summary>
         /// Character's XmlDocument.
         /// </summary>
@@ -501,6 +579,47 @@ namespace Chummer
                 if (objItem.Tag != null)
                     objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
             }
+        }
+
+        private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue.ToString());
+            }
+            catch (CultureNotFoundException)
+            {
+            }
+            if (_blnLoading)
+                return;
+            string strOldSelected = _strSelectedSheet;
+            // Strip away the language prefix
+            if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+            _blnLoading = true;
+            PopulateXsltList();
+            string strNewLanguage = cboLanguage.SelectedValue.ToString();
+            if (strNewLanguage == GlobalOptions.DefaultLanguage)
+                _strSelectedSheet = strOldSelected;
+            else
+                _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
+            cboXSLT.SelectedValue = _strSelectedSheet;
+            // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+            if (cboXSLT.SelectedIndex == -1)
+            {
+                if (strNewLanguage == GlobalOptions.DefaultLanguage)
+                    _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                else
+                    _strSelectedSheet = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                cboXSLT.SelectedValue = _strSelectedSheet;
+                if (cboXSLT.SelectedIndex == -1)
+                {
+                    cboXSLT.SelectedIndex = 0;
+                    _strSelectedSheet = cboXSLT.SelectedValue.ToString();
+                }
+            }
+            _blnLoading = false;
+            RefreshView();
         }
     }
 }

@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Xml;
 using Chummer.Backend;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -265,7 +266,8 @@ namespace Chummer
     /// </summary>
     public class ExpenseLogEntry
     {
-        private Guid _guiID = new Guid();
+        private Guid _guiID = Guid.Empty;
+        private readonly Character _objCharacter;
         private DateTime _datDate = new DateTime();
         private decimal _decAmount = 0;
         private string _strReason = string.Empty;
@@ -315,8 +317,9 @@ namespace Chummer
         #endregion
 
         #region Constructor, Create, Save, Load, and Print Methods
-        public ExpenseLogEntry()
+        public ExpenseLogEntry(Character objCharacter)
         {
+            _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
             LanguageManager.Load(GlobalOptions.Language, null);
         }
@@ -385,11 +388,11 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("date", _datDate.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Karma ? "N0" : "N2", GlobalOptions.CultureInfo));
+            objWriter.WriteElementString("date", _datDate.ToString(objCulture));
+            objWriter.WriteElementString("amount", _decAmount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString());

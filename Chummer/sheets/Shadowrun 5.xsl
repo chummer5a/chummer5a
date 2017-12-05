@@ -4,7 +4,8 @@
   <xsl:include href="xz.language.xslt"/>
   
   <xsl:include href="Shadowrun 5 set.xslt"/>
+  <xsl:include href="Shadowrun 5 set CSS.xslt"/>
   <xsl:include href="xs.SkillsGroupedAssorted.xslt"/>
 
-  <xsl:variable name="PrintSkillCategoryNames" select="False"/>
+  <xsl:variable name="PrintSkillCategoryNames" select="false()"/>
 </xsl:stylesheet>

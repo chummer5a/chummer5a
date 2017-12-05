@@ -55,7 +55,6 @@ namespace Chummer
             Reach,
             Nuyen,
             Essence,
-            Reaction,
             PhysicalCM,
             StunCM,
             UnarmedDV,
@@ -73,7 +72,6 @@ namespace Chummer
             CyberwareTotalEssMultiplierNonRetroactive,
             SpecialTab,
             Initiative,
-            Uneducated,
             LivingPersonaResponse,
             LivingPersonaSignal,
             LivingPersonaFirewall,
@@ -103,14 +101,13 @@ namespace Chummer
             FreeSpiritPowerPoints,
             AdeptPowerPoints,
             ArmorEncumbrancePenalty,
-            Uncouth,
             Initiation,
             Submersion,
-            Infirm,
+            Metamagic,
+            Echo,
             Skillwire,
             DamageResistance,
             RestrictedItemCount,
-            AdeptLinguistics,
             JudgeIntentions,
             JudgeIntentionsOffense,
             JudgeIntentionsDefense,
@@ -150,15 +147,11 @@ namespace Chummer
             PhysicalLimit,
             MentalLimit,
             SocialLimit,
-            SchoolOfHardKnocks,
             FriendsInHighPlaces,
-            JackOfAllTrades,
-            CollegeEducation,
             Erased,
             BornRich,
             Fame,
             LightningReflexes,
-            Linguist,
             MadeMan,
             Overclocker,
             RestrictedGear,
@@ -187,7 +180,6 @@ namespace Chummer
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
-            DataStore,
             BlockSkillDefault,
             Ambidextrous,
             UnarmedReach,
@@ -200,7 +192,6 @@ namespace Chummer
             CritterPower,
             SwapSkillSpecAttribute,
             SpellResistance,
-            SpellKarmaDiscount,
             LimitSpellCategory,
             LimitSpiritCategory,
             WalkSpeed,
@@ -219,6 +210,7 @@ namespace Chummer
             FreeSpells,
             DrainValue,
             Spell,
+            Gear,
             MentorSpirit,
             Paragon,
             FreeSpellsSkill,
@@ -255,8 +247,54 @@ namespace Chummer
             ManaIllusionResist,
             PhysicalIllusionResist,
             DetectionSpellResist,
-            // V This one should always be the last defined enum
-            NumImprovementTypes
+            AddLimb,
+            StreetCredMultiplier,
+            StreetCred,
+            AttributeKarmaCostMultiplier,
+            AttributeKarmaCost,
+            ActiveSkillKarmaCostMultiplier,
+            SkillGroupKarmaCostMultiplier,
+            KnowledgeSkillKarmaCostMultiplier,
+            ActiveSkillKarmaCost,
+            SkillGroupKarmaCost,
+            SkillGroupDisable,
+            KnowledgeSkillKarmaCost,
+            SkillCategorySpecializationKarmaCostMultiplier,
+            SkillCategorySpecializationKarmaCost,
+            SkillCategoryKarmaCostMultiplier,
+            SkillCategoryKarmaCost,
+            SkillGroupCategoryKarmaCostMultiplier,
+            SkillGroupCategoryDisable,
+            SkillGroupCategoryKarmaCost,
+            AttributePointCostMultiplier,
+            AttributePointCost,
+            ActiveSkillPointCostMultiplier,
+            SkillGroupPointCostMultiplier,
+            KnowledgeSkillPointCostMultiplier,
+            ActiveSkillPointCost,
+            SkillGroupPointCost,
+            KnowledgeSkillPointCost,
+            SkillCategoryPointCostMultiplier,
+            SkillCategoryPointCost,
+            SkillGroupCategoryPointCostMultiplier,
+            SkillGroupCategoryPointCost,
+            NewSpellKarmaCostMultiplier,
+            NewSpellKarmaCost,
+            NewComplexFormKarmaCostMultiplier,
+            NewComplexFormKarmaCost,
+            NewAIProgramKarmaCostMultiplier,
+            NewAIProgramKarmaCost,
+            NewAIAdvancedProgramKarmaCostMultiplier,
+            NewAIAdvancedProgramKarmaCost,
+            BlockSkillSpecializations,
+            BlockSkillCategorySpecializations,
+            FocusBindingKarmaCost,
+            FocusBindingKarmaMultiplier,
+            MagiciansWayDiscount,
+            BurnoutsWay,
+            ContactForceLoyalty,
+            FreeWare,
+            NumImprovementTypes // <- This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -295,10 +333,11 @@ namespace Chummer
             MartialArt,
             AIProgram,
             SpiritFettering,
-            // V This one should always be the last defined enum
-            NumImprovementSources
+            MentorSpirit,
+            NumImprovementSources // <- This one should always be the last defined enum
         }
 
+        private readonly Character _objCharacter = null;
         private string _strImprovedName = string.Empty;
         private string _strSourceName = string.Empty;
         private int _intMin = 0;
@@ -328,7 +367,7 @@ namespace Chummer
         /// Convert a string to an ImprovementType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        private ImprovementType ConvertToImprovementType(string strValue)
+        public static ImprovementType ConvertToImprovementType(string strValue)
         {
             if (strValue.Contains("InitiativePass"))
             {
@@ -341,7 +380,7 @@ namespace Chummer
         /// Convert a string to an ImprovementSource.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ImprovementSource ConvertToImprovementSource(string strValue)
+        public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
@@ -349,6 +388,10 @@ namespace Chummer
         #endregion
 
         #region Save and Load Methods
+        public Improvement(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -507,10 +550,11 @@ namespace Chummer
             set
             {
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(_objImprovementType);
+                {
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, _objImprovementType));
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, value));
+                }
                 _objImprovementType = value;
-                if (Enabled)
-                    ImprovementManager.ClearCachedValue(_objImprovementType);
             }
         }
 
@@ -524,7 +568,7 @@ namespace Chummer
             {
                 _objImprovementSource = value;
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(Improvement.ImprovementType.MatrixInitiativeDice);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImprovementType.MatrixInitiativeDice));
             }
         }
 
@@ -610,7 +654,7 @@ namespace Chummer
             {
                 _strUniqueName = value;
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(ImproveType);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
             }
         }
 
@@ -624,7 +668,7 @@ namespace Chummer
             {
                 _blnAddToRating = value;
                 if (Enabled)
-                    ImprovementManager.ClearCachedValue(ImproveType);
+                    ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
             }
         }
 
@@ -646,7 +690,7 @@ namespace Chummer
             set
             {
                 _blnEnabled = value;
-                ImprovementManager.ClearCachedValue(ImproveType);
+                ImprovementManager.ClearCachedValue(new Tuple<Character, ImprovementType>(_objCharacter, ImproveType));
             }
         }
 
@@ -670,8 +714,7 @@ namespace Chummer
         private static string _strSelectedValue = string.Empty;
         private static string _strForcedValue = string.Empty;
         private static readonly List<Improvement> _lstTransaction = new List<Improvement>();
-        private static Dictionary<Improvement.ImprovementType, int> _dictionaryCachedValues = new Dictionary<Improvement.ImprovementType, int>((int)Improvement.ImprovementType.NumImprovementTypes);
-        private static Character _objLastCachedCharacter = null;
+        private static Dictionary<Tuple<Character, Improvement.ImprovementType>, int> _dictionaryCachedValues = new Dictionary<Tuple<Character, Improvement.ImprovementType>, int>((int)Improvement.ImprovementType.NumImprovementTypes);
         #region Properties
 
         /// <summary>
@@ -690,6 +733,7 @@ namespace Chummer
         public static string SelectedValue
         {
             get { return _strSelectedValue; }
+            set { _strSelectedValue = value; }
         }
 
         /// <summary>
@@ -697,15 +741,16 @@ namespace Chummer
         /// </summary>
         public static string ForcedValue
         {
+            get { return _strForcedValue; }
             set { _strForcedValue = value; }
         }
 
-        public static void ClearCachedValue(Improvement.ImprovementType eImprovementType)
+        public static void ClearCachedValue(Tuple<Character, Improvement.ImprovementType> objImprovementType)
         {
-            if (_dictionaryCachedValues.ContainsKey(eImprovementType))
-                _dictionaryCachedValues[eImprovementType] = int.MinValue;
+            if (_dictionaryCachedValues.ContainsKey(objImprovementType))
+                _dictionaryCachedValues[objImprovementType] = int.MinValue;
             else
-                _dictionaryCachedValues.Add(eImprovementType, int.MinValue);
+                _dictionaryCachedValues.Add(objImprovementType, int.MinValue);
         }
         #endregion
 
@@ -732,7 +777,8 @@ namespace Chummer
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
             int intCachedValue;
-            if (_objLastCachedCharacter == objCharacter && !blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objImprovementType, out intCachedValue) && intCachedValue != int.MinValue)
+            Tuple<Character, Improvement.ImprovementType> objCacheKey = new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovementType);
+            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objCacheKey, out intCachedValue) && intCachedValue != int.MinValue)
             {
                 return intCachedValue;
             }
@@ -837,18 +883,10 @@ namespace Chummer
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName))
             {
-                if (_objLastCachedCharacter != objCharacter)
-                {
-                    for(Improvement.ImprovementType eLoopImprovement = 0; eLoopImprovement < Improvement.ImprovementType.NumImprovementTypes; ++eLoopImprovement)
-                    {
-                        ClearCachedValue(eLoopImprovement);
-                    }
-                    _objLastCachedCharacter = objCharacter;
-                }
-                if (_dictionaryCachedValues.ContainsKey(objImprovementType))
-                    _dictionaryCachedValues[objImprovementType] = intValue + intCustomValue;
+                if (_dictionaryCachedValues.ContainsKey(objCacheKey))
+                    _dictionaryCachedValues[objCacheKey] = intValue + intCustomValue;
                 else
-                    _dictionaryCachedValues.Add(objImprovementType, intValue + intCustomValue);
+                    _dictionaryCachedValues.Add(objCacheKey, intValue + intCustomValue);
             }
 
             return intValue + intCustomValue;
@@ -861,35 +899,33 @@ namespace Chummer
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
         private static int ValueToInt(Character objCharacter, string strValue, int intRating)
         {
+            if (string.IsNullOrEmpty(strValue))
+                return 0;
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
             if (strValue.Contains("FixedValues"))
             {
-                string[] strValues = strValue.Replace("FixedValues", string.Empty).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strValue.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                 if (strValues.Length >= intRating)
                     strValue = strValues[intRating - 1];
                 else
                     strValue = strValues[strValues.Length - 1];
             }
-            if (strValue.Contains("Rating") || Character.AttributeStrings.Any(strValue.Contains))
+            if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString());
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                foreach (string strAttribute in Character.AttributeStrings)
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    strReturn = strReturn.Replace(strAttribute, objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
+                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
                 }
-
-                XmlDocument objXmlDocument = new XmlDocument();
-                XPathNavigator nav = objXmlDocument.CreateNavigator();
+                
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
-                XPathExpression xprValue = nav.Compile(strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                double dblValue = Convert.ToDouble(nav.Evaluate(xprValue).ToString(), GlobalOptions.InvariantCultureInfo);
-                int intValue = Convert.ToInt32(Math.Floor(dblValue));
+                int intValue = Convert.ToInt32(Math.Floor((double)CommonFunctions.EvaluateInvariantXPath(strReturn)));
 
                 //Log.Exit("ValueToInt");
                 return intValue;
@@ -1076,71 +1112,74 @@ namespace Chummer
         {
             if (bonusNode == null)
                 return false;
-                //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
-                //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
-                //getting a different parameter injected
+            //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
+            //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+            //getting a different parameter injected
 
-                AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                    strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
-                    strFriendlyName, intRating, ValueToInt, Rollback);
+            AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
+                strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
+                strFriendlyName, intRating, ValueToInt, Rollback);
 
-                MethodInfo info;
-                if (AddMethods.Value.TryGetValue(bonusNode.Name.ToUpperInvariant(), out info))
-                {
+            Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
+            if (objImprovementMethod != null)
+            {
                 try
                 {
-                    info.Invoke(container, new object[] {bonusNode});
+                    objImprovementMethod.Invoke(bonusNode);
                 }
-                catch (TargetInvocationException ex) when (ex.InnerException?.GetType() == typeof(AbortedException))
+                catch (AbortedException)
                 {
                     Rollback(objCharacter);
                     return false;
                 }
 
-                    strSourceName = container.SourceName;
-                    _strForcedValue = container.ForcedValue;
-                    _strLimitSelection = container.LimitSelection;
-                    _strSelectedValue = container.SelectedValue;
-                }
-            else if
-                    (bonusNode.ChildNodes.Count == 0)
-                {
-                    return true;
-                }
+                strSourceName = container.SourceName;
+                _strForcedValue = container.ForcedValue;
+                _strLimitSelection = container.LimitSelection;
+                _strSelectedValue = container.SelectedValue;
+            }
+            else if (bonusNode.ChildNodes.Count == 0)
+            {
+                return true;
+            }
             else if (bonusNode.NodeType != XmlNodeType.Comment)
-                {
-                        Utils.BreakIfDebug();
-                        Log.Warning(new object[]
-                        {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
+            {
+                Utils.BreakIfDebug();
+                Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml});
                 return false;
             }
             return true;
         }
 
-        //this should probably be somewhere else...
-        private static readonly Lazy<Dictionary<string, MethodInfo>> AddMethods = new Lazy<Dictionary<string, MethodInfo>>(() =>
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName)
         {
-            MethodInfo[] allMethods = typeof(AddImprovementCollection).GetMethods();
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return;
+            }
 
-            return allMethods.ToDictionary(x => x.Name.ToUpperInvariant());
-        });
+            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("strSourceName = " + strSourceName);
+            // A List of Improvements to hold all of the items that will eventually be deleted.
+            List<Improvement> objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
+            RemoveImprovements(objCharacter, objImprovementList);
+        }
 
         /// <summary>
         /// Remove all of the Improvements for an XML Node.
         /// </summary>
-        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
-        /// <param name="strSourceName">Name of the item that granted these Improvements. If empty, deletes all improvements that match objImprovementSource</param>
-        /// <param name="blnReapplyImprovements">Remove all improvements from the improvements list that would be reapplied by Reapply Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "", bool blnReapplyImprovements = false)
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementList">List of improvements to delete.</param>
+        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList)
         {
             Log.Enter("RemoveImprovements");
-            if (blnReapplyImprovements)
-                Log.Info("Wiping all improvements that would be refreshed by Re-Apply Improvements.");
-            else
-            {
-                Log.Info("objImprovementSource = " + objImprovementSource.ToString());
-                Log.Info("strSourceName = " + strSourceName);
-            }
 
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -1149,35 +1188,14 @@ namespace Chummer
                 return;
             }
 
-            // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = null;
-            if (blnReapplyImprovements)
-            {
-                objImprovementList = objCharacter.Improvements.Where(objImprovement =>
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Armor ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Echo ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Gear ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Power ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Quality ||
-                                                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Spell).ToList();
-            }
-            else
-                objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && (string.IsNullOrEmpty(strSourceName) || objImprovement.SourceName == strSourceName)).ToList();
+            // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
             // Now that we have all of the applicable Improvements, remove them from the character.
             foreach (Improvement objImprovement in objImprovementList)
             {
                 // Remove the Improvement.
                 objCharacter.Improvements.Remove(objImprovement);
-                ClearCachedValue(objImprovement.ImproveType);
+                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
@@ -1241,7 +1259,7 @@ namespace Chummer
                                     break;
                             }
                         }
-                        objCharacter.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers),objImprovement.ImprovedName);
+                        objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
@@ -1292,74 +1310,57 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in objCharacter.Vehicles)
                                 {
                                     objVehicle.BlackMarketDiscount = false;
-                                    foreach (Weapon objWeapon in objVehicle.Weapons)
+                                    foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
                                     {
                                         objWeapon.DiscountCost = false;
                                         foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
                                         {
                                             objWeaponAccessory.DiscountCost = false;
+                                            foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                            {
+                                                objLoopGear.DiscountCost = false;
+                                            }
                                         }
                                     }
-                                    foreach (Gear objGear in objVehicle.Gear)
+                                    foreach (Gear objLoopGear in objVehicle.Gear.GetAllDescendants(x => x.Children))
                                     {
-                                        objGear.DiscountCost = false;
+                                        objLoopGear.DiscountCost = false;
                                     }
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
                                         objMod.DiscountCost = false;
                                     }
                                 }
-                                foreach (Weapon objWeapon in objCharacter.Weapons)
+                                foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))
                                 {
                                     objWeapon.DiscountCost = false;
                                     foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
                                     {
                                         objWeaponAccessory.DiscountCost = false;
+                                        foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                        {
+                                            objLoopGear.DiscountCost = false;
+                                        }
                                     }
                                 }
-                                foreach (Gear objGear in objCharacter.Gear)
+                                foreach (Gear objLoopGear in objCharacter.Gear.GetAllDescendants(x => x.Children))
                                 {
-                                    objGear.DiscountCost = false;
-
-                                    foreach (Gear objChild in objGear.Children)
-                                    {
-                                        objChild.DiscountCost = false;
-                                    }
+                                    objLoopGear.DiscountCost = false;
                                 }
                             }
                         }
-                        break;
-                    case Improvement.ImprovementType.Uneducated:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.Uneducated = false;
-                        break;
-                    case Improvement.ImprovementType.Uncouth:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.Uncouth = false;
                         break;
                     case Improvement.ImprovementType.FriendsInHighPlaces:
                         if (!blnHasDuplicate)
                             objCharacter.FriendsInHighPlaces = false;
                         break;
-                    case Improvement.ImprovementType.SchoolOfHardKnocks:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.SchoolOfHardKnocks = false;
-                        break;
                     case Improvement.ImprovementType.ExCon:
                         if (!blnHasDuplicate)
                             objCharacter.ExCon = false;
                         break;
-                    case Improvement.ImprovementType.JackOfAllTrades:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.JackOfAllTrades = false;
-                        break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
                         if (!blnHasDuplicate)
                             objCharacter.PrototypeTranshuman = 0;
-                        break;
-                    case Improvement.ImprovementType.CollegeEducation:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.CollegeEducation = false;
                         break;
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
@@ -1377,10 +1378,6 @@ namespace Chummer
                         if (!blnHasDuplicate)
                             objCharacter.LightningReflexes = false;
                         break;
-                    case Improvement.ImprovementType.Linguist:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.Linguist = false;
-                        break;
                     case Improvement.ImprovementType.MadeMan:
                         if (!blnHasDuplicate)
                             objCharacter.MadeMan = false;
@@ -1397,10 +1394,6 @@ namespace Chummer
                         if (!blnHasDuplicate)
                             objCharacter.RestrictedGear = false;
                         break;
-                    case Improvement.ImprovementType.TechSchool:
-                        if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.TechSchool = false;
-                        break;
                     case Improvement.ImprovementType.TrustFund:
                         if (!blnHasDuplicate)
                             objCharacter.TrustFund = 0;
@@ -1408,25 +1401,12 @@ namespace Chummer
                     case Improvement.ImprovementType.Adapsin:
                         if (!objCharacter.AdapsinEnabled)
                         {
-                            foreach (Cyberware objCyberware in objCharacter.Cyberware)
+                            foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
                             {
-                                if (objCyberware.Grade.Adapsin)
-                                {
-                                    // Determine which GradeList to use for the Cyberware.
-                                    GradeList objGradeList;
-                                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                        {
-                                            GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, objCharacter.Options);
-                                            objGradeList = GlobalOptions.BiowareGrades;
-                                        }
-                                        else
-                                        {
-                                            GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, objCharacter.Options);
-                                            objGradeList = GlobalOptions.CyberwareGrades;
-                                        }
-
-                                    objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
-                                }
+                                string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
+                                // Determine which GradeList to use for the Cyberware.
+                                List<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options);
+                                objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == strNewName);
                             }
                         }
                         break;
@@ -1446,12 +1426,39 @@ namespace Chummer
                     case Improvement.ImprovementType.Submersion:
                         objCharacter.SubmersionGrade -= objImprovement.Value;
                         break;
+                    case Improvement.ImprovementType.Metamagic:
+                    case Improvement.ImprovementType.Echo:
+                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.Name == objImprovement.ImprovedName);
+                        if (objMetamagic != null)
+                        {
+                            RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
+                            objCharacter.Metamagics.Remove(objMetamagic);
+                        }
+                        break;
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName);
                         if (objCritterPower != null)
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                             objCharacter.CritterPowers.Remove(objCritterPower);
+                        }
+                        break;
+                    case Improvement.ImprovementType.MentorSpirit:
+                    case Improvement.ImprovementType.Paragon:
+                        MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMentor != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
+                            objCharacter.MentorSpirits.Remove(objMentor);
+                        }
+                        break;
+                    case Improvement.ImprovementType.Gear:
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objGear != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            CommonFunctions.DeleteGear(objCharacter, objGear, null, null);
+                            objCharacter.Gear.Remove(objGear);
                         }
                         break;
                     case Improvement.ImprovementType.Spell:
@@ -1517,6 +1524,23 @@ namespace Chummer
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
                         }
                         break;
+                    case Improvement.ImprovementType.MagiciansWayDiscount:
+                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        {
+                            bool blnDummy = objLoopPower.AdeptWayDiscountEnabled;
+                        }
+                        break;
+                    case Improvement.ImprovementType.FreeWare:
+                        Cyberware cy = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                        if (cy != null)
+                        {
+                            RemoveImprovements(objCharacter,cy.SourceType == Improvement.ImprovementSource.Cyberware
+                                    ? Improvement.ImprovementSource.Cyberware
+                                    : Improvement.ImprovementSource.Bioware,
+                                cy.InternalId);
+                            objCharacter.Cyberware.Remove(cy);
+                        }
+                        break;
                 }
             }
 
@@ -1580,7 +1604,7 @@ namespace Chummer
             if (objCharacter != null)
             {
                 // Record the improvement.
-                Improvement objImprovement = new Improvement();
+                Improvement objImprovement = new Improvement(objCharacter);
                 objImprovement.ImprovedName = strImprovedName;
                 objImprovement.ImproveSource = objImprovementSource;
                 objImprovement.SourceName = strSourceName;
@@ -1599,7 +1623,7 @@ namespace Chummer
 
                 // Add the Improvement to the list.
                 objCharacter.Improvements.Add(objImprovement);
-                ClearCachedValue(objImprovement.ImproveType);
+                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
 
                 // Add the Improvement to the Transaction List.
                 _lstTransaction.Add(objImprovement);
@@ -1631,7 +1655,7 @@ namespace Chummer
             foreach (Improvement objImprovement in _lstTransaction)
             {
                 RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
-                ClearCachedValue(objImprovement.ImproveType);
+                ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
 
             _lstTransaction.Clear();

@@ -21,7 +21,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decMultiplier;
         private int _intMonths = 1;
         private int _intRoommates;
-        private int _intPercentage = 100;
+        private decimal _decPercentage = 100.0m;
         private string _strLifestyleName = string.Empty;
         private bool _blnPurchased;
         private int _intEntertainment;
@@ -86,7 +86,9 @@ namespace Chummer.Backend.Equipment
 
                 if (System.Diagnostics.Debugger.IsAttached)
                     System.Diagnostics.Debugger.Break();
-            }             
+            }
+            else
+                _objCachedMyXmlNode = null;
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID;
@@ -107,7 +109,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("multiplier", _decMultiplier.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("months", _intMonths.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("roommates", _intRoommates.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("percentage", _intPercentage.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("percentage", _decPercentage.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("lifestylename", _strLifestyleName);
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("comforts", _intComforts.ToString(CultureInfo.InvariantCulture));
@@ -173,7 +175,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
             objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts);
             objNode.TryGetInt32FieldQuickly("roommates", ref _intRoommates);
-            objNode.TryGetInt32FieldQuickly("percentage", ref _intPercentage);
+            objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("lifestylename", ref _strLifestyleName);
             objNode.TryGetBoolFieldQuickly("purchased", ref _blnPurchased);
 
@@ -220,16 +222,16 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("lifestyle");
             objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("totalcost", TotalCost.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("dice", _intDice.ToString());
-            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(GlobalOptions.CultureInfo));
-            objWriter.WriteElementString("months", _intMonths.ToString());
+            objWriter.WriteElementString("cost", _decCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("totalcost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("dice", _intDice.ToString(objCulture));
+            objWriter.WriteElementString("multiplier", _decMultiplier.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("months", _intMonths.ToString(objCulture));
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("type", _objType.ToString());
             objWriter.WriteElementString("sourceid", SourceID.ToString());
@@ -259,7 +261,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
                 {
-                    objQuality.Print(objWriter);
+                    objQuality.Print(objWriter, objCulture);
                 }
             }
             // Retrieve the free Grids for the Advanced Lifestyle if applicable.
@@ -300,6 +302,8 @@ namespace Chummer.Backend.Equipment
                     throw new InvalidOperationException("Source ID can only be set once");
                 }
 
+                if (_sourceID != value)
+                    _objCachedMyXmlNode = null;
                 _sourceID = value;
             }
         }
@@ -327,7 +331,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language == "en-us")
+                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
                     return _strBaseLifestyle;
                 return MyXmlNode?["translate"]?.InnerText ?? _strBaseLifestyle;
             }
@@ -373,7 +377,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = _strPage;
                 // Get the translated name if applicable.
-                if (GlobalOptions.Language != "en-us")
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = MyXmlNode;
                     if (objNode?["altpage"] != null)
@@ -647,15 +651,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Percentage of the total cost the character pays per month.
         /// </summary>
-        public int Percentage
+        public decimal Percentage
         {
             get
             {
-                return _intPercentage;
+                return _decPercentage;
             }
             set
             {
-                _intPercentage = value;
+                _decPercentage = value;
             }
         }
 
@@ -674,11 +678,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
         public XmlNode MyXmlNode
         {
             get
             {
-                return XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                    _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml")?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                return _objCachedMyXmlNode;
             }
         }
         #endregion
@@ -728,9 +735,9 @@ namespace Chummer.Backend.Equipment
                 decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.InvariantCultureInfo);
                 decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.InvariantCultureInfo);
 
-                decimal decPercentage = Convert.ToDecimal(_intPercentage, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                decimal decPercentage = _decPercentage / 100.0m;
 
-                decimal decBaseLifestyleCost = Convert.ToInt32(decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly));
+                decimal decBaseLifestyleCost = decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly);
                 if (!_blnTrustFund)
                 {
                     decReturn += decBaseLifestyleCost;

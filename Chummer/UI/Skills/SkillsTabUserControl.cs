@@ -10,6 +10,7 @@ using System.Xml;
 using Chummer.Backend.Skills;
 using Chummer.Skills;
 using Chummer.UI.Shared;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
 {
@@ -33,7 +34,6 @@ namespace Chummer.UI.Skills
             UpdateKnoSkillRemaining();
         }
 
-        private bool _loadCalled = false;
         private bool _initialized = false;
         private Character _character = null;
         private List<Tuple<string, Predicate<Skill>>> _dropDownList;
@@ -55,13 +55,12 @@ namespace Chummer.UI.Skills
 
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
-            _loadCalled = true;
             RealLoad();
         }
 
         private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
         {
-            if (_initialized || _character == null || !_loadCalled)
+            if (_initialized || _character == null)
                 return;
             _initialized = true;  //Only do once
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
@@ -147,8 +146,6 @@ namespace Chummer.UI.Skills
             Panel1_Resize(null, null);
             Panel2_Resize(null, null);
             parts.TaskEnd("resize");
-            sw.Stop();
-            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
             //this.Update();
             //this.ResumeLayout(true);
             //this.PerformLayout();
@@ -182,6 +179,8 @@ namespace Chummer.UI.Skills
                 //lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             ResumeLayout(true);
+            sw.Stop();
+            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
         private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
@@ -238,12 +237,15 @@ namespace Chummer.UI.Skills
                     $"{LanguageManager.GetString("Label_Category")} {displayName}", 
                     skill => skill.SkillCategory == objNode.InnerText));
 
-            ret.AddRange(
-                from string attribute
-                in Character.AttributeStrings
-                select new Tuple<string, Predicate<Skill>>(
-                    $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
-                    skill => skill.Attribute == attribute));
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
+            {
+                string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", false);
+                if (!string.IsNullOrEmpty(strAttributeShort))
+                {
+                    ret.Add(new Tuple<string, Predicate<Skill>>($"{LanguageManager.GetString("String_ExpenseAttribute")}: {strAttributeShort}",
+                        skill => skill.Attribute == strAttribute));
+                }
+            }
 
             ret.AddRange(
                 from SkillGroup @group
@@ -303,12 +305,15 @@ namespace Chummer.UI.Skills
                     $"{LanguageManager.GetString("Label_Category")} {displayName}",
                     skill => skill.SkillCategory == objNode.InnerText));
 
-            ret.AddRange(
-                from string attribute
-                in Character.AttributeStrings
-                select new Tuple<string, Predicate<KnowledgeSkill>>(
-                    $"{LanguageManager.GetString("String_ExpenseAttribute")}: {LanguageManager.GetString($"String_Attribute{attribute}Short")}",
-                    skill => skill.Attribute == attribute));
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
+            {
+                string strAttributeShort = LanguageManager.GetString($"String_Attribute{strAttribute}Short", false);
+                if (!string.IsNullOrEmpty(strAttributeShort))
+                {
+                    ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>($"{LanguageManager.GetString("String_ExpenseAttribute")}: {strAttributeShort}",
+                        skill => skill.Attribute == strAttribute));
+                }
+            }
             /*
             ret.AddRange(
                 from SkillGroup @group
@@ -327,6 +332,8 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(0, 15),
             };
+            _groups.Filter(x => x.SkillList.Any(y => _character.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+
             sw.TaskEnd("_groups");
 
             splitSkills.Panel1.Controls.Add(_groups);
@@ -380,14 +387,11 @@ namespace Chummer.UI.Skills
                         intWidth = objControl.PreferredSize.Width;
                     }
                 }
-                _groups.Height = height - _groups.Top;
-                _groups.Size = new Size(intWidth, splitSkills.Panel1.Height - 15);
+                _groups.Size = new Size(intWidth, height - _groups.Top);
             }
             if (_skills != null)
             {
-                _skills.Height = height - _skills.Top;
-                _skills.Size = new Size(splitSkills.Panel1.Width - (intWidth+10), splitSkills.Panel1.Height - 39);
-
+                _skills.Size = new Size(splitSkills.Panel1.Width - (intWidth + 10), height - _skills.Top);
             }
         }
 

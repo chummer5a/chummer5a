@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmSelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
-        private double _dblCharacterESSModifier = 1.0;
+        private decimal _decCharacterESSModifier = 1.0m;
         private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
         private string _strType = "cyberware";
         private Character _objCharacter;
@@ -80,7 +80,7 @@ namespace Chummer
         {
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -88,17 +88,7 @@ namespace Chummer
                 return;
 
             XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
-            GradeList lstGrades = null;
-            if (_objSource == Improvement.ImprovementSource.Bioware)
-            {
-                GlobalOptions.BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware, _objCharacter.Options);
-                lstGrades = GlobalOptions.BiowareGrades;
-            }
-            else
-            {
-                GlobalOptions.CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
-                lstGrades = GlobalOptions.CyberwareGrades;
-            }
+            List<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter.Options);
 
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {
@@ -125,8 +115,7 @@ namespace Chummer
 
             // Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + CyberwareGradeName(objXmlSuite["grade"].InnerText) + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-
-            XPathNavigator nav = _objXmlDocument.CreateNavigator();
+            
             lblCyberware.Text = string.Empty;
 
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
@@ -138,8 +127,9 @@ namespace Chummer
                 decTotalESS += objCyberware.CalculatedESS();
             }
 
-            lblEssence.Text = Math.Round(decTotalESS, _objCharacter.Options.EssenceDecimals).ToString(GlobalOptions.CultureInfo);
-            lblCost.Text = $"{decTotalCost:###,###,##0.##¥}";
+            if (!_objCharacter.Options.DontRoundEssenceInternally)
+                lblEssence.Text = decimal.Round(decTotalESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+            lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblGrade.Text = objXmlSuite["grade"].InnerText;
             _decCost = decTotalCost;
         }
@@ -149,11 +139,11 @@ namespace Chummer
         /// <summary>
         /// Essence cost multiplier from the character.
         /// </summary>
-        public double CharacterESSMultiplier
+        public decimal CharacterESSMultiplier
         {
             set
             {
-                _dblCharacterESSModifier = value;
+                _decCharacterESSModifier = value;
             }
         }
 

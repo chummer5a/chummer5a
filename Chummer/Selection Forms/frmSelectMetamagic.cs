@@ -38,7 +38,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
         private readonly XmlDocument _objMetatypeDocument;
         private readonly XmlDocument _objCritterDocument;
@@ -82,7 +82,7 @@ namespace Chummer
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
-                if (objLabel.Text.StartsWith("["))
+                if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
@@ -255,7 +255,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

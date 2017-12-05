@@ -26,14 +26,11 @@ namespace Chummer
         private decimal _decReturnValue = 0;
 
         #region Control Events
-        public frmSelectNumber(bool blnCurrency = true)
+        public frmSelectNumber(int intDecimalPlaces = 2)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            if (blnCurrency)
-            {
-                nudNumber.DecimalPlaces = 2;
-            }
+            nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 
         private void frmSelectNumber_Shown(object sender, EventArgs e)
