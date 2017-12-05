@@ -1,6 +1,5 @@
 using System.Windows.Forms;
 using Chummer.UI.Powers;
-using Chummer.UI.Skills;
 
 namespace Chummer
 {
@@ -5877,6 +5876,7 @@ namespace Chummer
             this.lblComplexFormSource.Size = new System.Drawing.Size(47, 13);
             this.lblComplexFormSource.TabIndex = 174;
             this.lblComplexFormSource.Text = "[Source]";
+            this.lblComplexFormSource.Click += new System.EventHandler(this.lblComplexFormSource_Click);
             // 
             // lblComplexFormSourceLabel
             // 
