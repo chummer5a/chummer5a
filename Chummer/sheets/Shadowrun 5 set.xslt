@@ -568,9 +568,9 @@
           </xsl:call-template>
         </xsl:if>
 
-            <table width="100%" style="cellpadding: 0; margin: 0; padding: 0; border-width: 0; border-collapse: collapse; empty-cells: hide; page-break-inside: avoid;">
+            <table width="100%" style="cellpadding: 0; margin: 0; padding: 0; border-width: 0; border-collapse: collapse; empty-cells: hide;">
               <tr>
-                <td width="67%" style="text-align: center">
+                <td style="text-align: center;">
                   <xsl:if test="qualities/quality">
                     <div class="block" id="QualitiesBlock">
                     <table class="tablestyle">
@@ -590,7 +590,7 @@
                     </xsl:call-template>
                   </xsl:if>
                 </td>
-                <td width="33%">
+                <td style="width:33%; max-width:33%;">
                   <div class="block" id="CMBlock">
                     <table class="tablestyle">
                       <tr>
