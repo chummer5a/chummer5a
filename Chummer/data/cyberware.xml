@@ -2690,10 +2690,12 @@
       <cost>FixedValues(40000,125000,205000)</cost>
       <source>CF</source>
       <page>84</page>
+      <!-- TODO: Allow user to deactivate the bonus/penalties -->
       <bonus>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire>Rating * 2</skillwire>
+        <sociallimit>-Rating</sociallimit>
         <specificattribute>
           <name precedence="0">REA</name>
           <val>Rating</val>
