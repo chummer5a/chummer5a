@@ -3778,7 +3778,7 @@
 			<key>Checkbox_Contact_Group</key>
 			<text>魔法团体</text>
 		</string>
-    <string>
+		<string>
 			<key>Checkbox_Contact_Free</key>
 			<text>免费</text>
 		</string>
@@ -4478,7 +4478,7 @@
 		</string>
 		<string>
 			<key>Label_Options_NewSpecialization</key>
-			<text>新专精</text>
+			<text>新行动技能专精</text>
 		</string>
 		<string>
 			<key>Label_Options_NewKnowledgeSkill</key>
@@ -4726,11 +4726,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_StrengthAffectsRecoil</key>
-			<text>High Strength affects Weapon Recoil</text>
+			<text>高力量影响武器后坐力补偿</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MaximumArmorModifications</key>
-			<text>Use Maximum Armor Modifications</text>
+			<text>使用最大护甲强化</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ArmorSuitCapacity</key>
@@ -6871,7 +6871,7 @@
 		</string>
 		<string>
 			<key>Message_DroneIllegalDowngrade</key>
-			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
+			<text>以下{0}台无人机的降级把属性降得太低了。</text>
 		</string>
 		<!-- End Region -->
 		<string>
@@ -8319,6 +8319,66 @@
 		<string>
 			<key>String_DealerConnection_Drones</key>
 			<text>无人机</text>
+		</string>
+		<string>
+			<key>Message_Update_CloseForms</key>
+			<text>Chummer5的新版本已经自动下载完毕，要安装并重启本应用吗？</text>
+		</string>
+		<string>
+			<key>String_Checking_For_Update</key>
+			<text>正在查找更新……</text>
+		</string>
+		<string>
+			<key>MessageTitle_ImprovementLoadError</key>
+			<text>载入提升时遇到错误</text>
+		</string>
+		<string>
+			<key>Message_ImprovementLoadError</key>
+			<text>在载入一个或多个提升时，Chummer5遇到了一个错误，这可能是因为某个旧版本的提升在新版本中被调整了。\n\n该问题可以通过重新应用引起问题的项目解决。\n\n你要现在重新应用吗？如果不，这些问题仍然可以通过 特殊 &gt; 重新应用提升来解决。</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkills</key>
+			<text>{0}个{1}技能，获得{2}级。</text>
+		</string>
+		<string>
+			<key>Label_Contact_PersonalLife</key>
+			<text>个人生活：</text>
+		</string>
+		<string>
+			<key>Label_Contact_PreferredPayment</key>
+			<text>支付方式：</text>
+		</string>
+		<string>
+			<key>Label_Contact_HobbiesVice</key>
+			<text>爱好/恶习：</text>
+		</string>
+		<string>
+			<key>Label_Options_NewKnoSpecialization</key>
+			<text>新知识技能专精</text>
+		</string>
+		<string>
+			<key>Title_SelectGeneric</key>
+			<text>选择{0}</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Requirement</key>
+			<text>需要{0}</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Restriction</key>
+			<text>限制{0}</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_Restriction</key>
+			<text>你无法选择{0}，因为已经选择了以下禁止项目。</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_ChargenRestriction</key>
+			<text>你无法选择{0}，因为你已经创建了角色。</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_PriorityRestriction</key>
+			<text>你无法选择{0}，因为你角色的创建方式不允许你购买{0}。</text>
 		</string>
 	</strings>
 </chummer>
