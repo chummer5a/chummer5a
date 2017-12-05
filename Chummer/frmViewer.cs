@@ -566,7 +566,7 @@ namespace Chummer
 
                 string languageName = node.InnerText;
 
-                if (GetXslFilesFromLocalDirectory(Path.GetFileNameWithoutExtension(filePath).ToString()).Count > 0)
+                if (GetXslFilesFromLocalDirectory(Path.GetFileNameWithoutExtension(filePath)).Count > 0)
                 {
                     ListItem objItem = new ListItem();
                     objItem.Value = Path.GetFileNameWithoutExtension(filePath);

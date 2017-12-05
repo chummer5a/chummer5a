@@ -5289,7 +5289,7 @@ namespace Chummer
                             {
                                 foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
                                 {
-                                    if (nodQuality.Text.ToString() == "One Trick Pony")
+                                    if (nodQuality.Text == "One Trick Pony")
                                         nodQuality.Remove();
                                 }
                             }
@@ -9015,7 +9015,7 @@ namespace Chummer
                 }
                 TreeNode tn = new TreeNode
                 {
-                    Tag = frmPickVehicleMod.WeaponMount.InternalId.ToString(),
+                    Tag = frmPickVehicleMod.WeaponMount.InternalId,
                     Text = frmPickVehicleMod.WeaponMount.DisplayName,
                     ContextMenuStrip = cmsWeaponMount
                 };
@@ -21679,9 +21679,9 @@ namespace Chummer
                 lblVehicleCategory.Text = objVehicle.DisplayCategory;
                 lblVehicleAvail.Text = objVehicle.CalculatedAvail;
                 lblVehicleCost.Text = objVehicle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
-                lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
-                lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
+                lblVehicleHandling.Text = objVehicle.TotalHandling;
+                lblVehicleAccel.Text = objVehicle.TotalAccel;
+                lblVehicleSpeed.Text = objVehicle.TotalSpeed;
                 lblVehicleDevice.Text = objVehicle.DeviceRating.ToString();
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
@@ -21912,7 +21912,7 @@ namespace Chummer
                         if (objGear.GetType() == typeof(Commlink))
                         {
                             Commlink objCommlink = (Commlink)objGear;
-                            lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
+                            lblVehicleDevice.Text = objCommlink.DeviceRating;
                             objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
                             if (_objCharacter.Metatype == "A.I.")
                             {
@@ -22116,7 +22116,7 @@ namespace Chummer
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
-                        lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
+                        lblVehicleDevice.Text = objCommlink.DeviceRating;
                         objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
                         if (_objCharacter.Metatype == "A.I.")
                         {
@@ -22332,7 +22332,7 @@ namespace Chummer
                     if (objGear.GetType() == typeof(Commlink))
                     {
                         Commlink objCommlink = (Commlink)objGear;
-                        lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
+                        lblVehicleDevice.Text = objCommlink.DeviceRating;
                         objCommlink.RefreshCommlinkCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
                         if (_objCharacter.Metatype == "A.I.")
                         {
@@ -24939,7 +24939,7 @@ namespace Chummer
             Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
             // Find the associated Power
-            string strPower = objXmlArt["power"].InnerText.ToString();
+            string strPower = objXmlArt["power"].InnerText;
 
             objEnhancement.Create(objXmlArt, objNode, objSource);
             objEnhancement.Grade = intGrade;

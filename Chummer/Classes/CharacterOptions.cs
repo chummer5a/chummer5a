@@ -375,7 +375,7 @@ namespace Chummer
             // <donotroundessenceinternally />
             objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString());
             // <nuyenformat />
-            objWriter.WriteElementString("nuyenformat", _strNuyenFormat.ToString());
+            objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
             // <essencedecimals />
             objWriter.WriteElementString("essencedecimals", _intEssenceDecimals.ToString());
             // <enforcecapacity />

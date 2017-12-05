@@ -3893,7 +3893,7 @@ namespace Chummer
             {
                 // Load the Martial Art information.
                 XmlDocument _objXmlDocument = XmlManager.Load("martialarts.xml");
-                XmlNode objXmlTechnique = _objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + treMartialArts.SelectedNode.Text.ToString() + "\"]");
+                XmlNode objXmlTechnique = _objXmlDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + treMartialArts.SelectedNode.Text + "\"]");
 
                 if (objXmlTechnique != null)
                 {
@@ -5209,7 +5209,7 @@ namespace Chummer
                         {
                             foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
                             {
-                                if (nodQuality.Text.ToString() == "One Trick Pony")
+                                if (nodQuality.Text == "One Trick Pony")
                                     nodQuality.Remove();
                             }
                         }
@@ -5527,7 +5527,7 @@ namespace Chummer
                         lstRemoveArts.Add(objArt);
                         foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
                         {
-                            if (nodItem.Tag.ToString() == objArt.InternalId.ToString())
+                            if (nodItem.Tag.ToString() == objArt.InternalId)
                             {
                                 treMetamagic.SelectedNode.Nodes.Remove(nodItem);
                                 break;
@@ -5547,7 +5547,7 @@ namespace Chummer
                         lstRemoveMetamagics.Add(objMetamagic);
                         foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
                         {
-                            if (nodItem.Tag.ToString() == objMetamagic.InternalId.ToString())
+                            if (nodItem.Tag.ToString() == objMetamagic.InternalId)
                             {
                                 treMetamagic.SelectedNode.Nodes.Remove(nodItem);
                                 break;
@@ -5570,7 +5570,7 @@ namespace Chummer
                         lstRemoveEnhancements.Add(objEnhancement);
                         foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
                         {
-                            if (nodItem.Tag.ToString() == objEnhancement.InternalId.ToString())
+                            if (nodItem.Tag.ToString() == objEnhancement.InternalId)
                             {
                                 treMetamagic.SelectedNode.Nodes.Remove(nodItem);
                                 break;
@@ -5590,7 +5590,7 @@ namespace Chummer
                         lstRemoveSpells.Add(objSpell);
                         foreach (TreeNode nodItem in treMetamagic.SelectedNode.Nodes)
                         {
-                            if (nodItem.Tag.ToString() == objSpell.InternalId.ToString())
+                            if (nodItem.Tag.ToString() == objSpell.InternalId)
                             {
                                 treMetamagic.SelectedNode.Nodes.Remove(nodItem);
                                 break;
@@ -5698,7 +5698,7 @@ namespace Chummer
                         {
                             foreach (TreeNode objNode in objRootNode.Nodes)
                             {
-                                if (objNode.Tag.ToString() == objSpell.InternalId.ToString())
+                                if (objNode.Tag.ToString() == objSpell.InternalId)
                                 {
                                     objNode.Remove();
                                     goto EndSpellLoop;
@@ -7046,7 +7046,7 @@ namespace Chummer
                 }
                 TreeNode tn = new TreeNode
                 {
-                    Tag = frmPickVehicleMod.WeaponMount.InternalId.ToString(),
+                    Tag = frmPickVehicleMod.WeaponMount.InternalId,
                     Text = frmPickVehicleMod.WeaponMount.DisplayName,
                     ContextMenuStrip = cmsWeaponMount
                 };
@@ -13568,8 +13568,8 @@ namespace Chummer
                     strContactPoints += " (" + intPointsInContacts.ToString() + ' ' + strPoints + ')';
                 }
 
-                lblContactsBP.Text = strContactPoints.ToString();
-                lblContactPoints.Text = strContactPoints.ToString();
+                lblContactsBP.Text = strContactPoints;
+                lblContactPoints.Text = strContactPoints;
                 lblEnemiesBP.Text = string.Format("{0} " + strPoints, intEnemyPoints.ToString());
 
                 lblPositiveQualitiesBP.Text = unlimitedPositive > 0
@@ -16314,9 +16314,9 @@ namespace Chummer
                 lblVehicleAvail.Text = objVehicle.CalculatedAvail;
                 lblVehicleCostLabel.Visible = true;
                 lblVehicleCost.Text = objVehicle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
-                lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
-                lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
+                lblVehicleHandling.Text = objVehicle.TotalHandling;
+                lblVehicleAccel.Text = objVehicle.TotalAccel;
+                lblVehicleSpeed.Text = objVehicle.TotalSpeed;
                 lblVehicleDevice.Text = objVehicle.DeviceRating.ToString();
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
@@ -21356,7 +21356,7 @@ namespace Chummer
             Enhancement objEnhancement = new Enhancement(_objCharacter);
 
             // Find the associated Power
-            string strPower = objXmlArt["power"].InnerText.ToString();
+            string strPower = objXmlArt["power"].InnerText;
 
             objEnhancement.Create(objXmlArt, objNode, objSource);
             objEnhancement.Grade = intGrade;
