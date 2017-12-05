@@ -157,13 +157,13 @@ namespace Chummer
 
             StringBuilder objNuyenFormat = new StringBuilder("#,0");
             int intNuyenDecimalPlacesMaximum = decimal.ToInt32(nudNuyenDecimalsMaximum.Value);
-            int intNuyenDecimalPlacesAlways = decimal.ToInt32(nudNuyenDecimalsAlways.Value);
+            int intNuyenDecimalPlacesMinimum = decimal.ToInt32(nudNuyenDecimalsMinimum.Value);
             if (intNuyenDecimalPlacesMaximum > 0)
             {
                 objNuyenFormat.Append(".");
                 for (int i = 0; i < intNuyenDecimalPlacesMaximum; ++i)
                 {
-                    if (i <= intNuyenDecimalPlacesAlways)
+                    if (i <= intNuyenDecimalPlacesMinimum)
                         objNuyenFormat.Append("0");
                     else
                         objNuyenFormat.Append("#");
@@ -235,11 +235,11 @@ namespace Chummer
         {
             if (cboBuildMethod.SelectedValue != null)
             {
-            if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_Karma"))
-                nudBP.Value = 800;
-            else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_LifeModule"))
-                nudBP.Value = 750;
-        }
+                if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_Karma"))
+                    nudBP.Value = 800;
+                else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_LifeModule"))
+                    nudBP.Value = 750;
+            }
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -490,8 +490,8 @@ namespace Chummer
             nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width;
             nudEssenceDecimals.Left = lblEssenceDecimals.Left + lblEssenceDecimals.Width + 6;
 
-            intWidth = Math.Max(lblNuyenDecimalsAlwaysLabel.Width, lblNuyenDecimalsMaximumLabel.Width);
-            nudNuyenDecimalsAlways.Left = lblNuyenDecimalsAlwaysLabel.Left + intWidth + 6;
+            intWidth = Math.Max(lblNuyenDecimalsMinimumLabel.Width, lblNuyenDecimalsMaximumLabel.Width);
+            nudNuyenDecimalsMinimum.Left = lblNuyenDecimalsMinimumLabel.Left + intWidth + 6;
             nudNuyenDecimalsMaximum.Left = lblNuyenDecimalsMaximumLabel.Left + intWidth + 6;
 
             txtPDFAppPath.Left = lblPDFAppPath.Left + lblPDFAppPath.Width + 6;
@@ -803,7 +803,7 @@ namespace Chummer
                     intNuyenDecimalPlacesAlways = intNuyenDecimalPlacesMaximum;
             }
             nudNuyenDecimalsMaximum.Value = intNuyenDecimalPlacesMaximum;
-            nudNuyenDecimalsAlways.Value = intNuyenDecimalPlacesAlways;
+            nudNuyenDecimalsMinimum.Value = intNuyenDecimalPlacesAlways;
 
             SetDefaultValueForLimbCount();
             PopulateKarmaFields();
@@ -1573,7 +1573,15 @@ namespace Chummer
 
         private void nudNuyenDecimalsMaximum_ValueChanged(object sender, EventArgs e)
         {
-            nudNuyenDecimalsAlways.Maximum = nudNuyenDecimalsMaximum.Value;
+            if (nudNuyenDecimalsMinimum.Value > nudNuyenDecimalsMaximum.Value)
+                nudNuyenDecimalsMinimum.Value = nudNuyenDecimalsMaximum.Value;
+            OptionsChanged(sender, e);
+        }
+
+        private void nudNuyenDecimalsMinimum_ValueChanged(object sender, EventArgs e)
+        {
+            if (nudNuyenDecimalsMaximum.Value < nudNuyenDecimalsMinimum.Value)
+                nudNuyenDecimalsMaximum.Value = nudNuyenDecimalsMinimum.Value;
             OptionsChanged(sender, e);
         }
     }

@@ -7179,8 +7179,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Character Roster Watch Folder</text>
     </string>
     <string>
-      <key>Label_Options_NuyenDecimalsAlways</key>
-      <text>Number of Nuyen decimal places to always display:</text>
+      <key>Label_Options_NuyenDecimalsMinimum</key>
+      <text>Minimum number of Nuyen decimal places to display:</text>
     </string>
     <string>
       <key>Label_Options_NuyenDecimalsMaximum</key>
