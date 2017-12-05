@@ -1151,10 +1151,12 @@ namespace Chummer
             if (!e.Cancel)
             {
                 _blnLoading = true;
+                Cursor = Cursors.WaitCursor;
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
                 GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
                 GlobalOptions.MainForm.OpenCharacterForms.Remove(this);
+                GlobalOptions.MainForm.CharacterRoster.PopulateCharacterList(); // Regenerates character list
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 

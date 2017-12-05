@@ -31,7 +31,7 @@ namespace Chummer
             MoveControls();
         }
 
-        private void PopulateCharacterList()
+        public void PopulateCharacterList()
         {
             //TODO: Cheaper way to do this than rebuilding the list every time?
             treCharacterList.Nodes.Clear();
@@ -45,11 +45,6 @@ namespace Chummer
             TreeNode objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) { Tag = "Favourite" };
 
             List<string> lstRecents = GlobalOptions.ReadMRUList();
-            TreeNode objRecentNode = null;
-            if (lstRecents.Count > 0)
-            {
-                objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) { Tag = "Recent" };
-            }
 
             List<string> lstWatch = new List<string>();
             TreeNode objWatchNode = null;
@@ -81,6 +76,35 @@ namespace Chummer
             if (lstWatch.Count > 0)
             {
                 objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
+            }
+
+            // Add any characters that are open to the displayed list so we can have more than 10 characters listed
+            foreach (Character objCharacter in GlobalOptions.MainForm.OpenCharacters)
+            {
+                string strFile = objCharacter.FileName;
+                // Make sure we're not loading a character that was already loaded by the MRU list.
+                if (lstFavorites.Contains(strFile) || lstRecents.Contains(strFile) || lstWatch.Contains(strFile))
+                    continue;
+                int intCachedCharacterIndex = _lstCharacterCache.FindIndex(x => x.FilePath == strFile);
+                if (intCachedCharacterIndex != -1)
+                {
+                    foreach (TreeNode rootNode in treCharacterList.Nodes)
+                    {
+                        foreach (TreeNode objChildNode in rootNode.Nodes)
+                        {
+                            if (Convert.ToInt32(objChildNode.Tag) == intCachedCharacterIndex)
+                                goto CharacterAlreadyLoaded;
+                        }
+                    }
+                }
+                lstRecents.Add(strFile);
+                CharacterAlreadyLoaded:;
+            }
+
+            TreeNode objRecentNode = null;
+            if (lstRecents.Count > 0)
+            {
+                objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) { Tag = "Recent" };
             }
 
             TreeNode[] lstFavoritesNodes = new TreeNode[lstFavorites.Count];
@@ -253,6 +277,8 @@ namespace Chummer
                 strBuildMethod = "Unknown build method";
             string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode");
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
+            if (GlobalOptions.MainForm.OpenCharacters.Any(x => x.FileName == objCache.FilePath))
+                strReturn = "* " + strReturn;
             return strReturn;
         }
 
@@ -386,10 +412,15 @@ namespace Chummer
                     string strFile = _lstCharacterCache[intIndex]?.FilePath;
                     if (!string.IsNullOrEmpty(strFile))
                     {
-                        Cursor = Cursors.WaitCursor;
-                        Character objOpenCharacter = frmMain.LoadCharacter(strFile);
-                        Cursor = Cursors.Default;
-                        GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                        Character objOpenCharacters = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        if (objOpenCharacters == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacters))
+                        {
+                            Cursor = Cursors.WaitCursor;
+                            objSelectedNode.Text = "* " + objSelectedNode.Text;
+                            Character objOpenCharacter = frmMain.LoadCharacter(strFile);
+                            Cursor = Cursors.Default;
+                            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                        }
                     }
                 }
             }
