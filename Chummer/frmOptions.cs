@@ -1336,6 +1336,16 @@ namespace Chummer
                 GlobalOptions.DefaultCharacterSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
 
             cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheet;
+            if (cboXSLT.SelectedValue == null)
+            {
+                int intNameIndex = -1;
+                string strLanguage = cboLanguage.SelectedValue.ToString();
+                if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
+                else
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                cboXSLT.SelectedIndex = Math.Max(0, intNameIndex);
+            }
         }
 
         private void UpdateSourcebookInfoPath(string path)

@@ -60,13 +60,17 @@ namespace Chummer
             {
                 if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
                     _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
-                else if (_strSelectedSheet.IndexOf('-') == -1 || _strSelectedSheet.IndexOf('-') > _strSelectedSheet.IndexOf(Path.DirectorySeparatorChar))
+                else if (!_strSelectedSheet.Contains(GlobalOptions.Language) && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
                 {
-                    _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet.Substring(_strSelectedSheet.IndexOf(Path.DirectorySeparatorChar) + 1));
+                    _strSelectedSheet = _strSelectedSheet.Replace(GlobalOptions.Language.Substring(0, 2), GlobalOptions.Language);
                 }
             }
-            else if (_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
-                _strSelectedSheet = _strSelectedSheet.Substring(_strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+            else
+            {
+                int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
+                if (intLastIndexDirectorySeparator != -1)
+                    _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
+            }
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
@@ -107,12 +111,27 @@ namespace Chummer
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                if (cboLanguage.SelectedValue.ToString() == GlobalOptions.DefaultLanguage)
-                    cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                string strLanguage = cboLanguage.SelectedValue?.ToString();
+                int intNameIndex = -1;
+                if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
                 else
-                    _strSelectedSheet = Path.Combine(cboLanguage.SelectedValue.ToString(), GlobalOptions.DefaultCharacterSheetDefaultValue);
-                if (cboXSLT.SelectedIndex == -1)
-                    cboXSLT.SelectedIndex = 0;
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                if (intNameIndex != -1)
+                    cboXSLT.SelectedIndex = intNameIndex;
+                else
+                {
+                    if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                        _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    else
+                        _strSelectedSheet = Path.Combine(strLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    cboXSLT.SelectedValue = _strSelectedSheet;
+                    if (cboXSLT.SelectedIndex == -1)
+                    {
+                        cboXSLT.SelectedIndex = 0;
+                        _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
+                    }
+                }
             }
             _blnLoading = false;
             SetDocumentText(LanguageManager.GetString("String_Loading_Characters"));
@@ -646,8 +665,8 @@ namespace Chummer
                 strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             _blnLoading = true;
             PopulateXsltList();
-            string strNewLanguage = cboLanguage.SelectedValue.ToString();
-            if (strNewLanguage == GlobalOptions.DefaultLanguage)
+            string strNewLanguage = cboLanguage.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
                 _strSelectedSheet = strOldSelected;
             else
                 _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
@@ -655,15 +674,25 @@ namespace Chummer
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                if (strNewLanguage == GlobalOptions.DefaultLanguage)
-                    _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                int intNameIndex = -1;
+                if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
                 else
-                    _strSelectedSheet = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
-                cboXSLT.SelectedValue = _strSelectedSheet;
-                if (cboXSLT.SelectedIndex == -1)
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                if (intNameIndex != -1)
+                    cboXSLT.SelectedIndex = intNameIndex;
+                else
                 {
-                    cboXSLT.SelectedIndex = 0;
-                    _strSelectedSheet = cboXSLT.SelectedValue.ToString();
+                    if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
+                        _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    else
+                        _strSelectedSheet = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    cboXSLT.SelectedValue = _strSelectedSheet;
+                    if (cboXSLT.SelectedIndex == -1)
+                    {
+                        cboXSLT.SelectedIndex = 0;
+                        _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
+                    }
                 }
             }
             _blnLoading = false;

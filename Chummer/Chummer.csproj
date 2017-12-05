@@ -2672,28 +2672,28 @@
     <Content Include="sheets\de-de\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Fahrzeuge.xsl">
+    <Content Include="sheets\de-de\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Formatieren Nur Text.xsl">
+    <Content Include="sheets\de-de\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kalender.xsl">
+    <Content Include="sheets\de-de\Calender.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kommlinks.xsl">
+    <Content Include="sheets\de-de\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kontakte.xsl">
+    <Content Include="sheets\de-de\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kosten.xsl">
+    <Content Include="sheets\de-de\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Notizen.xsl">
+    <Content Include="sheets\de-de\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Nur Text.xsl">
+    <Content Include="sheets\de-de\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Fancy Blocks.xsl">
@@ -2720,7 +2720,7 @@
     <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Kern%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
@@ -2764,10 +2764,10 @@
     <Content Include="sheets\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Blocs fantaisie.xsl">
+    <Content Include="sheets\fr-fr\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Calendrier.xsl">
+    <Content Include="sheets\fr-fr\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Commlinks.xsl">
@@ -2791,7 +2791,7 @@
     <Content Include="sheets\fr-fr\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Coeur%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
@@ -2824,7 +2824,7 @@
     <Content Include="sheets\fr-fr\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Texte seulement.xsl">
+    <Content Include="sheets\fr-fr\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Vehicles.xsl">
@@ -3030,7 +3030,7 @@
     <Content Include="sheets\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\GM简要.xsl">
+    <Content Include="sheets\zh-cn\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
@@ -3054,49 +3054,49 @@
     <Content Include="sheets\zh-cn\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\人脉.xsl">
+    <Content Include="sheets\zh-cn\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\仅文本.xsl">
+    <Content Include="sheets\zh-cn\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\备注.xsl">
+    <Content Include="sheets\zh-cn\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\多彩方块.xsl">
+    <Content Include="sheets\zh-cn\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\收支.xsl">
+    <Content Include="sheets\zh-cn\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\日程表.xsl">
+    <Content Include="sheets\zh-cn\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（名称排列）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（技能等级＞0）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（核心）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core）.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（等级排列）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\格式仅文本.xsl">
+    <Content Include="sheets\zh-cn\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\档案.xsl">
+    <Content Include="sheets\zh-cn\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\矩阵设备.xsl">
+    <Content Include="sheets\zh-cn\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\载具和无人机.xsl">
+    <Content Include="sheets\zh-cn\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="wkhtmltopdf.exe">
