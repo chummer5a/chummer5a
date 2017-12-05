@@ -229,16 +229,11 @@ namespace Chummer
                 }
                 else
                 {
-                    int intMainMugshotIndex = 0;
+                    int intMainMugshotIndex = -1;
                     objXmlSourceNode.TryGetInt32FieldQuickly("mainmugshotindex", ref intMainMugshotIndex);
                     XmlNodeList objXmlMugshotsList = objXmlSourceNode.SelectNodes("mugshots/mugshot");
-                    int intMugshotCount = objXmlMugshotsList.Count;
-                    if (intMainMugshotIndex >= intMugshotCount)
-                        intMainMugshotIndex = 0;
-                    else if (intMainMugshotIndex < 0)
-                        intMainMugshotIndex = intMugshotCount - 1;
 
-                    if (intMugshotCount > 0 && intMainMugshotIndex < intMugshotCount)
+                    if (intMainMugshotIndex >= 0 && intMainMugshotIndex < objXmlMugshotsList.Count)
                         objCache.Mugshot = objXmlMugshotsList[intMainMugshotIndex].InnerText?.ToImage();
                     else
                         objCache.Mugshot = null;

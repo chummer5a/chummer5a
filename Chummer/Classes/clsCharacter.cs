@@ -87,7 +87,7 @@ namespace Chummer
         // General character info.
         private string _strName = string.Empty;
         private List<Image> _lstMugshots = new List<Image>();
-        private int _intMainMugshotIndex = 0;
+        private int _intMainMugshotIndex = -1;
         private string _strSex = string.Empty;
         private string _strAge = string.Empty;
         private string _strEyes = string.Empty;
@@ -3385,7 +3385,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Index of Character's main portrait.
+        /// Index of Character's main portrait. -1 if set to none.
         /// </summary>
         public int MainMugshotIndex
         {
@@ -3396,15 +3396,8 @@ namespace Chummer
             set
             {
                 _intMainMugshotIndex = value;
-                if (_intMainMugshotIndex >= _lstMugshots.Count)
-                    _intMainMugshotIndex = 0;
-                else if (_intMainMugshotIndex < 0)
-                {
-                    if (_lstMugshots.Count > 0)
-                        _intMainMugshotIndex = _lstMugshots.Count - 1;
-                    else
-                        _intMainMugshotIndex = 0;
-                }
+                if (_intMainMugshotIndex >= _lstMugshots.Count || _intMainMugshotIndex < -1)
+                    _intMainMugshotIndex = -1;
             }
         }
 

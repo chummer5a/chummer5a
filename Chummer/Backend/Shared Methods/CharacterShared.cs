@@ -530,6 +530,8 @@ namespace Chummer
                 Bitmap imgMugshot = (new Bitmap(openFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
 
                 _objCharacter.Mugshots.Add(imgMugshot);
+                if (_objCharacter.MainMugshotIndex == -1)
+                    _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }
             return blnSuccess;
         }
@@ -572,7 +574,7 @@ namespace Chummer
             _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
             if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
             {
-                _objCharacter.MainMugshotIndex = 0;
+                _objCharacter.MainMugshotIndex = -1;
             }
             else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
             {
@@ -644,7 +646,7 @@ namespace Chummer
             if (_objCharacter.Save())
             {
                 _blnIsDirty = false;
-                GlobalOptions.AddToMRUList(_objCharacter.FileName);
+                GlobalOptions.AddToMRUList(_objCharacter.FileName, "mru", true, true);
                 UpdateWindowTitle(false);
                 Cursor = Cursors.Default;
 
