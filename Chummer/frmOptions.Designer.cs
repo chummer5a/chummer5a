@@ -104,8 +104,8 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
             this.nudNuyenDecimalsMaximum = new System.Windows.Forms.NumericUpDown();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
-            this.nudNuyenDecimalsAlways = new System.Windows.Forms.NumericUpDown();
-            this.lblNuyenDecimalsAlwaysLabel = new System.Windows.Forms.Label();
+            this.nudNuyenDecimalsMinimum = new System.Windows.Forms.NumericUpDown();
+            this.lblNuyenDecimalsMinimumLabel = new System.Windows.Forms.Label();
             this.chkLiveCustomData = new System.Windows.Forms.CheckBox();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.lblPDFLocation = new System.Windows.Forms.Label();
@@ -314,7 +314,7 @@ namespace Chummer
             this.tabControl2.SuspendLayout();
             this.tabGlobal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMaximum)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsAlways)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMinimum)).BeginInit();
             this.grpSelectedSourcebook.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -1088,8 +1088,8 @@ namespace Chummer
             this.tabGlobal.Controls.Add(this.chkLiveUpdateCleanCharacterFiles);
             this.tabGlobal.Controls.Add(this.nudNuyenDecimalsMaximum);
             this.tabGlobal.Controls.Add(this.lblNuyenDecimalsMaximumLabel);
-            this.tabGlobal.Controls.Add(this.nudNuyenDecimalsAlways);
-            this.tabGlobal.Controls.Add(this.lblNuyenDecimalsAlwaysLabel);
+            this.tabGlobal.Controls.Add(this.nudNuyenDecimalsMinimum);
+            this.tabGlobal.Controls.Add(this.lblNuyenDecimalsMinimumLabel);
             this.tabGlobal.Controls.Add(this.chkLiveCustomData);
             this.tabGlobal.Controls.Add(this.grpSelectedSourcebook);
             this.tabGlobal.Controls.Add(this.cboPDFParameters);
@@ -1155,28 +1155,28 @@ namespace Chummer
             this.lblNuyenDecimalsMaximumLabel.Tag = "Label_Options_NuyenDecimalsMaximum";
             this.lblNuyenDecimalsMaximumLabel.Text = "Maximum number of Nuyen decimal places to display:";
             // 
-            // nudNuyenDecimalsAlways
+            // nudNuyenDecimalsMinimum
             // 
-            this.nudNuyenDecimalsAlways.Location = new System.Drawing.Point(269, 293);
-            this.nudNuyenDecimalsAlways.Maximum = new decimal(new int[] {
+            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(269, 293);
+            this.nudNuyenDecimalsMinimum.Maximum = new decimal(new int[] {
             28,
             0,
             0,
             0});
-            this.nudNuyenDecimalsAlways.Name = "nudNuyenDecimalsAlways";
-            this.nudNuyenDecimalsAlways.Size = new System.Drawing.Size(61, 20);
-            this.nudNuyenDecimalsAlways.TabIndex = 30;
-            this.nudNuyenDecimalsAlways.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudNuyenDecimalsMinimum.Name = "nudNuyenDecimalsMinimum";
+            this.nudNuyenDecimalsMinimum.Size = new System.Drawing.Size(61, 20);
+            this.nudNuyenDecimalsMinimum.TabIndex = 30;
+            this.nudNuyenDecimalsMinimum.ValueChanged += new System.EventHandler(this.nudNuyenDecimalsMinimum_ValueChanged);
             // 
-            // lblNuyenDecimalsAlwaysLabel
+            // lblNuyenDecimalsMinimumLabel
             // 
-            this.lblNuyenDecimalsAlwaysLabel.AutoSize = true;
-            this.lblNuyenDecimalsAlwaysLabel.Location = new System.Drawing.Point(5, 295);
-            this.lblNuyenDecimalsAlwaysLabel.Name = "lblNuyenDecimalsAlwaysLabel";
-            this.lblNuyenDecimalsAlwaysLabel.Size = new System.Drawing.Size(248, 13);
-            this.lblNuyenDecimalsAlwaysLabel.TabIndex = 29;
-            this.lblNuyenDecimalsAlwaysLabel.Tag = "Label_Options_NuyenDecimalsAlways";
-            this.lblNuyenDecimalsAlwaysLabel.Text = "Number of Nuyen decimal places to always display:";
+            this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
+            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(5, 295);
+            this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
+            this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(248, 13);
+            this.lblNuyenDecimalsMinimumLabel.TabIndex = 29;
+            this.lblNuyenDecimalsMinimumLabel.Tag = "Label_Options_NuyenDecimalsMinimum";
+            this.lblNuyenDecimalsMinimumLabel.Text = "Minimum number of Nuyen decimal places to display:";
             // 
             // chkLiveCustomData
             // 
@@ -3449,7 +3449,7 @@ namespace Chummer
             this.tabGlobal.ResumeLayout(false);
             this.tabGlobal.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMaximum)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsAlways)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMinimum)).EndInit();
             this.grpSelectedSourcebook.ResumeLayout(false);
             this.grpSelectedSourcebook.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).EndInit();
@@ -3753,8 +3753,8 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkDontRoundEssenceInternally;
         private System.Windows.Forms.NumericUpDown nudNuyenDecimalsMaximum;
         private System.Windows.Forms.Label lblNuyenDecimalsMaximumLabel;
-        private System.Windows.Forms.NumericUpDown nudNuyenDecimalsAlways;
-        private System.Windows.Forms.Label lblNuyenDecimalsAlwaysLabel;
+        private System.Windows.Forms.NumericUpDown nudNuyenDecimalsMinimum;
+        private System.Windows.Forms.Label lblNuyenDecimalsMinimumLabel;
         private System.Windows.Forms.Label lblKarmaKnowledgeSpecialization;
         private System.Windows.Forms.NumericUpDown nudKarmaKnowledgeSpecialization;
         private System.Windows.Forms.NumericUpDown nudKarmaInitiationFlat;

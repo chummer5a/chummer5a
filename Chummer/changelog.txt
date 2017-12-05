@@ -527,7 +527,7 @@ New Strings:
 - Checkbox_Contact_Family
 - Checkbox_Options_ExceedPositiveQualitiesCostDoubled
 - Checkbox_Option_DontRoundEssenceInternally
-- Label_Options_NuyenDecimalsAlways
+- Label_Options_NuyenDecimalsMinimum
 - Label_Options_NuyenDecimalsMaximum
 - Label_Options_NewKnoSpecialization
 - Label_Options_NewRatingPlus
