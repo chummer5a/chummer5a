@@ -134,37 +134,42 @@
     <sheet>
       <id>255f1f17-bcd9-40f1-ae84-9ce5529b91fc</id>
       <name>Fahrzeuge</name>
-      <filename>Fahrzeuge</filename>
+      <filename>Vehicles</filename>
     </sheet>
     <sheet>
       <id>e7d67499-4f86-4153-b748-e903f8bc97b3</id>
       <name>Formatieren Nur Text</name>
-      <filename>Formatieren Nur Text</filename>
+      <filename>Formatted Text-Only</filename>
     </sheet>
     <sheet>
       <id>5ccf5887-441f-44c9-94b9-6182137e824e</id>
       <name>Kalender</name>
-      <filename>Kalender</filename>
+      <filename>Calender</filename>
     </sheet>
     <sheet>
       <id>8b691596-e030-4305-8a0c-8ee1db29cae7</id>
       <name>Kommlinks</name>
-      <filename>Kommlinks</filename>
+      <filename>Commlinks</filename>
+    </sheet>
+    <sheet>
+      <id>17e18261-0c8a-404d-85cd-dc6442a3f4cd</id>
+      <name>Kontakte</name>
+      <filename>Contacts</filename>
     </sheet>
     <sheet>
       <id>906e0ba0-4761-4ddb-a4d9-dfb34d30c39d</id>
       <name>Kosten</name>
-      <filename>Kosten</filename>
+      <filename>Expenses</filename>
     </sheet>
     <sheet>
       <id>362ea83f-447a-475b-b8af-7f2d40de0d11</id>
       <name>Notizen</name>
-      <filename>Notizen</filename>
+      <filename>Notes</filename>
     </sheet>
     <sheet>
       <id>e5dc6627-35c2-4a36-8126-436ba0323e47</id>
       <name>Nur Text</name>
-      <filename>Nur Text</filename>
+      <filename>Text-Only</filename>
     </sheet>
     <sheet>
       <id>9dcbd2e5-aa5f-4127-ac26-f12e4f03d3a1</id>
@@ -189,14 +194,14 @@
     <sheet>
       <id>63314285-26fb-4162-bbf7-015788bea04b</id>
       <name>Shadowrun 5 (Kern)</name>
-      <filename>Shadowrun 5 (Kern)</filename>
+      <filename>Shadowrun 5 (Core)</filename>
     </sheet>
     <sheet>
       <id>4a612f4d-482b-4de7-9af6-7878847ae327</id>
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>aa00e72d-bddb-48ee-98b1-de860da11a16</id>
       <name>Shadowrun 5 (Kern, Gruppiert Fähigkeit durch Kategorie)</name>
       <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
@@ -231,12 +236,12 @@
     <sheet>
       <id>9763ccaf-61f5-4473-b4d9-e5a210073a7b</id>
       <name>Blocs fantaisie</name>
-      <filename>Blocs fantaisie</filename>
+      <filename>Fancy Blocks</filename>
     </sheet>
     <sheet>
       <id>9e9059ee-96a7-4dab-b2fb-dfe909a17702</id>
       <name>Calendrier</name>
-      <filename>Calendrier</filename>
+      <filename>Calendar</filename>
     </sheet>
     <sheet>
       <id>7090c91a-f1e1-4791-b373-34280e75a5d1</id>
@@ -261,12 +266,12 @@
     <sheet>
       <id>ddbb9a60-6625-4091-8b42-59079538bb71</id>
       <name>Formaté texte seulement</name>
-      <filename>Formaté texte seulement</filename>
+      <filename>Formatted Text-Only</filename>
     </sheet>
     <sheet>
       <id>0f2c14d0-1d90-4b45-b26e-ef1da40c2ded</id>
       <name>Remarques</name>
-      <filename>Remarques</filename>
+      <filename>Notes</filename>
     </sheet>
     <sheet>
       <id>c24f51e2-c795-40e0-8b5b-3ddc04965221</id>
@@ -326,7 +331,7 @@
     <sheet>
       <id>ef153fd3-ac81-43cb-b8bb-13a8ed441ced</id>
       <name>Texte seulement</name>
-      <filename>Texte seulement</filename>
+      <filename>Text-Only</filename>
     </sheet>
     <sheet>
       <id>2fe33919-5419-4681-9cf1-556f0054d398</id>
@@ -443,76 +448,76 @@
 	</sheets>	
     <sheets lang="zh-cn">
     <sheet>
-      <id>8b16e238-18c6-40e0-85ca-a3a6c1854bd9</id>
+      <id>dbe18b2a-a657-48e7-b4ba-9378189014c9</id>
       <name>日程表</name>
-      <filename>日程表</filename>
+      <filename>Calendar</filename>
     </sheet>
     <sheet>
-      <id>88ffe3f4-f216-44bf-85f5-4dd27034599b</id>
+      <id>bd263301-3ceb-4e2a-8d34-e685004246e9</id>
       <name>矩阵设备</name>
-      <filename>矩阵设备</filename>
+      <filename>Commlinks</filename>
     </sheet>
     <sheet>
-      <id>57ba779b-c7aa-4699-bd3b-4d0cbc1f8bd7</id>
+      <id>047277ad-9c82-4b50-aecf-4289fa152278</id>
       <name>人脉</name>
-      <filename>人脉</filename>
+      <filename>Contacts</filename>
     </sheet>
     <sheet>
-      <id>4feb3343-b759-47a6-a4e4-2fe308d30afa</id>
+      <id>1c58e32c-b865-47b7-9419-d592c717127f</id>
       <name>档案</name>
-      <filename>档案</filename>
+      <filename>Dossier</filename>
     </sheet>
     <sheet>
-      <id>ee596d7a-300b-4cd6-8fb0-2d180b8a1cd0</id>
+      <id>7fbbf00e-2c08-47f9-9f81-71de6db580f0</id>
       <name>收支</name>
-      <filename>收支</filename>
+      <filename>Expenses</filename>
     </sheet>
     <sheet>
-      <id>1ce3583c-d6b4-4ad4-b64c-67361ec53997</id>
+      <id>ff51f2a1-aef8-41d7-a4db-3e7264cdebd6</id>
       <name>多彩方块</name>
-      <filename>多彩方块</filename>
+      <filename>Fancy Blocks</filename>
     </sheet>
     <sheet>
-      <id>32949e5b-49ec-4231-8954-30366c5364a1</id>
+      <id>e6c988a8-d324-4fb0-ae49-af2c0ba2d64b</id>
       <name>格式仅文本</name>
-      <filename>格式仅文本</filename>
+      <filename>Formatted Text-Only</filename>
     </sheet>
     <sheet>
-      <id>0a04bce3-5d9f-4aee-a54d-4514eaf86ee0</id>
+      <id>87669c92-58f9-4d03-92bc-faaae20f0685</id>
       <name>GM简要</name>
-      <filename>GM简要</filename>
+      <filename>Game Master Summary</filename>
     </sheet>
     <sheet>
-      <id>682a0fff-e064-4208-91fd-e386acf8fdda</id>
+      <id>ac1c2a17-663f-46da-b67f-f3f532fb5143</id>
       <name>备注</name>
-      <filename>备注</filename>
+      <filename>Notes</filename>
     </sheet>
     <sheet>
-      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
+      <id>47d22500-320b-4c58-8733-2c7dc4bbd392</id>
       <name>暗影狂奔5（核心）</name>
-      <filename>暗影狂奔5（核心）</filename>
+      <filename>Shadowrun 5 (Core）</filename>
     </sheet>
     <sheet>
-      <id>19653431-f271-4e6b-bfcd-34525e168f3d</id>
+      <id>e4d5de11-7cbc-4248-81ce-722695fa3883</id>
       <name>暗影狂奔5（名称排列）</name>
-      <filename>暗影狂奔5（名称排列）</filename>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
     </sheet>
     <sheet>
-      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
+      <id>71bc2cfd-fb9e-445e-a212-1ba29d04d161</id>
       <name>暗影狂奔5（等级排列）</name>
-      <filename>暗影狂奔5（等级排列）</filename>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
     </sheet>
     <sheet>
-      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
+      <id>7fdc5909-20c0-4f9a-b381-362cbfdb8eeb</id>
       <name>暗影狂奔5（技能等级＞0）</name>
-      <filename>暗影狂奔5（技能等级＞0）</filename>
+      <filename>Shadowrun 5 (Rating greater 0)</filename>
     </sheet>
     <sheet>
-      <id>c4e73b93-8372-4d65-ac7c-b3e30218ef6f</id>
+      <id>62c46104-f0f8-40fe-9014-6ad6d0b7891a</id>
       <name>暗影狂奔5</name>
-      <filename>暗影狂奔5</filename>
+      <filename>Shadowrun 5</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>b9eeb2c0-eba2-4e33-8549-46f5f281c6f9</id>
       <name>暗影狂奔5(核心和类别排列)</name>
       <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
@@ -538,14 +543,14 @@
       <filename>Shadowrun 5 (Grouped by Category)</filename>
     </sheet>
     <sheet>
-      <id>5e4fa26c-22bc-46a8-b342-68d5ec975d35</id>
+      <id>5f0052ef-8d8a-4220-91e1-f15e2aa4dca4</id>
       <name>仅文本</name>
-      <filename>仅文本</filename>
+      <filename>Text-Only</filename>
     </sheet>
     <sheet>
-      <id>995ad8c4-2c0b-4aaa-876e-5d3ae962ee84</id>
+      <id>33f93949-6e3e-46bd-af8a-333e56c1e399</id>
       <name>载具和无人机</name>
-      <filename>载具和无人机</filename>
+      <filename>Vehicles</filename>
     </sheet>
   </sheets>
 </chummer>

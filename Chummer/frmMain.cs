@@ -155,6 +155,7 @@ namespace Chummer
 
             frmCharacterRoster frmCharacter = new frmCharacterRoster();
             frmCharacter.MdiParent = this;
+            _frmCharacterRoster = frmCharacter;
 
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
@@ -188,6 +189,15 @@ namespace Chummer
 
             frmCharacter.WindowState = FormWindowState.Maximized;
             frmCharacter.Show();
+        }
+
+        private frmCharacterRoster _frmCharacterRoster;
+        public frmCharacterRoster CharacterRoster
+        {
+            get
+            {
+                return _frmCharacterRoster;
+            }
         }
 
         public void CheckForUpdate(object sender, EventArgs e)
@@ -430,7 +440,7 @@ namespace Chummer
                     // Add a tab page.
                     tp.Tag = ActiveMdiChild;
                     tp.Parent = tabForms;
-                    
+
                     if (ActiveMdiChild.GetType() == typeof(frmCareer))
                     {
                         tp.Text = ((frmCareer)ActiveMdiChild).CharacterName;
@@ -476,6 +486,26 @@ namespace Chummer
         {
             if (tabForms.SelectedTab != null && tabForms.SelectedTab.Tag != null)
                 (tabForms.SelectedTab.Tag as Form)?.Select();
+        }
+
+        public bool SwitchToOpenCharacter(Character objCharacter)
+        {
+            if (objCharacter != null)
+            {
+                Form objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
+                if (objCharacterForm != null)
+                {
+                    foreach (TabPage objTabPage in tabForms.TabPages)
+                    {
+                        if (objTabPage.Tag == objCharacterForm)
+                        {
+                            tabForms.SelectTab(objTabPage);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         private void objCharacter_CharacterNameChanged(Object sender)

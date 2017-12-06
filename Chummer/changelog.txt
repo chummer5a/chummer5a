@@ -299,6 +299,8 @@ Application Changes:
 - Moved Complex Form Context Menu Strip into the treenodes for each complex form to bring it back into line with the usual standard, removed it from the button.
 - Fixed a crash when moving characters between the "Favorites" and "Recent" lists in the character roster.
 - The "Favorites" list will now be shown in the character roster even when it is empty so that characters can immediately be moved to it.
+- Double clicking a character on the character roster who is already open will now switch to the character's tab instead of attempting to open a new tab of the character. Open characters are now marked with an asterisk. If there are more than 10 characters open, open characters will still show up in the "Recent" list.
+- Fixed a bug where testing a PDF inside the options menu would automatically save the currently selected options, which would cause them to be applied even if the user would choose not to apply changes to options in the prompt when they exited the options menu.
 
 Data Changes:
 
@@ -457,6 +459,7 @@ Data Changes:
 - Added content from The Seattle Gauntlet Enhanced Fiction novel.
 - Added missing entries for Magecuff and Magemask from Street Grimoire.
 - Added missing damage resistance bonus to the Bear mentor spirit.
+- Added missing social limit penalty to the Move-By-Wire System.
 - Fixed bonus for Superhuman Psychosis not applying to Exotic Melee Weapons
 - Fixed incorrect concealability for the Altmayr SPX
 
@@ -529,14 +532,18 @@ New Strings:
 - Checkbox_Contact_Family
 - Checkbox_Options_ExceedPositiveQualitiesCostDoubled
 - Checkbox_Option_DontRoundEssenceInternally
-- Label_Options_NuyenDecimalsAlways
+- Label_Options_NuyenDecimalsMinimum
 - Label_Options_NuyenDecimalsMaximum
 - Label_Options_NewKnoSpecialization
 - Label_Options_NewRatingPlus
 - Checkbox_Options_LiveUpdateCleanCharacterFiles
 - Checkbox_Options_CompensateSkillGroupKarmaDifference
 - Button_ContactsExpansionToggle
-
+- String_Loading_Characters
+- String_Generating_Sheet
+- Menu_Delete
+- Menu_Sort
+- Menu_ToggleFavourite
 Changed Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf

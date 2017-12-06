@@ -2947,14 +2947,18 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Book coode and page number to open.</param>
         /// <param name="objCharacter">Character from which alternate sources should be fetched.</param>
-        public static void OpenPDF(string strSource, Character objCharacter = null)
+        public static void OpenPDF(string strSource, Character objCharacter = null, string strPDFParamaters = "", string strPDFAppPath = "")
         {
+            if (string.IsNullOrEmpty(strPDFParamaters))
+                strPDFParamaters = GlobalOptions.PDFParameters;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters))
+            if (string.IsNullOrWhiteSpace(strPDFParamaters))
                 return;
 
+            if (string.IsNullOrEmpty(strPDFAppPath))
+                strPDFAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
+            if (string.IsNullOrWhiteSpace(strPDFAppPath))
                 return;
 
             string[] strTemp = strSource.Split(' ');
@@ -2975,8 +2979,7 @@ namespace Chummer
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             Uri uriPath;
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(
-                objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
             if (objBookInfo != null)
             {
                 uriPath = new Uri(objBookInfo.Path);
@@ -2986,13 +2989,13 @@ namespace Chummer
             else
                 return;
 
-            string strParams = GlobalOptions.PDFParameters;
+            string strParams = strPDFParamaters;
             strParams = strParams.Replace("{page}", intPage.ToString());
             strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
             strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
-                FileName = GlobalOptions.PDFAppPath,
+                FileName = strPDFAppPath,
                 Arguments = strParams
             };
             Process.Start(objProgress);

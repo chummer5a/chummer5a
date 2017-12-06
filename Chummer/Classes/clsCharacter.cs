@@ -87,7 +87,7 @@ namespace Chummer
         // General character info.
         private string _strName = string.Empty;
         private List<Image> _lstMugshots = new List<Image>();
-        private int _intMainMugshotIndex = 0;
+        private int _intMainMugshotIndex = -1;
         private string _strSex = string.Empty;
         private string _strAge = string.Empty;
         private string _strEyes = string.Empty;
@@ -2167,31 +2167,34 @@ namespace Chummer
                 }
             }
             // <mainmugshotpath />
-            if (MainMugshot != null)
+            if (Mugshots.Count > 0)
             {
-                Image imgMainMugshot = MainMugshot;
                 string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + ".img");
-                imgMainMugshot.Save(imgMugshotPath);
-                objWriter.WriteElementString("mainmugshotpath",
-                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
-                // <mainmugshotbase64 />
-                objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
-                // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
-                objWriter.WriteStartElement("othermugshots");
-                int i = 0;
-                foreach (Image imgMugshot in Mugshots)
+                Image imgMainMugshot = MainMugshot;
+                if (imgMainMugshot != null)
                 {
-                    if (imgMugshot == MainMugshot)
+                    imgMainMugshot.Save(imgMugshotPath);
+                    objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                    // <mainmugshotbase64 />
+                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
+                }
+                // <othermugshots>
+                objWriter.WriteElementString("hasothermugshots", imgMainMugshot == null || Mugshots.Count > 1 ? "yes" : "no");
+                objWriter.WriteStartElement("othermugshots");
+                for (int i = 0; i < Mugshots.Count; ++i)
+                {
+                    if (i == MainMugshotIndex)
                         continue;
+                    Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
+
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
+
                     imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
                     objWriter.WriteEndElement();
-                    ++i;
                 }
                 // </mugshots>
                 objWriter.WriteEndElement();
@@ -2905,9 +2908,9 @@ namespace Chummer
             {
                 _frmPrintView.Activate();
             }
-            _frmPrintView.RefreshView();
+            _frmPrintView.RefreshCharacters();
             if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(this) == true)
-                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshView();
+                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
         }
 
         /// <summary>
@@ -3385,7 +3388,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Index of Character's main portrait.
+        /// Index of Character's main portrait. -1 if set to none.
         /// </summary>
         public int MainMugshotIndex
         {
@@ -3396,15 +3399,8 @@ namespace Chummer
             set
             {
                 _intMainMugshotIndex = value;
-                if (_intMainMugshotIndex >= _lstMugshots.Count)
-                    _intMainMugshotIndex = 0;
-                else if (_intMainMugshotIndex < 0)
-                {
-                    if (_lstMugshots.Count > 0)
-                        _intMainMugshotIndex = _lstMugshots.Count - 1;
-                    else
-                        _intMainMugshotIndex = 0;
-                }
+                if (_intMainMugshotIndex >= _lstMugshots.Count || _intMainMugshotIndex < -1)
+                    _intMainMugshotIndex = -1;
             }
         }
 

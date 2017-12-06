@@ -649,7 +649,7 @@ namespace Chummer
 
             intMultiplier += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost).Sum(objImprovement => objImprovement.Value);
 
-            if (strBaseLifestyle.ToString() == "Street")
+            if (strBaseLifestyle == "Street")
             {
                 decNuyen += (intComfortsValue - intMinComfort) * 50;
                 decNuyen += (intAreaValue - intMinArea) * 50;

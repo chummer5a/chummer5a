@@ -324,7 +324,7 @@ namespace Chummer
                     string strPath = string.Empty;
                     object objRegistryResult = objLoopKey.GetValue("Path");
                     if (objRegistryResult != null)
-                        strPath = objRegistryResult.ToString();
+                        strPath = objRegistryResult.ToString().Replace("$CHUMMER", Application.StartupPath);
                     if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                     {
                         CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo();
@@ -825,7 +825,7 @@ namespace Chummer
         /// Add a file to the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to add.</param>
-        public static void AddToMRUList(string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, int intIndex = 0)
+        public static void AddToMRUList(string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false, int intIndex = 0)
         {
             if (string.IsNullOrEmpty(strFile))
                 return;
@@ -837,7 +837,11 @@ namespace Chummer
             {
                 List<string> strStickyFiles = ReadMRUList("stickymru");
                 if (strStickyFiles.Contains(strFile))
+                {
+                    if (blnForceDoMRUChanged && blnDoMRUChanged && MRUChanged != null)
+                        MRUChanged.Invoke();
                     return;
+                }
             }
             int i = intIndex;
             // Make sure the file does not already exist in the MRU list.
@@ -845,7 +849,11 @@ namespace Chummer
             if (intOldIndex != -1)
             {
                 if (intOldIndex == intIndex)
+                {
+                    if (blnForceDoMRUChanged && blnDoMRUChanged && MRUChanged != null)
+                        MRUChanged.Invoke();
                     return;
+                }
                 strFiles.RemoveAt(intOldIndex);
                 if (i > intOldIndex)
                     i = intOldIndex;
@@ -869,7 +877,7 @@ namespace Chummer
         /// Remove a file from the most recently used characters.
         /// </summary>
         /// <param name="strFile">Name of the file to remove.</param>
-        public static void RemoveFromMRUList([NotNull] string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        public static void RemoveFromMRUList([NotNull] string strFile, string strMRUType = "mru", bool blnDoMRUChanged = true, bool blnForceDoMRUChanged = false)
         {
             List<string> strFiles = ReadMRUList(strMRUType);
 
@@ -887,6 +895,8 @@ namespace Chummer
                 if (blnDoMRUChanged && MRUChanged != null)
                     MRUChanged.Invoke();
             }
+            else if (blnForceDoMRUChanged && blnDoMRUChanged && MRUChanged != null)
+                MRUChanged.Invoke();
         }
 
         /// <summary>

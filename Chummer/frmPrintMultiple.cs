@@ -146,7 +146,7 @@ namespace Chummer
             {
                 _frmPrintView.Activate();
             }
-            _frmPrintView.RefreshView();
+            _frmPrintView.RefreshCharacters();
         }
         #endregion
 

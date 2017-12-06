@@ -1132,7 +1132,7 @@ namespace Chummer
                 SelectedGrade = _objGradeList.FirstOrDefault(x => x.Name == _strSelectedGrade);
             }
 
-            _strSelectedGrade = SelectedGrade.Name.ToString();
+            _strSelectedGrade = SelectedGrade.Name;
             SelectedRating = decimal.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
 

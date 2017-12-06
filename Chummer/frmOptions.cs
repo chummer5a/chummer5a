@@ -157,13 +157,13 @@ namespace Chummer
 
             StringBuilder objNuyenFormat = new StringBuilder("#,0");
             int intNuyenDecimalPlacesMaximum = decimal.ToInt32(nudNuyenDecimalsMaximum.Value);
-            int intNuyenDecimalPlacesAlways = decimal.ToInt32(nudNuyenDecimalsAlways.Value);
+            int intNuyenDecimalPlacesMinimum = decimal.ToInt32(nudNuyenDecimalsMinimum.Value);
             if (intNuyenDecimalPlacesMaximum > 0)
             {
                 objNuyenFormat.Append(".");
                 for (int i = 0; i < intNuyenDecimalPlacesMaximum; ++i)
                 {
-                    if (i <= intNuyenDecimalPlacesAlways)
+                    if (i <= intNuyenDecimalPlacesMinimum)
                         objNuyenFormat.Append("0");
                     else
                         objNuyenFormat.Append("#");
@@ -235,11 +235,11 @@ namespace Chummer
         {
             if (cboBuildMethod.SelectedValue != null)
             {
-            if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_Karma"))
-                nudBP.Value = 800;
-            else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_LifeModule"))
-                nudBP.Value = 750;
-        }
+                if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_Karma"))
+                    nudBP.Value = 800;
+                else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.GetString("String_LifeModule"))
+                    nudBP.Value = 750;
+            }
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -428,7 +428,9 @@ namespace Chummer
             _skipRefresh = false;
 
             // Find the selected item in the Sourcebook List.
-            foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo.Where(objSource => objSource.Code == treSourcebook.SelectedNode.Tag.ToString()))
+            SourcebookInfo objSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == treSourcebook.SelectedNode.Tag.ToString());
+
+            if (objSource != null)
             {
                 txtPDFLocation.Text = objSource.Path;
                 nudPDFOffset.Value = objSource.Offset;
@@ -469,9 +471,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
 
-            SaveRegistrySettings();
-
-            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
+            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
         #endregion
 
@@ -490,8 +490,8 @@ namespace Chummer
             nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width;
             nudEssenceDecimals.Left = lblEssenceDecimals.Left + lblEssenceDecimals.Width + 6;
 
-            intWidth = Math.Max(lblNuyenDecimalsAlwaysLabel.Width, lblNuyenDecimalsMaximumLabel.Width);
-            nudNuyenDecimalsAlways.Left = lblNuyenDecimalsAlwaysLabel.Left + intWidth + 6;
+            intWidth = Math.Max(lblNuyenDecimalsMinimumLabel.Width, lblNuyenDecimalsMaximumLabel.Width);
+            nudNuyenDecimalsMinimum.Left = lblNuyenDecimalsMinimumLabel.Left + intWidth + 6;
             nudNuyenDecimalsMaximum.Left = lblNuyenDecimalsMaximumLabel.Left + intWidth + 6;
 
             txtPDFAppPath.Left = lblPDFAppPath.Left + lblPDFAppPath.Width + 6;
@@ -685,7 +685,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode();
 
-                    objNode.Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path + ")";
+                    objNode.Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")";
                     objNode.Tag = objCustomDataDirectory.Name;
                     objNode.Checked = objCustomDataDirectory.Enabled;
                     treCustomDataDirectories.Nodes.Add(objNode);
@@ -697,7 +697,7 @@ namespace Chummer
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
                     CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfo[i];
-                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path + ")";
+                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")";
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
@@ -803,7 +803,7 @@ namespace Chummer
                     intNuyenDecimalPlacesAlways = intNuyenDecimalPlacesMaximum;
             }
             nudNuyenDecimalsMaximum.Value = intNuyenDecimalPlacesMaximum;
-            nudNuyenDecimalsAlways.Value = intNuyenDecimalPlacesAlways;
+            nudNuyenDecimalsMinimum.Value = intNuyenDecimalPlacesAlways;
 
             SetDefaultValueForLimbCount();
             PopulateKarmaFields();
@@ -875,7 +875,7 @@ namespace Chummer
             GlobalOptions.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.PrintToFileFirst = chkPrintToFileFirst.Checked;
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
-            GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue.ToString();
+            GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.OmaeEnabled = chkOmaeEnabled.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
@@ -927,7 +927,7 @@ namespace Chummer
             {
                 CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.CustomDataDirectoryInfo[i];
                 Microsoft.Win32.RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
-                objLoopKey.SetValue("Path", objCustomDataDirectory.Path);
+                objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Application.StartupPath, "$CHUMMER"));
                 objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
                 objLoopKey.SetValue("LoadOrder", i);
                 objLoopKey.Close();
@@ -1336,6 +1336,16 @@ namespace Chummer
                 GlobalOptions.DefaultCharacterSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
 
             cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheet;
+            if (cboXSLT.SelectedValue == null)
+            {
+                int intNameIndex = -1;
+                string strLanguage = cboLanguage.SelectedValue.ToString();
+                if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
+                else
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                cboXSLT.SelectedIndex = Math.Max(0, intNameIndex);
+            }
         }
 
         private void UpdateSourcebookInfoPath(string path)
@@ -1573,7 +1583,15 @@ namespace Chummer
 
         private void nudNuyenDecimalsMaximum_ValueChanged(object sender, EventArgs e)
         {
-            nudNuyenDecimalsAlways.Maximum = nudNuyenDecimalsMaximum.Value;
+            if (nudNuyenDecimalsMinimum.Value > nudNuyenDecimalsMaximum.Value)
+                nudNuyenDecimalsMinimum.Value = nudNuyenDecimalsMaximum.Value;
+            OptionsChanged(sender, e);
+        }
+
+        private void nudNuyenDecimalsMinimum_ValueChanged(object sender, EventArgs e)
+        {
+            if (nudNuyenDecimalsMaximum.Value < nudNuyenDecimalsMinimum.Value)
+                nudNuyenDecimalsMaximum.Value = nudNuyenDecimalsMinimum.Value;
             OptionsChanged(sender, e);
         }
     }
