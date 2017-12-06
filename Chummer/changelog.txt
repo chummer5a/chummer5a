@@ -457,6 +457,8 @@ Data Changes:
 - Added content from The Seattle Gauntlet Enhanced Fiction novel.
 - Added missing entries for Magecuff and Magemask from Street Grimoire.
 - Added missing damage resistance bonus to the Bear mentor spirit.
+- Fixed bonus for Superhuman Psychosis not applying to Exotic Melee Weapons
+- Fixed incorrect concealability for the Altmayr SPX
 
 New Strings:
 - Message_Improvement_EmptySelectionList

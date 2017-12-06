@@ -8588,7 +8588,7 @@
       <name>Altmayr SPX</name>
       <category>Shotguns</category>
       <type>Ranged</type>
-      <conceal>0</conceal>
+      <conceal>+2</conceal>
       <spec>Shotguns</spec>
       <accuracy>4</accuracy>
       <reach>0</reach>
