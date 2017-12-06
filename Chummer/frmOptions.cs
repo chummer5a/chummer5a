@@ -428,7 +428,9 @@ namespace Chummer
             _skipRefresh = false;
 
             // Find the selected item in the Sourcebook List.
-            foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo.Where(objSource => objSource.Code == treSourcebook.SelectedNode.Tag.ToString()))
+            SourcebookInfo objSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == treSourcebook.SelectedNode.Tag.ToString());
+
+            if (objSource != null)
             {
                 txtPDFLocation.Text = objSource.Path;
                 nudPDFOffset.Value = objSource.Offset;
@@ -469,9 +471,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
 
-            SaveRegistrySettings();
-
-            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
+            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
         #endregion
 
@@ -685,7 +685,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode();
 
-                    objNode.Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path + ")";
+                    objNode.Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")";
                     objNode.Tag = objCustomDataDirectory.Name;
                     objNode.Checked = objCustomDataDirectory.Enabled;
                     treCustomDataDirectories.Nodes.Add(objNode);
@@ -697,7 +697,7 @@ namespace Chummer
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
                     CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfo[i];
-                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path + ")";
+                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")";
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
@@ -875,7 +875,7 @@ namespace Chummer
             GlobalOptions.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.PrintToFileFirst = chkPrintToFileFirst.Checked;
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
-            GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue.ToString();
+            GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.OmaeEnabled = chkOmaeEnabled.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
@@ -927,7 +927,7 @@ namespace Chummer
             {
                 CustomDataDirectoryInfo objCustomDataDirectory = GlobalOptions.CustomDataDirectoryInfo[i];
                 Microsoft.Win32.RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
-                objLoopKey.SetValue("Path", objCustomDataDirectory.Path);
+                objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Application.StartupPath, "$CHUMMER"));
                 objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
                 objLoopKey.SetValue("LoadOrder", i);
                 objLoopKey.Close();

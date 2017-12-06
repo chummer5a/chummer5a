@@ -324,7 +324,7 @@ namespace Chummer
                     string strPath = string.Empty;
                     object objRegistryResult = objLoopKey.GetValue("Path");
                     if (objRegistryResult != null)
-                        strPath = objRegistryResult.ToString();
+                        strPath = objRegistryResult.ToString().Replace("$CHUMMER", Application.StartupPath);
                     if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                     {
                         CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo();

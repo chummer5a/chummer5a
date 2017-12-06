@@ -300,6 +300,7 @@ Application Changes:
 - Fixed a crash when moving characters between the "Favorites" and "Recent" lists in the character roster.
 - The "Favorites" list will now be shown in the character roster even when it is empty so that characters can immediately be moved to it.
 - Double clicking a character on the character roster who is already open will now switch to the character's tab instead of attempting to open a new tab of the character. Open characters are now marked with an asterisk. If there are more than 10 characters open, open characters will still show up in the "Recent" list.
+- Fixed a bug where testing a PDF inside the options menu would automatically save the currently selected options, which would cause them to be applied even if the user would choose not to apply changes to options in the prompt when they exited the options menu.
 
 Data Changes:
 
