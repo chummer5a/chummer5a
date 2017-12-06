@@ -517,7 +517,7 @@ namespace Chummer
                 int.TryParse(objXmlMetatypeNode?["value"]?.InnerText, out intSpecialAttribPoints);
                 XmlNode objXmlTalentsNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
                 int intTalentSpecialAttribPoints = 0;
-                if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText.ToString(), out intTalentSpecialAttribPoints))
+                if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out intTalentSpecialAttribPoints))
                     intSpecialAttribPoints += intTalentSpecialAttribPoints;
                 lblSpecial.Text = intSpecialAttribPoints.ToString();
 

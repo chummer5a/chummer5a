@@ -413,7 +413,7 @@
 			<book>
 				<id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
 				<name>Stolen Souls</name>
-				<translate>Stolen Souls</translate>
+				<translate>灵魂遭窃（SS）</translate>
 			</book>
 			<book>
 				<id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
@@ -448,10 +448,264 @@
       <book>
         <id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
         <name>Chrome Flesh</name>
-        <translate>（CF）</translate>
+        <translate>镀铬血肉（CF）</translate>
+      </book>
+      <book>
+        <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
+        <name>Rigger 5.0</name>
+        <translate>机师5.0（R5）</translate>
       </book>
 		</books>
 	</chummer>
+  <chummer file="complexforms.xml">
+		<complexforms>
+			<complexform>
+				<id>373638b9-4334-4645-99f5-c3673e4f809b</id>
+				<name>Cleaner</name>
+				<translate>痕迹清理</translate>
+			</complexform>
+			<complexform>
+				<id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
+				<name>Diffusion of [Matrix Attribute]</name>
+				<translate>[矩阵属性]抽取</translate>
+			</complexform>
+			<complexform>
+				<id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
+				<name>Editor</name>
+				<translate>文档篡编</translate>
+			</complexform>
+			<complexform>
+				<id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
+				<name>Infusion of [Matrix Attribute]</name>
+				<translate>[矩阵属性]注入</translate>
+			</complexform>
+			<complexform>
+				<id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
+				<name>Static Veil</name>
+				<translate>静电屏蔽</translate>
+			</complexform>
+			<complexform>
+				<id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
+				<name>Pulse Storm</name>
+				<translate>脉冲风暴</translate>
+			</complexform>
+			<complexform>
+				<id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
+				<name>Puppeteer</name>
+				<translate>人偶操师</translate>
+			</complexform>
+			<complexform>
+				<id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
+				<name>Resonance Channel</name>
+				<translate>共鸣频道</translate>
+			</complexform>
+			<complexform>
+				<id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
+				<name>Resonance Spike</name>
+				<translate>共鸣棘刺</translate>
+			</complexform>
+			<complexform>
+				<id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
+				<name>Resonance Veil</name>
+				<translate>共鸣幻象</translate>
+			</complexform>
+			<complexform>
+				<id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
+				<name>Static Bomb</name>
+				<translate>静电炸弹</translate>
+			</complexform>
+			<complexform>
+				<id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
+				<name>Stitches</name>
+				<translate>数据缝合</translate>
+			</complexform>
+			<complexform>
+				<id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
+				<name>Transcendent Grid</name>
+				<translate>网域统御</translate>
+			</complexform>
+			<complexform>
+				<id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
+				<name>Tattletale</name>
+				<translate>告密行为</translate>
+			</complexform>
+			<complexform>
+				<id>57566f59-ddbf-42bb-929a-2966ce2fde46</id>
+				<name>Derezz</name>
+				<translate>裂解刺击</translate>
+			</complexform>
+			<complexform>
+				<id>2badbff2-02e1-4218-97f0-f53f71f22cc4</id>
+				<name>FAQ</name>
+				<translate>探耽求究</translate>
+			</complexform>
+			<complexform>
+				<id>5e5c8711-70a9-4068-b084-2ae23fce8fa7</id>
+				<name>IC Tray</name>
+				<translate>IC菜单</translate>
+			</complexform>
+			<complexform>
+				<id>9a2bcb96-36fe-4f43-bbfe-f2040a8ee491</id>
+				<name>Redundancy</name>
+				<translate>冗余备份</translate>
+			</complexform>
+			<complexform>
+				<id>bfa66f3e-4d04-43a4-972a-4e0b430284ca</id>
+				<name>Misread Marks</name>
+				<translate>虚假印记</translate>
+			</complexform>
+		</complexforms>
+	</chummer>
+  <chummer file="contacts.xml">
+    <contacts>
+      <contact translate="美洲原住民部落成员">Amerindian Tribesperson</contact>
+      <contact translate="古物商人">Antiquities and Oddities Dealer</contact>
+      <contact translate="军械技师">Armorer</contact>
+      <contact translate="酒保">Bartender</contact>
+      <contact translate="片警">Beat Cop</contact>
+      <contact translate="博客主">Blogger</contact>
+      <contact translate="保镖">Bodyguard</contact>
+      <contact translate="赌注经纪人">Bookie</contact>
+      <contact translate="夜店咖">Club Hopper</contact>
+      <contact translate="俱乐部老板">Club Owner</contact>
+      <contact translate="公司职员">Company Man</contact>
+      <contact translate="公司猎头">Corporate Headhunter</contact>
+      <contact translate="公司经理">Corporate Manager</contact>
+      <contact translate="公司科学家">Corporate Scientist</contact>
+      <contact translate="公司秘书">Corporate Secretary</contact>
+      <contact translate="公司薪奴">Corporate Wage Slave</contact>
+      <contact translate="郊狼">Coyote</contact>
+      <contact translate="邪教成员">Cult Member</contact>
+      <contact translate="码头工人">Dockworker</contact>
+      <contact translate="销赃中介">Fence</contact>
+      <contact translate="消防队员">Firefighter</contact>
+      <contact translate="掮客">Fixer</contact>
+      <contact translate="自由斗士">Freedom Fighter</contact>
+      <contact translate="鉴证专家">Forensics Expert</contact>
+      <contact translate="赌徒">Gambler</contact>
+      <contact translate="帮派领袖">Gang Leader</contact>
+      <contact translate="暴走族">Go-Ganger</contact>
+      <contact translate="草根政治家">Grassroots Politician</contact>
+      <contact translate="仇恨团体成员">Hate Group Member</contact>
+      <contact translate="赫尔墨斯学者">Hermetic Academic</contact>
+      <contact translate="高风险谈判专家">High Stakes Negotiator</contact>
+      <contact translate="ID制造商">ID Manufacturer</contact>
+      <contact translate="信息贩子">Infobroker</contact>
+      <contact translate="门警">Janitor</contact>
+      <contact translate="黑手党顾问">Mafia Consiglieri</contact>
+      <contact translate="技工">Mechanic</contact>
+      <contact translate="约翰逊先生">Mr. Johnson</contact>
+      <contact translate="游牧民">Nomad</contact>
+      <contact translate="兽人国组织者（Ork Nation Organizer）">Ork Nation Organizer</contact>
+      <contact translate="Paramed">Paramed</contact>
+      <contact translate="Paramed Shaman">Paramed Shaman</contact>
+      <contact translate="泛安保专家">Parasecurity Expert</contact>
+      <contact translate="当铺老板">Pawn Broker</contact>
+      <contact translate="拉皮条的">Pimp</contact>
+      <contact translate="海盗">Pirate</contact>
+      <contact translate="警察局长">Police Chief</contact>
+      <contact translate="政治实习生（Political Intern）">Political Intern</contact>
+      <contact translate="激进分子">Radical</contact>
+      <contact translate="私人安保">Rent-a-Cop</contact>
+      <contact translate="讼棍">Shark Lawyer</contact>
+      <contact translate="拟感明星">Simsense Star</contact>
+      <contact translate="贫民窟头头">Slumlord</contact>
+      <contact translate="销赃客">Smuggler</contact>
+      <contact translate="线人">Snitch</contact>
+      <contact translate="安保蜘蛛">Spider</contact>
+      <contact translate="占屋者">Squatter</contact>
+      <contact translate="街头医生">Street Doc</contact>
+      <contact translate="街边小贩">Street Vendor</contact>
+      <contact translate="脱衣舞者">Stripper</contact>
+      <contact translate="军需官">Supply Sergeant</contact>
+      <contact translate="星探">Talent Scout</contact>
+      <contact translate="魔法小贩（Talislegger）">Talislegger</contact>
+      <contact translate="魔法商（Talismonger）">Talismonger</contact>
+      <contact translate="特玛诺斯（Tamanous)成员">Tamanous Member</contact>
+      <contact translate="出租车司机">Taxi Driver</contact>
+      <contact translate="“大地为先！”活动家">TerraFirst! Activist</contact>
+      <contact translate="3D视频盗版商">Trid Pirate</contact>
+      <contact translate="巨魔街头毒贩">Troll Street Dealer</contact>
+      <contact translate="城市人类学家">Urban Anthropologist</contact>
+      <contact translate="律贼（Vory Shestiorka）">Vory Shestiorka</contact>
+      <contact translate="魔法之子（Wiz Kid）帮派成员">Wiz Kid Ganger</contact>
+    </contacts>
+    <sexes>
+      <sex translate="女性">Female</sex>
+      <sex translate="男性">Male</sex>
+      <sex translate="未知">Unknown</sex>
+    </sexes>
+    <ages>
+      <age translate="年轻">Young</age>
+      <age translate="中年">Middle-Aged</age>
+      <age translate="老年">Old</age>
+      <age translate="未知">Unknown</age>
+    </ages>
+    <personallives>
+      <personallife translate="离异">Divorced</personallife>
+      <personallife translate="家庭">Familial Relationship</personallife>
+      <personallife translate="恋爱中">In Relationship</personallife>
+      <personallife translate="关你屁事">None of Your Damn Business</personallife>
+      <personallife translate="单身">Single</personallife>
+      <personallife translate="鳏寡">Widowed</personallife>
+      <personallife translate="未知">Unknown</personallife>
+    </personallives>
+    <types>
+      <type translate="搜集情报">Legwork</type>
+      <type translate="网罗关系">Networking</type>
+      <type translate="暗中交易">Swag</type>
+      <type translate="暗影服务">Shadow Services</type>
+      <type translate="人情恩惠">Personal Favors</type>
+      <type translate="支援">Support</type>
+    </types>
+    <preferredpayments>
+      <preferredpayment translate="货物（快销货）">Barter (Easy-to-Sell Items)</preferredpayment>
+      <preferredpayment translate="货物（爱好/恶习）">Barter (Hobby/Vice Items)</preferredpayment>
+      <preferredpayment translate="货物（专业物品）">Barter (Profession Items)</preferredpayment>
+      <preferredpayment translate="现金（企业现金券）">Cash (Corp Scrip)</preferredpayment>
+      <preferredpayment translate="现金（信用棒）">Cash (Credstick)</preferredpayment>
+      <preferredpayment translate="现金（硬通货币）">Cash (Hard Currency)</preferredpayment>
+      <preferredpayment translate="现金（电子加密货币ECC）">Cash (ECC)</preferredpayment>
+      <preferredpayment translate="服务（脏活）">Service (Drek Jobs)</preferredpayment>
+      <preferredpayment translate="服务（免费劳动力）">Service (Free-Labor Jobs)</preferredpayment>
+      <preferredpayment translate="服务（狂奔）">Service (Shadowrunner Job)</preferredpayment>
+    </preferredpayments>
+    <hobbiesvices>
+      <hobbyvice translate="动物（超自然怪物）">Animals (Paracritters)</hobbyvice>
+      <hobbyvice translate="恶习（幻梦芯片）">Bad Habit (Dream Chips)</hobbyvice>
+      <hobbyvice translate="恶习（新星可乐）">Bad Habit (Novacoke)</hobbyvice>
+      <hobbyvice translate="恶习（漫游芯片）">Bad Habit (Trip Chips)</hobbyvice>
+      <hobbyvice translate="娱乐（3D剧集）">Entertainment (Trid Shows)</hobbyvice>
+      <hobbyvice translate="娱乐（电影）">Entertainment (Movies)</hobbyvice>
+      <hobbyvice translate="娱乐（音乐）">Entertainment (Music)</hobbyvice>
+      <hobbyvice translate="娱乐（3D剧集“怪巫集会”）">Entertainment (Trid Show 'Odd Coven')</hobbyvice>
+      <hobbyvice translate="娱乐（3D影像现实秀）">Entertainment (Trid Reality Shows)</hobbyvice>
+      <hobbyvice translate="娱乐（RPG、ARLARP、图像小说）">Entertainment (RPGs, ARLARP, Graphic Novels)</hobbyvice>
+      <hobbyvice translate="娱乐（艺术品）">Entertainment (Artwork)</hobbyvice>
+      <hobbyvice translate="娱乐（动作三维影像）">Entertainment (Action Trideos)</hobbyvice>
+      <hobbyvice translate="家族义务（兄弟）">Family Obligations (Brother)</hobbyvice>
+      <hobbyvice translate="家族义务（姐妹）">Family Obligations (Sister)</hobbyvice>
+      <hobbyvice translate="家族义务（孩子）">Family Obligations (Kids)</hobbyvice>
+      <hobbyvice translate="家族义务（父母）">Family Obligations (Parents)</hobbyvice>
+      <hobbyvice translate="赌博（赌牌）">Gambling (Cards)</hobbyvice>
+      <hobbyvice translate="赌博（赌马）">Gambling (Horses)</hobbyvice>
+      <hobbyvice translate="没什么感兴趣的">Nothing of Interest</hobbyvice>
+      <hobbyvice translate="打理衣着（衣服）">Personal Grooming (Clothes)</hobbyvice>
+      <hobbyvice translate="打理衣着（时尚）">Personal Grooming (Fashion)</hobbyvice>
+      <hobbyvice translate="打理衣着（鞋）">Personal Grooming (Shoes)</hobbyvice>
+      <hobbyvice translate="社交爱好（酒精）">Social Habit (Alcohol)</hobbyvice>
+      <hobbyvice translate="社交爱好（香烟）">Social Habit (Cigarettes)</hobbyvice>
+      <hobbyvice translate="社交爱好（雪茄）">Social Habit (Cigars)</hobbyvice>
+      <hobbyvice translate="社交爱好（精灵酒）">Social Habit (Elven Wines)</hobbyvice>
+      <hobbyvice translate="载具（车）">Vehicles (Cars)</hobbyvice>
+      <hobbyvice translate="载具（无人机）">Vehicles (Drones)</hobbyvice>
+      <hobbyvice translate="载具（老爷车）">Vehicles (Antique Cars)</hobbyvice>
+      <hobbyvice translate="载具（跑车）">Vehicles (Sports Cars)</hobbyvice>
+      <hobbyvice translate="武器（枪）">Weapons (Guns)</hobbyvice>
+      <hobbyvice translate="武器（刀剑）">Weapons (Blades)</hobbyvice>
+      <hobbyvice translate="武器（军事）">Weapons (Military)</hobbyvice>
+    </hobbiesvices>
+  </chummer>
 	<chummer file="critterpowers.xml">
 		<categories>
 			<category translate="允许可选能力">Allowed Optional Powers</category>
@@ -1527,6 +1781,28 @@
 			</echo>
 		</echoes>
 	</chummer>
+  <chummer file="gameplayoptions.xml">
+      <gameplayoption>
+        <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
+        <name>Standard</name>
+        <translate>标准等级</translate>
+      </gameplayoption>
+      <gameplayoption>
+        <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
+        <name>Prime Runner</name>
+        <translate>精英狂奔者等级</translate>
+      </gameplayoption>
+      <gameplayoption>
+        <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
+        <name>Street Level</name>
+        <translate>街头等级</translate>
+      </gameplayoption>
+      <gameplayoption>
+        <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
+        <name>Street Scum</name>
+        <translate>街头渣滓</translate>
+      </gameplayoption>
+  </chummer>
 	<chummer file="gear.xml">
 		<categories>
 			<category translate="弹药">Ammunition</category>
@@ -5191,6 +5467,1030 @@
 			</improvement>
 		</improvements>
 	</chummer>
+  <chummer file="licenses.xml">
+		<licenses>
+			<license translate="修士执照">Adept License</license>
+			<license translate="自动武器执照">Automatic Weapons License</license>
+			<license translate="钝击武器执照">Blunt Weapons License</license>
+			<license translate="保镖执照">Bodyguard License</license>
+			<license translate="赏金猎人执照">Bounty Hunter's License</license>
+			<license translate="隐匿携带许可">Concealed Carry Permit</license>
+			<license translate="碟板执照">Cyberdeck License</license>
+			<license translate="机动车驾驶员执照">Driver's License</license>
+			<license translate="无人机执照">Drone License</license>
+			<license translate="异种武器执照">Exotic Weapons License</license>
+			<license translate="炸药执照">Explosives License</license>
+			<license translate="火器执照">Firearms License</license>
+			<license translate="重武器执照">Heavy Weapons License</license>
+			<license translate="狩猎执照">Hunting License</license>
+			<license translate="大型刀具执照">Large Blades License</license>
+			<license translate="法师执照">Mage License</license>
+			<license translate="水手执照">Marine License</license>
+			<license translate="矩阵软件执照">Matrix Software License</license>
+			<license translate="医疗执照">Medical License</license>
+			<license translate="军用弹药执照">Military Ammunition License</license>
+			<license translate="军用护甲执照">Military Armor License</license>
+			<license translate="军用武器执照">Military Weapons License</license>
+			<license translate="宠物执照">Pet License</license>
+			<license translate="驾驶员执照">Pilot License</license>
+			<license translate="手枪执照">Pistol License</license>
+			<license translate="私人调查员执照">Private Investigator License</license>
+			<license translate="弓弩执照">Projectile License</license>
+			<license translate="受限护甲执照">Restricted Armor License</license>
+			<license translate="受限生物改造执照">Restricted Bioware License</license>
+			<license translate="受限赛博改造执照">Restricted Cyberware License</license>
+			<license translate="步枪执照">Rifle License</license>
+			<license translate="霰弹枪执照">Shotgun License</license>
+			<license translate="小型刀具执照">Small Blades License</license>
+			<license translate="召唤者执照">Summoner License</license>
+			<license translate="奇物贩子执照">Talismonger License</license>
+			<license translate="武器执照">Weapon License</license>
+		</licenses>
+	</chummer>
+  <chummer file="lifestyles.xml">
+		<lifestyles>
+			<lifestyle>
+				<id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
+				<name>Street</name>
+				<translate>街头</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>b46c5d66-940f-42c4-a8cb-a055f459bbb4</id>
+				<name>Squatter</name>
+				<translate>寄居</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>451eef87-d18e-4bee-a972-1ee165b08522</id>
+				<name>Low</name>
+				<translate>低端</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>9cb0222c-14c1-4bea-bf83-055513a1f33e</id>
+				<name>Medium</name>
+				<translate>中等</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>619be8b8-52a0-46b0-9566-a4102bd2040a</id>
+				<name>High</name>
+				<translate>高端</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>ebb68d2c-a882-4356-8031-2f62d3f6d064</id>
+				<name>Luxury</name>
+				<translate>豪华</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
+				<name>Hospitalized, Basic</name>
+				<translate>住院，基础</translate>
+			</lifestyle>
+			<lifestyle>
+				<id>2be1a0f7-6133-4966-be57-720ed9b927a9</id>
+				<name>Hospitalized, Intensive</name>
+				<translate>住院，重症</translate>
+			</lifestyle>
+		</lifestyles>
+		<categories>
+			<category translate="娱乐-资产">Entertainment - Asset</category>
+			<category translate="娱乐-服务">Entertainment - Service</category>
+			<category translate="娱乐-外出">Entertainment - Outing</category>
+			<category translate="正面特质">Positive</category>
+			<category translate="负面特质">Negative</category>
+			<category translate="合约">Contracts</category>
+		</categories>
+		<qualities>
+			<quality>
+				<id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
+				<name>Special Work Area</name>
+				<translate>特殊工作区</translate>
+			</quality>
+			<quality>
+				<id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
+				<name>Extra Secure</name>
+				<translate>额外安保</translate>
+			</quality>
+			<quality>
+				<id>0d70cc29-c9c2-43eb-afc5-72c5cae5c529</id>
+				<name>Obscure/Difficult to Find</name>
+				<translate>隐晦/难以寻找</translate>
+			</quality>
+			<quality>
+				<id>ff0cb981-4459-46e7-ab75-d8c5bcb0c486</id>
+				<name>Cramped</name>
+				<translate>狭窄</translate>
+			</quality>
+			<quality>
+				<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
+				<name>Dangerous Area</name>
+				<translate>危险地带</translate>
+			</quality>
+      <!--Region Run Faster-->
+      <lifestyle>
+        <id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
+        <name>Bolt Hole</name>
+        <translate>庇护所</translate>
+      </lifestyle>
+      <lifestyle>
+        <id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
+        <name>Commercial</name>
+        <translate>商居</translate>
+      </lifestyle>
+      <lifestyle>
+        <id>ed775c22-8f0c-40a0-bc6f-5dbb980cedba</id>
+        <name>Traveler</name>
+        <translate>旅居</translate>
+      </lifestyle>
+      <quality>
+        <id>91ac54bf-0f7d-40f3-81bf-dc32e62fd94e</id>
+        <name>Armory</name>
+        <translate>军械库</translate>
+      </quality>
+      <quality>
+        <id>af5b1436-abc9-4f3d-9521-64cf58724e0a</id>
+        <name>Cleaning Service (Standard)</name>
+        <translate>清洁服务（标准）</translate>
+      </quality>
+      <quality>
+        <id>6f638af3-39c0-4d29-8a5d-1e0bc67ea922</id>
+        <name>Cleaning Service (Mage Sensitive)</name>
+        <translate>清洁服务（魔法敏感）</translate>
+      </quality>
+      <quality>
+        <id>1fd70570-e89d-4c85-bfe7-6b56aac7c7df</id>
+        <name>Cleaning Service (Pollution Sensitive)</name>
+        <translate>清洁服务（污染敏感）</translate>
+      </quality>
+      <quality>
+        <name>Discreet Cleaning Service</name>
+        <translate>管家式清洁服务</translate>
+      </quality>
+      <quality>
+        <id>7e721535-3827-4a85-9771-9d20cf348d11</id>
+        <name>Discreet Deliveryman</name>
+        <translate>管家式快递员</translate>
+      </quality>
+      <quality>
+        <id>cc6f6198-a330-43f1-8c23-56ef9cb1f9ea</id>
+        <name>Discreet Candyman</name>
+        <translate>管家式糖果人</translate>
+      </quality>
+      <quality>
+        <id>280535d6-9e2a-4831-8b22-b2fb0647cff7</id>
+        <name>Cramped Garage (Airplane)</name>
+        <translate>狭窄车库（飞机）</translate>
+      </quality>
+      <quality>
+        <id>df7d2669-2af5-475b-853d-819498b3badc</id>
+        <name>Cramped Garage (Boat)</name>
+        <translate>狭窄车库（船只）</translate>
+      </quality>
+      <quality>
+        <id>efe7c46c-b863-4696-a750-015837861f81</id>
+        <name>Cramped Garage (Car (Body 4 or Less))</name>
+        <translate>狭窄车库（机体4及以下的汽车）</translate>
+      </quality>
+      <quality>
+        <id>3d62f25c-8c84-476f-907d-a95073711b44</id>
+        <name>Cramped Garage (Car (Body 5 or More))</name>
+        <translate>狭窄车库（机体5及以上的汽车）</translate>
+      </quality>
+      <quality>
+        <id>10a65174-a6a3-467b-b66e-6a837bf0e11b</id>
+        <name>Cramped Garage (Helicopter)</name>
+        <translate>狭窄车库（直升机）</translate>
+      </quality>
+      <quality>
+        <id>efb63888-ad49-44e0-8bd7-491532c8c179</id>
+        <name>Garage (Airplane)</name>
+        <translate>车库（飞机）</translate>
+      </quality>
+      <quality>
+        <id>981f4509-06db-430e-9845-b3a5268f14f5</id>
+        <name>Garage (Boat)</name>
+        <translate>车库（船只）</translate>
+      </quality>
+      <quality>
+        <id>a45f7fc8-ec90-4a65-8705-c931c408c9cc</id>
+        <name>Garage (Car (Body 4 or Less))</name>
+        <translate>车库（机体4及以下的汽车）</translate>
+      </quality>
+      <quality>
+        <id>9e7cea76-8f2e-4d87-a5ce-60395a8d701f</id>
+        <name>Garage (Car (Body 5 or More))</name>
+        <translate>车库（机体5及以上的汽车）</translate>
+      </quality>
+      <quality>
+        <id>67e41d1f-78a9-417b-88d4-94eeb58fa4ff</id>
+        <name>Garage (Helicopter)</name>
+        <translate>车库（直升机）</translate>
+      </quality>
+      <quality>
+        <id>0ab77035-0b81-4fe0-8e16-8674501a3782</id>
+        <name>Greenhouse</name>
+        <translate>车库（温室）</translate>
+      </quality>
+      <quality>
+        <id>adaf6b3d-874a-42e5-b08b-37adf1222f23</id>
+        <name>Grid Subscription</name>
+        <translate>矩阵信息订阅</translate>
+      </quality>
+      <quality>
+        <id>23c785d3-e086-46a6-8491-603fa1e6963d</id>
+        <name>Gym</name>
+        <translate>健身房</translate>
+      </quality>
+      <quality>
+        <id>3e5339c7-42e3-484b-8839-66ea942e509b</id>
+        <name>Indoor Arboretum</name>
+        <translate>室内植物园</translate>
+      </quality>
+      <quality>
+        <id>7348e613-3f05-413a-b8eb-a27e480d9f88</id>
+        <name>Local Bar Patron</name>
+        <translate>本地酒吧常客</translate>
+      </quality>
+      <quality>
+        <id>c63bcf5f-fcb7-4193-bdae-2b32cdf50032</id>
+        <name>Merchandise: Goods (Avail 3)</name>
+        <translate>买卖：货物（可获得性3）</translate>
+      </quality>
+      <quality>
+        <id>544760af-1c45-4de7-a198-f9f7f86ec4b2</id>
+        <name>Merchandise: Goods (Avail 5)</name>
+        <translate>买卖：货物（可获得性5）</translate>
+      </quality>
+      <quality>
+        <id>5a7f93eb-7297-49a0-904e-466be3f3f454</id>
+        <name>Merchandise: Goods (Avail 7)</name>
+        <translate>买卖：货物（可获得性7）</translate>
+      </quality>
+      <quality>
+        <id>1ab883f5-3392-41c6-b4e3-b26dfc4b8aba</id>
+        <name>Merchandise: Goods (Avail 9)</name>
+        <translate>买卖：货物（可获得性9）</translate>
+      </quality>
+      <quality>
+        <id>35d712d8-ea04-4853-8b1f-89e079e043ce</id>
+        <name>Merchandise: Pawn Shop</name>
+        <translate>买卖：旧货商店</translate>
+      </quality>
+      <quality>
+        <id>b8c84dbb-b59e-43e1-a07f-fa03802fe5af</id>
+        <name>Merchandise: Used Goods</name>
+        <translate>买卖：二手货</translate>
+      </quality>
+      <quality>
+        <id>9db8b664-4fba-4e66-8875-54c54324d93d</id>
+        <name>Panic Room</name>
+        <translate>密室</translate>
+      </quality>
+      <quality>
+        <id>5e7c3001-03de-41ed-b2d2-03c3175669d4</id>
+        <name>Patron of the Arts (Concerts/Events)</name>
+        <translate>艺术赞助人（音乐会/赛事）</translate>
+      </quality>
+      <quality>
+        <id>903b7d38-d844-4473-8454-4e8f4875880d</id>
+        <name>Patron of the Arts (Private Club)</name>
+        <translate>艺术赞助人（私人俱乐部）</translate>
+      </quality>
+      <quality>
+        <id>0bbec525-178b-4712-b36f-6549ea8274c2</id>
+        <name>Patron of the Arts (Zoo/Museum)</name>
+        <translate>艺术赞助人（动物园/博物馆）</translate>
+      </quality>
+      <quality>
+        <id>39f7afff-173b-4c14-91b6-de2c8d315cc6</id>
+        <name>Patron of the Arts (Theme Parks)</name>
+        <translate>艺术赞助人（主题公园）</translate>
+      </quality>
+      <quality>
+        <id>679b8200-2f4a-45f8-b7cb-c91fdcd94f2d</id>
+        <name>Private Room</name>
+        <translate>私人空间</translate>
+      </quality>
+      <quality>
+        <id>20c5e92c-deb7-4d88-9972-507ecccb1e50</id>
+        <name>Public Transportation</name>
+        <translate>公共交通</translate>
+      </quality>
+      <quality>
+        <id>35e2e527-2c63-4193-abe3-1c72063c8d6f</id>
+        <name>Railway Pass</name>
+        <translate>轨道交通</translate>
+      </quality>
+      <quality>
+        <id>ee56a5de-dfb0-41c3-8de7-67041a627df9</id>
+        <name>Shooting Range</name>
+        <translate>靶场</translate>
+      </quality>
+      <quality>
+        <id>d26a39a7-cc09-4476-a5f0-eeb55e737641</id>
+        <name>Soy Processing Unit</name>
+        <translate>大豆加工装置</translate>
+      </quality>
+      <quality>
+        <id>2e845204-d9b3-40a9-9d24-4b5aa9673486</id>
+        <name>Sports Court - Small</name>
+        <translate>小型运动场</translate>
+      </quality>
+      <quality>
+        <id>0503f768-dc6b-4e79-adbe-69907dd79e1b</id>
+        <name>Swimming Pool</name>
+        <translate>游泳池</translate>
+      </quality>
+      <quality>
+        <id>71428a84-70d1-4c9c-89c3-227509cfbc25</id>
+        <name>Walk-In Freezer</name>
+        <translate>冷藏库</translate>
+      </quality>
+      <quality>
+        <id>af8ac67a-7603-48b2-8ee4-940e5dcd5f29</id>
+        <name>Workshop/Facility</name>
+        <translate>车间</translate>
+      </quality>
+      <quality>
+        <id>867f7c74-8e6e-4467-b49c-10f4bf17fa8d</id>
+        <name>Cramped Workshop/Facility</name>
+        <translate>狭窄车间</translate>
+      </quality>
+      <quality>
+        <id>3dfb9fd3-c58d-4cc8-9e6b-f17fa18474b6</id>
+        <name>Yard</name>
+        <translate>庭院</translate>
+      </quality>
+      <quality>
+        <id>03092f1a-4018-413b-a11f-144383472c18</id>
+        <name>Zen Den</name>
+        <translate>禅室</translate>
+      </quality>
+      <quality>
+        <id>cc3abead-ab2a-4023-8a63-d64536ccf5e5</id>
+        <name>Bat Cave</name>
+        <translate>蝙蝠洞</translate>
+      </quality>
+      <quality>
+        <id>910b0a59-59cb-422b-b9a4-7b8d12912c91</id>
+        <name>Angry Drunk Reputation</name>
+        <translate>怒酒症</translate>
+      </quality>
+      <quality>
+        <id>6c47713d-46ba-495d-800c-f77c306cf9df</id>
+        <name>Corporate Owned</name>
+        <translate>公司所有</translate>
+      </quality>
+      <quality>
+        <id>8cc2d931-becd-40d7-a0bd-705412037f38</id>
+        <name>Hotel California</name>
+        <translate>加州旅馆</translate>
+      </quality>
+      <quality>
+        <id>ce96f8e7-42a5-4745-8e3d-1f04c72b0385</id>
+        <name>Maid is Out</name>
+        <translate>女仆外出</translate>
+      </quality>
+      <quality>
+        <id>9a8da447-b05f-4f4a-8d7c-537344d77557</id>
+        <name>Not a Home</name>
+        <translate>遮头之瓦</translate>
+      </quality>
+      <quality>
+        <id>a808bcae-68c5-4e96-8bfc-f432ea63cc11</id>
+        <name>One Good Thing About This Place</name>
+        <translate>聊以慰藉</translate>
+      </quality>
+      <quality>
+        <id>0eee0e10-078e-4f07-ac57-14f9b83f1a36</id>
+        <name>Safehouse</name>
+        <translate>安全屋</translate>
+      </quality>
+      <quality>
+        <id>c4d4c6db-7314-4a23-951d-31126514af8d</id>
+        <name>Safety Third</name>
+        <translate>安全第三</translate>
+        <source>RF</source>
+        <page>226</page>
+      </quality>
+      <quality>
+        <id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
+        <name>Special Work Area</name>
+        <translate>特殊工作区</translate>
+      </quality>
+      <quality>
+        <id>61e7bb21-cb25-44ff-a332-639fe9dac893</id>
+        <name>Thrifty</name>
+        <translate>节俭</translate>
+      </quality>
+      <quality>
+        <id>d508fc24-6cbd-488f-a5f8-5282cfb58f9a</id>
+        <name>W Zone</name>
+        <translate>W区</translate>
+      </quality>
+		</qualities>
+	</chummer>
+  <chummer file="martialarts.xml">
+    <martialarts>
+      <martialart>
+        <id>de351d4e-4384-4dda-a37f-e0e4537e1445</id>
+        <name>52 Blocks</name>
+        <translate>52格</translate>
+      </martialart>
+      <martialart>
+        <id>f0b55f24-a184-4d91-a4c2-71b480bace0b</id>
+        <name>Aikido</name>
+        <translate>合气道</translate>
+      </martialart>
+      <martialart>
+        <id>906a51fa-584d-4d5d-8608-f28e08d61902</id>
+        <name>Arnis De Mano</name>
+        <translate>菲律宾魔杖术</translate>
+      </martialart>
+      <martialart>
+        <id>d866e4b6-01fe-4ec6-b7b9-292d06015fc0</id>
+        <name>Bartitsu</name>
+        <translate>巴顿术</translate>
+      </martialart>
+      <martialart>
+        <id>03c1ba09-e8b5-492d-8752-bb9fb2ab438d</id>
+        <name>Boxing (Brawler Style)</name>
+        <translate>拳击（打手流派）</translate>
+      </martialart>
+      <martialart>
+        <id>5e02ce33-4cbd-4003-bc93-5d5971749eae</id>
+        <name>Boxing (Classic Style)</name>
+        <translate>拳击（经典流派）</translate>
+      </martialart>
+      <martialart>
+        <id>39b7d61b-b95e-4787-b3b0-df3c2a8bec5c</id>
+        <name>Boxing (Swarmer Style)</name>
+        <translate>拳击（疾风流派）</translate>
+      </martialart>
+      <martialart>
+        <id>5debcf68-304d-4ce6-97ee-9c00fc47f449</id>
+        <name>Capoeira</name>
+        <translate>巴西战舞</translate>
+      </martialart>
+      <martialart>
+        <id>6ff0927a-ba0c-44cf-abea-0d180768f73b</id>
+        <name>Carromeleg</name>
+        <translate>精灵反击术</translate>
+      </martialart>
+      <martialart>
+        <id>5170a688-54a0-4a71-899a-edfea5dec0a2</id>
+        <name>Chakram Fighting</name>
+        <translate>轮刃技法</translate>
+      </martialart>
+      <martialart>
+        <id>2327a330-3b9c-49a9-a392-8f34579e5bce</id>
+        <name>Drunken Boxing</name>
+        <translate>醉拳</translate>
+      </martialart>
+      <martialart>
+        <id>15ea5191-d615-4320-84e5-bffa90f8873e</id>
+        <name>Fiore Dei Liberi</name>
+        <translate>菲奥里代流</translate>
+      </martialart>
+      <martialart>
+        <id>3a16d253-73cb-41e0-8c52-8f5b79d27a58</id>
+        <name>Firefight</name>
+        <translate>近身枪术</translate>
+      </martialart>
+      <martialart>
+        <id>23c0c9dc-da26-40ab-a578-7cd1a2231ba1</id>
+        <name>Gun Kata</name>
+        <translate>枪斗术</translate>
+      </martialart>
+      <martialart>
+        <id>8940f70e-e81d-4e64-b8e0-52256ee28cf9</id>
+        <name>Jeet Kune Do</name>
+        <translate>截拳道</translate>
+      </martialart>
+      <martialart>
+        <id>fa11a3e1-a658-4353-8d74-71337e3e1f29</id>
+        <name>Jogo Du Pau</name>
+        <translate>葡萄牙杖术</translate>
+      </martialart>
+      <martialart>
+        <id>7415286a-11b7-41b6-ad18-a4c72067cb71</id>
+        <name>Jujitsu</name>
+        <translate>柔术</translate>
+      </martialart>
+      <martialart>
+        <id>16391532-2476-4a9f-b5d8-ae058b7e0f27</id>
+        <name>Karate</name>
+        <translate>空手道</translate>
+      </martialart>
+      <martialart>
+        <id>922b9b42-6e88-4ab6-a255-00fe2b025f2a</id>
+        <name>Kenjutsu</name>
+        <translate>剑道</translate>
+      </martialart>
+      <martialart>
+        <id>57a1e6dd-a78c-4fb7-94e0-db4a7b8b7f63</id>
+        <name>Knight Errant Tactical</name>
+        <translate>游侠战术</translate>
+      </martialart>
+      <martialart>
+        <id>3b3c2299-5a76-4cf4-962f-160fecbdd38b</id>
+        <name>Krav Maga</name>
+        <translate>马伽术</translate>
+      </martialart>
+      <martialart>
+        <id>69097cfa-cfdd-49d9-b65a-e866d2296b7e</id>
+        <name>Kunst Des Fechtens</name>
+        <translate>德国剑艺</translate>
+      </martialart>
+      <martialart>
+        <id>7a2eb5f6-fbb5-4952-95dc-352570c00e52</id>
+        <name>Kyujutsu</name>
+        <translate>弓道</translate>
+      </martialart>
+      <martialart>
+        <id>21bc338f-7b28-49df-9d11-e4db076404be</id>
+        <name>La Verdadera Destreza</name>
+        <translate>德斯特雷扎真实剑艺</translate>
+      </martialart>
+      <martialart>
+        <id>5366bd5d-ff0a-4277-b02d-24e10ac76319</id>
+        <name>Lone Star Tactical</name>
+        <translate>孤星战术</translate>
+      </martialart>
+      <martialart>
+        <id>af544c56-2c65-403a-a83b-e861e02c72bb</id>
+        <name>Muay Thai</name>
+        <translate>泰拳</translate>
+      </martialart>
+      <martialart>
+        <id>0b2aba07-cd8e-40b8-8bd5-a89b0c7d9699</id>
+        <name>Ninjutsu</name>
+        <translate>忍术</translate>
+      </martialart>
+      <martialart>
+        <id>f8c89602-b72f-4613-81b8-72951dcad4c9</id>
+        <name>Okichitaw</name>
+        <translate>克里战舞</translate>
+      </martialart>
+      <martialart>
+        <id>e613f285-bc8d-40a2-a968-da4aa567cbcc</id>
+        <name>Parkour</name>
+        <translate>跑酷</translate>
+      </martialart>
+      <martialart>
+        <id>0b792f6c-c12e-4e93-b830-1f201e267bbc</id>
+        <name>Pentjak-Silat</name>
+        <translate>班拉苏卡</translate>
+      </martialart>
+      <martialart>
+        <id>36e8103e-a362-49d5-959b-689d06dac350</id>
+        <name>Quarterstaff Fighting</name>
+        <translate>棍术</translate>
+      </martialart>
+      <martialart>
+        <id>3771abcc-6307-4ddf-9ab5-df86bc591da6</id>
+        <name>Sangre Y Acero</name>
+        <translate>血钢</translate>
+      </martialart>
+      <martialart>
+        <id>3e0d63a0-b784-4315-aa66-89b92818a267</id>
+        <name>Tae Kwon Do</name>
+        <translate>跆拳道</translate>
+      </martialart>
+      <martialart>
+        <id>f5829122-0973-4e27-98b4-f54c9343a57c</id>
+        <name>The Cowboy Way</name>
+        <translate>牛仔道</translate>
+      </martialart>
+      <martialart>
+        <id>6b5ae017-9fb1-46df-839b-4548ad360534</id>
+        <name>Turkish Archery</name>
+        <translate>土耳其箭术</translate>
+      </martialart>
+      <martialart>
+        <id>18c44152-1ca8-435c-a72d-e443d3f1e7c6</id>
+        <name>Whip Fighting</name>
+        <translate>鞭法</translate>
+      </martialart>
+      <martialart>
+        <id>df0b9bb0-bad9-4bb9-b543-eb73edfe34e8</id>
+        <name>Wildcat</name>
+        <translate>野猫</translate>
+      </martialart>
+      <martialart>
+        <id>24ee13d8-9b6d-4fc0-908c-d9904db364c7</id>
+        <name>Wrestling (Sport Style)</name>
+        <translate>摔跤（运动流派）</translate>
+      </martialart>
+      <martialart>
+        <id>03e7e806-2bf6-43d2-ae51-9a724aca67fc</id>
+        <name>Wrestling (Sumo Style)</name>
+        <translate>摔跤（相扑流派）</translate>
+      </martialart>
+      <martialart>
+        <id>06d5eac3-1ec1-4164-8014-e8f6ae47de0f</id>
+        <name>Wrestling (Professional Style)</name>
+        <translate>摔跤（职业流派）</translate>
+      </martialart>
+      <martialart>
+        <id>43aedfbf-c4ef-4682-a8a3-9f53363a3e60</id>
+        <name>Wrestling (MMA Style)</name>
+        <translate>摔跤（综合格斗流派）</translate>
+      </martialart>
+      <martialart>
+        <id>bd876c27-26b0-4b37-a236-b5da99d5c503</id>
+        <name>Wudang Sword</name>
+        <translate>武当剑法</translate>
+      </martialart>
+      <martialart>
+        <id>0325b2c8-0a48-497f-92b1-2830a5ac467f</id>
+        <name>One Trick Pony</name>
+        <translate>一招鲜</translate>
+      </martialart>
+    </martialarts>
+    <techniques>
+      <technique>
+        <id>d2234863-297d-4a61-a939-ff263381e209</id>
+        <name>Ballestra</name>
+        <translate>突刺</translate>
+      </technique>
+      <technique>
+        <id>c46f550f-3148-4b91-a0fa-299a57e7879c</id>
+        <name>Barbed Hooks</name>
+        <translate>倒钩刺</translate>
+      </technique>
+      <technique>
+        <id>378a6f47-9375-4810-8324-4a6230cd6914</id>
+        <name>Bending of the Reed</name>
+        <translate>动如脱兔</translate>
+      </technique>
+      <technique>
+        <id>8ba77379-ee89-49ab-a2a5-37194d9a992e</id>
+        <name>Broken Fang</name>
+        <translate>破锋</translate>
+      </technique>
+      <technique>
+        <id>eb766a12-66c7-44f4-bdc8-a3ae6f8f6770</id>
+        <name>Called Shot (Break Weapon)</name>
+        <translate>要害攻击（击破武器）</translate>
+      </technique>
+      <technique>
+        <id>56ec87e6-d962-4b97-88e8-947cd09ea161</id>
+        <name>Called Shot (Disarm)</name>
+        <translate>要害攻击（夺刃）</translate>
+      </technique>
+      <technique>
+        <id>d9e3774b-4b68-4dff-8c0b-3234a6a3f878</id>
+        <name>Called Shot (Entanglement)</name>
+        <translate>要害攻击（缠）</translate>
+      </technique>
+      <technique>
+        <id>57bc4b34-1f4d-4a19-8413-54f2ddafecd9</id>
+        <name>Called Shot (Feint)</name>
+        <translate>要害攻击（佯攻）</translate>
+      </technique>
+      <technique>
+        <id>a24a6c9f-6edd-4852-9d3d-785c51a40f25</id>
+        <name>Called Shot (Pin)</name>
+        <translate>要害攻击（钉刺）</translate>
+      </technique>
+      <technique>
+        <id>3d22777f-39c5-472f-b54a-703ed042d8b3</id>
+        <name>Chin Na</name>
+        <translate>擒拿</translate>
+      </technique>
+      <technique>
+        <id>e2bedc2b-59c3-45a1-9e0f-2e4f0234a0cf</id>
+        <name>Clinch</name>
+        <translate>缠斗</translate>
+      </technique>
+      <technique>
+        <id>0f324bd2-3fad-4721-9335-f82aaaee86cf</id>
+        <name>Close Quarter Firearms (Archery)</name>
+        <translate>近身枪械（弓箭）</translate>
+      </technique>
+      <technique>
+        <id>05666129-d102-469f-a957-a6456027c9c9</id>
+        <name>Close Quarter Firearms (Thrown Weapons)</name>
+        <translate>近身枪械（投掷武器）</translate>
+      </technique>
+      <technique>
+        <id>c04ce0ed-32d8-4e00-9d50-7be7b5e250fc</id>
+        <name>Close Quarter Firearms (Automatics)</name>
+        <translate>近身枪械（自动枪械）</translate>
+      </technique>
+      <technique>
+        <id>8022a74f-547c-4b1e-82b2-e1ce42dbae62</id>
+        <name>Close Quarter Firearms (Exotic Ranged Weapon)</name>
+        <translate>近身枪械（异种远程武器）</translate>
+      </technique>
+      <technique>
+        <id>34dcd6bd-dce4-43b9-bee8-ae18ab3a52b9</id>
+        <name>Close Quarter Firearms (Heavy Weapons)</name>
+        <translate>近身枪械（重武器）</translate>
+        <page>136</page>
+      </technique>
+      <technique>
+        <id>1d0afa0f-416a-4075-abbd-cc5112429639</id>
+        <name>Close Quarter Firearms (Longarms)</name>
+        <translate>近身枪械（长管枪械）</translate>
+      </technique>
+      <technique>
+        <id>44e0f0bb-2f30-4513-beab-1e0a6c033dd5</id>
+        <name>Close Quarter Firearms (Pistols)</name>
+        <translate>近身枪械（手枪）</translate>
+      </technique>
+      <technique>
+        <id>e6e3ef1e-9bbc-408a-b2c0-1ac1d4143e9c</id>
+        <name>Close Quarter Defense Against Firearms</name>
+        <translate>近身防御枪械</translate>
+      </technique>
+      <technique>
+        <id>06a17020-5b3a-409b-b8bf-19c4365fd594</id>
+        <name>Constrictor's Crush</name>
+        <translate>巨蟒扼制</translate>
+      </technique>
+      <technique>
+        <id>11a90b83-af42-4972-a028-0ab4c60e1c33</id>
+        <name>Counterstrike</name>
+        <translate>反击</translate>
+      </technique>
+      <technique>
+        <id>ec74b517-5c0d-46e6-a61b-5ab1b7316d5d</id>
+        <name>Crushing Jaws</name>
+        <translate>碎颚</translate>
+      </technique>
+      <technique>
+        <id>1b1dc37d-daf1-430c-a352-50f9b2cbe68e</id>
+        <name>Defiant Dance</name>
+        <translate>挑衅之舞</translate>
+      </technique>
+      <technique>
+        <id>cf776709-ffd2-4871-8a63-35efb5b73dbb</id>
+        <name>Dim Mak</name>
+        <translate>点穴</translate>
+      </technique>
+      <technique>
+        <id>3aba0ece-6ced-48ab-a873-3787c58df995</id>
+        <name>Finishing Move</name>
+        <translate>绝招</translate>
+      </technique>
+      <technique>
+        <id>601d98dd-5897-4974-af2e-72b5053bde62</id>
+        <name>Flying Kick</name>
+        <translate>飞踢</translate>
+      </technique>
+      <technique>
+        <id>d98d277b-a727-4381-9512-e8f64ad275ff</id>
+        <name>Full Offense</name>
+        <translate>全力攻势</translate>
+      </technique>
+      <technique>
+        <id>1df1bc89-a5d5-47e6-8685-7c09078ba17f</id>
+        <name>Grasping Vines</name>
+        <translate>急速藤蔓</translate>
+      </technique>
+      <technique>
+        <id>f79771b2-067e-4fa4-b295-b5e6a48fc5f0</id>
+        <name>Half Sword</name>
+        <translate>半剑</translate>
+      </technique>
+      <technique>
+        <id>2a28146f-cbd9-4cdd-98ba-59bd6eb65ded</id>
+        <name>Hammerfist</name>
+        <translate>锤扣</translate>
+      </technique>
+      <technique>
+        <id>dbeae1ec-ebb5-4283-b80e-e66ab08c892d</id>
+        <name>Haymaker</name>
+        <translate>强击</translate>
+      </technique>
+      <technique>
+        <id>971cac23-8ac2-4419-8d6b-f1de2641d7b3</id>
+        <name>Herding</name>
+        <translate>驱引</translate>
+      </technique>
+      <technique>
+        <id>6de0cc4b-d9b5-485c-9b4a-c6e4abeaf7d4</id>
+        <name>Iaijutsu</name>
+        <translate>居合</translate>
+      </technique>
+      <technique>
+        <id>e812caf9-7e6b-4963-bb9b-ea7ce8e46ea3</id>
+        <name>Imposing Stone</name>
+        <translate>坚如磐石</translate>
+      </technique>
+      <technique>
+        <id>8a457d21-cc45-4f60-b9d3-0891f0c47c10</id>
+        <name>Jiao Di (Charge)</name>
+        <translate>角抵（冲锋）</translate>
+      </technique>
+      <technique>
+        <id>84036a28-53d6-426f-935f-1f176964fc8a</id>
+        <name>Jiao Di (Knock Down)</name>
+        <translate>角抵（击倒）</translate>
+      </technique>
+      <technique>
+        <id>256bab6a-236d-4f76-93b1-d1dfe3b6df13</id>
+        <name>Karmic Response</name>
+        <translate>业风神闪</translate>
+      </technique>
+      <technique>
+        <id>5a29bdb8-5233-44ab-b5e0-5cf892559fc1</id>
+        <name>Kick Attack</name>
+        <translate>腿法</translate>
+      </technique>
+      <technique>
+        <id>daa9edc5-d5dd-466a-8df9-7abb6a358db1</id>
+        <name>Kip-Up</name>
+        <translate>鲤鱼打挺</translate>
+      </technique>
+      <technique>
+        <id>d89b18bb-9146-4ad4-8aef-efcb25a537a2</id>
+        <name>Knucklebreaker (Disarm)</name>
+        <translate>指节破坏（夺刃）</translate>
+      </technique>
+      <technique>
+        <id>4e3d4a86-d949-40dc-83c1-3358b42fc1f8</id>
+        <name>Knucklebreaker (Blast Out of Hands)</name>
+        <translate>指节破坏（缴械）</translate>
+      </technique>
+      <technique>
+        <id>5d25f0c8-1bfe-476d-b7b5-672f4ea36c80</id>
+        <name>Leaping Mantis</name>
+        <translate>螳螂跃</translate>
+      </technique>
+      <technique>
+        <id>96191a29-30c4-4973-bb45-8e267f0e221a</id>
+        <name>Monkey Climb</name>
+        <translate>猿攀</translate>
+      </technique>
+      <technique>
+        <id>a1ef3f0f-a36d-493b-b251-6385a15c51f7</id>
+        <name>Multiple Opponent Combat</name>
+        <translate>多敌战斗</translate>
+      </technique>
+      <technique>
+        <id>bf72ba84-4301-486c-9c9e-f6179fd5f297</id>
+        <name>Multiple Opponent Defense (Friends in Melee)</name>
+        <translate>多敌防御（近战中的盟友）</translate>
+        <page>139</page>
+      </technique>
+      <technique>
+        <id>d5ca554c-fb2b-480c-ab0c-ad6c05fa919b</id>
+        <name>Multiple Opponent Defense (Defender has Defended)</name>
+        <translate>多敌防御（被多次攻击）</translate>
+      </technique>
+      <technique>
+        <id>1ff734f2-094f-482f-9b52-3583f8d589bb</id>
+        <name>Oaken Stance (Defense Against Being Knocked Down)</name>
+        <translate>马步（防御击倒）</translate>
+      </technique>
+      <technique>
+        <id>371d0b75-f8a4-4fc8-90ee-9728d27eaca4</id>
+        <name>Oaken Stance (Defense Against Being Charged)</name>
+        <translate>马步（防御冲锋）</translate>
+      </technique>
+      <technique>
+        <id>1f772fd3-7fd6-4c42-a17f-fd363f46f9fa</id>
+        <name>Opposing Force (Block)</name>
+        <translate>以力抗力（徒手格挡）</translate>
+      </technique>
+      <technique>
+        <id>017a0f4c-6581-4f59-9c7d-52b11f51d365</id>
+        <name>Opposing Force (Parry)</name>
+        <translate>以力抗力（持械格挡）</translate>
+      </technique>
+      <technique>
+        <id>53a18dd7-a2bd-46fd-a27e-eceafe406154</id>
+        <name>Releasing Talons</name>
+        <translate>空手入白刃</translate>
+      </technique>
+      <technique>
+        <id>3abe5ad7-c735-4f7b-ae38-f7df1081c248</id>
+        <name>Randori (Dirty Trick)</name>
+        <translate>自由搏击（阴招）</translate>
+      </technique>
+      <technique>
+        <id>2747d8d5-022d-4477-a7ce-43d88806bb35</id>
+        <name>Randori (Vitals)</name>
+        <translate>自由搏击（致命射击）</translate>
+      </technique>
+      <technique>
+        <id>5d543914-9c0c-4245-a212-9d5383e7221a</id>
+        <name>Randori (Specific Location)</name>
+        <translate>自由搏击（特定位置）</translate>
+      </technique>
+      <technique>
+        <id>a620e473-4127-4863-b9da-ac8e96c84535</id>
+        <name>Riposte</name>
+        <translate>格挡反击</translate>
+      </technique>
+      <technique>
+        <id>456dfdc7-d1e5-4ec2-86bd-85bf82d81e46</id>
+        <name>Rooted Tree</name>
+        <translate>老树盘根</translate>
+      </technique>
+      <technique>
+        <id>845d010e-036b-488c-8ff6-5eec6c2b7c21</id>
+        <name>Sacrifice Throw</name>
+        <translate>舍身投技</translate>
+      </technique>
+      <technique>
+        <id>a10cc1a4-c5cb-492d-aa87-448ace3d7f88</id>
+        <name>Shadow Block</name>
+        <translate>影断</translate>
+      </technique>
+      <technique>
+        <id>d728ad1e-259a-4af3-ba52-383ffa3e90b4</id>
+        <name>Silken Storm</name>
+        <translate>柔技</translate>
+      </technique>
+      <technique>
+        <id>730318d1-9a03-4925-bd54-27d53dbb1769</id>
+        <name>Soaring Shackles</name>
+        <translate>束缚飙升</translate>
+      </technique>
+      <technique>
+        <id>693a1fb7-0c33-4959-87fc-a7f0d3bfd7bc</id>
+        <name>Stagger</name>
+        <translate>蹒跚打击</translate>
+      </technique>
+      <technique>
+        <id>81b9073d-305e-4bcf-90a9-56855f4076f4</id>
+        <name>Pouncing Dragon</name>
+        <translate>猛龙扑袭</translate>
+      </technique>
+      <technique>
+        <id>5e00496f-5e91-4fb7-96d9-9c176ff8b80f</id>
+        <name>Rolling Clouds</name>
+        <translate>卷云</translate>
+      </technique>
+      <technique>
+        <id>5be9b72c-1de5-49ca-9e63-73c9c58c3cac</id>
+        <name>Sweep</name>
+        <translate>横扫</translate>
+      </technique>
+      <technique>
+        <id>9d355a11-5e68-4c03-9676-9a3f555f977f</id>
+        <name>Throw Person</name>
+        <translate>摔投</translate>
+      </technique>
+      <technique>
+        <id>335d2151-9137-4071-af91-3e0688ef67d9</id>
+        <name>Thunder Strike</name>
+        <translate>雷霆一击</translate>
+      </technique>
+      <technique>
+        <id>43351aef-fbed-4a9e-a699-455a495ea2cb</id>
+        <name>Ti Khao</name>
+        <translate>膝击</translate>
+      </technique>
+      <technique>
+        <id>8d8e3afb-7538-47e1-91e7-fc1a8d50dbc7</id>
+        <name>Tricking</name>
+        <translate>骗招</translate>
+      </technique>
+      <technique>
+        <id>ea44f12a-0280-4d2b-8f1f-dc5006167872</id>
+        <name>Two-Headed Snake</name>
+        <translate>双头蛇</translate>
+      </technique>
+      <technique>
+        <id>db67e642-c74e-4780-a44b-b85524251240</id>
+        <name>Two-Weapon Style Attack</name>
+        <translate>双武器攻击</translate>
+      </technique>
+      <technique>
+        <id>8938ff95-3c3a-48f5-8a46-f6962e1b16cf</id>
+        <name>Two-Weapon Style Defense</name>
+        <translate>双武器防御</translate>
+      </technique>
+      <technique>
+        <id>e714b868-49df-465f-8ae0-89b7d150341c</id>
+        <name>Yielding Force (Riposte)</name>
+        <translate>借力打力（格挡反击）</translate>
+      </technique>
+      <technique>
+        <id>091f71eb-75d7-4a5c-8d4e-8ec5ff075ff2</id>
+        <name>Yielding Force (Counterstrike)</name>
+        <translate>借力打力（格挡反击）</translate>
+      </technique>
+      <technique>
+        <id>0dfdfe1c-a6ce-4233-a36a-d7856d655290</id>
+        <name>Yielding Force (Throw)</name>
+        <translate>借力打力（投技）</translate>
+      </technique>
+      <technique>
+        <id>c512a3e7-5711-438e-b1e7-e02dbf996b85</id>
+        <name>Neijia</name>
+        <translate>内家</translate>
+      </technique>
+      <technique>
+        <id>1ff5100c-6b10-453c-a05a-9af9110581e9</id>
+        <name>Strike the Darkness</name>
+        <translate>盲斗适应</translate>
+      </technique>
+    </techniques>
+  </chummer>
 	<chummer file="mentors.xml">
 		<mentors>
 			<mentor>
@@ -5714,7 +7014,548 @@
 			</power>
 		</powers>
 	</chummer>
-	<chummer file="qualities.xml">
+  <chummer file="priorities.xml">
+		<categories>
+			<category translate="泛形态">Heritage</category>
+			<category translate="天资">Talent</category>
+			<category translate="属性">Attributes</category>
+			<category translate="技能">Skills</category>
+			<category translate="资源">Resources</category>
+		</categories>
+		<priorities>
+			<priority>
+				<id>55bc32fb-e097-4234-bdd5-a70e4f043b3d</id>
+				<name>A - Any metatype</name>
+				<translate>A - 任何种族</translate>
+			</priority>
+			<priority>
+				<id>f9aa712d-7140-4ddd-9e88-4a06e8bae222</id>
+				<name>B - Any metatype</name>
+				<translate>B - 任何种族</translate>
+			</priority>
+			<priority>
+				<id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
+				<name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
+				<translate>C - 人类，矮人，精灵，兽人，或A.I.</translate>
+			</priority>
+			<priority>
+				<id>255da2ba-8d21-4a73-9f81-37156901db72</id>
+				<name>D - Human or Elf</name>
+				<translate>D - 人类或精灵</translate>
+			</priority>
+			<priority>
+				<id>91dccab9-c3fc-4868-abf8-1825b70e8a6c</id>
+				<name>E - Human</name>
+				<translate>E - 人类</translate>
+			</priority>
+			<priority>
+				<id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
+				<name>A - Magician or Technomancer</name>
+				<translate>A - 法师/神秘修士，或超链者</translate>
+      </priority>
+			<priority>
+				<id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
+				<name>B - Adept, Magician, or Technomancer</name>
+				<translate>B - 修士，法师/神秘修士，或超链者</translate>
+			</priority>
+			<priority>
+				<id>aae3a140-d306-4811-a9d2-874140600150</id>
+				<name>C - Adept, Magician, or Technomancer</name>
+				<translate>C - 修士，法师/神秘修士，或超链者</translate>
+			</priority>
+			<priority>
+				<id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
+				<name>D - Adept or Aspected Magician</name>
+				<translate>D - 修士或专精法师</translate>
+			</priority>
+			<priority>
+				<id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
+				<name>E - Mundane</name>
+				<translate>E - 凡俗</translate>
+			</priority>
+			<priority>
+				<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
+				<name>A - 24 (12) Attributes</name>
+				<translate>A - 24 (12) 点属性</translate>
+			</priority>
+			<priority>
+				<id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
+				<name>B - 20 (10) Attributes</name>
+				<translate>B - 20 (10) 点属性</translate>
+			</priority>
+			<priority>
+				<id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
+				<name>C - 16 (8) Attributes</name>
+				<translate>C - 16 (8) 点属性</translate>
+			</priority>
+			<priority>
+				<id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
+				<name>D - 14 (7) Attributes</name>
+				<translate>D - 14 (7) 点属性</translate>
+			</priority>
+			<priority>
+				<id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
+				<name>E - 12 (6) Attributes</name>
+				<translate>E - 12 (6) 点属性</translate>
+			</priority>
+			<priority>
+				<id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
+				<name>A - 46 Skills/10 Skill Groups</name>
+				<translate>A - 46 技能点数/10 技能组点数</translate>
+			</priority>
+			<priority>
+				<id>bde37645-6789-4401-bcec-4c0e61c7fe17</id>
+				<name>B - 36 Skills/5 Skill Groups</name>
+				<translate>B - 36 技能点数/5 技能组点数</translate>
+			</priority>
+			<priority>
+				<id>57c52154-489e-4e8a-b885-13b341700deb</id>
+				<name>C - 28 Skills/2 Skill Groups</name>
+				<translate>C - 28 技能点数/2 技能组点数</translate>
+			</priority>
+			<priority>
+				<id>61e1758f-e4ca-4e53-ad45-bb88a0e5ac04</id>
+				<name>D - 22 Skills/0 Skill Groups</name>
+				<translate>D - 22 技能点数/0 技能组点数</translate>
+			</priority>
+			<priority>
+				<id>b1ca5551-46a4-4ef0-9d07-c33ae0abbcd1</id>
+				<name>E - 18 Skills/0 Skill Groups</name>
+				<translate>E - 18 技能点数/0 技能组点数</translate>
+			</priority>
+			<priority>
+				<id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
+				<name>A - 450,000¥</name>
+				<translate>A - 450,000¥</translate>
+			</priority>
+			<priority>
+				<id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
+				<name>B - 275,000¥</name>
+				<translate>B - 275,000¥</translate>
+			</priority>
+			<priority>
+				<id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
+				<name>C - 140,000¥</name>
+				<translate>C - 140,000¥</translate>
+			</priority>
+			<priority>
+				<id>b977475b-9728-45a0-9873-a77bb036fb99</id>
+				<name>D - 50,000¥</name>
+				<translate>D - 50,000¥</translate>
+			</priority>
+			<priority>
+				<id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
+				<name>E - 6,000¥</name>
+				<translate>E - 6,000¥</translate>
+			</priority>
+			<priority>
+				<id>7e4c5695-52c8-4b16-b233-058af14a41d1</id>
+				<name>A - 500,000¥</name>
+				<translate>A - 500,000¥</translate>
+			</priority>
+			<priority>
+				<id>1da0e4d3-e75b-40ab-b366-e1eba499e8ca</id>
+				<name>B - 325,000¥</name>
+				<translate>B - 325,000¥</translate>
+			</priority>
+			<priority>
+				<id>0fdfe7f7-119d-4971-a629-4a4dea938c6c</id>
+				<name>C - 210,000¥</name>
+				<translate>C - 210,000¥</translate>
+			</priority>
+			<priority>
+				<id>2cbe209a-ae97-4985-b42f-4839613dfb28</id>
+				<name>D - 150,000¥</name>
+				<translate>D - 150,000¥</translate>
+			</priority>
+			<priority>
+				<id>860a9601-e06f-424f-8f40-bee843a6b5dc</id>
+				<name>E - 100,000¥</name>
+				<translate>E - 100,000¥</translate>
+			</priority>
+			<priority>
+				<id>dc72a445-a956-4ea5-b383-0f775c638f05</id>
+				<name>A - 75,000¥</name>
+				<translate>A - 75,000¥</translate>
+			</priority>
+			<priority>
+				<id>edc5db00-8d4c-4510-85d2-8d82d6c66ed6</id>
+				<name>B - 50,000¥</name>
+				<translate>B - 50,000¥</translate>
+			</priority>
+			<priority>
+				<id>9aecfa32-4d5c-4ba9-a88e-9a04f83e516b</id>
+				<name>C - 25,000¥</name>
+				<translate>C - 25,000¥</translate>
+			</priority>
+			<priority>
+				<id>c5b45f74-3396-45c7-afa9-b69c0c8db6ee</id>
+				<name>D - 15,000¥</name>
+				<translate>D - 15,000¥</translate>
+			</priority>
+		</priorities>
+	</chummer>
+	<chummer file="programs.xml">
+    <programs>
+      <program>
+        <id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
+        <name>Browse</name>
+        <translate>搜索引擎</translate>
+      </program>
+      <program>
+        <id>734f653b-35ca-4b26-b837-f64662878e8f</id>
+        <name>Configurator</name>
+        <translate>配置管家</translate>
+      </program>
+      <program>
+        <id>dd35285a-7506-4b7e-8d5a-1b6ea8577e19</id>
+        <name>Edit</name>
+        <translate>编辑器</translate>
+      </program>
+      <program>
+        <id>a1dd8536-d2ca-41cd-be55-4adfdc52068b</id>
+        <name>Encryption</name>
+        <translate>加密器</translate>
+      </program>
+      <program>
+        <id>3f2498d9-b575-474c-9b18-b959442011c5</id>
+        <name>Signal Scrub</name>
+        <translate>信号清理</translate>
+      </program>
+      <program>
+        <id>1861266c-9439-4816-9b1e-09ea9bbac9ec</id>
+        <name>Toolbox</name>
+        <translate>工具箱</translate>
+      </program>
+      <program>
+        <id>c56fd11b-f543-4c1f-8f97-6e7a82265885</id>
+        <name>Virtual Machine</name>
+        <translate>虚拟机</translate>
+      </program>
+      <program>
+        <id>6968d7e3-b58f-4199-af6f-5877097a51da</id>
+        <name>Armor</name>
+        <translate>矩阵护甲</translate>
+      </program>
+      <program>
+        <id>f5a1d20b-caa2-4a53-ab42-6e71ee519702</id>
+        <name>Baby Monitor</name>
+        <translate>“婴儿监控器”</translate>
+      </program>
+      <program>
+        <id>9bc73d88-bad2-4ae9-b9ea-fe004447e493</id>
+        <name>Biofeedback</name>
+        <translate>生物反馈</translate>
+      </program>
+      <program>
+        <id>f05f35c3-1c35-4bac-9ecb-1a6ebf9f89dd</id>
+        <name>Biofeedback Filter</name>
+        <translate>生物反馈过滤器</translate>
+      </program>
+      <program>
+        <id>f1329065-8e71-41d8-8090-a5e8f91cf031</id>
+        <name>Blackout</name>
+        <translate>断片</translate>
+      </program>
+      <program>
+        <id>de82aad2-da77-4478-a621-85ad02d70120</id>
+        <name>Decryption</name>
+        <translate>解码器</translate>
+      </program>
+      <program>
+        <id>6e6805d2-504d-422e-82d2-f782a912b2a7</id>
+        <name>Defuse</name>
+        <translate>防爆层</translate>
+      </program>
+      <program>
+        <id>a52cc5e5-83f5-4bcd-9fea-4f9ff5f52765</id>
+        <name>Demolition</name>
+        <translate>炸药库</translate>
+      </program>
+      <program>
+        <id>16b4bbc1-3a19-490c-90a8-0d102f18e709</id>
+        <name>Exploit</name>
+        <translate>利用漏洞</translate>
+      </program>
+      <program>
+        <id>b96ebe65-9bb5-49e7-8d23-a209eae7f9f3</id>
+        <name>Fork</name>
+        <translate>分叉</translate>
+      </program>
+      <program>
+        <id>4a79b908-8239-4b3a-9c82-e2420be2a174</id>
+        <name>Guard</name>
+        <translate>矩阵防护</translate>
+      </program>
+      <program>
+        <id>d2f96d3a-9dcb-4b46-b5bd-b98a730bf1d7</id>
+        <name>Hammer</name>
+        <translate>锤头</translate>
+      </program>
+      <program>
+        <id>01c5f885-d14f-478d-8e1d-612773035480</id>
+        <name>Lockdown</name>
+        <translate>封锁</translate>
+      </program>
+      <program>
+        <id>e3382b40-114e-456a-982a-f52d135527f5</id>
+        <name>Mugger</name>
+        <translate>劫掠</translate>
+      </program>
+      <program>
+        <id>ff9378d1-b6bc-4adc-8651-a9689a1b92b9</id>
+        <name>Shell</name>
+        <translate>外壳层</translate>
+      </program>
+      <program>
+        <id>f7b5a9a3-c030-4647-b043-f968913867b4</id>
+        <name>Sneak</name>
+        <translate>鬼祟</translate>
+      </program>
+      <program>
+        <id>a381db11-6e7f-4472-b4ef-79a16be65ba4</id>
+        <name>Stealth</name>
+        <translate>匿踪器</translate>
+      </program>
+      <program>
+        <id>7306594f-5e07-440e-a2db-a6dfbe0b90cb</id>
+        <name>Track</name>
+        <translate>追踪器</translate>
+      </program>
+      <program>
+        <id>1b78748c-9a1d-427f-8657-e3e2bc8fd5b5</id>
+        <name>Wrapper</name>
+        <translate>包装纸</translate>
+      </program>
+      <program>
+        <id>60b9ec51-8f80-4f1e-81e6-0747ecaf78c9</id>
+        <name>Bootstrap</name>
+        <translate>启动程序</translate>
+      </program>
+      <program>
+        <id>515f6d35-044e-4f4b-9a8b-1ff12e346648</id>
+        <name>Search</name>
+        <translate>搜索算法</translate>
+      </program>
+      <program>
+        <id>1fde3c4b-54a5-4961-ba80-decfb3df510f</id>
+        <name>Shredder</name>
+        <translate>碎纸机</translate>
+      </program>
+      <program>
+        <id>993fef0e-ff9e-499e-af06-f89aa492d931</id>
+        <name>Cat's Paw</name>
+        <translate>猫爪</translate>
+      </program>
+      <program>
+        <id>f5570527-0ae3-43ca-ac72-8193c7b1c182</id>
+        <name>Cloudless</name>
+        <translate>云下备份</translate>
+      </program>
+      <program>
+        <id>cb69aa6d-9d86-4786-b76e-8f76888c664f</id>
+        <name>Crash (Program)</name>
+        <translate>宕机</translate>
+      </program>
+      <program>
+        <id>382c8857-6a1a-4459-b310-e34d71ecb4c7</id>
+        <name>Detonator</name>
+        <translate>雷管</translate>
+      </program>
+      <program>
+        <id>946302c5-7da8-4310-8a76-aa57e5e8a70a</id>
+        <name>Evaluate</name>
+        <translate>估价</translate>
+      </program>
+      <program>
+        <id>7677ed19-8ce8-4081-b3d1-b9ed11daf1a5</id>
+        <name>Fly on a Wall</name>
+        <translate>窥隙</translate>
+      </program>
+      <program>
+        <id>fc47acc2-9b72-42f9-a5b0-18b1e6bf225e</id>
+        <name>Hitchhiker</name>
+        <translate>顺风车</translate>
+      </program>
+      <program>
+        <id>d57f676e-dcb2-485c-a349-0dc19eead2d2</id>
+        <name>Nuke-from-Orbit</name>
+        <translate>轨道核打击</translate>
+      </program>
+      <program>
+        <id>df2cebe3-225e-4da7-ac9b-c67dca4f5c73</id>
+        <name>Paintjob</name>
+        <translate>喷漆</translate>
+      </program>
+      <program>
+        <id>9907b8c0-b166-49e2-9ecc-100fac19dee6</id>
+        <name>Smoke and Mirrors</name>
+        <translate>镜中云烟</translate>
+      </program>
+      <program>
+        <id>0efe725c-2793-428b-9ee5-63ae17e3d11f</id>
+        <name>Swerve</name>
+        <translate>紧急变道</translate>
+      </program>
+      <program>
+        <id>0f6b9883-4b22-4f83-a7bb-9763c62e337b</id>
+        <name>Tantrum</name>
+        <translate>坏脾气</translate>
+      </program>
+      <program>
+        <id>240fd268-d2fa-40a0-9a2e-7613dc2a8ecd</id>
+        <name>Tarball</name>
+        <translate>焦油球</translate>
+      </program>
+      <program>
+        <id>9ebde6f6-a232-4af8-9e16-b553094160fa</id>
+        <name>Agent</name>
+        <translate>代理</translate>
+      </program>
+      <program>
+        <id>8ba242b1-87c7-4f07-a318-e41d9241ca25</id>
+        <name>Swarm</name>
+        <translate>虫群</translate>
+      </program>
+      <!-- Region Autosofts -->
+      <program>
+        <id>012d2de2-79cb-4f3b-9571-47c8b550a505</id>
+        <name>Clearsight Autosoft</name>
+        <translate>清晰视像</translate>
+      </program>
+      <program>
+        <id>434e08f4-43c1-4684-8b65-c55f5db61405</id>
+        <name>Electronic Warfare Autosoft</name>
+        <translate>电子战</translate>
+      </program>
+      <program>
+        <id>f4c2f78b-1659-469d-acf0-7264c8c5c65f</id>
+        <name>[Model] Evasion Autosoft</name>
+        <translate>[型号]闪避</translate>
+      </program>
+      <program>
+        <id>e9110525-4261-4626-b765-8668eec04fd3</id>
+        <name>[Model] Maneuvering Autosoft</name>
+        <translate>[型号]机动</translate>
+      </program>
+      <program>
+        <id>9255a84b-b146-4998-bb17-36c5d6b4fa7d</id>
+        <name>[Model] Stealth Autosoft</name>
+        <translate>[型号]秘密潜入</translate>
+      </program>
+      <program>
+        <id>052220bd-c15e-41e6-8455-d3a7c5c8e639</id>
+        <name>[Weapon] Targeting Autosoft</name>
+        <translate>[武器]瞄准</translate>
+      </program>
+      <program>
+        <id>0cc0ac2e-542d-4762-bd8c-70e734d96be1</id>
+        <name>Smartsoft</name>
+        <translate>智能软件</translate>
+      </program>
+      <program>
+        <id>37334b00-4143-4587-bffa-85b7f96c59bb</id>
+        <name>Group Autosoft</name>
+        <translate>小队自动软件</translate>
+      </program>
+      <program>
+        <id>1310e977-beee-46f6-afce-91d851d89dc4</id>
+        <name>Skill Autosoft</name>
+        <translate>技能自动软件</translate>
+      </program>
+      <program>
+        <id>c52e0caa-d520-4f4b-ae02-f741ca1bf356</id>
+        <name>Skill Autosoft (Restricted)</name>
+        <translate>技能自动软件（受限）</translate>
+      </program>
+      <program>
+        <id>af2fcad7-0ef5-454a-aac7-64c9ad495654</id>
+        <name>[Weapon] Melee Autosoft</name>
+        <translate>[武器]近身战斗</translate>
+      </program>
+      <program>
+        <id>dfd1e040-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Abduction</name>
+        <translate>溯因</translate>
+      </program>
+      <program>
+        <id>dfd1e39c-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Authority</name>
+        <translate>虚假授权</translate>
+      </program>
+      <program>
+        <id>dfd1e5c2-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Cascade</name>
+        <translate>级联</translate>
+      </program>
+      <program>
+        <id>dfd1e7e8-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Eguchi Smile</name>
+        <translate>江口之微笑</translate>
+      </program>
+      <program>
+        <id>dfd1e978-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Fnord</name>
+        <translate>错误暗示</translate>
+      </program>
+      <program>
+        <id>dfd1eb26-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Medic</name>
+        <translate>矩阵医生</translate>
+      </program>
+      <program>
+        <id>dfd1ed06-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Nyetworking</name>
+        <translate>喵联网</translate>
+      </program>
+      <program>
+        <id>dfd1ef36-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Poke</name>
+        <translate>暗戳戳</translate>
+      </program>
+      <program>
+        <id>dfd1f184-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Psychotropic Biofeedback</name>
+        <translate>精神生物反馈</translate>
+      </program>
+      <program>
+        <id>dfd1f38c-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Rootkit</name>
+        <translate>超级用户工具箱</translate>
+      </program>
+      <program>
+        <id>dfd1f5d0-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Rust</name>
+        <translate>锈蚀</translate>
+      </program>
+      <program>
+        <id>dfd1f7f6-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Shunt</name>
+        <translate>分流器</translate>
+      </program>
+      <program>
+        <id>dfd1f940-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Spotter</name>
+        <translate>观察员</translate>
+      </program>
+      <program>
+        <id>dfd1fbe8-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Teergrube</name>
+        <translate>柏油坑</translate>
+      </program>
+      <program>
+        <id>dfd1fe90-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>Uncertainty</name>
+        <translate>不确定性</translate>
+      </program>
+      <program>
+        <id>dfd2783e-ba62-11e6-a4a6-cec0c932ce01</id>
+        <name>WTLM</name>
+        <translate>机械猴</translate>
+      </program>
+    </programs>
+  </chummer>
+  <chummer file="qualities.xml">
 		<categories>
 			<category translate="正面特质">Positive</category>
 			<category translate="负面特质">Negative</category>
@@ -7064,6 +8905,370 @@
         <name>Wanted</name>
         <translate>通缉名单</translate>
       </quality>
+    <!-- Region AI -->
+    <quality>
+      <id>829568f2-509f-40a3-a16a-a5994ae8a037</id>
+      <name>Chatty</name>
+       <translate>矩阵话痨</translate>
+    </quality>
+    <quality>
+      <id>6c403cb7-791b-4fb1-bb5a-2f95a6859cfe</id>
+      <name>Designer</name>
+       <translate>设计师</translate>
+    </quality>
+    <quality>
+      <id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
+      <name>Exceptional Entity</name>
+       <translate>优越存在</translate>
+    </quality>
+    <quality>
+      <id>0EE4765D-46D6-4AD9-A3EE-33D6A1167D9A</id>
+      <name>Hello World!</name>
+       <translate>你好世界！</translate>
+    </quality>
+    <quality>
+      <id>36429E96-89FA-4E37-A20A-61A8D35A92AC</id>
+      <name>Inherent Program</name>
+      <translate>固有程序</translate>
+    </quality>
+    <quality>
+      <id>d6ced15f-2ba7-4a02-bfb7-ddcc0a3e263e</id>
+      <name>Improved Restoration</name>
+      <translate>改良复位</translate>
+    </quality>
+    <quality>
+      <id>6a2da674-ba73-4a95-ab3d-e4bbe2eeb926</id>
+      <name>Low Profile</name>
+       <translate>低调</translate>
+    </quality>
+    <quality>
+      <id>d7c75876-dc2d-44c3-bdb4-e898ef733d4e</id>
+      <name>Munge</name>
+       <translate>嚼嚼</translate>
+    </quality>
+    <quality>
+      <id>b86f54af-cca7-4698-ad6d-21ffca93fb23</id>
+      <name>Multiprocessing</name>
+      <translate>多线程处理</translate>
+    </quality>
+    <quality>
+      <id>91a06a6b-7d4a-4b10-9180-18dd3da623ab</id>
+      <name>Pilot Origins</name>
+       <translate>原自驾程序</translate>
+    </quality>
+    <quality>
+      <id>364CDB2A-C405-488C-8E08-631EF02EBCF2</id>
+      <name>Redundancy</name>
+       <translate>冗余</translate>
+    </quality>
+    <quality>
+      <id>6DCA4827-142C-4BC1-93AE-16F4F9C47ECA</id>
+      <name>Sapper</name>
+       <translate>工兵</translate>
+    </quality>
+    <quality>
+      <id>5A9EF869-FE86-4877-8D25-5F744C9CD007</id>
+      <name>Sensor Upgrade</name>
+      <translate>传感器升级</translate>
+    </quality>
+    <quality>
+      <id>33BE6D42-8E90-456F-85DE-AFB195747472</id>
+      <name>Snooper</name>
+       <translate>窥探者</translate>
+    </quality>
+    <quality>
+      <id>130F2287-6E27-4A7B-A45C-0313E8ECAD73</id>
+      <name>Virtual Stability</name>
+       <translate>虚拟稳定</translate>
+    </quality>
+    <quality>
+      <id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
+      <name>Corrupter</name>
+       <translate>瑕疵品</translate>
+    </quality>
+    <quality>
+      <id>73e0a16b-3fac-41a1-9157-cd51625e1843</id>
+      <name>Easily Exploitable</name>
+       <translate>好搞定</translate>
+    </quality>
+    <quality>
+      <id>40CEDA2D-B7D1-44C2-80F0-A26EA96DCBE2</id>
+      <name>Fragmentation</name>
+      <translate>碎片化</translate>
+    </quality>
+    <quality>
+      <id>B65991AF-B962-4641-A5A2-92FC53F30370</id>
+      <name>Persnickety Renter</name>
+      <translate>挑剔房客</translate>
+    </quality>
+    <quality>
+      <id>81224e80-43f1-4b70-8eb5-029540db2f62</id>
+      <name>Real World Naiveté</name>
+       <translate>肉界无知</translate>
+    </quality>
+  <!--Region Chrome Flesh Positive Qualities -->
+    <quality>
+      <id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
+      <name>Biocompatability (Cyberware)</name>
+     <translate>生物相容性（赛博改造）</translate>
+    </quality>
+    <quality>
+      <id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
+      <name>Biocompatability (Bioware)</name>
+      <translate>生物相容性（生体改造）</translate>
+    </quality>
+    <quality>
+      <id>32a4d207-a67b-4cdb-a0c8-731320f85ffc</id>
+      <name>Better to be Feared Than Loved</name>
+      <translate>被恐惧比被喜欢好</translate>
+    </quality>
+    <quality>
+      <id>b47319f5-372d-4e23-9fd9-a8e4aecd4c85</id>
+      <name>Cyber-Singularity Seeker</name>
+     <translate>赛博奇点追索者</translate>
+    </quality>
+    <quality>
+      <id>00c827f6-aaa7-4003-87c9-f14e36263252</id>
+      <name>Drug Tolerant</name>
+      <translate>药物抗性</translate>
+    </quality>
+    <quality>
+      <id>08c4dfad-3661-48d9-a265-43cce84e20d8</id>
+      <name>Prototype Transhuman</name>
+      <translate>原型超人</translate>
+    </quality>
+    <quality>
+      <id>38deea18-76f0-49a3-95ba-50006e4e7f90</id>
+      <name>Redliner</name>
+     <translate>红线战士</translate>
+    </quality>
+    <quality>
+      <id>999fd139-d2c7-42ba-8ff8-cd9cbe65711c</id>
+      <name>Revels in Murder</name>
+     <translate>杀戮狂喜</translate>
+    </quality>
+    <quality>
+      <id>0ebdfce5-c613-4fd9-9763-cae2d21c2153</id>
+      <name>Uncanny Healer</name>
+      <translate>神秘治愈者</translate>
+    </quality>  
+  <quality>
+      <id>0d5e6819-ac41-4700-ac7d-58fa957b328c</id>
+      <name>Phenotypic Variation - Genewipe</name>
+	  <translate>原型超人</translate>
+    </quality>
+    <quality>
+      <id>13edde6a-f920-4665-9e65-53a20b30c2a3</id>
+      <name>Phenotypic Variation - Masque</name>
+	  <chargenonly />
+      <karma>23</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+    <quality>
+      <id>eac42e74-2f7b-418d-bd38-c1cdd56ceec4</id>
+      <name>Phenotypic Variation - Reprint</name>
+	  <chargenonly />
+      <karma>18</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>CF</source>
+      <page>157</page>
+    </quality>
+    <quality>
+      <id>b9afa9de-39c0-4e49-8271-f76910352ec2</id>
+      <name>Antipathy</name>
+      <translate>共情缺失</translate>
+    </quality>
+    <quality>
+      <id>b8f8799f-b89b-462e-9e8c-e47cdd965587</id>
+      <name>AIPS</name>
+      <translate>人工诱导精神分裂综合征（AIPS）</translate>
+    </quality>
+    <quality>
+      <id>af6974ba-43fe-4a6e-97f7-82df2bbb97f9</id>
+      <name>Blank Slate</name>
+      <translate>白板人格</translate>
+    </quality>
+    <quality>
+      <id>01cd8471-224e-4ffe-9d89-79f565d78e29</id>
+      <name>Cyberpsychosis</name>
+      <translate>赛博错乱</translate>
+    </quality>
+    <quality>
+      <id>aaac8dfd-dee6-4277-b967-9ec9089260a7</id>
+      <name>Cyber-snob</name>
+      <translate>赛博虚荣者</translate>
+    </quality>
+    <quality>
+      <id>425fbcac-53a5-4788-a80c-0dc788e883b0</id>
+      <name>Dead Emotion</name>
+      <translate>情感坏死</translate>
+    </quality>
+    <quality>
+      <id>cd75169e-efa4-40aa-a4c8-ee055a5dd748</id>
+      <name>Dry Addict (Mild)</name>
+      <translate>过干瘾（轻度）</translate>
+    </quality>
+    <quality>
+      <id>f1026e12-7605-4454-acba-fbcf0b8b59f3</id>
+      <name>Dry Addict (Moderate)</name>
+     <translate>过干瘾（中度）</translate>
+    </quality>
+    <quality>
+      <id>78106262-f5a7-4d17-984c-ccb7765a51e0</id>
+      <name>Dry Addict (Severe)</name>
+      <translate>过干瘾（重度）</translate>
+    </quality>
+    <quality>
+      <id>af760e11-1d73-40f2-bbf0-ac6a73d05d39</id>
+      <name>Dry Addict (Burnout)</name>
+      <translate>过干瘾（极度）</translate>
+    </quality>
+    <quality>
+      <id>00ae8fce-15aa-4a7f-90e3-9336824a626e</id>
+      <name>Family Curse</name>
+      <translate>家传诅咒</translate>
+    </quality>
+    <quality>
+      <id>37129686-fe48-4374-acca-7b06d1373db0</id>
+      <name>Implant-induced Immune Deficiency</name>
+     <translate>植入体诱发型免疫缺陷</translate>
+    </quality>
+    <quality>
+      <id>06078d89-0f12-4f57-99d0-e088847dec7e</id>
+      <name>Lack of Focus</name>
+      <translate>失焦症</translate>
+    </quality>
+    <quality>
+      <id>8e176d15-e646-4aed-824c-171c6bd9e4bc</id>
+      <name>Lightweight</name>
+      <translate>不胜杯酌</translate>
+    </quality>
+    <quality>
+      <id>d398b3ec-93b1-4229-906a-49d7136045cb</id>
+      <name>One of Them</name>
+      <translate>他们中的一员</translate>
+    </quality>
+    <quality>
+      <id>4765ff9e-90f4-4783-b0cc-826419fafade</id>
+      <name>Poor Self Control (Attention-Seeking)</name>
+      <translate>自控力低下（求关注）</translate>
+    </quality>
+    <quality>
+      <id>f5fada49-7344-4e0d-b2d8-61aead583d7b</id>
+      <name>Poor Self Control (Sadistic)</name>
+      <translate>自控力低下（虐待狂）</translate>
+    </quality>
+    <quality>
+      <id>bd64ccab-5138-475d-8eb1-400ae4a11ac2</id>
+      <name>Quasimodo</name>
+      <translate>卡西莫多</translate>
+    </quality>
+    <quality>
+      <id>21c98d92-0a8b-454b-8623-b99480f3a518</id>
+      <name>So Jacked Up</name>
+     <translate>深陷其中</translate>
+    </quality>
+    <quality>
+      <id>6b9c009f-613b-4d3f-82c6-53e191c4e095</id>
+      <name>Superhuman Psychosis</name>
+      <translate>超人症候群</translate>
+    </quality>
+    <quality>
+      <id>262bb242-69eb-41fc-b751-e6fdeac3f071</id>
+      <name>TLE-X</name>
+     <translate>赛博性脑颞叶癫痫症（TLE-X）</translate>
+    </quality>
+    <quality>
+      <id>815f235c-dda7-4140-a667-c274ced1d9d6</id>
+      <name>Tough and Targeted</name>
+       <translate>被盯上的硬茬</translate>
+    </quality>
+  <!-- Region Hard Targets-->
+    <quality>
+      <id>efd34715-a95c-41d5-ae81-f3b394246448</id>
+      <name>Barrens Rat</name>
+      <translate>荒野之鼠</translate>
+    </quality>
+    <quality>
+      <id>8b686f85-1ef6-4369-a8ad-31eeb64985e9</id>
+      <name>Elemental Focus</name>
+      <translate>元素专攻</translate>
+    </quality>
+    <quality>
+      <id>9410a544-e13e-4de8-b5bf-7bfe316b70ac</id>
+      <name>Poisoner</name>
+      <translate>下毒者</translate>
+    </quality>
+    <quality>
+      <id>81fc0829-3456-4701-8ecc-f101d145b538</id>
+      <name>Practice, Practice, Practice</name>
+      <translate>熟能生巧</translate>
+    </quality>
+    <quality>
+      <id>86b95cd9-6c29-481e-9f75-cbb4aaf98f03</id>
+      <name>Code of Honor: Avenging Angel</name>
+      <translate>荣誉守则：复仇天使</translate>
+    </quality>
+    <quality>
+      <id>1c356f79-e4c1-4874-aed0-d7796ea35ed4</id>
+      <name>Impassive</name>
+      <translate>冷漠</translate>
+    </quality>
+    <quality>
+      <id>48e7351a-3d47-48d4-a969-cc5943d29da0</id>
+      <name>Faceless</name>
+      <translate>无面人</translate>
+    </quality>
+      <!-- Region Run & Gun -->
+    <quality>
+      <id>5150f4f0-5193-4f02-8914-d70e831e3567</id>
+      <name>Acrobatic Defender</name>
+      <translate>花式防御者</translate>
+    </quality>
+    <quality>
+      <id>1d0c4278-501d-456f-ab63-69afee6fbf95</id>
+      <name>Agile Defender</name>
+      <translate>灵巧防御者</translate>
+    </quality>
+    <quality>
+      <id>31108c89-a67c-47d4-a757-db4e22e2f607</id>
+      <name>Brand Loyalty (Manufacturer)</name>
+      <translate>忠于品牌（制造商）</translate>
+    </quality>
+    <quality>
+      <id>348d7043-7a1c-498f-85eb-3339be9941d1</id>
+      <name>Brand Loyalty (Product)</name>
+      <translate>忠于品牌（产品）</translate>
+    </quality>
+    <quality>
+      <id>98644894-e3a4-41f2-9b7e-91feb74d0334</id>
+      <name>One Trick Pony</name>
+     <translate>一招鲜</translate>
+    </quality>
+    <quality>
+      <id>b5f6d958-2563-431b-a7a4-a9028a9f0277</id>
+      <name>Perceptive Defender</name>
+      <translate>警觉防御者</translate>
+    </quality>
+    <quality>
+      <id>1675810d-0f77-42f9-848a-eaa929cb3a20</id>
+      <name>Sharpshooter</name>
+      <translate>神射手</translate>
+    </quality>
+    <quality>
+      <id>0c23861e-36d1-4454-b327-0d8118d02d60</id>
+      <name>Too Pretty To Hit</name>
+      <translate>太可爱了，不能打啊！</translate>
+    </quality>
+    <quality>
+      <id>8d2b32ec-2ddf-40dd-a29b-bf2e85a3d8ca</id>
+      <name>Combat Junkie</name>
+      <translate>战斗狂热者</translate>
+    </quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -9563,6 +11768,22 @@
 				<translate>水印标记</translate>
 			</power>
 		</powers>
+	</chummer>
+  <chummer file="streams.xml">
+		<traditions>
+			<tradition>
+				<id>7a3ecfbe-616e-425d-b204-329de37ffdbb</id>
+				<name>Default</name>
+				<translate>默认</translate>
+				<spirits>
+					<spirit translate="情报网精">Courier Sprite</spirit>
+					<spirit translate="破解网精">Crack Sprite</spirit>
+					<spirit translate="数据网精">Data Sprite</spirit>
+					<spirit translate="诱错网精">Fault Sprite</spirit>
+					<spirit translate="机械网精">Machine Sprite</spirit>
+				</spirits>
+			</tradition>
+		</traditions>
 	</chummer>
 	<chummer file="traditions.xml">
 		<traditions>
@@ -12179,6 +14400,121 @@
 				<name>Ultimax Rain Forest Carbine</name>
 				<translate>乌蒂马斯·雨林卡宾枪</translate>
 			</weapon>
+    <weapon>
+      <id>3a60c3ee-9f6f-46cb-be2f-bec0bccc3318</id>
+      <name>Tactical Grapple Gun</name>
+      <translate>战术抓钩枪</translate>
+    </weapon>
+    <weapon>
+      <id>a68d164d-4b79-47b9-ac89-4985ae18e882</id>
+      <name>Sapphire Knife</name>
+     <translate>蓝宝石刀</translate>
+    </weapon>
+    <weapon>
+      <id>cbc5270f-5848-41cd-a723-e86a7f48cfb4</id>
+      <name>Ceramic/Plasteel Knife</name>
+      <translate>陶瓷/塑钢刀</translate>
+    </weapon>
+    <weapon>
+      <id>d036885b-4238-4ed7-ae9d-5dba97071e19</id>
+      <name>Foot Blade</name>
+      <translate>足刃</translate>
+    </weapon>
+    <weapon>
+      <id>7b928bc3-c44e-4002-b8ac-17a2bdd01d5a</id>
+      <name>Bone Spike I</name>
+      <translate>骨刺I</translate>
+    </weapon>
+    <weapon>
+      <id>2ef46f42-8890-48fd-bb94-67c34c12f0fb</id>
+      <name>Bone Spike II</name>
+      <translate>骨刺II</translate>
+    </weapon>
+    <weapon>
+      <id>3babb9d3-a3bb-4c8f-96ce-73f27b6ec7a6</id>
+      <name>Bone Spike III</name>
+      <translate>骨刺III</translate>
+    </weapon>
+    <weapon>
+      <id>9434fb76-1d7f-463e-b377-b7c07e2a18e2</id>
+      <name>Cougar Collapsible Spear</name>
+      <translate>美洲狮·折叠长矛</translate>
+    </weapon>
+    <weapon>
+      <id>6967eea2-01f8-4931-a59f-d2cd64419561</id>
+      <name>Collapsible Scythe</name>
+     <translate>折叠镰刀</translate>
+    </weapon>
+    <weapon>
+      <id>023bb6db-4c14-470b-a063-9df1adf31a00</id>
+      <name>Victorinox Collapsible Hatchet</name>
+      <translate>维氏·折叠手斧</translate>
+    </weapon>
+    <weapon>
+      <id>4225b0c1-2da0-4dd9-9c98-2136a57946cf</id>
+      <name>Throwing Syringe</name>
+     <translate>投掷注射器</translate>
+    </weapon>
+    <weapon>
+      <id>c965dee9-de62-4569-b96a-4026105440b1</id>
+      <name>Dynamic Tension Bow</name>
+      <translate>动态张力弓</translate>
+    </weapon>
+    <weapon>
+      <id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
+      <name>Cavalier Arms Adder Silvergun</name>
+      <translate>骑将武器·“小蝰蛇”裂片枪</translate>
+    </weapon>
+    <weapon>
+      <id>a1b5cec9-e14d-4b4d-8377-436af40b09cd</id>
+      <name>Flame Bracer</name>
+     <translate>火焰护腕</translate>
+    </weapon>
+    <weapon>
+      <id>82aa8d25-179a-4c21-9a3c-61a171705f65</id>
+      <name>Shiawase Arms Simoom</name>
+      <translate>幸福武器·西蒙风</translate>
+    </weapon>
+    <weapon>
+      <id>176ab92a-0c00-48fe-a994-668903407fbf</id>
+      <name>Ares Armatus</name>
+      <translate>阿瑞斯·武装</translate>
+    </weapon>
+    <weapon>
+      <id>7aa56de0-e709-4a0e-aadb-fbcdd2fcfeb0</id>
+      <name>Plasteel Toe Boots</name>
+     <translate>塑钢鞋头靴</translate>
+    </weapon>
+    <weapon>
+      <id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
+      <name>Colt Manhunter A1</name>
+      <translate>柯尔特·猎人者 A1</translate>
+    </weapon>
+    <weapon>
+      <id>d36e75cc-73bc-4de3-9d9c-a236284e9d76</id>
+      <name>Lemat 2072</name>
+     <translate>勒马特2072</translate>
+    </weapon>
+    <weapon>
+      <id>e6c0ceab-ac8f-4b69-bb00-8f6e05396a64</id>
+      <name>Lemat 2072 (Shotgun Barrel)</name>
+      <translate>勒马特2072（短枪管）</translate>
+    </weapon>
+    <weapon>
+      <id>a1924b0d-3cc6-4a37-9783-c75145ca929e</id>
+      <name>Mounted Crossbow</name>
+      <translate>外挂十字弩</translate>
+    </weapon>
+    <weapon>
+      <id>7914b526-90a1-4691-93bf-1eace51b914f</id>
+      <name>Underbarrel Shotgun</name>
+      <translate>下挂霰弹枪</translate>
+    </weapon>
+    <weapon>
+      <id>fafa3c46-6ced-4cbd-b236-2c5abbae141e</id>
+      <name>Underbarrel Laser</name>
+      <translate>下挂激光枪</translate>
+    </weapon>
 		</weapons>
 		<accessories>
 			<!-- Region Shadowrun 5 -->
@@ -12649,818 +14985,4 @@
 			<!-- SAG和2050暂不翻译 -->
 		</accessories>
 	</chummer>
-	<chummer file="complexforms.xml">
-		<complexforms>
-			<complexform>
-				<id>373638b9-4334-4645-99f5-c3673e4f809b</id>
-				<name>Cleaner</name>
-				<translate>痕迹清理</translate>
-			</complexform>
-			<complexform>
-				<id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
-				<name>Diffusion of [Matrix Attribute]</name>
-				<translate>[矩阵属性]抽取</translate>
-			</complexform>
-			<complexform>
-				<id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
-				<name>Editor</name>
-				<translate>文档篡编</translate>
-			</complexform>
-			<complexform>
-				<id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
-				<name>Infusion of [Matrix Attribute]</name>
-				<translate>[矩阵属性]注入</translate>
-			</complexform>
-			<complexform>
-				<id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
-				<name>Static Veil</name>
-				<translate>静电屏蔽</translate>
-			</complexform>
-			<complexform>
-				<id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
-				<name>Pulse Storm</name>
-				<translate>脉冲风暴</translate>
-			</complexform>
-			<complexform>
-				<id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
-				<name>Puppeteer</name>
-				<translate>人偶操师</translate>
-			</complexform>
-			<complexform>
-				<id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
-				<name>Resonance Channel</name>
-				<translate>共鸣频道</translate>
-			</complexform>
-			<complexform>
-				<id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
-				<name>Resonance Spike</name>
-				<translate>共鸣棘刺</translate>
-			</complexform>
-			<complexform>
-				<id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
-				<name>Resonance Veil</name>
-				<translate>共鸣幻象</translate>
-			</complexform>
-			<complexform>
-				<id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
-				<name>Static Bomb</name>
-				<translate>静电炸弹</translate>
-			</complexform>
-			<complexform>
-				<id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
-				<name>Stitches</name>
-				<translate>数据缝合</translate>
-			</complexform>
-			<complexform>
-				<id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
-				<name>Transcendent Grid</name>
-				<translate>网域统御</translate>
-			</complexform>
-			<complexform>
-				<id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
-				<name>Tattletale</name>
-				<translate>告密行为</translate>
-			</complexform>
-			<complexform>
-				<id>57566f59-ddbf-42bb-929a-2966ce2fde46</id>
-				<name>Derezz</name>
-				<translate>裂解刺击</translate>
-			</complexform>
-			<complexform>
-				<id>2badbff2-02e1-4218-97f0-f53f71f22cc4</id>
-				<name>FAQ</name>
-				<translate>探耽求究</translate>
-			</complexform>
-			<complexform>
-				<id>5e5c8711-70a9-4068-b084-2ae23fce8fa7</id>
-				<name>IC Tray</name>
-				<translate>IC菜单</translate>
-			</complexform>
-			<complexform>
-				<id>9a2bcb96-36fe-4f43-bbfe-f2040a8ee491</id>
-				<name>Redundancy</name>
-				<translate>冗余备份</translate>
-			</complexform>
-			<complexform>
-				<id>bfa66f3e-4d04-43a4-972a-4e0b430284ca</id>
-				<name>Misread Marks</name>
-				<translate>虚假印记</translate>
-			</complexform>
-		</complexforms>
-	</chummer>
-	<chummer file="licenses.xml">
-		<licenses>
-			<license translate="修士执照">Adept License</license>
-			<license translate="自动武器执照">Automatic Weapons License</license>
-			<license translate="钝击武器执照">Blunt Weapons License</license>
-			<license translate="保镖执照">Bodyguard License</license>
-			<license translate="赏金猎人执照">Bounty Hunter's License</license>
-			<license translate="隐匿携带许可">Concealed Carry Permit</license>
-			<license translate="碟板执照">Cyberdeck License</license>
-			<license translate="机动车驾驶员执照">Driver's License</license>
-			<license translate="无人机执照">Drone License</license>
-			<license translate="异种武器执照">Exotic Weapons License</license>
-			<license translate="炸药执照">Explosives License</license>
-			<license translate="火器执照">Firearms License</license>
-			<license translate="重武器执照">Heavy Weapons License</license>
-			<license translate="狩猎执照">Hunting License</license>
-			<license translate="大型刀具执照">Large Blades License</license>
-			<license translate="法师执照">Mage License</license>
-			<license translate="水手执照">Marine License</license>
-			<license translate="矩阵软件执照">Matrix Software License</license>
-			<license translate="医疗执照">Medical License</license>
-			<license translate="军用弹药执照">Military Ammunition License</license>
-			<license translate="军用护甲执照">Military Armor License</license>
-			<license translate="军用武器执照">Military Weapons License</license>
-			<license translate="宠物执照">Pet License</license>
-			<license translate="驾驶员执照">Pilot License</license>
-			<license translate="手枪执照">Pistol License</license>
-			<license translate="私人调查员执照">Private Investigator License</license>
-			<license translate="弓弩执照">Projectile License</license>
-			<license translate="受限护甲执照">Restricted Armor License</license>
-			<license translate="受限生物改造执照">Restricted Bioware License</license>
-			<license translate="受限赛博改造执照">Restricted Cyberware License</license>
-			<license translate="步枪执照">Rifle License</license>
-			<license translate="霰弹枪执照">Shotgun License</license>
-			<license translate="小型刀具执照">Small Blades License</license>
-			<license translate="召唤者执照">Summoner License</license>
-			<license translate="奇物贩子执照">Talismonger License</license>
-			<license translate="武器执照">Weapon License</license>
-		</licenses>
-	</chummer>
-	<chummer file="lifestyles.xml">
-		<lifestyles>
-			<lifestyle>
-				<id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
-				<name>Street</name>
-				<translate>街头</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>b46c5d66-940f-42c4-a8cb-a055f459bbb4</id>
-				<name>Squatter</name>
-				<translate>寄居</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>451eef87-d18e-4bee-a972-1ee165b08522</id>
-				<name>Low</name>
-				<translate>低端</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>9cb0222c-14c1-4bea-bf83-055513a1f33e</id>
-				<name>Medium</name>
-				<translate>中等</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>619be8b8-52a0-46b0-9566-a4102bd2040a</id>
-				<name>High</name>
-				<translate>高端</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>ebb68d2c-a882-4356-8031-2f62d3f6d064</id>
-				<name>Luxury</name>
-				<translate>豪华</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
-				<name>Hospitalized, Basic</name>
-				<translate>住院，基础</translate>
-			</lifestyle>
-			<lifestyle>
-				<id>2be1a0f7-6133-4966-be57-720ed9b927a9</id>
-				<name>Hospitalized, Intensive</name>
-				<translate>住院，重症</translate>
-			</lifestyle>
-		</lifestyles>
-		<categories>
-			<category translate="娱乐-资产">Entertainment - Asset</category>
-			<category translate="娱乐-服务">Entertainment - Service</category>
-			<category translate="娱乐-外出">Entertainment - Outing</category>
-			<category translate="正面特质">Positive</category>
-			<category translate="负面特质">Negative</category>
-			<category translate="合约">Contracts</category>
-		</categories>
-		<qualities>
-			<quality>
-				<id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
-				<name>Special Work Area</name>
-				<translate>特殊工作区</translate>
-			</quality>
-			<quality>
-				<id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
-				<name>Extra Secure</name>
-				<translate>额外安保</translate>
-			</quality>
-			<quality>
-				<id>0d70cc29-c9c2-43eb-afc5-72c5cae5c529</id>
-				<name>Obscure/Difficult to Find</name>
-				<translate>隐晦/难以寻找</translate>
-			</quality>
-			<quality>
-				<id>ff0cb981-4459-46e7-ab75-d8c5bcb0c486</id>
-				<name>Cramped</name>
-				<translate>狭窄</translate>
-			</quality>
-			<quality>
-				<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
-				<name>Dangerous Area</name>
-				<translate>危险地带</translate>
-			</quality>
-      <!--Region Run Faster-->
-      <lifestyle>
-        <id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
-        <name>Bolt Hole</name>
-        <translate>庇护所</translate>
-      </lifestyle>
-      <lifestyle>
-        <id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
-        <name>Commercial</name>
-        <translate>商居</translate>
-      </lifestyle>
-      <lifestyle>
-        <id>ed775c22-8f0c-40a0-bc6f-5dbb980cedba</id>
-        <name>Traveler</name>
-        <translate>旅居</translate>
-      </lifestyle>
-      <quality>
-        <id>91ac54bf-0f7d-40f3-81bf-dc32e62fd94e</id>
-        <name>Armory</name>
-        <translate>军械库</translate>
-      </quality>
-      <quality>
-        <id>af5b1436-abc9-4f3d-9521-64cf58724e0a</id>
-        <name>Cleaning Service (Standard)</name>
-        <translate>清洁服务（标准）</translate>
-      </quality>
-      <quality>
-        <id>6f638af3-39c0-4d29-8a5d-1e0bc67ea922</id>
-        <name>Cleaning Service (Mage Sensitive)</name>
-        <translate>清洁服务（魔法敏感）</translate>
-      </quality>
-      <quality>
-        <id>1fd70570-e89d-4c85-bfe7-6b56aac7c7df</id>
-        <name>Cleaning Service (Pollution Sensitive)</name>
-        <translate>清洁服务（污染敏感）</translate>
-      </quality>
-      <quality>
-        <name>Discreet Cleaning Service</name>
-        <translate>管家式清洁服务</translate>
-      </quality>
-      <quality>
-        <id>7e721535-3827-4a85-9771-9d20cf348d11</id>
-        <name>Discreet Deliveryman</name>
-        <translate>管家式快递员</translate>
-      </quality>
-      <quality>
-        <id>cc6f6198-a330-43f1-8c23-56ef9cb1f9ea</id>
-        <name>Discreet Candyman</name>
-        <translate>管家式糖果人</translate>
-      </quality>
-      <quality>
-        <id>280535d6-9e2a-4831-8b22-b2fb0647cff7</id>
-        <name>Cramped Garage (Airplane)</name>
-        <translate>狭窄车库（飞机）</translate>
-      </quality>
-      <quality>
-        <id>df7d2669-2af5-475b-853d-819498b3badc</id>
-        <name>Cramped Garage (Boat)</name>
-        <translate>狭窄车库（船只）</translate>
-      </quality>
-      <quality>
-        <id>efe7c46c-b863-4696-a750-015837861f81</id>
-        <name>Cramped Garage (Car (Body 4 or Less))</name>
-        <translate>狭窄车库（机体4及以下的汽车）</translate>
-      </quality>
-      <quality>
-        <id>3d62f25c-8c84-476f-907d-a95073711b44</id>
-        <name>Cramped Garage (Car (Body 5 or More))</name>
-        <translate>狭窄车库（机体5及以上的汽车）</translate>
-      </quality>
-      <quality>
-        <id>10a65174-a6a3-467b-b66e-6a837bf0e11b</id>
-        <name>Cramped Garage (Helicopter)</name>
-        <translate>狭窄车库（直升机）</translate>
-      </quality>
-      <quality>
-        <id>efb63888-ad49-44e0-8bd7-491532c8c179</id>
-        <name>Garage (Airplane)</name>
-        <translate>车库（飞机）</translate>
-      </quality>
-      <quality>
-        <id>981f4509-06db-430e-9845-b3a5268f14f5</id>
-        <name>Garage (Boat)</name>
-        <translate>车库（船只）</translate>
-      </quality>
-      <quality>
-        <id>a45f7fc8-ec90-4a65-8705-c931c408c9cc</id>
-        <name>Garage (Car (Body 4 or Less))</name>
-        <translate>车库（机体4及以下的汽车）</translate>
-      </quality>
-      <quality>
-        <id>9e7cea76-8f2e-4d87-a5ce-60395a8d701f</id>
-        <name>Garage (Car (Body 5 or More))</name>
-        <translate>车库（机体5及以上的汽车）</translate>
-      </quality>
-      <quality>
-        <id>67e41d1f-78a9-417b-88d4-94eeb58fa4ff</id>
-        <name>Garage (Helicopter)</name>
-        <translate>车库（直升机）</translate>
-      </quality>
-      <quality>
-        <id>0ab77035-0b81-4fe0-8e16-8674501a3782</id>
-        <name>Greenhouse</name>
-        <translate>车库（温室）</translate>
-      </quality>
-      <quality>
-        <id>adaf6b3d-874a-42e5-b08b-37adf1222f23</id>
-        <name>Grid Subscription</name>
-        <translate>矩阵信息订阅</translate>
-      </quality>
-      <quality>
-        <id>23c785d3-e086-46a6-8491-603fa1e6963d</id>
-        <name>Gym</name>
-        <translate>健身房</translate>
-      </quality>
-      <quality>
-        <id>3e5339c7-42e3-484b-8839-66ea942e509b</id>
-        <name>Indoor Arboretum</name>
-        <translate>室内植物园</translate>
-      </quality>
-      <quality>
-        <id>7348e613-3f05-413a-b8eb-a27e480d9f88</id>
-        <name>Local Bar Patron</name>
-        <translate>本地酒吧常客</translate>
-      </quality>
-      <quality>
-        <id>c63bcf5f-fcb7-4193-bdae-2b32cdf50032</id>
-        <name>Merchandise: Goods (Avail 3)</name>
-        <translate>买卖：货物（可获得性3）</translate>
-      </quality>
-      <quality>
-        <id>544760af-1c45-4de7-a198-f9f7f86ec4b2</id>
-        <name>Merchandise: Goods (Avail 5)</name>
-        <translate>买卖：货物（可获得性5）</translate>
-      </quality>
-      <quality>
-        <id>5a7f93eb-7297-49a0-904e-466be3f3f454</id>
-        <name>Merchandise: Goods (Avail 7)</name>
-        <translate>买卖：货物（可获得性7）</translate>
-      </quality>
-      <quality>
-        <id>1ab883f5-3392-41c6-b4e3-b26dfc4b8aba</id>
-        <name>Merchandise: Goods (Avail 9)</name>
-        <translate>买卖：货物（可获得性9）</translate>
-      </quality>
-      <quality>
-        <id>35d712d8-ea04-4853-8b1f-89e079e043ce</id>
-        <name>Merchandise: Pawn Shop</name>
-        <translate>买卖：旧货商店</translate>
-      </quality>
-      <quality>
-        <id>b8c84dbb-b59e-43e1-a07f-fa03802fe5af</id>
-        <name>Merchandise: Used Goods</name>
-        <translate>买卖：二手货</translate>
-      </quality>
-      <quality>
-        <id>9db8b664-4fba-4e66-8875-54c54324d93d</id>
-        <name>Panic Room</name>
-        <translate>密室</translate>
-      </quality>
-      <quality>
-        <id>5e7c3001-03de-41ed-b2d2-03c3175669d4</id>
-        <name>Patron of the Arts (Concerts/Events)</name>
-        <translate>艺术赞助人（音乐会/赛事）</translate>
-      </quality>
-      <quality>
-        <id>903b7d38-d844-4473-8454-4e8f4875880d</id>
-        <name>Patron of the Arts (Private Club)</name>
-        <translate>艺术赞助人（私人俱乐部）</translate>
-      </quality>
-      <quality>
-        <id>0bbec525-178b-4712-b36f-6549ea8274c2</id>
-        <name>Patron of the Arts (Zoo/Museum)</name>
-        <translate>艺术赞助人（动物园/博物馆）</translate>
-      </quality>
-      <quality>
-        <id>39f7afff-173b-4c14-91b6-de2c8d315cc6</id>
-        <name>Patron of the Arts (Theme Parks)</name>
-        <translate>艺术赞助人（主题公园）</translate>
-      </quality>
-      <quality>
-        <id>679b8200-2f4a-45f8-b7cb-c91fdcd94f2d</id>
-        <name>Private Room</name>
-        <translate>私人空间</translate>
-      </quality>
-      <quality>
-        <id>20c5e92c-deb7-4d88-9972-507ecccb1e50</id>
-        <name>Public Transportation</name>
-        <translate>公共交通</translate>
-      </quality>
-      <quality>
-        <id>35e2e527-2c63-4193-abe3-1c72063c8d6f</id>
-        <name>Railway Pass</name>
-        <translate>轨道交通</translate>
-      </quality>
-      <quality>
-        <id>ee56a5de-dfb0-41c3-8de7-67041a627df9</id>
-        <name>Shooting Range</name>
-        <translate>靶场</translate>
-      </quality>
-      <quality>
-        <id>d26a39a7-cc09-4476-a5f0-eeb55e737641</id>
-        <name>Soy Processing Unit</name>
-        <translate>大豆加工装置</translate>
-      </quality>
-      <quality>
-        <id>2e845204-d9b3-40a9-9d24-4b5aa9673486</id>
-        <name>Sports Court - Small</name>
-        <translate>小型运动场</translate>
-      </quality>
-      <quality>
-        <id>0503f768-dc6b-4e79-adbe-69907dd79e1b</id>
-        <name>Swimming Pool</name>
-        <translate>游泳池</translate>
-      </quality>
-      <quality>
-        <id>71428a84-70d1-4c9c-89c3-227509cfbc25</id>
-        <name>Walk-In Freezer</name>
-        <translate>冷藏库</translate>
-      </quality>
-      <quality>
-        <id>af8ac67a-7603-48b2-8ee4-940e5dcd5f29</id>
-        <name>Workshop/Facility</name>
-        <translate>车间</translate>
-      </quality>
-      <quality>
-        <id>867f7c74-8e6e-4467-b49c-10f4bf17fa8d</id>
-        <name>Cramped Workshop/Facility</name>
-        <translate>狭窄车间</translate>
-      </quality>
-      <quality>
-        <id>3dfb9fd3-c58d-4cc8-9e6b-f17fa18474b6</id>
-        <name>Yard</name>
-        <translate>庭院</translate>
-      </quality>
-      <quality>
-        <id>03092f1a-4018-413b-a11f-144383472c18</id>
-        <name>Zen Den</name>
-        <translate>禅室</translate>
-      </quality>
-      <quality>
-        <id>cc3abead-ab2a-4023-8a63-d64536ccf5e5</id>
-        <name>Bat Cave</name>
-        <translate>蝙蝠洞</translate>
-      </quality>
-      <quality>
-        <id>910b0a59-59cb-422b-b9a4-7b8d12912c91</id>
-        <name>Angry Drunk Reputation</name>
-        <translate>怒酒症</translate>
-      </quality>
-      <quality>
-        <id>6c47713d-46ba-495d-800c-f77c306cf9df</id>
-        <name>Corporate Owned</name>
-        <translate>公司所有</translate>
-      </quality>
-      <quality>
-        <id>8cc2d931-becd-40d7-a0bd-705412037f38</id>
-        <name>Hotel California</name>
-        <translate>加州旅馆</translate>
-      </quality>
-      <quality>
-        <id>ce96f8e7-42a5-4745-8e3d-1f04c72b0385</id>
-        <name>Maid is Out</name>
-        <translate>女仆外出</translate>
-      </quality>
-      <quality>
-        <id>9a8da447-b05f-4f4a-8d7c-537344d77557</id>
-        <name>Not a Home</name>
-        <translate>遮头之瓦</translate>
-      </quality>
-      <quality>
-        <id>a808bcae-68c5-4e96-8bfc-f432ea63cc11</id>
-        <name>One Good Thing About This Place</name>
-        <translate>聊以慰藉</translate>
-      </quality>
-      <quality>
-        <id>0eee0e10-078e-4f07-ac57-14f9b83f1a36</id>
-        <name>Safehouse</name>
-        <translate>安全屋</translate>
-      </quality>
-      <quality>
-        <id>c4d4c6db-7314-4a23-951d-31126514af8d</id>
-        <name>Safety Third</name>
-        <translate>安全第三</translate>
-        <source>RF</source>
-        <page>226</page>
-      </quality>
-      <quality>
-        <id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
-        <name>Special Work Area</name>
-        <translate>特殊工作区</translate>
-      </quality>
-      <quality>
-        <id>61e7bb21-cb25-44ff-a332-639fe9dac893</id>
-        <name>Thrifty</name>
-        <translate>节俭</translate>
-      </quality>
-      <quality>
-        <id>d508fc24-6cbd-488f-a5f8-5282cfb58f9a</id>
-        <name>W Zone</name>
-        <translate>W区</translate>
-      </quality>
-		</qualities>
-	</chummer>
-	<chummer file="priorities.xml">
-		<categories>
-			<category translate="泛形态">Heritage</category>
-			<category translate="天资">Talent</category>
-			<category translate="属性">Attributes</category>
-			<category translate="技能">Skills</category>
-			<category translate="资源">Resources</category>
-		</categories>
-		<priorities>
-			<priority>
-				<id>55bc32fb-e097-4234-bdd5-a70e4f043b3d</id>
-				<name>A - Any metatype</name>
-				<translate>A - 任何种族</translate>
-			</priority>
-			<priority>
-				<id>f9aa712d-7140-4ddd-9e88-4a06e8bae222</id>
-				<name>B - Any metatype</name>
-				<translate>B - 任何种族</translate>
-			</priority>
-			<priority>
-				<id>988b7ce3-5739-4300-bc21-a6c92b869262</id>
-				<name>C - Human, Dwarf, Elf, Ork, or A.I.</name>
-				<translate>C - 人类，矮人，精灵，兽人，或A.I.</translate>
-			</priority>
-			<priority>
-				<id>255da2ba-8d21-4a73-9f81-37156901db72</id>
-				<name>D - Human or Elf</name>
-				<translate>D - 人类或精灵</translate>
-			</priority>
-			<priority>
-				<id>91dccab9-c3fc-4868-abf8-1825b70e8a6c</id>
-				<name>E - Human</name>
-				<translate>E - 人类</translate>
-			</priority>
-			<priority>
-				<id>9d58a295-7c59-4d3f-8001-a5565da6b836</id>
-				<name>A - Magician or Technomancer</name>
-				<translate>A - 法师/神秘修士，或超链者</translate>
-      </priority>
-			<priority>
-				<id>774fd89a-ecea-4f5f-ad2b-c4476ca46f70</id>
-				<name>B - Adept, Magician, or Technomancer</name>
-				<translate>B - 修士，法师/神秘修士，或超链者</translate>
-			</priority>
-			<priority>
-				<id>aae3a140-d306-4811-a9d2-874140600150</id>
-				<name>C - Adept, Magician, or Technomancer</name>
-				<translate>C - 修士，法师/神秘修士，或超链者</translate>
-			</priority>
-			<priority>
-				<id>b97be625-a732-4c3c-80e4-06c4d88bac91</id>
-				<name>D - Adept or Aspected Magician</name>
-				<translate>D - 修士或专精法师</translate>
-			</priority>
-			<priority>
-				<id>9753a254-94b0-46e8-83f4-e7627bdb8571</id>
-				<name>E - Mundane</name>
-				<translate>E - 凡俗</translate>
-			</priority>
-			<priority>
-				<id>1c4a7955-1ae1-4a5b-9ed4-5ab8525d13b0</id>
-				<name>A - 24 (12) Attributes</name>
-				<translate>A - 24 (12) 点属性</translate>
-			</priority>
-			<priority>
-				<id>521c1f60-f382-479e-af3b-a3eda5201f22</id>
-				<name>B - 20 (10) Attributes</name>
-				<translate>B - 20 (10) 点属性</translate>
-			</priority>
-			<priority>
-				<id>0a224d86-d355-4cd6-8e4e-b94e31f97c4b</id>
-				<name>C - 16 (8) Attributes</name>
-				<translate>C - 16 (8) 点属性</translate>
-			</priority>
-			<priority>
-				<id>984600d8-5b2f-437c-86eb-693a5bbff030</id>
-				<name>D - 14 (7) Attributes</name>
-				<translate>D - 14 (7) 点属性</translate>
-			</priority>
-			<priority>
-				<id>f6a36071-41ab-4f8e-884d-3cee92d8f181</id>
-				<name>E - 12 (6) Attributes</name>
-				<translate>E - 12 (6) 点属性</translate>
-			</priority>
-			<priority>
-				<id>45a5f7b4-c152-4e05-839f-1b3d14e56058</id>
-				<name>A - 46 Skills/10 Skill Groups</name>
-				<translate>A - 46 技能点数/10 技能组点数</translate>
-			</priority>
-			<priority>
-				<id>bde37645-6789-4401-bcec-4c0e61c7fe17</id>
-				<name>B - 36 Skills/5 Skill Groups</name>
-				<translate>B - 36 技能点数/5 技能组点数</translate>
-			</priority>
-			<priority>
-				<id>57c52154-489e-4e8a-b885-13b341700deb</id>
-				<name>C - 28 Skills/2 Skill Groups</name>
-				<translate>C - 28 技能点数/2 技能组点数</translate>
-			</priority>
-			<priority>
-				<id>61e1758f-e4ca-4e53-ad45-bb88a0e5ac04</id>
-				<name>D - 22 Skills/0 Skill Groups</name>
-				<translate>D - 22 技能点数/0 技能组点数</translate>
-			</priority>
-			<priority>
-				<id>b1ca5551-46a4-4ef0-9d07-c33ae0abbcd1</id>
-				<name>E - 18 Skills/0 Skill Groups</name>
-				<translate>E - 18 技能点数/0 技能组点数</translate>
-			</priority>
-			<priority>
-				<id>ee17af88-5564-4009-b0a1-4c8632bffaf4</id>
-				<name>A - 450,000¥</name>
-				<translate>A - 450,000¥</translate>
-			</priority>
-			<priority>
-				<id>ddb56487-f6ef-480d-9812-cf6077111c2b</id>
-				<name>B - 275,000¥</name>
-				<translate>B - 275,000¥</translate>
-			</priority>
-			<priority>
-				<id>be69802a-5379-457b-8084-87b22d2e9ea6</id>
-				<name>C - 140,000¥</name>
-				<translate>C - 140,000¥</translate>
-			</priority>
-			<priority>
-				<id>b977475b-9728-45a0-9873-a77bb036fb99</id>
-				<name>D - 50,000¥</name>
-				<translate>D - 50,000¥</translate>
-			</priority>
-			<priority>
-				<id>dd4eb137-e218-4d92-9ac2-db4d6bad4704</id>
-				<name>E - 6,000¥</name>
-				<translate>E - 6,000¥</translate>
-			</priority>
-			<priority>
-				<id>7e4c5695-52c8-4b16-b233-058af14a41d1</id>
-				<name>A - 500,000¥</name>
-				<translate>A - 500,000¥</translate>
-			</priority>
-			<priority>
-				<id>1da0e4d3-e75b-40ab-b366-e1eba499e8ca</id>
-				<name>B - 325,000¥</name>
-				<translate>B - 325,000¥</translate>
-			</priority>
-			<priority>
-				<id>0fdfe7f7-119d-4971-a629-4a4dea938c6c</id>
-				<name>C - 210,000¥</name>
-				<translate>C - 210,000¥</translate>
-			</priority>
-			<priority>
-				<id>2cbe209a-ae97-4985-b42f-4839613dfb28</id>
-				<name>D - 150,000¥</name>
-				<translate>D - 150,000¥</translate>
-			</priority>
-			<priority>
-				<id>860a9601-e06f-424f-8f40-bee843a6b5dc</id>
-				<name>E - 100,000¥</name>
-				<translate>E - 100,000¥</translate>
-			</priority>
-			<priority>
-				<id>dc72a445-a956-4ea5-b383-0f775c638f05</id>
-				<name>A - 75,000¥</name>
-				<translate>A - 75,000¥</translate>
-			</priority>
-			<priority>
-				<id>edc5db00-8d4c-4510-85d2-8d82d6c66ed6</id>
-				<name>B - 50,000¥</name>
-				<translate>B - 50,000¥</translate>
-			</priority>
-			<priority>
-				<id>9aecfa32-4d5c-4ba9-a88e-9a04f83e516b</id>
-				<name>C - 25,000¥</name>
-				<translate>C - 25,000¥</translate>
-			</priority>
-			<priority>
-				<id>c5b45f74-3396-45c7-afa9-b69c0c8db6ee</id>
-				<name>D - 15,000¥</name>
-				<translate>D - 15,000¥</translate>
-			</priority>
-		</priorities>
-	</chummer>
-	<chummer file="streams.xml">
-		<traditions>
-			<tradition>
-				<id>7a3ecfbe-616e-425d-b204-329de37ffdbb</id>
-				<name>Default</name>
-				<translate>默认</translate>
-				<spirits>
-					<spirit translate="情报网精">Courier Sprite</spirit>
-					<spirit translate="破解网精">Crack Sprite</spirit>
-					<spirit translate="数据网精">Data Sprite</spirit>
-					<spirit translate="诱错网精">Fault Sprite</spirit>
-					<spirit translate="机械网精">Machine Sprite</spirit>
-				</spirits>
-			</tradition>
-		</traditions>
-	</chummer>
-	<chummer file="contacts.xml">
-		<contacts>
-			<contact translate="美洲原住民部落成员">Amerindian Tribesperson</contact>
-			<contact translate="古物商人">Antiquities and Oddities Dealer</contact>
-			<contact translate="军械技师">Armorer</contact>
-			<contact translate="酒保">Bartender</contact>
-			<contact translate="片警">Beat Cop</contact>
-			<contact translate="博客主">Blogger</contact>
-			<contact translate="保镖">Bodyguard</contact>
-			<contact translate="赌注经纪人">Bookie</contact>
-			<contact translate="夜店咖">Club Hopper</contact>
-			<contact translate="俱乐部老板">Club Owner</contact>
-			<contact translate="公司职员">Company Man</contact>
-			<contact translate="公司猎头">Corporate Headhunter</contact>
-			<contact translate="公司经理">Corporate Manager</contact>
-			<contact translate="公司科学家">Corporate Scientist</contact>
-			<contact translate="公司秘书">Corporate Secretary</contact>
-			<contact translate="公司薪奴">Corporate Wage Slave</contact>
-			<contact translate="郊狼">Coyote</contact>
-			<contact translate="邪教成员">Cult Member</contact>
-			<contact translate="码头工人">Dockworker</contact>
-			<contact translate="销赃中介">Fence</contact>
-			<contact translate="消防队员">Firefighter</contact>
-			<contact translate="掮客">Fixer</contact>
-			<contact translate="自由斗士">Freedom Fighter</contact>
-			<contact translate="鉴证专家">Forensics Expert</contact>
-			<contact translate="赌徒">Gambler</contact>
-			<contact translate="帮派领袖">Gang Leader</contact>
-			<contact translate="暴走族">Go-Ganger</contact>
-			<contact translate="草根政治家">Grassroots Politician</contact>
-			<contact translate="仇恨团体成员">Hate Group Member</contact>
-			<contact translate="赫尔墨斯学者">Hermetic Academic</contact>
-			<contact translate="高风险谈判专家">High Stakes Negotiator</contact>
-			<contact translate="ID制造商">ID Manufacturer</contact>
-      <contact translate="信息贩子">Infobroker</contact>
-			<contact translate="门警">Janitor</contact>
-			<contact translate="黑手党顾问">Mafia Consiglieri</contact>
-			<contact translate="技工">Mechanic</contact>
-			<contact translate="约翰逊先生">Mr. Johnson</contact>
-			<contact translate="游牧民">Nomad</contact>
-			<contact translate="兽人国组织者（Ork Nation Organizer）">Ork Nation Organizer</contact>
-			<contact translate="Paramed">Paramed</contact>
-			<contact translate="Paramed Shaman">Paramed Shaman</contact>
-			<contact translate="泛安保专家">Parasecurity Expert</contact>
-			<contact translate="当铺老板">Pawn Broker</contact>
-			<contact translate="拉皮条的">Pimp</contact>
-			<contact translate="海盗">Pirate</contact>
-			<contact translate="警察局长">Police Chief</contact>
-			<contact translate="政治实习生（Political Intern）">Political Intern</contact>
-			<contact translate="激进分子">Radical</contact>
-			<contact translate="私人安保">Rent-a-Cop</contact>
-			<contact translate="讼棍">Shark Lawyer</contact>
-			<contact translate="拟感明星">Simsense Star</contact>
-			<contact translate="贫民窟头头">Slumlord</contact>
-			<contact translate="销赃客">Smuggler</contact>
-			<contact translate="线人">Snitch</contact>
-			<contact translate="安保蜘蛛">Spider</contact>
-			<contact translate="占屋者">Squatter</contact>
-			<contact translate="街头医生">Street Doc</contact>
-			<contact translate="街边小贩">Street Vendor</contact>
-			<contact translate="脱衣舞者">Stripper</contact>
-			<contact translate="军需官">Supply Sergeant</contact>
-			<contact translate="星探">Talent Scout</contact>
-			<contact translate="魔法小贩（Talislegger）">Talislegger</contact>
-			<contact translate="魔法商（Talismonger）">Talismonger</contact>
-			<contact translate="特玛诺斯（Tamanous)成员">Tamanous Member</contact>
-			<contact translate="出租车司机">Taxi Driver</contact>
-			<contact translate="“大地为先！”活动家">TerraFirst! Activist</contact>
-			<contact translate="3D视频盗版商">Trid Pirate</contact>
-			<contact translate="巨魔街头毒贩">Troll Street Dealer</contact>
-			<contact translate="城市人类学家">Urban Anthropologist</contact>
-			<contact translate="律贼（Vory Shestiorka）">Vory Shestiorka</contact>
-			<contact translate="魔法之子（Wiz Kid）帮派成员">Wiz Kid Ganger</contact>
-		</contacts>
-	</chummer>
-  <chummer file="gameplayoptions.xml">
-      <gameplayoption>
-        <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
-        <name>Standard</name>
-        <translate>标准等级</translate>
-      </gameplayoption>
-      <gameplayoption>
-        <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
-        <name>Prime Runner</name>
-        <translate>精英狂奔者等级</translate>
-      </gameplayoption>
-      <gameplayoption>
-        <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
-        <name>Street Level</name>
-        <translate>街头等级</translate>
-      </gameplayoption>
-      <gameplayoption>
-        <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
-        <name>Street Scum</name>
-        <translate>街头渣滓</translate>
-      </gameplayoption>
-  </chummer>
 </chummer>

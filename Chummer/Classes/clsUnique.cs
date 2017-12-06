@@ -3894,7 +3894,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
-            _blnIsQuality = objXmlArtNode["isquality"].InnerText == System.Boolean.TrueString;
+            _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == System.Boolean.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
             {

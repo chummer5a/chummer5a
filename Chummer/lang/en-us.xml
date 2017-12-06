@@ -8245,6 +8245,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Label_Viewer_CharacterSheet</key>
       <text>Character Sheet:</text>
     </string>
+    <string>
+      <key>String_Loading_Characters</key>
+      <text>Loading Characters...</text>
+    </string>
+    <string>
+      <key>String_Generating_Sheet</key>
+      <text>Generating Sheet...</text>
+    </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->
     <string>

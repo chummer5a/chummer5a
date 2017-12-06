@@ -50,6 +50,7 @@ namespace Chummer
             // cmdSaveHTML
             // 
             this.cmdSaveHTML.AutoSize = true;
+            this.cmdSaveHTML.Enabled = false;
             this.cmdSaveHTML.ContextMenuStrip = this.cmsSaveButton;
             this.cmdSaveHTML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.cmdSaveHTML.Location = new System.Drawing.Point(98, 12);
@@ -73,6 +74,7 @@ namespace Chummer
             // tsSaveAsXml
             // 
             this.tsSaveAsXml.Name = "tsSaveAsXml";
+            this.tsSaveAsXml.Enabled = false;
             this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
@@ -81,6 +83,7 @@ namespace Chummer
             // tsSaveAsPdf
             // 
             this.tsSaveAsPdf.Name = "tsSaveAsPdf";
+            this.tsSaveAsPdf.Enabled = false;
             this.tsSaveAsPdf.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
             this.tsSaveAsPdf.Text = "Save as PDF";
@@ -97,6 +100,7 @@ namespace Chummer
             // tsPrintPreview
             // 
             this.tsPrintPreview.Name = "tsPrintPreview";
+            this.tsPrintPreview.Enabled = false;
             this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
             this.tsPrintPreview.Tag = "Menu_FilePrintPreview";
             this.tsPrintPreview.Text = "&Print Preview";
@@ -105,6 +109,7 @@ namespace Chummer
             // cmdPrint
             // 
             this.cmdPrint.AutoSize = true;
+            this.cmdPrint.Enabled = false;
             this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
             this.cmdPrint.Location = new System.Drawing.Point(12, 12);
             this.cmdPrint.Name = "cmdPrint";
