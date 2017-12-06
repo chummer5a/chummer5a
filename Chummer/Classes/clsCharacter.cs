@@ -2167,31 +2167,34 @@ namespace Chummer
                 }
             }
             // <mainmugshotpath />
-            if (MainMugshot != null)
+            if (Mugshots.Count > 0)
             {
-                Image imgMainMugshot = MainMugshot;
                 string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + ".img");
-                imgMainMugshot.Save(imgMugshotPath);
-                objWriter.WriteElementString("mainmugshotpath",
-                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
-                // <mainmugshotbase64 />
-                objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
-                // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", Mugshots.Count > 1 ? "yes" : "no");
-                objWriter.WriteStartElement("othermugshots");
-                int i = 0;
-                foreach (Image imgMugshot in Mugshots)
+                Image imgMainMugshot = MainMugshot;
+                if (imgMainMugshot != null)
                 {
-                    if (imgMugshot == MainMugshot)
+                    imgMainMugshot.Save(imgMugshotPath);
+                    objWriter.WriteElementString("mainmugshotpath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                    // <mainmugshotbase64 />
+                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
+                }
+                // <othermugshots>
+                objWriter.WriteElementString("hasothermugshots", imgMainMugshot == null || Mugshots.Count > 1 ? "yes" : "no");
+                objWriter.WriteStartElement("othermugshots");
+                for (int i = 0; i < Mugshots.Count; ++i)
+                {
+                    if (i == MainMugshotIndex)
                         continue;
+                    Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
+
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
+
                     imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
                     objWriter.WriteEndElement();
-                    ++i;
                 }
                 // </mugshots>
                 objWriter.WriteEndElement();
