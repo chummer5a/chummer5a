@@ -1178,8 +1178,16 @@
       <text>Watch Folder</text>
     </string>
     <string>
-      <key>Treenode_Roster_FavouriteCharacters</key>
-      <text>Favourite Characters</text>
+      <key>Menu_Delete</key>
+      <text>&amp;Delete</text>
+    </string>
+    <string>
+      <key>Menu_Sort</key>
+      <text>&amp;Sort Alphabetically</text>
+    </string>
+    <string>
+      <key>Menu_ToggleFavourite</key>
+      <text>&amp;Toggle Favorite</text>
     </string>
     <!-- End Region -->
     <!-- Region Create/Career Window -->

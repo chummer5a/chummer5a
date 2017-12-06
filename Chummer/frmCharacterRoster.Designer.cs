@@ -30,6 +30,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.picMugshot = new System.Windows.Forms.PictureBox();
             this.tabCharacterText = new System.Windows.Forms.TabControl();
             this.panCharacterBio = new System.Windows.Forms.TabPage();
@@ -57,6 +58,10 @@ namespace Chummer
             this.lblFilePath = new System.Windows.Forms.Label();
             this.lblFilePathLabel = new System.Windows.Forms.Label();
             this.treCharacterList = new System.Windows.Forms.TreeView();
+            this.cmsRoster = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsToggleFav = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsSort = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsDelete = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -64,6 +69,7 @@ namespace Chummer
             this.panCharacterBackground.SuspendLayout();
             this.panCharacterNotes.SuspendLayout();
             this.panGameNotes.SuspendLayout();
+            this.cmsRoster.SuspendLayout();
             this.SuspendLayout();
             // 
             // picMugshot
@@ -370,6 +376,44 @@ namespace Chummer
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
             this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
             this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_KeyDown);
+            this.treCharacterList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            // 
+            // cmsRoster
+            // 
+            this.cmsRoster.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsToggleFav,
+            this.tsSort,
+            this.tsDelete});
+            this.cmsRoster.Name = "cmsRoster";
+            this.cmsRoster.Size = new System.Drawing.Size(174, 92);
+            // 
+            // tsToggleFav
+            // 
+            this.tsToggleFav.Image = global::Chummer.Properties.Resources.asterisk_orange;
+            this.tsToggleFav.Name = "tsToggleFav";
+            this.tsToggleFav.Size = new System.Drawing.Size(173, 22);
+            this.tsToggleFav.Tag = "Menu_ToggleFavorite";
+            this.tsToggleFav.Text = "&Toggle Favourite";
+            this.tsToggleFav.Click += new System.EventHandler(this.tsToggleFav_Click);
+            // 
+            // tsSort
+            // 
+            this.tsSort.Enabled = false;
+            this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsSort.Name = "tsSort";
+            this.tsSort.Size = new System.Drawing.Size(173, 22);
+            this.tsSort.Tag = "Menu_Sort";
+            this.tsSort.Text = "&Sort Alphabetically";
+            this.tsSort.Click += new System.EventHandler(this.tsSort_Click);
+            // 
+            // tsDelete
+            // 
+            this.tsDelete.Image = global::Chummer.Properties.Resources.delete;
+            this.tsDelete.Name = "tsDelete";
+            this.tsDelete.Size = new System.Drawing.Size(173, 22);
+            this.tsDelete.Tag = "Menu_Delete";
+            this.tsDelete.Text = "&Delete";
+            this.tsDelete.Click += new System.EventHandler(this.tsDelete_Click);
             // 
             // frmCharacterRoster
             // 
@@ -410,6 +454,7 @@ namespace Chummer
             this.panCharacterNotes.PerformLayout();
             this.panGameNotes.ResumeLayout(false);
             this.panGameNotes.PerformLayout();
+            this.cmsRoster.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -444,5 +489,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblFilePathLabel;
         private System.Windows.Forms.TabPage panGameNotes;
         private System.Windows.Forms.TextBox txtGameNotes;
+        private System.Windows.Forms.ContextMenuStrip cmsRoster;
+        private System.Windows.Forms.ToolStripMenuItem tsToggleFav;
+        private System.Windows.Forms.ToolStripMenuItem tsSort;
+        private System.Windows.Forms.ToolStripMenuItem tsDelete;
     }
 }

@@ -535,7 +535,9 @@ New Strings:
 - Checkbox_Options_LiveUpdateCleanCharacterFiles
 - Checkbox_Options_CompensateSkillGroupKarmaDifference
 - Button_ContactsExpansionToggle
-
+- Menu_Delete
+- Menu_Sort
+- Menu_ToggleFavourite
 Changed Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf
