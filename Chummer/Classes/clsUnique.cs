@@ -1795,26 +1795,27 @@ namespace Chummer
                 strReturn = strReturn.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"));
                 strReturn = strReturn.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
 
-                //if (_blnExtended)
-                //{
-                //    // Add +2 to the DV value if Extended is selected.
-                //    int intPos = strReturn.IndexOf(')') + 1;
-                //    string strAfter = strReturn.Substring(intPos, strReturn.Length - intPos);
-                //    strReturn = strReturn.Remove(intPos, strReturn.Length - intPos);
-                //    if (string.IsNullOrEmpty(strAfter))
-                //        strAfter = "+2";
-                //    else
-                //    {
-                //        int intValue = Convert.ToInt32(strAfter) + 2;
-                //        if (intValue == 0)
-                //            strAfter = string.Empty;
-                //        else if (intValue > 0)
-                //            strAfter = "+" + intValue.ToString();
-                //        else
-                //            strAfter = intValue.ToString();
-                //    }
-                //    strReturn += strAfter;
-                //}
+                if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
+                {
+                    int i = ImprovementManager.ValueOf(_objCharacter,Improvement.ImprovementType.SpellCategoryDrain, false, Category);
+                    i += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategoryDrain, false, string.Empty);
+                    int intPos = strReturn.IndexOf(')') + 1;
+                    string strAfter = strReturn.Substring(intPos, strReturn.Length - intPos);
+                    strReturn = strReturn.Remove(intPos, strReturn.Length - intPos);
+                    if (string.IsNullOrEmpty(strAfter))
+                        strAfter = "+2";
+                    else
+                    {
+                        int intValue = Convert.ToInt32(strAfter) + i;
+                        if (intValue == 0)
+                            strAfter = string.Empty;
+                        else if (intValue > 0)
+                            strAfter = "+" + intValue.ToString();
+                        else
+                            strAfter = intValue.ToString();
+                    }
+                    strReturn += strAfter;
+                }
 
                 return strReturn;
             }
@@ -1863,12 +1864,12 @@ namespace Chummer
                         break;
                     }
                 }
-                if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category)))
+                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
                 {
                     strTip += $"\n {LanguageManager.GetString("Label_Bonus")}";
                     strTip = _objCharacter.Improvements
-                        .Where(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category))
-                        .Aggregate(strTip, (current, imp) => current + $"\n {imp.ImprovedName} ({imp.Value:+0;-0;0})");
+                        .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category))
+                        .Aggregate(strTip, (current, imp) => current + $"\n {imp.UniqueName} ({imp.Value:+0;-0;0})");
                 }
 
                 return strTip;
@@ -2002,7 +2003,7 @@ namespace Chummer
                         Improvement imp in
                         _objCharacter.Improvements.Where(
                             i =>
-                                i.ImproveType == Improvement.ImprovementType.DrainValue &&
+                                (i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
                                 (i.UniqueName == string.Empty || i.UniqueName == Category) && i.Enabled))
                     {
                         dv += $" + {imp.Value:+0;-0;0}";

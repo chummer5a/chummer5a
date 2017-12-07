@@ -126,6 +126,8 @@ namespace Chummer
             Restricted,
             Notoriety,
             SpellCategory,
+            SpellCategoryDamage,
+            SpellCategoryDrain,
             ThrowRange,
             SkillsoftAccess,
             AddSprite,

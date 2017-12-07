@@ -13196,7 +13196,13 @@
 	  <canbuywithspellpoints>True</canbuywithspellpoints>
       <karma>15</karma>
       <category>Positive</category>
-      <bonus />
+	  <bonus>
+	    <weaponcategorydv>
+	      <selectskill skillcategory="Combat Active">
+	      </selectskill>
+	      <bonus>1</bonus>
+	    </weaponcategorydv>
+	  </bonus>
       <required>
 		<allof>
 		  <attribute>
